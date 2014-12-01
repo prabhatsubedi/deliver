@@ -55,10 +55,6 @@
                 $('#signup_form').validate().resetForm();
             });
 
-/*            $(".logo_container").dragleave(function(e) {
-                console.log(e);
-            });*/
-
 
 
         });

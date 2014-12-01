@@ -14,7 +14,6 @@ import java.util.List;
  */
 public interface UserService {
 
-    public void saveUser(UserEntity user) throws Exception;
     public void saveRole(RoleEntity role) throws Exception;
     public List<RoleEntity> findAllRoles() throws Exception;
 

@@ -23,14 +23,6 @@ public class UserServiceImpl implements UserService{
     @Autowired
     UserDaoService userDaoService;
 
-    /* Used For Only Manager and Account Registration */
-    public void saveUser(UserEntity user) throws Exception{
-
-            RoleEntity userRole = userDaoService.getRoleByRole(user.getRole().getRole());
-            user.setRole(userRole);
-            userDaoService.save(user);
-    }
-
 
     public void saveRole(RoleEntity role) throws Exception{
             userDaoService.saveRole(role);

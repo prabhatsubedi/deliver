@@ -4,6 +4,7 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.model.AuthenticatedUser;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.util.ServiceResponse;
+import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
@@ -22,12 +23,12 @@ import java.util.Iterator;
 
 @Controller
 public class MainController {
+    private Logger log = Logger.getLogger(MainController.class);
 
 	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
 	public ModelAndView defaultPage() {
+        //Default Page [Requested at First Time ]
 		ModelAndView model = new ModelAndView();
-		model.addObject("title", "Spring Security + Hibernate Example");
-		model.addObject("message", "This is default page!");
         if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null && !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
             AuthenticatedUser userDetails = (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             for(Iterator iterator = userDetails.getAuthorities().iterator(); iterator.hasNext();){

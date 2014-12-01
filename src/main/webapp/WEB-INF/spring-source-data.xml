@@ -1,0 +1,84 @@
+<?xml  version="1.0" encoding="UTF-8"?>
+<!-- @Author Surendra -->
+ <beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Connecting Database -->
+    <bean id="dataSource" class = "com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
+        <property name="jdbcUrl" value="jdbc:mysql://#{systemProperties.DELIVR_MYSQL_HOST}:#{systemProperties.DELIVR_MYSQL_PORT}/#{systemProperties.DELIVR_DATABASE}" />
+        <property name="user" value="#{systemProperties.DELIVR_MYSQL_USERNAME}" />
+        <property name="password" value="#{systemProperties.DELIVR_MYSQL_PASSWORD}" />
+        <property name="acquireIncrement" value="5" />
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="20" />
+        <property name="maxIdleTime" value="3600" /> <!-- Max 1 Hours -->
+        <property name="unreturnedConnectionTimeout" value="7200" /> <!-- connection will need to finish its work within 2 hour -->
+
+    </bean>
+
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+
+        <property name="configLocation">
+            <value>/WEB-INF/hibernate.cfg.xml</value>
+        </property>
+
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+                <prop key="hibernate.use_sql_comments">${hibernate.use_sql_comments}</prop>
+                <prop key="hibernate.auto_close_session">${hibernate.auto_close_session}</prop>
+                <!--<prop key="hibernate.connection.url">jdbc:mysql://localhost:3306/dboy</prop>
+                <prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
+                <prop key="hibernate.connection.username">root</prop>
+                <prop key="hibernate.connection.password"></prop>-->
+
+            </props>
+        </property>
+
+    </bean>
+
+    <bean id="userDao" class="com.yetistep.delivr.dao.impl.UserDaoServiceImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <bean id="springUserDetailsService"
+          class="com.yetistep.delivr.service.impl.SpringUserDetailsServiceImpl">
+        <property name="userDao" ref="userDao" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- MUST have transaction manager, using aop and aspects  -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+   <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true" />
+            <tx:method name="find*" read-only="true" />
+            <tx:method name="*" propagation="REQUIRED" rollback-for="Throwable"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="userServicePointCut"
+                      expression="execution(* com.yetistep.delivr.service.impl.*ServiceImpl.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="userServicePointCut" />
+    </aop:config>
+
+
+
+</beans>

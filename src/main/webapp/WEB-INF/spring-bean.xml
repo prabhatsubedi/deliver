@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- @Author Surendra -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+     <!--Dao and Service Layer Bean Dependency-->
+
+
+    <bean id = "userService" class = "com.yetistep.delivr.service.impl.UserServiceImpl" />
+    <bean id = "deliveryBoyService" class="com.yetistep.delivr.service.impl.DeliveryBoyServiceImpl" />
+    <bean id = "customerService" class="com.yetistep.delivr.service.impl.CustomerServiceImpl" />
+    <bean id = "merchantService" class="com.yetistep.delivr.service.impl.MerchantServiceImpl" />
+    <bean id = "managerService" class="com.yetistep.delivr.service.impl.ManagerServiceImpl" />
+    <bean id = "adminService" class="com.yetistep.delivr.service.impl.AdminServiceImpl" />
+    <bean id = "accountService" class="com.yetistep.delivr.service.impl.AccountServiceImpl" />
+
+
+    <bean id = "deliveryBoyDaoService" class="com.yetistep.delivr.dao.impl.DeliveryBoyDaoServiceImpl" />
+    <bean id = "customerDaoService" class="com.yetistep.delivr.dao.impl.CustomerDaoServiceImpl" />
+    <bean id = "merchantDaoService" class="com.yetistep.delivr.dao.impl.MerchantDaoServiceImpl" />
+</beans>

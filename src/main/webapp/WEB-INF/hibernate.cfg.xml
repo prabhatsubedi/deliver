@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+
+
+<hibernate-configuration>
+    <session-factory>
+
+        <!-- Show all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
+        <property name="use_sql_comments">true</property>
+        <property name="auto_close_session">true</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+
+        <!-- Drop and re-create the database schema on startup -->
+        <property name="hbm2ddl.auto">create</property>
+
+       <mapping class="com.yetistep.delivr.model.UserEntity" />
+       <mapping class="com.yetistep.delivr.model.RoleEntity" />
+       <mapping class="com.yetistep.delivr.model.CustomerEntity" />
+       <mapping class="com.yetistep.delivr.model.DeliveryBoyEntity"/>
+       <mapping class="com.yetistep.delivr.model.MerchantEntity"/>
+
+    </session-factory>
+</hibernate-configuration>

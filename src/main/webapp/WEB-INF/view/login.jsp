@@ -146,7 +146,7 @@
                 </div>
                 <div class="login_foot text-center">
                     Are you new to <strong>Delivr</strong> ?
-                    <button type="button" class="btn btn-default btn_logins" data-toggle="modal" data-target="#modal_signup">Sign Up</button>
+                    <button type="button" class="btn btn-default btn_logins" data-toggle="modal" data-target="#modal_signup" data-dismiss="modal">Sign Up</button>
                 </div>
             </div>
         </div>
@@ -174,10 +174,9 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" id="business_name" name="business_name" placeholder="Business Name">
                             </div>
-                            <div class="form-group business_logo unselectable">
+                            <div id="drop_zone" class="form-group business_logo unselectable text-center">
                                 <div class="drop_info">Drop image file (or click to browse)</div>
                                 <div class="logo_text">Business Logo</div>
-                                <div id="drop_zone" class="text-center"></div>
                             </div>
                             <input type="file" onchange="readURL(this)" id="logo_input" class="hidden" />
                             <div class="form-group">

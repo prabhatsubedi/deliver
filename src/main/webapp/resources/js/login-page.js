@@ -193,6 +193,7 @@ $(document).ready(function(){
     });
     $('#modal_signup').on('shown.bs.modal', function (e) {
         $('#business_name').focus();
+        $('body').addClass('modal-open');
     });
     $('#modal_login').on('hide.bs.modal', function (e) {
         $('#login_form').validate().resetForm();
@@ -201,6 +202,12 @@ $(document).ready(function(){
         $('#signup_form').validate().resetForm();
     });
 
+    $('#signup_form a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $(this).parent().removeClass('disabled_tab');
+        $(this).parent().prevAll().addClass('passed_tab');
+        $(this).parent().nextAll().removeClass('passed_tab');
+    })
+
 
     $(document).on('dragover drop', function (e)
     {
@@ -208,30 +215,29 @@ $(document).ready(function(){
         e.preventDefault();
     });
     var dropZone = $("#drop_zone");
-    var logoCont = $("#modal_signup .business_logo");
-    dropZone.on('dragenter', function (e)
+    dropZone.on('dragover', function (e)
     {
-        logoCont.addClass("entered");
+        $(this).addClass("entered");
     });
     dropZone.on('dragleave', function (e)
     {
-        logoCont.removeClass("entered");
+        $(this).removeClass("entered");
     });
     dropZone.on('drop', function (e)
     {
         if(e.originalEvent.dataTransfer.files[0] != undefined) {
-            logoCont.removeClass("entered").addClass("dropped");
+            $(this).removeClass("entered").addClass("dropped");
             readFile(e.originalEvent.dataTransfer.files[0]);
         } else {
-            logoCont.removeClass("entered dropped");
+            $(this).removeClass("entered dropped");
         }
     });
     dropZone.mousedown('', function(){
-        logoCont.addClass("entered");
+        $(this).addClass("entered");
     }).mouseleave(function(){
-        logoCont.removeClass("entered");
+        $(this).removeClass("entered");
     }).mouseup(function(){
-        logoCont.removeClass("entered");
+        $(this).removeClass("entered");
         $('#logo_input').trigger('click');
     });
 

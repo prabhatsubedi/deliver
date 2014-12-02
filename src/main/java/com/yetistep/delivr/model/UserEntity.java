@@ -6,7 +6,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,8 +44,7 @@ public class UserEntity {
     private Boolean verifiedStatus;
     private String token;
     private Boolean subscribeNewsletter;
-
-
+    private List<ActionLogEntity> actionLogEntities;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -265,5 +264,14 @@ public class UserEntity {
 
     public void setSubscribeNewsletter(Boolean subscribeNewsletter) {
         this.subscribeNewsletter = subscribeNewsletter;
+    }
+
+    @OneToMany(mappedBy = "userEntity")
+    public List<ActionLogEntity> getActionLogEntities() {
+        return actionLogEntities;
+    }
+
+    public void setActionLogEntities(List<ActionLogEntity> actionLogEntities) {
+        this.actionLogEntities = actionLogEntities;
     }
 }

@@ -23,6 +23,7 @@
        <mapping class="com.yetistep.delivr.model.CustomerEntity" />
        <mapping class="com.yetistep.delivr.model.DeliveryBoyEntity"/>
        <mapping class="com.yetistep.delivr.model.MerchantEntity"/>
+       <mapping class="com.yetistep.delivr.model.ActionLogEntity"/>
 
     </session-factory>
 </hibernate-configuration>

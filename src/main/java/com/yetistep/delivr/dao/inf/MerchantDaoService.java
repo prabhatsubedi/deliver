@@ -13,4 +13,5 @@ import java.sql.SQLException;
  * To change this template use File | Settings | File Templates.
  */
 public interface MerchantDaoService extends GenericDaoService<Integer, MerchantEntity>{
+    public void updateMerchantImageLinks(MerchantEntity merchantEntity) throws Exception;
 }

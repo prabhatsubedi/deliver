@@ -44,6 +44,15 @@ public class MessageBundle {
         return prop;
     }
 
+    public static String separateString(String separator, String... args){
+        StringBuilder builder = new StringBuilder();
+
+        for(String arg: args)
+            builder.append(arg+separator);
+
+        return builder.toString();
+    }
+
     public  static Timestamp getCurrentTimestampSQL(){
         return new Timestamp(System.currentTimeMillis());
     }
@@ -58,7 +67,16 @@ public class MessageBundle {
     public static int getSenderPort(){
         return Integer.parseInt(System.getProperty("DELIVR_SENDER_PORT"));
     }
+
     public static String getSenderHost(){
         return System.getProperty("DELIVR_SENDER_HOST");
+    }
+
+    public static String getHostName() {
+        return System.getProperty("DELIVR_HOST");
+    }
+
+    public static boolean isLocalHost() {
+        return getHostName().equals("localhost");
     }
 }

@@ -1,9 +1,12 @@
 package com.yetistep.delivr.model;
 
 import com.yetistep.delivr.enums.MerchantType;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.persistence.metamodel.EmbeddableType;
 import java.math.BigDecimal;
 
@@ -16,6 +19,8 @@ import java.math.BigDecimal;
  */
 @Entity(name="MerchantEntity")
 @Table(name="merchants")
+
+@DynamicUpdate
 public class MerchantEntity {
 
     private Integer id;

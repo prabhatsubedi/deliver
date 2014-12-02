@@ -54,4 +54,11 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Session session = sessionFactory.getCurrentSession();
         return session;
     }
+
+    @Override
+    public void updateMerchantImageLinks(MerchantEntity merchantEntity) throws Exception {
+
+        getCurrentSession().update(merchantEntity);
+
+    }
 }

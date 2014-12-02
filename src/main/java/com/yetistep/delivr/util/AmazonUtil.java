@@ -35,8 +35,8 @@ public class AmazonUtil {
 
     public static AWSCredentials getCredentials(){
         if(credentials==null){
-            String accessKey = MessageBundle.getMessage("accessKey", "AwsCredentials.properties");
-            String secretKey = MessageBundle.getMessage("secretKey", "AwsCredentials.properties");
+            String accessKey = MessageBundle.getMessage("accessKey", "awsCredentials.properties");
+            String secretKey = MessageBundle.getMessage("secretKey", "awsCredentials.properties");
 
             credentials = new BasicAWSCredentials(accessKey, secretKey);
         }
@@ -68,26 +68,8 @@ public class AmazonUtil {
 
             final Upload upload = tx.upload(BUCKET, key, file);
 
-//            final ProgressListener progressListener = new ProgressListener() {
-//                // This method is called periodically as your transfer progresses
-//                public void progressChanged(ProgressEvent progressEvent) {
-//                    log.info(upload.getDescription() + " [" + upload.getState() + " :" + upload.getProgress().getPercentTransferred() + "%]");
-//
-//                    if (progressEvent.getEventCode() == ProgressEvent.COMPLETED_EVENT_CODE) {
-//                        log.info(upload.getDescription() + " Upload complete!!! with file size " +upload.getProgress().getTotalBytesToTransfer() +"["+ upload.getProgress().getBytesTransferred()+"]");
-//                        if (upload.getProgress().getTotalBytesToTransfer() !=upload.getProgress().getBytesTransferred()) {
-//                            log.error("Failed to upload image completely. Trying for second time");
-//                        }
-//
-//                    }
-//                }
-//            };
-//
-//            upload.addProgressListener(progressListener);
-
             upload.waitForCompletion();
             log.info("File "+filename+" successfully uploaded to bucket");
-//            upload.removeProgressListener(progressListener);
 
             if(deleteOriginal) file.delete();
 

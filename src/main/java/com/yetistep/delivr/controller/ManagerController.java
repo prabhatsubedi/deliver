@@ -82,6 +82,31 @@ public class ManagerController {
         return serviceResponse;
     }
 
+    @RequestMapping(value = "/save_accountant", method = RequestMethod.POST)
+    @ResponseBody
+    public ServiceResponse processRegistration(@RequestBody final UserEntity user) {
+
+        try{
+            String password = user.getPassword();
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String hashedPassword = passwordEncoder.encode(password);
+
+            user.setPassword(hashedPassword);
+
+            user.setMobileVerificationStatus(false);
+            //user.setLastActivityDate(new Date());
+            user.setBlacklistStatus(false);
+            user.setVerifiedStatus(false);
+
+            userService.saveUser(user);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ServiceResponse serviceResponse = new ServiceResponse("User has been saved successfully");
+        return serviceResponse;
+    }
+
     @RequestMapping(value = "/save_merchant", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<ServiceResponse> processRegistration(@RequestHeader(value="username", required = false) String username, @RequestHeader(value="password", required = false) String password, @RequestBody MerchantEntity merchant){

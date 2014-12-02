@@ -43,8 +43,8 @@ if(typeof(Main) == "undefined") var Main = {};
             },
             success: function (data) {
 //                setTimeout(function (){
-                    hideLoader();
-                    return callback("success", data);
+                hideLoader();
+                return callback("success", data);
 //                }, 3000);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {

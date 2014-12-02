@@ -3,12 +3,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Delivr</title>
+    <title>Delivr</title>
 
     <%@include file="includes/head.jsp" %>
 
     <script src="<c:url value="/resources/js/jquery.validate.js" />"></script>
-
     <script type="text/javascript">
         $(document).ready(function(){
             var tokenName = $('#csrf_token').attr('name');
@@ -17,11 +16,9 @@
             $('#login_form').validate({
                 submitHandler: function() {
                     var data = {username: $('#email').val(), password: $('#password').val()};
-                    data[tokenName] = tokenValue;
                     Main.doLogin(data);
                     return false;
-                },
-                wrapper : 'div'
+                }
             });
             $('#email').rules('add', {required: true, email: true, messages : {required: "Email is required."}});
             $('#password').rules('add', {required: true, minlength: 6, messages : {required: "Password is required."}});
@@ -29,7 +26,6 @@
             $('#signup_form').validate({
                 submitHandler: function() {
                     var data = {username: $('#email').val(), password: $('#password').val()};
-                    data[tokenName] = tokenValue;
                     Main.doLogin(data);
                     return false;
                 }
@@ -42,21 +38,6 @@
             $('#registration_no').rules('add', {required: true, messages : {required: "Email is required."}});
             $('#vat').rules('add', {required: true, messages : {required: "Email is required."}});
 
-            $('#modal_login').on('shown.bs.modal', function (e) {
-                $('#email').focus();
-            });
-            $('#modal_signup').on('shown.bs.modal', function (e) {
-                $('#business_name').focus();
-            });
-            $('#modal_login').on('hide.bs.modal', function (e) {
-                $('#login_form').validate().resetForm();
-            });
-            $('#modal_signup').on('hide.bs.modal', function (e) {
-                $('#signup_form').validate().resetForm();
-            });
-
-
-
         });
     </script>
 
@@ -66,7 +47,7 @@
 <input id="csrf_token" type="hidden" name="${_csrf.parameterName}"
        value="${_csrf.token}" />
 
-<div id="drop_zone" class="logo_container">
+<div class="logo_container">
     <img src="<c:url value="/resources/images/login-logo.png" />" class="img-responsive">
 </div>
 

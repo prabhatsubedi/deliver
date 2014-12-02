@@ -43,7 +43,7 @@ public class MerchantServiceImpl implements MerchantService {
         log.info("++++++++++ Checking Role from Database +++++++++++++++++++++++++");
         RoleEntity userRole = userDaoService.getRoleByRole(merchant.getUser().getRole().getRole());
         merchant.getUser().setRole(userRole);
-        merchantDaoService.saveMerchant(merchant);
+        merchantDaoService.save(merchant);
 
     }
 }

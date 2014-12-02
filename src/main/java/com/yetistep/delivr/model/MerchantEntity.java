@@ -23,15 +23,13 @@ public class MerchantEntity {
     private MerchantType type;
     private Boolean partnershipStatus;
     private BigDecimal commissionPercentage;
-    private String contactNumber;
-    private String contactEmail;
-    private String contactPerson;
     private String website;
     private String agreementDetail;
     private String businessTitle;
-    private String businessCoverImage;
+    private String businessLogo;
     private String companyRegistrationNo;
     private String vatNo;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -82,32 +80,6 @@ public class MerchantEntity {
         this.commissionPercentage = commissionPercentage;
     }
 
-    @Column(name = "contact_number", nullable = false)
-    public String getContactNumber() {
-        return contactNumber;
-    }
-
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
-    }
-
-    @Column(name = "contact_email", nullable = false)
-    public String getContactEmail() {
-        return contactEmail;
-    }
-
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
-    }
-
-    @Column(name = "contact_person", nullable = false)
-    public String getContactPerson() {
-        return contactPerson;
-    }
-
-    public void setContactPerson(String contactPerson) {
-        this.contactPerson = contactPerson;
-    }
 
     @Column(name = "website")
     public String getWebsite() {
@@ -137,13 +109,13 @@ public class MerchantEntity {
         this.businessTitle = businessTitle;
     }
 
-    @Column(name = "business_cover_image")
-    public String getBusinessCoverImage() {
-        return businessCoverImage;
+    @Column(name="business_logo")
+    public String getBusinessLogo() {
+        return businessLogo;
     }
 
-    public void setBusinessCoverImage(String businessCoverImage) {
-        this.businessCoverImage = businessCoverImage;
+    public void setBusinessLogo(String businessLogo) {
+        this.businessLogo = businessLogo;
     }
 
     @Column(name = "registration_no")

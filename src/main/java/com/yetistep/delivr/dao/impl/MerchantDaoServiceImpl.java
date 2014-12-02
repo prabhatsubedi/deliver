@@ -6,7 +6,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,12 +22,36 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Autowired
     SessionFactory sessionFactory;
 
+
     @Override
-    public void saveMerchant(MerchantEntity merchant) throws SQLException{
-
-        Session session = sessionFactory.getCurrentSession();
-        session.save(merchant);
-
+    public MerchantEntity find(Integer id) throws Exception {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public List<MerchantEntity> findAll() throws Exception {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Boolean save(MerchantEntity value) throws Exception {
+        getCurrentSession().save(value);
+        return true;
+    }
+
+    @Override
+    public Boolean update(MerchantEntity value) throws Exception {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Boolean delete(MerchantEntity value) throws Exception {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Session getCurrentSession() throws Exception {
+        Session session = sessionFactory.getCurrentSession();
+        return session;
+    }
 }

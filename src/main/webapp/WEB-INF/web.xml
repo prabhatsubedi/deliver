@@ -45,8 +45,9 @@
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
 
+    <!-- Timeout in MIN -->
     <session-config>
-        <session-timeout>2</session-timeout>
+        <session-timeout>10</session-timeout>
     </session-config>
 
 </web-app>

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +29,11 @@ public class MessageBundle {
         return null;
     }
 
+    public static String generateTokenString() {
+        return UUID.randomUUID().toString();
+
+    }
+
     public static Properties readProperties(String fileName) throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         InputStream input = classLoader.getResourceAsStream(fileName);
@@ -40,5 +46,19 @@ public class MessageBundle {
 
     public  static Timestamp getCurrentTimestampSQL(){
         return new Timestamp(System.currentTimeMillis());
+    }
+
+    public static String getSenderEmail(){
+        return System.getProperty("DELIVR_SENDER_EMAIL");
+    }
+    public static String getSenderPassword(){
+        return System.getProperty("DELIVR_SENDER_PASSWORD");
+    }
+
+    public static int getSenderPort(){
+        return Integer.parseInt(System.getProperty("DELIVR_SENDER_PORT"));
+    }
+    public static String getSenderHost(){
+        return System.getProperty("DELIVR_SENDER_HOST");
     }
 }

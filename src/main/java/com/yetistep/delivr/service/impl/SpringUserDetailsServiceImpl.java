@@ -7,8 +7,6 @@ package com.yetistep.delivr.service.impl;
  * Time: 4:17 PM
  * To change this template use File | Settings | File Templates.
  */
-import java.util.*;
-
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.model.AuthenticatedUser;
 import com.yetistep.delivr.model.RoleEntity;
@@ -18,6 +16,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Custom Spring Authentication and Authorization Class
@@ -48,7 +51,7 @@ public class SpringUserDetailsServiceImpl implements UserDetailsService {
         Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
         // Build user's authorities
         try {
-            setAuths.add(new SimpleGrantedAuthority(role.getRole()));
+            setAuths.add(new SimpleGrantedAuthority(role.getRole().toString()));
             List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
             return Result;
         }catch (Exception e) {

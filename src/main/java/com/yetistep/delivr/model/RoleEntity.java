@@ -1,8 +1,9 @@
 package com.yetistep.delivr.model;
 
+import com.yetistep.delivr.enums.Role;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ import java.util.Set;
 public class RoleEntity {
 
     private int id;
-    private String role;
+    private Role role;
     private Set<UserEntity> user = new HashSet<UserEntity>();
     private Timestamp createdDate;
 
@@ -34,11 +35,12 @@ public class RoleEntity {
     }
 
     @Column(name = "role", nullable = false, unique = true)
-    public String getRole() {
+    @Enumerated(EnumType.STRING)
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

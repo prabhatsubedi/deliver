@@ -1,9 +1,8 @@
 package com.yetistep.delivr.dao.inf;
 
-import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.List;
 public interface UserDaoService {
     public void saveRole(RoleEntity role) throws SQLException;
 
-    public RoleEntity getRoleByRole(String role) throws SQLException;
+    public RoleEntity getRoleByRole(Role role) throws SQLException;
 
     public List<RoleEntity> findAllRoles() throws SQLException;
 

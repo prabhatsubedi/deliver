@@ -1,17 +1,14 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.UserDaoService;
-import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -67,7 +64,7 @@ public class UserDaoServiceImpl implements UserDaoService {
     }
 
     @Override
-    public RoleEntity getRoleByRole(String role) throws SQLException {
+    public RoleEntity getRoleByRole(Role role) throws SQLException {
         Session session = sessionFactory.getCurrentSession();
         List<RoleEntity> roleList = new ArrayList<>();
 

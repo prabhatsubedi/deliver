@@ -2,11 +2,11 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.CustomerDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
-import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.model.CustomerEntity;
+import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.service.inf.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,7 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void saveCustomer(CustomerEntity customer) throws Exception{
 
-            RoleEntity userRole = userDaoService.getRoleByRole("ROLE_CUSTOMER");
+            RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_CUSTOMER);
             customer.getUser().setRole(userRole);
             //customer.getUser().setCreatedDate(new Date());
             customerDaoService.saveCustomer(customer);

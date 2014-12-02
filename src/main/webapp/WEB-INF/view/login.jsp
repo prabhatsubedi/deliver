@@ -6,11 +6,64 @@
 <title>Delivr</title>
 
     <%@include file="includes/head.jsp" %>
-
+    
     <script type="text/javascript" src="<c:url value="/resources/js/jquery.validate.js" />"></script>
     <script type="text/javascript" src="<c:url value="/resources/js/jquery.Jcrop.js" />"></script>
     <script type="text/javascript" src="<c:url value="/resources/js/html2canvas.js" />"></script>
     <script type="text/javascript" src="<c:url value="/resources/js/login-page.js" />"></script>
+
+    <script src="<c:url value="/resources/js/jquery.validate.js" />"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var tokenName = $('#csrf_token').attr('name');
+            var tokenValue = $('#csrf_token').attr('value');
+
+            $('#login_form').validate({
+                submitHandler: function() {
+                    var data = {username: $('#email').val(), password: $('#password').val()};
+                    data[tokenName] = tokenValue;
+                    Main.doLogin(data);
+                    return false;
+                },
+                wrapper : 'div'
+            });
+            $('#email').rules('add', {required: true, email: true, messages : {required: "Email is required."}});
+            $('#password').rules('add', {required: true, minlength: 6, messages : {required: "Password is required."}});
+
+            $('#signup_form').validate({
+                submitHandler: function() {
+                    var data = {username: $('#email').val(), password: $('#password').val()};
+                    data[tokenName] = tokenValue;
+                    Main.doLogin(data);
+                    return false;
+                }
+            });
+            $('#business_name').rules('add', {required: true, messages : {required: "Email is required."}});
+            $('#url').rules('add', {required: true, messages : {required: "Email is required."}});
+            $('#contact_person').rules('add', {required: true, messages : {required: "Email is required."}});
+            $('#contact_email').rules('add', {required: true, messages : {required: "Email is required."}});
+            $('#contact_no').rules('add', {required: true, messages : {required: "Email is required."}});
+            $('#registration_no').rules('add', {required: true, messages : {required: "Email is required."}});
+            $('#vat').rules('add', {required: true, messages : {required: "Email is required."}});
+
+            $('#modal_login').on('shown.bs.modal', function (e) {
+                $('#email').focus();
+            });
+            $('#modal_signup').on('shown.bs.modal', function (e) {
+                $('#business_name').focus();
+            });
+            $('#modal_login').on('hide.bs.modal', function (e) {
+                $('#login_form').validate().resetForm();
+            });
+            $('#modal_signup').on('hide.bs.modal', function (e) {
+                $('#signup_form').validate().resetForm();
+            });
+
+
+
+        });
+    </script>
 
 </head>
 <body>

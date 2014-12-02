@@ -34,6 +34,32 @@ public class AdminController {
     @Autowired
     CustomerService customerService;
 
+    @RequestMapping(value = "/save_manager", method = RequestMethod.POST)
+    @ResponseBody
+    public ServiceResponse processRegistration(@RequestBody final UserEntity user) {
+
+        try {
+            String password = user.getPassword();
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String hashedPassword = passwordEncoder.encode(password);
+
+            user.setPassword(hashedPassword);
+
+            user.setMobileVerificationStatus(false);
+            //user.setLastActivityDate(new Date());
+            user.setBlacklistStatus(false);
+            user.setVerifiedStatus(false);
+
+            userService.saveUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ServiceResponse serviceResponse = new ServiceResponse("User has been saved successfully");
+        return serviceResponse;
+    }
+
+
     @RequestMapping(value = "/save_role", method = RequestMethod.POST)
     @ResponseBody
     public ServiceResponse processRegistration() {

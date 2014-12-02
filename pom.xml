@@ -27,7 +27,7 @@
             <version>${spring.version}</version>
         </dependency>
 
-       <dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
             <version>${spring.version}</version>
@@ -125,19 +125,6 @@
             <version>${servletapi.version}</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Amazon S3 SDK -->
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
-            <version>1.9.8</version>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
-            <version>1.6.4</version>
-        </dependency>
-
 
     </dependencies>
 

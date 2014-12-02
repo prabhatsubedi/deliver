@@ -4,7 +4,6 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.model.AuthenticatedUser;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.util.ServiceResponse;
-import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
@@ -23,12 +22,12 @@ import java.util.Iterator;
 
 @Controller
 public class MainController {
-    private Logger log = Logger.getLogger(MainController.class);
 
-	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
-	public ModelAndView defaultPage() {
-        //Default Page [Requested at First Time ]
-		ModelAndView model = new ModelAndView();
+    @RequestMapping(value = { "/" }, method = RequestMethod.GET)
+    public ModelAndView defaultPage() {
+        ModelAndView model = new ModelAndView();
+        model.addObject("title", "Spring Security + Hibernate Example");
+        model.addObject("message", "This is default page!");
         if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null && !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
             AuthenticatedUser userDetails = (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             for(Iterator iterator = userDetails.getAuthorities().iterator(); iterator.hasNext();){
@@ -46,8 +45,8 @@ public class MainController {
         }  else {
             model.setViewName("login");
         }
-		return model;
-	}
+        return model;
+    }
 
     @RequestMapping(value = {"/welcome" }, method = RequestMethod.GET)
     @ResponseBody
@@ -74,15 +73,15 @@ public class MainController {
     }
 
 
-	@RequestMapping(value = "/admin**", method = RequestMethod.GET)
-	public ModelAndView adminPage() {
-		ModelAndView model = new ModelAndView();
-		model.addObject("title", "Spring Security + Hibernate Example");
+    @RequestMapping(value = "/admin**", method = RequestMethod.GET)
+    public ModelAndView adminPage() {
+        ModelAndView model = new ModelAndView();
+        model.addObject("title", "Spring Security + Hibernate Example");
 
-		model.addObject("message", "This page is for ROLE_ADMIN only!");
-		model.setViewName("admin");
-		return model;
-	}
+        model.addObject("message", "This page is for ROLE_ADMIN only!");
+        model.setViewName("admin");
+        return model;
+    }
 
     @RequestMapping(value = "/auth_failed", method = RequestMethod.GET)
     public ModelAndView auth_failed() {
@@ -101,20 +100,20 @@ public class MainController {
         return model;
     }
 
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     @ResponseBody
-	public ServiceResponse login(@RequestParam(value = "error", required = false) String error,
-			@RequestParam(value = "logout", required = false) String logout, HttpServletRequest request) {
-		String message = "";
-		if (error != null) {
+    public ServiceResponse login(@RequestParam(value = "error", required = false) String error,
+                                 @RequestParam(value = "logout", required = false) String logout, HttpServletRequest request) {
+        String message = "";
+        if (error != null) {
             message = getErrorMessage(request, "SPRING_SECURITY_LAST_EXCEPTION");
-		}
-		if (logout != null) {
+        }
+        if (logout != null) {
             message = "You've been logged out successfully.";
-		}
+        }
         ServiceResponse serviceResponse = new ServiceResponse(message);
         return serviceResponse;
-	}
+    }
 
 
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
@@ -146,34 +145,34 @@ public class MainController {
         return model;
     }
 
-	// customize the error message
-	private String getErrorMessage(HttpServletRequest request, String key) {
-		Exception exception = (Exception) request.getSession().getAttribute(key);
-		String error = "";
-		if (exception instanceof BadCredentialsException) {
-			error = "Invalid username and password!";
-		} else if (exception instanceof LockedException) {
-			error = exception.getMessage();
-		} else {
-			error = "Invalid username and password!";
-		}
-		return error;
-	}
+    // customize the error message
+    private String getErrorMessage(HttpServletRequest request, String key) {
+        Exception exception = (Exception) request.getSession().getAttribute(key);
+        String error = "";
+        if (exception instanceof BadCredentialsException) {
+            error = "Invalid username and password!";
+        } else if (exception instanceof LockedException) {
+            error = exception.getMessage();
+        } else {
+            error = "Invalid username and password!";
+        }
+        return error;
+    }
 
-	// for 403 access denied page
-	@RequestMapping(value = "/403", method = RequestMethod.GET)
-	public ModelAndView accesssDenied() {
-		ModelAndView model = new ModelAndView();
-		// check if user is login
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			UserDetails userDetail = (UserDetails) auth.getPrincipal();
-			System.out.println(userDetail);
-			model.addObject("username", userDetail.getUsername());
-		}
-		model.setViewName("403");
-		return model;
+    // for 403 access denied page
+    @RequestMapping(value = "/403", method = RequestMethod.GET)
+    public ModelAndView accesssDenied() {
+        ModelAndView model = new ModelAndView();
+        // check if user is login
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            UserDetails userDetail = (UserDetails) auth.getPrincipal();
+            System.out.println(userDetail);
+            model.addObject("username", userDetail.getUsername());
+        }
+        model.setViewName("403");
+        return model;
 
-	}
+    }
 
 }

@@ -12,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractManager {
+    @Autowired
+    SessionFactory sessionFactory;
 
-   //TODO Create Abstract Method Here for Service Layer
-
-
+    public Session getCurrentSession() throws Exception {
+        Session session = sessionFactory.getCurrentSession();
+        return session;
+    }
 }

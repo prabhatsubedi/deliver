@@ -259,3 +259,9 @@ body {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07) inset, 0 0 8px rgba(255, 146, 53, 0.60);
     outline: 0 none;
 }
+#drop_zone.entered {
+    border: 3px solid  #ff9235;
+}
+#drop_zone.dropped {
+    border: 3px solid #CCCCCC;
+}

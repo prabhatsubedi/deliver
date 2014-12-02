@@ -22,7 +22,7 @@ if(typeof(Main) == "undefined") var Main = {};
         return localStorage.getItem(key);
     }
 
-    Main.request = function (url, parameter, callback, headers) {
+    Main.request = function (url, parameter, callback) {
         var loaderDiv = callback["loaderDiv"];
         if (loaderDiv != undefined) {
             $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
@@ -38,7 +38,6 @@ if(typeof(Main) == "undefined") var Main = {};
             url: url,
             type: "POST",
             data: parameter,
-            headers: headers,
             statusCode: {
             },
             success: function (data) {

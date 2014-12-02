@@ -48,6 +48,7 @@ if(typeof(Main) == "undefined") var Main = {};
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 hideLoader();
+                return callback("error", {success: false, message: errorThrown});
             }
         });
     };

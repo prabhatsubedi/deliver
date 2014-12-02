@@ -16,9 +16,6 @@
 </head>
 <body>
 
-<input id="csrf_token" type="hidden" name="${_csrf.parameterName}"
-       value="${_csrf.token}" />
-
 <div id="drop_zone" class="logo_container">
     <img src="<c:url value="/resources/images/login-logo.png" />" class="img-responsive">
 </div>

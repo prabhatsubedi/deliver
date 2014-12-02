@@ -52,16 +52,19 @@ function readURL(input) {
     }
 }
 
-function
+function readFile(file) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        return e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+}
 
 $(document).ready(function(){
-    var tokenName = $('#csrf_token').attr('name');
-    var tokenValue = $('#csrf_token').attr('value');
 
     $('#login_form').validate({
         submitHandler: function() {
             var data = {username: $('#email').val(), password: $('#password').val()};
-//            data[tokenName] = tokenValue;
             Main.doLogin(data);
             return false;
         },
@@ -73,7 +76,6 @@ $(document).ready(function(){
     $('#signup_form').validate({
         submitHandler: function() {
             var data = {username: $('#email').val(), password: $('#password').val()};
-            data[tokenName] = tokenValue;
             Main.doLogin(data);
             return false;
         }

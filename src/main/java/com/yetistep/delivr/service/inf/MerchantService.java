@@ -1,6 +1,7 @@
 package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.model.MerchantEntity;
+import org.springframework.http.HttpHeaders;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,5 +11,5 @@ import com.yetistep.delivr.model.MerchantEntity;
  * To change this template use File | Settings | File Templates.
  */
 public interface MerchantService {
-    public void saveMerchant(MerchantEntity merchant, String username, String password) throws Exception;
+    public void saveMerchant(MerchantEntity merchant, HttpHeaders headers) throws Exception;
 }

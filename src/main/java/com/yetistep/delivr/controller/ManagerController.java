@@ -72,11 +72,11 @@ public class ManagerController {
 
     @RequestMapping(value = "/save_merchant", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> processRegistration(@RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password, @RequestBody MerchantEntity merchant) {
+    public ResponseEntity<ServiceResponse> processRegistration(@RequestHeader HttpHeaders headers, @RequestBody MerchantEntity merchant){
 
-        try {
+        try{
 
-            merchantService.saveMerchant(merchant, username, password);
+            merchantService.saveMerchant(merchant, headers);
 
              /* Response Success */
             // JSON Information

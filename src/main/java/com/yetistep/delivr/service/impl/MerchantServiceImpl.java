@@ -3,12 +3,14 @@ package com.yetistep.delivr.service.impl;
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
+import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.imageio.ImageIO;
@@ -37,18 +39,16 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     HttpServletRequest httpServletRequest;
 
     @Override
-    public void saveMerchant(MerchantEntity merchant, String username, String password) throws Exception {
+    public void saveMerchant(MerchantEntity merchant, HttpHeaders headers) throws Exception {
         log.info("++++++++++++++++++ Creating Merchant +++++++++++++++++");
         UserEntity user = merchant.getUser();
-        if((username==null || password==null) || (username.isEmpty() || password.isEmpty()))
-            throw new YSException("VLD009");
+        HeaderDto headerDto = new HeaderDto();
+        GeneralUtil.fillHeaderCredential(headers, headerDto);
 
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String hashedPassword = passwordEncoder.encode(password);
         String token = MessageBundle.generateTokenString() + "_" + System.currentTimeMillis();
 
-        user.setUsername(username);
-        user.setPassword(hashedPassword);
+        user.setUsername(headerDto.getUsername());
+        user.setPassword("");
         user.setToken(token);
         merchant.setUser(user);
 

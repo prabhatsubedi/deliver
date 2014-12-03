@@ -404,6 +404,7 @@ $(document).ready(function(){
     }
 
     function addMarker(location, name) {
+        deleteMarkers();
         var location_check = false;
         for(var i in arrGeoPoints) {
             if(location.lat() == arrGeoPoints[i].latitude && location.lng() == arrGeoPoints[i].longitude) {

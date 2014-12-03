@@ -1,8 +1,7 @@
 package com.yetistep.delivr.dao.inf;
 
+import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
-
-import java.sql.SQLException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,6 +10,6 @@ import java.sql.SQLException;
  * Time: 12:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface DeliveryBoyDaoService {
-    public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy) throws SQLException;
+public interface DeliveryBoyDaoService extends GenericDaoService<Integer, DeliveryBoyEntity> {
+
 }

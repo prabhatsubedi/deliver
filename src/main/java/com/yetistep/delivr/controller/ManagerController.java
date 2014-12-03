@@ -50,20 +50,18 @@ public class ManagerController {
     @RequestMapping(value = "/save_delivery_boy", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> saveDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoy) {
-        try{
+        try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto);
-            String hashedPassword = GeneralUtil.encryptPassword(headerDto.getPassword());
-
             deliveryBoy.getUser().setUsername(headerDto.getUsername());
-            deliveryBoy.getUser().setPassword(hashedPassword);
+            deliveryBoy.getUser().setPassword(headerDto.getPassword());
             deliveryBoyService.saveDeliveryBoy(deliveryBoy);
 
             ServiceResponse serviceResponse = new ServiceResponse("User(Delivery Boy) has been saved successfully");
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add("deliveryBoyId", deliveryBoy.getUser().getId() + "");
-            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-            return new ResponseEntity<ServiceResponse>(serviceResponse, httpHeaders, HttpStatus.CREATED);
+//            HttpHeaders httpHeaders = new HttpHeaders();
+//            httpHeaders.add("deliveryBoyId", deliveryBoy.getUser().getId() + "");
+//            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
 
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
@@ -74,9 +72,9 @@ public class ManagerController {
 
     @RequestMapping(value = "/save_merchant", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> processRegistration(@RequestHeader(value="username", required = false) String username, @RequestHeader(value="password", required = false) String password, @RequestBody MerchantEntity merchant){
+    public ResponseEntity<ServiceResponse> processRegistration(@RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password, @RequestBody MerchantEntity merchant) {
 
-        try{
+        try {
 
             merchantService.saveMerchant(merchant, username, password);
 
@@ -102,7 +100,7 @@ public class ManagerController {
     @ResponseBody
     public ServiceResponse processRegistration(@RequestBody final CustomerEntity customer) {
         UserEntity user = customer.getUser();
-        try{
+        try {
 
             String password = user.getPassword();
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -121,8 +119,6 @@ public class ManagerController {
             customer.setRewardsEarned(BigDecimal.ZERO);
 
 
-
-
             customerService.saveCustomer(customer);
 
 
@@ -135,13 +131,12 @@ public class ManagerController {
     }
 
 
-
     @RequestMapping(value = "/save_test_delivery_boy", method = RequestMethod.GET)
     @ResponseBody
     public ServiceResponse saveTestDeliveryBoy() {
         DeliveryBoyEntity deliveryBoy = new DeliveryBoyEntity();
         UserEntity user = new UserEntity();
-        try{
+        try {
 
             String password = "dboypassword";
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -177,7 +172,7 @@ public class ManagerController {
 
 
             deliveryBoyService.saveDeliveryBoy(deliveryBoy);
-        }catch (Exception e) {
+        } catch (Exception e) {
             //
         }
 

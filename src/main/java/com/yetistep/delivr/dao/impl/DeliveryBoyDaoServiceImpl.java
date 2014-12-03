@@ -6,7 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,10 +22,35 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
 
 
     @Override
-    public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy) throws SQLException{
+    public DeliveryBoyEntity find(Integer id) throws Exception {
+        return null;
+    }
 
-            Session session = sessionFactory.getCurrentSession();
-            session.save(deliveryBoy);
+    @Override
+    public List<DeliveryBoyEntity> findAll() throws Exception {
+        return null;
+    }
 
+    @Override
+    public Boolean save(DeliveryBoyEntity value) throws Exception {
+        getCurrentSession().save(value);
+        return true;
+    }
+
+    @Override
+    public Boolean update(DeliveryBoyEntity value) throws Exception {
+        getCurrentSession().update(value);
+        return true;
+    }
+
+    @Override
+    public Boolean delete(DeliveryBoyEntity value) throws Exception {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Session getCurrentSession() throws Exception {
+        Session session = sessionFactory.getCurrentSession();
+        return session;
     }
 }

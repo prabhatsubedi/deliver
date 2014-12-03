@@ -2,6 +2,7 @@ package com.yetistep.delivr.model;
 
 
 import com.yetistep.delivr.enums.Gender;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Entity(name="UserEntity")
 @Table(name = "users")
+@DynamicUpdate
 public class UserEntity {
 
     private int id;

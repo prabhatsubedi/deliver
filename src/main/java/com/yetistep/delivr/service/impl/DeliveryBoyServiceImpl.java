@@ -43,7 +43,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         String profileImage = deliveryBoy.getUser().getProfileImage();
         deliveryBoy.getUser().setProfileImage(null);
         deliveryBoyDaoService.save(deliveryBoy);
-        if(profileImage != null || !profileImage.isEmpty()){
+        if(profileImage != null && !profileImage.isEmpty()){
             log.info("Uploading Profile Image of delivery boy to S3 Bucket ");
 
             String dir = MessageBundle.separateString("/", "DBoy", "DBoy"+ deliveryBoy.getId());

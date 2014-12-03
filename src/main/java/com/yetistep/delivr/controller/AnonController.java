@@ -1,9 +1,11 @@
 package com.yetistep.delivr.controller;
 
+import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.CountryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
 import com.yetistep.delivr.service.inf.AdminService;
 import com.yetistep.delivr.service.inf.MerchantService;
+import com.yetistep.delivr.service.inf.UserService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
 import org.apache.log4j.Logger;
@@ -34,6 +36,9 @@ public class AnonController {
 
     @Autowired
     AdminService adminService;
+
+    @Autowired
+    UserService userService;
 
     /* Controller For All User */
     @RequestMapping(value = "/save_merchant", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -73,6 +78,23 @@ public class AnonController {
             GeneralUtil.logError(log, "Error Occurred while retrieving list of countries", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/check_user", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> validateUser(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            userService.checkUserExistence(headerDto.getUsername());
+
+            ServiceResponse serviceResponse = new ServiceResponse("User name available");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "User name already exists", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
 }

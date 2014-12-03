@@ -8,7 +8,6 @@ import com.yetistep.delivr.util.YSException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,6 +42,15 @@ public class UserServiceImpl implements UserService{
 
         return roleList;
 
+    }
+
+    @Override
+    public Boolean checkUserExistence(String username) throws Exception {
+        UserEntity userEntity = userDaoService.findByUserName(username);
+        if(userEntity != null){
+            throw new YSException("VLD010");
+        }
+        return true;
     }
 
 

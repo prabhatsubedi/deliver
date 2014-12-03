@@ -469,9 +469,6 @@ $(document).ready(function(){
                             geoObj.latitude = location.lat();
                             geoObj.longitude = location.lng();
                             geoObj.name = name === undefined ? $('#company_name').val() : name;
-//                            geoObj.buildingNo = '';
-//                            geoObj.buildingName = '';
-//                            geoObj.streetNo = streetNumber === undefined ? '' : streetNumber;
                             geoObj.street = sublocality === undefined ? '' : sublocality;
                             geoObj.city = city === undefined ? '' : city;
                             geoObj.postalCode = postalCode === undefined ? '' : postalCode;
@@ -483,44 +480,17 @@ $(document).ready(function(){
                                 map: map
                                 //draggable: true
                             });
-                            /*                           var line2 = [];
-                             var line3 = [];
-                             if(locality != undefined)
-                             {
-                             line2.push(locality);
-                             }
-                             if(city != undefined)
-                             {
-                             line2.push(city);
-                             }
-                             if(state != undefined)
-                             {
-                             line3.push(state);
-                             }
-                             if(region != undefined)
-                             {
-                             line3.push(region);
-                             }*/
-                            //var jsonObj = JSON.stringify(geoObj);
                             var jsonObj = geoObj;
                             markers.push(marker);
                             arrGeoPoints[locationToKey(location)] = jsonObj;
                             var marker_address = $('.infowindow_template').clone();
-//                            google.maps.event.addListener(marker, 'click', function () {
-//                                var infoWindowData = arrGeoPoints[locationToKey(this.getPosition())];
                             var infoWindowData = arrGeoPoints[locationToKey(location)];
                             var address_name = infoWindowData.name;
-//                                var address_building_no = infoWindowData.buildingNo;
-//                                var address_building_name = infoWindowData.buildingName;
-//                                var address_street_number = infoWindowData.streetNo;
                             var address_street_name = infoWindowData.street;
                             var address_postal_code = infoWindowData.postalCode;
                             var address_city = infoWindowData.city;
                             var address_state = infoWindowData.state;
                             $('.address_name .address_value', marker_address).attr('value', address_name);
-//                                $('.address_building_no .address_value', marker_address).attr('value', address_building_no);
-//                                $('.address_building_name .address_value', marker_address).attr('value', address_building_name);
-//                                $('.address_street_number .address_value', marker_address).attr('value', address_street_number);
                             $('.address_street_name .address_value', marker_address).attr('value', address_street_name);
                             $('.address_postal_code .address_value', marker_address).attr('value', address_postal_code);
                             $('.address_city .address_value', marker_address).attr('value', address_city);
@@ -528,21 +498,14 @@ $(document).ready(function(){
                             $('.address_lines .save_marker', marker_address).attr('id', locationToKey(location));
                             infowindow.setContent(marker_address.html());
                             infowindow.open(map, marker);
-//                            });
                             google.maps.event.addListener(marker, 'click', function () {
                                 var infoWindowData = arrGeoPoints[locationToKey(this.getPosition())];
                                 var address_name = infoWindowData.name;
-                                //                                var address_building_no = infoWindowData.buildingNo;
-                                //                                var address_building_name = infoWindowData.buildingName;
-                                //                                var address_street_number = infoWindowData.streetNo;
                                 var address_street_name = infoWindowData.street;
                                 var address_postal_code = infoWindowData.postalCode;
                                 var address_city = infoWindowData.city;
                                 var address_state = infoWindowData.state;
                                 $('.address_name .address_value', marker_address).attr('value', address_name);
-                                //                                $('.address_building_no .address_value', marker_address).attr('value', address_building_no);
-                                //                                $('.address_building_name .address_value', marker_address).attr('value', address_building_name);
-                                //                                $('.address_street_number .address_value', marker_address).attr('value', address_street_number);
                                 $('.address_street_name .address_value', marker_address).attr('value', address_street_name);
                                 $('.address_postal_code .address_value', marker_address).attr('value', address_postal_code);
                                 $('.address_city .address_value', marker_address).attr('value', address_city);
@@ -582,9 +545,6 @@ $(document).ready(function(){
         var geoParent = $(this).parent().parent();
 
         var address_name = $('.address_name .address_value', geoParent).val();
-//        var address_building_no = $('.address_building_no .address_value', geoParent).val();
-//        var address_building_name = $('.address_building_name .address_value', geoParent).val();
-//        var address_street_number = $('.address_street_number .address_value', geoParent).val();
         var address_street_name = $('.address_street_name .address_value', geoParent).val();
         var address_postal_code = $('.address_postal_code .address_value', geoParent).val();
         var address_city = $('.address_city .address_value', geoParent).val();
@@ -592,9 +552,6 @@ $(document).ready(function(){
 
 
         geoKeyObject.name = address_name;
-//        geoKeyObject.buildingNo = address_building_no;
-//        geoKeyObject.buildingName = address_building_name;
-//        geoKeyObject.streetNo = address_street_number;
         geoKeyObject.street = address_street_name;
         geoKeyObject.postalCode = address_postal_code;
         geoKeyObject.city = address_city;

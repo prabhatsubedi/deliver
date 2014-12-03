@@ -19,16 +19,16 @@ import java.math.BigDecimal;
 @Table(name="delivery_boys")
 public class DeliveryBoyEntity {
 
-    private int id;
+    private Integer id;
     private UserEntity user;
     private DBoyStatus availabilityStatus;
     private BigDecimal averageRating;
-    private int totalOrderTaken;
-    private int totalOrderDelivered;
-    private int totalOrderUndelivered;
+    private Integer totalOrderTaken;
+    private Integer totalOrderDelivered;
+    private Integer totalOrderUndelivered;
     private BigDecimal totalEarnings;
     private VehicleType vehicleType;
-    private int activeOrderNo;
+    private Integer activeOrderNo;
     private BigDecimal availableAmount;
     private String latitude;
     private String longitude;
@@ -36,11 +36,11 @@ public class DeliveryBoyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -74,29 +74,29 @@ public class DeliveryBoyEntity {
     }
 
     @Column(name = "total_order_taken", nullable = false)
-    public int getTotalOrderTaken() {
+    public Integer getTotalOrderTaken() {
         return totalOrderTaken;
     }
 
-    public void setTotalOrderTaken(int totalOrderTaken) {
+    public void setTotalOrderTaken(Integer totalOrderTaken) {
         this.totalOrderTaken = totalOrderTaken;
     }
 
     @Column(name = "total_order_delivered", nullable = false)
-    public int getTotalOrderDelivered() {
+    public Integer getTotalOrderDelivered() {
         return totalOrderDelivered;
     }
 
-    public void setTotalOrderDelivered(int totalOrderDelivered) {
+    public void setTotalOrderDelivered(Integer totalOrderDelivered) {
         this.totalOrderDelivered = totalOrderDelivered;
     }
 
     @Column(name = "total_order_undelivered", nullable = false)
-    public int getTotalOrderUndelivered() {
+    public Integer getTotalOrderUndelivered() {
         return totalOrderUndelivered;
     }
 
-    public void setTotalOrderUndelivered(int totalOrderUndelivered) {
+    public void setTotalOrderUndelivered(Integer totalOrderUndelivered) {
         this.totalOrderUndelivered = totalOrderUndelivered;
     }
 
@@ -120,11 +120,11 @@ public class DeliveryBoyEntity {
     }
 
     @Column(name = "active_order_no", nullable = false)
-    public int getActiveOrderNo() {
+    public Integer getActiveOrderNo() {
         return activeOrderNo;
     }
 
-    public void setActiveOrderNo(int activeOrderNo) {
+    public void setActiveOrderNo(Integer activeOrderNo) {
         this.activeOrderNo = activeOrderNo;
     }
 

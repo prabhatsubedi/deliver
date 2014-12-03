@@ -1,8 +1,12 @@
 package com.yetistep.delivr.model;
 
 
+import com.yetistep.delivr.enums.DBoyStatus;
+import com.yetistep.delivr.enums.VehicleType;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,16 +21,15 @@ public class DeliveryBoyEntity {
 
     private int id;
     private UserEntity user;
-    private int gender;
-    private Boolean availabilityStatus;
-    private int averageRating;
+    private DBoyStatus availabilityStatus;
+    private BigDecimal averageRating;
     private int totalOrderTaken;
     private int totalOrderDelivered;
     private int totalOrderUndelivered;
-    private int totalEarnings;
-    private int vehicleType;
+    private BigDecimal totalEarnings;
+    private VehicleType vehicleType;
     private int activeOrderNo;
-    private int availableAmount;
+    private BigDecimal availableAmount;
     private String latitude;
     private String longitude;
 
@@ -51,30 +54,22 @@ public class DeliveryBoyEntity {
         this.user = user;
     }
 
-    @Column(name = "gender", nullable = false)
-    public int getGender() {
-        return gender;
-    }
-
-    public void setGender(int gender) {
-        this.gender = gender;
-    }
-
     @Column(name = "availability_status", nullable = false)
-    public Boolean getAvailabilityStatus() {
+    @Enumerated(EnumType.ORDINAL)
+    public DBoyStatus getAvailabilityStatus() {
         return availabilityStatus;
     }
 
-    public void setAvailabilityStatus(Boolean availabilityStatus) {
+    public void setAvailabilityStatus(DBoyStatus availabilityStatus) {
         this.availabilityStatus = availabilityStatus;
     }
 
-    @Column(name = "average_rating", nullable = false)
-    public int getAverageRating() {
+    @Column(name = "average_rating", nullable = false, precision = 4, scale = 2)
+    public BigDecimal getAverageRating() {
         return averageRating;
     }
 
-    public void setAverageRating(int averageRating) {
+    public void setAverageRating(BigDecimal averageRating) {
         this.averageRating = averageRating;
     }
 
@@ -105,21 +100,22 @@ public class DeliveryBoyEntity {
         this.totalOrderUndelivered = totalOrderUndelivered;
     }
 
-    @Column(name = "total_earnings", nullable = false)
-    public int getTotalEarnings() {
+    @Column(name = "total_earnings", nullable = false, precision = 16, scale = 4)
+    public BigDecimal getTotalEarnings() {
         return totalEarnings;
     }
 
-    public void setTotalEarnings(int totalEarnings) {
+    public void setTotalEarnings(BigDecimal totalEarnings) {
         this.totalEarnings = totalEarnings;
     }
 
     @Column(name = "vehicle_type", nullable = false)
-    public int getVehicleType() {
+    @Type(type="com.yetistep.delivr.enums.VehicleTypeCustom")
+    public VehicleType getVehicleType() {
         return vehicleType;
     }
 
-    public void setVehicleType(int vehicleType) {
+    public void setVehicleType(VehicleType vehicleType) {
         this.vehicleType = vehicleType;
     }
 
@@ -132,12 +128,12 @@ public class DeliveryBoyEntity {
         this.activeOrderNo = activeOrderNo;
     }
 
-    @Column(name = "available_amount")
-    public int getAvailableAmount() {
+    @Column(name = "available_amount", precision = 16, scale = 4)
+    public BigDecimal getAvailableAmount() {
         return availableAmount;
     }
 
-    public void setAvailableAmount(int availableAmount) {
+    public void setAvailableAmount(BigDecimal availableAmount) {
         this.availableAmount = availableAmount;
     }
 

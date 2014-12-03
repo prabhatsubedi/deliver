@@ -1,7 +1,11 @@
 package com.yetistep.delivr.util;
 
-import com.yetistep.delivr.util.YSException;
+import com.yetistep.delivr.dto.HeaderDto;
 import org.apache.log4j.Logger;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.List;
 
 import java.io.File;
 
@@ -14,6 +18,9 @@ import java.io.File;
  */
 public class GeneralUtil {
     private static Logger log = Logger.getLogger(GeneralUtil.class);
+
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
 
     public static void logError(Logger log, String message, Exception e) {
         if (e instanceof YSException)
@@ -55,6 +62,39 @@ public class GeneralUtil {
             return imgUrl == null ? AmazonUtil.cacheImage(s3Url) : imgUrl;
         }
 
+    }
+
+    /**
+     * Util method to get data from HttpHeaders
+     * @param headers
+     * @param headerDto
+     */
+    public static void fillHeaderCredential(HttpHeaders headers, HeaderDto headerDto) {
+        String username = null;
+        String password = null;
+        List<String> hd = headers.get(USERNAME);
+        if (hd != null && hd.size() > 0)
+            username = hd.get(0);
+
+        hd = headers.get(PASSWORD);
+        if (hd != null && hd.size() > 0)
+            password = hd.get(0);
+
+        headerDto.setUsername(username);
+        headerDto.setPassword(password);
+    }
+
+    /**
+     * Util method to encrypt the password.
+     * @param password
+     * @return
+     */
+    public static String encryptPassword(String password){
+        if(password != null){
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            return passwordEncoder.encode(password);
+        }
+        return null;
     }
 
 }

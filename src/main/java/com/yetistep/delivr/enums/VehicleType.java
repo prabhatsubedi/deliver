@@ -7,13 +7,13 @@ package com.yetistep.delivr.enums;
  * Time: 2:45 PM
  * To change this template use File | Settings | File Templates.
  */
-public enum VehicleType {
+public enum VehicleType implements PersistentEnum {
     WALKING(1), BICYCLE(2) , MOTORBIKE(3), FOUR_WHEELER(4), TRUCK(5);
 
-    private final int vehicleType;
+    private final int id;
 
-    private VehicleType(int vehicleType){
-        this.vehicleType = vehicleType;
+    private VehicleType(int id){
+        this.id = id;
     }
 
     public String toStr(){
@@ -34,7 +34,7 @@ public enum VehicleType {
     }
 
     public Integer toInt() {
-        return vehicleType;
+        return id;
     }
 
     public static VehicleType fromInt(Integer arg){
@@ -48,5 +48,10 @@ public enum VehicleType {
             return FOUR_WHEELER;
         else
             return TRUCK;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 }

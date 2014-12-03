@@ -1,5 +1,8 @@
 package com.yetistep.delivr.controller;
 
+import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.enums.DBoyStatus;
+import com.yetistep.delivr.enums.VehicleType;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.MerchantEntity;
@@ -9,9 +12,7 @@ import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.service.inf.UserService;
 import com.yetistep.delivr.util.GeneralUtil;
-import com.yetistep.delivr.util.MessageBundle;
 import com.yetistep.delivr.util.ServiceResponse;
-import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,37 +49,27 @@ public class ManagerController {
 
     @RequestMapping(value = "/save_delivery_boy", method = RequestMethod.POST)
     @ResponseBody
-    public ServiceResponse saveDeliveryBoy(@RequestBody final DeliveryBoyEntity deliveryBoy) {
-
-        UserEntity user = deliveryBoy.getUser();
+    public ResponseEntity<ServiceResponse> saveDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoy) {
         try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            String hashedPassword = GeneralUtil.encryptPassword(headerDto.getPassword());
 
-            String password = user.getPassword();
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String hashedPassword = passwordEncoder.encode(password);
-
-            user.setPassword(hashedPassword);
-            user.setMobileVerificationStatus(false);
-            //user.setLastActivityDate(new Date());
-            user.setBlacklistStatus(false);
-            user.setVerifiedStatus(false);
-            deliveryBoy.setUser(user);
-            deliveryBoy.setAvailabilityStatus(true);
-            deliveryBoy.setAverageRating(5);
-            deliveryBoy.setTotalOrderTaken(0);
-            deliveryBoy.setTotalOrderDelivered(0);
-            deliveryBoy.setTotalOrderUndelivered(0);
-            deliveryBoy.setTotalEarnings(0);
-            deliveryBoy.setActiveOrderNo(0);
-            deliveryBoy.setAvailableAmount(0);
-
+            deliveryBoy.getUser().setUsername(headerDto.getUsername());
+            deliveryBoy.getUser().setPassword(hashedPassword);
             deliveryBoyService.saveDeliveryBoy(deliveryBoy);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        ServiceResponse serviceResponse = new ServiceResponse("User(Delivery Boy) has been saved successfully");
-        return serviceResponse;
+            ServiceResponse serviceResponse = new ServiceResponse("User(Delivery Boy) has been saved successfully");
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("deliveryBoyId", deliveryBoy.getUser().getId() + "");
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, httpHeaders, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value = "/save_merchant", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -173,18 +163,17 @@ public class ManagerController {
             user.setSubscribeNewsletter(true);
 
             deliveryBoy.setUser(user);
-            deliveryBoy.setGender(1);
-            deliveryBoy.setAvailabilityStatus(true);
-            deliveryBoy.setAverageRating(5);
+            deliveryBoy.setAvailabilityStatus(DBoyStatus.BUSY);
+            deliveryBoy.setAverageRating(new BigDecimal(1.0));
             deliveryBoy.setTotalOrderTaken(0);
             deliveryBoy.setTotalOrderDelivered(0);
             deliveryBoy.setTotalOrderUndelivered(0);
-            deliveryBoy.setTotalEarnings(0);
-            deliveryBoy.setVehicleType(1);
+            deliveryBoy.setTotalEarnings(new BigDecimal(1.0));
+            deliveryBoy.setVehicleType(VehicleType.MOTORBIKE);
             deliveryBoy.setActiveOrderNo(0);
-            deliveryBoy.setAvailableAmount(0);
-            deliveryBoy.setLatitude("477879845");
-            deliveryBoy.setLongitude("34578645345");
+            deliveryBoy.setAvailableAmount(new BigDecimal(1.0));
+            deliveryBoy.setLatitude("477879845.0L");
+            deliveryBoy.setLongitude("34578645345.0F");
 
 
             deliveryBoyService.saveDeliveryBoy(deliveryBoy);

@@ -195,7 +195,7 @@ public class UserEntity {
         this.mobileVerificationStatus = mobileVerificationStatus;
     }
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", unique = true)
     public String getEmailAddress() {
         return emailAddress;
     }

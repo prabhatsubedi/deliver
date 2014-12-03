@@ -12,6 +12,7 @@
         <intercept-url pattern="/merchant/**" access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_ACCOUNTANT', 'ROLE_MERCHANT')" />
         <intercept-url pattern="/organizer/**" access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')" />
         <intercept-url pattern="/accountant/**" access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_ACCOUNTANT')" />
+        <intercept-url pattern="/anon/**" access="permitAll" />
 
 
         <access-denied-handler error-page="/403" />

@@ -70,30 +70,7 @@ public class ManagerController {
         }
     }
 
-    @RequestMapping(value = "/save_merchant", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<ServiceResponse> processRegistration(@RequestHeader HttpHeaders headers, @RequestBody MerchantEntity merchant){
 
-        try{
-
-            merchantService.saveMerchant(merchant, headers);
-
-             /* Response Success */
-            // JSON Information
-            ServiceResponse serviceResponse = new ServiceResponse("Merchant has been saved successfully");
-            // Header Parameter Response
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add("merchantId", merchant.getId().toString());
-            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-            return new ResponseEntity<ServiceResponse>(serviceResponse, httpHeaders, HttpStatus.OK);
-
-        } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while creating merchant", e);
-            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
-        }
-
-    }
 
 
     @RequestMapping(value = "/save_customer", method = RequestMethod.POST)

@@ -22,7 +22,7 @@ if(typeof(Merchant) == "undefined") var Merchant = {};
 
         callback.loaderDiv = "#modal_signup .modal-dialog";
 
-        Main.request('/organizer/save_merchant', data, callback, headers);
+        Main.request('/anon/save_merchant', data, callback, headers);
 
     };
 

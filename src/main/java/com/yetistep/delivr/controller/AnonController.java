@@ -1,6 +1,8 @@
 package com.yetistep.delivr.controller;
 
+import com.yetistep.delivr.model.CountryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.service.inf.AdminService;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
@@ -12,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,6 +31,9 @@ public class AnonController {
 
     @Autowired
     MerchantService merchantService;
+
+    @Autowired
+    AdminService adminService;
 
     /* Controller For All User */
     @RequestMapping(value = "/save_merchant", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -52,5 +59,20 @@ public class AnonController {
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @RequestMapping(value = "/country_list", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getCountryList() {
+        try {
+            List<CountryEntity> countryEntityList =  adminService.findAllCountries();
+            ServiceResponse serviceResponse = new ServiceResponse("List of countries");
+            serviceResponse.addParam("countryList", countryEntityList);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving list of countries", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+        }
     }
 }

@@ -122,7 +122,7 @@ public class UserEntity {
         this.fullName = fullName;
     }
 
-    @Column(name="gender")
+    @Column(name="gender", nullable = true)
     @Type(type="com.yetistep.delivr.enums.GenderCustom")
     public Gender getGender() {
         return gender;

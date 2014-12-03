@@ -4,6 +4,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created with IntelliJ IDEA.
  * User: surendraJ
@@ -13,10 +16,24 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class AbstractManager {
     @Autowired
-    SessionFactory sessionFactory;
+    HttpServletRequest httpServletRequest;
 
-    public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+    public String getServerName(){
+      //Requested Server Name
+      return httpServletRequest.getServerName();
+    }
+
+    public String getServerUrl(){
+        //Requested URL
+        return httpServletRequest.getRequestURL().toString().replace(httpServletRequest.getServletPath(), "").trim();
+    }
+
+    public String getIpAddress(){
+        //Client IP Address
+        String ipAddress = httpServletRequest.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null)
+            ipAddress = httpServletRequest.getRemoteAddr();
+
+        return ipAddress;
     }
 }

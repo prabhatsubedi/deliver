@@ -1,18 +1,22 @@
 package com.yetistep.delivr.service.impl;
 
+import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
-import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.model.RoleEntity;
-import com.yetistep.delivr.model.UserEntity;
+import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import java.awt.image.BufferedImage;
 import java.io.File;
-
+import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,13 +25,16 @@ import java.io.File;
  * Time: 12:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MerchantServiceImpl implements MerchantService {
+public class MerchantServiceImpl extends AbstractManager implements MerchantService {
     private static final Logger log = Logger.getLogger(MerchantServiceImpl.class);
     @Autowired
     MerchantDaoService merchantDaoService;
 
     @Autowired
     UserDaoService userDaoService;
+
+    @Autowired
+    HttpServletRequest httpServletRequest;
 
     @Override
     public void saveMerchant(MerchantEntity merchant, String username, String password) throws Exception {
@@ -38,12 +45,13 @@ public class MerchantServiceImpl implements MerchantService {
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String hashedPassword = passwordEncoder.encode(password);
+        String token = MessageBundle.generateTokenString() + "_" + System.currentTimeMillis();
 
         user.setUsername(username);
         user.setPassword(hashedPassword);
+        user.setToken(token);
         merchant.setUser(user);
 
-        log.info("++++++++++ Checking Role from Database +++++++++++++++++++++++++");
         RoleEntity userRole = userDaoService.getRoleByRole(merchant.getUser().getRole().getRole());
         merchant.getUser().setRole(userRole);
 
@@ -66,6 +74,19 @@ public class MerchantServiceImpl implements MerchantService {
 
         /* Update S3 Location to the Database */
         merchantDaoService.updateMerchantImageLinks(merchant);
+
+        //Sending Email For Merchant
+        String hostName = getServerUrl();
+        String url = hostName + "/create_password?code=" + token ;
+        String loginUrl = hostName + "/";
+        log.info("Sending mail to " + user.getUsername() + " with new registration: " + url);
+
+        //send email
+        String body = EmailMsg.createPasswordForNewUser(url, user.getFullName(), user.getUsername(), " You have been added as Merchant");
+        String subject = "Delivr: You have been added as Merchant ";
+        EmailUtil.Email mail = new EmailUtil.Email(user.getUsername(), subject, body);
+        EmailUtil emailUtil = new EmailUtil(mail);
+        emailUtil.sendMail();
 
         log.info("+++++++ Merchant Created Successfully ++++++");
 

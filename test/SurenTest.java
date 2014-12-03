@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 /**
  * Created with IntelliJ IDEA.
  * User: surendraJ
@@ -7,6 +9,8 @@
  */
 public class SurenTest {
     public static void main(String[] args) {
-//        System.out.println(Gender.MALE.toInt());
-    }
+
+        System.out.println(5/2);
+}
+
 }

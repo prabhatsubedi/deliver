@@ -176,7 +176,7 @@ public class MainController {
     @ResponseBody
     public ServiceResponse forgotPassword(@RequestParam("code") String code){
         ServiceResponse serviceResponse = new ServiceResponse("Redirecting URL");
-        serviceResponse.addParam("url", "forgot_password");
+        serviceResponse.addParam("url", "create_password");
         return serviceResponse;
     }
 

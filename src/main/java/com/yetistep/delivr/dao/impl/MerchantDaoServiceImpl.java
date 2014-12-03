@@ -41,7 +41,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public Boolean update(MerchantEntity value) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        getCurrentSession().update(value);
+        return true;
     }
 
     @Override
@@ -55,10 +56,5 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         return session;
     }
 
-    @Override
-    public void updateMerchantImageLinks(MerchantEntity merchantEntity) throws Exception {
 
-        getCurrentSession().update(merchantEntity);
-
-    }
 }

@@ -73,7 +73,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         /* Update S3 Location to the Database */
-        merchantDaoService.updateMerchantImageLinks(merchant);
+        merchantDaoService.update(merchant);
 
         //Sending Email For Merchant
         String hostName = getServerUrl();

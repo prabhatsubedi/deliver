@@ -90,7 +90,7 @@ public class GeneralUtil {
      * @return
      */
     public static String encryptPassword(String password){
-        if(password != null){
+        if(password != null && !password.isEmpty()){
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             return passwordEncoder.encode(password);
         }

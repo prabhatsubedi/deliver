@@ -211,9 +211,46 @@ $(document).ready(function(){
 
     $('#signup_form').validate({
         submitHandler: function() {
-            var data = {username: $('#email').val(), password: $('#password').val()};
-            Main.doLogin(data);
+
+            var chk_confirm = confirm('Are you sure you want to Signup?');
+            if(!chk_confirm) return false;
+
+            var data = {};
+            var user = {};
+
+            var address = arrGeoPoints[Object.keys(arrGeoPoints)[0]];
+            user.fullName = $('#contact_person').val();
+            user.street = address.street;
+            user.city = address.city;
+            user.state = address.state;
+            user.country = address.country;
+            user.countryCode = "00977";
+            user.mobileNumber = $('#contact_no').val();
+            user.mobileVerificationStatus = "true";
+            user.emailAddress = $('#contact_email').val();
+            user.profileImage = "";
+            user.blacklistStatus = "false";
+            user.verifiedStatus = "true";
+            user.token = "token";
+            user.subscribeNewsletter = "true";
+            user.role = {role: "ROLE_MERCHANT"};
+
+            data.type = "CORPORATE";
+            data.partnershipStatus = "true";
+            data.commissionPercentage = "0";
+            data.website = $('#url').val();
+            data.agreementDetail = "";
+            data.businessTitle = $('#business_name').val();
+            data.businessLogo = $('#drop_zone img').attr('src');
+            data.companyRegistrationNo = $('#registration_no').val();
+            data.vatNo = $('#vat').val();
+            data.user = user;
+
+            var headers = {};
+            headers.username = $('#contact_email').val();
+            Merchant.signUp(data, headers);
             return false;
+
         }
     });
     $('#business_name').rules('add', {required: true, messages : {required: "Business name is required."}});
@@ -417,7 +454,7 @@ $(document).ready(function(){
                 if (status == google.maps.GeocoderStatus.OK) {
                     if (results[0]) {
 
-                        var streetNumber, sublocality, locality, city, postalCode, district, state, region, country, addressComponents;
+                        var streetNumber, sublocality, locality, city, postalCode, state, region, country, addressComponents;
 
                         var compCountry = results[results.length-1].address_components;
                         for(var i in compCountry) {
@@ -468,7 +505,7 @@ $(document).ready(function(){
                             var geoObj = {};
                             geoObj.latitude = location.lat();
                             geoObj.longitude = location.lng();
-                            geoObj.name = name === undefined ? $('#company_name').val() : name;
+                            geoObj.name = name === undefined ? $('#business_name').val() : name;
                             geoObj.street = sublocality === undefined ? '' : sublocality;
                             geoObj.city = city === undefined ? '' : city;
                             geoObj.postalCode = postalCode === undefined ? '' : postalCode;
@@ -565,6 +602,10 @@ $(document).ready(function(){
         $(this).parent().removeClass('disabled_tab');
         $(this).parent().prevAll().addClass('passed_tab');
         $(this).parent().nextAll().removeClass('passed_tab');
+        if($(this).attr('href') == "#step_3")
+            $("button[type='submit']","#signup_form").html('Signup');
+        else
+            $("button[type='submit']","#signup_form").html('Next');
     });
 
     $('#signup_form .nav a[href="#step_3"]').on('shown.bs.tab', function (e) {

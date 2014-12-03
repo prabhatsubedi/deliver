@@ -24,7 +24,7 @@ if(typeof(Main) == "undefined") var Main = {};
         return localStorage.getItem(key);
     }
 
-    Main.request = function (url, parameter, callback) {
+    Main.request = function (url, parameter, callback, headers) {
         var loaderDiv = callback["loaderDiv"];
         if (loaderDiv != undefined) {
             $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
@@ -40,6 +40,7 @@ if(typeof(Main) == "undefined") var Main = {};
             url: url,
             type: "POST",
             data: parameter,
+            headers: headers,
             statusCode: {
             },
             success: function (data) {
@@ -58,7 +59,7 @@ if(typeof(Main) == "undefined") var Main = {};
     Main.doLogin = function (data) {
         $("button[type='submit']","#login_form").attr("disabled",true);
 
-        var loginCallback = function (status, data) {
+        var callback = function (status, data) {
             $("button[type='submit']","#login_form").removeAttr("disabled");
 
             if (data.success == true) {
@@ -67,9 +68,9 @@ if(typeof(Main) == "undefined") var Main = {};
             }
         };
 
-        loginCallback.loaderDiv = "#modal_login .modal-dialog";
+        callback.loaderDiv = "#modal_login .modal-dialog";
 
-        Main.request('/j_spring_security_check', data, loginCallback);
+        Main.request('/j_spring_security_check', data, callback);
     }
 
 })(jQuery);

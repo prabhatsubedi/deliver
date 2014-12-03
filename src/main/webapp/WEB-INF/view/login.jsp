@@ -11,6 +11,7 @@
     <script type="text/javascript" src="<c:url value="/resources/js/jquery.Jcrop.js" />"></script>
     <script type="text/javascript" src="<c:url value="/resources/js/html2canvas.js" />"></script>
     <script src="<c:url value="/resources/js/jquery.validate.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/resources/js/merchant.js" />"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false&libraries=places" type="text/javascript"></script>
 
     <link rel="stylesheet" href="<c:url value="/resources/css/jquery.Jcrop.css" />" type="text/css" />
@@ -220,25 +221,9 @@
             <span class="address_span"></span>
             <input type="text" name="address_name" class="address_value form-control" placeholder="Location Name" >
         </div>
-        <%--<div class="address_building_no address_lines">--%>
-        <%--<span class="address_span"></span>--%>
-        <%--<input type="text" name="address_building_no" class="address_value form-control" placeholder="Building Number">--%>
-        <%--</div>--%>
-        <%--<div class="address_building_name address_lines">--%>
-        <%--<span class="address_span"></span>--%>
-        <%--<input type="text" name="address_building_name" class="address_value form-control" placeholder="Building Name">--%>
-        <%--</div>--%>
-        <%--<div class="address_street_number address_lines">--%>
-        <%--<span class="address_span"></span>--%>
-        <%--<input type="text" name="address_street_number" class="address_value form-control" placeholder="Street Number">--%>
-        <%--</div>--%>
         <div class="address_street_name address_lines">
             <span class="address_span"></span>
             <input type="text" name="address_street_name" class="address_value form-control" placeholder="Street Name">
-        </div>
-        <div class="address_postal_code address_lines">
-            <span class="address_span"></span>
-            <input type="text" name="address_postal_code" class="address_value form-control" placeholder="Postal Code / Zip Code">
         </div>
         <div class="address_city address_lines">
             <span class="address_span"></span>

@@ -35,8 +35,8 @@ public class AmazonUtil {
 
     public static AWSCredentials getCredentials(){
         if(credentials==null){
-            String accessKey = MessageBundle.getMessage("accessKey", "awsCredentials.properties");
-            String secretKey = MessageBundle.getMessage("secretKey", "awsCredentials.properties");
+            String accessKey = MessageBundle.getMessage("accessKey", "AwsCredentials.properties");
+            String secretKey = MessageBundle.getMessage("secretKey", "AwsCredentials.properties");
 
             credentials = new BasicAWSCredentials(accessKey, secretKey);
         }

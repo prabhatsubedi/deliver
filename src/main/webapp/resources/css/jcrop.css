@@ -1,0 +1,52 @@
+
+#crop_img_modal .modal-dialog {
+    width: 750px;
+}
+#crop_img_modal .modal-dialog .modal-header {
+    border-radius: 6px 6px 0px 0px;
+}
+#crop_img_modal .modal-dialog .modal-body {
+    min-height: 350px;
+    overflow: hidden;
+}
+.jcrop-holder .preview-pane .preview-head {
+    background-color: #ff9235;
+    border-radius: 0;
+    color: #ffffff;
+    font-size: 20px;
+    line-height: 45px;
+    outline: 0 none;
+    padding: 0 15px;
+}
+.jcrop-holder .preview-pane {
+    background-color: white;
+    display: block;
+    float: right;
+    margin-right: -260px;
+    overflow: hidden;
+}
+.preview-pane .preview-container {
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+}
+.preview-pane .preview-container-dup {
+    width: 240px;
+    height: 240px;
+    overflow: hidden;
+}
+.preview2 .preview-container {
+    width: 720px !important;
+    height: 400px !important;
+}
+.preview2 .preview-container-dup {
+    width: 230px !important;
+    height: 128px !important;
+}
+.preview-pane-org {
+    margin-right: 0 !important;
+    position: absolute;
+    right: -276px !important;
+    top: -8px !important;
+    z-index: -1 !important;
+}

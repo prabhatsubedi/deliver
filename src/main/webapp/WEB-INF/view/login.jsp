@@ -11,63 +11,11 @@
     <script type="text/javascript" src="<c:url value="/resources/js/jquery.Jcrop.js" />"></script>
     <script type="text/javascript" src="<c:url value="/resources/js/html2canvas.js" />"></script>
     <script src="<c:url value="/resources/js/jquery.validate.js" />"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false&libraries=places" type="text/javascript"></script>
 
     <link rel="stylesheet" href="<c:url value="/resources/css/jquery.Jcrop.css" />" type="text/css" />
-    <style type="text/css">
-
-        #crop_img_modal .modal-dialog {
-            width: 750px;
-        }
-        #crop_img_modal .modal-dialog .modal-header {
-            border-radius: 6px 6px 0px 0px;
-        }
-        #crop_img_modal .modal-dialog .modal-body {
-            min-height: 350px;
-            overflow: hidden;
-        }
-        .jcrop-holder .preview-pane .preview-head {
-            background-color: #ff9235;
-            border-radius: 0;
-            color: #ffffff;
-            font-size: 20px;
-            line-height: 45px;
-            outline: 0 none;
-            padding: 0 15px;
-        }
-        .jcrop-holder .preview-pane {
-            background-color: white;
-            display: block;
-            float: right;
-            margin-right: -260px;
-            overflow: hidden;
-        }
-        .preview-pane .preview-container {
-            width: 200px;
-            height: 200px;
-            overflow: hidden;
-        }
-        .preview-pane .preview-container-dup {
-            width: 240px;
-            height: 240px;
-            overflow: hidden;
-        }
-        .preview2 .preview-container {
-            width: 720px !important;
-            height: 400px !important;
-        }
-        .preview2 .preview-container-dup {
-            width: 230px !important;
-            height: 128px !important;
-        }
-        .preview-pane-org {
-            margin-right: 0 !important;
-            position: absolute;
-            right: -276px !important;
-            top: -8px !important;
-            z-index: -1 !important;
-        }
-
-    </style>
+    <link rel="stylesheet" href="<c:url value="/resources/css/maps.css" />" type="text/css" />
+    <link rel="stylesheet" href="<c:url value="/resources/css/jcrop.css" />" type="text/css" />
 
     <script type="text/javascript" src="<c:url value="/resources/js/login-page.js" />"></script>
 
@@ -202,7 +150,18 @@
                             </div>
                         </div>
 
-                        <div class="tab-pane" id="step_3">3</div>
+                        <div class="tab-pane" id="step_3">
+                            <div class="map-container">
+                                <div id="search_box">
+                                    <input id="pac-input" class="controls" type="text" placeholder="Enter Postal/Zipcode to focus map & place marker. Click on marker to add address.">
+                                </div>
+                                <div id="custom_map_controls" class="clearfix">
+                                    <div id="scroll_zoom" class="pull-left">Enable Scroll Zoom</div>
+                                    <div id="clear_markers" class="pull-left">Clear All Markers</div>
+                                </div>
+                                <div id="map-canvas"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -210,7 +169,7 @@
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
                     <div class="col-lg-6 no_pad">
-                        <button type="submit" class="btn btn-default">Next</button>
+                        <button type="submit" class="btn btn-default next">Next</button>
                     </div>
                 </div>
             </div>
@@ -251,6 +210,46 @@
                     <button type="button" id="apply_preview" class="btn btn-primary">Set Logo</button>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="infowindow_template hidden">
+    <div class="infowindow">
+        <div class="address_name address_lines">
+            <span class="address_span"></span>
+            <input type="text" name="address_name" class="address_value form-control" placeholder="Location Name" >
+        </div>
+        <%--<div class="address_building_no address_lines">--%>
+        <%--<span class="address_span"></span>--%>
+        <%--<input type="text" name="address_building_no" class="address_value form-control" placeholder="Building Number">--%>
+        <%--</div>--%>
+        <%--<div class="address_building_name address_lines">--%>
+        <%--<span class="address_span"></span>--%>
+        <%--<input type="text" name="address_building_name" class="address_value form-control" placeholder="Building Name">--%>
+        <%--</div>--%>
+        <%--<div class="address_street_number address_lines">--%>
+        <%--<span class="address_span"></span>--%>
+        <%--<input type="text" name="address_street_number" class="address_value form-control" placeholder="Street Number">--%>
+        <%--</div>--%>
+        <div class="address_street_name address_lines">
+            <span class="address_span"></span>
+            <input type="text" name="address_street_name" class="address_value form-control" placeholder="Street Name">
+        </div>
+        <div class="address_postal_code address_lines">
+            <span class="address_span"></span>
+            <input type="text" name="address_postal_code" class="address_value form-control" placeholder="Postal Code / Zip Code">
+        </div>
+        <div class="address_city address_lines">
+            <span class="address_span"></span>
+            <input type="text" name="address_city" class="address_value form-control" placeholder="City">
+        </div>
+        <div class="address_state address_lines">
+            <span class="address_span"></span>
+            <input type="text" name="address_state" class="address_value form-control" placeholder="State">
+        </div>
+        <div class="address_lines">
+            <button type="button" class="save_marker <%--glyphicon glyphicon-floppy-disk--%> btn btn-primary">Save</button>
         </div>
     </div>
 </div>

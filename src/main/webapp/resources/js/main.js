@@ -6,6 +6,8 @@ if(typeof(Main) == "undefined") var Main = {};
 
 (function ($){
 
+    Main.country = "Nepal";
+
     Main.saveInSessionStorage = function (key, value){
         sessionStorage.setItem(key, value);
     }

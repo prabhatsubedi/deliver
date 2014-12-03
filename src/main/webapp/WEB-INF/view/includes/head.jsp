@@ -13,5 +13,6 @@
 <%--    <link rel="shortcut icon" href="<c:url value="/resources/images/favicon.ico" />" type="image/x-icon" />
     <link rel="icon" href="<c:url value="/resources/images/favicon.ico" />" type="image/x-icon" />--%>
 <script type="text/javascript" src="<c:url value="/resources/js/jquery-2.1.1.min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/jquery-migrate-1.2.1.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/main.js" />"></script>

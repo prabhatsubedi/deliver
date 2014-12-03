@@ -2,19 +2,17 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
-import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.RoleEntity;
+import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.util.Date;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -45,6 +43,7 @@ public class MerchantServiceImpl implements MerchantService {
         user.setPassword(hashedPassword);
         merchant.setUser(user);
 
+        log.info("++++++++++ Checking Role from Database +++++++++++++++++++++++++");
         RoleEntity userRole = userDaoService.getRoleByRole(merchant.getUser().getRole().getRole());
         merchant.getUser().setRole(userRole);
 

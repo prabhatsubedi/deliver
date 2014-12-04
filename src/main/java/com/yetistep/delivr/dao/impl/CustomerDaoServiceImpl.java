@@ -6,7 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,11 +22,36 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
 
 
     @Override
-    public void saveCustomer(CustomerEntity customer) throws SQLException {
+    public CustomerEntity find(Integer id) throws Exception {
+        return (CustomerEntity) getCurrentSession().get(CustomerEntity.class, id);
+    }
 
-            Session session = sessionFactory.getCurrentSession();
-            session.save(customer);
+    @Override
+    public List<CustomerEntity> findAll() throws Exception {
+        return (List<CustomerEntity>) getCurrentSession().createCriteria(CustomerEntity.class).list();
+    }
 
+    @Override
+    public Boolean save(CustomerEntity value) throws Exception {
+        getCurrentSession().save(value);
+        return true;
+    }
+
+    @Override
+    public Boolean update(CustomerEntity value) throws Exception {
+        getCurrentSession().update(value);
+        return true;
+    }
+
+    @Override
+    public Boolean delete(CustomerEntity value) throws Exception {
+        getCurrentSession().delete(value);
+        return true;
+    }
+
+    @Override
+    public Session getCurrentSession() throws Exception {
+        return sessionFactory.getCurrentSession();
     }
 
 }

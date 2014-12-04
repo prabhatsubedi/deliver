@@ -3,9 +3,7 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.VehicleType;
-import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
-import com.yetistep.delivr.model.MerchantEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
@@ -17,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -69,44 +66,6 @@ public class ManagerController {
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
         }
     }
-
-
-
-
-    @RequestMapping(value = "/save_customer", method = RequestMethod.POST)
-    @ResponseBody
-    public ServiceResponse processRegistration(@RequestBody final CustomerEntity customer) {
-        UserEntity user = customer.getUser();
-        try {
-
-            String password = user.getPassword();
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String hashedPassword = passwordEncoder.encode(password);
-
-            user.setPassword(hashedPassword);
-            //user.setLastActivityDate(new Date());
-            user.setBlacklistStatus(false);
-            user.setVerifiedStatus(false);
-
-            customer.setTotalOrderPlaced(0);
-            customer.setTotalOrderDelivered(0);
-            customer.setAverageRating(5);
-            customer.setFriendsInvitationCount(0);
-            customer.setReferredFriendsCount(0);
-            customer.setRewardsEarned(BigDecimal.ZERO);
-
-
-            customerService.saveCustomer(customer);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        ServiceResponse serviceResponse = new ServiceResponse("User has been saved successfully");
-        return serviceResponse;
-    }
-
 
     @RequestMapping(value = "/save_test_delivery_boy", method = RequestMethod.GET)
     @ResponseBody

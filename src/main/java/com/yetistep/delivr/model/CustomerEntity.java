@@ -14,14 +14,14 @@ import java.math.BigDecimal;
 @Table(name="customers")
 public class CustomerEntity {
 
-    private int id;
+    private Integer id;
     private UserEntity user;
-    private int totalOrderPlaced;
-    private int totalOrderDelivered;
-    private int averageRating;
-    private int friendsInvitationCount;
+    private Integer totalOrderPlaced;
+    private Integer totalOrderDelivered;
+    private BigDecimal averageRating;
+    private Integer friendsInvitationCount;
     private String referenceUrl;
-    private int referredFriendsCount;
+    private Integer referredFriendsCount;
     private BigDecimal rewardsEarned;
     private String creditCardToken;
     private String creditCardId;
@@ -29,11 +29,11 @@ public class CustomerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id", nullable = false)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -48,38 +48,38 @@ public class CustomerEntity {
     }
 
     @Column(name = "total_order_placed", nullable = false)
-    public int getTotalOrderPlaced() {
+    public Integer getTotalOrderPlaced() {
         return totalOrderPlaced;
     }
 
-    public void setTotalOrderPlaced(int totalOrderPlaced) {
+    public void setTotalOrderPlaced(Integer totalOrderPlaced) {
         this.totalOrderPlaced = totalOrderPlaced;
     }
 
     @Column(name = "total_order_delivered", nullable = false)
-    public int getTotalOrderDelivered() {
+    public Integer getTotalOrderDelivered() {
         return totalOrderDelivered;
     }
 
-    public void setTotalOrderDelivered(int totalOrderDelivered) {
+    public void setTotalOrderDelivered(Integer totalOrderDelivered) {
         this.totalOrderDelivered = totalOrderDelivered;
     }
 
-    @Column(name = "average_rating", nullable = false)
-    public int getAverageRating() {
+    @Column(name = "average_rating", nullable = false, precision = 4, scale = 2)
+    public BigDecimal getAverageRating() {
         return averageRating;
     }
 
-    public void setAverageRating(int averageRating) {
+    public void setAverageRating(BigDecimal averageRating) {
         this.averageRating = averageRating;
     }
 
     @Column(name = "friends_invitation_count", nullable = false)
-    public int getFriendsInvitationCount() {
+    public Integer getFriendsInvitationCount() {
         return friendsInvitationCount;
     }
 
-    public void setFriendsInvitationCount(int friendsInvitationCount) {
+    public void setFriendsInvitationCount(Integer friendsInvitationCount) {
         this.friendsInvitationCount = friendsInvitationCount;
     }
 
@@ -93,11 +93,11 @@ public class CustomerEntity {
     }
 
     @Column(name = "referred_friends_count", nullable = false)
-    public int getReferredFriendsCount() {
+    public Integer getReferredFriendsCount() {
         return referredFriendsCount;
     }
 
-    public void setReferredFriendsCount(int referredFriendsCount) {
+    public void setReferredFriendsCount(Integer referredFriendsCount) {
         this.referredFriendsCount = referredFriendsCount;
     }
 

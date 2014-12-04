@@ -89,7 +89,7 @@
                                     <button type="submit" class="btn btn-default btn_logins">Login</button>
                                 </div>
                             </div>
-                            <a href="#">Need Help?</a>
+                            <a href="/assistance/">Need Help?</a>
                         </div>
                     </form>
                 </div>

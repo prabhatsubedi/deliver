@@ -10,7 +10,6 @@
     <script type="text/javascript" src="<c:url value="/resources/js/jquery.validate.js" />"></script>
     <script type="text/javascript" src="<c:url value="/resources/js/jquery.Jcrop.js" />"></script>
     <script type="text/javascript" src="<c:url value="/resources/js/html2canvas.js" />"></script>
-    <script src="<c:url value="/resources/js/jquery.validate.js" />"></script>
     <script type="text/javascript" src="<c:url value="/resources/js/merchant.js" />"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false&libraries=places" type="text/javascript"></script>
 

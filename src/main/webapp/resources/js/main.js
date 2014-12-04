@@ -65,12 +65,33 @@ if(typeof(Main) == "undefined") var Main = {};
             if (data.success == true) {
                 window.location.replace(data.params.url);
             } else {
+                alert(data.message);
             }
         };
 
         callback.loaderDiv = "#modal_login .modal-dialog";
 
         Main.request('/j_spring_security_check', data, callback);
-    }
+    };
+
+    Main.assistance = function(data, headers) {
+
+        $("button[type='submit']").attr("disabled",true);
+
+        var callback = function (status, data) {
+            $("button[type='submit']").removeAttr("disabled");
+
+            if (data.success == true) {
+                alert(data.message);
+            } else {
+                alert(data.message);
+            }
+        };
+
+        callback.loaderDiv = ".assist_containers";
+
+        Main.request('/anon/password_assist', data, callback, headers);
+
+    };
 
 })(jQuery);

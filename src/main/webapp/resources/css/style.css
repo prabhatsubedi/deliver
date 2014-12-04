@@ -296,7 +296,71 @@ body {
     border: 3px solid #CCCCCC;
     background-color: #DDDDDD;
 }
-/*
-#drop_zone.dropped {
-    border: 3px solid #CCCCCC;
-}*/
+
+/* Assistance */
+body.assistance_page {
+    background-color: rgba(0,0,0,0.5);
+}
+.assist_containers {
+    margin: 100px auto 0;
+    max-width: 480px;
+}
+.assist_containers .modal-content {
+    border-radius: 0px;
+}
+.assist_containers .modal-header {
+    padding: 20px 30px;
+    color: #ff9235;
+    font-size: 30px;
+    background-color: #eeeded;
+}
+.assist_containers .modal-body {
+    padding: 30px 30px 0px 30px;
+}
+.assist_containers .form-group {
+    margin-bottom: 30px;
+}
+.assist_containers .form-control {
+    padding: 0px 30px;
+    height: 60px;
+    font-size: 25px;
+    background-color: #e0e0e0;
+    border: 0px none;
+    border-radius: 0px;
+}
+.assist_containers .modal-footer {
+    padding: 0px;
+    border: 0px none;
+    text-align: left;
+}
+.assist_containers .modal-footer .no_pad:first-child {
+    padding-right: 1px !important;
+}
+.assist_containers .modal-footer .btn {
+    background-color: #ff9235;
+    border: 0px none;
+    border-radius: 0px;
+    color: #FFFFFF;
+    line-height: 70px;
+    width: 100%;
+    font-size: 25px;
+    padding: 0px 20px;
+    margin: 0px;
+}
+.assist_containers .modal-footer .btn:hover {
+    background-color: #ff7d2d;
+}
+.assist_containers .form-control:focus {
+    border: 1px solid #66afe9;
+}
+.assist_containers .form-control.error {
+    border: 1px solid #ff9235;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07) inset, 0 0 8px rgba(255, 146, 53, 0.60);
+    outline: 0 none;
+}
+#container_assist .modal-footer {
+    padding: 30px 30px 0px 30px;
+}
+#container_assist .modal-footer .btn {
+    margin-bottom: 30px;
+}

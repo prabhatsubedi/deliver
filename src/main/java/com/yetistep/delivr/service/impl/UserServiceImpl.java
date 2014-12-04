@@ -69,7 +69,7 @@ public class UserServiceImpl extends AbstractManager implements UserService{
 
             successMsg = "Your password has been created successfully";
 
-        } else if (actionType.toString().equals(PasswordActionType.CHANGE.toString())) {
+        } else if (actionType.toString().equals(PasswordActionType.RESET.toString())) {
             log.info("+++++++++++ Resetting password +++++++++++");
             //Resetting Password
             resetForgotPassword(headerDto.getVerificationCode(), headerDto.getPassword());

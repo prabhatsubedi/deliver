@@ -174,10 +174,10 @@ public class MainController {
 
     @RequestMapping(value = "/assistance/*", method = RequestMethod.GET)
     @ResponseBody
-    public ServiceResponse forgotPassword(){
-        ServiceResponse serviceResponse = new ServiceResponse("Redirecting URL");
-        serviceResponse.addParam("url", "assistance");
-        return serviceResponse;
+    public ModelAndView forgotPassword(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("assistance");
+        return modelAndView;
     }
 
 }

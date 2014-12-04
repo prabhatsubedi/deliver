@@ -77,7 +77,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         //Sending Email For Merchant
         String hostName = getServerUrl();
-        String url = hostName + "assistance/create_password/" + code;
+        String url = hostName + "/assistance/create_password/" + code;
         String loginUrl = hostName + "/";
         log.info("Sending mail to " + user.getUsername() + " with new registration: " + url);
 

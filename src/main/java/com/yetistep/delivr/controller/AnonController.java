@@ -99,7 +99,7 @@ public class AnonController {
         }
     }
 
-    @RequestMapping(value = "/change_password", method = RequestMethod.POST)
+    @RequestMapping(value = "/password_assist", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders headers, @RequestBody PasswordActionType actionType) {
         try{

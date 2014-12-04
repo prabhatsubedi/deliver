@@ -22,6 +22,7 @@ public class GeneralUtil {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
     private static final String VERIFICATION_CODE = "verificationCode";
+    private static final String NEW_PASSWORD = "newPassword";
 
     public static void logError(Logger log, String message, Exception e) {
         if (e instanceof YSException)
@@ -74,7 +75,7 @@ public class GeneralUtil {
         String username = null;
         String password = null;
         String verificationCode = null;
-
+        String newPassword = null;
         List<String> hd = headers.get(USERNAME);
         if (hd != null && hd.size() > 0)
             username = hd.get(0);
@@ -87,9 +88,14 @@ public class GeneralUtil {
         if(hd !=null && hd.size() > 0)
             verificationCode = hd.get(0);
 
+        hd = headers.get(NEW_PASSWORD);
+        if(hd !=null && hd.size() > 0)
+            newPassword = hd.get(0);
+
         headerDto.setUsername(username);
         headerDto.setPassword(password);
         headerDto.setVerificationCode(verificationCode);
+        headerDto.setNewPassword(newPassword);
     }
 
     /**

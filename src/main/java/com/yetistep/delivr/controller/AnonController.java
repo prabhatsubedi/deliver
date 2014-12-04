@@ -4,6 +4,7 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.model.CountryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.AdminService;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.service.inf.UserService;
@@ -101,18 +102,40 @@ public class AnonController {
 
     @RequestMapping(value = "/password_assist", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders headers, @RequestBody PasswordActionType actionType) {
+    public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders headers, @RequestBody FeaturePassword featurePassword) {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto);
-            String msg = userService.performPasswordAction(headerDto, actionType);
+            String msg = userService.performPasswordAction(headerDto, featurePassword.actionType);
 
             ServiceResponse serviceResponse = new ServiceResponse(msg);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
-            GeneralUtil.logError(log, "Error occurred while changing password", e);
+            GeneralUtil.logError(log, "Error occurred while assisting password", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
+    }
+    @RequestMapping(value = "/change_password")
+    public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders httpHeaders, @RequestBody UserEntity userEntity) throws Exception {
+
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(httpHeaders, headerDto);
+
+            userService.changePassword(headerDto, userEntity);
+            ServiceResponse serviceResponse = new ServiceResponse("User password changed successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error occurred while changing password", e);
+            HttpHeaders headers = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
+    final class FeaturePassword {
+        public PasswordActionType actionType;
     }
 }

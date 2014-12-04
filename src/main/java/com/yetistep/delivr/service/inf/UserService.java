@@ -26,4 +26,5 @@ public interface UserService {
 
     public String performPasswordAction(HeaderDto headerDto, PasswordActionType passwordActionType) throws Exception;
 
+    public void changePassword(HeaderDto headerDto, UserEntity userEntity) throws Exception;
 }

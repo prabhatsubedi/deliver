@@ -40,6 +40,28 @@ public class EmailMsg {
         return prepareEmail(subject, body.toString(), null);
     }
 
+    public static String resetForgotPassword(String url, String userName, String subject) {
+        StringBuilder body = new StringBuilder();
+
+        body.append("Dear " + userName + ",<br/><br/>");
+        body.append("We're sorry you are having difficulty logging in.Click on the link below to reset your password.<br/><br/>");
+
+        body.append("Please click on the link below and navigate to reset your new password. <br/>");
+        body.append(getEmailBodyButton("Reset Password", url));
+        body.append("If the link does not work,please copy & paste the following URL in your web browser:<br/>");
+        body.append(url);
+
+        body.append("<br/><br/>");
+
+        return prepareEmail(subject, body.toString(), null);
+    }
+
+    private static String getEmailBodyButton(String viewLink, String url) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("<a href='" + url + "'  style='background:#52B4F3; padding: 10px 20px; color: #FFFFFF; text-decoration: none; display: inline-block;; border-radius: 3px; margin: 10px 0px;'>" + viewLink + "</a>");
+        builder.append("<br clear='all'/>");
+        return builder.toString();
+    }
 
     private static String getEmailFooter() {
         StringBuilder builder = new StringBuilder();

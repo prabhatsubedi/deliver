@@ -43,7 +43,7 @@ public class UserDaoServiceImpl implements UserDaoService {
     public UserEntity findByVerificationCode(String code) throws Exception {
         List<UserEntity> usersList = new ArrayList<>();
         Criteria criteria = getCurrentSession().createCriteria(UserEntity.class);
-        criteria.add(Restrictions.eq("verification_code", code));
+        criteria.add(Restrictions.eq("verificationCode", code));
         usersList = criteria.list();
         return usersList.size() > 0 ? usersList.get(0) : null;
     }

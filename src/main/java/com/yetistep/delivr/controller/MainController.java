@@ -172,7 +172,7 @@ public class MainController {
 
     }
 
-    @RequestMapping(value = "/assistance/*", method = RequestMethod.GET)
+    @RequestMapping(value = "/assistance/**", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView forgotPassword(){
         ModelAndView modelAndView = new ModelAndView();

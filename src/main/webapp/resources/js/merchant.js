@@ -15,8 +15,11 @@ if(typeof(Merchant) == "undefined") var Merchant = {};
             $("button[type='submit']","#signup_form").removeAttr("disabled");
 
             if (data.success == true) {
-                alert("Account created successfully.");
+                alert(data.message);
                 $('#modal_signup').modal('hide');
+                $('#signup_form').trigger('reset');
+                $('#drop_zone').html('');
+                deleteMarkers();
             } else {
                 alert(data.message);
             }

@@ -39,7 +39,7 @@ if(typeof(Main) == "undefined") var Main = {};
         $.ajax({
             url: url,
             type: "POST",
-            data: parameter,
+            data: parameter.stringify == false ? parameter : JSON.stringify(parameter),
             headers: headers,
             statusCode: {
             },
@@ -51,7 +51,7 @@ if(typeof(Main) == "undefined") var Main = {};
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 hideLoader();
-                return callback("error", {success: false, message: errorThrown});
+                return callback("error", {success: false, message: XMLHttpRequest.getResponseHeader("errorMessage")});
             }
         });
     };

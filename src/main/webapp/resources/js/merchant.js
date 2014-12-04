@@ -16,7 +16,9 @@ if(typeof(Merchant) == "undefined") var Merchant = {};
 
             if (data.success == true) {
                 alert("Account created successfully.");
+                $('#modal_signup').modal('hide');
             } else {
+                alert(data.message);
             }
         };
 

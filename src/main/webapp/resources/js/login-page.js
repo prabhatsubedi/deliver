@@ -198,13 +198,19 @@ $(document).ready(function(){
         return this.optional(element) || /[0-9+-]+$/.test(value);
     }, "Only +, - and numbers are allowed.");
 
+    $.validator.setDefaults({
+        errorPlacement : function(error, element){
+            $('#error_container').html(error);
+        }
+    });
+
     $('#login_form').validate({
         submitHandler: function() {
-            var data = {username: $('#email').val(), password: $('#password').val()};
+            var data = {username: $('#email').val(), password: $('#password').val(), stringify: false};
             Main.doLogin(data);
             return false;
-        },
-        wrapper : 'div'
+        }/*,
+        wrapper : 'div'*/
     });
     $('#email').rules('add', {required: true, email: true, messages : {required: "Email is required."}});
     $('#password').rules('add', {required: true, minlength: 6, messages : {required: "Password is required."}});
@@ -212,43 +218,53 @@ $(document).ready(function(){
     $('#signup_form').validate({
         submitHandler: function() {
 
-            var chk_confirm = confirm('Are you sure you want to Signup?');
-            if(!chk_confirm) return false;
-
-            var data = {};
-            var user = {};
-
             var address = arrGeoPoints[Object.keys(arrGeoPoints)[0]];
-            user.fullName = $('#contact_person').val();
-            user.street = address.street;
-            user.city = address.city;
-            user.state = address.state;
-            user.country = address.country;
-            user.countryCode = "00977";
-            user.mobileNumber = $('#contact_no').val();
-            user.mobileVerificationStatus = "true";
-            user.emailAddress = $('#contact_email').val();
-            user.profileImage = "";
-            user.blacklistStatus = "false";
-            user.verifiedStatus = "true";
-            user.token = "token";
-            user.subscribeNewsletter = "true";
-            user.role = {role: "ROLE_MERCHANT"};
+            if(address == undefined) {
+                alert("Please add a marker to set address.");
+            } else if(address.name == "" || address.street == "" || address.city == "" || address.state == "") {
+                alert("Please fill up all fields of info window and save.");
+            } else {
 
-            data.type = "CORPORATE";
-            data.partnershipStatus = "true";
-            data.commissionPercentage = "0";
-            data.website = $('#url').val();
-            data.agreementDetail = "";
-            data.businessTitle = $('#business_name').val();
-            data.businessLogo = $('#drop_zone img').attr('src');
-            data.companyRegistrationNo = $('#registration_no').val();
-            data.vatNo = $('#vat').val();
-            data.user = user;
+                var chk_confirm = confirm('Are you sure you want to Signup?');
+                if(!chk_confirm) return false;
 
-            var headers = {};
-            headers.username = $('#contact_email').val();
-            Merchant.signUp(data, headers);
+                var data = {};
+                var user = {};
+
+                user.fullName = $('#contact_person').val();
+                user.street = address.street;
+                user.city = address.city;
+                user.state = address.state;
+                user.country = address.country;
+                user.countryCode = "00977";
+                user.mobileNumber = $('#contact_no').val();
+                user.mobileVerificationStatus = "true";
+                user.emailAddress = $('#contact_email').val();
+                user.profileImage = "";
+                user.blacklistStatus = "false";
+                user.verifiedStatus = "false";
+                user.token = "token";
+                user.subscribeNewsletter = "true";
+                user.role = {role: "ROLE_MERCHANT"};
+
+                data.type = "CORPORATE";
+                data.partnershipStatus = "true";
+                data.commissionPercentage = "0";
+                data.website = $('#url').val();
+                data.agreementDetail = "";
+                data.businessTitle = $('#business_name').val();
+                data.businessLogo = $('#drop_zone img').attr('src');
+                data.companyRegistrationNo = $('#registration_no').val();
+                data.vatNo = $('#vat').val();
+                data.user = user;
+
+                var headers = {};
+                headers.username = $('#contact_email').val();
+                headers['Content-Type'] = 'application/json';
+
+                Merchant.signUp(data, headers);
+
+            }
             return false;
 
         }
@@ -316,7 +332,7 @@ $(document).ready(function(){
         html2canvas($('.preview-container'), {
             onrendered: function(canvas) {
                 var strImage = canvas.toDataURL('image/jpeg');
-                $('#drop_zone').addClass('image_selected').html('<img src="' + strImage + '" style="height: 100%;" />');
+                $('#drop_zone').addClass('image_selected').removeClass('error').html('<img src="' + strImage + '" style="height: 100%;" />');
                 $('#crop_img_modal').modal('hide');
             }
         });
@@ -630,6 +646,12 @@ $(document).ready(function(){
         if(index > 0) {
             if(!$('#business_name').valid()) {
                 bool_0 = false;
+            }
+            if($('#drop_zone img').attr('src') == undefined || $('#drop_zone img').attr('src') == "") {
+                bool_0 = false;
+                $('#drop_zone').addClass('error');
+            } else {
+                $('#drop_zone').removeClass('error');
             }
             if(!$('#url').valid()) {
                 bool_0 = false;

@@ -172,11 +172,11 @@ public class MainController {
 
     }
 
-    @RequestMapping(value = "/create_password", method = RequestMethod.GET)
+    @RequestMapping(value = "/assistance/*", method = RequestMethod.GET)
     @ResponseBody
-    public ServiceResponse forgotPassword(@RequestParam("code") String code){
+    public ServiceResponse forgotPassword(){
         ServiceResponse serviceResponse = new ServiceResponse("Redirecting URL");
-        serviceResponse.addParam("url", "create_password");
+        serviceResponse.addParam("url", "assistance");
         return serviceResponse;
     }
 

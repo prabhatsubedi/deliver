@@ -11,6 +11,7 @@ public class HeaderDto {
     private String username;
     private String password;
     private String accessToken;
+    private String verificationCode;
 
     public String getAccessToken() {
         return accessToken;
@@ -35,5 +36,13 @@ public class HeaderDto {
     public void setUsername(String username) {
         this.username = username;
 
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
     }
 }

@@ -45,6 +45,7 @@ public class UserEntity {
     private Boolean blacklistStatus;
     private Boolean verifiedStatus;
     private String token;
+    private String verificationCode;
     private Boolean subscribeNewsletter;
     private List<ActionLogEntity> actionLogEntities;
 
@@ -257,6 +258,15 @@ public class UserEntity {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    @Column(name = "verification_code")
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
     }
 
     @Column(name = "subscribe_newsletter", nullable = false)

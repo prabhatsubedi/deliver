@@ -39,28 +39,56 @@ public class UserDaoServiceImpl implements UserDaoService {
         return usersList.size() > 0 ? usersList.get(0) : null;
     }
 
+    @Override
+    public UserEntity findByVerificationCode(String code) throws Exception {
+        List<UserEntity> usersList = new ArrayList<>();
+        Criteria criteria = getCurrentSession().createCriteria(UserEntity.class);
+        criteria.add(Restrictions.eq("verification_code", code));
+        usersList = criteria.list();
+        return usersList.size() > 0 ? usersList.get(0) : null;
+    }
+
+
+    @Override
+    public UserEntity find(Integer id) throws Exception {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List<UserEntity> findAll() throws Exception {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Boolean save(UserEntity value) throws Exception {
+        getCurrentSession().save(value);
+        return true;
+    }
+
+
+    @Override
+    public Boolean update(UserEntity value) throws Exception {
+        getCurrentSession().update(value);
+        return true;
+    }
+
+    @Override
+    public Boolean delete(UserEntity value) throws Exception {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Session getCurrentSession() throws Exception {
+        Session session = getSessionFactory().getCurrentSession();
+        return session;
+    }
+
     public SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-    }
-
-    @Override
-    public void save(UserEntity user) throws SQLException {
-
-        Session session = sessionFactory.getCurrentSession();
-        session.save(user);
-
-    }
-
-    @Override
-    public void saveRole(RoleEntity role) throws SQLException {
-
-        Session session = sessionFactory.getCurrentSession();
-        session.save(role);
-
     }
 
     @Override

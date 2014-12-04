@@ -1,6 +1,7 @@
 package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.model.CountryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
 import com.yetistep.delivr.service.inf.AdminService;
@@ -77,7 +78,7 @@ public class AnonController {
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while retrieving list of countries", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
 
@@ -93,6 +94,23 @@ public class AnonController {
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "User name already exists", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/change_password", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders headers, @RequestBody PasswordActionType actionType) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            String msg = userService.performPasswordAction(headerDto, actionType);
+
+            ServiceResponse serviceResponse = new ServiceResponse(msg);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error occurred while changing password", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

@@ -1,10 +1,16 @@
 package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.UserDaoService;
+import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.UserService;
+import com.yetistep.delivr.util.GeneralUtil;
+import com.yetistep.delivr.util.MessageBundle;
+import com.yetistep.delivr.util.ServiceResponse;
 import com.yetistep.delivr.util.YSException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -19,6 +25,7 @@ import java.util.List;
  */
 public class UserServiceImpl implements UserService{
 
+    private static final Logger log = Logger.getLogger(UserServiceImpl.class);
     @Autowired
     UserDaoService userDaoService;
 
@@ -28,11 +35,6 @@ public class UserServiceImpl implements UserService{
         RoleEntity userRole = userDaoService.getRoleByRole(user.getRole().getRole());
         user.setRole(userRole);
         userDaoService.save(user);
-    }
-
-
-    public void saveRole(RoleEntity role) throws Exception{
-        userDaoService.saveRole(role);
     }
 
     public List<RoleEntity> findAllRoles() throws Exception{
@@ -46,11 +48,65 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Boolean checkUserExistence(String username) throws Exception {
+        log.info("++++++++ Checking User Existence +++++++++++++++");
+
         UserEntity userEntity = userDaoService.findByUserName(username);
         if(userEntity != null){
             throw new YSException("VLD010");
         }
         return true;
+    }
+
+    @Override
+    public String performPasswordAction(HeaderDto headerDto, PasswordActionType actionType) throws Exception {
+        String successMsg = "";
+        if (actionType.toString().equals(PasswordActionType.NEW.toString())) {
+            log.info("+++++++++++ Creating Password +++++++++++");
+
+            //Update Verification Status True
+            updateVerificationStatus(headerDto.getVerificationCode());
+            //Create Password
+            resetForgotPassword(headerDto.getVerificationCode(), headerDto.getPassword());
+
+            successMsg = "Your password has been created successfully";
+
+        } else if(actionType.toString().equals(PasswordActionType.CHANGE.toString())){
+            log.info("+++++++++++ Resetting password +++++++++++");
+            //Resetting Password
+            resetForgotPassword(headerDto.getVerificationCode(), headerDto.getPassword());
+            successMsg = "Your password has been reset successfully";
+
+        } else if (actionType.toString().equals(PasswordActionType.FORGOT.toString())) {
+            log.info("+++++++++++Performing Forgot password +++++++++++");
+            //TODO
+        } else if (actionType.toString().equals(PasswordActionType.RESEND.toString())) {
+            log.info("++++++++++++ Resending password reset email +++++++++++");
+            //TODO
+
+        }
+        return successMsg;
+    }
+
+    private void resetForgotPassword(String code, String password) throws Exception {
+
+        UserEntity userEntity = userDaoService.findByVerificationCode(code);
+        if (userEntity == null)
+            throw new YSException("VLD011");
+
+        userEntity.setPassword(GeneralUtil.encryptPassword(password.trim()));
+        userEntity.setVerificationCode("");
+        userDaoService.update(userEntity);
+
+    }
+
+    private void updateVerificationStatus(String code) throws Exception {
+
+        UserEntity userEntity = userDaoService.findByVerificationCode(code);
+        if (userEntity == null)
+            throw new YSException("VLD011");
+
+        userEntity.setVerifiedStatus(true);
+        userDaoService.update(userEntity);
     }
 
 

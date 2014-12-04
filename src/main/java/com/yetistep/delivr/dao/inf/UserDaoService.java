@@ -1,5 +1,6 @@
 package com.yetistep.delivr.dao.inf;
 
+import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
@@ -14,16 +15,15 @@ import java.util.List;
  * Time: 2:42 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface UserDaoService {
-    public void saveRole(RoleEntity role) throws SQLException;
+public interface UserDaoService extends GenericDaoService<Integer, UserEntity>{
 
-    public RoleEntity getRoleByRole(Role role) throws SQLException;
+    public RoleEntity getRoleByRole(Role role) throws Exception;
 
-    public List<RoleEntity> findAllRoles() throws SQLException;
+    public List<RoleEntity> findAllRoles() throws Exception;
 
     //Spring Authentication Only
     public UserEntity findByUserName(String userName);
 
-    public void save(UserEntity user) throws SQLException;
+    public UserEntity findByVerificationCode(String code) throws Exception;
 
 }

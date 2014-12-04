@@ -71,7 +71,7 @@ public class AdminController {
                     Role role = Role.fromInt(i);
                     RoleEntity userRole = new RoleEntity();
                     userRole.setRole(role);
-                    userService.saveRole(userRole);
+                    //userService.saveRole(userRole);
                 }
             }
         } catch (Exception e) {

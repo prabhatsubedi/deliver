@@ -45,11 +45,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         HeaderDto headerDto = new HeaderDto();
         GeneralUtil.fillHeaderCredential(headers, headerDto);
 
-        String token = MessageBundle.generateTokenString() + "_" + System.currentTimeMillis();
+        String code = MessageBundle.generateTokenString() + "_" + System.currentTimeMillis();
 
         user.setUsername(headerDto.getUsername());
         user.setPassword("");
-        user.setToken(token);
+        user.setVerificationCode(code);
         merchant.setUser(user);
 
         RoleEntity userRole = userDaoService.getRoleByRole(merchant.getUser().getRole().getRole());
@@ -70,14 +70,14 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             String logoName = "logo" + (isLocal ? "_tmp_" : "_") + merchant.getId();
             String s3Path = GeneralUtil.saveImageToBucket(base64encoded, logoName, dir, true);
             merchant.setBusinessLogo(s3Path);
-        }
 
-        /* Update S3 Location to the Database */
-        merchantDaoService.update(merchant);
+             /* Update S3 Location to the Database */
+            merchantDaoService.update(merchant);
+        }
 
         //Sending Email For Merchant
         String hostName = getServerUrl();
-        String url = hostName + "/create_password?code=" + token ;
+        String url = hostName + "assistance/create_password/" + code;
         String loginUrl = hostName + "/";
         log.info("Sending mail to " + user.getUsername() + " with new registration: " + url);
 

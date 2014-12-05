@@ -90,4 +90,30 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     }
 
+    @Override
+    public void activateMerchant(MerchantEntity merchantEntity) throws Exception {
+        log.info("++++++++++++++ Activating Merchant " + merchantEntity.getId() + " +++++++++++");
+
+        MerchantEntity dbMerchant = merchantDaoService.find(merchantEntity.getId());
+        if(dbMerchant == null)
+               throw new YSException("VLD011");
+
+        if(merchantEntity.getCommissionPercentage() == null || BigDecimalUtil.isZero(merchantEntity.getCommissionPercentage()))
+              throw new YSException("MRC001");
+
+        if(merchantEntity.getType()==null || merchantEntity.getType().toString().isEmpty())
+              throw new YSException("MRC002");
+
+        //Verified Status True
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(dbMerchant.getUser().getId());
+        userEntity.setVerifiedStatus(true);
+        userDaoService.update(userEntity);
+
+        //update merchant detail
+        merchantDaoService.update(merchantEntity);
+
+
+    }
+
 }

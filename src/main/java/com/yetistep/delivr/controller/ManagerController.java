@@ -4,6 +4,7 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.VehicleType;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.MerchantEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
@@ -114,6 +115,23 @@ public class ManagerController {
 
         ServiceResponse serviceResponse = new ServiceResponse("User(Delivery Boy) has been saved successfully");
         return serviceResponse;
+    }
+
+    @RequestMapping(value = "/activate_merchant", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> activateMerchant(@RequestBody MerchantEntity merchantEntity) {
+        try{
+            merchantService.activateMerchant(merchantEntity);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Merchant activated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+
     }
 
 }

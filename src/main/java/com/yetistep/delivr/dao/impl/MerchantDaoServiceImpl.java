@@ -25,7 +25,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public MerchantEntity find(Integer id) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return (MerchantEntity) getCurrentSession().get(MerchantEntity.class, id);
     }
 
     @Override

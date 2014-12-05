@@ -123,8 +123,11 @@ public class UserServiceImpl extends AbstractManager implements UserService{
         if (userEntity == null)
             throw new YSException("VLD011");
 
-        userEntity.setVerifiedStatus(true);
-        userDaoService.update(userEntity);
+        if(!userEntity.getRole().getRole().toString().equals(Role.ROLE_MERCHANT.toString())) {
+            userEntity.setVerifiedStatus(true);
+            userDaoService.update(userEntity);
+        }
+
     }
 
     private void resendVerificationMail(String userName) throws Exception {

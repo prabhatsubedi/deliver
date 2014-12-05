@@ -12,4 +12,6 @@ import org.springframework.http.HttpHeaders;
  */
 public interface MerchantService {
     public void saveMerchant(MerchantEntity merchant, HttpHeaders headers) throws Exception;
+
+    public void activateMerchant(MerchantEntity merchantEntity) throws Exception;
 }

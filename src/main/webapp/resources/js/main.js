@@ -33,12 +33,20 @@ if(typeof(Main) == "undefined") var Main = {};
 
         var loaderDiv = callback["loaderDiv"];
         if (loaderDiv != undefined) {
-            $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
+            if (loaderDiv == "body") {
+                $(loaderDiv).append('<div class="loader"></div>');
+            } else {
+                $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
+            }
         }
 
         function hideLoader() {
             if (loaderDiv != undefined) {
-                $(loaderDiv).removeClass('loader_div').children('.loader').hide();
+                if (loaderDiv == "body") {
+                    $(loaderDiv).children('.loader').hide();
+                } else {
+                    $(loaderDiv).removeClass('loader_div').children('.loader').hide();
+                }
             }
         }
 
@@ -78,6 +86,14 @@ if(typeof(Main) == "undefined") var Main = {};
         callback.loaderDiv = "#modal_login .modal-dialog";
 
         Main.request('/j_spring_security_check', data, callback);
+    };
+
+    Main.doLogout = function (data) {
+        var callback = function (status, data) {
+            window.location = "/";
+        };
+        callback.loaderDiv = "body";
+        Main.request('/j_spring_security_logout', {}, callback);
     };
 
     Main.assistance = function(data, headers) {

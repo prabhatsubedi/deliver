@@ -7,23 +7,23 @@
 
     <%@include file="includes/head.jsp" %>
     
-    <script type="text/javascript" src="<c:url value="/resources/js/jquery.validate.js" />"></script>
-    <script type="text/javascript" src="<c:url value="/resources/js/jquery.Jcrop.js" />"></script>
-    <script type="text/javascript" src="<c:url value="/resources/js/html2canvas.js" />"></script>
-    <script type="text/javascript" src="<c:url value="/resources/js/merchant.js" />"></script>
+    <script type="text/javascript" src="/resources/js/jquery.validate.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery.Jcrop.js"></script>
+    <script type="text/javascript" src="/resources/js/html2canvas.js"></script>
+    <script type="text/javascript" src="/resources/js/merchant.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false&libraries=places" type="text/javascript"></script>
 
-    <link rel="stylesheet" href="<c:url value="/resources/css/jquery.Jcrop.css" />" type="text/css" />
-    <link rel="stylesheet" href="<c:url value="/resources/css/maps.css" />" type="text/css" />
-    <link rel="stylesheet" href="<c:url value="/resources/css/jcrop.css" />" type="text/css" />
+    <link rel="stylesheet" href="/resources/css/jquery.Jcrop.css" type="text/css" />
+    <link rel="stylesheet" href="/resources/css/maps.css" type="text/css" />
+    <link rel="stylesheet" href="/resources/css/jcrop.css" type="text/css" />
 
-    <script type="text/javascript" src="<c:url value="/resources/js/login-page.js" />"></script>
+    <script type="text/javascript" src="/resources/js/login-page.js"></script>
 
 </head>
 <body>
 
 <div class="logo_container">
-    <img src="<c:url value="/resources/images/login-logo.png" />" class="img-responsive">
+    <img src="/resources/images/login-logo.png" class="img-responsive">
 </div>
 
 <div class="delivr_info container">
@@ -42,9 +42,9 @@
 
 <div class="login_video">
     <div class="video_image">
-        <img src="<c:url value="/resources/images/login-image.jpg" />" class="img-responsive">
+        <img src="/resources/images/login-image.jpg" />" class="img-responsive">
         <div class="btn_play">
-            <img src="<c:url value="/resources/images/btn-play.png" />" class="img-responsive">
+            <img src="/resources/images/btn-play.png" class="img-responsive">
         </div>
     </div>
     <div class="video_text">Lorem Ipsum is simply dummy text of the printing</div>
@@ -56,7 +56,7 @@
 </div>
 
 <div class="login_foot">
-    <div class="foot_logo"><img src="<c:url value="/resources/images/login-logo.png" />" class="img-responsive"></div>
+    <div class="foot_logo"><img src="/resources/images/login-logo.png" class="img-responsive"></div>
     <div class="foot_links">
         <ul class="nav nav-pills text-center">
             <li><a href="#">Delivr</a></li>

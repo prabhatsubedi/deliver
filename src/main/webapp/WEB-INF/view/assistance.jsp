@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Delivr</title>
+    <title>Assistance</title>
 
     <%@include file="includes/head.jsp" %>
 
-    <script type="text/javascript" src="<c:url value="/resources/js/jquery.validate.js" />"></script>
+    <script type="text/javascript" src="/resources/js/jquery.validate.js"></script>
 
     <script type="text/javascript">
 

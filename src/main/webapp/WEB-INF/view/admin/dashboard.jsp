@@ -1,46 +1,78 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:url value="/j_spring_security_logout" var="logoutUrl" />
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page session="true"%>
+<!DOCTYPE html>
+<html>
 <head>
-    <title>Hello World!</title>
-    <script src="<c:url value="/resources/js/jquery-2.1.1.min.js" />"></script>
+    <title>Dashboard</title>
 
-    <meta name="_csrf" content="${_csrf.token}"/>
-    <!-- default header name is X-CSRF-TOKEN -->
-    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+    <%@include file="../includes/head.jsp" %>
 
-    <meta id="_csrf_token" name="${_csrf.parameterName}" content="${_csrf.token}"/>
 
-    <%--<form action="${logoutUrl}" method="post" id="logoutForm">
-        <input type="hidden" name="${_csrf.parameterName}"
-               value="${_csrf.token}" />
-    </form>--%>
 </head>
 <body>
-    <div class="logout">Logout</div>
-    <p>This is the admin dashboard page</p>
-    <script>
-        $(document).ready(function(){
-             $('.logout').click(function(event){
-                 event.preventDefault();
-                 var tokenName = $("meta[id='_csrf_token']").attr("name");
-                 var tokenValue = $("meta[id='_csrf_token']").attr("content");
-                 var jsonData = {};
-                 jsonData[""+tokenName+""] = tokenValue;
-                 $.ajax({
-                     url: "${logoutUrl}",
-                     data: jsonData,
-                     type: "POST",
-                     beforeSend: function (xhr) {
-                         xhr.setRequestHeader("X-Ajax-call", "true");
-                     },
-                     success: function(result) {
-                         console.log(result);
-                     }
-             });
-          });
-      });
-    </script>
+
+<div class="sidebar">
+    <div class="sidebar_logo">
+        <img src="/resources/images/delivr-logo.png" class="img-responsive" />
+    </div>
+    <div class="sidebar_menu">
+        <ul class="nav nav-stacked">
+            <li><a href="#" class="active">Merchants</a></li>
+            <li><a href="#">Courier Boy</a></li>
+            <li><a href="#">Invoices</a></li>
+            <li><a href="#">Purchase History</a></li>
+        </ul>
+    </div>
+</div>
+<div class="main_container">
+    <div class="header clearfix">
+        <div class="item_search col-lg-8">
+            <form role="form" id="item_search" class="form-inline" method="POST" action="">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="item_name" name="item_name" placeholder="Search Items">
+                </div>
+                <div class="form-group">
+                    <select id="item_categories" name="item_categories" class="form-control">
+                        <option>All Categories</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select id="item_stores" name="item_stores" class="form-control">
+                        <option>All Stores</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-default">Search</button>
+            </form>
+        </div>
+        <div class="user_menu col-lg-4 no_pad_right">
+            <div class="pull-right user-nav">
+                <div class="dropdown">
+                    <a href="#" class="user_image" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="false"><img src="/resources/images/user-icon.png" class="img-responsive" /> </a>
+                    <ul class="dropdown-menu pull-right">
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Change Password</a></li>
+                        <li><a href="#" onclick="Main.doLogout()">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pull-right user_name">
+                Manager
+            </div>
+        </div>
+    </div>
+    <div class="body">
+        body
+    </div>
+</div>
+
 </body>
 </html>

@@ -260,7 +260,6 @@ $(document).ready(function(){
 
                 var headers = {};
                 headers.username = $('#contact_email').val();
-                headers['Content-Type'] = 'application/json';
 
                 Merchant.signUp(data, headers);
 

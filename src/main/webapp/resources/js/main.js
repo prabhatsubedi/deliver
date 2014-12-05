@@ -25,6 +25,12 @@ if(typeof(Main) == "undefined") var Main = {};
     }
 
     Main.request = function (url, parameter, callback, headers) {
+
+        if(headers == undefined) var headers = {};
+
+        if(parameter.stringify != false)
+            headers['Content-Type'] = 'application/json';
+
         var loaderDiv = callback["loaderDiv"];
         if (loaderDiv != undefined) {
             $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
@@ -83,6 +89,7 @@ if(typeof(Main) == "undefined") var Main = {};
 
             if (data.success == true) {
                 alert(data.message);
+                window.location = "/";
             } else {
                 alert(data.message);
             }

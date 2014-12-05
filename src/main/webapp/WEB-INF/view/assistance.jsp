@@ -15,6 +15,10 @@
         var path_arr = [];
         $(document).ready(function(){
 
+            $('.btn_cancel').click(function(){
+                window.location = "/";
+            });
+
             $.validator.setDefaults({
                 errorPlacement : function(error, element){
                     $('#error_container').html(error);
@@ -123,7 +127,7 @@
             </div>
             <div class="modal-footer">
                 <div class="col-lg-6 no_pad">
-                    <button type="button" class="btn btn-default">Cancel</button>
+                    <button type="button" class="btn btn-default btn_cancel">Cancel</button>
                 </div>
                 <div class="col-lg-6 no_pad">
                     <button type="submit" class="btn btn-default">Continue</button>
@@ -149,7 +153,7 @@
             </div>
             <div class="modal-footer">
                 <div class="col-lg-6 no_pad">
-                    <button type="button" class="btn btn-default">Cancel</button>
+                    <button type="button" class="btn btn-default btn_cancel">Cancel</button>
                 </div>
                 <div class="col-lg-6 no_pad">
                     <button type="submit" class="btn btn-default">Continue</button>

@@ -4,10 +4,27 @@
     </div>
     <div class="sidebar_menu">
         <ul class="nav nav-stacked">
-            <li><a href="/merchant" class="active">Merchants</a></li>
+            <li><a href="/admin/dashboard">Dashboard</a></li>
+            <li><a href="/merchant">Merchants</a></li>
             <li><a href="/courier_boy">Courier Boy</a></li>
             <li><a href="#">Invoices</a></li>
             <li><a href="#">Purchase History</a></li>
         </ul>
     </div>
 </div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+
+        var pathname = window.location.pathname;
+        $('.sidebar_menu li a[href="' + pathname + '"]').addClass('active');
+
+        $('.sidebar_menu li a').click(function(){
+            $('.sidebar_menu li a').removeClass('active');
+            $(this).addClass('active');
+        });
+
+    });
+
+</script>

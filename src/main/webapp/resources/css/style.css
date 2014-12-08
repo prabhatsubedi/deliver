@@ -476,3 +476,6 @@ body.assistance_page {
 /*.main_container .header .user-nav */.dropdown-menu li a:hover {
     background-color: #FAC08F;
 }
+.main_container .body {
+    padding: 20px 30px 20px 45px;
+}

@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Iterator;
+import java.lang.reflect.Array;
+import java.util.*;
 
 @Controller
 public class MainController {
@@ -177,6 +178,30 @@ public class MainController {
     public ModelAndView forgotPassword(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("assistance");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/merchant"}, method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView merchant(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("merchant/dashboard");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/courier_boy"}, method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView addDeliveryBoy(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("courier_boy/dashboard");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/courier_boy/{page}/**"}, method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView addDeliveryBoy(@PathVariable String page){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("courier_boy/" + page);
         return modelAndView;
     }
 

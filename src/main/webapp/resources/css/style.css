@@ -1,5 +1,5 @@
-*, *:focus {
-    outline: 0px none !important;
+*, *:focus, *:active {
+    outline: none !important;
 }
 body {
     background-color: #eeeded;
@@ -113,7 +113,7 @@ body {
     border-left: 2px solid #707070;
 }
 .foot_links ul li:first-child {
-    border-left: 0px none;
+    border-left: none;
 }
 .foot_links ul li a {
     font-size: 25px;
@@ -156,7 +156,7 @@ body {
     height: 60px;
     font-size: 25px;
     background-color: #e0e0e0;
-    border: 0px none;
+    border: none;
     border-radius: 0px;
 }
 #modal_login .login_foot {
@@ -167,7 +167,7 @@ body {
 }
 #modal_login .btn_logins {
     border-radius: 0;
-    border: 0px none;
+    border: none;
     border-bottom: 4px solid #d27127;
     background-color: #ff9235;
     color: #ffffff;
@@ -200,7 +200,7 @@ body {
     color: #FFFFFF;
     padding: 0px 30px;
     line-height: 58px;
-    outline: 0px none;
+    outline: none;
     background-color: #ff9235;
 }
 #modal_signup .modal-body ul li.active a {
@@ -231,7 +231,7 @@ body {
     height: 60px;
     font-size: 25px;
     background-color: #e0e0e0;
-    border: 0px none;
+    border: none;
     border-radius: 0px;
 }
 #modal_signup .business_logo {
@@ -265,7 +265,7 @@ body {
 }
 #modal_signup .modal-footer, #crop_img_modal .modal-footer {
     padding: 0px;
-    border: 0px none;
+    border: none;
     text-align: left;
 }
 #modal_signup .modal-footer .no_pad:first-child, #crop_img_modal .modal-footer .no_pad:first-child {
@@ -273,7 +273,7 @@ body {
 }
 #modal_signup .modal-footer .btn, #crop_img_modal .modal-footer .btn {
     background-color: #ff9235;
-    border: 0px none;
+    border: none;
     border-radius: 0px;
     color: #FFFFFF;
     line-height: 70px;
@@ -325,12 +325,12 @@ body.assistance_page {
     height: 60px;
     font-size: 25px;
     background-color: #e0e0e0;
-    border: 0px none;
+    border: none;
     border-radius: 0px;
 }
 .assist_containers .modal-footer {
     padding: 0px;
-    border: 0px none;
+    border: none;
     text-align: left;
 }
 .assist_containers .modal-footer .no_pad:first-child {
@@ -338,7 +338,7 @@ body.assistance_page {
 }
 .assist_containers .modal-footer .btn {
     background-color: #ff9235;
-    border: 0px none;
+    border: none;
     border-radius: 0px;
     color: #FFFFFF;
     line-height: 70px;
@@ -411,15 +411,33 @@ body.assistance_page {
     font-size: 0px;
 }
 .main_container .header .item_search .form-control {
-    border: 0px none;
+    border: none;
     box-shadow: none;
     border-radius: 0px;
+    height: 40px;
+}
+.main_container .header .item_search .form-control .caret {
+    color: #f7941d;
+    margin-top: -3px;
+    border-width: 8px;
 }
 .main_container .header .item_search #item_name {
     border-radius: 3px 0px 0px 3px;
+    width: 100%;
 }
-.main_container .header .item_search #item_stores {
+.main_container .header .item_search .item_categories .form-control {
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+}
+.main_container .header .item_search .item_stores .form-control {
     border-radius: 0px 3px 3px 0px;
+}
+.main_container .header .item_search button[type="submit"] {
+    height: 40px;
+    background-color: #9c5209;
+    border: none;
+    color: #FFFFFF;
+    margin-left: 10px;
 }
 .main_container .header .user_name {
     color: #ffffff;
@@ -438,23 +456,23 @@ body.assistance_page {
     border-radius: 3px;
     overflow: hidden;
 }
-.main_container .header .user-nav .dropdown-menu {
-    background-color: #ffffff;
-    border: 1px solid #9bd5f7;
-    border-radius: 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    margin: 0;
-    padding: 0;
-}
-.main_container .header .user-nav .dropdown-menu li a {
-    border-top: 1px solid #c7e9fb;
+/*.main_container .header .user-nav */.dropdown-menu {
+     background-color: #ffffff;
+     border: 1px solid #f58220;
+     border-radius: 0;
+     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+     margin: 0;
+     padding: 0;
+ }
+/*.main_container .header .user-nav */.dropdown-menu li a {
+    border-top: 1px solid #f7941d;
     color: #626262;
     line-height: 40px;
     padding: 0 20px;
 }
-.main_container .header .user-nav .dropdown-menu li:first-child a {
+/*.main_container .header .user-nav */.dropdown-menu li:first-child a {
     border-top: 0 none;
 }
-.main_container .header .user-nav .dropdown-menu li a:hover {
-    background-color: #c7e9fb;
+/*.main_container .header .user-nav */.dropdown-menu li a:hover {
+    background-color: #FAC08F;
 }

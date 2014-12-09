@@ -3,6 +3,7 @@ package com.yetistep.delivr.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -19,11 +20,18 @@ public class MerchantViewController {
 
     @RequestMapping(value = { "/add_store" }, method = RequestMethod.GET)
     public ModelAndView defaultPage() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("title", "Add Store");
+        modelAndView.setViewName("merchant/add_store");
+        return modelAndView;
+    }
 
-        ModelAndView model = new ModelAndView();
-        model.addObject("title", "Add Store");
-
-        model.setViewName("merchant/add_store");
-        return model;
+    @RequestMapping(value = {"/dashboard"}, method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView addDeliveryBoy(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("title", "Add Store");
+        modelAndView.setViewName("merchant/dashboard");
+        return modelAndView;
     }
 }

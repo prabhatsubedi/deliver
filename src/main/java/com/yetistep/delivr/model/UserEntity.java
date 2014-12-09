@@ -3,7 +3,9 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.Gender;
+import com.yetistep.delivr.util.JsonDateSerializer;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
 
@@ -219,6 +221,7 @@ public class UserEntity {
         this.profileImage = profileImage;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "last_activity_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getLastActivityDate() {
         return lastActivityDate;
@@ -228,6 +231,7 @@ public class UserEntity {
         this.lastActivityDate = lastActivityDate;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getCreatedDate() {
         return createdDate;

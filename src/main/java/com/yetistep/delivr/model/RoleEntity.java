@@ -1,7 +1,9 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.util.JsonDateSerializer;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -55,6 +57,7 @@ public class RoleEntity {
         this.user = user;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getCreatedDate() {
         return createdDate;

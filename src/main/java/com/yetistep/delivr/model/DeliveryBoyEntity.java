@@ -1,6 +1,7 @@
 package com.yetistep.delivr.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.VehicleType;
@@ -63,6 +64,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.user = user;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "delivery_boy")
     public Set<OrderEntity> getOrder() {
         return order;

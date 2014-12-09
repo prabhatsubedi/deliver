@@ -34,6 +34,9 @@ public class ActionLogEntity implements Serializable {
         this.userIP = userIP;
     }
 
+    public ActionLogEntity() {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)

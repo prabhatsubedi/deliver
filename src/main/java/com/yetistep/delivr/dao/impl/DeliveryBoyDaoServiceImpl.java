@@ -23,12 +23,12 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
 
     @Override
     public DeliveryBoyEntity find(Integer id) throws Exception {
-        return null;
+        return (DeliveryBoyEntity) getCurrentSession().get(DeliveryBoyEntity.class, id);
     }
 
     @Override
     public List<DeliveryBoyEntity> findAll() throws Exception {
-        return null;
+        return (List<DeliveryBoyEntity>) getCurrentSession().createCriteria(DeliveryBoyEntity.class).list();
     }
 
     @Override

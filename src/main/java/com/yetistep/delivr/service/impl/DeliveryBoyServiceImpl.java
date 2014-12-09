@@ -13,6 +13,8 @@ import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Sagar
@@ -29,7 +31,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Autowired
     UserDaoService userDaoService;
 
-    @Override
+   @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy) throws Exception{
         log.info("++++++++++++++++++ Creating Delivery Boy +++++++++++++++++");
         UserEntity user = deliveryBoy.getUser();
@@ -54,5 +56,22 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             deliveryBoyDaoService.update(deliveryBoy);
         }
 
+    }
+
+    @Override
+    public DeliveryBoyEntity findDeliveryBoyById(Integer id) throws Exception {
+        log.info("Retrieving Deliver Boy With ID:"+id);
+        DeliveryBoyEntity deliveryBoyEntity = deliveryBoyDaoService.find(id);
+        if(deliveryBoyEntity == null){
+            throw new YSException("ERR013");
+        }
+        return deliveryBoyEntity;
+    }
+
+    @Override
+    public List<DeliveryBoyEntity> findAllDeliverBoy() throws Exception {
+        log.info("Retrieving list of Deliver Boys");
+        List<DeliveryBoyEntity> deliveryBoyEntities = deliveryBoyDaoService.findAll();
+        return deliveryBoyEntities;
     }
 }

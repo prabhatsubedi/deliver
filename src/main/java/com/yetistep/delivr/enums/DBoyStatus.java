@@ -8,7 +8,7 @@ package com.yetistep.delivr.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum DBoyStatus {
-    FREE, BUSY;
+    NOT_AVAILABLE, FREE, BUSY;
 
     public String toStr(){
         return this.toString();
@@ -19,9 +19,10 @@ public enum DBoyStatus {
     }
 
     public static DBoyStatus fromInt(Integer arg){
-        if(arg.equals(0))
-            return FREE;
-        else
-            return BUSY;
+        switch (arg){
+            case 0: return NOT_AVAILABLE;
+            case 1: return FREE;
+            default: return BUSY;
+        }
     }
 }

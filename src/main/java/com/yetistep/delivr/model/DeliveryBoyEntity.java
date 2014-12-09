@@ -36,6 +36,9 @@ public class DeliveryBoyEntity implements Serializable {
     private BigDecimal availableAmount;
     private String latitude;
     private String longitude;
+    private BigDecimal advanceAmount;
+    private BigDecimal previousDue;
+    private String licenseNumber;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -166,5 +169,32 @@ public class DeliveryBoyEntity implements Serializable {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    @Column(name = "advance_amount", precision = 16, scale = 4)
+    public BigDecimal getAdvanceAmount() {
+        return advanceAmount;
+    }
+
+    public void setAdvanceAmount(BigDecimal advanceAmount) {
+        this.advanceAmount = advanceAmount;
+    }
+
+    @Column(name = "previous_due", precision = 16, scale = 4)
+    public BigDecimal getPreviousDue() {
+        return previousDue;
+    }
+
+    public void setPreviousDue(BigDecimal previousDue) {
+        this.previousDue = previousDue;
+    }
+
+    @Column(name="license_number", unique = true)
+    public String getLicenseNumber() {
+        return licenseNumber;
+    }
+
+    public void setLicenseNumber(String licenseNumber) {
+        this.licenseNumber = licenseNumber;
     }
 }

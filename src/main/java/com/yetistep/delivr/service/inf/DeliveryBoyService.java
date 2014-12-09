@@ -2,6 +2,8 @@ package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Sagar
@@ -11,4 +13,8 @@ import com.yetistep.delivr.model.DeliveryBoyEntity;
  */
 public interface DeliveryBoyService {
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy) throws Exception;
+
+    public DeliveryBoyEntity findDeliveryBoyById(Integer id) throws Exception;
+
+    public List<DeliveryBoyEntity> findAllDeliverBoy() throws Exception;
 }

@@ -4,6 +4,7 @@ import com.yetistep.delivr.enums.ActionType;
 import com.yetistep.delivr.enums.Role;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -16,7 +17,7 @@ import java.util.Date;
  */
 @Entity(name = "ActionLogEntity")
 @Table(name = "action_log")
-public class ActionLogEntity {
+public class ActionLogEntity implements Serializable {
     private Long id;
     private UserEntity userEntity;
     private Role role;

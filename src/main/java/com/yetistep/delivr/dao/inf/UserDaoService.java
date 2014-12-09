@@ -7,6 +7,7 @@ import com.yetistep.delivr.model.UserEntity;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,4 +27,5 @@ public interface UserDaoService extends GenericDaoService<Integer, UserEntity>{
 
     public UserEntity findByVerificationCode(String code) throws Exception;
 
+    public List<UserEntity> getUsers();
 }

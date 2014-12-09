@@ -4,6 +4,10 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.model.AuthenticatedUser;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.util.ServiceResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
@@ -48,7 +52,7 @@ public class MainController {
 
     @RequestMapping(value = {"/welcome" }, method = RequestMethod.GET)
     @ResponseBody
-    public ServiceResponse loginDefaultPage() {
+    public ResponseEntity<ServiceResponse> loginDefaultPage() {
         String url="";
         if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null && !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
             AuthenticatedUser userDetails = (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -66,8 +70,10 @@ public class MainController {
             }
         }
         ServiceResponse serviceResponse = new ServiceResponse("User has been logged in successfully");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         serviceResponse.addParam("url", url);
-        return serviceResponse;
+        return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
     }
 
 

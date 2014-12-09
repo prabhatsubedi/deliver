@@ -1,7 +1,15 @@
 package com.yetistep.delivr.controller;
 
+import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.StoreEntity;
+import com.yetistep.delivr.util.GeneralUtil;
+import com.yetistep.delivr.util.ServiceResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,6 +22,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/merchant")
 public class MerchantController {
 
+    /*@RequestMapping(value = "/save_store", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody StoreEntity store) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            merchantService.saveDeliveryBoy(store);
 
+            ServiceResponse serviceResponse = new ServiceResponse("Store has been saved successfully");
+//            HttpHeaders httpHeaders = new HttpHeaders();
+//            httpHeaders.add("deliveryBoyId", deliveryBoy.getUser().getId() + "");
+//            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+        }
+    }*/
 
 }

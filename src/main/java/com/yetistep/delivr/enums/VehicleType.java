@@ -8,7 +8,7 @@ package com.yetistep.delivr.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum VehicleType implements PersistentEnum {
-    WALKING(1), BICYCLE(2) , MOTORBIKE(3), FOUR_WHEELER(4), TRUCK(5);
+    ON_FOOT(1), BICYCLE(2) , MOTORBIKE(3), CAR(4), TRUCK(5), OTHERS(6);
 
     private final int id;
 
@@ -21,16 +21,18 @@ public enum VehicleType implements PersistentEnum {
     }
 
     public static VehicleType fromString(String arg){
-        if(arg.equalsIgnoreCase("walking"))
-            return WALKING;
+        if(arg.equalsIgnoreCase("on_foot"))
+            return ON_FOOT;
         else if(arg.equalsIgnoreCase("bicycle"))
             return BICYCLE;
         else if(arg.equalsIgnoreCase("motorbike"))
             return MOTORBIKE;
-        else if(arg.equalsIgnoreCase("four_wheeler"))
-            return FOUR_WHEELER;
-        else
+        else if(arg.equalsIgnoreCase("car"))
+            return CAR;
+        else if(arg.equalsIgnoreCase("truck"))
             return TRUCK;
+        else
+            return OTHERS;
     }
 
     public Integer toInt() {
@@ -39,15 +41,17 @@ public enum VehicleType implements PersistentEnum {
 
     public static VehicleType fromInt(Integer arg){
         if(arg.equals(1))
-            return WALKING;
+            return ON_FOOT;
         else if(arg.equals(2))
             return BICYCLE;
         else if(arg.equals(3))
             return MOTORBIKE;
         else if(arg.equals(4))
-            return FOUR_WHEELER;
-        else
+            return CAR;
+        else if(arg.equals(5))
             return TRUCK;
+        else
+            return OTHERS;
     }
 
     @Override

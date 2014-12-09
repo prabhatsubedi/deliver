@@ -8,7 +8,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.metamodel.EmbeddableType;
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,11 +24,12 @@ import java.math.BigDecimal;
 @Table(name="merchants")
 
 @DynamicUpdate
-public class MerchantEntity {
+public class MerchantEntity implements Serializable {
 
     private Integer id;
     private UserEntity user;
     private MerchantType type;
+    private Set<StoreEntity> store = new HashSet<StoreEntity>();
     private Boolean partnershipStatus;
     private BigDecimal commissionPercentage;
     private String website;
@@ -67,6 +71,15 @@ public class MerchantEntity {
         this.type = type;
     }
 
+    @OneToMany(mappedBy = "merchant")
+    public Set<StoreEntity> getStore() {
+        return store;
+    }
+
+    public void setStore(Set<StoreEntity> store) {
+        this.store = store;
+    }
+
     @Column(name = "partnership_status", nullable = false)
     public Boolean getPartnershipStatus() {
         return partnershipStatus;
@@ -95,8 +108,7 @@ public class MerchantEntity {
         this.website = website;
     }
 
-    @Lob
-    @Column(name = "agreement_detail")
+    @Column(name = "agreement_detail", columnDefinition = "longtext")
     public String getAgreementDetail() {
         return agreementDetail;
     }

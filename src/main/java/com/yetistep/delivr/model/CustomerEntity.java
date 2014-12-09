@@ -1,7 +1,10 @@
 package com.yetistep.delivr.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,10 +15,11 @@ import java.math.BigDecimal;
  */
 @Entity(name="CustomerEntity")
 @Table(name="customers")
-public class CustomerEntity {
+public class CustomerEntity implements Serializable {
 
     private Integer id;
     private UserEntity user;
+    private Set<OrderEntity> order = new HashSet<OrderEntity>();
     private Integer totalOrderPlaced;
     private Integer totalOrderDelivered;
     private BigDecimal averageRating;
@@ -45,6 +49,15 @@ public class CustomerEntity {
 
     public void setUser(UserEntity user) {
         this.user = user;
+    }
+
+    @OneToMany(mappedBy = "customer")
+    public Set<OrderEntity> getOrder() {
+        return order;
+    }
+
+    public void setOrder(Set<OrderEntity> order) {
+        this.order = order;
     }
 
     @Column(name = "total_order_placed", nullable = false)

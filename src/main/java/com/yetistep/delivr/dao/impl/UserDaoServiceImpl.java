@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -111,6 +113,16 @@ public class UserDaoServiceImpl implements UserDaoService {
         roleList = criteria.list();
 
         return roleList;
+    }
+
+    @Override
+    public List<UserEntity> getUsers(){
+        Session session = sessionFactory.getCurrentSession();
+        List<UserEntity> userlist = new ArrayList<>();
+        Criteria criteria = session.createCriteria(UserEntity.class);
+        userlist = criteria.list();
+
+        return userlist;
     }
 
 }

@@ -22,7 +22,7 @@ import java.util.List;
 @DynamicUpdate
 public class UserEntity {
 
-    private int id;
+    private Integer id;
     private RoleEntity role;
     private String username;
     private String password;
@@ -52,11 +52,11 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -6,7 +6,10 @@ import com.yetistep.delivr.enums.VehicleType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,10 +20,11 @@ import java.math.BigDecimal;
  */
 @Entity(name="DeliveryBoyEntity")
 @Table(name="delivery_boys")
-public class DeliveryBoyEntity {
+public class DeliveryBoyEntity implements Serializable {
 
     private Integer id;
     private UserEntity user;
+    private Set<OrderEntity> order = new HashSet<OrderEntity>();
     private DBoyStatus availabilityStatus;
     private BigDecimal averageRating;
     private Integer totalOrderTaken;
@@ -52,6 +56,15 @@ public class DeliveryBoyEntity {
 
     public void setUser(UserEntity user) {
         this.user = user;
+    }
+
+    @OneToMany(mappedBy = "delivery_boy")
+    public Set<OrderEntity> getOrder() {
+        return order;
+    }
+
+    public void setOrder(Set<OrderEntity> order) {
+        this.order = order;
     }
 
     @Column(name = "availability_status", nullable = false)

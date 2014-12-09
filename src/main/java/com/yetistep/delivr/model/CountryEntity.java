@@ -1,6 +1,7 @@
 package com.yetistep.delivr.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import javax.persistence.*;
  */
 @Entity(name = "CountryEntity")
 @Table(name = "countries")
-public class CountryEntity {
+public class CountryEntity implements Serializable {
     private Integer id;
     private String countryName;
     private String currencyCode;

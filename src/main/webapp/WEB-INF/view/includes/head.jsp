@@ -5,8 +5,6 @@
   Time: 12:05 PM
   To change this template use File | Settings | File Templates.
 --%>
-
-<meta name="_csrf" content="${_csrf.token}"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link href="/resources/css/bootstrap.css" rel="stylesheet" type="text/css" media="screen" />
 <link href="/resources/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" media="screen" />

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -174,6 +175,13 @@ public class UserServiceImpl extends AbstractManager implements UserService{
         String body = EmailMsg.resetForgotPassword(url, user.getFullName(), "Forgot your Password!");
 
         sendMail(userName, body, subject);
+
+    }
+
+    @Override
+    public List<UserEntity> getUsers() {
+        List<UserEntity> users = userDaoService.getUsers();
+        return  users;
 
     }
 

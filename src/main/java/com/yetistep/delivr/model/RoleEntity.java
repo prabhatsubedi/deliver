@@ -18,7 +18,7 @@ import java.util.Set;
 @Table(name="roles")
 public class RoleEntity {
 
-    private int id;
+    private Integer id;
     private Role role;
     private Set<UserEntity> user = new HashSet<UserEntity>();
     private Timestamp createdDate;
@@ -26,11 +26,11 @@ public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Sagar
@@ -60,7 +63,24 @@ public class AdminController {
         return serviceResponse;
     }
 
+    @RequestMapping(value = "/get_users", method = RequestMethod.GET)
+    @ResponseBody
+    public ServiceResponse get_users() {
+        List<UserEntity> users = new ArrayList<>();
 
+        try {
+          users =  userService.getUsers();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        ServiceResponse serviceResponse = new ServiceResponse("user list");
+        serviceResponse.addParam("userList", users);
+        return serviceResponse;
+    }
+
+
+
+    //@unused
     @RequestMapping(value = "/save_role", method = RequestMethod.POST)
     @ResponseBody
     public ServiceResponse processRegistration() {

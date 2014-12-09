@@ -43,15 +43,6 @@ public class ManagerController {
 
     private static final Logger log = Logger.getLogger(ManagerController.class);
 
-
-    @RequestMapping(value = {"/dashboard"}, method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView addDeliveryBoy(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("organizer/dashboard");
-        return modelAndView;
-    }
-
     @RequestMapping(value = "/save_delivery_boy", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> saveDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoy) {

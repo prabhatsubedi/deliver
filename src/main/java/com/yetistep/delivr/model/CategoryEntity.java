@@ -65,6 +65,7 @@ public class CategoryEntity implements Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
     public StoreEntity getStore() {
         return store;
     }

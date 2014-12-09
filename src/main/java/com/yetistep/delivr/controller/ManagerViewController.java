@@ -3,6 +3,7 @@ package com.yetistep.delivr.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -25,6 +26,14 @@ public class ManagerViewController {
         model.setViewName("organizer/create_delivery_boy_account");
         return model;
 
+    }
+
+    @RequestMapping(value = {"/dashboard"}, method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView addDeliveryBoy(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("organizer/dashboard");
+        return modelAndView;
     }
 
 

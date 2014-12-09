@@ -19,7 +19,8 @@ import java.util.Set;
 public class StoreEntity implements Serializable {
 
     private Integer id;
-    private MerchantEntity merchant;
+    private StoresBrandsEntity storesBrand;
+    private Set<CategoryEntity> category = new HashSet<CategoryEntity>();
     private Set<ItemsStoreEntity> itemsStore = new HashSet<ItemsStoreEntity>();
     private Set<OrderEntity> order = new HashSet<OrderEntity>();
     private String name;
@@ -49,13 +50,22 @@ public class StoreEntity implements Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "merchant_id")
-    public MerchantEntity getMerchant() {
-        return merchant;
+    @JoinColumn(name = "stores_brand_id")
+    public StoresBrandsEntity getStoresBrand() {
+        return storesBrand;
     }
 
-    public void setMerchant(MerchantEntity merchant) {
-        this.merchant = merchant;
+    public void setStoresBrand(StoresBrandsEntity storesBrand) {
+        this.storesBrand = storesBrand;
+    }
+
+    @OneToMany(mappedBy = "store")
+    public Set<CategoryEntity> getCategory() {
+        return category;
+    }
+
+    public void setCategory(Set<CategoryEntity> category) {
+        this.category = category;
     }
 
     @OneToMany(mappedBy = "store")

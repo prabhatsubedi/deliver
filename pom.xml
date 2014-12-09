@@ -9,12 +9,12 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <spring.version>4.1.1.RELEASE</spring.version>
+        <spring.version>4.1.2.RELEASE</spring.version>
         <hibernate.version>4.3.7.Final</hibernate.version>
         <log4j.version>1.2.17</log4j.version>
         <jdk.version>1.7</jdk.version>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
-        <servletapi.version>2.5</servletapi.version>
+        <servletapi.version>3.1.0</servletapi.version>
         <context.path>SpringRestCrud</context.path>
     </properties>
 
@@ -47,9 +47,16 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
 
         <!-- Tag Library -->
         <dependency>
@@ -60,15 +67,15 @@
 
         <!-- JSON Library -->
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.2.2</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.3.0</version>
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.10</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.3.0</version>
         </dependency>
 
         <!-- My SQL Connector -->
@@ -111,30 +118,21 @@
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk</artifactId>
             <version>1.6.4</version>
-            <exclusions>
+            <!--<exclusions>-->
                 <!--<exclusion>-->
-                    <!--<groupId>org.codehaus.jackson</groupId>-->
-                    <!--<artifactId>jackson-core-asl</artifactId>-->
+                    <!--<artifactId>jackson-core</artifactId>-->
+                    <!--<groupId>com.fasterxml.jackson.core</groupId>-->
                 <!--</exclusion>-->
                 <!--<exclusion>-->
-                    <!--<groupId>org.codehaus.jackson</groupId>-->
-                    <!--<artifactId>jackson-mapper-asl</artifactId>-->
+                    <!--<artifactId>jackson-databind</artifactId>-->
+                    <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+                <!--</exclusion>-->
+                <!--<exclusion>-->
+                    <!--<artifactId>jackson-annotations</artifactId>-->
+                    <!--<groupId>com.fasterxml.jackson.core</groupId>-->
                 <!--</exclusion>-->
 
-                <exclusion>
-                    <artifactId>jackson-core</artifactId>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jackson-databind</artifactId>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jackson-annotations</artifactId>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                </exclusion>
-
-            </exclusions>
+            <!--</exclusions>-->
         </dependency>
 
         <!-- Spring Security -->
@@ -159,7 +157,7 @@
 
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <artifactId>javax.servlet-api</artifactId>
             <version>${servletapi.version}</version>
             <scope>provided</scope>
         </dependency>

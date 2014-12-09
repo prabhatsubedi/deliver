@@ -2,6 +2,8 @@ package com.yetistep.delivr.util;
 
 
 
+import com.yetistep.delivr.model.MerchantEntity;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
@@ -55,6 +57,18 @@ public class EmailMsg {
 
         return prepareEmail(subject, body.toString(), null);
     }
+
+    public static String activateMerchant(String url, String contactPerson, String subject) {
+        StringBuilder body = new StringBuilder();
+        body.append(getHtmlHeader());
+        body.append("Dear  " + contactPerson + ",<br/><br/>");
+        body.append("Your account has been approved & activated. You can access your dashboard." + "<br/><br/>");
+
+        body.append(getEmailBodyButton("Login to Delivr", url));
+        body.append("<br/>");
+        return prepareEmail(subject, body.toString(), null);
+    }
+
 
     private static String getEmailBodyButton(String viewLink, String url) {
         StringBuilder builder = new StringBuilder();

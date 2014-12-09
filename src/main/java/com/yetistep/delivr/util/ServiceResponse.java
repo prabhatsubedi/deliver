@@ -1,7 +1,5 @@
 package com.yetistep.delivr.util;
 
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -19,7 +17,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class ServiceResponse {
-    private boolean success;
+    private Boolean success;
     private String message;
     private String errorCode;
     private Map<String, Object> params;
@@ -28,12 +26,12 @@ public class ServiceResponse {
         this(true, message);
     }
 
-    public ServiceResponse(boolean success, String message) {
+    public ServiceResponse(Boolean success, String message) {
         this(success, message, null);
     }
 
 
-    public ServiceResponse(boolean success, String message, String errorCode) {
+    public ServiceResponse(Boolean success, String message, String errorCode) {
         this.success = success;
         this.message = message;
         this.errorCode = errorCode;
@@ -54,15 +52,47 @@ public class ServiceResponse {
         return httpHeaders;
     }
 
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public Map<String, Object> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, Object> params) {
+        this.params = params;
+    }
 
     public static HttpHeaders generateRuntimeErrors(Exception e) {
         String statusCode = "ERR001";
         String message = MessageBundle.getMessage(statusCode, "errorCodes.properties");
 
-        if(e instanceof JsonParseException || e instanceof JsonSyntaxException) {
-            statusCode = "RS201";
-            message = MessageBundle.getMessage(statusCode, "errorCodes.properties")+ e.getMessage();
-        } else if(e instanceof YSException) {
+//        if(e instanceof JsonParseException || e instanceof JsonSyntaxException) {
+//            statusCode = "RS201";
+//            message = MessageBundle.getMessage(statusCode, "errorCodes.properties")+ e.getMessage();
+//        }
+        if(e instanceof YSException) {
             statusCode = ((YSException) e).getErrorCode();
             message =  e.getMessage();
         }  else if(e instanceof GeneralSecurityException) {

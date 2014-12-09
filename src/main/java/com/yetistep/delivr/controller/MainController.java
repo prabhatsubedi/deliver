@@ -199,7 +199,7 @@ public class MainController {
     @ResponseBody
     public ModelAndView addDeliveryBoy(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("courier_boy/dashboard");
+        modelAndView.setViewName("organizer/courier_boy_dashboard");
         return modelAndView;
     }
 
@@ -207,7 +207,7 @@ public class MainController {
     @ResponseBody
     public ModelAndView addDeliveryBoy(@PathVariable String page){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("courier_boy/" + page);
+        modelAndView.setViewName("organizer/courier_boy_" + page);
         return modelAndView;
     }
 

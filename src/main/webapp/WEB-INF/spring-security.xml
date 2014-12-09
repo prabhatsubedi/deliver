@@ -11,6 +11,7 @@
         <intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
         <intercept-url pattern="/merchant/**" access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_ACCOUNTANT', 'ROLE_MERCHANT')" />
         <intercept-url pattern="/organizer/**" access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')" />
+        <intercept-url pattern="/courier_boy/**" access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')" />
         <intercept-url pattern="/accountant/**" access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_ACCOUNTANT')" />
         <intercept-url pattern="/anon/**" access="permitAll" />
 

@@ -18,7 +18,11 @@
     <%@include file="../includes/header.jsp" %>
 
     <div class="body">
-        body
+        <div class="heading clearfix">
+            <h1 class="pull-left">Courier Boy</h1>
+            <a class="btn btn_head pull-right" href="/courier_boy/create">Add Courier Boy</a>
+        </div>
+        <div class="main_content">Content</div>
     </div>
 </div>
 

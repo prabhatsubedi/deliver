@@ -13,6 +13,9 @@ body {
 .no_pad {
     padding: 0px !important;
 }
+.no_margin {
+    margin: 0px !important;
+}
 .loader_div {
     position: relative;
 }
@@ -370,11 +373,13 @@ body.assistance_page {
 .sidebar {
     width: 320px;
     height: 100%;
-    position: absolute;
+    position: fixed;
     left: 0px;
     top: 0px;
     padding: 30px;
     background-color: #FFFFFF;
+    border-right: 1px solid #dbdada;
+    overflow: auto;
 }
 .main_container {
     margin-left: 320px;
@@ -476,6 +481,41 @@ body.assistance_page {
 /*.main_container .header .user-nav */.dropdown-menu li a:hover {
     background-color: #FAC08F;
 }
-.main_container .body {
+.main_container .body .heading {
+    background-color: #FFFFFF;
+    padding: 10px 30px 10px 45px;
+    border-bottom: 1px solid #dbdada;
+}
+.main_container .body .heading h1 {
+    font-size: 18px;
+    color: #282828;
+    font-weight: normal;
+    line-height: 40px;
+    margin: 0px;
+}
+.main_container .body .heading .btn_head {
+    background-color: #19bc15;
+    border: none;
+    color: #FFFFFF;
+    padding: 0 20px;
+    line-height: 40px;
+}
+.main_container .body .main_content {
     padding: 20px 30px 20px 45px;
+}
+
+/* FORM CSS */
+
+.form_container {
+    max-width: 700px;
+}
+.form_container .form-control {
+    border: 1px solid #cbcaca;
+    border-radius: 0px;
+    height: 50px;
+    line-height: 50px;
+    padding: 0px 20px;
+}
+.form_container .form-control .filter-option {
+    left: 20px !important;
 }

@@ -237,7 +237,7 @@ body {
     border: none;
     border-radius: 0px;
 }
-#modal_signup .business_logo {
+#drop_zone {
     padding: 0px 30px;
     height: 280px;
     font-size: 25px;
@@ -250,7 +250,7 @@ body {
     cursor: pointer;
     border: 3px solid #e0e0e0;
 }
-#modal_signup .business_logo .drop_info {
+#drop_zone .drop_info {
     color: #999999;
     font-size: 20px;
     left: 30px;
@@ -259,7 +259,7 @@ body {
     text-align: center;
     top: 25px;
 }
-#modal_signup .business_logo .logo_text {
+#drop_zone .drop_title {
     bottom: 25px;
     color: #999999;
     left: 30px;
@@ -290,14 +290,14 @@ body {
 #modal_login .form-control:focus, #modal_signup .form-control:focus {
     border: 1px solid #66afe9;
 }
-#modal_login .form-control.error, #modal_signup .form-control.error, #modal_signup .form-group.error {
+#drop_zone.entered {
+    border: 3px solid #CCCCCC;
+    background-color: #DDDDDD;
+}
+#modal_login .form-control.error, #modal_signup .form-control.error, #drop_zone.error {
     border: 1px solid #ff9235;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07) inset, 0 0 8px rgba(255, 146, 53, 0.60);
     outline: 0 none;
-}
-#modal_signup #drop_zone.entered {
-    border: 3px solid #CCCCCC;
-    background-color: #DDDDDD;
 }
 
 /* Assistance */
@@ -379,7 +379,7 @@ body.assistance_page {
     padding: 30px;
     background-color: #FFFFFF;
     border-right: 1px solid #dbdada;
-    overflow: auto;
+    overflow: hidden;
 }
 .main_container {
     margin-left: 320px;
@@ -493,12 +493,15 @@ body.assistance_page {
     line-height: 40px;
     margin: 0px;
 }
-.main_container .body .heading .btn_head {
+.btn_green, .btn_green:focus, .btn_green:hover {
     background-color: #19bc15;
     border: none;
     color: #FFFFFF;
     padding: 0 20px;
     line-height: 40px;
+}
+.btn_green.pull-right {
+    margin-left: 10px;
 }
 .main_container .body .main_content {
     padding: 20px 30px 20px 45px;
@@ -516,6 +519,47 @@ body.assistance_page {
     line-height: 50px;
     padding: 0px 20px;
 }
+.form_container .form-control:focus {
+    border: 1px solid #66afe9;
+}
+.form_container .form-control.error {
+    border: 1px solid #ff9235;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07) inset, 0 0 8px rgba(255, 146, 53, 0.60);
+    outline: 0 none;
+}
 .form_container .form-control .filter-option {
     left: 20px !important;
+}
+.courier_staff_profile_pic {
+    position: relative;
+}
+.courier_staff_profile_pic .profile_pic_left {
+    margin-right: 200px;
+}
+.courier_staff_profile_pic .profile_pic_left .form-group {
+    margin-bottom: 17px;
+}
+#drop_zone.profile_image {
+    width: 202px;
+    height: 202px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    border: 1px solid #cbcaca;
+    padding: 5px;
+    background-color: #FFFFFF;
+}
+#drop_zone.profile_image.error {
+    border: 1px solid #ff9235;
+}
+#drop_zone.profile_image .drop_info {
+    font-size: 14px;
+    padding-top: 6px;
+    line-height: 18px;
+}
+#drop_zone.profile_image .drop_title {
+    left: 0px;
+    width: 100%;
+    bottom: 10px;
+    font-size: 20px;
 }

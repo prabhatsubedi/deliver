@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Courier Boy Dashboard</title>
+    <title>Courier Staff Profile</title>
 
     <%@include file="../includes/head.jsp" %>
 
@@ -18,11 +18,7 @@
     <%@include file="../includes/header.jsp" %>
 
     <div class="body">
-        <div class="heading clearfix">
-            <h1 class="pull-left">Courier Boy</h1>
-            <a class="btn btn_head pull-right" href="/courier_boy/create">Add Courier Boy</a>
-        </div>
-        <div class="main_content">Content</div>
+        body
     </div>
 </div>
 

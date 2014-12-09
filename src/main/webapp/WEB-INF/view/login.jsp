@@ -8,14 +8,15 @@
     <%@include file="includes/head.jsp" %>
     
     <script type="text/javascript" src="/resources/js/jquery.validate.js"></script>
-    <script type="text/javascript" src="/resources/js/jquery.Jcrop.js"></script>
-    <script type="text/javascript" src="/resources/js/html2canvas.js"></script>
     <script type="text/javascript" src="/resources/js/merchant.js"></script>
     <script type="text/javascript" src="/resources/js/map.js"></script>
+    <script type="text/javascript" src="/resources/js/html2canvas.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery.Jcrop.js"></script>
+    <script type="text/javascript" src="/resources/js/image.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false&libraries=places" type="text/javascript"></script>
 
-    <link rel="stylesheet" href="/resources/css/jquery.Jcrop.css" type="text/css" />
     <link rel="stylesheet" href="/resources/css/maps.css" type="text/css" />
+    <link rel="stylesheet" href="/resources/css/jquery.Jcrop.css" type="text/css" />
     <link rel="stylesheet" href="/resources/css/jcrop.css" type="text/css" />
 
     <script type="text/javascript" src="/resources/js/login-page.js"></script>
@@ -125,9 +126,9 @@
                             </div>
                             <div id="drop_zone" class="form-group business_logo unselectable text-center">
                                 <div class="drop_info">Drop image file (or click to browse)</div>
-                                <div class="logo_text">Business Logo</div>
+                                <div class="drop_title">Business Logo</div>
                             </div>
-                            <input type="file" onchange="readURL(this)" id="logo_input" class="hidden" />
+                            <input type="file" onchange="Image.readURL(this)" id="logo_input" class="hidden" />
                             <div class="form-group">
                                 <input type="text" class="form-control" id="url" name="url" placeholder="URL">
                             </div>

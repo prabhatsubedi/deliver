@@ -195,19 +195,19 @@ public class MainController {
         return modelAndView;
     }
 
-    @RequestMapping(value = {"/courier_boy"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/courier_staff"}, method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView addDeliveryBoy(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("organizer/courier_boy_dashboard");
+        modelAndView.setViewName("organizer/courier_staff_dashboard");
         return modelAndView;
     }
 
-    @RequestMapping(value = {"/courier_boy/{page}/**"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/courier_staff/{page}/**"}, method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView addDeliveryBoy(@PathVariable String page){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("organizer/courier_boy_" + page);
+        modelAndView.setViewName("organizer/courier_staff_" + page);
         return modelAndView;
     }
 

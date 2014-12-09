@@ -77,7 +77,7 @@ if(typeof(Main) == "undefined") var Main = {};
             $("button[type='submit']","#login_form").removeAttr("disabled");
 
             if (data.success == true) {
-                //window.location.replace(data.params.url);
+                window.location.replace(data.params.url);
             } else {
                 alert(data.message);
             }

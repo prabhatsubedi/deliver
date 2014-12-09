@@ -24,7 +24,7 @@ public class GeneralUtil {
     private static final String VERIFICATION_CODE = "verificationCode";
     private static final String NEW_PASSWORD = "newPassword";
     private static final String ID = "id";
-    private static final String ACCESS_TOKEN = "id";
+    private static final String ACCESS_TOKEN = "accessToken";
 
     public static void logError(Logger log, String message, Exception e) {
         if (e instanceof YSException)

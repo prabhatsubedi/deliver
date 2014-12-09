@@ -23,6 +23,8 @@ public class GeneralUtil {
     private static final String PASSWORD = "password";
     private static final String VERIFICATION_CODE = "verificationCode";
     private static final String NEW_PASSWORD = "newPassword";
+    private static final String ID = "id";
+    private static final String ACCESS_TOKEN = "id";
 
     public static void logError(Logger log, String message, Exception e) {
         if (e instanceof YSException)
@@ -76,6 +78,8 @@ public class GeneralUtil {
         String password = null;
         String verificationCode = null;
         String newPassword = null;
+        String id = null;
+        String accessToken = null;
         List<String> hd = headers.get(USERNAME);
         if (hd != null && hd.size() > 0)
             username = hd.get(0);
@@ -92,10 +96,20 @@ public class GeneralUtil {
         if(hd !=null && hd.size() > 0)
             newPassword = hd.get(0);
 
+        hd = headers.get(ID);
+        if(hd !=null && hd.size() > 0)
+            id = hd.get(0);
+
+        hd = headers.get(ACCESS_TOKEN);
+        if(hd !=null && hd.size() > 0)
+            accessToken = hd.get(0);
+
         headerDto.setUsername(username);
         headerDto.setPassword(password);
         headerDto.setVerificationCode(verificationCode);
         headerDto.setNewPassword(newPassword);
+        headerDto.setId(id);
+        headerDto.setAccessToken(accessToken);
     }
 
     /**

@@ -8,11 +8,20 @@ package com.yetistep.delivr.dto;
  * To change this template use File | Settings | File Templates.
  */
 public class HeaderDto {
+    private String id;
     private String username;
     private String password;
     private String accessToken;
     private String verificationCode;
     private String newPassword;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getAccessToken() {
         return accessToken;

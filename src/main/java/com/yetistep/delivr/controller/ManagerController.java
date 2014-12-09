@@ -71,23 +71,24 @@ public class ManagerController {
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
 
-    @RequestMapping(value = "/get_delivery_boy/{dbId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_delivery_boy", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getDeliveryBoy(@PathVariable("dbId") Integer deliveryBoyId) {
+    public ResponseEntity<ServiceResponse> getDeliveryBoy(@RequestHeader HttpHeaders headers) {
         try {
-            DeliveryBoyEntity deliveryBoy = deliveryBoyService.findDeliveryBoyById(deliveryBoyId);
-            deliveryBoy.getUser().setActionLogEntities(null);
-            ServiceResponse serviceResponse = new ServiceResponse("Details of delivery boy with ID: "+deliveryBoyId);
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            DeliveryBoyEntity deliveryBoy = deliveryBoyService.findDeliveryBoyById(Integer.parseInt(headerDto.getId()));
+            ServiceResponse serviceResponse = new ServiceResponse("Details of delivery boy with ID: "+headerDto.getId());
             serviceResponse.addParam("deliveryBoy", deliveryBoy);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while retrieving delivery boy with ID: "+deliveryBoyId, e);
+            GeneralUtil.logError(log, "Error Occurred while retrieving delivery boy: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
 
@@ -102,7 +103,7 @@ public class ManagerController {
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while retrieving delivery boys", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
 

@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
+import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.RoleEntity;
@@ -63,7 +64,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         log.info("Retrieving Deliver Boy With ID:"+id);
         DeliveryBoyEntity deliveryBoyEntity = deliveryBoyDaoService.find(id);
         if(deliveryBoyEntity == null){
-            throw new YSException("ERR013");
+            throw new YSException("VLD011");
         }
         return deliveryBoyEntity;
     }
@@ -73,5 +74,21 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         log.info("Retrieving list of Deliver Boys");
         List<DeliveryBoyEntity> deliveryBoyEntities = deliveryBoyDaoService.findAll();
         return deliveryBoyEntities;
+    }
+
+    @Override
+    public Boolean updateDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception {
+        return deliveryBoyDaoService.update(deliveryBoyEntity);
+    }
+
+    @Override
+    public Boolean updateDeliveryBoyStatus(Integer id, DBoyStatus dBoyStatus) throws Exception {
+        log.info("Updating Status of Delivery Boy to:"+dBoyStatus);
+        DeliveryBoyEntity deliveryBoyEntity = deliveryBoyDaoService.find(id);
+        if(deliveryBoyEntity == null){
+             throw new YSException("VLD011");
+        }
+        deliveryBoyEntity.setAvailabilityStatus(dBoyStatus);
+        return deliveryBoyDaoService.update(deliveryBoyEntity);
     }
 }

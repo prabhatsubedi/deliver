@@ -6,8 +6,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 /**
  * Created with IntelliJ IDEA.

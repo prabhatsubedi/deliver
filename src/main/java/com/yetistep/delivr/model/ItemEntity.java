@@ -2,7 +2,7 @@ package com.yetistep.delivr.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 

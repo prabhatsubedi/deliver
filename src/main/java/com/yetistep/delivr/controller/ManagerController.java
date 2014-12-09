@@ -41,7 +41,7 @@ public class ManagerController {
 
     private static final Logger log = Logger.getLogger(ManagerController.class);
 
-    @RequestMapping(value = "/save_delivery_boy", method = RequestMethod.POST)
+    @RequestMapping(value = "/save_dboy", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> saveDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoy) {
         try {
@@ -64,7 +64,7 @@ public class ManagerController {
         }
     }
 
-    @RequestMapping(value = "/get_delivery_boy", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_dboy", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> getDeliveryBoy(@RequestHeader HttpHeaders headers) {
         try {
@@ -81,7 +81,7 @@ public class ManagerController {
         }
     }
 
-    @RequestMapping(value = "/get_all_delivery_boy", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_dboys", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> getAllDeliveryBoy() {
         try {
@@ -96,7 +96,7 @@ public class ManagerController {
         }
     }
 
-    @RequestMapping(value = "/update_delivery_boy_status", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update_dboy_status", method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<ServiceResponse> updateDeliveryBoyStatus(@RequestBody DeliveryBoyEntity deliveryBoyEntity) {
         try {

@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -106,6 +107,25 @@ public class ManagerController {
 
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+
+    }
+
+    @RequestMapping(value = "/get_merchants", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getMerchants() {
+        try{
+            List<MerchantEntity> merchantEntities = merchantService.getMerchants();
+
+            ServiceResponse serviceResponse = new ServiceResponse("Merchant retrieved successfully");
+            serviceResponse.addParam("merchants", merchantEntities);
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting merchants", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

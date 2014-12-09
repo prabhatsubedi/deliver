@@ -19,22 +19,20 @@ import java.util.Map;
 public class ServiceResponse {
     private Boolean success;
     private String message;
-    private String errorCode;
     private Map<String, Object> params;
 
     public ServiceResponse(String message) {
         this(true, message);
     }
 
+//    public ServiceResponse(Boolean success, String message) {
+//        this(success, message, null);
+//    }
+
+
     public ServiceResponse(Boolean success, String message) {
-        this(success, message, null);
-    }
-
-
-    public ServiceResponse(Boolean success, String message, String errorCode) {
         this.success = success;
         this.message = message;
-        this.errorCode = errorCode;
         this.params = new HashMap<String, Object>();
     }
 
@@ -66,14 +64,6 @@ public class ServiceResponse {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
     }
 
     public Map<String, Object> getParams() {

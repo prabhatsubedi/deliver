@@ -18,7 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -104,15 +106,21 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         if(merchantEntity.getType()==null || merchantEntity.getType().toString().isEmpty())
               throw new YSException("MRC002");
 
-        //Verified Status True
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(dbMerchant.getUser().getId());
-        userEntity.setVerifiedStatus(true);
-        userDaoService.update(userEntity);
+        dbMerchant.getUser().setVerifiedStatus(true);
+        dbMerchant.setCommissionPercentage(merchantEntity.getCommissionPercentage());
+        dbMerchant.setType(merchantEntity.getType());
+        merchantDaoService.update(dbMerchant);
 
-        //update merchant detail
-        merchantDaoService.update(merchantEntity);
 
+    }
+
+    @Override
+    public List<MerchantEntity> getMerchants() throws Exception {
+        log.info("++++++++++++ Getting All Merchants +++++++++++++++");
+        List<MerchantEntity> merchantEntities = new ArrayList<>();
+
+        merchantEntities = merchantDaoService.findAll();
+        return merchantEntities;
 
     }
 

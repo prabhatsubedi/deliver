@@ -43,7 +43,7 @@ public class AnonController {
     UserService userService;
 
     /* Controller For All User */
-    @RequestMapping(value = "/save_merchant", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/save_merchant", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> processRegistration(@RequestHeader HttpHeaders headers, @RequestBody MerchantEntity merchant){
 

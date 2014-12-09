@@ -3,6 +3,8 @@ package com.yetistep.delivr.service.inf;
 import com.yetistep.delivr.model.MerchantEntity;
 import org.springframework.http.HttpHeaders;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Sagar
@@ -14,4 +16,6 @@ public interface MerchantService {
     public void saveMerchant(MerchantEntity merchant, HttpHeaders headers) throws Exception;
 
     public void activateMerchant(MerchantEntity merchantEntity) throws Exception;
+
+    public List<MerchantEntity> getMerchants() throws Exception;
 }

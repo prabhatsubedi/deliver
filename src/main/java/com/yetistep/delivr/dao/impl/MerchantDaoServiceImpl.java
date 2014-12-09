@@ -30,7 +30,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public List<MerchantEntity> findAll() throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return (List<MerchantEntity>) getCurrentSession().createCriteria(MerchantEntity.class).list();
     }
 
     @Override

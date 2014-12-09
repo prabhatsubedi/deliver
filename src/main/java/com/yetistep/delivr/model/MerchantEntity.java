@@ -1,5 +1,6 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yetistep.delivr.enums.MerchantType;
 import org.hibernate.annotations.*;
 
@@ -51,6 +52,7 @@ public class MerchantEntity implements Serializable {
         this.id = id;
     }
 
+    @JsonManagedReference
     @OneToOne(cascade = { CascadeType.ALL })
     @JoinColumn(name = "user_id")
     public UserEntity getUser() {

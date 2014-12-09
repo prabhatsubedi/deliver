@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -124,4 +125,34 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     }
 
+
+    @Override
+    public void saveStore(Set<StoreEntity> stores) throws Exception {
+        log.info("++++++++++++ Saving Store +++++++++++++++");
+        /*
+        *   private Integer id;
+            private StoresBrandsEntity storesBrand;
+            private Set<CategoryEntity> category = new HashSet<CategoryEntity>();
+            private Set<ItemsStoreEntity> itemsStore = new HashSet<ItemsStoreEntity>();
+            private Set<OrderEntity> order = new HashSet<OrderEntity>();
+            private String name;
+            private String street;
+            private String locality;
+            private String city;
+            private String country;
+            private String contact_no;
+            private BigDecimal latitude;
+            private BigDecimal longitude;
+            private Timestamp created_date;
+            private String return_policy;
+            private Integer delivery_fee;
+            private String promo_code;
+            private BigDecimal vat;
+            private BigDecimal service_charge;
+        * */
+        StoresBrandsEntity storesBrand = new StoresBrandsEntity();
+        for (StoreEntity store: stores){
+            merchantDaoService.saveStore(store);
+        }
+    }
 }

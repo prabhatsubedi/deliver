@@ -28,15 +28,15 @@ public class StoreEntity implements Serializable {
     private String locality;
     private String city;
     private String country;
-    private String contact_no;
+    private String contactNo;
     private BigDecimal latitude;
     private BigDecimal longitude;
-    private Timestamp created_date;
-    private String return_policy;
-    private Integer delivery_fee;
-    private String promo_code;
+    private Timestamp createdDate;
+    private String returnPolicy;
+    private Integer deliveryFee;
+    private String promoCode;
     private BigDecimal vat;
-    private BigDecimal service_charge;
+    private BigDecimal serviceCharge;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -132,12 +132,12 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name="contact_no", nullable = false)
-    public String getContact_no() {
-        return contact_no;
+    public String getContactNo() {
+        return contactNo;
     }
 
-    public void setContact_no(String contact_no) {
-        this.contact_no = contact_no;
+    public void setContactNo(String contactNo) {
+        this.contactNo = contactNo;
     }
 
     @Column(name="latitude", nullable = false)
@@ -159,30 +159,30 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name="return_policy")
-    public String getReturn_policy() {
-        return return_policy;
+    public String getReturnPolicy() {
+        return returnPolicy;
     }
 
-    public void setReturn_policy(String return_policy) {
-        this.return_policy = return_policy;
+    public void setReturnPolicy(String returnPolicy) {
+        this.returnPolicy = returnPolicy;
     }
 
     @Column(name="delivery_fee")
-    public Integer getDelivery_fee() {
-        return delivery_fee;
+    public Integer getDeliveryFee() {
+        return deliveryFee;
     }
 
-    public void setDelivery_fee(Integer delivery_fee) {
-        this.delivery_fee = delivery_fee;
+    public void setDeliveryFee(Integer deliveryFee) {
+        this.deliveryFee = deliveryFee;
     }
 
     @Column(name="promo_code")
-    public String getPromo_code() {
-        return promo_code;
+    public String getPromoCode() {
+        return promoCode;
     }
 
-    public void setPromo_code(String promo_code) {
-        this.promo_code = promo_code;
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 
     @Column(name="vat")
@@ -195,21 +195,21 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name="service_charge")
-    public BigDecimal getService_charge() {
-        return service_charge;
+    public BigDecimal getServiceCharge() {
+        return serviceCharge;
     }
 
-    public void setService_charge(BigDecimal service_charge) {
-        this.service_charge = service_charge;
+    public void setServiceCharge(BigDecimal serviceCharge) {
+        this.serviceCharge = serviceCharge;
     }
 
 
     @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    public Timestamp getCreated_date() {
-        return created_date;
+    public Timestamp getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCreated_date(Timestamp created_date) {
-        this.created_date = created_date;
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
     }
 }

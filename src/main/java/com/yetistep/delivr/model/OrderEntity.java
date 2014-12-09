@@ -21,25 +21,25 @@ public class OrderEntity implements Serializable {
 
 
     private Integer id;
-    private Integer order_verification_code;
-    private Boolean order_verification_status;
-    private Integer delivery_status;
-    private Integer order_status;
+    private Integer orderVerificationCode;
+    private Boolean orderVerificationStatus;
+    private Integer deliveryStatus;
+    private Integer orderStatus;
     private ItemEntity item;
-    private DeliveryBoyEntity delivery_boy;
+    private DeliveryBoyEntity deliveryBoy;
     private CategoryEntity customer;
     private StoreEntity store;
-    private BigDecimal customer_chargeable_distance; //Paid by customer
-    private BigDecimal system_chargeable_distance; //Paid by system
-    private BigDecimal item_total;
-    private BigDecimal total_cost;
-    private BigDecimal transportaion_charge;
-    private BigDecimal system_service_charge;
-    private BigDecimal delivery_charge;
-    private BigDecimal grand_total;
-    private BigDecimal delivery_boy_share;
-    private BigDecimal system_share;
-    private Timestamp order_date;
+    private BigDecimal customerChargeableDistance; //Paid by customer
+    private BigDecimal systemChargeableDistance; //Paid by system
+    private BigDecimal itemTotal;
+    private BigDecimal totalCost;
+    private BigDecimal transportationCharge;
+    private BigDecimal systemServiceCharge;
+    private BigDecimal deliveryCharge;
+    private BigDecimal grandTotal;
+    private BigDecimal deliveryBoyShare;
+    private BigDecimal systemShare;
+    private Timestamp orderDate;
 
 
     @Id
@@ -54,39 +54,39 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "order_verification_code")
-    public Integer getOrder_verification_code() {
-        return order_verification_code;
+    public Integer getOrderVerificationCode() {
+        return orderVerificationCode;
     }
 
-    public void setOrder_verification_code(Integer order_verification_code) {
-        this.order_verification_code = order_verification_code;
+    public void setOrderVerificationCode(Integer orderVerificationCode) {
+        this.orderVerificationCode = orderVerificationCode;
     }
 
     @Column(name = "order_verification_status")
-    public Boolean getOrder_verification_status() {
-        return order_verification_status;
+    public Boolean getOrderVerificationStatus() {
+        return orderVerificationStatus;
     }
 
-    public void setOrder_verification_status(Boolean order_verification_status) {
-        this.order_verification_status = order_verification_status;
+    public void setOrderVerificationStatus(Boolean orderVerificationStatus) {
+        this.orderVerificationStatus = orderVerificationStatus;
     }
 
     @Column(name = "delivery_status")
-    public Integer getDelivery_status() {
-        return delivery_status;
+    public Integer getDeliveryStatus() {
+        return deliveryStatus;
     }
 
-    public void setDelivery_status(Integer delivery_status) {
-        this.delivery_status = delivery_status;
+    public void setDeliveryStatus(Integer deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
     }
 
     @Column(name = "order_status")
-    public Integer getOrder_status() {
-        return order_status;
+    public Integer getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setOrder_status(Integer order_status) {
-        this.order_status = order_status;
+    public void setOrderStatus(Integer orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -101,12 +101,12 @@ public class OrderEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_boy_id")
-    public DeliveryBoyEntity getDelivery_boy() {
-        return delivery_boy;
+    public DeliveryBoyEntity getDeliveryBoy() {
+        return deliveryBoy;
     }
 
-    public void setDelivery_boy(DeliveryBoyEntity delivery_boy) {
-        this.delivery_boy = delivery_boy;
+    public void setDeliveryBoy (DeliveryBoyEntity deliveryBoy) {
+        this.deliveryBoy = deliveryBoy;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -130,102 +130,102 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "customer_chargeable_distance", precision = 4, scale = 2)
-    public BigDecimal getCustomer_chargeable_distance() {
-        return customer_chargeable_distance;
+    public BigDecimal getCustomerChargeableDistance() {
+        return customerChargeableDistance;
     }
 
-    public void setCustomer_chargeable_distance(BigDecimal customer_chargeable_distance) {
-        this.customer_chargeable_distance = customer_chargeable_distance;
+    public void setCustomerChargeableDistance(BigDecimal customerChargeableDistance) {
+        this.customerChargeableDistance = customerChargeableDistance;
     }
 
     @Column(name = "system_chargeable_distance", precision = 4, scale = 2)
-    public BigDecimal getSystem_chargeable_distance() {
-        return system_chargeable_distance;
+    public BigDecimal getSystemChargeableDistance() {
+        return systemChargeableDistance;
     }
 
-    public void setSystem_chargeable_distance(BigDecimal system_chargeable_distance) {
-        this.system_chargeable_distance = system_chargeable_distance;
+    public void setSystemChargeableDistance(BigDecimal systemChargeableDistance) {
+        this.systemChargeableDistance = systemChargeableDistance;
     }
 
     @Column(name = "item_total", precision = 4, scale = 2)
-    public BigDecimal getItem_total() {
-        return item_total;
+    public BigDecimal getItemTotal() {
+        return itemTotal;
     }
 
-    public void setItem_total(BigDecimal item_total) {
-        this.item_total = item_total;
+    public void setItemTotal(BigDecimal itemTotal) {
+        this.itemTotal = itemTotal;
     }
 
     @Column(name = "total_cost", precision = 4, scale = 2)
-    public BigDecimal getTotal_cost() {
-        return total_cost;
+    public BigDecimal getTotalCost() {
+        return totalCost;
     }
 
-    public void setTotal_cost(BigDecimal total_cost) {
-        this.total_cost = total_cost;
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
     }
 
     @Column(name = "transportaion_charge", precision = 4, scale = 2)
-    public BigDecimal getTransportaion_charge() {
-        return transportaion_charge;
+    public BigDecimal getTransportationCharge() {
+        return transportationCharge;
     }
 
-    public void setTransportaion_charge(BigDecimal transportaion_charge) {
-        this.transportaion_charge = transportaion_charge;
+    public void setTransportationCharge(BigDecimal transportationCharge) {
+        this.transportationCharge = transportationCharge;
     }
 
     @Column(name = "system_service_charge", precision = 4, scale = 2)
-    public BigDecimal getSystem_service_charge() {
-        return system_service_charge;
+    public BigDecimal getSystemServiceCharge() {
+        return systemServiceCharge;
     }
 
-    public void setSystem_service_charge(BigDecimal system_service_charge) {
-        this.system_service_charge = system_service_charge;
+    public void setSystemServiceCharge(BigDecimal systemServiceCharge) {
+        this.systemServiceCharge = systemServiceCharge;
     }
 
     @Column(name = "delivery_charge", precision = 4, scale = 2)
-    public BigDecimal getDelivery_charge() {
-        return delivery_charge;
+    public BigDecimal getDeliveryCharge() {
+        return deliveryCharge;
     }
 
-    public void setDelivery_charge(BigDecimal delivery_charge) {
-        this.delivery_charge = delivery_charge;
+    public void setDeliveryCharge(BigDecimal deliveryCharge) {
+        this.deliveryCharge = deliveryCharge;
     }
 
     @Column(name = "grand_total", precision = 4, scale = 2)
-    public BigDecimal getGrand_total() {
-        return grand_total;
+    public BigDecimal getGrandTotal() {
+        return grandTotal;
     }
 
-    public void setGrand_total(BigDecimal grand_total) {
-        this.grand_total = grand_total;
+    public void setGrandTotal(BigDecimal grandTotal) {
+        this.grandTotal = grandTotal;
     }
 
     @Column(name = "delivery_boy_share", precision = 4, scale = 2)
-    public BigDecimal getDelivery_boy_share() {
-        return delivery_boy_share;
+    public BigDecimal getDeliveryBoyShare() {
+        return deliveryBoyShare;
     }
 
-    public void setDelivery_boy_share(BigDecimal delivery_boy_share) {
-        this.delivery_boy_share = delivery_boy_share;
+    public void setDeliveryBoyShare (BigDecimal deliveryBoyShare) {
+        this.deliveryBoyShare = deliveryBoyShare;
     }
 
     @Column(name = "system_share", precision = 4, scale = 2)
-    public BigDecimal getSystem_share() {
-        return system_share;
+    public BigDecimal getSystemShare() {
+        return systemShare ;
     }
 
-    public void setSystem_share(BigDecimal system_share) {
-        this.system_share = system_share;
+    public void setSystemShare(BigDecimal systemShare) {
+        this.systemShare = systemShare;
     }
 
 
     @Column(name = "order_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    public Timestamp getOrder_date() {
-        return order_date;
+    public Timestamp getOrderDate() {
+        return orderDate;
     }
 
-    public void setOrder_date(Timestamp order_date) {
-        this.order_date = order_date;
+    public void setOrderDate(Timestamp orderDate) {
+        this.orderDate = orderDate;
     }
 }

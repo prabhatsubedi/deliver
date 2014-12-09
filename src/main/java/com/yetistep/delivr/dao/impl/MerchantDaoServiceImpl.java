@@ -2,12 +2,17 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.StoreEntity;
+import com.yetistep.delivr.model.StoresBrandsEntity;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,5 +61,24 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         return session;
     }
 
+    @Override
+    public Boolean saveStore(StoreEntity value) throws Exception {
+        getCurrentSession().save(value);
+        return true;
 
+    }
+
+    @Override
+    public StoresBrandsEntity getBrandByBrandName(String brandName) throws Exception {
+        List<StoresBrandsEntity> storeBrandList = new ArrayList<>();
+        try {
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandsEntity.class);
+            criteria.add(Restrictions.eq("brand_name", brandName));
+            storeBrandList = criteria.list();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        return storeBrandList.size() > 0 ? storeBrandList.get(0) : null;
+    }
 }

@@ -22,26 +22,26 @@ public class ItemEntity implements Serializable {
     private String name;
     private Set<ItemsImageEntity> itemsImage = new HashSet<ItemsImageEntity>();
     private String Description;
-    private Integer available_quantity;
-    private Timestamp available_start_time;
-    private Timestamp available_end_time;
+    private Integer availableQuantity;
+    private Timestamp availableStartTime;
+    private Timestamp availableEndTime;
     private Set<ItemsStoreEntity> itemsStores = new HashSet<ItemsStoreEntity>();
     private Set<ItemsAttributeEntity> attributes = new HashSet<ItemsAttributeEntity>();
     private Set<OrderEntity> order = new HashSet<OrderEntity>();
-    private Integer max_order_quantity;
-    private Integer min_order_quantity;
-    private Timestamp created_date;
-    private Timestamp modified_date;
-    private Integer listing_days;
-    private Boolean payment_method_cd;  //cash on demand
-    private Boolean payment_method_cc; //credit card
-    private Integer unit_price;
-    private String currency_type;
-    private String multi_select_offer;
-    private String single_select_offer;
-    private String additional_offer;
-    private Integer approx_size;
-    private Integer approx_weight;
+    private Integer maxOrderQuantity;
+    private Integer minOrderQuantity;
+    private Timestamp createdDate;
+    private Timestamp modifiedDate;
+    private Integer listingDays;
+    private Boolean paymentMethodCd;  //cash on demand
+    private Boolean paymentMethodCc; //credit card
+    private Integer unitPrice;
+    private String currencyType;
+    private String multiSelectOffer;
+    private String singleSelectOffer;
+    private String additionalOffer;
+    private Integer approxSize;
+    private Integer approxWeight;
 
 
     @Id
@@ -92,30 +92,30 @@ public class ItemEntity implements Serializable {
     }
 
     @Column(name = "available_quantity")
-    public Integer getAvailable_quantity() {
-        return available_quantity;
+    public Integer getAvailableQuantity() {
+        return availableQuantity;
     }
 
-    public void setAvailable_quantity(Integer available_quantity) {
-        this.available_quantity = available_quantity;
+    public void setAvailableQuantity(Integer availableQuantity) {
+        this.availableQuantity = availableQuantity;
     }
 
     @Column(name = "available_start_time")
-    public Timestamp getAvailable_start_time() {
-        return available_start_time;
+    public Timestamp getAvailableStartTime() {
+        return availableStartTime;
     }
 
-    public void setAvailable_start_time(Timestamp available_start_time) {
-        this.available_start_time = available_start_time;
+    public void setAvailableStartTime(Timestamp availableStartTime) {
+        this.availableStartTime = availableStartTime;
     }
 
     @Column(name = "available_end_time")
-    public Timestamp getAvailable_end_time() {
-        return available_end_time;
+    public Timestamp getAvailableEndTime() {
+        return availableEndTime;
     }
 
-    public void setAvailable_end_time(Timestamp available_end_time) {
-        this.available_end_time = available_end_time;
+    public void setAvailableEndTime(Timestamp availableEndTime) {
+        this.availableEndTime = availableEndTime;
     }
 
     @OneToMany(mappedBy = "item")
@@ -146,129 +146,129 @@ public class ItemEntity implements Serializable {
     }
 
     @Column(name = "max_order_quantity")
-    public Integer getMax_order_quantity() {
-        return max_order_quantity;
+    public Integer getMaxOrderQuantity() {
+        return maxOrderQuantity;
     }
 
-    public void setMax_order_quantity(Integer max_order_quantity) {
-        this.max_order_quantity = max_order_quantity;
+    public void setMaxOrderQuantity(Integer maxOrderQuantity) {
+        this.maxOrderQuantity = maxOrderQuantity;
     }
 
     @Column(name = "min_order_quantity")
-    public Integer getMin_order_quantity() {
-        return min_order_quantity;
+    public Integer getMinOrderQuantity() {
+        return minOrderQuantity;
     }
 
-    public void setMin_order_quantity(Integer min_order_quantity) {
-        this.min_order_quantity = min_order_quantity;
+    public void setMinOrderQuantity(Integer minOrderQuantity) {
+        this.minOrderQuantity = minOrderQuantity;
     }
 
     @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = false)
-    public Timestamp getCreated_date() {
-        return created_date;
+    public Timestamp getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCreated_date(Timestamp created_date) {
-        this.created_date = created_date;
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
     }
 
     @Column(name = "modified_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = true)
-    public Timestamp getModified_date() {
-        return modified_date;
+    public Timestamp getModifiedDate() {
+        return modifiedDate;
     }
 
-    public void setModified_date(Timestamp modified_date) {
-        this.modified_date = modified_date;
+    public void setModifiedDate(Timestamp modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
 
     @Column(name = "listing_days")
-    public Integer getListing_days() {
-        return listing_days;
+    public Integer getListingDays() {
+        return listingDays;
     }
 
-    public void setListing_days(Integer listing_days) {
-        this.listing_days = listing_days;
+    public void setListingDays(Integer listing_days) {
+        this.listingDays = listingDays;
     }
 
     @Column(name = "payment_method_cd")
-    public Boolean getPayment_method_cd() {
-        return payment_method_cd;
+    public Boolean getPaymentMethodCd() {
+        return paymentMethodCd;
     }
 
-    public void setPayment_method_cd(Boolean payment_method_cd) {
-        this.payment_method_cd = payment_method_cd;
+    public void setPaymentMethodCd(Boolean paymentMethodCd) {
+        this.paymentMethodCd = paymentMethodCd;
     }
 
     @Column(name = "payment_method_cc")
-    public Boolean getPayment_method_cc() {
-        return payment_method_cc;
+    public Boolean getPaymentMethodCc() {
+        return paymentMethodCc;
     }
 
-    public void setPayment_method_cc(Boolean payment_method_cc) {
-        this.payment_method_cc = payment_method_cc;
+    public void setPaymentMethodCc(Boolean paymentMethodCc) {
+        this.paymentMethodCc = paymentMethodCc;
     }
 
     @Column(name = "unit_price")
-    public Integer getUnit_price() {
-        return unit_price;
+    public Integer getUnitPrice() {
+        return unitPrice;
     }
 
-    public void setUnit_price(Integer unit_price) {
-        this.unit_price = unit_price;
+    public void setUnitPrice(Integer unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
     @Column(name = "currency_type")
-    public String getCurrency_type() {
-        return currency_type;
+    public String getCurrencyType() {
+        return currencyType;
     }
 
-    public void setCurrency_type(String currency_type) {
-        this.currency_type = currency_type;
+    public void setCurrencyType(String currencyType) {
+        this.currencyType = currencyType;
     }
 
     @Column(name = "multi_select_offer", columnDefinition = "longtext")
-    public String getMulti_select_offer() {
-        return multi_select_offer;
+    public String getMultiSelectOffer() {
+        return multiSelectOffer;
     }
 
-    public void setMulti_select_offer(String multi_select_offer) {
-        this.multi_select_offer = multi_select_offer;
+    public void setMultiSelectOffer(String multiSelectOffer) {
+        this.multiSelectOffer = multiSelectOffer;
     }
 
     @Column(name = "single_select_offer", columnDefinition = "longtext")
-    public String getSingle_select_offer() {
-        return single_select_offer;
+    public String getSingleSelectOffer() {
+        return singleSelectOffer;
     }
 
-    public void setSingle_select_offer(String single_select_offer) {
-        this.single_select_offer = single_select_offer;
+    public void setSingleSelectOffer(String singleSelectOffer) {
+        this.singleSelectOffer = singleSelectOffer;
     }
 
     @Column(name = "additional_offer")
-    public String getAdditional_offer() {
-        return additional_offer;
+    public String getAdditionalOffer() {
+        return additionalOffer;
     }
 
-    public void setAdditional_offer(String additional_offer) {
-        this.additional_offer = additional_offer;
+    public void setAdditionalOffer(String additionalOffer) {
+        this.additionalOffer = additionalOffer;
     }
 
     @Column(name = "approx_size")
-    public Integer getApprox_size() {
-        return approx_size;
+    public Integer getApproxSize() {
+        return approxSize;
     }
 
-    public void setApprox_size(Integer approx_size) {
-        this.approx_size = approx_size;
+    public void setApproxSize(Integer approxSize) {
+        this.approxSize = approxSize;
     }
 
     @Column(name = "approx_weight")
-    public Integer getApprox_weight() {
-        return approx_weight;
+    public Integer getApproxWeight() {
+        return approxWeight;
     }
 
-    public void setApprox_weight(Integer approx_weight) {
-        this.approx_weight = approx_weight;
+    public void setApproxWeight(Integer approxWeight) {
+        this.approxWeight = approxWeight;
     }
 
 

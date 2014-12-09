@@ -24,7 +24,7 @@ public class CategoryEntity implements Serializable {
    private String name;
    private Boolean featured;
    private Integer priority;
-   private Timestamp created_date;
+   private Timestamp createdDate;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -103,12 +103,12 @@ public class CategoryEntity implements Serializable {
     }
 
     @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    public Timestamp getCreated_date() {
-        return created_date;
+    public Timestamp getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCreated_date(Timestamp created_date) {
-        this.created_date = created_date;
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
     }
 
 }

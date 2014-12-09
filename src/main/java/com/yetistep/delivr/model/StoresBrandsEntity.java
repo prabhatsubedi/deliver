@@ -21,10 +21,10 @@ public class StoresBrandsEntity {
    private Integer id;
    private MerchantEntity merchant;
    private Set<StoreEntity> store = new HashSet<StoreEntity>();
-   private String brand_name;
+   private String brandName;
    private Boolean featured;
    private Integer priority;
-   private Timestamp created_date;
+   private Timestamp createdDate;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -57,12 +57,12 @@ public class StoresBrandsEntity {
     }
 
     @Column(name = "brand_name")
-    public String getBrand_name() {
-        return brand_name;
+    public String getBrandName() {
+        return brandName;
     }
 
-    public void setBrand_name(String brand_name) {
-        this.brand_name = brand_name;
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
     }
 
     @Column(name = "featured", columnDefinition = "int default '0'")
@@ -85,11 +85,11 @@ public class StoresBrandsEntity {
 
     @Column(name = "created_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @JsonSerialize
-    public Timestamp getCreated_date() {
-        return created_date;
+    public Timestamp getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCreated_date(Timestamp created_date) {
-        this.created_date = created_date;
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
     }
 }

@@ -79,4 +79,8 @@ public class MessageBundle {
     public static boolean isLocalHost() {
         return getHostName().equals("localhost");
     }
+
+    public static String getSecretKey(){
+        return System.getProperty("DELIVR_SECRET_KEY");
+    }
 }

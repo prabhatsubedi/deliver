@@ -4,15 +4,20 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.CustomerService;
-import com.yetistep.delivr.util.GeneralUtil;
-import com.yetistep.delivr.util.ServiceResponse;
+import com.yetistep.delivr.util.*;
+import net.sf.uadetector.ReadableUserAgent;
+import net.sf.uadetector.UserAgentStringParser;
+import net.sf.uadetector.service.UADetectorServiceFactory;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,6 +29,9 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping(value = "/client")
 public class ClientController {
+    @Autowired
+    HttpServletRequest httpServletRequest;
+
     /* Controller for Mobile API */
     private static final Logger log = Logger.getLogger(ClientController.class);
 
@@ -46,8 +54,38 @@ public class ClientController {
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while creating customer", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/access_token", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ResponseEntity<ServiceResponse> getAccessToken() {
+        try {
+            log.info("+++++++++++ Getting Access Token ++++++++++++++++++");
+            UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+            ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
+
+            String family = agent.getOperatingSystem().getFamily().toString();
+            String token = GeneralUtil.generateAccessToken(family);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Token retrieved successfully");
+
+            /* Setting Http Headers */
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("accessToken", token);
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, httpHeaders, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while creating customer", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+
+    }
+
 
 }

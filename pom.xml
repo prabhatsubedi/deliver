@@ -162,6 +162,26 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- User Agent Parser -->
+        <dependency>
+            <groupId>net.sf.uadetector</groupId>
+            <artifactId>uadetector-core</artifactId>
+            <version>0.9.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.uadetector</groupId>
+            <artifactId>uadetector-resources</artifactId>
+            <version>2013.07</version>
+        </dependency>
+
+        <!--RNCrypto for AES encryption -->
+        <dependency>
+            <groupId>org.cryptonode.jncryptor</groupId>
+            <artifactId>jncryptor</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>

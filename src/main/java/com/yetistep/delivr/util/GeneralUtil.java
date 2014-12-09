@@ -1,10 +1,15 @@
 package com.yetistep.delivr.util;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import net.sf.uadetector.ReadableUserAgent;
+import net.sf.uadetector.UserAgentStringParser;
+import net.sf.uadetector.service.UADetectorServiceFactory;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import java.io.File;
@@ -17,6 +22,9 @@ import java.io.File;
  * To change this template use File | Settings | File Templates.
  */
 public class GeneralUtil {
+    @Autowired
+    HttpServletRequest httpServletRequest;
+
     private static Logger log = Logger.getLogger(GeneralUtil.class);
 
     private static final String USERNAME = "username";
@@ -124,5 +132,40 @@ public class GeneralUtil {
         }
         return null;
     }
+
+    public void validateMobileClient(String token) throws Exception {
+        if(token == null)
+            throw new YSException("SEC002");
+
+        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+        ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
+
+        String timeStr = null;
+        String family = agent.getOperatingSystem().getFamily().toString();
+
+        if (family.toUpperCase().equals("IOS")) {
+            timeStr = RNCryptoEncDec.decryptAccessToken(token);
+        } else{
+            timeStr = EncDecUtil.decryptAccessToken(token, MessageBundle.getSecretKey());
+        }
+        Long timeVal = Long.valueOf(timeStr).longValue();
+        Long now = System.currentTimeMillis();
+        Long diff = (now - timeVal) / 1000;
+
+        if (diff > 120) //if diff more than 2 minutes
+            throw  new YSException("SC002");
+
+    }
+
+    public static String generateAccessToken(String osFamily) throws Exception {
+        String tokenstr = null;
+        if (osFamily.toUpperCase().equals("IOS")) {
+            tokenstr = RNCryptoEncDec.generateResponseAccessToken();
+        } else {
+            tokenstr = EncDecUtil.generateResponseAccessToken(MessageBundle.getSecretKey());
+        }
+        return tokenstr;
+    }
+
 
 }

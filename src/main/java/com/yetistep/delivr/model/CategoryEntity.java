@@ -22,6 +22,8 @@ public class CategoryEntity implements Serializable {
    private Set<CategoryEntity> child = new HashSet<CategoryEntity>();
    private StoreEntity store;
    private String name;
+   private Boolean featured;
+   private Integer priority;
    private Timestamp created_date;
 
     @Id
@@ -79,6 +81,24 @@ public class CategoryEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Column(name = "featured", columnDefinition = "int default '0'")
+    public Boolean getFeatured() {
+        return featured;
+    }
+
+    public void setFeatured(Boolean featured) {
+        this.featured = featured;
+    }
+
+    @Column(name = "priority", unique = true)
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

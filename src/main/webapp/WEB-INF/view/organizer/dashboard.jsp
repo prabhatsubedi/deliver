@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Courier Boy Dashboard</title>
+    <title>Admin Dashboard</title>
 
     <%@include file="../includes/head.jsp" %>
 
@@ -18,10 +18,7 @@
     <%@include file="../includes/header.jsp" %>
 
     <div class="body">
-        <div class="heading clearfix">
-            <h1 class="pull-left">Manager</h1>
-        </div>
-        <div class="main_content">Content</div>
+        body
     </div>
 </div>
 

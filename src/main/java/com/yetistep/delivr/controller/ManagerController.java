@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -41,6 +42,15 @@ public class ManagerController {
     CustomerService customerService;
 
     private static final Logger log = Logger.getLogger(ManagerController.class);
+
+
+    @RequestMapping(value = {"/dashboard"}, method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView addDeliveryBoy(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("organizer/dashboard");
+        return modelAndView;
+    }
 
     @RequestMapping(value = "/save_delivery_boy", method = RequestMethod.POST)
     @ResponseBody

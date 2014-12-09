@@ -220,6 +220,7 @@ public class OrderEntity implements Serializable {
         this.system_share = system_share;
     }
 
+
     @Column(name = "order_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getOrder_date() {
         return order_date;

@@ -5,6 +5,7 @@ import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping(value = "/merchant")
 public class MerchantController {
+
+    private static final Logger log = Logger.getLogger(ManagerController.class);
 
     /*@RequestMapping(value = "/save_store", method = RequestMethod.POST)
     @ResponseBody

@@ -1,6 +1,5 @@
 package com.yetistep.delivr.service.inf;
 
-import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 
 import java.util.List;
@@ -21,5 +20,5 @@ public interface DeliveryBoyService {
 
     public Boolean updateDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
 
-    public Boolean updateDeliveryBoyStatus(Integer id, DBoyStatus dBoyStatus) throws Exception;
+    public Boolean updateDeliveryBoyStatus(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
 }

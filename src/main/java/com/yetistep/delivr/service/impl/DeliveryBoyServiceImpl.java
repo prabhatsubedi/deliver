@@ -97,13 +97,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public Boolean updateDeliveryBoyStatus(Integer id, DBoyStatus dBoyStatus) throws Exception {
-        log.info("Updating Status of Delivery Boy to:" + dBoyStatus);
-        DeliveryBoyEntity deliveryBoyEntity = deliveryBoyDaoService.find(id);
-        if (deliveryBoyEntity == null) {
+    public Boolean updateDeliveryBoyStatus(DeliveryBoyEntity deliveryBoyEntity) throws Exception {
+        log.info("Updating Status of Delivery Boy to:" + deliveryBoyEntity.getAvailabilityStatus());
+        DeliveryBoyEntity dBoyEntity = deliveryBoyDaoService.find(deliveryBoyEntity.getId());
+        if (dBoyEntity == null) {
             throw new YSException("VLD011");
         }
-        deliveryBoyEntity.setAvailabilityStatus(dBoyStatus);
-        return deliveryBoyDaoService.update(deliveryBoyEntity);
+        dBoyEntity.setAvailabilityStatus(deliveryBoyEntity.getAvailabilityStatus());
+        return deliveryBoyDaoService.update(dBoyEntity);
     }
 }

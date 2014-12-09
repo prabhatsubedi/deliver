@@ -1,6 +1,7 @@
 package com.yetistep.delivr.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.VehicleType;
 import org.hibernate.annotations.Type;
@@ -51,6 +52,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.id = id;
     }
 
+    @JsonManagedReference("user-dboy")
     @OneToOne(cascade = { CascadeType.ALL })
     @JoinColumn(name = "user_id")
     public UserEntity getUser() {

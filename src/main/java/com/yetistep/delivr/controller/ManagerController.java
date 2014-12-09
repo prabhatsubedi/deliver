@@ -1,11 +1,8 @@
 package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
-import com.yetistep.delivr.enums.DBoyStatus;
-import com.yetistep.delivr.enums.VehicleType;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.MerchantService;
@@ -17,11 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -68,53 +64,35 @@ public class ManagerController {
         }
     }
 
-    @RequestMapping(value = "/save_test_delivery_boy", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_delivery_boy/{dbId}", method = RequestMethod.GET)
     @ResponseBody
-    public ServiceResponse saveTestDeliveryBoy() {
-        DeliveryBoyEntity deliveryBoy = new DeliveryBoyEntity();
-        UserEntity user = new UserEntity();
+    public ResponseEntity<ServiceResponse> getDeliveryBoy(@PathVariable("dbId") Integer deliveryBoyId) {
         try {
-
-            String password = "dboypassword";
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String hashedPassword = passwordEncoder.encode(password);
-            user.setUsername("sagar1 dboy");
-            user.setPassword(hashedPassword);
-            user.setFullName("Sagar Sapkota1");
-            user.setStreet("balaju-16, Kathmandu1");
-            user.setCity("city1");
-            user.setState("Bagmati1");
-            user.setCountry("Nepal1");
-            user.setCountryCode("346656");
-            user.setMobileNumber("9849540028456");
-            user.setMobileVerificationStatus(true);
-            user.setEmailAddress("sapktoasagardboy5@yahoo.com");
-            user.setProfileImage("/user/profile-image1.jpg");
-            user.setBlacklistStatus(false);
-            user.setVerifiedStatus(true);
-            user.setSubscribeNewsletter(true);
-
-            deliveryBoy.setUser(user);
-            deliveryBoy.setAvailabilityStatus(DBoyStatus.BUSY);
-            deliveryBoy.setAverageRating(new BigDecimal(1.0));
-            deliveryBoy.setTotalOrderTaken(0);
-            deliveryBoy.setTotalOrderDelivered(0);
-            deliveryBoy.setTotalOrderUndelivered(0);
-            deliveryBoy.setTotalEarnings(new BigDecimal(1.0));
-            deliveryBoy.setVehicleType(VehicleType.MOTORBIKE);
-            deliveryBoy.setActiveOrderNo(0);
-            deliveryBoy.setAvailableAmount(new BigDecimal(1.0));
-            deliveryBoy.setLatitude("477879845.0L");
-            deliveryBoy.setLongitude("34578645345.0F");
-
-
-            deliveryBoyService.saveDeliveryBoy(deliveryBoy);
+            DeliveryBoyEntity deliveryBoy = deliveryBoyService.findDeliveryBoyById(deliveryBoyId);
+            deliveryBoy.getUser().setActionLogEntities(null);
+            ServiceResponse serviceResponse = new ServiceResponse("Details of delivery boy with ID: "+deliveryBoyId);
+            serviceResponse.addParam("deliveryBoy", deliveryBoy);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            //
+            GeneralUtil.logError(log, "Error Occurred while retrieving delivery boy with ID: "+deliveryBoyId, e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
         }
+    }
 
-        ServiceResponse serviceResponse = new ServiceResponse("User(Delivery Boy) has been saved successfully");
-        return serviceResponse;
+    @RequestMapping(value = "/get_all_delivery_boy", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getAllDeliveryBoy() {
+        try {
+            List<DeliveryBoyEntity> deliveryBoyEntities = deliveryBoyService.findAllDeliverBoy();
+            ServiceResponse serviceResponse = new ServiceResponse("List of delivery boys");
+            serviceResponse.addParam("deliveryBoys", deliveryBoyEntities);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving delivery boys", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value = "/activate_merchant", method = RequestMethod.POST)

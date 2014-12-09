@@ -1,6 +1,8 @@
 package com.yetistep.delivr.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yetistep.delivr.enums.Gender;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
@@ -69,6 +71,7 @@ public class UserEntity {
         this.role = role;
     }
 
+    @JsonBackReference("user-dboy")
     @OneToOne(mappedBy = "user")
     public DeliveryBoyEntity getDeliveryBoy() {
         return deliveryBoy;
@@ -106,7 +109,7 @@ public class UserEntity {
         this.username = username;
     }
 
-
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     public String getPassword() {
         return password;
@@ -278,6 +281,7 @@ public class UserEntity {
         this.subscribeNewsletter = subscribeNewsletter;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "userEntity")
     public List<ActionLogEntity> getActionLogEntities() {
         return actionLogEntities;

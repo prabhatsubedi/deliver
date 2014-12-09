@@ -1,5 +1,6 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yetistep.delivr.enums.Role;
 
 import javax.persistence.*;
@@ -44,6 +45,7 @@ public class RoleEntity {
         this.role = role;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "role")
     public Set<UserEntity> getUser() {
         return user;

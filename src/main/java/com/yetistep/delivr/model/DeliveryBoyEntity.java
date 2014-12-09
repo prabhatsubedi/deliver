@@ -41,6 +41,7 @@ public class DeliveryBoyEntity implements Serializable {
     private BigDecimal advanceAmount;
     private BigDecimal previousDue;
     private String licenseNumber;
+    private String vehicleNumber;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -200,5 +201,14 @@ public class DeliveryBoyEntity implements Serializable {
 
     public void setLicenseNumber(String licenseNumber) {
         this.licenseNumber = licenseNumber;
+    }
+
+    @Column(name="vehicle_number")
+    public String getVehicleNumber() {
+        return vehicleNumber;
+    }
+
+    public void setVehicleNumber(String vehicleNumber) {
+        this.vehicleNumber = vehicleNumber;
     }
 }

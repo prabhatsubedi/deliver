@@ -2,13 +2,10 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yetistep.delivr.enums.MerchantType;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.metamodel.EmbeddableType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -52,7 +49,7 @@ public class MerchantEntity implements Serializable {
         this.id = id;
     }
 
-    @JsonManagedReference
+    @JsonManagedReference("merchant-user")
     @OneToOne(cascade = { CascadeType.ALL })
     @JoinColumn(name = "user_id")
     public UserEntity getUser() {

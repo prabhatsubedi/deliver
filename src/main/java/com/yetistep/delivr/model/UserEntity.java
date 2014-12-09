@@ -83,6 +83,7 @@ public class UserEntity {
         this.deliveryBoy = deliveryBoy;
     }
 
+    @JsonBackReference("merchant-user")
     @OneToOne(mappedBy = "user")
     public MerchantEntity getMerchant() {
         return merchant;

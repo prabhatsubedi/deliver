@@ -14,6 +14,7 @@ import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -32,25 +33,39 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Autowired
     UserDaoService userDaoService;
 
-   @Override
-    public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy) throws Exception{
+    @Override
+    public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy) throws Exception {
         log.info("++++++++++++++++++ Creating Delivery Boy +++++++++++++++++");
         UserEntity user = deliveryBoy.getUser();
-        if((user.getUsername()==null || user.getPassword()==null) || (user.getUsername().isEmpty() || user.getPassword().isEmpty()))
+        if ((user.getUsername() == null || user.getPassword() == null) || (user.getUsername().isEmpty() || user.getPassword().isEmpty()))
             throw new YSException("VLD009");
         user.setPassword(GeneralUtil.encryptPassword(user.getPassword()));
 
         RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_DELIVERY_BOY);
-        deliveryBoy.getUser().setRole(userRole);
+
+        /** Setting Default values **/
+        user.setRole(userRole);
+        user.setBlacklistStatus(false);
+        user.setMobileVerificationStatus(false);
+        user.setVerifiedStatus(true);
+        user.setSubscribeNewsletter(false);
+
+        deliveryBoy.setAvailabilityStatus(DBoyStatus.FREE);
+        deliveryBoy.setAverageRating(new BigDecimal(0));
+        deliveryBoy.setTotalOrderTaken(0);
+        deliveryBoy.setTotalOrderDelivered(0);
+        deliveryBoy.setTotalOrderUndelivered(0);
+        deliveryBoy.setTotalEarnings(new BigDecimal(0));
+        deliveryBoy.setActiveOrderNo(0);
 
         String profileImage = deliveryBoy.getUser().getProfileImage();
         deliveryBoy.getUser().setProfileImage(null);
         deliveryBoyDaoService.save(deliveryBoy);
-        if(profileImage != null && !profileImage.isEmpty()){
+        if (profileImage != null && !profileImage.isEmpty()) {
             log.info("Uploading Profile Image of delivery boy to S3 Bucket ");
 
-            String dir = MessageBundle.separateString("/", "DBoy", "DBoy"+ deliveryBoy.getId());
-            boolean isLocal =  MessageBundle.isLocalHost();
+            String dir = MessageBundle.separateString("/", "DBoy", "DBoy" + deliveryBoy.getId());
+            boolean isLocal = MessageBundle.isLocalHost();
             String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + deliveryBoy.getId();
             String s3Path = GeneralUtil.saveImageToBucket(profileImage, imageName, dir, true);
             deliveryBoy.getUser().setProfileImage(s3Path);
@@ -61,9 +76,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
     @Override
     public DeliveryBoyEntity findDeliveryBoyById(Integer id) throws Exception {
-        log.info("Retrieving Deliver Boy With ID:"+id);
+        log.info("Retrieving Deliver Boy With ID:" + id);
         DeliveryBoyEntity deliveryBoyEntity = deliveryBoyDaoService.find(id);
-        if(deliveryBoyEntity == null){
+        if (deliveryBoyEntity == null) {
             throw new YSException("VLD011");
         }
         return deliveryBoyEntity;
@@ -83,10 +98,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
     @Override
     public Boolean updateDeliveryBoyStatus(Integer id, DBoyStatus dBoyStatus) throws Exception {
-        log.info("Updating Status of Delivery Boy to:"+dBoyStatus);
+        log.info("Updating Status of Delivery Boy to:" + dBoyStatus);
         DeliveryBoyEntity deliveryBoyEntity = deliveryBoyDaoService.find(id);
-        if(deliveryBoyEntity == null){
-             throw new YSException("VLD011");
+        if (deliveryBoyEntity == null) {
+            throw new YSException("VLD011");
         }
         deliveryBoyEntity.setAvailabilityStatus(dBoyStatus);
         return deliveryBoyDaoService.update(deliveryBoyEntity);

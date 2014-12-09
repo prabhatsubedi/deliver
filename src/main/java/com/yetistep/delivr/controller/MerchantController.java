@@ -28,7 +28,7 @@ public class MerchantController {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto);
-            merchantService.saveDeliveryBoy(store);
+            merchantService.saveStore(store);
 
             ServiceResponse serviceResponse = new ServiceResponse("Store has been saved successfully");
 //            HttpHeaders httpHeaders = new HttpHeaders();

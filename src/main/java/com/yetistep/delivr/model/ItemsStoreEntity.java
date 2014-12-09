@@ -11,7 +11,7 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 @Entity(name = "ItemsStoreEntity")
-@Table(name = "items_store")
+@Table(name = "items_stores")
 public class ItemsStoreEntity implements Serializable {
 
     private Integer id;

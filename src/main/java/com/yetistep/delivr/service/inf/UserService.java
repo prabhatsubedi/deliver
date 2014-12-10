@@ -4,11 +4,8 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.config.http.HeadersBeanDefinitionParser;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,5 +25,8 @@ public interface UserService {
     public String performPasswordAction(HeaderDto headerDto, PasswordActionType passwordActionType) throws Exception;
 
     public List<UserEntity> getUsers();
+
     public void changePassword(HeaderDto headerDto, UserEntity userEntity) throws Exception;
+
+    public Boolean changeUserStatus(UserEntity userEntity) throws Exception;
 }

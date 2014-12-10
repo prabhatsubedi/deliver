@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,7 +51,7 @@ public class UserDaoServiceImpl implements UserDaoService {
 
     @Override
     public UserEntity find(Integer id) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return (UserEntity) getCurrentSession().get(UserEntity.class, id);
     }
 
     @Override

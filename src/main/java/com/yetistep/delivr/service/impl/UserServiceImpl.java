@@ -8,13 +8,15 @@ import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.UserService;
-import com.yetistep.delivr.util.*;
+import com.yetistep.delivr.util.EmailMsg;
+import com.yetistep.delivr.util.GeneralUtil;
+import com.yetistep.delivr.util.MessageBundle;
+import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -185,5 +187,13 @@ public class UserServiceImpl extends AbstractManager implements UserService{
 
     }
 
-
+    @Override
+    public Boolean changeUserStatus(UserEntity userEntity) throws Exception {
+        UserEntity user = userDaoService.find(userEntity.getId());
+        if( user == null){
+            throw new YSException("VLD011");
+        }
+        user.setVerifiedStatus(userEntity.getVerifiedStatus());
+        return userDaoService.update(user);
+    }
 }

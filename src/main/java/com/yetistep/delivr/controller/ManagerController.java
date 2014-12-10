@@ -3,6 +3,7 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.MerchantService;
@@ -140,6 +141,21 @@ public class ManagerController {
 
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while getting merchants", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+
+    }
+
+    @RequestMapping(value = "/change_user_status", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateUserStatus(@RequestBody UserEntity userEntity) {
+        try{
+            userService.changeUserStatus(userEntity);
+            ServiceResponse serviceResponse = new ServiceResponse("User status updated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while updating user status", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

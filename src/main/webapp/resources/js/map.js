@@ -7,6 +7,7 @@ var markers = [];
 var marker;
 var arrGeoPoints = {};
 var redeem_location = [];
+var initialize;
 
 // Sets the map on all markers in the array.
 function setAllMap(map) {
@@ -49,7 +50,7 @@ $(document).ready(function(){
         });
     }
 
-    function initialize() {
+    initialize = function() {
         var myOptions = {
             zoom: 4,
             mapTypeId: google.maps.MapTypeId.ROADMAP,

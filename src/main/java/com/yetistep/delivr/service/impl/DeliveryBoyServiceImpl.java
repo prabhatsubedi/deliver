@@ -46,7 +46,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         /** Setting Default values **/
         user.setRole(userRole);
         user.setBlacklistStatus(false);
-        user.setMobileVerificationStatus(false);
+        user.setMobileVerificationStatus(true);
         user.setVerifiedStatus(true);
         user.setSubscribeNewsletter(false);
 
@@ -93,7 +93,35 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
     @Override
     public Boolean updateDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception {
-        return deliveryBoyDaoService.update(deliveryBoyEntity);
+        DeliveryBoyEntity dBoyEntity = deliveryBoyDaoService.find(deliveryBoyEntity.getId());
+        if (dBoyEntity == null) {
+            throw new YSException("VLD011");
+        }
+
+        dBoyEntity.getUser().setUsername(deliveryBoyEntity.getUser().getMobileNumber());
+        dBoyEntity.getUser().setPassword(GeneralUtil.encryptPassword(deliveryBoyEntity.getUser().getPassword()));
+        dBoyEntity.getUser().setMobileNumber(deliveryBoyEntity.getUser().getMobileNumber());
+        dBoyEntity.getUser().setStreet(deliveryBoyEntity.getUser().getStreet());
+        dBoyEntity.getUser().setCity(deliveryBoyEntity.getUser().getCity());
+        dBoyEntity.getUser().setState(deliveryBoyEntity.getUser().getState());
+        dBoyEntity.getUser().setCountry(deliveryBoyEntity.getUser().getCountry());
+        dBoyEntity.getUser().setCountryCode(deliveryBoyEntity.getUser().getCountryCode());
+        dBoyEntity.setVehicleNumber(deliveryBoyEntity.getVehicleNumber());
+        dBoyEntity.setVehicleType(deliveryBoyEntity.getVehicleType());
+        dBoyEntity.setLicenseNumber(deliveryBoyEntity.getLicenseNumber());
+
+        String profileImage = deliveryBoyEntity.getUser().getProfileImage();
+        if (profileImage != null && !profileImage.isEmpty()) {
+            log.info("Uploading Profile Image of delivery boy to S3 Bucket ");
+
+            String dir = MessageBundle.separateString("/", "DBoy", "DBoy" + dBoyEntity.getId());
+            boolean isLocal = MessageBundle.isLocalHost();
+            String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + dBoyEntity.getId();
+            String s3Path = GeneralUtil.saveImageToBucket(profileImage, imageName, dir, true);
+            dBoyEntity.getUser().setProfileImage(s3Path);
+        }
+
+        return deliveryBoyDaoService.update(dBoyEntity);
     }
 
     @Override

@@ -111,6 +111,24 @@ public class ManagerController {
         }
     }
 
+    @RequestMapping(value = "/update_dboy", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoy) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            deliveryBoy.getUser().setUsername(headerDto.getUsername());
+            deliveryBoy.getUser().setPassword(headerDto.getPassword());
+            deliveryBoyService.updateDeliveryBoy(deliveryBoy);
+            ServiceResponse serviceResponse = new ServiceResponse("Delivery Boy has been updated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while updating delivery boy", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     @RequestMapping(value = "/activate_merchant", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> activateMerchant(@RequestBody MerchantEntity merchantEntity) {

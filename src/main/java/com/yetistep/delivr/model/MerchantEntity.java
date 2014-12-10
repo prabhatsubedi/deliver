@@ -1,7 +1,9 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yetistep.delivr.enums.MerchantType;
+import com.yetistep.delivr.enums.UserStatus;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
 
@@ -36,7 +38,8 @@ public class MerchantEntity implements Serializable {
     private String businessLogo;
     private String companyRegistrationNo;
     private String vatNo;
-
+    @Transient
+    private UserStatus userStatus;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -70,6 +73,7 @@ public class MerchantEntity implements Serializable {
         this.type = type;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "merchant")
     public Set<StoresBrandsEntity> getStoresBrand() {
         return storesBrand;
@@ -88,7 +92,7 @@ public class MerchantEntity implements Serializable {
         this.partnershipStatus = partnershipStatus;
     }
 
-    @Column(name = "commission_percentage", nullable = false, columnDefinition="Decimal(6,4)")
+    @Column(name = "commission_percentage", columnDefinition="Decimal(6,4)")
     public BigDecimal getCommissionPercentage() {
         return commissionPercentage;
     }
@@ -150,5 +154,13 @@ public class MerchantEntity implements Serializable {
 
     public void setVatNo(String vatNo) {
         this.vatNo = vatNo;
+    }
+
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 }

@@ -4,24 +4,17 @@ import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.enums.UserStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -54,7 +47,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         user.setPassword("");
         user.setVerificationCode(code);
         merchant.setUser(user);
-
+        /*By default set to null during sign up*/
+        merchant.setCommissionPercentage(null);
         RoleEntity userRole = userDaoService.getRoleByRole(merchant.getUser().getRole().getRole());
         merchant.getUser().setRole(userRole);
 
@@ -121,6 +115,17 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<MerchantEntity> merchantEntities = new ArrayList<>();
 
         merchantEntities = merchantDaoService.findAll();
+        for(MerchantEntity merchantEntity: merchantEntities){
+            if(merchantEntity.getCommissionPercentage() == null){
+                merchantEntity.setUserStatus(UserStatus.UNVERIFIED);
+            }else{
+                if(merchantEntity.getUser().getVerifiedStatus()){
+                    merchantEntity.setUserStatus(UserStatus.ACTIVE);
+                }else{
+                    merchantEntity.setUserStatus(UserStatus.INACTIVE);
+                }
+            }
+        }
         return merchantEntities;
 
     }

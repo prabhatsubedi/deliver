@@ -14,6 +14,7 @@ import com.yetistep.delivr.util.MessageBundle;
 import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -200,8 +201,13 @@ public class UserServiceImpl extends AbstractManager implements UserService{
     @Override
     public UserEntity dboyLogin(HeaderDto headerDto) throws Exception {
         log.info("+++++++++++++++ Checking DBOY Credential +++++++++++++++");
-        UserEntity userEntity = userDaoService.find(headerDto.getUsername(), GeneralUtil.encryptPassword(headerDto.getPassword()));
+        UserEntity userEntity = userDaoService.findByUserName(headerDto.getUsername());
+
         if(userEntity == null)
+            throw new YSException("VLD011");
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if(!passwordEncoder.matches(headerDto.getPassword(), userEntity.getPassword()))
             throw new YSException("VLD011");
 
         return userEntity;

@@ -157,4 +157,12 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
     }
+
+    @Override
+    public MerchantEntity getMerchantById(Integer id) throws Exception {
+        MerchantEntity merchantEntity = merchantDaoService.find(id);
+        if(merchantEntity == null)
+            throw new YSException("VLD011");
+        return merchantEntity;
+    }
 }

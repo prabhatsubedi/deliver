@@ -5,7 +5,6 @@ import com.yetistep.delivr.model.StoreEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,4 +21,6 @@ public interface MerchantService {
     public List<MerchantEntity> getMerchants() throws Exception;
 
     public void saveStore(List<StoreEntity> stores, HttpHeaders headers) throws Exception;
+
+    public MerchantEntity getMerchantById(Integer id) throws Exception;
 }

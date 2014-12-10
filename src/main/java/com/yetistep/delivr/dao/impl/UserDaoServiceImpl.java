@@ -123,4 +123,15 @@ public class UserDaoServiceImpl implements UserDaoService {
         return userlist;
     }
 
+    @Override
+    public UserEntity find(String userName, String password) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(UserEntity.class);
+        criteria.add(Restrictions.eq("username", userName));
+        criteria.add(Restrictions.eq("password", password));
+
+        List<UserEntity> userEntityList = criteria.list();
+
+        return userEntityList.size() > 0 ? userEntityList.get(0) : null;
+    }
+
 }

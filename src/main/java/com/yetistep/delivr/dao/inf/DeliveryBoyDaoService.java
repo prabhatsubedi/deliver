@@ -11,5 +11,4 @@ import com.yetistep.delivr.model.DeliveryBoyEntity;
  * To change this template use File | Settings | File Templates.
  */
 public interface DeliveryBoyDaoService extends GenericDaoService<Integer, DeliveryBoyEntity> {
-
 }

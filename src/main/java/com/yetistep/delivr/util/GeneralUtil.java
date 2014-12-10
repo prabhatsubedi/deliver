@@ -134,6 +134,8 @@ public class GeneralUtil {
     }
 
     public void validateMobileClient(String token) throws Exception {
+        log.info("++++++++++++++ Validating mobile client +++++++++++++++");
+
         if(token == null)
             throw new YSException("SEC002");
 

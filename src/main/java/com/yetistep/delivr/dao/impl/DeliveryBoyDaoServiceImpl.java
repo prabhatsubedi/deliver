@@ -2,8 +2,10 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -53,4 +55,5 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         Session session = sessionFactory.getCurrentSession();
         return session;
     }
+
 }

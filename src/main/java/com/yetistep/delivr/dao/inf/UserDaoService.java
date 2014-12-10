@@ -28,4 +28,6 @@ public interface UserDaoService extends GenericDaoService<Integer, UserEntity>{
     public UserEntity findByVerificationCode(String code) throws Exception;
 
     public List<UserEntity> getUsers();
+
+    public UserEntity find(String userName, String password) throws Exception;
 }

@@ -37,7 +37,7 @@ public class StoresBrandsEntity {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "merchant_id")
     public MerchantEntity getMerchant() {
         return merchant;

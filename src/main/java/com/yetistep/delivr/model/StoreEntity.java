@@ -49,7 +49,7 @@ public class StoreEntity implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "stores_brand_id")
     public StoresBrandsEntity getStoresBrand() {
         return storesBrand;

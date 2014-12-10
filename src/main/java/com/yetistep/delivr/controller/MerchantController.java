@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,10 +34,31 @@ public class MerchantController {
 
     @RequestMapping(value = "/save_store", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody Set<StoreEntity> stores) {
+    public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody List<StoreEntity> stores) {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto);
+            /*
+           private Integer id;
+            private StoresBrandsEntity storesBrand;
+            private Set<CategoryEntity> category = new HashSet<CategoryEntity>();
+            private Set<ItemsStoreEntity> itemsStore = new HashSet<ItemsStoreEntity>();
+            private Set<OrderEntity> order = new HashSet<OrderEntity>();
+            private String name;
+            private String street;
+            private String locality;
+            private String city;
+            private String country;
+            private String contact_no;
+            private BigDecimal latitude;
+            private BigDecimal longitude;
+            private Timestamp created_date;
+            private String return_policy;
+            private Integer delivery_fee;
+            private String promo_code;
+            private BigDecimal vat;
+            private BigDecimal service_charge;
+        * */
 
             merchantService.saveStore(stores);
 

@@ -6,6 +6,7 @@ import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.model.StoresBrandsEntity;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +17,7 @@ import java.sql.SQLException;
  */
 public interface MerchantDaoService extends GenericDaoService<Integer, MerchantEntity>{
 
-    public Boolean saveStore(StoreEntity store) throws Exception;
+    public void saveStore(List<StoreEntity> values) throws Exception;
 
     public StoresBrandsEntity getBrandByBrandName(String brandName) throws Exception;
 }

@@ -21,5 +21,5 @@ public interface MerchantService {
 
     public List<MerchantEntity> getMerchants() throws Exception;
 
-    public void saveStore(Set<StoreEntity> stores) throws Exception;
+    public void saveStore(List<StoreEntity> stores) throws Exception;
 }

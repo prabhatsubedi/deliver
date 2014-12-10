@@ -62,22 +62,21 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public Boolean saveStore(StoreEntity value) throws Exception {
-        getCurrentSession().save(value);
-        return true;
+    public void saveStore(List<StoreEntity> values) throws Exception {
+
+        for (StoreEntity store: values){
+            getCurrentSession().save(store);
+        }
 
     }
 
     @Override
     public StoresBrandsEntity getBrandByBrandName(String brandName) throws Exception {
+
         List<StoresBrandsEntity> storeBrandList = new ArrayList<>();
-        try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandsEntity.class);
-            criteria.add(Restrictions.eq("brand_name", brandName));
-            storeBrandList = criteria.list();
-        } catch (Exception e) {
-            throw e;
-        }
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandsEntity.class);
+        criteria.add(Restrictions.eq("brandName", brandName));
+        storeBrandList = criteria.list();
 
         return storeBrandList.size() > 0 ? storeBrandList.get(0) : null;
     }

@@ -38,7 +38,6 @@ public class MerchantEntity implements Serializable {
     private String businessLogo;
     private String companyRegistrationNo;
     private String vatNo;
-    @Transient
     private UserStatus userStatus;
 
     @Id
@@ -156,6 +155,7 @@ public class MerchantEntity implements Serializable {
         this.vatNo = vatNo;
     }
 
+    @Transient
     public UserStatus getUserStatus() {
         return userStatus;
     }

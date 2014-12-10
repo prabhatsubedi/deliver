@@ -5,7 +5,7 @@
     <div class="sidebar_menu">
         <ul class="nav nav-stacked">
             <li><a href="/admin/dashboard">Dashboard</a></li>
-            <li><a href="/merchant">Merchants</a></li>
+            <li><a href="/merchant/list">Merchants</a></li>
             <li><a href="#">Stores</a></li>
             <li><a href="/courier_staff">Courier Staff</a></li>
             <li><a href="#">Invoices</a></li>

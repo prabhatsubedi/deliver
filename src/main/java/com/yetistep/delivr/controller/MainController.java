@@ -195,6 +195,14 @@ public class MainController {
         return modelAndView;
     }
 
+    @RequestMapping(value = {"/merchant/{page}/**"}, method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView merchant(@PathVariable String page){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("merchant/" + page);
+        return modelAndView;
+    }
+
     @RequestMapping(value = {"/courier_staff"}, method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView addDeliveryBoy(){

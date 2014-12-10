@@ -113,7 +113,7 @@ if(typeof(CourierStaff) == "undefined") var CourierStaff = {};
 
             }
         });
-//        $('#image_input').rules('add', {imageRequired: true});
+        $('#image_input').rules('add', {imageRequired: true});
         $('#full_name').rules('add', {required: true});
         $('#email').rules('add', {email: true});
         $('#mobile').rules('add', {required: true, mobileNumber: true, minlength: 10, maxlength: 10});
@@ -147,7 +147,7 @@ if(typeof(CourierStaff) == "undefined") var CourierStaff = {};
 
         callback.loaderDiv = ".main_content";
 
-        Main.request('organizer/save_dboy', data, callback, headers);
+        Main.request('/organizer/save_dboy', data, callback, headers);
 
     };
 

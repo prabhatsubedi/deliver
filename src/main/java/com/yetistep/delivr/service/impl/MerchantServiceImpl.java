@@ -116,8 +116,10 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         merchantEntities = merchantDaoService.findAll();
         for(MerchantEntity merchantEntity: merchantEntities){
-            if(merchantEntity.getCommissionPercentage() == null){
+            if(merchantEntity.getUser().getPassword().isEmpty()){
                 merchantEntity.setUserStatus(UserStatus.UNVERIFIED);
+            }else if(merchantEntity.getCommissionPercentage() == null){
+                merchantEntity.setUserStatus(UserStatus.VERIFIED);
             }else{
                 if(merchantEntity.getUser().getVerifiedStatus()){
                     merchantEntity.setUserStatus(UserStatus.ACTIVE);
@@ -164,5 +166,17 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         if(merchantEntity == null)
             throw new YSException("VLD011");
         return merchantEntity;
+    }
+
+    @Override
+    public Boolean updateMerchant(MerchantEntity merchantEntity) throws Exception {
+        log.info("Updating merchant with ID:"+merchantEntity.getId());
+        MerchantEntity merchant = merchantDaoService.find(merchantEntity.getId());
+        if(merchant == null)
+            throw new YSException("VLD011");
+        merchant.setWebsite(merchantEntity.getWebsite());
+        merchant.getUser().setFullName(merchantEntity.getUser().getFullName());
+        merchant.getUser().setMobileNumber(merchantEntity.getUser().getMobileNumber());
+        return merchantDaoService.update(merchant);
     }
 }

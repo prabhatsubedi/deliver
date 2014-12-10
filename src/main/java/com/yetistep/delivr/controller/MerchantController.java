@@ -1,7 +1,6 @@
 package com.yetistep.delivr.controller;
 
-import com.yetistep.delivr.dto.HeaderDto;
-import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.MerchantEntity;
 import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.GeneralUtil;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -46,6 +44,20 @@ public class MerchantController {
             GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/update_merchant", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateMerchant(@RequestBody MerchantEntity merchantEntity) {
+        try {
+            merchantService.updateMerchant(merchantEntity);
+            ServiceResponse serviceResponse = new ServiceResponse("Merchant has been saved successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
 

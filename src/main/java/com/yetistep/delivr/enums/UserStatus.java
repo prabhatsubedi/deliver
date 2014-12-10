@@ -8,5 +8,5 @@ package com.yetistep.delivr.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum UserStatus {
-    UNVERIFIED, ACTIVE, INACTIVE;
+    UNVERIFIED, VERIFIED, ACTIVE, INACTIVE;
 }

@@ -23,4 +23,6 @@ public interface MerchantService {
     public void saveStore(List<StoreEntity> stores, HttpHeaders headers) throws Exception;
 
     public MerchantEntity getMerchantById(Integer id) throws Exception;
+
+    public Boolean updateMerchant(MerchantEntity merchantEntity) throws Exception;
 }

@@ -534,14 +534,11 @@ body.assistance_page {
     position: relative;
 }
 .courier_staff_profile_pic .profile_pic_left {
-    margin-right: 200px;
-}
-.courier_staff_profile_pic .profile_pic_left .form-group {
-    margin-bottom: 17px;
+    margin-right: 195px;
 }
 #drop_zone.profile_image {
-    width: 202px;
-    height: 202px;
+    width: 180px;
+    height: 180px;
     position: absolute;
     right: 0px;
     top: 0px;

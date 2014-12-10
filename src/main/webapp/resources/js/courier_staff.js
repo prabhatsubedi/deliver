@@ -80,48 +80,40 @@ if(typeof(CourierStaff) == "undefined") var CourierStaff = {};
         $('#courier_boy_form').validate({
             submitHandler: function() {
 
-                var bool = true;
-                if($('#drop_zone img').attr('src') == undefined || $('#drop_zone img').attr('src') == "") {
-                    bool = false;
-                    $('#drop_zone').addClass('error');
-                } else {
-                    $('#drop_zone').removeClass('error');
-                }
-                if(bool) {
-                    var chk_confirm = confirm('Are you sure you want to add delivery boy?');
-                    if(!chk_confirm) return false;
+                var chk_confirm = confirm('Are you sure you want to add delivery boy?');
+                if(!chk_confirm) return false;
 
-                    var data = {};
-                    var user = {};
+                var data = {};
+                var user = {};
 
-                    user.fullName = $('#full_name').val();
-                    user.emailAddress = $('#email').val();
-                    user.mobileNumber = $('#mobile').val();
-                    user.gender = $('#gender').val();
-                    user.street = $('#street').val();
-                    user.city = $('#city').val();
-                    user.state = $('#state').val();
-                    user.country = $('#country').val();
-                    user.countryCode = "00977";
-                    user.profileImage = $('#drop_zone img').attr('src');
-                    user.role = {role: "ROLE_DELIVERY_BOY"};
+                user.fullName = $('#full_name').val();
+                user.emailAddress = $('#email').val();
+                user.mobileNumber = $('#mobile').val();
+                user.gender = $('#gender').val();
+                user.street = $('#street').val();
+                user.city = $('#city').val();
+                user.state = $('#state').val();
+                user.country = $('#country').val();
+                user.countryCode = "00977";
+                user.profileImage = $('#drop_zone img').attr('src');
+                user.role = {role: "ROLE_DELIVERY_BOY"};
 
-                    data.vehicleType = $('#vehicle_type').val();
-                    data.vehicleNumber = $('#vehicle_no').val();
-                    data.licenseNumber = $('#license_no').val();
-                    data.user = user;
+                data.vehicleType = $('#vehicle_type').val();
+                data.vehicleNumber = $('#vehicle_no').val();
+                data.licenseNumber = $('#license_no').val();
+                data.user = user;
 
-                    var headers = {};
-                    headers.username = $('#mobile').val();
-                    headers.password = $('#password').val();
+                var headers = {};
+                headers.username = $('#mobile').val();
+                headers.password = $('#password').val();
 
-                    CourierStaff.addCourierStaff(data, headers);
-                }
+                CourierStaff.addCourierStaff(data, headers);
+
                 return false;
 
             }
         });
-        $('#image_input').rules('add', {imageRequired: true});
+//        $('#image_input').rules('add', {imageRequired: true});
         $('#full_name').rules('add', {required: true});
         $('#email').rules('add', {email: true});
         $('#mobile').rules('add', {required: true, mobileNumber: true, minlength: 10, maxlength: 10});

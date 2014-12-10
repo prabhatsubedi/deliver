@@ -196,4 +196,14 @@ public class UserServiceImpl extends AbstractManager implements UserService{
         user.setVerifiedStatus(userEntity.getVerifiedStatus());
         return userDaoService.update(user);
     }
+
+    @Override
+    public UserEntity dboyLogin(HeaderDto headerDto) throws Exception {
+        log.info("+++++++++++++++ Checking DBOY Credential +++++++++++++++");
+        UserEntity userEntity = userDaoService.find(headerDto.getUsername(), GeneralUtil.encryptPassword(headerDto.getPassword()));
+        if(userEntity == null)
+            throw new YSException("VLD011");
+
+        return userEntity;
+    }
 }

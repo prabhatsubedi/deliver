@@ -29,4 +29,6 @@ public interface UserService {
     public void changePassword(HeaderDto headerDto, UserEntity userEntity) throws Exception;
 
     public Boolean changeUserStatus(UserEntity userEntity) throws Exception;
+
+    public UserEntity dboyLogin(HeaderDto headerDto) throws Exception;
 }

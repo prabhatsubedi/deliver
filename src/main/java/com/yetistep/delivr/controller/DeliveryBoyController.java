@@ -2,7 +2,9 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
+import com.yetistep.delivr.service.inf.UserService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
 import org.apache.log4j.Logger;
@@ -24,10 +26,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * To change this template use File | Settings | File Templates.
  */
 @Controller
-@RequestMapping(value = "dboy")
+@RequestMapping(value = "/dboy")
 public class DeliveryBoyController {
     @Autowired
-    DeliveryBoyService deliveryBoyService;
+    UserService userService;
 
     Logger log = Logger.getLogger(DeliveryBoyController.class);
 
@@ -38,10 +40,10 @@ public class DeliveryBoyController {
 
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto);
-            DeliveryBoyEntity deliveryBoyEntity =  deliveryBoyService.login(headerDto);
+            UserEntity userEntity =  userService.dboyLogin(headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Delivery boy logged in successfully");
-            serviceResponse.addParam("userDetail", deliveryBoyEntity);
+            serviceResponse.addParam("userDetail", userEntity);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
         } catch (Exception e){

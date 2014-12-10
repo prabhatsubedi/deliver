@@ -62,11 +62,9 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public void saveStore(List<StoreEntity> values) throws Exception {
+    public void saveStore(StoreEntity value) throws Exception {
 
-        for (StoreEntity store: values){
-            getCurrentSession().save(store);
-        }
+            getCurrentSession().save(value);
 
     }
 

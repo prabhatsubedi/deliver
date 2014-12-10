@@ -132,14 +132,29 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
     @Override
-    public void saveStore(List<StoreEntity> stores) throws Exception {
-        log.info("++++++++++++ Saving Store +++++++++++++++");
+    public void saveStore(List<StoreEntity> stores, HttpHeaders headers ) throws Exception {
+        log.info("++++++++++++ Saving Store "+stores.size()+" +++++++++++++++");
+
+        HeaderDto headerDto = new HeaderDto();
+        GeneralUtil.fillHeaderCredential(headers, headerDto);
+
+        MerchantEntity dbMerchant = merchantDaoService.find(Integer.parseInt(headerDto.getId()));
+        if(dbMerchant == null)
+            throw new YSException("VLD011");
+
+
         for (StoreEntity store: stores){
             StoresBrandsEntity storesBrand = merchantDaoService.getBrandByBrandName(store.getStoresBrand().getBrandName());
-            if(storesBrand != null)
+
+            if(storesBrand != null) {
                 store.setStoresBrand(storesBrand);
+            }
+
+            store.getStoresBrand().setMerchant(dbMerchant);
+
+            merchantDaoService.saveStore(store);
         }
-        merchantDaoService.saveStore(stores);
+
 
     }
 }

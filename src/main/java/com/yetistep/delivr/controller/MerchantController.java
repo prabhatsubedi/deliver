@@ -36,8 +36,8 @@ public class MerchantController {
     @ResponseBody
     public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody List<StoreEntity> stores) {
         try {
-            HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            /*HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto);*/
             /*
            private Integer id;
             private StoresBrandsEntity storesBrand;
@@ -60,7 +60,7 @@ public class MerchantController {
             private BigDecimal service_charge;
         * */
 
-            merchantService.saveStore(stores);
+            merchantService.saveStore(stores, headers);
 
             ServiceResponse serviceResponse = new ServiceResponse("Store has been saved successfully");
 //            HttpHeaders httpHeaders = new HttpHeaders();

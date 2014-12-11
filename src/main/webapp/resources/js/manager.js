@@ -104,9 +104,14 @@ if(typeof(Manager) == "undefined") var Manager = {};
          $('#commission').rules('add', {required: true, digits: true, min: 0, max: 100});
 
          $('.trigger_activation').live('click', function(){
+             var statusCheck = $(this).attr('data-status') == 'INACTIVE';
+
+             var chk_confirm = confirm('Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?');
+             if(!chk_confirm) return false;
+
              var data = {};
              data.id = $(this).attr('data-id');
-             data.verifiedStatus = $(this).attr('data-status') == 'INACTIVE';
+             data.verifiedStatus = statusCheck ;
              Manager.changeUserStatus(data);
          });
 

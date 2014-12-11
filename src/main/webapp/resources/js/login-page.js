@@ -55,9 +55,7 @@ $(document).ready(function(){
                 user.subscribeNewsletter = "true";
                 user.role = {role: "ROLE_MERCHANT"};
 
-                data.type = "CORPORATE";
                 data.partnershipStatus = "true";
-                data.commissionPercentage = "0";
                 data.website = $('#url').val();
                 data.agreementDetail = "";
                 data.businessTitle = $('#business_name').val();

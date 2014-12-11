@@ -9,8 +9,19 @@
 
     <script type="text/javascript" src="/resources/js/jquery.validate.js"></script>
     <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
+    <link href="/resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" media="screen" />
 
-    <script type="text/javascript" src="/resources/js/merchant.js"></script>
+    <script type="text/javascript" src="/resources/js/manager.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            Manager.getMerchants();
+
+        });
+
+    </script>
 
 
 </head>
@@ -28,15 +39,16 @@
         </div>
         <div class="main_content">
             <div class="table-view">
-                <table id="advertisers_table">
+                <table id="merchants_table">
                     <thead>
                     <tr>
                         <th>SN</th>
-                        <th><div class="th_name_width"> Merchant Name </div></th>
-                        <th><div class="th_name_width"> Contact Person </div></th>
-                        <th><div class="th_name_width"> Contact No. </div></th>
-                        <th><div class="th_email_width"> Status </div></th>
-                        <th><div class="th_advertisers_action_width"> Action </div></th>
+                        <th><div class="width_150"> Merchant Name </div></th>
+                        <th><div class="width_150"> Contact Person </div></th>
+                        <th><div class="width_150"> Email </div></th>
+                        <th><div class="width_100"> Contact No. </div></th>
+                        <th> Status </th>
+                        <th><div class="width_150"> Action </div></th>
                     </tr>
                     </thead>
                     <tbody>

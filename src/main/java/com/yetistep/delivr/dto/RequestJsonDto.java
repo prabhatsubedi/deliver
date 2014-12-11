@@ -2,7 +2,6 @@ package com.yetistep.delivr.dto;
 
 import com.yetistep.delivr.controller.AnonController;
 import com.yetistep.delivr.enums.PasswordActionType;
-import com.yetistep.delivr.model.TestEntity;
 
 /**
  * Created with IntelliJ IDEA.

@@ -32,6 +32,7 @@ if(typeof(Main) == "undefined") var Main = {};
             headers['Content-Type'] = 'application/json';
 
         var loaderDiv = callback["loaderDiv"];
+        var requestType = callback["get"];
         if (loaderDiv != undefined) {
             if (loaderDiv == "body") {
                 $(loaderDiv).append('<div class="loader"></div>');
@@ -52,7 +53,7 @@ if(typeof(Main) == "undefined") var Main = {};
 
         $.ajax({
             url: url,
-            type: "POST",
+            type: requestType == true ? "GET" : "POST",
             data: parameter.stringify == false ? parameter : JSON.stringify(parameter),
             headers: headers,
             statusCode: {
@@ -115,6 +116,35 @@ if(typeof(Main) == "undefined") var Main = {};
 
         Main.request('/anon/password_assist', data, callback, headers);
 
+    };
+
+    Main.createDataTable = function (selector, data, colindex, sortorder, hideCols){
+        $.extend($.fn.dataTable.defaults, {
+            sDom: '<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
+            columnDefs: [
+                {
+                    targets: hideCols,
+                    visible: false
+                }
+            ],
+            language: {
+                paginate: {
+                    next: '&raquo;',
+                    previous: '&laquo'
+                }
+            }
+        });
+        dataTable = $(selector).dataTable();
+        dataTable.fnClearTable();
+        if(data.length > 0) {
+            dataTable.fnAddData(data);
+            if(colindex != undefined && sortorder != undefined) dataTable.fnSort( [ [colindex, sortorder] ] );
+        }
+        dataTable.fnDraw();
+    }
+
+    Main.ucfirst = function(word){
+        return word.substr(0, 1).toUpperCase() + word.substr(1).toLowerCase();
     };
 
 })(jQuery);

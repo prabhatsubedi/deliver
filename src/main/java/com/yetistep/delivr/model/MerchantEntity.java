@@ -29,7 +29,7 @@ public class MerchantEntity implements Serializable {
     private Integer id;
     private UserEntity user;
     private MerchantType type;
-    private Set<StoresBrandsEntity> storesBrand = new HashSet<StoresBrandsEntity>();
+    private Set<StoresBrandEntity> storesBrand = new HashSet<StoresBrandEntity>();
     private Boolean partnershipStatus;
     private BigDecimal commissionPercentage;
     private String website;
@@ -74,11 +74,11 @@ public class MerchantEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "merchant")
-    public Set<StoresBrandsEntity> getStoresBrand() {
+    public Set<StoresBrandEntity> getStoresBrand() {
         return storesBrand;
     }
 
-    public void setStoresBrand(Set<StoresBrandsEntity> storesBrand) {
+    public void setStoresBrand(Set<StoresBrandEntity> storesBrand) {
         this.storesBrand = storesBrand;
     }
 

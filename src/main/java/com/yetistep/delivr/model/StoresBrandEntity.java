@@ -1,10 +1,14 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,13 +18,14 @@ import java.util.Set;
  * Time: 12:56 PM
  * To change this template use File | Settings | File Templates.
  */
-@Entity(name = "StoresBrandsEntity")
+@Entity(name = "StoresBrandEntity")
 @Table(name="stores_brands")
-public class StoresBrandsEntity {
+public class StoresBrandEntity implements Serializable {
 
    private Integer id;
    private MerchantEntity merchant;
    private Set<StoreEntity> store = new HashSet<StoreEntity>();
+   private List<BrandsCategoryEntity> brandsCategory = new ArrayList<BrandsCategoryEntity>();
    private String brandName;
    private Boolean featured;
    private Integer priority;
@@ -37,6 +42,7 @@ public class StoresBrandsEntity {
         this.id = id;
     }
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "merchant_id")
     public MerchantEntity getMerchant() {
@@ -54,6 +60,15 @@ public class StoresBrandsEntity {
 
     public void setStore(Set<StoreEntity> store) {
         this.store = store;
+    }
+
+    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
+    public List<BrandsCategoryEntity> getBrandsCategory() {
+        return brandsCategory;
+    }
+
+    public void setBrandsCategory(List<BrandsCategoryEntity> brandsCategory) {
+        this.brandsCategory = brandsCategory;
     }
 
     @Column(name = "brand_name")

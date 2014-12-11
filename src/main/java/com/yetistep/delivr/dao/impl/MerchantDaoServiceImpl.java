@@ -1,17 +1,15 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
-import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.model.StoreEntity;
-import com.yetistep.delivr.model.StoresBrandsEntity;
+import com.yetistep.delivr.model.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,13 +67,44 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public StoresBrandsEntity getBrandByBrandName(String brandName) throws Exception {
+    public StoresBrandEntity getBrandByBrandName(String brandName) throws Exception {
 
-        List<StoresBrandsEntity> storeBrandList = new ArrayList<>();
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandsEntity.class);
+        List<StoresBrandEntity> storeBrandList = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
         criteria.add(Restrictions.eq("brandName", brandName));
         storeBrandList = criteria.list();
 
         return storeBrandList.size() > 0 ? storeBrandList.get(0) : null;
+    }
+
+    @Override
+    public CategoryEntity getCategoryById(Integer id) throws Exception {
+        return (CategoryEntity) getCurrentSession().get(CategoryEntity.class, id);
+    }
+
+    @Override
+    public BrandsCategoryEntity getBrandsCategoryByBrandAndCategory(Integer brandId, Integer categoryId) throws Exception {
+        List<BrandsCategoryEntity> brandsCategories = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BrandsCategoryEntity.class);
+        criteria.add(Restrictions.eq("storesBrand.id", brandId));
+        criteria.add(Restrictions.eq("category.id", categoryId));
+        brandsCategories = criteria.list();
+
+        return brandsCategories.size() > 0 ? brandsCategories.get(0) : null;
+
+    }
+
+    @Override
+    public List<CategoryEntity> findParentCategories() throws Exception {
+        List<CategoryEntity> categories = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("name"), "name"))
+                .setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
+        criteria.add(Restrictions.isNull("parent")) ;
+        categories = criteria.list();
+
+        return categories;
     }
 }

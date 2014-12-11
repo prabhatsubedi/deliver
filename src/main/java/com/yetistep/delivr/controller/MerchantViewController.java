@@ -1,10 +1,15 @@
 package com.yetistep.delivr.controller;
 
+import com.yetistep.delivr.dao.inf.MerchantDaoService;
+import com.yetistep.delivr.model.CategoryEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,6 +22,8 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/merchant")
 public class MerchantViewController {
 
+    @Autowired
+    MerchantDaoService merchantDaoService;
 
     @RequestMapping(value = { "/add_store" }, method = RequestMethod.GET)
     public ModelAndView defaultPage() {

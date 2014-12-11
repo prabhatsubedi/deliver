@@ -2,7 +2,7 @@ package com.yetistep.delivr.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,10 +16,13 @@ import java.util.Set;
 @Entity(name="CategoryEntity")
 @Table(name="categories")
 public class CategoryEntity implements Serializable {
+
+
    private Integer id;
    private CategoryEntity parent;
    private Set<ItemEntity> item = new HashSet<ItemEntity>();
    private Set<CategoryEntity> child = new HashSet<CategoryEntity>();
+   private Set<BrandsCategoryEntity> brandsCategory = new HashSet<BrandsCategoryEntity>();
    private StoreEntity store;
    private String name;
    private Boolean featured;
@@ -53,6 +56,15 @@ public class CategoryEntity implements Serializable {
 
     public void setChild(Set<CategoryEntity> child) {
         this.child = child;
+    }
+
+    @OneToMany(mappedBy = "category")
+    public Set<BrandsCategoryEntity> getBrandsCategory() {
+        return brandsCategory;
+    }
+
+    public void setBrandsCategory(Set<BrandsCategoryEntity> brandsCategory) {
+        this.brandsCategory = brandsCategory;
     }
 
     @OneToMany(mappedBy = "category")

@@ -19,7 +19,7 @@ import java.util.Set;
 public class StoreEntity implements Serializable {
 
     private Integer id;
-    private StoresBrandsEntity storesBrand;
+    private StoresBrandEntity storesBrand;
     private Set<CategoryEntity> category = new HashSet<CategoryEntity>();
     private Set<ItemsStoreEntity> itemsStore = new HashSet<ItemsStoreEntity>();
     private Set<OrderEntity> order = new HashSet<OrderEntity>();
@@ -51,11 +51,11 @@ public class StoreEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "stores_brand_id")
-    public StoresBrandsEntity getStoresBrand() {
+    public StoresBrandEntity getStoresBrand() {
         return storesBrand;
     }
 
-    public void setStoresBrand(StoresBrandsEntity storesBrand) {
+    public void setStoresBrand(StoresBrandEntity storesBrand) {
         this.storesBrand = storesBrand;
     }
 

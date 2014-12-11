@@ -4,6 +4,7 @@ import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.PostDataDto;
 import com.yetistep.delivr.enums.UserStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.MerchantService;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -139,11 +141,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
     @Override
-    public void saveStore(List<StoreEntity> stores, HttpHeaders headers ) throws Exception {
-        log.info("++++++++++++ Saving Store "+stores.size()+" +++++++++++++++");
+    public void saveStore(PostDataDto postData, HttpHeaders headers ) throws Exception {
+        log.info("++++++++++++ Saving Store "+postData.getStores().size()+" +++++++++++++++");
 
         HeaderDto headerDto = new HeaderDto();
         GeneralUtil.fillHeaderCredential(headers, headerDto);
+
+        List<StoreEntity> stores = postData.getStores();
+        String brandName = postData.getBrandName();
+        List<Integer> categories = postData.getCategories();
 
         MerchantEntity dbMerchant = merchantDaoService.find(Integer.parseInt(headerDto.getId()));
         if(dbMerchant == null)
@@ -151,15 +157,39 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
         for (StoreEntity store: stores){
-            StoresBrandsEntity storesBrand = merchantDaoService.getBrandByBrandName(store.getStoresBrand().getBrandName());
 
-            if(storesBrand != null) {
+            StoresBrandEntity storesBrand = merchantDaoService.getBrandByBrandName(brandName);
+            //if brand with current name not exists add brand
+            if(storesBrand == null) {
+                StoresBrandEntity newStoresBrand = new StoresBrandEntity();
+                newStoresBrand.setBrandName(brandName);
+                store.setStoresBrand(newStoresBrand);
+            }else{
                 store.setStoresBrand(storesBrand);
             }
 
-            store.getStoresBrand().setMerchant(dbMerchant);
+            List<BrandsCategoryEntity> brandsCategories = new ArrayList<BrandsCategoryEntity>();
 
+            for (Integer categoryId: categories){
+                BrandsCategoryEntity brandsCategory = merchantDaoService.getBrandsCategoryByBrandAndCategory(store.getStoresBrand().getId(), categoryId);
+
+                //if brands category with current category and and brand add brandCategory
+                if(brandsCategory == null){
+                    BrandsCategoryEntity newBrandsCategory = new BrandsCategoryEntity();
+                    CategoryEntity category = merchantDaoService.getCategoryById(categoryId);
+                    newBrandsCategory.setCategory(category);
+                    newBrandsCategory.setStoresBrand(store.getStoresBrand());
+                    brandsCategories.add(newBrandsCategory);
+                }else{
+                    brandsCategory.setStoresBrand(store.getStoresBrand());
+                    brandsCategories.add(brandsCategory);
+                }
+            }
+
+            store.getStoresBrand().setBrandsCategory(brandsCategories);
+            store.getStoresBrand().setMerchant(dbMerchant);
             merchantDaoService.saveStore(store);
+
         }
 
 
@@ -183,5 +213,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         merchant.getUser().setFullName(merchantEntity.getUser().getFullName());
         merchant.getUser().setMobileNumber(merchantEntity.getUser().getMobileNumber());
         return merchantDaoService.update(merchant);
+    }
+
+    @Override
+    public List<CategoryEntity> getParentCategories() throws Exception {
+        List<CategoryEntity> categories = merchantDaoService.findParentCategories();
+        return categories;
     }
 }

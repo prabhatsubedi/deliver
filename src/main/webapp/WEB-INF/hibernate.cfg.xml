@@ -32,7 +32,8 @@
        <mapping class="com.yetistep.delivr.model.ItemsStoreEntity"/>
        <mapping class="com.yetistep.delivr.model.OrderEntity"/>
        <mapping class="com.yetistep.delivr.model.StoreEntity"/>
-       <mapping class="com.yetistep.delivr.model.StoresBrandsEntity"/>
+       <mapping class="com.yetistep.delivr.model.StoresBrandEntity"/>
+       <mapping class="com.yetistep.delivr.model.BrandsCategoryEntity"/>
 
     </session-factory>
 </hibernate-configuration>

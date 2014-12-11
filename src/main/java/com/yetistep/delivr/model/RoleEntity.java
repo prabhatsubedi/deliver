@@ -6,6 +6,7 @@ import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.util.JsonDateSerializer;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +20,7 @@ import java.util.Set;
  */
 @Entity(name="RoleEntity")
 @Table(name="roles")
-public class RoleEntity {
+public class RoleEntity implements Serializable {
 
     private Integer id;
     private Role role;

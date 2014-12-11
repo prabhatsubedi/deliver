@@ -24,7 +24,6 @@ import java.util.List;
 @Entity(name="UserEntity")
 @Table(name = "users")
 @DynamicUpdate
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = UserEntity.class)
 public class UserEntity implements Serializable {
 
     private Integer id;

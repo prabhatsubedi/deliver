@@ -1,5 +1,7 @@
 package com.yetistep.delivr.controller;
 
+import com.yetistep.delivr.dto.PostDataDto;
+import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
 import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.service.inf.MerchantService;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,12 +35,31 @@ public class MerchantController {
 
     @RequestMapping(value = "/save_store", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody List<StoreEntity> stores) {
+    public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody PostDataDto postData) {
         try {
-            merchantService.saveStore(stores, headers);
+
+            merchantService.saveStore(postData, headers);
 
             ServiceResponse serviceResponse = new ServiceResponse("Store(Stores) has been saved successfully");
 
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/get_parent_categories", method = RequestMethod.GET)
+    public ResponseEntity<ServiceResponse> getParentCategories(){
+        try {
+
+            List<CategoryEntity> categories =  merchantService.getParentCategories();
+
+            ServiceResponse serviceResponse = new ServiceResponse("Categories retrieved successfully");
+            serviceResponse.addParam("categories", categories);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
 
         } catch (Exception e) {

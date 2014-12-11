@@ -1,9 +1,9 @@
 package com.yetistep.delivr.dao.inf;
 
 import com.yetistep.delivr.abs.GenericDaoService;
-import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.model.StoreEntity;
-import com.yetistep.delivr.model.StoresBrandsEntity;
+import com.yetistep.delivr.model.*;
+
+import java.util.List;
 
 
 /**
@@ -17,5 +17,11 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public void saveStore(StoreEntity value) throws Exception;
 
-    public StoresBrandsEntity getBrandByBrandName(String brandName) throws Exception;
+    public StoresBrandEntity getBrandByBrandName(String brandName) throws Exception;
+
+    public CategoryEntity getCategoryById(Integer id) throws  Exception;
+
+    public List<CategoryEntity> findParentCategories() throws Exception;
+
+    public BrandsCategoryEntity getBrandsCategoryByBrandAndCategory(Integer brandId, Integer categoryId) throws Exception;
 }

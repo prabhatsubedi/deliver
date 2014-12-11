@@ -1,5 +1,6 @@
 package com.yetistep.delivr.service.inf;
 
+import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.UserEntity;
 
@@ -22,5 +23,7 @@ public interface DeliveryBoyService {
     public Boolean updateDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
 
     public Boolean updateDeliveryBoyStatus(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
+
+    public DeliveryBoyEntity dboyLogin(HeaderDto headerDto) throws Exception;
 
 }

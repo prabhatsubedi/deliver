@@ -1,6 +1,10 @@
 package com.yetistep.delivr.abs;
 
-import com.yetistep.delivr.util.EmailUtil;
+import com.yetistep.delivr.util.*;
+import net.sf.uadetector.ReadableUserAgent;
+import net.sf.uadetector.UserAgentStringParser;
+import net.sf.uadetector.service.UADetectorServiceFactory;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ public abstract class AbstractManager {
     @Autowired
     HttpServletRequest httpServletRequest;
 
+    Logger log = Logger.getLogger(AbstractManager.class);
     public String getServerName(){
       //Requested Server Name
       return httpServletRequest.getServerName();
@@ -47,6 +52,32 @@ public abstract class AbstractManager {
         EmailUtil email = new EmailUtil(mail);
         email.sendMail();
         return true;
+    }
+
+    public void validateMobileClient(String token) throws Exception {
+        log.info("++++++++++++++ Validating mobile client +++++++++++++++");
+
+        if(token == null)
+            throw new YSException("SEC002");
+
+        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+        ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
+
+        String timeStr = null;
+        String family = agent.getOperatingSystem().getFamily().toString();
+
+        if (family.toUpperCase().equals("IOS")) {
+            timeStr = RNCryptoEncDec.decryptAccessToken(token);
+        } else{
+            timeStr = EncDecUtil.decryptAccessToken(token, MessageBundle.getSecretKey());
+        }
+        Long timeVal = Long.valueOf(timeStr).longValue();
+        Long now = System.currentTimeMillis();
+        Long diff = (now - timeVal) / 1000;
+
+        if (diff > 120) //if diff more than 2 minutes
+            throw  new YSException("SC002");
+
     }
 
 }

@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
+import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
@@ -133,5 +134,20 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
         dBoyEntity.setAvailabilityStatus(deliveryBoyEntity.getAvailabilityStatus());
         return deliveryBoyDaoService.update(dBoyEntity);
+    }
+
+    @Override
+    public DeliveryBoyEntity dboyLogin(HeaderDto headerDto) throws Exception {
+        log.info("+++++++++++++++ Checking DBOY Credential +++++++++++++++");
+
+        UserEntity userEntity = userDaoService.findByUserName(headerDto.getUsername());
+
+        if(userEntity == null)
+            throw new YSException("VLD011");
+
+        GeneralUtil.matchDBPassword(headerDto.getPassword(), userEntity.getPassword());
+
+        DeliveryBoyEntity deliveryBoyEntity = deliveryBoyDaoService.find(userEntity.getDeliveryBoy().getId());
+        return deliveryBoyEntity;
     }
 }

@@ -141,31 +141,7 @@ public class GeneralUtil {
         return true;
     }
 
-    public void validateMobileClient(String token) throws Exception {
-        log.info("++++++++++++++ Validating mobile client +++++++++++++++");
 
-        if(token == null)
-            throw new YSException("SEC002");
-
-        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
-        ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
-
-        String timeStr = null;
-        String family = agent.getOperatingSystem().getFamily().toString();
-
-        if (family.toUpperCase().equals("IOS")) {
-            timeStr = RNCryptoEncDec.decryptAccessToken(token);
-        } else{
-            timeStr = EncDecUtil.decryptAccessToken(token, MessageBundle.getSecretKey());
-        }
-        Long timeVal = Long.valueOf(timeStr).longValue();
-        Long now = System.currentTimeMillis();
-        Long diff = (now - timeVal) / 1000;
-
-        if (diff > 120) //if diff more than 2 minutes
-            throw  new YSException("SC002");
-
-    }
 
     public static String generateAccessToken(String osFamily) throws Exception {
         String tokenstr = null;

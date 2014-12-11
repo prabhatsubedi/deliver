@@ -1,5 +1,6 @@
 package com.yetistep.delivr.controller;
 
+import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.UserEntity;
@@ -27,9 +28,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping(value = "/dboy")
-public class DeliveryBoyController {
+public class DeliveryBoyController extends AbstractManager{
     @Autowired
-    UserService userService;
+    DeliveryBoyService deliveryBoyService;
 
     Logger log = Logger.getLogger(DeliveryBoyController.class);
 
@@ -40,10 +41,13 @@ public class DeliveryBoyController {
 
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto);
-            UserEntity userEntity =  userService.dboyLogin(headerDto);
+
+            validateMobileClient(headerDto.getAccessToken());
+
+            DeliveryBoyEntity deliveryBoyEntity =  deliveryBoyService.dboyLogin(headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Delivery boy logged in successfully");
-            serviceResponse.addParam("userDetail", userEntity);
+            serviceResponse.addParam("userDetail", deliveryBoyEntity);
 
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 

@@ -90,7 +90,7 @@ public class EncDecUtil {
         log.info("access token:-"  +token);
         StringTokenizer stringTokenizer = new StringTokenizer(token, ":");
         String str1 = stringTokenizer.nextToken();
-        if (!str1.equals("request")) throw new YSException("SC001");
+        if (!str1.equals("request")) throw new YSException("SEC001");
         String now = stringTokenizer.nextToken();
         log.info("decryptAccessToken: [" + str1 + "  time:-" + now +"]");
         return now;

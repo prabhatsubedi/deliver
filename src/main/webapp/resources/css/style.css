@@ -39,11 +39,14 @@ body {
     -ms-user-select: none;
     user-select: none;
 }
+.width_100 {
+    min-width: 100px;
+}
 .width_150 {
     min-width: 150px;
 }
-.width_100 {
-    min-width: 100px;
+.width_200 {
+    min-width: 200px;
 }
 .modal-body {
     width: 100%;
@@ -234,13 +237,13 @@ body {
     font-size: 30px;
     background-color: #eeeded;
 }
-.modal_form .modal-body .nav ul {
+.modal_form .modal-body ul.nav {
     background-color: #cfcfcf;
 }
-.modal_form .modal-body .nav ul li {
+.modal_form .modal-body ul.nav li {
     margin-left: 0px;
 }
-.modal_form .modal-body .nav ul li a {
+.modal_form .modal-body ul.nav li a {
     border-radius: 0px;
     font-size: 20px;
     color: #FFFFFF;
@@ -249,20 +252,20 @@ body {
     outline: none;
     background-color: #ff9235;
 }
-.modal_form .modal-body .nav ul li.active a {
+.modal_form .modal-body ul.nav li.active a {
     background-color: #d0670e;
     padding-right: 15px;
 }
-.modal_form .modal-body .nav ul li.active + li a {
+.modal_form .modal-body ul.nav li.active + li a {
     background-image: url("/resources/images/signup-nav.png");
     background-repeat: no-repeat;
     background-position: center left;
     padding-left: 52px;
 }
-.modal_form .modal-body .nav ul li.passed_tab a {
+.modal_form .modal-body ul.nav li.passed_tab a {
     background-color: #d0670e;
 }
-.modal_form .modal-body .nav ul li.disabled_tab a {
+.modal_form .modal-body ul.nav li.disabled_tab a {
     background-color: transparent;
     padding-right: 30px;
 }
@@ -285,7 +288,7 @@ body {
     height: 60px;
     font-size: 25px;
     background-color: #e0e0e0;
-    border: none;
+    border: none !important;
     border-radius: 0px;
 }
 .modal_form .bootstrap-select button.dropdown-toggle .filter-option {
@@ -546,8 +549,8 @@ body.assistance_page {
 .form_container {
     max-width: 700px;
 }
-.form_container .form-control {
-    border: 1px solid #cbcaca;
+.form_container .form-control, .form_container .bootstrap-select button.dropdown-toggle {
+    border: 1px solid #cbcaca !important;
     border-radius: 0px;
     height: 50px;
     line-height: 50px;

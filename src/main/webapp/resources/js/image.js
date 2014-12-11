@@ -25,7 +25,14 @@ chk_w = chk_h = 200;
         {
             if(e.originalEvent.dataTransfer.files[0] != undefined) {
                 $(this).removeClass("entered").addClass("dropped");
-                Image.readFile(e.originalEvent.dataTransfer.files[0]);
+                var file = e.originalEvent.dataTransfer.files[0];
+                var isValid = /\.(jpg|jpeg|png)$/i.test(file.name);
+                if(!isValid) {
+                    alert('Only PNG, JPG and JPEG files are supported.');
+                    return false;
+                } else {
+                    Image.readFile(file);
+                }
             } else {
                 $(this).removeClass("entered dropped");
             }
@@ -76,6 +83,7 @@ chk_w = chk_h = 200;
             var isValid = /\.(jpg|jpeg|png)$/i.test(input.value);
             input.value == '';
             if(!isValid) {
+                alert('Only PNG, JPG and JPEG files are supported.');
                 return false;
             } else {
                 Image.readFile(tempInput.files[0]);

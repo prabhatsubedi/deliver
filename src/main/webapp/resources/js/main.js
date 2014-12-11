@@ -32,7 +32,7 @@ if(typeof(Main) == "undefined") var Main = {};
             headers['Content-Type'] = 'application/json';
 
         var loaderDiv = callback["loaderDiv"];
-        var requestType = callback["get"];
+        var requestType = callback["requestType"];
         if (loaderDiv != undefined) {
             if (loaderDiv == "body") {
                 $(loaderDiv).append('<div class="loader"></div>');
@@ -53,7 +53,7 @@ if(typeof(Main) == "undefined") var Main = {};
 
         $.ajax({
             url: url,
-            type: requestType == true ? "GET" : "POST",
+            type: requestType != undefined ? requestType : "POST",
             data: parameter.stringify == false ? parameter : JSON.stringify(parameter),
             headers: headers,
             statusCode: {

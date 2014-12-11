@@ -45,12 +45,10 @@ if(typeof(Manager) == "undefined") var Manager = {};
 
             $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
-            Manager.loadMerchantActivation();
-
         };
 
         callback.loaderDiv = "body";
-        callback.get = true;
+        callback.requestType = "GET";
 
         Main.request('/organizer/get_merchants', {}, callback);
 
@@ -112,7 +110,7 @@ if(typeof(Manager) == "undefined") var Manager = {};
 
              var data = {};
              data.id = $(this).attr('data-id');
-             data.verifiedStatus = statusCheck ;
+             data.verifiedStatus = "" + statusCheck ;
              Manager.changeUserStatus(data);
          });
 
@@ -128,7 +126,7 @@ if(typeof(Manager) == "undefined") var Manager = {};
             alert(data.message);
             if (data.success == true) {
                 $('#modal_activation').modal('hide');
-                Merchant.getMerchants();
+                Manager.getMerchants();
             }
         };
 
@@ -143,13 +141,60 @@ if(typeof(Manager) == "undefined") var Manager = {};
         var callback = function (status, data) {
             alert(data.message);
             if (data.success == true) {
-                Merchant.getMerchants();
+                Manager.getMerchants();
             }
         };
 
         callback.loaderDiv = "body";
+        callback.requestType = "PUT";
 
         Main.request('/organizer/change_user_status', data, callback);
+
+    };
+
+    Manager.getCourierStaffs = function() {
+
+        var callback = function (status, data) {
+
+            console.log(data);
+            if(!data.success){
+                alert(data.message);
+                return;
+            }
+            var courierStaffs = data.params.deliveryBoys;
+            var tdata = [];
+
+            for(i = 0; i < courierStaffs.length; i++){
+                var courierStaff = courierStaffs[i];
+
+                var id = courierStaff.id;
+                var link_courier_staff = '<a href="/courier_staff/dashboard/' + id  + '">' + courierStaff.user.fullName + '</a>';
+                var number = courierStaff.user.mobileNumber;
+                var order_no = 0;
+                var order_name = 0;
+                var job_status = 0;
+                var balance = 0;
+                var action = '<div class="action_links">' +
+                    '<a href="/courier_staff/profile/' + id  + '">Profile</a>' +
+                    '<a href="#">View on Map</a>' +
+                    '<a href="#">View Accounts</a>' +
+                    '</div>';
+
+
+                var row = [id, link_courier_staff, number, order_no, order_name, job_status, balance, action];
+                tdata.push(row);
+            }
+
+            Main.createDataTable("#courier_staff_table", tdata);
+
+            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+
+        };
+
+        callback.loaderDiv = "body";
+        callback.requestType = "GET";
+
+        Main.request('/organizer/get_dboys', {}, callback);
 
     };
 

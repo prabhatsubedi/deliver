@@ -24,7 +24,7 @@ import java.util.List;
 @Entity(name="UserEntity")
 @Table(name = "users")
 @DynamicUpdate
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = UserEntity.class)
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = UserEntity.class)
 public class UserEntity implements Serializable {
 
     private Integer id;
@@ -74,7 +74,6 @@ public class UserEntity implements Serializable {
         this.role = role;
     }
 
-    @JsonManagedReference("user-dboy")
     @JsonBackReference("dboy-user")
     @OneToOne(mappedBy = "user")
     public DeliveryBoyEntity getDeliveryBoy() {

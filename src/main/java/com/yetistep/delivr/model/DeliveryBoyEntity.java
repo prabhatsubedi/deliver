@@ -21,7 +21,7 @@ import java.util.Set;
  */
 @Entity(name="DeliveryBoyEntity")
 @Table(name="delivery_boys")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = DeliveryBoyEntity.class)
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = DeliveryBoyEntity.class)
 public class DeliveryBoyEntity implements Serializable {
 
     private Integer id;
@@ -55,7 +55,6 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @JsonManagedReference("dboy-user")
-    @JsonBackReference("user-dboy")
     @OneToOne(cascade = { CascadeType.ALL })
     @JoinColumn(name = "user_id")
     public UserEntity getUser() {

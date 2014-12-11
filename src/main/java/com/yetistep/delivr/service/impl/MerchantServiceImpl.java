@@ -98,15 +98,20 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         if(merchantEntity.getCommissionPercentage() == null || BigDecimalUtil.isZero(merchantEntity.getCommissionPercentage()))
               throw new YSException("MRC001");
 
-        if(merchantEntity.getType()==null || merchantEntity.getType().toString().isEmpty())
+        if(merchantEntity.getPartnershipStatus()==null)
               throw new YSException("MRC002");
 
-        dbMerchant.getUser().setVerifiedStatus(true);
+        UserEntity user = dbMerchant.getUser();
+        user.setVerifiedStatus(true);
         dbMerchant.setCommissionPercentage(merchantEntity.getCommissionPercentage());
-        dbMerchant.setType(merchantEntity.getType());
+        dbMerchant.setPartnershipStatus(merchantEntity.getPartnershipStatus());
         merchantDaoService.update(dbMerchant);
 
-
+        //Sending Email For Merchant
+        String url = getServerUrl();
+        String body = EmailMsg.activateMerchant(url, user.getFullName(), " Your account has been activated");
+        String subject = "Delivr: Your account has been activated ";
+        sendMail(user.getUsername(), body, subject);
     }
 
     @Override

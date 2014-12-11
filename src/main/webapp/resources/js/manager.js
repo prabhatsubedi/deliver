@@ -24,7 +24,7 @@ if(typeof(Manager) == "undefined") var Manager = {};
 
                 var userId = merchant.id;
                 var status = merchant.userStatus;
-                var link_activation = "", profile = "";
+                var link_activation = "", link_profile = "";
 
                 if(status == "VERIFIED") {
                     link_activation = '<a href="#" data-id="' + userId + '"  data-status="' + status + '"  data-toggle="modal" data-target="#modal_activation">Activate</a>';
@@ -33,10 +33,11 @@ if(typeof(Manager) == "undefined") var Manager = {};
                 } else if (status == "INACTIVE") {
                     link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '" data-status="' + status + '" >Activate</a>';
                 }
-                profile = '<a href="/merchant/profile' + userId  + '">Profile</a>';
-                var action = profile + link_activation;
+                link_profile = '<a href="/merchant/profile/' + userId  + '">Profile</a>';
+                var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
+                var link_merchant = '<a href="/merchant/dashboard/' + userId  + '">' + merchant.businessTitle + '</a>';
 
-                var row = [userId, merchant.businessTitle, merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
+                var row = [userId, link_merchant, merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
                 tdata.push(row);
             }
 

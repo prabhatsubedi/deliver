@@ -440,4 +440,15 @@ table#payout_table td .error-msg, table#payout_table_success td .error-msg {
     font-weight: bold;
 }
 
+.dataTable .action_links {
+    margin: 0px -10px;
+}
+.dataTable .action_links a {
+    padding: 0px 10px;
+    border-left: 1px solid;
+}
+.dataTable .action_links a:first-child {
+    border-left: none;
+}
+
 /* Custom css end */

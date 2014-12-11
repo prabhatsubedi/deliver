@@ -1,6 +1,7 @@
 package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.model.CountryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
@@ -102,13 +103,13 @@ public class AnonController {
 
     @RequestMapping(value = "/password_assist", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders headers, @RequestBody FeaturePassword featurePassword) {
+    public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto actionType) {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto);
-            String msg = userService.performPasswordAction(headerDto, featurePassword.actionType);
+            String msg = userService.performPasswordAction(headerDto, actionType.getActionType());
 
-            ServiceResponse serviceResponse = new ServiceResponse(msg);
+            ServiceResponse serviceResponse = new ServiceResponse("");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error occurred while assisting password", e);
@@ -134,8 +135,4 @@ public class AnonController {
         }
     }
 
-
-    final class FeaturePassword {
-        public PasswordActionType actionType;
-    }
 }

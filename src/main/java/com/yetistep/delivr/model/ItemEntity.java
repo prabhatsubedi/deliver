@@ -20,14 +20,14 @@ public class ItemEntity implements Serializable {
     private Integer id;
     private CategoryEntity category;
     private String name;
-    private Set<ItemsImageEntity> itemsImage = new HashSet<ItemsImageEntity>();
+    private Set<ItemsImageEntity> itemsImage;
     private String Description;
     private Integer availableQuantity;
     private Timestamp availableStartTime;
     private Timestamp availableEndTime;
-    private Set<ItemsStoreEntity> itemsStores = new HashSet<ItemsStoreEntity>();
-    private Set<ItemsAttributeEntity> attributes = new HashSet<ItemsAttributeEntity>();
-    private Set<OrderEntity> order = new HashSet<OrderEntity>();
+    private Set<ItemsStoreEntity> itemsStores;
+    private Set<ItemsAttributeEntity> attributes;
+    private Set<OrderEntity> order;
     private Integer maxOrderQuantity;
     private Integer minOrderQuantity;
     private Timestamp createdDate;
@@ -190,7 +190,7 @@ public class ItemEntity implements Serializable {
         this.listingDays = listingDays;
     }
 
-    @Column(name = "payment_method_cd")
+    @Column(name = "payment_method_cd", columnDefinition = "TINYINT(1)")
     public Boolean getPaymentMethodCd() {
         return paymentMethodCd;
     }
@@ -199,7 +199,7 @@ public class ItemEntity implements Serializable {
         this.paymentMethodCd = paymentMethodCd;
     }
 
-    @Column(name = "payment_method_cc")
+    @Column(name = "payment_method_cc", columnDefinition = "TINYINT(1)")
     public Boolean getPaymentMethodCc() {
         return paymentMethodCc;
     }

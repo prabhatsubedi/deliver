@@ -24,8 +24,8 @@ public class StoresBrandEntity implements Serializable {
 
    private Integer id;
    private MerchantEntity merchant;
-   private Set<StoreEntity> store = new HashSet<StoreEntity>();
-   private List<BrandsCategoryEntity> brandsCategory = new ArrayList<BrandsCategoryEntity>();
+   private Set<StoreEntity> store;
+   private List<BrandsCategoryEntity> brandsCategory;
    private String brandName;
    private Boolean featured;
    private Integer priority;
@@ -80,7 +80,7 @@ public class StoresBrandEntity implements Serializable {
         this.brandName = brandName;
     }
 
-    @Column(name = "featured", columnDefinition = "int default '0'")
+    @Column(name = "featured", columnDefinition = "TINYINT(1) default '0'")
     public Boolean getFeatured() {
         return featured;
     }

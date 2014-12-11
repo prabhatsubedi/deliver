@@ -19,7 +19,7 @@ public class CustomerEntity implements Serializable {
 
     private Integer id;
     private UserEntity user;
-    private Set<OrderEntity> order = new HashSet<OrderEntity>();
+    private Set<OrderEntity> order;
     private Integer totalOrderPlaced;
     private Integer totalOrderDelivered;
     private BigDecimal averageRating;

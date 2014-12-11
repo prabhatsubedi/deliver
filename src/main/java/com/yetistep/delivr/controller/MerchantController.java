@@ -1,9 +1,8 @@
 package com.yetistep.delivr.controller;
 
-import com.yetistep.delivr.dto.PostDataDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,7 +33,7 @@ public class MerchantController {
 
     @RequestMapping(value = "/save_store", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody PostDataDto postData) {
+    public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto postData) {
         try {
 
             merchantService.saveStore(postData, headers);

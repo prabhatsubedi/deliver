@@ -4,7 +4,7 @@ import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
-import com.yetistep.delivr.dto.PostDataDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.UserStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.MerchantService;
@@ -16,7 +16,6 @@ import org.springframework.http.HttpHeaders;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -141,7 +140,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
     @Override
-    public void saveStore(PostDataDto postData, HttpHeaders headers ) throws Exception {
+    public void saveStore(RequestJsonDto postData, HttpHeaders headers ) throws Exception {
         log.info("++++++++++++ Saving Store "+postData.getStores().size()+" +++++++++++++++");
 
         HeaderDto headerDto = new HeaderDto();

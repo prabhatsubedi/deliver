@@ -26,7 +26,7 @@ public class DeliveryBoyEntity implements Serializable {
 
     private Integer id;
     private UserEntity user;
-    private Set<OrderEntity> order = new HashSet<OrderEntity>();
+    private Set<OrderEntity> order;
     private DBoyStatus availabilityStatus;
     private BigDecimal averageRating;
     private Integer totalOrderTaken;

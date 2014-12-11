@@ -29,7 +29,7 @@ public class MerchantEntity implements Serializable {
     private Integer id;
     private UserEntity user;
     private MerchantType type;
-    private Set<StoresBrandEntity> storesBrand = new HashSet<StoresBrandEntity>();
+    private Set<StoresBrandEntity> storesBrand;
     private Boolean partnershipStatus;
     private BigDecimal commissionPercentage;
     private String website;

@@ -1,13 +1,11 @@
 package com.yetistep.delivr.service.inf;
 
-import com.yetistep.delivr.dto.PostDataDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.model.StoreEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,7 +21,7 @@ public interface MerchantService {
 
     public List<MerchantEntity> getMerchants() throws Exception;
 
-    public void saveStore(PostDataDto postData, HttpHeaders headers) throws Exception;
+    public void saveStore(RequestJsonDto postData, HttpHeaders headers) throws Exception;
 
     public List<CategoryEntity> getParentCategories() throws Exception;
 

@@ -62,7 +62,7 @@ public class OrderEntity implements Serializable {
         this.orderVerificationCode = orderVerificationCode;
     }
 
-    @Column(name = "order_verification_status")
+    @Column(name = "order_verification_status", columnDefinition = "TINYINT(1)")
     public Boolean getOrderVerificationStatus() {
         return orderVerificationStatus;
     }

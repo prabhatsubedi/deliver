@@ -24,7 +24,7 @@ public class RoleEntity implements Serializable {
 
     private Integer id;
     private Role role;
-    private Set<UserEntity> user = new HashSet<UserEntity>();
+    private Set<UserEntity> user;
     private Timestamp createdDate;
 
     @Id

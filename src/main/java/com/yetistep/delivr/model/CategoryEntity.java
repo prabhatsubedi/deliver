@@ -20,9 +20,9 @@ public class CategoryEntity implements Serializable {
 
    private Integer id;
    private CategoryEntity parent;
-   private Set<ItemEntity> item = new HashSet<ItemEntity>();
-   private Set<CategoryEntity> child = new HashSet<CategoryEntity>();
-   private Set<BrandsCategoryEntity> brandsCategory = new HashSet<BrandsCategoryEntity>();
+   private Set<ItemEntity> item;
+   private Set<CategoryEntity> child;
+   private Set<BrandsCategoryEntity> brandsCategory;
    private StoreEntity store;
    private String name;
    private Boolean featured;
@@ -96,7 +96,7 @@ public class CategoryEntity implements Serializable {
         this.name = name;
     }
 
-    @Column(name = "featured", columnDefinition = "int default '0'")
+    @Column(name = "featured", columnDefinition = "TINYINT(1) default '0'")
     public Boolean getFeatured() {
         return featured;
     }
@@ -105,7 +105,7 @@ public class CategoryEntity implements Serializable {
         this.featured = featured;
     }
 
-    @Column(name = "priority", unique = true)
+    @Column(name = "priority")
     public Integer getPriority() {
         return priority;
     }

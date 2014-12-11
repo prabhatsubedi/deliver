@@ -20,9 +20,9 @@ public class StoreEntity implements Serializable {
 
     private Integer id;
     private StoresBrandEntity storesBrand;
-    private Set<CategoryEntity> category = new HashSet<CategoryEntity>();
-    private Set<ItemsStoreEntity> itemsStore = new HashSet<ItemsStoreEntity>();
-    private Set<OrderEntity> order = new HashSet<OrderEntity>();
+    private Set<CategoryEntity> category;
+    private Set<ItemsStoreEntity> itemsStore;
+    private Set<OrderEntity> order;
     private String name;
     private String street;
     private String locality;

@@ -555,6 +555,7 @@ body.assistance_page {
     height: 50px;
     line-height: 50px;
     padding: 0px 20px;
+    font-size: 14px;
 }
 .form_container .form-control:focus {
     border: 1px solid #66afe9;

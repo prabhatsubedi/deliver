@@ -52,7 +52,7 @@
 
                         <div class="profile_pic_left">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Name of Courier Boy">
+                                <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Name of Courier Staff">
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="email" name="email" placeholder="Email Address (Optional)">

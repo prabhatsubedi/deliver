@@ -82,7 +82,7 @@ public class MerchantEntity implements Serializable {
         this.storesBrand = storesBrand;
     }
 
-    @Column(name = "partnership_status", nullable = false)
+    @Column(name = "partnership_status", nullable = false, columnDefinition = "TINYINT(1)")
     public Boolean getPartnershipStatus() {
         return partnershipStatus;
     }

@@ -196,7 +196,7 @@ public class UserEntity implements Serializable {
         this.mobileNumber = mobileNumber;
     }
 
-    @Column(name = "mobile_verification_status", nullable = false)
+    @Column(name = "mobile_verification_status", nullable = false, columnDefinition = "TINYINT(1)")
     public Boolean getMobileVerificationStatus() {
         return mobileVerificationStatus;
     }
@@ -243,7 +243,7 @@ public class UserEntity implements Serializable {
         this.createdDate = createdDate;
     }
 
-    @Column(name = "black_list_status", nullable = false)
+    @Column(name = "black_list_status", nullable = false, columnDefinition = "TINYINT(1)")
     public Boolean getBlacklistStatus() {
         return blacklistStatus;
     }
@@ -252,7 +252,7 @@ public class UserEntity implements Serializable {
         this.blacklistStatus = blacklistStatus;
     }
 
-    @Column(name = "verification_status", nullable = false)
+    @Column(name = "verification_status", nullable = false, columnDefinition = "TINYINT(1)")
     public Boolean getVerifiedStatus() {
         return verifiedStatus;
     }
@@ -278,7 +278,7 @@ public class UserEntity implements Serializable {
         this.verificationCode = verificationCode;
     }
 
-    @Column(name = "subscribe_newsletter", nullable = false)
+    @Column(name = "subscribe_newsletter", nullable = false, columnDefinition = "TINYINT(1)")
     public Boolean getSubscribeNewsletter() {
         return subscribeNewsletter;
     }

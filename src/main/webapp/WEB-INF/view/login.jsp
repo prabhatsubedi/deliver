@@ -44,7 +44,7 @@
 
 <div class="login_video">
     <div class="video_image">
-        <img src="/resources/images/login-image.jpg" />" class="img-responsive">
+        <img src="/resources/images/login-image.jpg" class="img-responsive">
         <div class="btn_play">
             <img src="/resources/images/btn-play.png" class="img-responsive">
         </div>

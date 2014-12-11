@@ -133,6 +133,14 @@ public class GeneralUtil {
         return null;
     }
 
+    public static Boolean matchDBPassword(String rawPassword, String dbEncryptedPassword) throws Exception {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if(!passwordEncoder.matches(rawPassword, dbEncryptedPassword))
+            throw new YSException("VLD011");
+
+        return true;
+    }
+
     public void validateMobileClient(String token) throws Exception {
         log.info("++++++++++++++ Validating mobile client +++++++++++++++");
 

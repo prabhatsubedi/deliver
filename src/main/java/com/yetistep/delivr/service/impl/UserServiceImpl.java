@@ -201,14 +201,13 @@ public class UserServiceImpl extends AbstractManager implements UserService{
     @Override
     public UserEntity dboyLogin(HeaderDto headerDto) throws Exception {
         log.info("+++++++++++++++ Checking DBOY Credential +++++++++++++++");
+
         UserEntity userEntity = userDaoService.findByUserName(headerDto.getUsername());
 
         if(userEntity == null)
             throw new YSException("VLD011");
 
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        if(!passwordEncoder.matches(headerDto.getPassword(), userEntity.getPassword()))
-            throw new YSException("VLD011");
+        GeneralUtil.matchDBPassword(headerDto.getPassword(), userEntity.getPassword());
 
         return userEntity;
     }

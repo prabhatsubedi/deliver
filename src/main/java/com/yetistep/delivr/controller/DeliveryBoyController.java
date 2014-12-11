@@ -44,6 +44,7 @@ public class DeliveryBoyController {
 
             ServiceResponse serviceResponse = new ServiceResponse("Delivery boy logged in successfully");
             serviceResponse.addParam("userDetail", userEntity);
+
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
         } catch (Exception e){

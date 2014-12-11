@@ -5,6 +5,7 @@ import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.UserService;
@@ -207,6 +208,7 @@ public class UserServiceImpl extends AbstractManager implements UserService{
         if(userEntity == null)
             throw new YSException("VLD011");
 
+//        DeliveryBoyEntity deliveryBoyEntity = de
         GeneralUtil.matchDBPassword(headerDto.getPassword(), userEntity.getPassword());
 
         return userEntity;

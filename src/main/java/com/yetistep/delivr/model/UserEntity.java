@@ -1,8 +1,7 @@
 package com.yetistep.delivr.model;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.Gender;
 import com.yetistep.delivr.util.JsonDateSerializer;
@@ -10,6 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -24,7 +24,8 @@ import java.util.List;
 @Entity(name="UserEntity")
 @Table(name = "users")
 @DynamicUpdate
-public class UserEntity {
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = UserEntity.class)
+public class UserEntity implements Serializable {
 
     private Integer id;
     private RoleEntity role;
@@ -73,7 +74,8 @@ public class UserEntity {
         this.role = role;
     }
 
-    @JsonBackReference("user-dboy")
+    @JsonManagedReference("user-dboy")
+    @JsonBackReference("dboy-user")
     @OneToOne(mappedBy = "user")
     public DeliveryBoyEntity getDeliveryBoy() {
         return deliveryBoy;

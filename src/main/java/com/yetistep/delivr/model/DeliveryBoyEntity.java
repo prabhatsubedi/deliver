@@ -1,8 +1,7 @@
 package com.yetistep.delivr.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.VehicleType;
 import org.hibernate.annotations.Type;
@@ -22,6 +21,7 @@ import java.util.Set;
  */
 @Entity(name="DeliveryBoyEntity")
 @Table(name="delivery_boys")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = DeliveryBoyEntity.class)
 public class DeliveryBoyEntity implements Serializable {
 
     private Integer id;
@@ -54,7 +54,8 @@ public class DeliveryBoyEntity implements Serializable {
         this.id = id;
     }
 
-    @JsonManagedReference("user-dboy")
+    @JsonManagedReference("dboy-user")
+    @JsonBackReference("user-dboy")
     @OneToOne(cascade = { CascadeType.ALL })
     @JoinColumn(name = "user_id")
     public UserEntity getUser() {

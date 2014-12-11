@@ -103,7 +103,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal_signup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade modal_form" id="modal_signup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form role="form" id="signup_form" method="POST" action="">
             <div class="modal-content">
@@ -119,7 +119,7 @@
                     </ul>
 
                     <!-- Tab panes -->
-                    <div class="tab-content">
+                    <div class="tab-content body_padding">
                         <div class="tab-pane active" id="step_1">
                             <div class="form-group">
                                 <input type="text" class="form-control" id="business_name" name="business_name" placeholder="Business Name">

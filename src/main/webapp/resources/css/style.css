@@ -167,13 +167,13 @@ body {
     padding: 0px 20px;
     line-height: 100%;
 }
-#modal_login .modal-dialog, #modal_signup .modal-dialog {
+#modal_login .modal-dialog, .modal_form .modal-dialog {
     max-width: 480px;
 }
-#modal_login .modal-content, #modal_signup .modal-content {
+#modal_login .modal-content, .modal_form .modal-content {
     border-radius: 0px;
 }
-#modal_login .modal-content .modal-body, #modal_signup .modal-content .modal-body {
+#modal_login .modal-content .modal-body, .modal_form .modal-content .modal-body {
     padding: 0px;
 }
 #modal_login .modal-content .modal-body .login_head {
@@ -228,19 +228,19 @@ body {
 #modal_login .btn_logins:hover {
     background-color: #ff7d2d;
 }
-#modal_signup .modal-header {
+.modal_form .modal-header {
     padding: 20px 30px;
     color: #ff9235;
     font-size: 30px;
     background-color: #eeeded;
 }
-#modal_signup .modal-body ul {
+.modal_form .modal-body .nav ul {
     background-color: #cfcfcf;
 }
-#modal_signup .modal-body ul li {
+.modal_form .modal-body .nav ul li {
     margin-left: 0px;
 }
-#modal_signup .modal-body ul li a {
+.modal_form .modal-body .nav ul li a {
     border-radius: 0px;
     font-size: 20px;
     color: #FFFFFF;
@@ -249,36 +249,47 @@ body {
     outline: none;
     background-color: #ff9235;
 }
-#modal_signup .modal-body ul li.active a {
+.modal_form .modal-body .nav ul li.active a {
     background-color: #d0670e;
     padding-right: 15px;
 }
-#modal_signup .modal-body ul li.active + li a {
+.modal_form .modal-body .nav ul li.active + li a {
     background-image: url("/resources/images/signup-nav.png");
     background-repeat: no-repeat;
     background-position: center left;
     padding-left: 52px;
 }
-#modal_signup .modal-body ul li.passed_tab a {
+.modal_form .modal-body .nav ul li.passed_tab a {
     background-color: #d0670e;
 }
-#modal_signup .modal-body ul li.disabled_tab a {
+.modal_form .modal-body .nav ul li.disabled_tab a {
     background-color: transparent;
     padding-right: 30px;
 }
-#modal_signup .tab-content {
-    padding: 30px 30px 0px 30px;
+.modal_form .body_padding {
+    padding: 30px 30px 0px 30px !important;
 }
-#modal_signup .form-group {
+.modal_form .form-group {
     margin-bottom: 30px;
 }
-#modal_signup .form-control {
+.modal_form .form-control {
     padding: 0px 30px;
     height: 60px;
     font-size: 25px;
     background-color: #e0e0e0;
     border: none;
     border-radius: 0px;
+}
+.modal_form .bootstrap-select button.dropdown-toggle {
+    padding: 0px 30px;
+    height: 60px;
+    font-size: 25px;
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 0px;
+}
+.modal_form .bootstrap-select button.dropdown-toggle .filter-option {
+    left: 25px;
 }
 #drop_zone {
     padding: 0px 30px;
@@ -309,15 +320,15 @@ body {
     line-height: 100%;
     position: absolute;
 }
-#modal_signup .modal-footer, #crop_img_modal .modal-footer {
+.modal_form .modal-footer, #crop_img_modal .modal-footer {
     padding: 0px;
     border: none;
     text-align: left;
 }
-#modal_signup .modal-footer .no_pad:first-child, #crop_img_modal .modal-footer .no_pad:first-child {
+.modal_form .modal-footer .no_pad:first-child, #crop_img_modal .modal-footer .no_pad:first-child {
     padding-right: 1px !important;
 }
-#modal_signup .modal-footer .btn, #crop_img_modal .modal-footer .btn {
+.modal_form .modal-footer .btn, #crop_img_modal .modal-footer .btn {
     background-color: #ff9235;
     border: none;
     border-radius: 0px;
@@ -327,17 +338,17 @@ body {
     font-size: 25px;
     padding: 0px 20px;
 }
-#modal_signup .modal-footer .btn:hover, #crop_img_modal .modal-footer .btn:hover {
+.modal_form .modal-footer .btn:hover, #crop_img_modal .modal-footer .btn:hover {
     background-color: #ff7d2d;
 }
-#modal_login .form-control:focus, #modal_signup .form-control:focus {
+#modal_login .form-control:focus, .modal_form .form-control:focus {
     border: 1px solid #66afe9;
 }
 #drop_zone.entered {
     border: 3px solid #CCCCCC;
     background-color: #DDDDDD;
 }
-#modal_login .form-control.error, #modal_signup .form-control.error, #drop_zone.error {
+#modal_login .form-control.error, .modal_form .form-control.error, #drop_zone.error {
     border: 1px solid #ff9235;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07) inset, 0 0 8px rgba(255, 146, 53, 0.60);
     outline: 0 none;

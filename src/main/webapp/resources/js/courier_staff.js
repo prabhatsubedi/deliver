@@ -40,7 +40,6 @@ if(typeof(CourierStaff) == "undefined") var CourierStaff = {};
 
         $.validator.addMethod("notEqual", function(value, element, arg){
             var result = value != arg;
-//            console.log(element.nextSibling.childNodes[0].className += ' error');
             if($(element).is('select')) {
                 if(!result) {
                     $(element).siblings('.bootstrap-select').children('.form-control').addClass('error');

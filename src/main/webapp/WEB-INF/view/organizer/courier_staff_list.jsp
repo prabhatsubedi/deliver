@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Courier Staff Dashboard</title>
+    <title>Courier Staffs</title>
 
     <%@include file="../includes/head.jsp" %>
 

@@ -109,7 +109,7 @@ public class AnonController {
             GeneralUtil.fillHeaderCredential(headers, headerDto);
             String msg = userService.performPasswordAction(headerDto, actionType.getActionType());
 
-            ServiceResponse serviceResponse = new ServiceResponse("");
+            ServiceResponse serviceResponse = new ServiceResponse(msg);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error occurred while assisting password", e);

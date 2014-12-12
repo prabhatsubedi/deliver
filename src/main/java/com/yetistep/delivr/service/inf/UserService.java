@@ -30,5 +30,4 @@ public interface UserService {
 
     public Boolean changeUserStatus(UserEntity userEntity) throws Exception;
 
-    public UserEntity dboyLogin(HeaderDto headerDto) throws Exception;
 }

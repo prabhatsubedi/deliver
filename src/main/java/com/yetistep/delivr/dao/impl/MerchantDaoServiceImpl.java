@@ -60,11 +60,21 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public void saveStore(StoreEntity value) throws Exception {
+    public void saveStore(List<StoreEntity> values) throws Exception {
 
+        for (StoreEntity value: values)
             getCurrentSession().save(value);
 
     }
+
+    @Override
+    public void updateStoresBrand(StoresBrandEntity value) throws Exception {
+
+        getCurrentSession().update(value);
+
+    }
+
+
 
     @Override
     public StoresBrandEntity getBrandByBrandName(String brandName) throws Exception {
@@ -83,7 +93,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public BrandsCategoryEntity getBrandsCategoryByBrandAndCategory(Integer brandId, Integer categoryId) throws Exception {
+    public BrandsCategoryEntity getBrandsCategory(Integer brandId, Integer categoryId) throws Exception {
         List<BrandsCategoryEntity> brandsCategories = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BrandsCategoryEntity.class);
         criteria.add(Restrictions.eq("storesBrand.id", brandId));

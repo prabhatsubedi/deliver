@@ -27,6 +27,10 @@ public class StoresBrandEntity implements Serializable {
    private Set<StoreEntity> store;
    private List<BrandsCategoryEntity> brandsCategory;
    private String brandName;
+   private String openingTime;
+   private String closingTime;
+   private String brandLogo;
+   private String brandImage;
    private Boolean featured;
    private Integer priority;
    private Timestamp createdDate;
@@ -78,6 +82,42 @@ public class StoresBrandEntity implements Serializable {
 
     public void setBrandName(String brandName) {
         this.brandName = brandName;
+    }
+
+    @Column(name = "opening_time", nullable = false)
+    public String getOpeningTime() {
+        return openingTime;
+    }
+
+    public void setOpeningTime(String openingTime) {
+        this.openingTime = openingTime;
+    }
+
+    @Column(name = "closing_time", nullable = false)
+    public String getClosingTime() {
+        return closingTime;
+    }
+
+    public void setClosingTime(String closingTime) {
+        this.closingTime = closingTime;
+    }
+
+    @Column(name = "brand_logo")
+    public String getBrandLogo() {
+        return brandLogo;
+    }
+
+    public void setBrandLogo(String brandLogo) {
+        this.brandLogo = brandLogo;
+    }
+
+    @Column(name = "brand_image")
+    public String getBrandImage() {
+        return brandImage;
+    }
+
+    public void setBrandImage(String brandImage) {
+        this.brandImage = brandImage;
     }
 
     @Column(name = "featured", columnDefinition = "TINYINT(1) default '0'")

@@ -25,18 +25,14 @@ public class StoreEntity implements Serializable {
     private Set<OrderEntity> order;
     private String name;
     private String street;
-    private String locality;
     private String city;
+    private String state;
     private String country;
     private String contactNo;
+    private String contactPerson;
     private BigDecimal latitude;
     private BigDecimal longitude;
     private Timestamp createdDate;
-    private String returnPolicy;
-    private Integer deliveryFee;
-    private String promoCode;
-    private BigDecimal vat;
-    private BigDecimal serviceCharge;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -104,13 +100,13 @@ public class StoreEntity implements Serializable {
         this.street = street;
     }
 
-    @Column(name="locality")
-    public String getLocality() {
-        return locality;
+    @Column(name="state")
+    public String getState() {
+        return state;
     }
 
-    public void setLocality(String locality) {
-        this.locality = locality;
+    public void setState(String state) {
+        this.state = state;
     }
 
     @Column(name="city", nullable = false)
@@ -140,6 +136,15 @@ public class StoreEntity implements Serializable {
         this.contactNo = contactNo;
     }
 
+    @Column(name = "contact_person", nullable = false)
+    public String getContactPerson() {
+        return contactPerson;
+    }
+
+    public void setContactPerson(String contactPerson) {
+        this.contactPerson = contactPerson;
+    }
+
     @Column(name="latitude", nullable = false)
     public BigDecimal getLatitude() {
         return latitude;
@@ -157,52 +162,6 @@ public class StoreEntity implements Serializable {
     public void setLongitude(BigDecimal longitude) {
         this.longitude = longitude;
     }
-
-    @Column(name="return_policy")
-    public String getReturnPolicy() {
-        return returnPolicy;
-    }
-
-    public void setReturnPolicy(String returnPolicy) {
-        this.returnPolicy = returnPolicy;
-    }
-
-    @Column(name="delivery_fee")
-    public Integer getDeliveryFee() {
-        return deliveryFee;
-    }
-
-    public void setDeliveryFee(Integer deliveryFee) {
-        this.deliveryFee = deliveryFee;
-    }
-
-    @Column(name="promo_code")
-    public String getPromoCode() {
-        return promoCode;
-    }
-
-    public void setPromoCode(String promoCode) {
-        this.promoCode = promoCode;
-    }
-
-    @Column(name="vat")
-    public BigDecimal getVat() {
-        return vat;
-    }
-
-    public void setVat(BigDecimal vat) {
-        this.vat = vat;
-    }
-
-    @Column(name="service_charge")
-    public BigDecimal getServiceCharge() {
-        return serviceCharge;
-    }
-
-    public void setServiceCharge(BigDecimal serviceCharge) {
-        this.serviceCharge = serviceCharge;
-    }
-
 
     @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getCreatedDate() {

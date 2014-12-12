@@ -33,17 +33,17 @@ public class MerchantController {
 
     @RequestMapping(value = "/save_store", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto postData) {
+    public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try {
 
-            merchantService.saveStore(postData, headers);
+            merchantService.saveStore(requestJson, headers);
 
             ServiceResponse serviceResponse = new ServiceResponse("Store(Stores) has been saved successfully");
 
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
 
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
+            GeneralUtil.logError(log, "Error Occurred while adding store", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
         }

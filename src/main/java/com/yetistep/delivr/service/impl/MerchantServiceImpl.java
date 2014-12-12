@@ -155,37 +155,41 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
     @Override
-    public void saveStore(RequestJsonDto postData, HttpHeaders headers ) throws Exception {
-        log.info("++++++++++++ Saving Store "+postData.getStores().size()+" +++++++++++++++");
+    public void saveStore(RequestJsonDto requestJson, HttpHeaders headers ) throws Exception {
+        log.info("++++++++++++ Saving Store "+requestJson.getStores().size()+" +++++++++++++++");
 
         HeaderDto headerDto = new HeaderDto();
         GeneralUtil.fillHeaderCredential(headers, headerDto);
 
-        List<StoreEntity> stores = postData.getStores();
-        String brandName = postData.getBrandName();
-        List<Integer> categories = postData.getCategories();
+        List<StoreEntity> stores = requestJson.getStores();
+        StoresBrandEntity newStoresBrand = requestJson.getStoresBrand();
+        List<Integer> categories = requestJson.getCategories();
+
+        //StoresBrandEntity newStoresBrand = new StoresBrandEntity();
 
         MerchantEntity dbMerchant = merchantDaoService.find(Integer.parseInt(headerDto.getId()));
         if(dbMerchant == null)
             throw new YSException("VLD011");
 
 
+        StoresBrandEntity storesBrand;
+        if(newStoresBrand.getId()==null){
+             //if brand with current name not exists add brand
+             storesBrand = merchantDaoService.getBrandByBrandName(newStoresBrand.getBrandName()) == null?newStoresBrand:merchantDaoService.getBrandByBrandName(newStoresBrand.getBrandName());
+        } else {
+             storesBrand =  newStoresBrand;
+        }
+        String brandLogo = storesBrand.getBrandLogo();
+        String brandImage = storesBrand.getBrandImage();
+
         for (StoreEntity store: stores){
 
-            StoresBrandEntity storesBrand = merchantDaoService.getBrandByBrandName(brandName);
-            //if brand with current name not exists add brand
-            if(storesBrand == null) {
-                StoresBrandEntity newStoresBrand = new StoresBrandEntity();
-                newStoresBrand.setBrandName(brandName);
-                store.setStoresBrand(newStoresBrand);
-            }else{
-                store.setStoresBrand(storesBrand);
-            }
+            store.setStoresBrand(storesBrand);
 
             List<BrandsCategoryEntity> brandsCategories = new ArrayList<BrandsCategoryEntity>();
 
             for (Integer categoryId: categories){
-                BrandsCategoryEntity brandsCategory = merchantDaoService.getBrandsCategoryByBrandAndCategory(store.getStoresBrand().getId(), categoryId);
+                BrandsCategoryEntity brandsCategory = merchantDaoService.getBrandsCategory(store.getStoresBrand().getId(), categoryId);
 
                 //if brands category with current category and and brand add brandCategory
                 if(brandsCategory == null){
@@ -202,11 +206,30 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
             store.getStoresBrand().setBrandsCategory(brandsCategories);
             store.getStoresBrand().setMerchant(dbMerchant);
-            merchantDaoService.saveStore(store);
+
+
+            store.getStoresBrand().setBrandLogo(null);
+            store.getStoresBrand().setBrandImage(null);
 
         }
 
+        merchantDaoService.saveStore(stores);
 
+        StoresBrandEntity brand = stores.get(0).getStoresBrand();
+
+        if (brandLogo != null && !brandLogo.isEmpty() && brandImage != null && !brandImage.isEmpty()) {
+            log.info("Uploading brand logo and image to S3 Bucket ");
+
+            String dir = MessageBundle.separateString("/", "brand", "brand" + brand.getId());
+            boolean isLocal = MessageBundle.isLocalHost();
+            String brandLogoName = "limg" + (isLocal ? "_tmp_" : "_") + brand.getId();
+            String brandImageName = "simg" + (isLocal ? "_tmp_" : "_") + brand.getId();
+            String s3PathLogo = GeneralUtil.saveImageToBucket(brandLogo, brandLogoName, dir, true);
+            String s3PathImage = GeneralUtil.saveImageToBucket(brandImage, brandImageName, dir, true);
+            brand.setBrandLogo(s3PathLogo);
+            brand.setBrandImage(s3PathImage);
+            merchantDaoService.updateStoresBrand(brand);
+        }
     }
 
     @Override

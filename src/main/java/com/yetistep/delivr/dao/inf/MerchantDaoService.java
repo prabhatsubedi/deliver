@@ -15,7 +15,9 @@ import java.util.List;
  */
 public interface MerchantDaoService extends GenericDaoService<Integer, MerchantEntity>{
 
-    public void saveStore(StoreEntity value) throws Exception;
+    public void saveStore(List<StoreEntity> values) throws Exception;
+
+    public void updateStoresBrand(StoresBrandEntity value) throws Exception;
 
     public StoresBrandEntity getBrandByBrandName(String brandName) throws Exception;
 
@@ -23,5 +25,5 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public List<CategoryEntity> findParentCategories() throws Exception;
 
-    public BrandsCategoryEntity getBrandsCategoryByBrandAndCategory(Integer brandId, Integer categoryId) throws Exception;
+    public BrandsCategoryEntity getBrandsCategory(Integer brandId, Integer categoryId) throws Exception;
 }

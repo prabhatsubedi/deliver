@@ -2,6 +2,7 @@ package com.yetistep.delivr.dto;
 
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.model.StoreEntity;
+import com.yetistep.delivr.model.StoresBrandEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,9 @@ public class RequestJsonDto {
    /* ====== Used at AnonController.changePassword ===== */
     private PasswordActionType actionType;
 
-    /*Add store properties start*/
+    /*Add store properties*/
     private List<StoreEntity> stores;
-    private String brandName;
+    private StoresBrandEntity storesBrand;
     private List<Integer> categories;
 
 
@@ -45,12 +46,12 @@ public class RequestJsonDto {
         this.stores = stores;
     }
 
-    public String getBrandName() {
-        return brandName;
+    public StoresBrandEntity getStoresBrand() {
+        return storesBrand;
     }
 
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
+    public void setStoresBrand(StoresBrandEntity storesBrand) {
+        this.storesBrand = storesBrand;
     }
 
     public List<Integer> getCategories() {

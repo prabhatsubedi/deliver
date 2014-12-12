@@ -48,6 +48,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         user.setUsername(headerDto.getUsername());
         user.setPassword("");
         user.setVerificationCode(code);
+        user.setMobileVerificationStatus(false);
+        user.setBlacklistStatus(false);
+        user.setVerifiedStatus(false);
+        user.setSubscribeNewsletter(false);
+        merchant.setPartnershipStatus(false);
         merchant.setUser(user);
         /*By default set to null during sign up*/
         merchant.setCommissionPercentage(null);

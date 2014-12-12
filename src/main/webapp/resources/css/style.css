@@ -351,7 +351,7 @@ body {
     border: 3px solid #CCCCCC;
     background-color: #DDDDDD;
 }
-#modal_login .form-control.error, .modal_form .form-control.error, #drop_zone.error {
+#modal_login .form-control.error, .modal_form .form-control.error, #drop_zone.error, .checkbox .error {
     border: 1px solid #ff9235;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07) inset, 0 0 8px rgba(255, 146, 53, 0.60);
     outline: 0 none;

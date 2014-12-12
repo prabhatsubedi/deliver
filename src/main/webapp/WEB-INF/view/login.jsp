@@ -108,7 +108,7 @@
         <form role="form" id="signup_form" method="POST" action="">
             <div class="modal-content">
                 <div class="modal-header text-center">
-                    Merchant Sign Up
+                    Merchant Sign up
                 </div>
                 <div class="modal-body">
                     <!-- Nav tabs -->
@@ -162,6 +162,12 @@
                                     <div id="clear_markers" class="pull-left">Clear All Markers</div>
                                 </div>
                                 <div id="map-canvas"></div>
+                            </div>
+                            <div class="form-group checkbox">
+                                <label>
+                                    <input type="checkbox" id="accept_terms" name="accept_terms">
+                                    I acknowledge that I have read the <a href="#">Terms of use</a> & <a href="#">Privacy Policy</a>.
+                                </label>
                             </div>
                         </div>
                     </div>

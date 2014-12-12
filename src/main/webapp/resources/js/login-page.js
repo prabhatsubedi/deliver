@@ -6,6 +6,10 @@ $(document).ready(function(){
         return this.optional(element) || /[0-9+-]+$/.test(value);
     }, "Only +, - and numbers are allowed.");
 
+    $.validator.addMethod("checkRequired", function(value, element, arg){
+        return $(element).prop("checked");
+    }, "Please check the checkbox");
+
     $.validator.setDefaults({
         errorPlacement : function(error, element){
             $('#error_container').html(error);
@@ -33,7 +37,7 @@ $(document).ready(function(){
                 alert("Please fill up all fields of info window and save.");
             } else {
 
-                var chk_confirm = confirm('Are you sure you want to Signup?');
+                var chk_confirm = confirm('Are you sure you want to Sign up?');
                 if(!chk_confirm) return false;
 
                 var data = {};
@@ -79,6 +83,7 @@ $(document).ready(function(){
     $('#contact_person').rules('add', {required: true, messages : {required: "Contact person is required."}});
     $('#contact_email').rules('add', {required: true, email: true, messages : {required: "Contact email is required."}});
     $('#contact_no').rules('add', {required: true, contactNumber: true, messages : {required: "Contact number is required."}});
+    $('#accept_terms').rules('add', {checkRequired: true});
 //    $('#registration_no').rules('add', {required: true, messages : {required: "Registration number is required."}});
 //    $('#vat').rules('add', {required: true, messages : {required: "VAT is required."}});
 
@@ -129,7 +134,7 @@ $(document).ready(function(){
         $(this).parent().prevAll().addClass('passed_tab');
         $(this).parent().nextAll().removeClass('passed_tab');
         if($(this).attr('href') == "#step_3")
-            $("button[type='submit']","#signup_form").html('Signup');
+            $("button[type='submit']","#signup_form").html('Sign up');
         else
             $("button[type='submit']","#signup_form").html('Next');
     });

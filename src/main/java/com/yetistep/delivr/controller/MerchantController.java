@@ -75,7 +75,7 @@ public class MerchantController {
             ServiceResponse serviceResponse = new ServiceResponse("Merchant has been saved successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
+            GeneralUtil.logError(log, "Error Occurred while updating merchant", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

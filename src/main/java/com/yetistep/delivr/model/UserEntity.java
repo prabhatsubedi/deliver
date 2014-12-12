@@ -35,11 +35,6 @@ public class UserEntity implements Serializable {
     private CustomerEntity customer;
     private String fullName;
     private Gender gender;
-    private String street;
-    private String city;
-    private String state;
-    private String country;
-    private String countryCode;
     private String mobileNumber;
     private Boolean mobileVerificationStatus;
     private String emailAddress;
@@ -52,6 +47,7 @@ public class UserEntity implements Serializable {
     private String verificationCode;
     private Boolean subscribeNewsletter;
     private List<ActionLogEntity> actionLogEntities;
+    private List<AddressEntity> addresses;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -64,7 +60,7 @@ public class UserEntity implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     public RoleEntity getRole() {
         return role;
     }
@@ -102,7 +98,6 @@ public class UserEntity implements Serializable {
         this.customer = customer;
     }
 
-
     @Column(name = "username", nullable = false, unique = true)
     public String getUsername() {
         return username;
@@ -139,51 +134,6 @@ public class UserEntity implements Serializable {
 
     public void setGender(Gender gender) {
         this.gender = gender;
-    }
-
-    @Column(name = "street")
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    @Column(name = "city", nullable = false)
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    @Column(name = "state", nullable = false)
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    @Column(name = "country", nullable = false)
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    @Column(name = "country_code", nullable = false)
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
     }
 
     @Column(name = "mobile_number", nullable = false)
@@ -259,6 +209,8 @@ public class UserEntity implements Serializable {
     public void setVerifiedStatus(Boolean verifiedStatus) {
         this.verifiedStatus = verifiedStatus;
     }
+
+    @JsonIgnore
     @Column(name = "token")
     public String getToken() {
         return token;
@@ -268,6 +220,7 @@ public class UserEntity implements Serializable {
         this.token = token;
     }
 
+    @JsonIgnore
     @Column(name = "verification_code")
     public String getVerificationCode() {
         return verificationCode;
@@ -294,5 +247,15 @@ public class UserEntity implements Serializable {
 
     public void setActionLogEntities(List<ActionLogEntity> actionLogEntities) {
         this.actionLogEntities = actionLogEntities;
+    }
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    public List<AddressEntity> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<AddressEntity> addresses) {
+        this.addresses = addresses;
     }
 }

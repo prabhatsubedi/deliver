@@ -5,6 +5,7 @@ import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.UserStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.MerchantService;
@@ -50,7 +51,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         merchant.setUser(user);
         /*By default set to null during sign up*/
         merchant.setCommissionPercentage(null);
-        RoleEntity userRole = userDaoService.getRoleByRole(merchant.getUser().getRole().getRole());
+        RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_MERCHANT);
         merchant.getUser().setRole(userRole);
 
         String base64encoded = merchant.getBusinessLogo();
@@ -122,6 +123,14 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         merchantEntities = merchantDaoService.findAll();
         for(MerchantEntity merchantEntity: merchantEntities){
+            /*
+            * If password is empty, then our assumption is merchant has not clicked the verification link
+            * and hence status is UNVERIFIED.
+            * If password is not empty and commission percentage is null, our assumption is merchant has clicked
+            * on the verification link but not activated by admin/manager. Hence status is VERIFIED only.
+            * If password is not empty and commission percentage is not null, then verification status checked and
+            * user status is updated based on verified status(true ==> ACTIVE, false ==> INACTIVE).
+            */
             if(merchantEntity.getUser().getPassword().isEmpty()){
                 merchantEntity.setUserStatus(UserStatus.UNVERIFIED);
             }else if(merchantEntity.getCommissionPercentage() == null){
@@ -133,6 +142,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                     merchantEntity.setUserStatus(UserStatus.INACTIVE);
                 }
             }
+            merchantEntity.getUser().setRole(null);
         }
         return merchantEntities;
 
@@ -199,6 +209,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         MerchantEntity merchantEntity = merchantDaoService.find(id);
         if(merchantEntity == null)
             throw new YSException("VLD011");
+        merchantEntity.getUser().setRole(null);
         return merchantEntity;
     }
 

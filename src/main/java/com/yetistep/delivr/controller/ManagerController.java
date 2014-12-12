@@ -52,7 +52,7 @@ public class ManagerController {
             deliveryBoy.getUser().setPassword(headerDto.getPassword());
             deliveryBoyService.saveDeliveryBoy(deliveryBoy);
 
-            ServiceResponse serviceResponse = new ServiceResponse("User(Delivery Boy) has been saved successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Delivery Boy has been saved successfully");
 //            HttpHeaders httpHeaders = new HttpHeaders();
 //            httpHeaders.add("deliveryBoyId", deliveryBoy.getUser().getId() + "");
 //            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -139,7 +139,7 @@ public class ManagerController {
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
         } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
+            GeneralUtil.logError(log, "Error Occurred while activating merchant", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

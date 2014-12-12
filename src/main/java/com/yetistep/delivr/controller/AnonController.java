@@ -63,7 +63,7 @@ public class AnonController {
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while creating merchant", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
 
     }

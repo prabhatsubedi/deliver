@@ -5,6 +5,7 @@ import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
@@ -82,6 +83,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if (deliveryBoyEntity == null) {
             throw new YSException("VLD011");
         }
+        deliveryBoyEntity.getUser().setRole(null);
         return deliveryBoyEntity;
     }
 
@@ -89,6 +91,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     public List<DeliveryBoyEntity> findAllDeliverBoy() throws Exception {
         log.info("Retrieving list of Deliver Boys");
         List<DeliveryBoyEntity> deliveryBoyEntities = deliveryBoyDaoService.findAll();
+        /*For filtering role -- set to null as all delivery boy has same role*/
+        for(DeliveryBoyEntity deliveryBoyEntity: deliveryBoyEntities){
+            deliveryBoyEntity.getUser().setRole(null);
+        }
         return deliveryBoyEntities;
     }
 
@@ -102,11 +108,18 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         dBoyEntity.getUser().setUsername(deliveryBoyEntity.getUser().getMobileNumber());
         dBoyEntity.getUser().setPassword(GeneralUtil.encryptPassword(deliveryBoyEntity.getUser().getPassword()));
         dBoyEntity.getUser().setMobileNumber(deliveryBoyEntity.getUser().getMobileNumber());
-        dBoyEntity.getUser().setStreet(deliveryBoyEntity.getUser().getStreet());
-        dBoyEntity.getUser().setCity(deliveryBoyEntity.getUser().getCity());
-        dBoyEntity.getUser().setState(deliveryBoyEntity.getUser().getState());
-        dBoyEntity.getUser().setCountry(deliveryBoyEntity.getUser().getCountry());
-        dBoyEntity.getUser().setCountryCode(deliveryBoyEntity.getUser().getCountryCode());
+        for(AddressEntity addressEntity: deliveryBoyEntity.getUser().getAddresses()){
+            for(AddressEntity address: dBoyEntity.getUser().getAddresses()){
+                if(address.getId().equals(addressEntity.getId())){
+                   address.setStreet(addressEntity.getStreet());
+                   address.setCity(addressEntity.getCity());
+                   address.setState(addressEntity.getState());
+                   address.setCountry(addressEntity.getCountry());
+                   address.setCountryCode(addressEntity.getCountryCode());
+                   break;
+                }
+            }
+        }
         dBoyEntity.setVehicleNumber(deliveryBoyEntity.getVehicleNumber());
         dBoyEntity.setVehicleType(deliveryBoyEntity.getVehicleType());
         dBoyEntity.setLicenseNumber(deliveryBoyEntity.getLicenseNumber());

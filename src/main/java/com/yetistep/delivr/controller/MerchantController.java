@@ -3,6 +3,7 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.GeneralUtil;
@@ -111,6 +112,38 @@ public class MerchantController {
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/save_item", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> saveItem(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
+        try {
+            merchantService.saveItem(requestJson, headers);
+            ServiceResponse serviceResponse = new ServiceResponse("Item has been saved successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    /*store list is required on item create*/
+    @RequestMapping(value = "/get_brands_stores", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> findBrandsStores(@RequestHeader HttpHeaders headers) {
+        try {
+            List<StoreEntity> stores = merchantService.findStoresByBrand(headers);
+            ServiceResponse serviceResponse = new ServiceResponse("Stores has been retrieved successfully");
+            serviceResponse.addParam("stores", stores);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
 
 
 }

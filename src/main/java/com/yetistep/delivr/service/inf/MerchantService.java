@@ -3,6 +3,7 @@ package com.yetistep.delivr.service.inf;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
 import org.springframework.http.HttpHeaders;
 
@@ -22,7 +23,7 @@ public interface MerchantService {
 
     public List<MerchantEntity> getMerchants() throws Exception;
 
-    public void saveStore(RequestJsonDto postData, HttpHeaders headers) throws Exception;
+    public void saveStore(RequestJsonDto requestJson, HttpHeaders headers) throws Exception;
 
     public List<CategoryEntity> getParentCategories() throws Exception;
 
@@ -33,4 +34,8 @@ public interface MerchantService {
     public List<StoresBrandEntity> findBrandList(HttpHeaders headers) throws Exception;
 
     public StoresBrandEntity findBrandBrandDetail(HttpHeaders headers) throws Exception;
+
+    public void saveItem(RequestJsonDto requestJson, HttpHeaders headers) throws Exception;
+
+    public List<StoreEntity> findStoresByBrand(HttpHeaders headers) throws Exception;
 }

@@ -17,6 +17,7 @@ public class ItemsAttributeEntity implements Serializable {
     private Integer id;
     private ItemEntity item;
     private String attribute;
+    private Integer unitPrice;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,5 +47,14 @@ public class ItemsAttributeEntity implements Serializable {
 
     public void setAttribute(String attribute) {
         this.attribute = attribute;
+    }
+
+    @Column(name = "unit_price")
+    public Integer getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(Integer unitPrice) {
+        this.unitPrice = unitPrice;
     }
 }

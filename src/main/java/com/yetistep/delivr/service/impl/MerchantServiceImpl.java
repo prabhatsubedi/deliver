@@ -299,4 +299,35 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
         return  storesBrand;
     }
+
+
+
+    @Override
+    public void saveItem(RequestJsonDto requestJson, HttpHeaders headers) throws Exception {
+        log.info("++++++++++++ Saving Item +++++++++++++++");
+
+        HeaderDto headerDto = new HeaderDto();
+        GeneralUtil.fillHeaderCredential(headers, headerDto);
+
+        ItemEntity item = requestJson.getItem();
+        List<CategoryEntity> itemCategories = requestJson.getItemCategories();
+        List<Integer> itemStores = requestJson.getItemStores();
+        List<ItemsAttributeEntity> itemsAttributes = requestJson.getItemsAttributes();
+        List<ItemsImageEntity> itemsImages = requestJson.getItemsImages();
+
+    }
+
+    @Override
+    public List<StoreEntity> findStoresByBrand(HttpHeaders headers) throws Exception {
+        HeaderDto headerDto = new HeaderDto();
+        GeneralUtil.fillHeaderCredential(headers, headerDto);
+
+        List<StoreEntity> stores;
+        if(headerDto.getId() != null)  {
+            stores =  merchantDaoService.findStoreByBrand(Integer.parseInt(headerDto.getId()));
+        } else {
+            stores = null;
+        }
+        return  stores;
+    }
 }

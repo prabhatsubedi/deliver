@@ -1,9 +1,7 @@
 package com.yetistep.delivr.dto;
 
 import com.yetistep.delivr.enums.PasswordActionType;
-import com.yetistep.delivr.model.PreferencesEntity;
-import com.yetistep.delivr.model.StoreEntity;
-import com.yetistep.delivr.model.StoresBrandEntity;
+import com.yetistep.delivr.model.*;
 
 import java.util.List;
 
@@ -28,6 +26,15 @@ public class RequestJsonDto {
 
     /* For sending verification code, Used at ClientController.setMobileCode */
     private String verificationCode;
+
+    /*Add item properties*/
+    private ItemEntity item;
+    private List<CategoryEntity> itemCategories;
+    private List<Integer> itemStores;
+    private List<ItemsAttributeEntity> itemsAttributes;
+    private List<ItemsImageEntity> itemsImages;
+
+
 
 
 
@@ -78,5 +85,45 @@ public class RequestJsonDto {
 
     public void setVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
+    }
+
+    public ItemEntity getItem() {
+        return item;
+    }
+
+    public void setItem(ItemEntity item) {
+        this.item = item;
+    }
+
+    public List<CategoryEntity> getItemCategories() {
+        return itemCategories;
+    }
+
+    public void setItemCategories(List<CategoryEntity> itemCategories) {
+        this.itemCategories = itemCategories;
+    }
+
+    public List<Integer> getItemStores() {
+        return itemStores;
+    }
+
+    public void setItemStores(List<Integer> itemStores) {
+        this.itemStores = itemStores;
+    }
+
+    public List<ItemsAttributeEntity> getItemsAttributes() {
+        return itemsAttributes;
+    }
+
+    public void setItemsAttributes(List<ItemsAttributeEntity> itemsAttributes) {
+        this.itemsAttributes = itemsAttributes;
+    }
+
+    public List<ItemsImageEntity> getItemsImages() {
+        return itemsImages;
+    }
+
+    public void setItemsImages(List<ItemsImageEntity> itemsImages) {
+        this.itemsImages = itemsImages;
     }
 }

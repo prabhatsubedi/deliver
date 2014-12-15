@@ -84,18 +84,20 @@ if(typeof(CourierStaff) == "undefined") var CourierStaff = {};
 
                 var data = {};
                 var user = {};
+                var address = {};
+
+                address.street = $('#street').val();
+                address.city = $('#city').val();
+                address.state = $('#state').val();
+                address.country = $('#country').val();
+                address.countryCode = "00977";
 
                 user.fullName = $('#full_name').val();
                 user.emailAddress = $('#email').val();
                 user.mobileNumber = $('#mobile').val();
                 user.gender = $('#gender').val();
-                user.street = $('#street').val();
-                user.city = $('#city').val();
-                user.state = $('#state').val();
-                user.country = $('#country').val();
-                user.countryCode = "00977";
                 user.profileImage = $('#drop_zone img').attr('src');
-                user.role = {role: "ROLE_DELIVERY_BOY"};
+                user.addresses = [address];
 
                 data.vehicleType = $('#vehicle_type').val();
                 data.vehicleNumber = $('#vehicle_no').val();

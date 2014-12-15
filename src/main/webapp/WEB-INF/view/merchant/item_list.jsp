@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Merchant Profile</title>
+    <title>Items</title>
 
     <%@include file="../includes/head.jsp" %>
 

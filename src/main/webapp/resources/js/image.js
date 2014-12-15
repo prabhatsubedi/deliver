@@ -1,18 +1,17 @@
 if(typeof(Image) == "undefined") var Image = {};
-
-var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt_dup, $pimg_dup, chk_w, chk_h;
-chk_w = chk_h = 200;
+var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt_dup, $pimg_dup, chk_w, chk_h, img_container;
 
 (function ($) {
 
-    Image.dropZone = function(target_input) {
+    Image.dropZone = function(target_input, custom_zone) {
 
         $(document).on('dragover drop', function (e)
         {
             e.stopPropagation();
             e.preventDefault();
         });
-        var dropZone = $("#drop_zone");
+        var elem = custom_zone == undefined ? "#drop_zone" : custom_zone;
+        var dropZone = $(elem);
         dropZone.on('dragover', function (e)
         {
             $(this).addClass("entered");
@@ -31,7 +30,7 @@ chk_w = chk_h = 200;
                     alert('Only PNG, JPG and JPEG files are supported.');
                     return false;
                 } else {
-                    Image.readFile(file);
+                    Image.readFile(file, target_input);
                 }
             } else {
                 $(this).removeClass("entered dropped");
@@ -43,6 +42,7 @@ chk_w = chk_h = 200;
             $(this).removeClass("entered");
         }).mouseup(function(){
             $(this).removeClass("entered");
+        }).click(function(){
             $(target_input).trigger('click');
         });
 
@@ -86,12 +86,22 @@ chk_w = chk_h = 200;
                 alert('Only PNG, JPG and JPEG files are supported.');
                 return false;
             } else {
-                Image.readFile(tempInput.files[0]);
+                Image.readFile(tempInput.files[0], '#' + $(input).attr('id'));
             }
         }
     }
 
-    Image.readFile = function (file) {
+    Image.readFile = function (file, container_id) {
+
+        var dimension = $(container_id).attr('data-dimension');
+        img_container = $(container_id).prev('.drop_zone').attr('id');
+        if(dimension != undefined) {
+            var dimension_arr = dimension.split('x');
+            chk_w = dimension_arr[0];
+            chk_h = dimension_arr[1];
+        } else {
+            chk_w = chk_h = 200;
+        }
 
         var reader = new FileReader();
         reader.onload = function (e) {
@@ -184,23 +194,56 @@ chk_w = chk_h = 200;
                                     // Move the preview into the jcrop container for css positioning
                                     $preview.appendTo(jcrop_api.ui.holder);
                                 });
+                                Image.loadJcropFunctions();
 
                             }
 
                         };
+
                     } else {
-                        alert("Please upload an image of size greater than 200px X 200px.");
+                        alert("Please upload an image of size greater than " + chk_w + "px X " + chk_h + "px.");
                         return false;
                     }
                 } else {
                     document.getElementById('jcrop_target').removeAttribute('src');
                     document.getElementById('jcrop_preview').removeAttribute('src');
                     document.getElementById('jcrop_preview_dup').removeAttribute('src');
-                    $('#drop_zone').addClass('image_selected').html('<img src="' + src_url + '" style="height: 100%;" />');
+                    $('#' + img_container).addClass('image_selected').html('<img src="' + src_url + '" style="height: 100%;" class="img-responsive" />');
                 }
             }
         };
         reader.readAsDataURL(file);
+    }
+
+    Image.loadJcropFunctions = function() {
+
+        $('#ar_lock').change(function(e) {
+            jcrop_api.setOptions(this.checked ? { aspectRatio: chk_w/chk_h }: { aspectRatio: 0 });
+            jcrop_api.focus();
+        });
+
+        $('#apply_preview').click(function(e){
+            html2canvas($('.preview-container'), {
+                onrendered: function(canvas) {
+                    var strImage = canvas.toDataURL('image/jpeg');
+                    $('#' + img_container).addClass('image_selected').removeClass('error').html('<img src="' + strImage + '" style="height: 100%;" class="img-responsive" />');
+                    $('#crop_img_modal').modal('hide');
+                }
+            });
+        });
+
+        $('#cancel_preview').click(function(e){
+            $('#crop_img_modal').modal('hide');
+        });
+
+        $('#crop_img_modal').on('show.bs.modal', function(e){
+            $('#ar_lock').prop('checked', true);
+        });
+
+        $('#crop_img_modal').on('hidden.bs.modal', function(e){
+            $('#crop_img_modal img').attr('src', '');
+        });
+
     }
 
 })(jQuery);

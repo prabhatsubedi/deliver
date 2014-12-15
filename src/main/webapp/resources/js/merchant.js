@@ -1,8 +1,3 @@
-/**
- * Created by Lunek on 12/3/2014.
- */
-
-
 if(typeof(Merchant) == "undefined") var Merchant = {};
 
 (function ($){

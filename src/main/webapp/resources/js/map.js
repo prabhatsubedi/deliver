@@ -50,7 +50,7 @@ $(document).ready(function(){
         });
     }
 
-    initialize = function() {
+    initialize = function(page) {
         var myOptions = {
             zoom: 4,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -85,7 +85,10 @@ $(document).ready(function(){
             //for (var i = 0, place; place = places[i]; i++) {
             foucsedplace = places[0];
             //}
-            addMarker(foucsedplace.geometry.location, foucsedplace.name);
+            if(page == "add_store")
+                addStoreMarker(foucsedplace.geometry.location, foucsedplace.name);
+            else
+                addMarker(foucsedplace.geometry.location, foucsedplace.name);
             map.setCenter(foucsedplace.geometry.location);
             if(foucsedplace.geometry.viewport == undefined) {
                 map.setZoom(19);
@@ -108,7 +111,10 @@ $(document).ready(function(){
 
 
         google.maps.event.addListener(map, 'click', function(event) {
-            addMarker(event.latLng);
+            if(page == "add_store")
+                addStoreMarker(event.latLng);
+            else
+                addMarker(event.latLng);
         });
         document.getElementById('custom_map_controls').style.display = 'block';
         //input.style.display = 'block';
@@ -275,7 +281,6 @@ $(document).ready(function(){
 
     }
 
-
     $('.infowindow .save_marker').live('click', function(){
 
         var geoKeyObject = arrGeoPoints[$(this).attr('id')];
@@ -297,5 +302,151 @@ $(document).ready(function(){
         infowindow.close(map);
 
     });
+
+    function addStoreMarker(location, name) {
+        var location_check = false;
+        for(var i in arrGeoPoints) {
+            if(location.lat() == arrGeoPoints[i].latitude && location.lng() == arrGeoPoints[i].longitude) {
+                location_check = true;
+            }
+        }
+
+        if(!location_check) {
+            geocoder.geocode({'latLng': location}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[0]) {
+
+                        var streetNumber, sublocality, locality, city, postalCode, state, region, country, addressComponents;
+
+                        var compCountry = results[results.length-1].address_components;
+                        for(var i in compCountry) {
+                            if(compCountry[i].types[0] == 'country') {
+                                country = compCountry[i].long_name;
+                                break;
+                            }
+                        }
+
+                        if(country == selectedCountry)
+                        {
+                            addressComponents = results[0].address_components;
+                            for (var i in addressComponents)
+                            {
+                                for(var j in addressComponents[i].types)
+                                {
+                                    if(addressComponents[i].types[j] == "street_number")
+                                    {
+                                        streetNumber = results[0].address_components[i].long_name;
+                                    }
+                                    if(addressComponents[i].types[j] == "route")
+                                    {
+                                        sublocality = results[0].address_components[i].long_name;
+                                    }
+                                    if(addressComponents[i].types[j] == "sublocality")
+                                    {
+                                        locality = results[0].address_components[i].long_name;
+                                    }
+                                    if(addressComponents[i].types[j] == "locality")
+                                    {
+                                        city = results[0].address_components[i].long_name;
+                                    }
+                                    if(addressComponents[i].types[j] == "postal_code")
+                                    {
+                                        postalCode = results[0].address_components[i].long_name;
+                                    }
+                                    if(addressComponents[i].types[j] == "administrative_area_level_2")
+                                    {
+                                        state = results[0].address_components[i].long_name;
+                                    }
+                                    if(addressComponents[i].types[j] == "administrative_area_level_1")
+                                    {
+                                        region = results[0].address_components[i].long_name;
+                                    }
+                                }
+                            }
+
+                            var geoObj = {};
+                            geoObj.latitude = location.lat();
+                            geoObj.longitude = location.lng();
+                            geoObj.name = name === undefined ? $('#brand_name').val() : name;
+                            geoObj.street = sublocality === undefined ? '' : sublocality;
+                            geoObj.city = city === undefined ? '' : city;
+                            geoObj.postalCode = postalCode === undefined ? '' : postalCode;
+                            geoObj.state = state === undefined ? '' : state;
+                            geoObj.country = country;
+                            geoObj.contactNumber = "";
+                            geoObj.contactPerson = "";
+
+                            marker = new google.maps.Marker({
+                                position: location,
+                                map: map
+                                //draggable: true
+                            });
+                            var jsonObj = geoObj;
+                            markers.push(marker);
+                            arrGeoPoints[locationToKey(location)] = jsonObj;
+                            var marker_address = '#store_section';
+                            var infoWindowData = arrGeoPoints[locationToKey(location)];
+                            var address_name = infoWindowData.name;
+                            var address_street_name = infoWindowData.street;
+//                            var address_postal_code = infoWindowData.postalCode;
+                            var address_city = infoWindowData.city;
+                            var address_state = infoWindowData.state;
+                            var address_country = infoWindowData.country;
+                            var address_contact_number = infoWindowData.contactNumber;
+                            var address_contact_person = infoWindowData.contactPerson;
+                            $('#store_name', marker_address).attr('value', address_name);
+                            $('#street', marker_address).attr('value', address_street_name);
+//                            $('.address_postal_code .address_value', marker_address).attr('value', address_postal_code);
+                            $('#city', marker_address).attr('value', address_city);
+                            $('#state', marker_address).attr('value', address_state);
+                            $('#country', marker_address).attr('value', address_country);
+                            $('#contact_no', marker_address).attr('value', address_contact_number);
+                            $('#contact_person', marker_address).attr('value', address_contact_person);
+                            $('#save_marker', marker_address).removeAttr('disabled').attr({'data-id': locationToKey(location)});
+                            $('#cancel_marker', marker_address).removeAttr('disabled');
+                            google.maps.event.addListener(marker, 'click', function () {
+                                var infoWindowData = arrGeoPoints[locationToKey(this.getPosition())];
+                                var address_name = infoWindowData.name;
+                                var address_street_name = infoWindowData.street;
+                                var address_city = infoWindowData.city;
+                                var address_state = infoWindowData.state;
+                                var address_country = infoWindowData.country;
+                                var address_contact_number = infoWindowData.contactNumber;
+                                var address_contact_person = infoWindowData.contactPerson;
+                                $('#store_name', marker_address).attr('value', address_name);
+                                $('#street', marker_address).attr('value', address_street_name);
+                                $('#city', marker_address).attr('value', address_city);
+                                $('#state', marker_address).attr('value', address_state);
+                                $('#country', marker_address).attr('value', address_country);
+                                $('#contact_no', marker_address).attr('value', address_contact_number);
+                                $('#contact_person', marker_address).attr('value', address_contact_person);
+                                $('#save_marker', marker_address).removeAttr('disabled').attr({'data-id': locationToKey(location)});
+                                $('#cancel_marker', marker_address).removeAttr('disabled');
+                            });
+                            google.maps.event.addListener(marker, 'rightclick', function () {
+                                this.setMap(null);
+                                markers.splice(markers.indexOf(this), 1);
+                                delete arrGeoPoints[locationToKey(this.getPosition())];
+                                $('#store_name, #street, #city, #state, #country, #contact_no, #contact_person').val('');
+                                $('#save_marker', marker_address).attr('disabled', 'disabled').removeAttr('data-id');
+                                $('#cancel_marker', marker_address).attr('disabled', 'disabled');
+                            });
+
+                        }
+                        else
+                        {
+                            alert('Deal redeem location doesn\'t lie within selected country boundary.');
+                        }
+                    } else {
+                        alert('No results found');
+                    }
+                } else {
+                    alert("Marker placing failed. Please click again to place marker.");
+                }
+            });
+        }
+        input.blur();
+
+    }
 
 });

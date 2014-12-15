@@ -26,7 +26,7 @@ body {
     background-color: rgba(0,0,0,0.5);
     width: 100%;
     height: 100%;
-    position: fixed;
+    position: absolute;
     left: 0px;
     top: 0px;
     z-index: 9999;
@@ -38,6 +38,10 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+.full_width {
+    width: 100% !important;
+    max-width: none !important;
 }
 .width_100 {
     min-width: 100px;
@@ -80,6 +84,9 @@ body {
     color: #626262;
     line-height: 40px;
     padding: 0 20px;
+}
+.dropdown-menu li a .check-mark {
+    margin-top: 13px !important;
 }
 .dropdown-menu li:first-child a {
     border-top: 0 none;
@@ -558,10 +565,10 @@ body.assistance_page {
     font-size: 14px;
 }
 .form_container .form-control:focus {
-    border: 1px solid #66afe9;
+    border: 1px solid #66afe9 !important;
 }
 .form_container .form-control.error {
-    border: 1px solid #ff9235;
+    border: 1px solid #ff9235 !important;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07) inset, 0 0 8px rgba(255, 146, 53, 0.60);
     outline: 0 none;
 }
@@ -597,4 +604,68 @@ body.assistance_page {
     width: 100%;
     bottom: 10px;
     font-size: 20px;
+}
+
+.store_section {
+    border: 1px solid #d6d5d5;
+    background-color: #f6f6f6;
+}
+.store_section .store_head {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #d6d5d5;
+    color: #ff9235;
+    font-size: 18px;
+    padding: 10px 20px;
+}
+.store_section .store_content {
+    padding: 15px 15px 0px 15px;
+}
+
+.map-container {
+    border: 1px solid #cbcaca;
+}
+.drop_zone {
+    border: 1px solid #cbcaca;
+    padding: 5px;
+    background-color: #FFFFFF;
+}
+.drop_zone.error {
+    border: 1px solid #ff9235;
+}
+.drop_zone .drop_info {
+    font-size: 14px;
+    padding-top: 6px;
+    line-height: 18px;
+}
+.drop_zone .drop_title {
+    left: 0px;
+    width: 100%;
+    bottom: 10px;
+    font-size: 20px;
+}
+.store_open_close {
+    margin: 15px -15px;
+}
+.store_open_close div:first-child:after {
+    content: "-";
+    font-size: 20px;
+    line-height: 50px;
+    position: absolute;
+    right: -4px;
+    top: 0;
+}
+.brand_images {
+    margin-bottom: 15px;
+    position: relative;
+}
+.brand_images #brand_image {
+    width: 100%;
+    height: 400px;
+}
+.brand_images #brand_logo {
+    width: 27%;
+    height: 50%;
+    position: absolute;
+    right: 4%;
+    bottom: 7%;
 }

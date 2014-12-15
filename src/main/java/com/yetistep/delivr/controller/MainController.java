@@ -195,6 +195,22 @@ public class MainController {
         return modelAndView;
     }
 
+    @RequestMapping(value = {"/merchant/store/{page}/**"}, method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView merchantStore(@PathVariable String page){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("merchant/store_" + page);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/merchant/item/{page}/**"}, method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView merchantList(@PathVariable String page){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("merchant/item_" + page);
+        return modelAndView;
+    }
+
     @RequestMapping(value = {"/merchant/{page}/**"}, method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView merchant(@PathVariable String page){

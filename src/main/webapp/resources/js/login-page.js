@@ -42,30 +42,25 @@ $(document).ready(function(){
 
                 var data = {};
                 var user = {};
+                var objAddress = {};
 
-                user.fullName = $('#contact_person').val();
-                user.street = address.street;
-                user.city = address.city;
-                user.state = address.state;
-                user.country = address.country;
-                user.countryCode = "00977";
-                user.mobileNumber = $('#contact_no').val();
-                user.mobileVerificationStatus = "true";
-                user.emailAddress = $('#contact_email').val();
-                user.profileImage = "";
-                user.blacklistStatus = "false";
-                user.verifiedStatus = "false";
-                user.token = "token";
-                user.subscribeNewsletter = "true";
-                user.role = {role: "ROLE_MERCHANT"};
+                objAddress.street = address.street;
+                objAddress.city = address.city;
+                objAddress.state = address.state;
+                objAddress.country = address.country;
+                objAddress.countryCode = "00977";
 
-                data.partnershipStatus = "true";
                 data.website = $('#url').val();
-                data.agreementDetail = "";
                 data.businessTitle = $('#business_name').val();
                 data.businessLogo = $('#drop_zone img').attr('src');
                 data.companyRegistrationNo = $('#registration_no').val();
                 data.vatNo = $('#vat').val();
+
+                user.fullName = $('#contact_person').val();
+                user.mobileNumber = $('#contact_no').val();
+                user.emailAddress = $('#contact_email').val();
+                user.addresses = [objAddress];
+
                 data.user = user;
 
                 var headers = {};

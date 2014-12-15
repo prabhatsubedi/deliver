@@ -147,4 +147,21 @@ if(typeof(Main) == "undefined") var Main = {};
         return word.substr(0, 1).toUpperCase() + word.substr(1).toLowerCase();
     };
 
+    Main.elemRatio = function() {
+        function elem_ratio() {
+            $('.maintain_ratio').each(function(){
+                var mthis = $(this);
+                mthis.height((mthis.attr('mr-height')/mthis.attr('mr-width'))*mthis.width())
+            });
+        }
+        $(window).resize(function(){
+            elem_ratio();
+        });
+        setTimeout(elem_ratio, 500);
+    };
+
 })(jQuery);
+
+$(document).ready(function(){
+    Main.elemRatio();
+});

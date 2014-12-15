@@ -1,7 +1,10 @@
 package com.yetistep.delivr.util;
 
+import com.yetistep.delivr.enums.PreferenceType;
 import org.apache.log4j.Logger;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
@@ -17,6 +20,7 @@ import java.util.UUID;
  */
 public class MessageBundle {
     private static final Logger log = Logger.getLogger(MessageBundle.class);
+    private static String SYSTEM_PREF_FILE = "system_pref.properties";
 
     public static String getMessage(String key, String file) {
         try {
@@ -82,5 +86,28 @@ public class MessageBundle {
 
     public static String getSecretKey(){
         return System.getProperty("DELIVR_SECRET_KEY");
+    }
+
+    public static String readPrefValue(PreferenceType preferenceType) {
+        return getPropertyKey(preferenceType.toString(), SYSTEM_PREF_FILE);
+    }
+
+    public static String getPropertyKey(String key, String file){
+        try {
+            Properties prop = readFileAsProperty(file);
+            return prop.getProperty(key);
+        } catch (Exception e) {
+            log.error("Error occurred while reading file "+file,e);
+        }
+
+        return null;
+    }
+
+    public static Properties readFileAsProperty(String filename) throws IOException {
+        File file = new File(filename);
+        InputStream stream = new FileInputStream(file);
+        Properties prop = new Properties();
+        prop.load(stream);
+        return prop;
     }
 }

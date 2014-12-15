@@ -160,7 +160,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         GeneralUtil.matchDBPassword(headerDto.getPassword(), userEntity.getPassword());
 
-        DeliveryBoyEntity deliveryBoyEntity = deliveryBoyDaoService.find(userEntity.getDeliveryBoy().getId());
+        userEntity.setRole(null);
+        DeliveryBoyEntity deliveryBoyEntity = userEntity.getDeliveryBoy();
+        //DeliveryBoyEntity deliveryBoyEntity = deliveryBoyDaoService.find(userEntity.getDeliveryBoy().getId());
         return deliveryBoyEntity;
     }
 }

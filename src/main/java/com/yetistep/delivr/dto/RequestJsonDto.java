@@ -1,6 +1,7 @@
 package com.yetistep.delivr.dto;
 
 import com.yetistep.delivr.enums.PasswordActionType;
+import com.yetistep.delivr.model.PreferencesEntity;
 import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
 
@@ -24,7 +25,7 @@ public class RequestJsonDto {
     private List<StoreEntity> stores;
     private StoresBrandEntity storesBrand;
     private List<Integer> categories;
-
+    private List<PreferencesEntity> preferences;
 
 
 
@@ -60,5 +61,13 @@ public class RequestJsonDto {
 
     public void setCategories(List<Integer> categories) {
         this.categories = categories;
+    }
+
+    public List<PreferencesEntity> getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(List<PreferencesEntity> preferences) {
+        this.preferences = preferences;
     }
 }

@@ -43,6 +43,8 @@
     <bean id="persistenceExceptionTranslationPostProcessor"
           class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 
+    <bean id="systemInit" class="com.yetistep.delivr.sys.SystemInit" />
+
     <mvc:resources mapping="/resources/**" location="/resources/" />
 
 </beans>

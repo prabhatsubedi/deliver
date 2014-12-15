@@ -14,6 +14,10 @@
         <property name="use_sql_comments">true</property>
         <property name="auto_close_session">true</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.order_inserts">true</property>
+        <property name="hibernate.order_updates">true</property>
+        <property name="hibernate.jdbc.batch_size">20</property>
+
 
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">update</property>
@@ -37,6 +41,8 @@
        <mapping class="com.yetistep.delivr.model.AddressEntity" />
        <mapping class="com.yetistep.delivr.model.ItemsOrderEntity" />
        <mapping class="com.yetistep.delivr.model.DBoyOrderHistory" />
+       <mapping class="com.yetistep.delivr.model.PreferencesEntity"/>
+
 
     </session-factory>
 </hibernate-configuration>

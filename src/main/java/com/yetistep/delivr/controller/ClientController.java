@@ -2,6 +2,7 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.UserEntity;
@@ -94,7 +95,7 @@ public class ClientController extends AbstractManager{
 
     @RequestMapping(value = "/add_address", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> processRegistration(@RequestHeader HttpHeaders headers, @RequestBody List<AddressEntity> addresses) {
+    public ResponseEntity<ServiceResponse> addAddresses(@RequestHeader HttpHeaders headers, @RequestBody List<AddressEntity> addresses) {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto);
@@ -105,6 +106,27 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while adding customer address", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/set_mobile_code", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> setMobileCode(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            validateMobileClient(headerDto.getAccessToken());
+            UserEntity user = new UserEntity();
+            user.setUsername(headerDto.getUsername());
+            user.setVerificationCode(requestJsonDto.getVerificationCode());
+            customerService.setMobileCode(user);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Customer has been verified");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while verifying mobile code", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

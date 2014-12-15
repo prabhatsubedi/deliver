@@ -81,4 +81,18 @@ public class CustomerServiceImpl implements CustomerService {
         customerEntity.getUser().setAddresses(addresses);
         customerDaoService.save(customerEntity);
     }
+
+    @Override
+    public void setMobileCode(UserEntity user) throws Exception {
+        UserEntity userEntity = userDaoService.findByUserName(user.getUsername());
+        if (userEntity == null)
+            throw new YSException("VLD011");
+        System.out.println("CustomerServiceImpl.setMobileCode"+user.getVerificationCode());
+        if(!user.getVerificationCode().equals(userEntity.getVerificationCode())){
+            throw new YSException("SEC008");
+        }
+        userEntity.setVerifiedStatus(true);
+        userEntity.setMobileVerificationStatus(true);
+        userDaoService.update(userEntity);
+    }
 }

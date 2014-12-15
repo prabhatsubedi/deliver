@@ -5,7 +5,6 @@ import com.yetistep.delivr.model.PreferencesEntity;
 import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +26,8 @@ public class RequestJsonDto {
     private List<Integer> categories;
     private List<PreferencesEntity> preferences;
 
+    /* For sending verification code, Used at ClientController.setMobileCode */
+    private String verificationCode;
 
 
 
@@ -69,5 +70,13 @@ public class RequestJsonDto {
 
     public void setPreferences(List<PreferencesEntity> preferences) {
         this.preferences = preferences;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
     }
 }

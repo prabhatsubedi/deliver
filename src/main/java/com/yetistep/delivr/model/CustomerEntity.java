@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,7 +20,7 @@ public class CustomerEntity implements Serializable {
 
     private Integer id;
     private UserEntity user;
-    private Set<OrderEntity> order;
+    private List<OrderEntity> order;
     private Integer totalOrderPlaced;
     private Integer totalOrderDelivered;
     private BigDecimal averageRating;
@@ -52,11 +53,11 @@ public class CustomerEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "customer")
-    public Set<OrderEntity> getOrder() {
+    public List<OrderEntity> getOrder() {
         return order;
     }
 
-    public void setOrder(Set<OrderEntity> order) {
+    public void setOrder(List<OrderEntity> order) {
         this.order = order;
     }
 

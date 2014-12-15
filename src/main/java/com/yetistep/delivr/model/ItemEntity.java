@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,14 +21,14 @@ public class ItemEntity implements Serializable {
     private Integer id;
     private CategoryEntity category;
     private String name;
-    private Set<ItemsImageEntity> itemsImage;
-    private Set<ItemsOrderEntity> itemsOrder;
+    private List<ItemsImageEntity> itemsImage;
+    private List<ItemsOrderEntity> itemsOrder;
     private String Description;
     private Integer availableQuantity;
     private Timestamp availableStartTime;
     private Timestamp availableEndTime;
-    private Set<ItemsStoreEntity> itemsStores;
-    private Set<ItemsAttributeEntity> attributes;
+    private List<ItemsStoreEntity> itemsStores;
+    private List<ItemsAttributeEntity> attributes;
     //private Set<OrderEntity> order;
     private Integer maxOrderQuantity;
     private Integer minOrderQuantity;
@@ -75,20 +76,20 @@ public class ItemEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "item")
-    public Set<ItemsImageEntity> getItemsImage() {
+    public List<ItemsImageEntity> getItemsImage() {
         return itemsImage;
     }
 
-    public void setItemsImage(Set<ItemsImageEntity> itemsImage) {
+    public void setItemsImage(List<ItemsImageEntity> itemsImage) {
         this.itemsImage = itemsImage;
     }
 
     @OneToMany(mappedBy = "item")
-    public Set<ItemsOrderEntity> getItemsOrder() {
+    public List<ItemsOrderEntity> getItemsOrder() {
         return itemsOrder;
     }
 
-    public void setItemsOrder(Set<ItemsOrderEntity> itemsOrder) {
+    public void setItemsOrder(List<ItemsOrderEntity> itemsOrder) {
         this.itemsOrder = itemsOrder;
     }
 
@@ -129,20 +130,20 @@ public class ItemEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "item")
-    public Set<ItemsStoreEntity> getItemsStores() {
+    public List<ItemsStoreEntity> getItemsStores() {
         return itemsStores;
     }
 
-    public void setItemsStores(Set<ItemsStoreEntity> itemsStores) {
+    public void setItemsStores(List<ItemsStoreEntity> itemsStores) {
         this.itemsStores = itemsStores;
     }
 
     @OneToMany(mappedBy = "item")
-    public Set<ItemsAttributeEntity> getAttributes() {
+    public List<ItemsAttributeEntity> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Set<ItemsAttributeEntity> attributes) {
+    public void setAttributes(List<ItemsAttributeEntity> attributes) {
         this.attributes = attributes;
     }
 

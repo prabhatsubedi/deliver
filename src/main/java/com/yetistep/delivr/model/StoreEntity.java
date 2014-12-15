@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.security.Timestamp;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,9 +21,9 @@ public class StoreEntity implements Serializable {
 
     private Integer id;
     private StoresBrandEntity storesBrand;
-    private Set<CategoryEntity> category;
-    private Set<ItemsStoreEntity> itemsStore;
-    private Set<OrderEntity> order;
+    private List<CategoryEntity> category;
+    private List<ItemsStoreEntity> itemsStore;
+    private List<OrderEntity> order;
     private String name;
     private String street;
     private String city;
@@ -56,29 +57,29 @@ public class StoreEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "store")
-    public Set<CategoryEntity> getCategory() {
+    public List<CategoryEntity> getCategory() {
         return category;
     }
 
-    public void setCategory(Set<CategoryEntity> category) {
+    public void setCategory(List<CategoryEntity> category) {
         this.category = category;
     }
 
     @OneToMany(mappedBy = "store")
-    public Set<ItemsStoreEntity> getItemsStore() {
+    public List<ItemsStoreEntity> getItemsStore() {
         return itemsStore;
     }
 
-    public void setItemsStore(Set<ItemsStoreEntity> itemsStore) {
+    public void setItemsStore(List<ItemsStoreEntity> itemsStore) {
         this.itemsStore = itemsStore;
     }
 
     @OneToMany(mappedBy = "store")
-    public Set<OrderEntity> getOrder() {
+    public List<OrderEntity> getOrder() {
         return order;
     }
 
-    public void setOrder(Set<OrderEntity> order) {
+    public void setOrder(List<OrderEntity> order) {
         this.order = order;
     }
 

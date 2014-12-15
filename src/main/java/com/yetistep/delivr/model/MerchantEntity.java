@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -29,7 +30,7 @@ public class MerchantEntity implements Serializable {
     private Integer id;
     private UserEntity user;
     private MerchantType type;
-    private Set<StoresBrandEntity> storesBrand;
+    private List<StoresBrandEntity> storesBrand;
     private Boolean partnershipStatus;
     private BigDecimal commissionPercentage;
     private String website;
@@ -74,11 +75,11 @@ public class MerchantEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "merchant")
-    public Set<StoresBrandEntity> getStoresBrand() {
+    public List<StoresBrandEntity> getStoresBrand() {
         return storesBrand;
     }
 
-    public void setStoresBrand(Set<StoresBrandEntity> storesBrand) {
+    public void setStoresBrand(List<StoresBrandEntity> storesBrand) {
         this.storesBrand = storesBrand;
     }
 

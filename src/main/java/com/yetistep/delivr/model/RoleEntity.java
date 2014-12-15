@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -24,7 +25,7 @@ public class RoleEntity implements Serializable {
 
     private Integer id;
     private Role role;
-    private Set<UserEntity> user;
+    private List<UserEntity> user;
     private Timestamp createdDate;
 
     @Id
@@ -50,11 +51,11 @@ public class RoleEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "role")
-    public Set<UserEntity> getUser() {
+    public List<UserEntity> getUser() {
         return user;
     }
 
-    public void setUser(Set<UserEntity> user) {
+    public void setUser(List<UserEntity> user) {
         this.user = user;
     }
 

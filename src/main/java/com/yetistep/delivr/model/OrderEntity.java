@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -27,7 +28,7 @@ public class OrderEntity implements Serializable {
     private Integer deliveryStatus;
     private Integer orderStatus;
     //private ItemEntity item;
-    private Set<ItemsOrderEntity> itemsOrder;
+    private List<ItemsOrderEntity> itemsOrder;
     private DeliveryBoyEntity deliveryBoy;
     private CustomerEntity customer;
     private StoreEntity store;
@@ -102,11 +103,11 @@ public class OrderEntity implements Serializable {
     }*/
 
     @OneToMany(mappedBy = "order")
-    public Set<ItemsOrderEntity> getItemsOrder() {
+    public List<ItemsOrderEntity> getItemsOrder() {
         return itemsOrder;
     }
 
-    public void setItemsOrder(Set<ItemsOrderEntity> itemsOrder) {
+    public void setItemsOrder(List<ItemsOrderEntity> itemsOrder) {
         this.itemsOrder = itemsOrder;
     }
 

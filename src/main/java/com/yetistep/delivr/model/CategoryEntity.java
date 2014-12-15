@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,9 +21,9 @@ public class CategoryEntity implements Serializable {
 
    private Integer id;
    private CategoryEntity parent;
-   private Set<ItemEntity> item;
-   private Set<CategoryEntity> child;
-   private Set<BrandsCategoryEntity> brandsCategory;
+   private List<ItemEntity> item;
+   private List<CategoryEntity> child;
+   private List<BrandsCategoryEntity> brandsCategory;
    private StoreEntity store;
    private String name;
    private Boolean featured;
@@ -50,29 +51,29 @@ public class CategoryEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "parent")
-    public Set<CategoryEntity> getChild() {
+    public List<CategoryEntity> getChild() {
         return child;
     }
 
-    public void setChild(Set<CategoryEntity> child) {
+    public void setChild(List<CategoryEntity> child) {
         this.child = child;
     }
 
     @OneToMany(mappedBy = "category")
-    public Set<BrandsCategoryEntity> getBrandsCategory() {
+    public List<BrandsCategoryEntity> getBrandsCategory() {
         return brandsCategory;
     }
 
-    public void setBrandsCategory(Set<BrandsCategoryEntity> brandsCategory) {
+    public void setBrandsCategory(List<BrandsCategoryEntity> brandsCategory) {
         this.brandsCategory = brandsCategory;
     }
 
     @OneToMany(mappedBy = "category")
-    public Set<ItemEntity> getItem() {
+    public List<ItemEntity> getItem() {
         return item;
     }
 
-    public void setItem(Set<ItemEntity> item) {
+    public void setItem(List<ItemEntity> item) {
         this.item = item;
     }
 

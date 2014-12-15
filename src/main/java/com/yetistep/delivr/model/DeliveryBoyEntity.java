@@ -1,7 +1,8 @@
 package com.yetistep.delivr.model;
 
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.VehicleType;
 import org.hibernate.annotations.Type;
@@ -9,9 +10,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,12 +36,15 @@ public class DeliveryBoyEntity implements Serializable {
     private VehicleType vehicleType;
     private Integer activeOrderNo;
     private BigDecimal availableAmount;
+    private BigDecimal bankAmount;
+    private BigDecimal walletAmount;
     private String latitude;
     private String longitude;
     private BigDecimal advanceAmount;
     private BigDecimal previousDue;
     private String licenseNumber;
     private String vehicleNumber;
+    private List<DBoyOrderHistory> dBoyOrderHistories;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -186,6 +188,24 @@ public class DeliveryBoyEntity implements Serializable {
         this.advanceAmount = advanceAmount;
     }
 
+    @Column(name = "bank_amount", precision = 16, scale = 4)
+    public BigDecimal getBankAmount() {
+        return bankAmount;
+    }
+
+    public void setBankAmount(BigDecimal bankAmount) {
+        this.bankAmount = bankAmount;
+    }
+
+    @Column(name = "wallet_amount", precision = 16, scale = 4)
+    public BigDecimal getWalletAmount() {
+        return walletAmount;
+    }
+
+    public void setWalletAmount(BigDecimal walletAmount) {
+        this.walletAmount = walletAmount;
+    }
+
     @Column(name = "previous_due", precision = 16, scale = 4)
     public BigDecimal getPreviousDue() {
         return previousDue;
@@ -211,5 +231,15 @@ public class DeliveryBoyEntity implements Serializable {
 
     public void setVehicleNumber(String vehicleNumber) {
         this.vehicleNumber = vehicleNumber;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "deliveryBoy")
+    public List<DBoyOrderHistory> getdBoyOrderHistories() {
+        return dBoyOrderHistories;
+    }
+
+    public void setdBoyOrderHistories(List<DBoyOrderHistory> dBoyOrderHistories) {
+        this.dBoyOrderHistories = dBoyOrderHistories;
     }
 }

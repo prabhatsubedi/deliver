@@ -1,14 +1,14 @@
 package com.yetistep.delivr.model;
 
-import com.yetistep.delivr.enums.VehicleType;
-import org.hibernate.annotations.Type;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.yetistep.delivr.enums.DeliveryStatus;
+import com.yetistep.delivr.enums.JobOrderStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,10 +23,11 @@ public class OrderEntity implements Serializable {
 
 
     private Integer id;
+    private String orderName;
     private Integer orderVerificationCode;
     private Boolean orderVerificationStatus;
-    private Integer deliveryStatus;
-    private Integer orderStatus;
+    private DeliveryStatus deliveryStatus;
+    private JobOrderStatus orderStatus;
     //private ItemEntity item;
     private List<ItemsOrderEntity> itemsOrder;
     private DeliveryBoyEntity deliveryBoy;
@@ -43,6 +44,7 @@ public class OrderEntity implements Serializable {
     private BigDecimal deliveryBoyShare;
     private BigDecimal systemShare;
     private Timestamp orderDate;
+    private DBoyOrderHistory dBoyOrderHistory;
 
 
     @Id
@@ -54,6 +56,15 @@ public class OrderEntity implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Column(name = "order_name")
+    public String getOrderName() {
+        return orderName;
+    }
+
+    public void setOrderName(String orderName) {
+        this.orderName = orderName;
     }
 
     @Column(name = "order_verification_code")
@@ -75,20 +86,20 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "delivery_status")
-    public Integer getDeliveryStatus() {
+    public DeliveryStatus getDeliveryStatus() {
         return deliveryStatus;
     }
 
-    public void setDeliveryStatus(Integer deliveryStatus) {
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
     }
 
     @Column(name = "order_status")
-    public Integer getOrderStatus() {
+    public JobOrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(Integer orderStatus) {
+    public void setOrderStatus(JobOrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -239,5 +250,15 @@ public class OrderEntity implements Serializable {
 
     public void setOrderDate(Timestamp orderDate) {
         this.orderDate = orderDate;
+    }
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "order")
+    public DBoyOrderHistory getdBoyOrderHistory() {
+        return dBoyOrderHistory;
+    }
+
+    public void setdBoyOrderHistory(DBoyOrderHistory dBoyOrderHistory) {
+        this.dBoyOrderHistory = dBoyOrderHistory;
     }
 }

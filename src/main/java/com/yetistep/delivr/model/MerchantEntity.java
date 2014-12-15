@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yetistep.delivr.enums.MerchantType;
 import com.yetistep.delivr.enums.UserStatus;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -75,6 +77,7 @@ public class MerchantEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "merchant")
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<StoresBrandEntity> getStoresBrand() {
         return storesBrand;
     }

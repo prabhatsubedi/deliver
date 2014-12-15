@@ -82,13 +82,28 @@ public class MerchantController {
         }
     }
 
-    @RequestMapping(value = "/get_all_stores", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_store_list", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> findStores(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> findStoreList(@RequestHeader HttpHeaders headers) {
         try {
-            List<StoresBrandEntity> stores = merchantService.findStores(headers);
+            List<StoresBrandEntity> storesBrand = merchantService.findBrandList(headers);
             ServiceResponse serviceResponse = new ServiceResponse("Stores has been retrieved successfully");
-            serviceResponse.addParam("stores", stores);
+            serviceResponse.addParam("storesBrand", storesBrand);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_store_detail", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> findStoreDetail(@RequestHeader HttpHeaders headers) {
+        try {
+            StoresBrandEntity storesBrand = merchantService.findBrandBrandDetail(headers);
+            ServiceResponse serviceResponse = new ServiceResponse("Stores detail has been retrieved successfully");
+            serviceResponse.addParam("storesBrand", storesBrand);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while fetching stores", e);

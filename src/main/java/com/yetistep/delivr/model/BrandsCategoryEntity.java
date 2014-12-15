@@ -31,7 +31,8 @@ public class BrandsCategoryEntity implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "stores_brand_id")
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
@@ -41,7 +42,7 @@ public class BrandsCategoryEntity implements Serializable {
         this.storesBrand = storesBrand;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     public CategoryEntity getCategory() {
         return category;

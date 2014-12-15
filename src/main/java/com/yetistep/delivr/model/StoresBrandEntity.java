@@ -2,6 +2,8 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -44,7 +46,7 @@ public class StoresBrandEntity implements Serializable {
     }
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "merchant_id")
     public MerchantEntity getMerchant() {
         return merchant;
@@ -55,6 +57,7 @@ public class StoresBrandEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<StoreEntity> getStore() {
         return store;
     }
@@ -64,6 +67,7 @@ public class StoresBrandEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<BrandsCategoryEntity> getBrandsCategory() {
         return brandsCategory;
     }

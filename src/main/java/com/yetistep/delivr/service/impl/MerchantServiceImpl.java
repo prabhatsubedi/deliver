@@ -261,7 +261,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
     @Override
-    public List<StoresBrandEntity> findStores(HttpHeaders headers) throws Exception {
+    public List<StoresBrandEntity> findBrandList(HttpHeaders headers) throws Exception {
         HeaderDto headerDto = new HeaderDto();
         GeneralUtil.fillHeaderCredential(headers, headerDto);
 
@@ -271,13 +271,32 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         } else {
              dbMerchant = null;
         }
-        List<StoresBrandEntity> stores;
+        List<StoresBrandEntity> storesBrands;
 
         if(dbMerchant != null)
-          stores =  merchantDaoService.findStoresByMerchant(dbMerchant.getId());
+            storesBrands =  merchantDaoService.findBrandListByMerchant(dbMerchant.getId());
         else
-          stores =  merchantDaoService.findStores();
+            storesBrands =  merchantDaoService.findBrandList();
 
-        return stores;
+       for(StoresBrandEntity storesBrand: storesBrands){
+           storesBrand.setStore(merchantDaoService.findStoreByBrand(storesBrand.getId()));
+       }
+
+        return storesBrands;
+    }
+
+    @Override
+    public StoresBrandEntity findBrandBrandDetail(HttpHeaders headers) throws Exception {
+
+        HeaderDto headerDto = new HeaderDto();
+        GeneralUtil.fillHeaderCredential(headers, headerDto);
+
+        StoresBrandEntity storesBrand;
+        if(headerDto.getId() != null)  {
+            storesBrand = merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
+        } else {
+            storesBrand = null;
+        }
+        return  storesBrand;
     }
 }

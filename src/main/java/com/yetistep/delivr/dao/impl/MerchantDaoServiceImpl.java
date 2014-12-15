@@ -3,10 +3,13 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.model.*;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -61,10 +64,16 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public void saveStore(List<StoreEntity> values) throws Exception {
-
-        for (StoreEntity value: values)
+        Integer i = 0;
+        for (StoreEntity value: values) {
             getCurrentSession().save(value);
-
+            if ( i % 20 == 0 ) { //20, same as the JDBC batch size
+                //flush a batch of inserts and release memory:
+                getCurrentSession().flush();
+                getCurrentSession().clear();
+            }
+            i++;
+        }
     }
 
     @Override
@@ -120,22 +129,59 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
 
     @Override
-    public List<StoresBrandEntity> findStoresByMerchant(Integer merchant_id) throws Exception {
-        List<StoresBrandEntity> stores = new ArrayList<>();
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
-
-        criteria.add(Restrictions.eq("merchant.id", merchant_id)) ;
+    public List<StoreEntity> findStoreByBrand(Integer brandId) throws Exception {
+        List<StoreEntity> stores = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoreEntity.class);
+        criteria.add(Restrictions.eq("storesBrand.id", brandId));
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("name"), "name")
+                .add(Projections.property("contactNo"), "contactNo")
+                .add(Projections.property("contactPerson"), "contactPerson")
+        ).setResultTransformer(Transformers.aliasToBean(StoreEntity.class));
         stores = criteria.list();
 
-        return stores;
+        return stores.size() > 0 ? stores : null;
     }
 
     @Override
-    public List<StoresBrandEntity> findStores() throws Exception {
+    public List<StoresBrandEntity> findBrandListByMerchant(Integer merchantId) throws Exception {
         List<StoresBrandEntity> stores = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("brandName"), "brandName")
+                .add(Projections.property("brandLogo"), "brandLogo")
+                .add(Projections.property("brandImage"), "brandImage")
+                .add(Projections.property("featured"), "featured")
+                .add(Projections.property("priority"), "priority")
+        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
+        criteria.add(Restrictions.eq("merchant.id", merchantId)) ;
         stores = criteria.list();
 
-        return stores;
+        //return stores;
+        return stores.size() > 0 ? stores : null;
+    }
+
+    @Override
+    public List<StoresBrandEntity> findBrandList() throws Exception {
+        List<StoresBrandEntity> stores = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("brandName"), "brandName")
+                .add(Projections.property("brandLogo"), "brandLogo")
+                .add(Projections.property("brandImage"), "brandImage")
+                .add(Projections.property("featured"), "featured")
+                .add(Projections.property("priority"), "priority")
+        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
+
+        stores = criteria.list();
+        return stores.size() > 0 ? stores : null;
+    }
+
+    @Override
+    public StoresBrandEntity findBrandDetail(Integer brandId) throws Exception {
+        return (StoresBrandEntity) getCurrentSession().get(StoresBrandEntity.class, brandId);
     }
 }

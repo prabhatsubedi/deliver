@@ -1,5 +1,7 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -29,6 +31,7 @@ public class ItemsStoreEntity implements Serializable {
         this.id = id;
     }
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     public ItemEntity getItem() {
@@ -39,6 +42,7 @@ public class ItemsStoreEntity implements Serializable {
         this.item = item;
     }
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     public StoreEntity getStore() {

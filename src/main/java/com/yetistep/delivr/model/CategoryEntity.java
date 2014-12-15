@@ -1,11 +1,13 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,7 +26,7 @@ public class CategoryEntity implements Serializable {
    private List<ItemEntity> item;
    private List<CategoryEntity> child;
    private List<BrandsCategoryEntity> brandsCategory;
-   private StoreEntity store;
+   //private StoreEntity store;
    private String name;
    private Boolean featured;
    private Integer priority;
@@ -41,6 +43,7 @@ public class CategoryEntity implements Serializable {
         this.id = id;
     }
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     public CategoryEntity getParent() {
         return parent;
@@ -50,7 +53,9 @@ public class CategoryEntity implements Serializable {
         this.parent = parent;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "parent")
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<CategoryEntity> getChild() {
         return child;
     }
@@ -59,7 +64,9 @@ public class CategoryEntity implements Serializable {
         this.child = child;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<BrandsCategoryEntity> getBrandsCategory() {
         return brandsCategory;
     }
@@ -68,7 +75,9 @@ public class CategoryEntity implements Serializable {
         this.brandsCategory = brandsCategory;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemEntity> getItem() {
         return item;
     }
@@ -77,7 +86,8 @@ public class CategoryEntity implements Serializable {
         this.item = item;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    /*@JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "store_id")
     public StoreEntity getStore() {
         return store;
@@ -85,7 +95,7 @@ public class CategoryEntity implements Serializable {
 
     public void setStore(StoreEntity store) {
         this.store = store;
-    }
+    }*/
 
 
     @Column(name = "name", nullable = false)

@@ -1,9 +1,13 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +25,7 @@ public class StoreEntity implements Serializable {
 
     private Integer id;
     private StoresBrandEntity storesBrand;
-    private List<CategoryEntity> category;
+    //private List<CategoryEntity> category;
     private List<ItemsStoreEntity> itemsStore;
     private List<OrderEntity> order;
     private String name;
@@ -46,7 +50,8 @@ public class StoreEntity implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "stores_brand_id")
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
@@ -56,16 +61,17 @@ public class StoreEntity implements Serializable {
         this.storesBrand = storesBrand;
     }
 
-    @OneToMany(mappedBy = "store")
+   /* @OneToMany(mappedBy = "store")
     public List<CategoryEntity> getCategory() {
         return category;
     }
 
     public void setCategory(List<CategoryEntity> category) {
         this.category = category;
-    }
+    }*/
 
     @OneToMany(mappedBy = "store")
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsStoreEntity> getItemsStore() {
         return itemsStore;
     }
@@ -75,6 +81,7 @@ public class StoreEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "store")
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<OrderEntity> getOrder() {
         return order;
     }

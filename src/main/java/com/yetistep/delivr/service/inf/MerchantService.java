@@ -30,5 +30,7 @@ public interface MerchantService {
 
     public Boolean updateMerchant(MerchantEntity merchantEntity) throws Exception;
 
-    public List<StoresBrandEntity> findStores(HttpHeaders headers) throws Exception;
+    public List<StoresBrandEntity> findBrandList(HttpHeaders headers) throws Exception;
+
+    public StoresBrandEntity findBrandBrandDetail(HttpHeaders headers) throws Exception;
 }

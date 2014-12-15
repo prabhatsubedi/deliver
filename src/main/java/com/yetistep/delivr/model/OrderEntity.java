@@ -3,6 +3,7 @@ package com.yetistep.delivr.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -142,6 +143,7 @@ public class OrderEntity implements Serializable {
         this.customer = customer;
     }
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     public StoreEntity getStore() {

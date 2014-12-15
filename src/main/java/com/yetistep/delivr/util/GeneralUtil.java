@@ -1,18 +1,14 @@
 package com.yetistep.delivr.util;
 
 import com.yetistep.delivr.dto.HeaderDto;
-import net.sf.uadetector.ReadableUserAgent;
-import net.sf.uadetector.UserAgentStringParser;
-import net.sf.uadetector.service.UADetectorServiceFactory;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-
 import java.io.File;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -153,5 +149,10 @@ public class GeneralUtil {
         return tokenstr;
     }
 
+    /*   Generates 4 digit code   */
+    public static String generateMobileCode(){
+        int code = (int) (Math.random()*9000+1000);
+        return String.valueOf(code);
+    }
 
 }

@@ -3,17 +3,17 @@ package com.yetistep.delivr.service.impl;
 import com.yetistep.delivr.dao.inf.CustomerDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.util.GeneralUtil;
-import com.yetistep.delivr.util.MessageBundle;
 import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -41,26 +41,44 @@ public class CustomerServiceImpl implements CustomerService {
         RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_CUSTOMER);
         userEntity.setRole(userRole);
         userEntity.setPassword(GeneralUtil.encryptPassword(userEntity.getPassword()));
+        userEntity.setMobileNumber(userEntity.getUsername());
+        userEntity.setMobileVerificationStatus(false);
+        userEntity.setVerifiedStatus(false);
+        userEntity.setBlacklistStatus(false);
+        userEntity.setSubscribeNewsletter(false);
+
         customer.setTotalOrderPlaced(0);
         customer.setTotalOrderDelivered(0);
-        customer.setAverageRating(new BigDecimal(5));
         customer.setFriendsInvitationCount(0);
-        customer.setReferenceUrl("");
         customer.setReferredFriendsCount(0);
-        customer.setRewardsEarned(new BigDecimal(0));
-
-        String profileImage = customer.getUser().getProfileImage();
-        customer.getUser().setProfileImage(null);
         customerDaoService.save(customer);
-        if (profileImage != null && !profileImage.isEmpty()) {
-            log.info("Uploading Profile Image of delivery boy to S3 Bucket ");
 
-            String dir = MessageBundle.separateString("/", "Customer", "Customer" + customer.getId());
-            boolean isLocal = MessageBundle.isLocalHost();
-            String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + customer.getId();
-            String s3Path = GeneralUtil.saveImageToBucket(profileImage, imageName, dir, true);
-            customer.getUser().setProfileImage(s3Path);
-            customerDaoService.update(customer);
+        String verifyCode = GeneralUtil.generateMobileCode();
+        customer.getUser().setVerificationCode(verifyCode);
+        customerDaoService.update(customer);
+
+//        if (profileImage != null && !profileImage.isEmpty()) {
+//            log.info("Uploading Profile Image of delivery boy to S3 Bucket ");
+//
+//            String dir = MessageBundle.separateString("/", "Customer", "Customer" + customer.getId());
+//            boolean isLocal = MessageBundle.isLocalHost();
+//            String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + customer.getId();
+//            String s3Path = GeneralUtil.saveImageToBucket(profileImage, imageName, dir, true);
+//            customer.getUser().setProfileImage(s3Path);
+//            customerDaoService.update(customer);
+//        }
+    }
+
+    @Override
+    public void addCustomerAddress(Integer customerId, List<AddressEntity> addresses) throws Exception {
+        CustomerEntity customerEntity = customerDaoService.find(customerId);
+        if(customerEntity == null){
+            throw new YSException("VLD011");
         }
+        for(AddressEntity address: addresses){
+            address.setUser(customerEntity.getUser());
+        }
+        customerEntity.getUser().setAddresses(addresses);
+        customerDaoService.save(customerEntity);
     }
 }

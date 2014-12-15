@@ -1,6 +1,9 @@
 package com.yetistep.delivr.service.inf;
 
+import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,4 +14,6 @@ import com.yetistep.delivr.model.CustomerEntity;
  */
 public interface CustomerService {
     public void saveCustomer(CustomerEntity customer) throws Exception;
+
+    public void addCustomerAddress(Integer customerId, List<AddressEntity> addresses) throws Exception;
 }

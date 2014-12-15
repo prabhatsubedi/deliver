@@ -1,10 +1,13 @@
 package com.yetistep.delivr.controller;
 
+import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.CustomerService;
-import com.yetistep.delivr.util.*;
+import com.yetistep.delivr.util.GeneralUtil;
+import com.yetistep.delivr.util.ServiceResponse;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.service.UADetectorServiceFactory;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequestMapping(value = "/client")
-public class ClientController {
+public class ClientController extends AbstractManager{
     @Autowired
     HttpServletRequest httpServletRequest;
 
@@ -45,6 +49,7 @@ public class ClientController {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto);
+            validateMobileClient(headerDto.getAccessToken());
             customer.getUser().setUsername(headerDto.getUsername());
             customer.getUser().setPassword(headerDto.getPassword());
             customerService.saveCustomer(customer);
@@ -85,6 +90,24 @@ public class ClientController {
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
 
+    }
+
+    @RequestMapping(value = "/add_address", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> processRegistration(@RequestHeader HttpHeaders headers, @RequestBody List<AddressEntity> addresses) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            validateMobileClient(headerDto.getAccessToken());
+            customerService.addCustomerAddress(Integer.parseInt(headerDto.getId()), addresses);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Customer address has been added successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while adding customer address", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
     }
 
 

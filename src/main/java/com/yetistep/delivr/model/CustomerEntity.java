@@ -3,9 +3,7 @@ package com.yetistep.delivr.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -79,7 +77,7 @@ public class CustomerEntity implements Serializable {
         this.totalOrderDelivered = totalOrderDelivered;
     }
 
-    @Column(name = "average_rating", nullable = false, precision = 4, scale = 2)
+    @Column(name = "average_rating", precision = 4, scale = 2)
     public BigDecimal getAverageRating() {
         return averageRating;
     }
@@ -97,7 +95,7 @@ public class CustomerEntity implements Serializable {
         this.friendsInvitationCount = friendsInvitationCount;
     }
 
-    @Column(name = "reference_url", nullable = false)
+    @Column(name = "reference_url")
     public String getReferenceUrl() {
         return referenceUrl;
     }
@@ -115,7 +113,7 @@ public class CustomerEntity implements Serializable {
         this.referredFriendsCount = referredFriendsCount;
     }
 
-    @Column(name = "rewards_earned", nullable = false)
+    @Column(name = "rewards_earned")
     public BigDecimal getRewardsEarned() {
         return rewardsEarned;
     }

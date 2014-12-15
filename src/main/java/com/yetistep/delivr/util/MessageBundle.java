@@ -88,11 +88,8 @@ public class MessageBundle {
         return System.getProperty("DELIVR_SECRET_KEY");
     }
 
-    public static String readPrefValue(PreferenceType preferenceType) {
-        return getPropertyKey(preferenceType.toString(), SYSTEM_PREF_FILE);
-    }
 
-    public static String getPropertyKey(String key, String file){
+    public static String getPropertyKey(String key, File file){
         try {
             Properties prop = readFileAsProperty(file);
             return prop.getProperty(key);
@@ -103,9 +100,8 @@ public class MessageBundle {
         return null;
     }
 
-    public static Properties readFileAsProperty(String filename) throws IOException {
-        File file = new File(filename);
-        InputStream stream = new FileInputStream(file);
+    public static Properties readFileAsProperty(File filename) throws IOException {
+        InputStream stream = new FileInputStream(filename);
         Properties prop = new Properties();
         prop.load(stream);
         return prop;

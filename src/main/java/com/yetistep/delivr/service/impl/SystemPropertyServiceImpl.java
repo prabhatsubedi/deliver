@@ -2,8 +2,10 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.impl.PreferencesDaoServiceImpl;
 import com.yetistep.delivr.dao.inf.PreferencesDaoService;
+import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.PreferencesEntity;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
+import com.yetistep.delivr.util.MessageBundle;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -92,4 +94,11 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
         savePropertyFileToWEB_INF(systemPreferences);
         return true;
     }
+
+    @Override
+    public String readPrefValue(PreferenceType preferenceType) throws Exception{
+        Resource resource = new ClassPathResource(SYSTEM_PREF_FILE);
+        return MessageBundle.getPropertyKey(preferenceType.toString(), resource.getFile());
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.PreferencesEntity;
 import com.yetistep.delivr.model.RoleEntity;

@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,13 +26,14 @@ public class OrderEntity implements Serializable {
     private Boolean orderVerificationStatus;
     private Integer deliveryStatus;
     private Integer orderStatus;
-    private ItemEntity item;
+    //private ItemEntity item;
+    private Set<ItemsOrderEntity> itemsOrder;
     private DeliveryBoyEntity deliveryBoy;
-    private CategoryEntity customer;
+    private CustomerEntity customer;
     private StoreEntity store;
     private BigDecimal customerChargeableDistance; //Paid by customer
     private BigDecimal systemChargeableDistance; //Paid by system
-    private BigDecimal itemTotal;
+    //private BigDecimal itemTotal;
     private BigDecimal totalCost;
     private BigDecimal transportationCharge;
     private BigDecimal systemServiceCharge;
@@ -89,7 +91,7 @@ public class OrderEntity implements Serializable {
         this.orderStatus = orderStatus;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+   /* @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     public ItemEntity getItem() {
         return item;
@@ -97,6 +99,15 @@ public class OrderEntity implements Serializable {
 
     public void setItem(ItemEntity item) {
         this.item = item;
+    }*/
+
+    @OneToMany(mappedBy = "order")
+    public Set<ItemsOrderEntity> getItemsOrder() {
+        return itemsOrder;
+    }
+
+    public void setItemsOrder(Set<ItemsOrderEntity> itemsOrder) {
+        this.itemsOrder = itemsOrder;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -111,11 +122,11 @@ public class OrderEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
-    public CategoryEntity getCustomer() {
+    public CustomerEntity getCustomer() {
         return customer;
     }
 
-    public void setCustomer(CategoryEntity customer) {
+    public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
     }
 
@@ -147,14 +158,14 @@ public class OrderEntity implements Serializable {
         this.systemChargeableDistance = systemChargeableDistance;
     }
 
-    @Column(name = "item_total", precision = 4, scale = 2)
+    /*@Column(name = "item_total", precision = 4, scale = 2)
     public BigDecimal getItemTotal() {
         return itemTotal;
     }
 
     public void setItemTotal(BigDecimal itemTotal) {
         this.itemTotal = itemTotal;
-    }
+    }*/
 
     @Column(name = "total_cost", precision = 4, scale = 2)
     public BigDecimal getTotalCost() {

@@ -21,13 +21,14 @@ public class ItemEntity implements Serializable {
     private CategoryEntity category;
     private String name;
     private Set<ItemsImageEntity> itemsImage;
+    private Set<ItemsOrderEntity> itemsOrder;
     private String Description;
     private Integer availableQuantity;
     private Timestamp availableStartTime;
     private Timestamp availableEndTime;
     private Set<ItemsStoreEntity> itemsStores;
     private Set<ItemsAttributeEntity> attributes;
-    private Set<OrderEntity> order;
+    //private Set<OrderEntity> order;
     private Integer maxOrderQuantity;
     private Integer minOrderQuantity;
     private Timestamp createdDate;
@@ -80,6 +81,15 @@ public class ItemEntity implements Serializable {
 
     public void setItemsImage(Set<ItemsImageEntity> itemsImage) {
         this.itemsImage = itemsImage;
+    }
+
+    @OneToMany(mappedBy = "item")
+    public Set<ItemsOrderEntity> getItemsOrder() {
+        return itemsOrder;
+    }
+
+    public void setItemsOrder(Set<ItemsOrderEntity> itemsOrder) {
+        this.itemsOrder = itemsOrder;
     }
 
     @Column(name = "description")
@@ -136,14 +146,14 @@ public class ItemEntity implements Serializable {
         this.attributes = attributes;
     }
 
-    @OneToMany(mappedBy = "item")
+    /*@OneToMany(mappedBy = "item")
     public Set<OrderEntity> getOrder() {
         return order;
     }
 
     public void setOrder(Set<OrderEntity> order) {
         this.order = order;
-    }
+    }*/
 
     @Column(name = "max_order_quantity")
     public Integer getMaxOrderQuantity() {

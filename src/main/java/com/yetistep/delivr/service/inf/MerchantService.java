@@ -3,6 +3,7 @@ package com.yetistep.delivr.service.inf;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.StoresBrandEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
@@ -28,4 +29,6 @@ public interface MerchantService {
     public MerchantEntity getMerchantById(Integer id) throws Exception;
 
     public Boolean updateMerchant(MerchantEntity merchantEntity) throws Exception;
+
+    public List<StoresBrandEntity> findStores(HttpHeaders headers) throws Exception;
 }

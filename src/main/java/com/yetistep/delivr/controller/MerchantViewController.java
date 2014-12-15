@@ -41,4 +41,13 @@ public class MerchantViewController {
         modelAndView.setViewName("merchant/dashboard");
         return modelAndView;
     }
+
+    @RequestMapping(value = {"/get_stores"}, method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView getStores(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("title", "Add Store");
+        modelAndView.setViewName("merchant/get_stores");
+        return modelAndView;
+    }
 }

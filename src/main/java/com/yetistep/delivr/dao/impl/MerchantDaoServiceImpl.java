@@ -117,4 +117,25 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
         return categories;
     }
+
+
+    @Override
+    public List<StoresBrandEntity> findStoresByMerchant(Integer merchant_id) throws Exception {
+        List<StoresBrandEntity> stores = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+
+        criteria.add(Restrictions.eq("merchant.id", merchant_id)) ;
+        stores = criteria.list();
+
+        return stores;
+    }
+
+    @Override
+    public List<StoresBrandEntity> findStores() throws Exception {
+        List<StoresBrandEntity> stores = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        stores = criteria.list();
+
+        return stores;
+    }
 }

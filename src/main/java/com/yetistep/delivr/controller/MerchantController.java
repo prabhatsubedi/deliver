@@ -3,6 +3,7 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.StoresBrandEntity;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
@@ -80,5 +81,21 @@ public class MerchantController {
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/get_all_stores", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> findStores(@RequestHeader HttpHeaders headers) {
+        try {
+            List<StoresBrandEntity> stores = merchantService.findStores(headers);
+            ServiceResponse serviceResponse = new ServiceResponse("Stores has been retrieved successfully");
+            serviceResponse.addParam("stores", stores);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
 }

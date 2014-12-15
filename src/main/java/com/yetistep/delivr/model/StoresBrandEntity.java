@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,7 +21,7 @@ public class StoresBrandEntity implements Serializable {
 
    private Integer id;
    private MerchantEntity merchant;
-   private Set<StoreEntity> store;
+   private List<StoreEntity> store;
    private List<BrandsCategoryEntity> brandsCategory;
    private String brandName;
    private String openingTime;
@@ -57,12 +54,12 @@ public class StoresBrandEntity implements Serializable {
         this.merchant = merchant;
     }
 
-    @OneToMany(mappedBy = "storesBrand")
-    public Set<StoreEntity> getStore() {
+    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
+    public List<StoreEntity> getStore() {
         return store;
     }
 
-    public void setStore(Set<StoreEntity> store) {
+    public void setStore(List<StoreEntity> store) {
         this.store = store;
     }
 

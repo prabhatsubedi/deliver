@@ -3,7 +3,10 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.model.AuthenticatedUser;
 import com.yetistep.delivr.model.RoleEntity;
+import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
+import com.yetistep.delivr.util.YSException;
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +27,7 @@ import java.util.*;
 
 @Controller
 public class MainController {
+    private static Logger log = Logger.getLogger(MainController.class);
 
     @RequestMapping(value = { "/" }, method = RequestMethod.GET)
     public ModelAndView defaultPage() {
@@ -88,11 +92,14 @@ public class MainController {
     }
 
     @RequestMapping(value = "/auth_failed", method = RequestMethod.GET)
-    public ModelAndView auth_failed() {
-        ModelAndView model = new ModelAndView();
-        model.addObject("title", "Authentication failed.");
-        model.addObject("message", "Authentication failed.");
-        return model;
+    public ResponseEntity<ServiceResponse> auth_failed() {
+        try{
+            throw new YSException("SEC003");
+        }catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while login", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value = "/user**", method = RequestMethod.GET)

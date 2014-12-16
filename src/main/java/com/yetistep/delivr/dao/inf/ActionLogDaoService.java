@@ -2,6 +2,9 @@ package com.yetistep.delivr.dao.inf;
 
 import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.model.ActionLogEntity;
+import com.yetistep.delivr.model.Page;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,5 +14,7 @@ import com.yetistep.delivr.model.ActionLogEntity;
  * To change this template use File | Settings | File Templates.
  */
 public interface ActionLogDaoService extends GenericDaoService<Long, ActionLogEntity> {
+     public List<ActionLogEntity> findActionLogPaginated(Page page) throws Exception;
 
+     public Long getTotalNumberOfActionLogs() throws Exception;
 }

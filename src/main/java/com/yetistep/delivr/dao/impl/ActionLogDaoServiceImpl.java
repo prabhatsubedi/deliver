@@ -2,8 +2,12 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.ActionLogDaoService;
 import com.yetistep.delivr.model.ActionLogEntity;
+import com.yetistep.delivr.model.Page;
+import com.yetistep.delivr.util.HibernateUtil;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -51,5 +55,21 @@ public class ActionLogDaoServiceImpl implements ActionLogDaoService {
     public Session getCurrentSession() throws Exception {
         Session session = sessionFactory.getCurrentSession();
         return session;
+    }
+
+    @Override
+    public List<ActionLogEntity> findActionLogPaginated(Page page) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(ActionLogEntity.class);
+        HibernateUtil.fillPaginationCriteria(criteria, page, ActionLogEntity.class);
+        List<ActionLogEntity> actionLogEntities = criteria.list();
+        return actionLogEntities;
+    }
+
+    @Override
+    public Long getTotalNumberOfActionLogs() throws Exception {
+        Criteria criteriaCount = getCurrentSession().createCriteria(ActionLogEntity.class);
+        criteriaCount.setProjection(Projections.rowCount());
+        Long count = (Long) criteriaCount.uniqueResult();
+        return count;
     }
 }

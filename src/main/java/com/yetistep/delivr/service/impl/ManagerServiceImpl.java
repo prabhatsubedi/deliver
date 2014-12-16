@@ -1,6 +1,14 @@
 package com.yetistep.delivr.service.impl;
 
+import com.yetistep.delivr.dao.inf.ActionLogDaoService;
+import com.yetistep.delivr.dto.PaginationDto;
+import com.yetistep.delivr.model.ActionLogEntity;
+import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.service.inf.ManagerService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,6 +17,24 @@ import com.yetistep.delivr.service.inf.ManagerService;
  * Time: 10:38 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ManagerServiceImpl implements ManagerService{
-    //TODO
+public class ManagerServiceImpl implements ManagerService {
+    private static final Logger log = Logger.getLogger(ManagerServiceImpl.class);
+    @Autowired
+    ActionLogDaoService actionLogDaoService;
+
+    @Override
+    public PaginationDto getActionLog(Page page) throws Exception {
+        log.info("Retrieving list of action logs:");
+        PaginationDto paginationDto = new PaginationDto();
+        paginationDto.setNumberOfRows(actionLogDaoService.getTotalNumberOfActionLogs());
+        List<ActionLogEntity> actionLogEntities;
+        if(page != null){
+            page.setTotalRows(actionLogDaoService.getTotalNumberOfActionLogs());
+            actionLogEntities = actionLogDaoService.findActionLogPaginated(page);
+        }else{
+            actionLogEntities = actionLogDaoService.findAll();
+        }
+        paginationDto.setData(actionLogEntities);
+        return paginationDto;
+    }
 }

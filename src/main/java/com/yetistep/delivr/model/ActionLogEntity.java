@@ -1,7 +1,10 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.ActionType;
 import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.util.JsonDateSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -48,6 +51,7 @@ public class ActionLogEntity implements Serializable {
         this.id = id;
     }
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     public UserEntity getUserEntity() {
@@ -96,6 +100,7 @@ public class ActionLogEntity implements Serializable {
         this.userIP = userIP;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "date_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getDateTime() {
         return dateTime;

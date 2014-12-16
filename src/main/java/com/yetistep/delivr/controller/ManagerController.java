@@ -1,13 +1,12 @@
 package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.UserEntity;
-import com.yetistep.delivr.service.inf.CustomerService;
-import com.yetistep.delivr.service.inf.DeliveryBoyService;
-import com.yetistep.delivr.service.inf.MerchantService;
-import com.yetistep.delivr.service.inf.UserService;
+import com.yetistep.delivr.service.inf.*;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
 import org.apache.log4j.Logger;
@@ -39,6 +38,8 @@ public class ManagerController {
     MerchantService merchantService;
     @Autowired
     CustomerService customerService;
+    @Autowired
+    ManagerService managerService;
 
     private static final Logger log = Logger.getLogger(ManagerController.class);
 
@@ -192,6 +193,22 @@ public class ManagerController {
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while retrieving merchant: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+
+    }
+
+    @RequestMapping(value = "/get_logs", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getActionLogs(@RequestBody(required = false) Page page) {
+        try{
+            PaginationDto paginationDto = managerService.getActionLog(page);
+            ServiceResponse serviceResponse = new ServiceResponse("List of action log");
+            serviceResponse.addParam("actionLog", paginationDto);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving action logs: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

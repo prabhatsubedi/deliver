@@ -112,6 +112,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         user.setVerifiedStatus(true);
         dbMerchant.setCommissionPercentage(merchantEntity.getCommissionPercentage());
         dbMerchant.setPartnershipStatus(merchantEntity.getPartnershipStatus());
+        dbMerchant.setServiceFee(merchantEntity.getServiceFee());
         merchantDaoService.update(dbMerchant);
 
         //Sending Email For Merchant
@@ -237,6 +238,25 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         MerchantEntity merchantEntity = merchantDaoService.find(id);
         if(merchantEntity == null)
             throw new YSException("VLD011");
+         /*
+            * If password is empty, then our assumption is merchant has not clicked the verification link
+            * and hence status is UNVERIFIED.
+            * If password is not empty and commission percentage is null, our assumption is merchant has clicked
+            * on the verification link but not activated by admin/manager. Hence status is VERIFIED only.
+            * If password is not empty and commission percentage is not null, then verification status checked and
+            * user status is updated based on verified status(true ==> ACTIVE, false ==> INACTIVE).
+            */
+        if(merchantEntity.getUser().getPassword().isEmpty()){
+            merchantEntity.setUserStatus(UserStatus.UNVERIFIED);
+        }else if(merchantEntity.getCommissionPercentage() == null){
+            merchantEntity.setUserStatus(UserStatus.VERIFIED);
+        }else{
+            if(merchantEntity.getUser().getVerifiedStatus()){
+                merchantEntity.setUserStatus(UserStatus.ACTIVE);
+            }else{
+                merchantEntity.setUserStatus(UserStatus.INACTIVE);
+            }
+        }
         merchantEntity.getUser().setRole(null);
         return merchantEntity;
     }

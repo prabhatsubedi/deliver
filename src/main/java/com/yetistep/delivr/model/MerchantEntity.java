@@ -12,9 +12,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,6 +33,7 @@ public class MerchantEntity implements Serializable {
     private List<StoresBrandEntity> storesBrand;
     private Boolean partnershipStatus;
     private BigDecimal commissionPercentage;
+    private BigDecimal serviceFee;
     private String website;
     private String agreementDetail;
     private String businessTitle;
@@ -104,6 +103,14 @@ public class MerchantEntity implements Serializable {
         this.commissionPercentage = commissionPercentage;
     }
 
+    @Column(name = "service_fee", columnDefinition="Decimal(16,4)")
+    public BigDecimal getServiceFee() {
+        return serviceFee;
+    }
+
+    public void setServiceFee(BigDecimal serviceFee) {
+        this.serviceFee = serviceFee;
+    }
 
     @Column(name = "website")
     public String getWebsite() {

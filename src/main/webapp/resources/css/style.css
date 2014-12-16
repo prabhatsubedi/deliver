@@ -358,7 +358,7 @@ body {
     border: 3px solid #CCCCCC;
     background-color: #DDDDDD;
 }
-#modal_login .form-control.error, .modal_form .form-control.error, #drop_zone.error, .checkbox .error {
+#modal_login .form-control.error, .modal_form .form-control.error, #drop_zone.error, .drop_zone.error, .checkbox .error {
     border: 1px solid #ff9235;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07) inset, 0 0 8px rgba(255, 146, 53, 0.60);
     outline: 0 none;
@@ -567,7 +567,7 @@ body.assistance_page {
 .form_container .form-control:focus {
     border: 1px solid #66afe9 !important;
 }
-.form_container .form-control.error {
+.form_container .form-control.error, .form_container .bootstrap-select button.dropdown-toggle.error {
     border: 1px solid #ff9235 !important;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07) inset, 0 0 8px rgba(255, 146, 53, 0.60);
     outline: 0 none;
@@ -623,6 +623,7 @@ body.assistance_page {
 
 .map-container {
     border: 1px solid #cbcaca;
+    margin-bottom: 15px;
 }
 .drop_zone {
     border: 1px solid #cbcaca;

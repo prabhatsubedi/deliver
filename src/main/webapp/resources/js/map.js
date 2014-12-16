@@ -303,6 +303,36 @@ $(document).ready(function(){
 
     });
 
+    function removeAnimation() {
+        for(var i in markers) {
+            markers[i].setAnimation(null);
+        }
+    }
+
+    function markerPrevNext(marker) {
+        var current_index = markers.indexOf(marker);
+        var markers_length = markers.length;
+        var prev = $(".marker_prev");
+        var next = $(".marker_next");
+        prev.attr('data-index', current_index - 1);
+        next.attr('data-index', current_index + 1);
+        if(markers_length > 1) {
+            if(current_index == 0){
+                prev.attr('disabled', 'disabled');
+            } else {
+                prev.removeAttr('disabled', 'disabled');
+            }
+            if(current_index == markers_length - 1) {
+                next.attr('disabled', 'disabled');
+            } else {
+                next.removeAttr('disabled', 'disabled');
+            }
+        } else {
+            prev.attr('disabled', 'disabled');
+            next.attr('disabled', 'disabled');
+        }
+    }
+
     function addStoreMarker(location, name) {
         var location_check = false;
         for(var i in arrGeoPoints) {
@@ -310,7 +340,6 @@ $(document).ready(function(){
                 location_check = true;
             }
         }
-
         if(!location_check) {
             geocoder.geocode({'latLng': location}, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
@@ -370,12 +399,13 @@ $(document).ready(function(){
                             geoObj.name = name === undefined ? $('#brand_name').val() : name;
                             geoObj.street = sublocality === undefined ? '' : sublocality;
                             geoObj.city = city === undefined ? '' : city;
-                            geoObj.postalCode = postalCode === undefined ? '' : postalCode;
+//                            geoObj.postalCode = postalCode === undefined ? '' : postalCode;
                             geoObj.state = state === undefined ? '' : state;
                             geoObj.country = country;
-                            geoObj.contactNumber = "";
+                            geoObj.contactNo = "";
                             geoObj.contactPerson = "";
 
+                            removeAnimation();
                             marker = new google.maps.Marker({
                                 position: location,
                                 map: map
@@ -392,7 +422,7 @@ $(document).ready(function(){
                             var address_city = infoWindowData.city;
                             var address_state = infoWindowData.state;
                             var address_country = infoWindowData.country;
-                            var address_contact_number = infoWindowData.contactNumber;
+                            var address_contact_number = infoWindowData.contactNo;
                             var address_contact_person = infoWindowData.contactPerson;
                             $('#store_name', marker_address).attr('value', address_name);
                             $('#street', marker_address).attr('value', address_street_name);
@@ -402,16 +432,19 @@ $(document).ready(function(){
                             $('#country', marker_address).attr('value', address_country);
                             $('#contact_no', marker_address).attr('value', address_contact_number);
                             $('#contact_person', marker_address).attr('value', address_contact_person);
-                            $('#save_marker', marker_address).removeAttr('disabled').attr({'data-id': locationToKey(location)});
-                            $('#cancel_marker', marker_address).removeAttr('disabled');
+                            $('.save_marker', marker_address).removeAttr('disabled').attr({'data-id': locationToKey(location)});
+                            $('.cancel_marker', marker_address).removeAttr('disabled');
+                            marker.setAnimation(google.maps.Animation.BOUNCE);
+                            markerPrevNext(marker);
                             google.maps.event.addListener(marker, 'click', function () {
+                                removeAnimation();
                                 var infoWindowData = arrGeoPoints[locationToKey(this.getPosition())];
                                 var address_name = infoWindowData.name;
                                 var address_street_name = infoWindowData.street;
                                 var address_city = infoWindowData.city;
                                 var address_state = infoWindowData.state;
                                 var address_country = infoWindowData.country;
-                                var address_contact_number = infoWindowData.contactNumber;
+                                var address_contact_number = infoWindowData.contactNo;
                                 var address_contact_person = infoWindowData.contactPerson;
                                 $('#store_name', marker_address).attr('value', address_name);
                                 $('#street', marker_address).attr('value', address_street_name);
@@ -420,16 +453,26 @@ $(document).ready(function(){
                                 $('#country', marker_address).attr('value', address_country);
                                 $('#contact_no', marker_address).attr('value', address_contact_number);
                                 $('#contact_person', marker_address).attr('value', address_contact_person);
-                                $('#save_marker', marker_address).removeAttr('disabled').attr({'data-id': locationToKey(location)});
-                                $('#cancel_marker', marker_address).removeAttr('disabled');
+                                $('.save_marker', marker_address).removeAttr('disabled').attr({'data-id': locationToKey(location)});
+                                $('.cancel_marker', marker_address).removeAttr('disabled');
+                                this.setAnimation(google.maps.Animation.BOUNCE);
+                                markerPrevNext(this);
                             });
                             google.maps.event.addListener(marker, 'rightclick', function () {
                                 this.setMap(null);
-                                markers.splice(markers.indexOf(this), 1);
+                                var current_index = markers.indexOf(this);
+                                markers.splice(current_index, 1);
                                 delete arrGeoPoints[locationToKey(this.getPosition())];
-                                $('#store_name, #street, #city, #state, #country, #contact_no, #contact_person').val('');
-                                $('#save_marker', marker_address).attr('disabled', 'disabled').removeAttr('data-id');
-                                $('#cancel_marker', marker_address).attr('disabled', 'disabled');
+                                var markers_length = markers.length;
+                                if(markers_length > 0){
+                                    current_index = current_index == 0 ? 0 : current_index - 1;
+                                    google.maps.event.trigger(markers[current_index], 'click');
+                                    map.panTo(markers[current_index].position);
+                                } else {
+                                    $('#store_name, #street, #city, #state, #country, #contact_no, #contact_person').val('');
+                                    $('.save_marker', marker_address).attr('disabled', 'disabled').removeAttr('data-id');
+                                    $('.cancel_marker', marker_address).attr('disabled', 'disabled');
+                                }
                             });
 
                         }

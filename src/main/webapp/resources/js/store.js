@@ -4,21 +4,58 @@ if(typeof(Store) == "undefined") var Store = {};
 
     Store.loadAddStore = function() {
 
+        $('option:selected').removeAttr('selected');
         Image.dropZone('#brand_image_input', '#brand_image');
         Image.dropZone('#brand_logo_input', '#brand_logo');
 
-        $('#save_marker', '#form_store').attr('disabled', 'disabled');
-        $('#cancel_marker', '#form_store').attr('disabled', 'disabled');
+        $('.save_marker, .cancel_marker, .marker_nav', '#form_store').attr('disabled', 'disabled');
+
+        $.validator.setDefaults({
+            errorPlacement : function(error, element){
+                $('#error_container').html(error);
+            },
+            ignore: []
+        });
 
         $.validator.addMethod("contactNumber", function(value, element, arg){
             return this.optional(element) || /[0-9+-]+$/.test(value);
         }, "Only +, - and numbers are allowed.");
 
-        $.validator.setDefaults({
-            errorPlacement : function(error, element){
-                $('#error_container').html(error);
+        $.validator.addMethod("notEqual", function(value, element, arg){
+            var result = value != arg;
+            if($(element).is('select')) {
+                if(!result) {
+                    $(element).siblings('.bootstrap-select').children('.form-control').addClass('error');
+                } else {
+                    $(element).siblings('.bootstrap-select').children('.form-control').removeClass('error');
+                }
             }
-        });
+            return result;
+        }, "Please select any option.");
+
+        $.validator.addMethod("minSelection", function(value, element, arg){
+            var result = value != null && (value.length >= arg || value == 'All');
+            if($(element).is('select')) {
+                if(!result) {
+                    $(element).siblings('.bootstrap-select').children('.form-control').addClass('error');
+                } else {
+                    $(element).siblings('.bootstrap-select').children('.form-control').removeClass('error');
+                }
+            }
+            return result;
+        }, $.validator.format("Please select at least {0} options."));
+
+        $.validator.addMethod("imageRequired", function(value, element, arg){
+            var result = true;
+            var container = $(element).prev('.drop_zone');
+            if($('img', container).attr('src') == undefined || $('img', container).attr('src') == "") {
+                result = false;
+                container.addClass('error');
+            } else {
+                container.removeClass('error');
+            }
+            return result;
+        }, "Only numbers are allowed.");
 
         $('#store_name, #street, #city, #state, #country, #contact_no, #contact_person').val('');
 
@@ -32,16 +69,28 @@ if(typeof(Store) == "undefined") var Store = {};
         });
 
         if(!initialized) initialize('add_store'); else google.maps.event.trigger(map, 'resize');
-        $('#brand_categories').selectpicker({
-            noneSelectedText: 'Select Brand Categories'
+        $('#store_categories').selectpicker({
+            noneSelectedText: 'Select Store Categories',
+            size: 5
         });
+
+        var timeSelect = "";
+        for(i = 0; i < 24; i++) {
+            var time = i + "";
+            time = time.length == 1 ? "0" + time : time;
+            timeSelect += '<option value="' + time + '">' + time + '</option>';
+        }
+        $('#open_time, #close_time').append(timeSelect);
+
+        $('#open_time').selectpicker({size: 5});
+        $('#close_time').selectpicker({size: 5});
 
         $('#form_store').validate({
             submitHandler: function() {
                 var loaderDiv = "#store_section .store_content";
                 $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
 
-                var geoKeyObject = arrGeoPoints[$("#save_marker").attr('data-id')];
+                var geoKeyObject = arrGeoPoints[$(".save_marker").eq(0).attr('data-id')];
                 var geoParent = '#form_store';
 
                 var address_name = $('#store_name', geoParent).val();
@@ -57,7 +106,7 @@ if(typeof(Store) == "undefined") var Store = {};
                 geoKeyObject.city = address_city;
                 geoKeyObject.state = address_state;
                 geoKeyObject.country = address_country;
-                geoKeyObject.contactNumber = address_contact_number;
+                geoKeyObject.contactNo = address_contact_number;
                 geoKeyObject.contactPerson = address_contact_person;
 
                 setTimeout(function(){
@@ -76,31 +125,100 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#contact_no').rules('add', {required: true, contactNumber: true});
         $('#contact_person').rules('add', {required: true});
 
-        $('#cancel_marker').live('click', function(){
-            var loaderDiv = "#store_section .store_content";
-            $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
-
-            var geoKeyObject = arrGeoPoints[$("#save_marker").attr('data-id')];
-            var geoParent = '#form_store';
-            $('#store_name', geoParent).val(geoKeyObject.name);
-            $('#street', geoParent).val(geoKeyObject.street);
-            $('#city', geoParent).val(geoKeyObject.city);
-            $('#state', geoParent).val(geoKeyObject.state);
-            $('#country', geoParent).val(geoKeyObject.country);
-            $('#contact_no', geoParent).val(geoKeyObject.contactNumber);
-            $('#contact_person', geoParent).val(geoKeyObject.contactPerson);
-
-            setTimeout(function(){
-                $(loaderDiv).removeClass('loader_div').children('.loader').hide();
-            }, 200);
-
-        });
-
         $('#form_brand').validate({
             submitHandler: function() {
 
+                if(markers.length > 0) {
+                    var location_valid = true;
+                    var stores = [];
+                    var geoPoint;
+                    var geoKey;
+                    for(geoKey in arrGeoPoints) {
+                        geoPoint = arrGeoPoints[geoKey];
+                        if(geoPoint.name == ""){
+                            location_valid = false;
+                        }
+                        if(geoPoint.street == ""){
+                            location_valid = false;
+                        }
+                        if(geoPoint.city == ""){
+                            location_valid = false;
+                        }
+                        if(geoPoint.state == ""){
+                            location_valid = false;
+                        }
+                        if(geoPoint.country == ""){
+                            location_valid = false;
+                        }
+                        if(geoPoint.contactNo == ""){
+                            location_valid = false;
+                        }
+                        if(geoPoint.contactPerson == ""){
+                            location_valid = false;
+                        }
+                        stores.push(geoPoint);
+                        if(location_valid == false) break;
+                    }
+
+                    if(location_valid) {
+                        var data = {};
+                        var stores_brand = {};
+
+                        stores_brand.brandName = $('#brand_name').val();
+                        stores_brand.openingTime = $('#open_time').val();
+                        stores_brand.closingTime = $('#close_time').val();
+                        stores_brand.brandLogo = $('#brand_logo img').attr('src');
+                        stores_brand.brandImage = $('#brand_image img').attr('src');
+//                    stores_brand.brandUrl = $('#brand_url').val();
+
+
+                        var categories = $('#store_categories').val();
+                        var arr_categories = [];
+                        if(categories == "All") {
+                            $('#store_categories option').not('option[value="All"]').each(function(){
+                                arr_categories.push($(this).val());
+                            });
+                            categories = arr_categories;
+                        }
+                        data.stores = stores;
+                        data.storesBrand = stores_brand;
+                        data.categories = categories;
+
+                        Store.addStore(data, {id: 1});
+                    } else {
+                        alert('All fields of all store locations are required.');
+                        var current_index = Object.keys(arrGeoPoints).indexOf(geoKey);
+                        google.maps.event.trigger(markers[current_index], 'click');
+                        map.panTo(markers[current_index].position);
+                    }
+
+                } else {
+                    alert("Please add at least 1 store location.");
+                }
 
                 return false;
+            }
+        });
+        $('#brand_name').rules('add', {required: true});
+        $('#brand_image_input').rules('add', {imageRequired: true});
+        $('#brand_logo_input').rules('add', {imageRequired: true});
+        $('#open_time').rules('add', {notEqual: "none"});
+        $('#close_time').rules('add', {notEqual: "none"});
+        $('#brand_url').rules('add', {required: true, url: true});
+        $('#store_categories').rules('add', {minSelection: 1});
+
+        $('.cancel_marker').live('click', function(){
+
+            var current_index = Object.keys(arrGeoPoints).indexOf($(".save_marker").eq(0).attr('data-id'));
+            google.maps.event.trigger(markers[current_index], 'rightclick');
+
+        });
+
+        $('.marker_nav').click(function(){
+            var marker_index = $(this).attr('data-index');
+            if(marker_index != undefined && $.isNumeric(marker_index) && marker_index >= 0 && marker_index < markers.length) {
+                google.maps.event.trigger(markers[marker_index], 'click');
+                map.panTo(markers[marker_index].position);
             }
         });
 

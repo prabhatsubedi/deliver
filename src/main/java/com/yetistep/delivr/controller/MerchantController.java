@@ -83,7 +83,7 @@ public class MerchantController {
         }
     }
 
-    @RequestMapping(value = "/get_store_list", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_stores", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> findStoreList(@RequestHeader HttpHeaders headers) {
         try {

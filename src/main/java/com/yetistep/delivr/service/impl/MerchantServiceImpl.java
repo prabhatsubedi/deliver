@@ -336,6 +336,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             itemsImageEntity.setUrl(null);
         }
 
+        //merchantDaoService.saveItem(item);
+
+
 
     }
 

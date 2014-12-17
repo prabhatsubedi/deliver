@@ -163,7 +163,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         //StoresBrandEntity newStoresBrand = new StoresBrandEntity();
 
-        MerchantEntity dbMerchant = merchantDaoService.find(Integer.parseInt(headerDto.getId()));
+        MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
         if(dbMerchant == null)
             throw new YSException("VLD011");
 
@@ -230,8 +230,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public MerchantEntity getMerchantById(HeaderDto headerDto) throws Exception {
-        int id = Integer.parseInt(headerDto.getId());
-        MerchantEntity merchantEntity = merchantDaoService.find(id);
+        MerchantEntity merchantEntity = merchantDaoService.find(headerDto.getMerchantId());
         if(merchantEntity == null)
             throw new YSException("VLD011");
          /*
@@ -278,21 +277,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public List<StoresBrandEntity> findBrandList(HeaderDto headerDto) throws Exception {
-        MerchantEntity dbMerchant =null;
-        if(headerDto.getId() != null)
-             dbMerchant = merchantDaoService.find(Integer.parseInt(headerDto.getId()));
-
-        List<StoresBrandEntity> storesBrands;
-
-        if(dbMerchant != null)
-            storesBrands =  merchantDaoService.findBrandListByMerchant(dbMerchant.getId());
-        else
-            storesBrands =  merchantDaoService.findBrandList();
-
-       for(StoresBrandEntity storesBrand: storesBrands){
+        MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
+        if(dbMerchant == null)
+            throw new YSException("VLD011");
+        List<StoresBrandEntity> storesBrands = merchantDaoService.findBrandListByMerchant(dbMerchant.getId());
+        for(StoresBrandEntity storesBrand: storesBrands){
            storesBrand.setStore(merchantDaoService.findStoreByBrand(storesBrand.getId()));
-       }
-
+        }
         return storesBrands;
     }
 

@@ -39,7 +39,7 @@ public class MerchantController {
     public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
             merchantService.saveStore(requestJson, headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Store(Stores) has been saved successfully");
@@ -83,13 +83,12 @@ public class MerchantController {
         }
     }
 
-    @RequestMapping(value = "/get_store_list", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_store", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> findStoreList(@RequestHeader HttpHeaders headers) {
         try {
-            //FIXME Session to be added
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
             List<StoresBrandEntity> storesBrand = merchantService.findBrandList(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Stores has been retrieved successfully");
             serviceResponse.addParam("storesBrand", storesBrand);

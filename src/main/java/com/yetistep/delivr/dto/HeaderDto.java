@@ -14,6 +14,7 @@ public class HeaderDto {
     private String accessToken;
     private String verificationCode;
     private String newPassword;
+    private Integer merchantId;
 
     public String getId() {
         return id;
@@ -62,5 +63,13 @@ public class HeaderDto {
 
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
+    }
+
+    public Integer getMerchantId() {
+        return merchantId;
+    }
+
+    public void setMerchantId(Integer merchantId) {
+        this.merchantId = merchantId;
     }
 }

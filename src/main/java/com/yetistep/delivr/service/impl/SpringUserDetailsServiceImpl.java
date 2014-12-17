@@ -8,6 +8,7 @@ package com.yetistep.delivr.service.impl;
  * To change this template use File | Settings | File Templates.
  */
 import com.yetistep.delivr.dao.inf.UserDaoService;
+import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.AuthenticatedUser;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
@@ -42,9 +43,22 @@ public class SpringUserDetailsServiceImpl implements UserDetailsService {
     private AuthenticatedUser buildUserForAuthentication(UserEntity user,
                                                          List<GrantedAuthority> authorities) {
         //The Session Value Set Here
-        return new AuthenticatedUser(user.getUsername(),
+        Integer merchantId  = null;
+        if(user.getRole().getRole().toString().equals(Role.ROLE_MERCHANT.toString())){
+            merchantId = user.getMerchant().getId();
+        }
+
+        AuthenticatedUser authenticatedUser = new AuthenticatedUser(user.getUsername(),
                 user.getPassword(), user.getVerifiedStatus(),
-                true, true, true, authorities, "Surendra", "Nepal");
+                true, true, true, authorities);
+
+        authenticatedUser.setUserId(user.getId());
+        authenticatedUser.setFullName(user.getFullName());
+        authenticatedUser.setMobileNumber(user.getMobileNumber());
+        if(merchantId!=null)
+            authenticatedUser.setMerchantId(merchantId);
+        return authenticatedUser;
+
     }
 
     private List<GrantedAuthority> buildUserAuthority(RoleEntity role) {

@@ -1,10 +1,12 @@
 package com.yetistep.delivr.controller;
 
 
+import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.AuthenticatedUser;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
+import com.yetistep.delivr.util.SessionManager;
 import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpHeaders;
@@ -29,26 +31,23 @@ import java.util.*;
 public class MainController {
     private static Logger log = Logger.getLogger(MainController.class);
 
-    @RequestMapping(value = { "/" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public ModelAndView defaultPage() {
         ModelAndView model = new ModelAndView();
         model.addObject("title", "Spring Security + Hibernate Example");
         model.addObject("message", "This is default page!");
-        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null && !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
-            AuthenticatedUser userDetails = (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            for(Iterator iterator = userDetails.getAuthorities().iterator(); iterator.hasNext();){
-                String role= String.valueOf(iterator.next());
-                if(role.equals("ROLE_ADMIN")){
-                    model.setViewName("admin/dashboard");
-                }else if(role.equals("ROLE_MANAGER")){
-                    model.setViewName("organizer/dashboard");
-                }else if(role.equals("ROLE_ACCOUNTANT")){
-                    model.setViewName("accountant/dashboard");
-                }else if(role.equals("ROLE_MERCHANT")) {
-                    model.setViewName("merchant/dashboard");
-                }
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null && !SessionManager.isAnonymousUser()) {
+            Role role = SessionManager.getRole();
+            if (role.toString().equals(Role.ROLE_ADMIN.toString())) {
+                model.setViewName("admin/dashboard");
+            } else if (role.toString().equals(Role.ROLE_MANAGER.toString())) {
+                model.setViewName("organizer/dashboard");
+            } else if (role.toString().equals(Role.ROLE_ACCOUNTANT.toString())) {
+                model.setViewName("accountant/dashboard");
+            } else if (role.toString().equals(Role.ROLE_MERCHANT.toString())) {
+                model.setViewName("merchant/dashboard");
             }
-        }  else {
+        } else {
             model.setViewName("login");
         }
         return model;
@@ -57,20 +56,18 @@ public class MainController {
     @RequestMapping(value = {"/welcome" }, method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> loginDefaultPage() {
-        String url="";
-        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null && !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
+        String url = "";
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null && !SessionManager.isAnonymousUser()) {
             AuthenticatedUser userDetails = (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            for(Iterator iterator = userDetails.getAuthorities().iterator(); iterator.hasNext();){
-                String role= String.valueOf(iterator.next());
-                if(role.equals("ROLE_ADMIN")){
-                    url="admin/dashboard";
-                }else if(role.equals("ROLE_MANAGER")){
-                    url="organizer/dashboard";
-                }else if(role.equals("ROLE_ACCOUNTANT")){
-                    url="accountant/dashboard";
-                }else if(role.equals("ROLE_MERCHANT")) {
-                    url="merchant/dashboard";
-                }
+            Role role = SessionManager.getRole();
+            if (role.toString().equals(Role.ROLE_ADMIN.toString())) {
+                url = "admin/dashboard";
+            } else if (role.toString().equals(Role.ROLE_MANAGER.toString())) {
+                url = "organizer/dashboard";
+            } else if (role.toString().equals(Role.ROLE_ACCOUNTANT.toString())) {
+                url = "accountant/dashboard";
+            } else if (role.toString().equals(Role.ROLE_MERCHANT.toString())) {
+                url = "merchant/dashboard";
             }
         }
         ServiceResponse serviceResponse = new ServiceResponse("User has been logged in successfully");

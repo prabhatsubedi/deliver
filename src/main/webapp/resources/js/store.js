@@ -8,6 +8,19 @@ if(typeof(Store) == "undefined") var Store = {};
         Image.dropZone('#brand_image_input', '#brand_image');
         Image.dropZone('#brand_logo_input', '#brand_logo');
 
+        var cat_callback = function (status, data) {
+            console.log(data);
+            var categories = data.params.categories;
+            var category_options = "";
+            for(var i = 0; i < categories.length; i++) {
+                category_options += '<option value="' + categories[i].id + '">' + categories[i].name + '</option>';
+            }
+            $('#store_categories').append(category_options);
+            $('#store_categories').selectpicker('refresh');
+        };
+        cat_callback.requestType = "GET";
+        Main.request('/merchant/get_parent_categories', {}, cat_callback);
+
         $('.save_marker, .cancel_marker, .marker_nav', '#form_store').attr('disabled', 'disabled');
 
         $.validator.setDefaults({

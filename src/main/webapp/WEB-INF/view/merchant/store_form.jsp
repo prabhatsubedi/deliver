@@ -80,10 +80,6 @@
                                     <div class="form-group">
                                         <select id="store_categories" name="store_categories" class="haveall compelselection col-xs-12 no_pad no_margin" data-style="form-control" multiple="multiple">
                                             <option value="All">All</option>
-                                            <option value="1">Category 1</option>
-                                            <option value="2">Category 2</option>
-                                            <option value="3">Category 3</option>
-                                            <option value="4">Category 4</option>
                                         </select>
                                     </div>
                                     <div class="form-group">

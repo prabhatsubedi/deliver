@@ -160,6 +160,32 @@ if(typeof(Main) == "undefined") var Main = {};
         setTimeout(elem_ratio, 500);
     };
 
+    Main.remove_value = function(value, remove) {
+        if(value.indexOf(remove) > -1) {
+            value.splice(value.indexOf(remove), 1);
+            Main.remove_value(value, remove);
+        }
+        return value;
+    }
+
+    Main.getURLParameter = function(key) {
+        if(key == undefined) return false;
+        key = key + "_";
+
+        var pathname = window.location.pathname;
+        var path_arr = pathname.split('/');
+        path_arr = Main.remove_value(path_arr, "");
+        var idm_param = undefined;
+        for(var i = 0; i < path_arr.length; i++) {
+            if(/idm_/g.test(path_arr[i])) {
+                idm_param = path_arr[i];
+                break;
+            }
+        }
+        return idm_param;
+
+    };
+
 })(jQuery);
 
 $(document).ready(function(){

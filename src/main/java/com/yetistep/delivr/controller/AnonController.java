@@ -105,8 +105,8 @@ public class AnonController {
     public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto actionType) {
         try{
             HeaderDto headerDto = new HeaderDto();
-            if (actionType.toString().equals(PasswordActionType.NEW.toString()) ||
-                    actionType.toString().equals(PasswordActionType.RESET.toString())) {
+            if (actionType.getActionType().toString().equals(PasswordActionType.NEW.toString()) ||
+                    actionType.getActionType().toString().equals(PasswordActionType.RESET.toString())) {
                 GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.PASSWORD, GeneralUtil.VERIFICATION_CODE);
             }else {
                 GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME);

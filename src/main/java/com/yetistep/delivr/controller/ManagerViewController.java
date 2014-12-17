@@ -1,6 +1,7 @@
 package com.yetistep.delivr.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,20 +18,25 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/organizer")
 public class ManagerViewController {
 
-    @RequestMapping(value = { "/create_delivery_boy_account" }, method = RequestMethod.GET)
-    public ModelAndView defaultPage() {
-
-        ModelAndView model = new ModelAndView();
-        model.addObject("title", "Create Delivery Boy Account");
-
-        model.setViewName("organizer/create_delivery_boy_account");
-        return model;
-
+    @RequestMapping(value = {"/courier_staff/{page}/**"}, method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView addDeliveryBoy(@PathVariable String page){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("organizer/courier_staff_" + page);
+        return modelAndView;
     }
 
-    @RequestMapping(value = {"/dashboard"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/{page}/**", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView addDeliveryBoy(){
+    public ModelAndView merchant(@PathVariable String page){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("organizer/" + page);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView merchant(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("organizer/dashboard");
         return modelAndView;

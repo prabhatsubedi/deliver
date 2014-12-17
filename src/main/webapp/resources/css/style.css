@@ -224,7 +224,7 @@ body.loader_div > .loader {
     color: #999997;
     background-color: #eeeded;
 }
-#modal_login .btn_logins {
+.btn_logins {
     border-radius: 0;
     border: none;
     border-bottom: 4px solid #d27127;
@@ -238,8 +238,10 @@ body.loader_div > .loader {
 #modal_login .login_foot .btn_logins {
     margin-top: 30px;
 }
-#modal_login .btn_logins:hover {
+.btn_logins:hover, .btn_logins:focus {
     background-color: #ff7d2d;
+    border-bottom-color: #b95e28;
+    color: #FFFFFF;
 }
 .modal_form .modal-header {
     padding: 20px 30px;
@@ -672,4 +674,53 @@ body.assistance_page {
     position: absolute;
     right: 4%;
     bottom: 7%;
+}
+
+.table_div {
+    display: table;
+}
+.table_div .td_div {
+    display: table-cell;
+    vertical-align: top;
+}
+.box_store {
+    width: 100%;
+    background-color: #FFFFFF;
+    border:  1px solid #cac9c9;
+    margin-bottom: 20px;
+}
+.box_store .td_div {
+    padding: 20px;
+}
+.box_store .store_logo {
+    width: 200px;
+}
+.box_store .store_logo img {
+    border: 1px solid #ebebeb;
+    padding: 10px;
+    width: 100%;
+}
+.box_store .store_info .store_name {
+    color: #282828;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 100%;
+    margin-bottom: 5px;
+}
+.box_store .store_info .store_address_list {
+    font-size: 12px;
+    color: #686868;
+}
+.box_store .store_info .store_address_list ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}
+.box_store .store_actions {
+    width: 250px;
+}
+.box_store .store_actions .btn {
+    font-size: 20px;
+    line-height: 45px;
+    border-bottom-width: 2px;
 }

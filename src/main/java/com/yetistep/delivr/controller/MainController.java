@@ -39,7 +39,7 @@ public class MainController {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null && !SessionManager.isAnonymousUser()) {
             Role role = SessionManager.getRole();
             if (role.toString().equals(Role.ROLE_ADMIN.toString())) {
-                model.setViewName("admin/dashboard");
+                model.setViewName("organizer/dashboard");
             } else if (role.toString().equals(Role.ROLE_MANAGER.toString())) {
                 model.setViewName("organizer/dashboard");
             } else if (role.toString().equals(Role.ROLE_ACCOUNTANT.toString())) {
@@ -61,7 +61,7 @@ public class MainController {
             AuthenticatedUser userDetails = (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Role role = SessionManager.getRole();
             if (role.toString().equals(Role.ROLE_ADMIN.toString())) {
-                url = "admin/dashboard";
+                url = "organizer/dashboard";
             } else if (role.toString().equals(Role.ROLE_MANAGER.toString())) {
                 url = "organizer/dashboard";
             } else if (role.toString().equals(Role.ROLE_ACCOUNTANT.toString())) {
@@ -78,16 +78,6 @@ public class MainController {
     }
 
 
-    @RequestMapping(value = "/admin**", method = RequestMethod.GET)
-    public ModelAndView adminPage() {
-        ModelAndView model = new ModelAndView();
-        model.addObject("title", "Spring Security + Hibernate Example");
-
-        model.addObject("message", "This page is for ROLE_ADMIN only!");
-        model.setViewName("admin");
-        return model;
-    }
-
     @RequestMapping(value = "/auth_failed", method = RequestMethod.GET)
     public ResponseEntity<ServiceResponse> auth_failed() {
         try{
@@ -97,15 +87,6 @@ public class MainController {
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @RequestMapping(value = "/user**", method = RequestMethod.GET)
-    public ModelAndView userPage() {
-        ModelAndView model = new ModelAndView();
-        model.addObject("title", "Spring Security + Hibernate Example");
-        model.addObject("message", "This page is for ROLE_USER only!");
-        model.setViewName("user");
-        return model;
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -121,39 +102,6 @@ public class MainController {
         }
         ServiceResponse serviceResponse = new ServiceResponse(message);
         return serviceResponse;
-    }
-
-
-    @RequestMapping(value = "/signin", method = RequestMethod.GET)
-    public ModelAndView signin() {
-        ModelAndView model = new ModelAndView();
-        model.addObject("title", "Sign in to Delivr");
-        model.setViewName("login");
-        return model;
-    }
-
-    @RequestMapping(value = "/admin/index", method = RequestMethod.GET)
-    public ModelAndView indexPage() {
-        ModelAndView model = new ModelAndView();
-        model.addObject("title", "Spring Security + Hibernate Example");
-        model.addObject("message", "This page is for ROLE_USER only!");
-        model.setViewName("index");
-        return model;
-    }
-
-    @RequestMapping(value = "/admin/merchants", method = RequestMethod.GET)
-    public ModelAndView listMerchants() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("organizer/merchants");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/organizer/add_role", method = RequestMethod.GET)
-    public ModelAndView addRole() {
-        ModelAndView model = new ModelAndView();
-        model.addObject("title", "Spring Security + Hibernate Example");
-        model.setViewName("organizer/roles/add_role");
-        return model;
     }
 
     // customize the error message
@@ -191,54 +139,6 @@ public class MainController {
     public ModelAndView forgotPassword(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("assistance");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/merchant", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView merchant(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("merchant/dashboard");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/merchant/store/{page}/**", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView merchantStore(@PathVariable String page){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("merchant/store_" + page);
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/merchant/item/{page}/**", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView merchantList(@PathVariable String page){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("merchant/item_" + page);
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/merchant/{page}/**", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView merchant(@PathVariable String page){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("merchant/" + page);
-        return modelAndView;
-    }
-
-    @RequestMapping(value = {"/courier_staff"}, method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView addDeliveryBoy(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("organizer/courier_staff_dashboard");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = {"/courier_staff/{page}/**"}, method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView addDeliveryBoy(@PathVariable String page){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("organizer/courier_staff_" + page);
         return modelAndView;
     }
 

@@ -117,7 +117,7 @@ if(typeof(Store) == "undefined") var Store = {};
             }
         });
 
-        $('#store_name').rules('add', {required: true});
+//        $('#store_name').rules('add', {required: true});
         $('#street').rules('add', {required: true});
         $('#city').rules('add', {required: true});
         $('#state').rules('add', {required: true});
@@ -135,9 +135,10 @@ if(typeof(Store) == "undefined") var Store = {};
                     var geoKey;
                     for(geoKey in arrGeoPoints) {
                         geoPoint = arrGeoPoints[geoKey];
-                        if(geoPoint.name == ""){
-                            location_valid = false;
-                        }
+//                        if(geoPoint.name == ""){
+//                            location_valid = false;
+//                        }
+                        geoPoint.name = $('#brand_name').val();
                         if(geoPoint.street == ""){
                             location_valid = false;
                         }
@@ -184,7 +185,7 @@ if(typeof(Store) == "undefined") var Store = {};
                         data.storesBrand = stores_brand;
                         data.categories = categories;
 
-                        Store.addStore(data, {id: 1});
+                        Store.addStore(data, {id: Main.getFromSessionStorage('mid')});
                     } else {
                         alert('All fields of all store locations are required.');
                         var current_index = Object.keys(arrGeoPoints).indexOf(geoKey);
@@ -241,6 +242,58 @@ if(typeof(Store) == "undefined") var Store = {};
         callback.loaderDiv = "body";
 
         Main.request('/merchant/save_store', data, callback, headers);
+
+    };
+
+    Store.listStores = function(headers) {
+
+        var callback = function (status, data) {
+
+            if (data.success == true) {
+
+                var storeBrands = data.params.storesBrand;
+
+                var elem = $('.box_store_template');
+
+                var store_list = "";
+
+                for(var i = 0; i < 2; i++) {
+
+                    var storeBrand = storeBrands[i];
+                    console.log(storeBrand);
+                    $('.store_logo img', elem).attr('src', storeBrand.brandLogo);
+                    $('.store_name', elem).html(storeBrand.brandName);
+                    var stores = storeBrand.store;
+                    var address_list = "";
+                    for(var j in stores) {
+                        var store = stores[j];
+                        var address = [];
+                        address.push(store.street);
+                        address.push(store.city);
+                        address.push(store.state);
+                        address.push(store.country);
+                        address_list += '<li>' + address.join(', ') + '</li>';
+                    }
+                    $('.store_address_list ul', elem).html(address_list);
+                    $('.add_items').attr('href', '/merchant/item/create/' + storeBrand.id);
+
+                    store_list += $('.box_store_template').html();
+
+                }
+
+                $('.main_content').append(store_list);
+
+
+            } else {
+                alert(data.message);
+            }
+
+        };
+
+        callback.loaderDiv = "body";
+        callback.requestType = "GET";
+
+        Main.request('/merchant/get_store_list', {}, callback, headers);
 
     };
 

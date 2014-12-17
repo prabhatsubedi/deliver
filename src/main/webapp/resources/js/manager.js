@@ -33,9 +33,9 @@ if(typeof(Manager) == "undefined") var Manager = {};
                 } else if (status == "INACTIVE") {
                     link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '" data-status="' + status + '" >Activate</a>';
                 }
-                link_profile = '<a href="/merchant/profile/idm_' + userId  + '">Profile</a>';
+                link_profile = '<a href="/merchant/profile" merchant-id="' + userId  + '">Profile</a>';
                 var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
-                var link_merchant = '<a href="/merchant/dashboard/idm_' + userId  + '">' + merchant.businessTitle + '</a>';
+                var link_merchant = '<a href="/merchant/dashboard" merchant-id="' + userId  + '">' + merchant.businessTitle + '</a>';
 
                 var row = [userId, link_merchant, merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
                 tdata.push(row);

@@ -168,7 +168,7 @@ if(typeof(Main) == "undefined") var Main = {};
         return value;
     }
 
-    Main.getURLParameter = function(key) {
+/*    Main.getURLParameter = function(key, keyvalue) {
         if(key == undefined) return false;
         key = key + "_";
 
@@ -182,12 +182,33 @@ if(typeof(Main) == "undefined") var Main = {};
                 break;
             }
         }
-        return idm_param;
+        if(keyvalue)
+            return idm_param;
+        else
+            return idm_param.replace(key, '');
 
     };
+
+    Main.updateLinks = function(parameter, target, callback) {
+
+        var param = Main.getURLParameter(parameter, true);
+        if(param != undefined) {
+            $(target).each(function(){
+                var href = $(this).attr('href');
+                $(this).attr('href', href + (href.lastIndexOf('/') == href.length - 1 ? "" : "/") + param);
+            });
+            if(callback != undefined) callback();
+        }
+
+    };*/
 
 })(jQuery);
 
 $(document).ready(function(){
     Main.elemRatio();
+
+    $('a[merchant-id]').live('click', function(e){
+        Main.saveInSessionStorage('mid', $(this).attr('merchant-id'));
+    });
+
 });

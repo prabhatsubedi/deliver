@@ -4,6 +4,7 @@ import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.model.CategoryEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,29 +26,35 @@ public class MerchantViewController {
     @Autowired
     MerchantDaoService merchantDaoService;
 
-    @RequestMapping(value = { "/add_store" }, method = RequestMethod.GET)
-    public ModelAndView defaultPage() {
+    @RequestMapping(value = "/store/{page}/**", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView merchantStore(@PathVariable String page){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("title", "Add Store");
-        modelAndView.setViewName("merchant/add_store");
+        modelAndView.setViewName("merchant/store_" + page);
         return modelAndView;
     }
 
-    @RequestMapping(value = {"/dashboard"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/item/{page}/**", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView addDeliveryBoy(){
+    public ModelAndView merchantList(@PathVariable String page){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("title", "Add Store");
+        modelAndView.setViewName("merchant/item_" + page);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/{page}/**", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView merchant(@PathVariable String page){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("merchant/" + page);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView merchant(){
+        ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("merchant/dashboard");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = {"/get_stores"}, method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView getStores(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("title", "Add Store");
-        modelAndView.setViewName("merchant/get_stores");
         return modelAndView;
     }
 }

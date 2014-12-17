@@ -22,23 +22,5 @@ import java.util.Iterator;
 @RequestMapping(value = "/admin")
 public class AdminViewController {
 
-    @RequestMapping(value = { "/create_user" }, method = RequestMethod.GET)
-    public ModelAndView defaultPage() {
-        ModelAndView model = new ModelAndView();
-        model.addObject("title", "Create User");
-
-        model.setViewName("admin/create_user");
-        return model;
-    }
-
-    @RequestMapping(value = { "/dashboard" }, method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView dashboard() {
-		ModelAndView model = new ModelAndView();
-		model.addObject("title", "Dashboard");
-
-        model.setViewName("admin/dashboard");
-        return model;
-    }
 
 }

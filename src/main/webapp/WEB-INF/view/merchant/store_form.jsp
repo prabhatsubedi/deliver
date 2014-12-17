@@ -116,9 +116,9 @@
                                         <button type="button" class="btn btn_green cancel_marker" disabled="disabled">Remove</button>
                                         <button type="submit" class="btn btn_green save_marker" disabled="disabled">Save Changes</button>
                                     </div>
-                                    <div class="form-group">
+<%--                                    <div class="form-group">
                                         <input type="text" class="form-control" id="store_name" name="store_name" placeholder="Store Name">
-                                    </div>
+                                    </div>--%>
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="street" name="street" placeholder="Street">
                                     </div>

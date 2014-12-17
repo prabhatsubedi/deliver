@@ -23,9 +23,13 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public CategoryEntity getCategoryById(Integer id) throws  Exception;
 
+    public StoreEntity getStoreById(Integer id) throws  Exception;
+
     public List<CategoryEntity> findParentCategories() throws Exception;
 
     public BrandsCategoryEntity getBrandsCategory(Integer brandId, Integer categoryId) throws Exception;
+
+    public List<BrandsCategoryEntity> getBrandsCategory(Integer brandId) throws Exception;
 
     public List<StoreEntity> findStoreByBrand(Integer brandId) throws Exception;
 
@@ -34,4 +38,6 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public List<StoresBrandEntity> findBrandList() throws Exception;
 
     public  StoresBrandEntity findBrandDetail(Integer brandId) throws Exception;
+
+    public List<CategoryEntity> findChildCategories(Integer parentId, Integer storeId) throws Exception;
 }

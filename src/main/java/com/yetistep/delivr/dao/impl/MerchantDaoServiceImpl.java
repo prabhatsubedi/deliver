@@ -6,10 +6,7 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
+import org.hibernate.criterion.*;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -102,6 +99,11 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
+    public StoreEntity getStoreById(Integer id) throws Exception {
+        return (StoreEntity) getCurrentSession().get(StoreEntity.class, id);
+    }
+
+    @Override
     public BrandsCategoryEntity getBrandsCategory(Integer brandId, Integer categoryId) throws Exception {
         List<BrandsCategoryEntity> brandsCategories = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BrandsCategoryEntity.class);
@@ -110,6 +112,17 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         brandsCategories = criteria.list();
 
         return brandsCategories.size() > 0 ? brandsCategories.get(0) : null;
+
+    }
+
+    @Override
+    public List<BrandsCategoryEntity> getBrandsCategory(Integer brandId) throws Exception {
+        List<BrandsCategoryEntity> brandsCategories = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BrandsCategoryEntity.class);
+        criteria.add(Restrictions.eq("storesBrand.id", brandId));
+        brandsCategories = criteria.list();
+
+        return brandsCategories.size() > 0 ? brandsCategories : null;
 
     }
 
@@ -183,5 +196,24 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Override
     public StoresBrandEntity findBrandDetail(Integer brandId) throws Exception {
         return (StoresBrandEntity) getCurrentSession().get(StoresBrandEntity.class, brandId);
+    }
+
+    @Override
+    public List<CategoryEntity> findChildCategories(Integer parentId, Integer storeId) throws Exception {
+        List<CategoryEntity> categories = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
+
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("name"), "name")
+        ).setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
+
+        Criterion rest1 = Restrictions.and(Restrictions.isNull("store"), Restrictions.eq("parent.id", parentId));
+        Criterion rest2 = Restrictions.and(Restrictions.eq("store.id", storeId), Restrictions.eq("parent.id", parentId));
+
+        criteria.add(Restrictions.or(rest1, rest2));
+
+        categories = criteria.list();
+        return categories.size() > 0 ? categories : null;
     }
 }

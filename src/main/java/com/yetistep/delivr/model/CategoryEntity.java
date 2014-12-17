@@ -26,7 +26,7 @@ public class CategoryEntity implements Serializable {
    private List<ItemEntity> item;
    private List<CategoryEntity> child;
    private List<BrandsCategoryEntity> brandsCategory;
-   //private StoreEntity store;
+   private StoreEntity store;
    private String name;
    private Boolean featured;
    private Integer priority;
@@ -86,7 +86,7 @@ public class CategoryEntity implements Serializable {
         this.item = item;
     }
 
-    /*@JsonIgnore
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "store_id")
     public StoreEntity getStore() {
@@ -95,7 +95,7 @@ public class CategoryEntity implements Serializable {
 
     public void setStore(StoreEntity store) {
         this.store = store;
-    }*/
+    }
 
 
     @Column(name = "name", nullable = false)

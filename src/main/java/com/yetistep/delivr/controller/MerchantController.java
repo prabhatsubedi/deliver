@@ -152,6 +152,40 @@ public class MerchantController {
         }
     }
 
+    /*store list is required on item create*/
+    @RequestMapping(value = "/get_brands_categories", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> findBrandsCategories(@RequestHeader HttpHeaders headers) {
+        try {
+            List<CategoryEntity> categories = merchantService.findCategoriesByBrand(headers);
+            ServiceResponse serviceResponse = new ServiceResponse("Stores has been retrieved successfully");
+            serviceResponse.addParam("categories", categories);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    /*store list is required on item create*/
+    @RequestMapping(value = "/get_child_categories", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> findChildCategories(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
+        try {
+            List<CategoryEntity> categories = merchantService.findChildCategories(headers, requestJson);
+            ServiceResponse serviceResponse = new ServiceResponse("Categories has been retrieved successfully");
+            serviceResponse.addParam("categories", categories);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
+
 
 
 

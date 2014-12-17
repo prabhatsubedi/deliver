@@ -30,6 +30,7 @@ public class StoresBrandEntity implements Serializable {
    private String closingTime;
    private String brandLogo;
    private String brandImage;
+   private String brandUrl;
    private Boolean featured;
    private Integer priority;
    private Timestamp createdDate;
@@ -119,6 +120,15 @@ public class StoresBrandEntity implements Serializable {
 
     public void setBrandImage(String brandImage) {
         this.brandImage = brandImage;
+    }
+
+    @Column(name = "brand_url")
+    public String getBrandUrl() {
+        return brandUrl;
+    }
+
+    public void setBrandUrl(String brandUrl) {
+        this.brandUrl = brandUrl;
     }
 
     @Column(name = "featured", columnDefinition = "TINYINT(1) default '0'")

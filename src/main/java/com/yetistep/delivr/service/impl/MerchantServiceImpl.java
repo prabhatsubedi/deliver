@@ -155,7 +155,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public void saveStore(RequestJsonDto requestJson, HeaderDto headerDto ) throws Exception {
-        log.info("++++++++++++ Saving Store "+requestJson.getStores().size()+" +++++++++++++++");
+        log.info("++++++++++++ Saving Store " + requestJson.getStores().size() + " +++++++++++++++");
 
         List<StoreEntity> stores = requestJson.getStores();
         StoresBrandEntity newStoresBrand = requestJson.getStoresBrand();
@@ -307,14 +307,36 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public void saveItem(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++ Saving Item +++++++++++++++");
 
-
-
         ItemEntity item = requestJson.getItem();
         List<CategoryEntity> itemCategories = requestJson.getItemCategories();
         List<Integer> itemStores = requestJson.getItemStores();
         List<ItemsAttributeEntity> itemsAttributes = requestJson.getItemsAttributes();
         List<ItemsImageEntity> itemsImages = requestJson.getItemsImages();
 
+        CategoryEntity category;
+        //save stores category
+        if(itemCategories.size()>0){
+            int i;
+           for(i = 1; i<itemCategories.size()-1; i++){
+               itemCategories.get(i).setParent(itemCategories.get(i-1));
+           }
+            merchantDaoService.saveCategories(itemCategories);
+            //get items category
+            category = itemCategories.get(itemCategories.size());
+        }else{
+            category = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
+        }
+
+        item.setCategory(category);
+
+        List<ItemsStoreEntity> itemsStoreEntities = new ArrayList<>();
+        for(Integer itemsStore: itemStores){
+            ItemsStoreEntity itemsStoreEntity = new ItemsStoreEntity();
+            StoreEntity store = merchantDaoService.getStoreById(itemsStore);
+            itemsStoreEntity.setStore(store);
+            itemsStoreEntities.add(itemsStoreEntity);
+        }
+        item.setItemsStores(itemsStoreEntities);
 
 
     }

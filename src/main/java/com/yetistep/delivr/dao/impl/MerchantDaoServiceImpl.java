@@ -216,4 +216,18 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         categories = criteria.list();
         return categories.size() > 0 ? categories : null;
     }
+
+    @Override
+    public void saveCategories(List<CategoryEntity> categories) throws Exception {
+        Integer i = 0;
+        for (CategoryEntity value: categories) {
+            getCurrentSession().save(value);
+            if ( i % 20 == 0 ) { //20, same as the JDBC batch size
+                //flush a batch of inserts and release memory:
+                getCurrentSession().flush();
+                getCurrentSession().clear();
+            }
+            i++;
+        }
+    }
 }

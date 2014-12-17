@@ -92,6 +92,7 @@ if(typeof(Manager) == "undefined") var Manager = {};
                  data.id = $(form).attr('data-id');
                  data.partnershipStatus = $('#partnership').val();
                  data.commissionPercentage = $('#commission').val();
+                 data.serviceFee = $('#service_fee').val();
 
                  Manager.merchantActivation(data);
 
@@ -101,6 +102,7 @@ if(typeof(Manager) == "undefined") var Manager = {};
          });
          $('#partnership').rules('add', {notEqual: "none"});
          $('#commission').rules('add', {required: true, digits: true, min: 0, max: 100});
+         $('#service_fee').rules('add', {required: true, digits: true, min: 0});
 
          $('.trigger_activation').live('click', function(){
              var statusCheck = $(this).attr('data-status') == 'INACTIVE';
@@ -168,14 +170,13 @@ if(typeof(Manager) == "undefined") var Manager = {};
                 var courierStaff = courierStaffs[i];
 
                 var id = courierStaff.id;
-                var link_courier_staff = '<a href="/courier_staff/dashboard/' + id  + '">' + courierStaff.user.fullName + '</a>';
+                var link_courier_staff = '<a href="/organizer/courier_staff/profile/' + id  + '">' + courierStaff.user.fullName + '</a>';
                 var number = courierStaff.user.mobileNumber;
                 var order_no = 0;
                 var order_name = 0;
                 var job_status = 0;
                 var balance = 0;
                 var action = '<div class="action_links">' +
-                    '<a href="/courier_staff/profile/' + id  + '">Profile</a>' +
                     '<a href="#">View on Map</a>' +
                     '<a href="#">View Accounts</a>' +
                     '</div>';

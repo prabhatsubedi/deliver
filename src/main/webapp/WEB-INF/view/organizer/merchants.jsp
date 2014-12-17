@@ -78,6 +78,9 @@
                     <div class="form-group">
                         <input type="text" class="form-control" id="commission" name="commission" placeholder="Commission Percent">
                     </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="service_fee" name="service_fee" placeholder="Service Fee">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <div class="col-lg-6 no_pad">

@@ -13,7 +13,7 @@
 
         $(document).ready(function(){
 
-            Store.listStores({id: Main.getFromSessionStorage('mid')});
+            Store.listStores({merchantId: Main.getFromSessionStorage('mid')});
 
         });
 

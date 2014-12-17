@@ -1,20 +1,18 @@
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <div class="sidebar">
     <div class="sidebar_logo">
         <a href="/organizer/dashboard"><img src="/resources/images/delivr-logo.png" class="img-responsive" /></a>
     </div>
     <div class="sidebar_menu">
-
-        <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
-            <%@include file="../includes/sidebar_organizer.jsp" %>
-        </sec:authorize>
-        <sec:authorize access="hasRole('ROLE_MERCHANT')">
-            <%@include file="../includes/sidebar_merchant.jsp" %>
-        </sec:authorize>
-
+        <ul class="nav nav-stacked">
+            <li><a href="/organizer/dashboard">Dashboard</a></li>
+            <li><a href="/organizer/merchants">Merchants</a></li>
+            <li><a href="#">Stores</a></li>
+            <li><a href="/organizer/courier_staff/list">Courier Staff</a></li>
+            <li><a href="#">Invoices</a></li>
+            <li><a href="#">Purchase History</a></li>
+        </ul>
     </div>
 </div>
-
 
 <script type="text/javascript">
 

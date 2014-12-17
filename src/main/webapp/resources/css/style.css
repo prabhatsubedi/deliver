@@ -634,6 +634,7 @@ body.assistance_page {
     border: 1px solid #cbcaca;
     padding: 5px;
     background-color: #FFFFFF;
+    cursor: pointer;
 }
 .drop_zone.error {
     border: 1px solid #ff9235;

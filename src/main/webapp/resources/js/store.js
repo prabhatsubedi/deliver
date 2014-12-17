@@ -185,7 +185,7 @@ if(typeof(Store) == "undefined") var Store = {};
                         data.storesBrand = stores_brand;
                         data.categories = categories;
 
-                        Store.addStore(data, {id: Main.getFromSessionStorage('mid')});
+                        Store.addStore(data, {merchantId: Main.getFromSessionStorage('mid')});
                     } else {
                         alert('All fields of all store locations are required.');
                         var current_index = Object.keys(arrGeoPoints).indexOf(geoKey);
@@ -275,7 +275,7 @@ if(typeof(Store) == "undefined") var Store = {};
                         address_list += '<li>' + address.join(', ') + '</li>';
                     }
                     $('.store_address_list ul', elem).html(address_list);
-                    $('.add_items').attr('href', '/merchant/item/create/' + storeBrand.id);
+                    $('.add_items').attr('href', '/merchant/item/form/create/' + storeBrand.id);
 
                     store_list += $('.box_store_template').html();
 
@@ -293,7 +293,7 @@ if(typeof(Store) == "undefined") var Store = {};
         callback.loaderDiv = "body";
         callback.requestType = "GET";
 
-        Main.request('/merchant/get_store_list', {}, callback, headers);
+        Main.request('/merchant/get_stores', {}, callback, headers);
 
     };
 

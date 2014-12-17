@@ -169,7 +169,7 @@ if(typeof(Store) == "undefined") var Store = {};
                         stores_brand.closingTime = $('#close_time').val();
                         stores_brand.brandLogo = $('#brand_logo img').attr('src');
                         stores_brand.brandImage = $('#brand_image img').attr('src');
-//                    stores_brand.brandUrl = $('#brand_url').val();
+                        stores_brand.brandUrl = $('#brand_url').val();
 
 
                         var categories = $('#store_categories').val();

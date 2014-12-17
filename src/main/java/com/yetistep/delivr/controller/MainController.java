@@ -135,9 +135,6 @@ public class MainController {
         return model;
     }
 
-
-
-
     @RequestMapping(value = "/admin/index", method = RequestMethod.GET)
     public ModelAndView indexPage() {
         ModelAndView model = new ModelAndView();
@@ -147,6 +144,12 @@ public class MainController {
         return model;
     }
 
+    @RequestMapping(value = "/admin/merchants", method = RequestMethod.GET)
+    public ModelAndView listMerchants() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("organizer/merchants");
+        return modelAndView;
+    }
 
     @RequestMapping(value = "/organizer/add_role", method = RequestMethod.GET)
     public ModelAndView addRole() {
@@ -194,7 +197,7 @@ public class MainController {
         return modelAndView;
     }
 
-    @RequestMapping(value = {"/merchant"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/merchant", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView merchant(){
         ModelAndView modelAndView = new ModelAndView();
@@ -202,7 +205,7 @@ public class MainController {
         return modelAndView;
     }
 
-    @RequestMapping(value = {"/merchant/store/{page}/**"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/merchant/store/{page}/**", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView merchantStore(@PathVariable String page){
         ModelAndView modelAndView = new ModelAndView();
@@ -210,7 +213,7 @@ public class MainController {
         return modelAndView;
     }
 
-    @RequestMapping(value = {"/merchant/item/{page}/**"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/merchant/item/{page}/**", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView merchantList(@PathVariable String page){
         ModelAndView modelAndView = new ModelAndView();
@@ -218,7 +221,7 @@ public class MainController {
         return modelAndView;
     }
 
-    @RequestMapping(value = {"/merchant/{page}/**"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/merchant/{page}/**", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView merchant(@PathVariable String page){
         ModelAndView modelAndView = new ModelAndView();

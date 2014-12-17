@@ -31,6 +31,9 @@ body {
     top: 0px;
     z-index: 9999;
 }
+body.loader_div > .loader {
+    position: fixed;
+}
 .unselectable {
     -webkit-touch-callout: none;
     -webkit-user-select: none;

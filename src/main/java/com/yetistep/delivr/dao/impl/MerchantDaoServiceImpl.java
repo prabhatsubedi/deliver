@@ -147,10 +147,10 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoreEntity.class);
         criteria.add(Restrictions.eq("storesBrand.id", brandId));
         criteria.setProjection(Projections.projectionList()
-                .add(Projections.property("id"), "id")
-                .add(Projections.property("name"), "name")
-                .add(Projections.property("contactNo"), "contactNo")
-                .add(Projections.property("contactPerson"), "contactPerson")
+                .add(Projections.property("street"), "street")
+                .add(Projections.property("city"), "city")
+                .add(Projections.property("state"), "state")
+                .add(Projections.property("country"), "country")
         ).setResultTransformer(Transformers.aliasToBean(StoreEntity.class));
         stores = criteria.list();
 

@@ -157,7 +157,9 @@ public class MerchantController {
     @ResponseBody
     public ResponseEntity<ServiceResponse> findBrandsCategories(@RequestHeader HttpHeaders headers) {
         try {
-            List<CategoryEntity> categories = merchantService.findCategoriesByBrand(headers);
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            List<CategoryEntity> categories = merchantService.findCategoriesByBrand(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Stores has been retrieved successfully");
             serviceResponse.addParam("categories", categories);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -171,9 +173,9 @@ public class MerchantController {
     /*store list is required on item create*/
     @RequestMapping(value = "/get_child_categories", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> findChildCategories(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
+    public ResponseEntity<ServiceResponse> findChildCategories(@RequestBody RequestJsonDto requestJson) {
         try {
-            List<CategoryEntity> categories = merchantService.findChildCategories(headers, requestJson);
+            List<CategoryEntity> categories = merchantService.findChildCategories(requestJson);
             ServiceResponse serviceResponse = new ServiceResponse("Categories has been retrieved successfully");
             serviceResponse.addParam("categories", categories);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

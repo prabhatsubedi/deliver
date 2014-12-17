@@ -325,10 +325,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<CategoryEntity> findCategoriesByBrand(HttpHeaders headers) throws Exception {
-        HeaderDto headerDto = new HeaderDto();
-        GeneralUtil.fillHeaderCredential(headers, headerDto);
-
+    public List<CategoryEntity> findCategoriesByBrand(HeaderDto headerDto) throws Exception {
         List<BrandsCategoryEntity> brandsCategories =  merchantDaoService.getBrandsCategory(Integer.parseInt(headerDto.getId()));
         List<CategoryEntity> categories = new ArrayList<>();
 
@@ -342,9 +339,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     //findChildCategories
     @Override
-    public List<CategoryEntity> findChildCategories(HttpHeaders headers, RequestJsonDto requestJson) throws Exception {
-        HeaderDto headerDto = new HeaderDto();
-        GeneralUtil.fillHeaderCredential(headers, headerDto);
+    public List<CategoryEntity> findChildCategories(RequestJsonDto requestJson) throws Exception {
 
         Integer parentId = requestJson.getParentCategoryId();
         Integer storeId = requestJson.getCategoryStoreId();

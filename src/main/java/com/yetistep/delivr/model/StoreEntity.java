@@ -62,6 +62,7 @@ public class StoreEntity implements Serializable {
     }
 
    @OneToMany(mappedBy = "store")
+   @LazyCollection(LazyCollectionOption.FALSE)
     public List<CategoryEntity> getCategory() {
         return category;
     }

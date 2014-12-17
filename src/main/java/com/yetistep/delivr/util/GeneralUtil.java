@@ -1,6 +1,7 @@
 package com.yetistep.delivr.util;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.enums.Role;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +30,7 @@ public class GeneralUtil {
     public static final String NEW_PASSWORD = "newPassword";
     public static final String ID = "id";
     public static final String ACCESS_TOKEN = "accessToken";
+    public static final String MERCHANT_ID = "merchantId";
 
     public static void logError(Logger log, String message, Exception e) {
         if (e instanceof YSException)
@@ -91,6 +93,12 @@ public class GeneralUtil {
                 headerDto.setId(extractHeader(headers, ID));
             }else if(field.equals(ACCESS_TOKEN)){
                 headerDto.setAccessToken(extractHeader(headers, ACCESS_TOKEN));
+            }else if(field.equals(MERCHANT_ID)){
+                if(SessionManager.getRole().toString().equals(Role.ROLE_MERCHANT.toString())){
+                    headerDto.setMerchantId(SessionManager.getMerchantId());
+                } else{
+                    headerDto.setMerchantId(Integer.parseInt(extractHeader(headers, MERCHANT_ID)));
+                }
             }
         }
     }

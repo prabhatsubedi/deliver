@@ -9,5 +9,5 @@
 -DDELIVR_SENDER_HOST=smtp.gmail.com
 -DDELIVR_HOST=localhost
 -DDELIVR_S3_BUCKET=delivrtest
--DDELIVR_CLOUD_FRONT=https://d130l5jusxxhpc.cloudfront.net
+-DDELIVR_CLOUD_FRONT=https://d1z92nla4e78oz.cloudfront.net
 -DDELIVR_SECRET_KEY=18fEqNix2oRGpx6YUWwucw==

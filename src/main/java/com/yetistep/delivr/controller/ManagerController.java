@@ -181,10 +181,10 @@ public class ManagerController {
     public ResponseEntity<ServiceResponse> getMerchantById(@RequestHeader HttpHeaders headers) {
         try{
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
             MerchantEntity merchantEntity = merchantService.getMerchantById(headerDto);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Merchant retrieved successfully with ID: "+headerDto.getId());
+            ServiceResponse serviceResponse = new ServiceResponse("Merchant retrieved successfully with ID: "+headerDto.getMerchantId());
             serviceResponse.addParam("merchant", merchantEntity);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){

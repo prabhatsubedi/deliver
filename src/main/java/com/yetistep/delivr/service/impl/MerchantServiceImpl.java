@@ -155,7 +155,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public void saveStore(RequestJsonDto requestJson, HeaderDto headerDto ) throws Exception {
-        log.info("++++++++++++ Saving Store "+requestJson.getStores().size()+" +++++++++++++++");
+        log.info("++++++++++++ Saving Store " + requestJson.getStores().size() + " +++++++++++++++");
 
         List<StoreEntity> stores = requestJson.getStores();
         StoresBrandEntity newStoresBrand = requestJson.getStoresBrand();
@@ -163,7 +163,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         //StoresBrandEntity newStoresBrand = new StoresBrandEntity();
 
-        MerchantEntity dbMerchant = merchantDaoService.find(Integer.parseInt(headerDto.getId()));
+        MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
         if(dbMerchant == null)
             throw new YSException("VLD011");
 
@@ -218,8 +218,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
             String dir = MessageBundle.separateString("/", "brand", "brand" + brand.getId());
             boolean isLocal = MessageBundle.isLocalHost();
-            String brandLogoName = "limg" + (isLocal ? "_tmp_" : "_") + brand.getId();
-            String brandImageName = "simg" + (isLocal ? "_tmp_" : "_") + brand.getId();
+            String brandLogoName = "brand_logo" + (isLocal ? "_tmp_" : "_") + brand.getId();
+            String brandImageName = "brand_image" + (isLocal ? "_tmp_" : "_") + brand.getId();
             String s3PathLogo = GeneralUtil.saveImageToBucket(brandLogo, brandLogoName, dir, true);
             String s3PathImage = GeneralUtil.saveImageToBucket(brandImage, brandImageName, dir, true);
             brand.setBrandLogo(s3PathLogo);
@@ -230,8 +230,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public MerchantEntity getMerchantById(HeaderDto headerDto) throws Exception {
-        int id = Integer.parseInt(headerDto.getId());
-        MerchantEntity merchantEntity = merchantDaoService.find(id);
+        MerchantEntity merchantEntity = merchantDaoService.find(headerDto.getMerchantId());
         if(merchantEntity == null)
             throw new YSException("VLD011");
          /*
@@ -278,21 +277,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public List<StoresBrandEntity> findBrandList(HeaderDto headerDto) throws Exception {
-        MerchantEntity dbMerchant =null;
-        if(headerDto.getId() != null)
-             dbMerchant = merchantDaoService.find(Integer.parseInt(headerDto.getId()));
-
-        List<StoresBrandEntity> storesBrands;
-
-        if(dbMerchant != null)
-            storesBrands =  merchantDaoService.findBrandListByMerchant(dbMerchant.getId());
-        else
-            storesBrands =  merchantDaoService.findBrandList();
-
-       for(StoresBrandEntity storesBrand: storesBrands){
+        MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
+        if(dbMerchant == null)
+            throw new YSException("VLD011");
+        List<StoresBrandEntity> storesBrands = merchantDaoService.findBrandListByMerchant(dbMerchant.getId());
+        for(StoresBrandEntity storesBrand: storesBrands){
            storesBrand.setStore(merchantDaoService.findStoreByBrand(storesBrand.getId()));
-       }
-
+        }
         return storesBrands;
     }
 
@@ -307,13 +298,45 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public void saveItem(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++ Saving Item +++++++++++++++");
 
-
-
         ItemEntity item = requestJson.getItem();
         List<CategoryEntity> itemCategories = requestJson.getItemCategories();
         List<Integer> itemStores = requestJson.getItemStores();
         List<ItemsAttributeEntity> itemsAttributes = requestJson.getItemsAttributes();
         List<ItemsImageEntity> itemsImages = requestJson.getItemsImages();
+
+        CategoryEntity category;
+        //save stores category
+        if(itemCategories.size()>0){
+            int i;
+           for(i = 1; i<itemCategories.size()-1; i++){
+               itemCategories.get(i).setParent(itemCategories.get(i-1));
+           }
+            merchantDaoService.saveCategories(itemCategories);
+            //get items category
+            category = itemCategories.get(itemCategories.size());
+        }else{
+            category = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
+        }
+
+        item.setCategory(category);
+
+        List<ItemsStoreEntity> itemsStoreEntities = new ArrayList<>();
+        for(Integer itemsStore: itemStores){
+            ItemsStoreEntity itemsStoreEntity = new ItemsStoreEntity();
+            StoreEntity store = merchantDaoService.getStoreById(itemsStore);
+            itemsStoreEntity.setStore(store);
+            itemsStoreEntities.add(itemsStoreEntity);
+        }
+        item.setItemsStores(itemsStoreEntities);
+        item.setAttributes(itemsAttributes);
+
+        List<String> images = new ArrayList<>();
+        for (ItemsImageEntity itemsImageEntity: itemsImages){
+            images.add(itemsImageEntity.getUrl());
+            itemsImageEntity.setUrl(null);
+        }
+
+        //merchantDaoService.saveItem(item);
 
 
 

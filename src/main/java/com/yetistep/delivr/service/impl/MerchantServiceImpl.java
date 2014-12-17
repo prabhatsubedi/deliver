@@ -218,8 +218,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
             String dir = MessageBundle.separateString("/", "brand", "brand" + brand.getId());
             boolean isLocal = MessageBundle.isLocalHost();
-            String brandLogoName = "limg" + (isLocal ? "_tmp_" : "_") + brand.getId();
-            String brandImageName = "simg" + (isLocal ? "_tmp_" : "_") + brand.getId();
+            String brandLogoName = "brand_logo" + (isLocal ? "_tmp_" : "_") + brand.getId();
+            String brandImageName = "brand_image" + (isLocal ? "_tmp_" : "_") + brand.getId();
             String s3PathLogo = GeneralUtil.saveImageToBucket(brandLogo, brandLogoName, dir, true);
             String s3PathImage = GeneralUtil.saveImageToBucket(brandImage, brandImageName, dir, true);
             brand.setBrandLogo(s3PathLogo);

@@ -28,6 +28,8 @@ public class CustomerEntity implements Serializable {
     private BigDecimal rewardsEarned;
     private String creditCardToken;
     private String creditCardId;
+    private String latitude;
+    private String longitude;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -139,4 +141,22 @@ public class CustomerEntity implements Serializable {
     public void setCreditCardId(String creditCardId) {
         this.creditCardId = creditCardId;
     }
+    @Column(name = "latitude")
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    @Column(name = "longitude")
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
 }

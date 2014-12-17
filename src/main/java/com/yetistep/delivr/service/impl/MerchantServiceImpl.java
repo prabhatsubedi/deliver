@@ -328,6 +328,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             itemsStoreEntities.add(itemsStoreEntity);
         }
         item.setItemsStores(itemsStoreEntities);
+        item.setAttributes(itemsAttributes);
+
+        List<String> images = new ArrayList<>();
+        for (ItemsImageEntity itemsImageEntity: itemsImages){
+            images.add(itemsImageEntity.getUrl());
+            itemsImageEntity.setUrl(null);
+        }
 
 
     }

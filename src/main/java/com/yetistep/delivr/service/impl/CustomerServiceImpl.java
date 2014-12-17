@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.CustomerDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
+import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
@@ -32,7 +33,9 @@ public class CustomerServiceImpl implements CustomerService {
     UserDaoService userDaoService;
 
     @Override
-    public void saveCustomer(CustomerEntity customer) throws Exception {
+    public void saveCustomer(CustomerEntity customer, HeaderDto headerDto) throws Exception {
+        customer.getUser().setUsername(headerDto.getUsername());
+        customer.getUser().setPassword(headerDto.getPassword());
         UserEntity userEntity = customer.getUser();
         if (userEntity.getUsername() == null || userEntity.getPassword() == null || userEntity.getUsername().isEmpty() || userEntity.getPassword().isEmpty())
             throw new YSException("VLD009");
@@ -70,7 +73,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void addCustomerAddress(Integer customerId, List<AddressEntity> addresses) throws Exception {
+    public void addCustomerAddress(HeaderDto headerDto, List<AddressEntity> addresses) throws Exception {
+        int customerId = Integer.parseInt(headerDto.getId());
         CustomerEntity customerEntity = customerDaoService.find(customerId);
         if(customerEntity == null){
             throw new YSException("VLD011");
@@ -83,12 +87,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void setMobileCode(UserEntity user) throws Exception {
-        UserEntity userEntity = userDaoService.findByUserName(user.getUsername());
+    public void setMobileCode(HeaderDto headerDto) throws Exception {
+        UserEntity userEntity = userDaoService.findByUserName(headerDto.getUsername());
         if (userEntity == null)
             throw new YSException("VLD011");
-        System.out.println("CustomerServiceImpl.setMobileCode"+user.getVerificationCode());
-        if(!user.getVerificationCode().equals(userEntity.getVerificationCode())){
+        if(!headerDto.getVerificationCode().equals(userEntity.getVerificationCode())){
             throw new YSException("SEC008");
         }
         userEntity.setVerifiedStatus(true);

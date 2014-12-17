@@ -5,7 +5,6 @@ import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.enums.Role;
-import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.UserService;
@@ -15,7 +14,6 @@ import com.yetistep.delivr.util.MessageBundle;
 import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +49,10 @@ public class UserServiceImpl extends AbstractManager implements UserService{
     }
 
     @Override
-    public Boolean checkUserExistence(String username) throws Exception {
+    public Boolean checkUserExistence(HeaderDto headerDto) throws Exception {
         log.info("++++++++ Checking User Existence +++++++++++++++");
 
-        UserEntity userEntity = userDaoService.findByUserName(username);
+        UserEntity userEntity = userDaoService.findByUserName(headerDto.getUsername());
         if(userEntity != null){
             throw new YSException("VLD010");
         }
@@ -97,13 +95,11 @@ public class UserServiceImpl extends AbstractManager implements UserService{
     }
 
     @Override
-    public void changePassword(HeaderDto headerDto, UserEntity userEntity) throws Exception {
+    public void changePassword(HeaderDto headerDto) throws Exception {
 
-        log.info("++++++ Changing User " +userEntity.getId() + " Password ++++++++");
-        UserEntity user = userDaoService.find(userEntity.getId());
-
-        if (!user.getPassword().equalsIgnoreCase(GeneralUtil.encryptPassword(headerDto.getPassword())))
-            throw new YSException("ERR014");
+        log.info("++++++ Changing User " +headerDto.getId() + " Password ++++++++");
+        UserEntity user = userDaoService.find(Integer.parseInt(headerDto.getId()));
+        GeneralUtil.matchDBPassword(headerDto.getPassword(), user.getPassword());
 
         user.setPassword(GeneralUtil.encryptPassword(headerDto.getNewPassword()));
         userDaoService.update(user);

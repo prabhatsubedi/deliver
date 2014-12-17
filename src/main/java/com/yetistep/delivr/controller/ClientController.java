@@ -2,7 +2,6 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
-import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.UserEntity;
@@ -49,11 +48,9 @@ public class ClientController extends AbstractManager{
         UserEntity user = customer.getUser();
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.PASSWORD, GeneralUtil.ACCESS_TOKEN);
             validateMobileClient(headerDto.getAccessToken());
-            customer.getUser().setUsername(headerDto.getUsername());
-            customer.getUser().setPassword(headerDto.getPassword());
-            customerService.saveCustomer(customer);
+            customerService.saveCustomer(customer, headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Customer has been created successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
@@ -72,12 +69,10 @@ public class ClientController extends AbstractManager{
             log.info("+++++++++++ Getting Access Token ++++++++++++++++++");
             UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
             ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
-
             String family = agent.getOperatingSystem().getFamily().toString();
             String token = GeneralUtil.generateAccessToken(family);
 
             ServiceResponse serviceResponse = new ServiceResponse("Token retrieved successfully");
-
             /* Setting Http Headers */
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add("accessToken", token);
@@ -98,9 +93,9 @@ public class ClientController extends AbstractManager{
     public ResponseEntity<ServiceResponse> addAddresses(@RequestHeader HttpHeaders headers, @RequestBody List<AddressEntity> addresses) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID, GeneralUtil.ACCESS_TOKEN);
             validateMobileClient(headerDto.getAccessToken());
-            customerService.addCustomerAddress(Integer.parseInt(headerDto.getId()), addresses);
+            customerService.addCustomerAddress(headerDto, addresses);
 
             ServiceResponse serviceResponse = new ServiceResponse("Customer address has been added successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
@@ -113,15 +108,12 @@ public class ClientController extends AbstractManager{
 
     @RequestMapping(value = "/set_mobile_code", method = RequestMethod.PUT)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> setMobileCode(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+    public ResponseEntity<ServiceResponse> setMobileCode(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.ACCESS_TOKEN, GeneralUtil.VERIFICATION_CODE);
             validateMobileClient(headerDto.getAccessToken());
-            UserEntity user = new UserEntity();
-            user.setUsername(headerDto.getUsername());
-            user.setVerificationCode(requestJsonDto.getVerificationCode());
-            customerService.setMobileCode(user);
+            customerService.setMobileCode(headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Customer has been verified");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -131,6 +123,5 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
-
 
 }

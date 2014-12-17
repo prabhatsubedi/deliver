@@ -23,12 +23,12 @@ public class GeneralUtil {
 
     private static Logger log = Logger.getLogger(GeneralUtil.class);
 
-    private static final String USERNAME = "username";
-    private static final String PASSWORD = "password";
-    private static final String VERIFICATION_CODE = "verificationCode";
-    private static final String NEW_PASSWORD = "newPassword";
-    private static final String ID = "id";
-    private static final String ACCESS_TOKEN = "accessToken";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String VERIFICATION_CODE = "verificationCode";
+    public static final String NEW_PASSWORD = "newPassword";
+    public static final String ID = "id";
+    public static final String ACCESS_TOKEN = "accessToken";
 
     public static void logError(Logger log, String message, Exception e) {
         if (e instanceof YSException)
@@ -77,43 +77,30 @@ public class GeneralUtil {
      * @param headers
      * @param headerDto
      */
-    public static void fillHeaderCredential(HttpHeaders headers, HeaderDto headerDto) {
-        String username = null;
-        String password = null;
-        String verificationCode = null;
-        String newPassword = null;
-        String id = null;
-        String accessToken = null;
-        List<String> hd = headers.get(USERNAME);
+    public static void fillHeaderCredential(HttpHeaders headers, HeaderDto headerDto, String... expectedFields) throws Exception {
+        for(String field : expectedFields){
+            if (field.equals(USERNAME)){
+               headerDto.setUsername(extractHeader(headers, USERNAME));
+            }else if(field.equals(PASSWORD)){
+               headerDto.setPassword(extractHeader(headers, PASSWORD));
+            }else if(field.equals(VERIFICATION_CODE)){
+                headerDto.setVerificationCode(extractHeader(headers, VERIFICATION_CODE));
+            }else if(field.equals(NEW_PASSWORD)){
+                headerDto.setNewPassword(extractHeader(headers, NEW_PASSWORD));
+            }else if(field.equals(ID)){
+                headerDto.setId(extractHeader(headers, ID));
+            }else if(field.equals(ACCESS_TOKEN)){
+                headerDto.setAccessToken(extractHeader(headers, ACCESS_TOKEN));
+            }
+        }
+    }
+
+    private static String extractHeader(HttpHeaders headers, String field) throws Exception{
+        List<String> hd = headers.get(field);
         if (hd != null && hd.size() > 0)
-            username = hd.get(0);
-
-        hd = headers.get(PASSWORD);
-        if (hd != null && hd.size() > 0)
-            password = hd.get(0);
-
-        hd = headers.get(VERIFICATION_CODE);
-        if(hd !=null && hd.size() > 0)
-            verificationCode = hd.get(0);
-
-        hd = headers.get(NEW_PASSWORD);
-        if(hd !=null && hd.size() > 0)
-            newPassword = hd.get(0);
-
-        hd = headers.get(ID);
-        if(hd !=null && hd.size() > 0)
-            id = hd.get(0);
-
-        hd = headers.get(ACCESS_TOKEN);
-        if(hd !=null && hd.size() > 0)
-            accessToken = hd.get(0);
-
-        headerDto.setUsername(username);
-        headerDto.setPassword(password);
-        headerDto.setVerificationCode(verificationCode);
-        headerDto.setNewPassword(newPassword);
-        headerDto.setId(id);
-        headerDto.setAccessToken(accessToken);
+            return hd.get(0);
+        else
+            throw new YSException("VLD009");
     }
 
     /**
@@ -132,7 +119,7 @@ public class GeneralUtil {
     public static Boolean matchDBPassword(String rawPassword, String dbEncryptedPassword) throws Exception {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         if(!passwordEncoder.matches(rawPassword, dbEncryptedPassword))
-            throw new YSException("VLD011");
+            throw new YSException("ERR014");
 
         return true;
     }

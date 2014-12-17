@@ -20,13 +20,13 @@ public interface UserService {
 
     public List<RoleEntity> findAllRoles() throws Exception;
 
-    public Boolean checkUserExistence(String username) throws Exception;
+    public Boolean checkUserExistence(HeaderDto headerDto) throws Exception;
 
     public String performPasswordAction(HeaderDto headerDto, PasswordActionType passwordActionType) throws Exception;
 
     public List<UserEntity> getUsers();
 
-    public void changePassword(HeaderDto headerDto, UserEntity userEntity) throws Exception;
+    public void changePassword(HeaderDto headerDto) throws Exception;
 
     public Boolean changeUserStatus(UserEntity userEntity) throws Exception;
 

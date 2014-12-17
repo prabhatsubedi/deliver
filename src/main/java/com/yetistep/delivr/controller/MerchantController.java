@@ -1,5 +1,6 @@
 package com.yetistep.delivr.controller;
 
+import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
@@ -37,13 +38,12 @@ public class MerchantController {
     @ResponseBody
     public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try {
-
-            merchantService.saveStore(requestJson, headers);
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            merchantService.saveStore(requestJson, headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Store(Stores) has been saved successfully");
-
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
-
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while adding store", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
@@ -87,7 +87,10 @@ public class MerchantController {
     @ResponseBody
     public ResponseEntity<ServiceResponse> findStoreList(@RequestHeader HttpHeaders headers) {
         try {
-            List<StoresBrandEntity> storesBrand = merchantService.findBrandList(headers);
+            //FIXME Session to be added
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            List<StoresBrandEntity> storesBrand = merchantService.findBrandList(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Stores has been retrieved successfully");
             serviceResponse.addParam("storesBrand", storesBrand);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -102,7 +105,9 @@ public class MerchantController {
     @ResponseBody
     public ResponseEntity<ServiceResponse> findStoreDetail(@RequestHeader HttpHeaders headers) {
         try {
-            StoresBrandEntity storesBrand = merchantService.findBrandBrandDetail(headers);
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            StoresBrandEntity storesBrand = merchantService.findBrandBrandDetail(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Stores detail has been retrieved successfully");
             serviceResponse.addParam("storesBrand", storesBrand);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -117,7 +122,9 @@ public class MerchantController {
     @ResponseBody
     public ResponseEntity<ServiceResponse> saveItem(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try {
-            merchantService.saveItem(requestJson, headers);
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            merchantService.saveItem(requestJson, headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Item has been saved successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
@@ -132,7 +139,9 @@ public class MerchantController {
     @ResponseBody
     public ResponseEntity<ServiceResponse> findBrandsStores(@RequestHeader HttpHeaders headers) {
         try {
-            List<StoreEntity> stores = merchantService.findStoresByBrand(headers);
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            List<StoreEntity> stores = merchantService.findStoresByBrand(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Stores has been retrieved successfully");
             serviceResponse.addParam("stores", stores);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

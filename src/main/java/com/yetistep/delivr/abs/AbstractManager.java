@@ -5,11 +5,8 @@ import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.service.UADetectorServiceFactory;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -57,9 +54,6 @@ public abstract class AbstractManager {
     public void validateMobileClient(String token) throws Exception {
         log.info("++++++++++++++ Validating mobile client +++++++++++++++");
 
-        if(token == null)
-            throw new YSException("SEC002");
-
         UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
         ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
 
@@ -76,7 +70,7 @@ public abstract class AbstractManager {
         Long diff = (now - timeVal) / 1000;
 
         if (diff > 120) //if diff more than 2 minutes
-            throw  new YSException("SC002");
+            throw  new YSException("SEC002");
 
     }
 

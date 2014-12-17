@@ -12,7 +12,6 @@ import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -37,11 +36,10 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     HttpServletRequest httpServletRequest;
 
     @Override
-    public void saveMerchant(MerchantEntity merchant, HttpHeaders headers) throws Exception {
+    public void saveMerchant(MerchantEntity merchant, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Merchant +++++++++++++++++");
         UserEntity user = merchant.getUser();
-        HeaderDto headerDto = new HeaderDto();
-        GeneralUtil.fillHeaderCredential(headers, headerDto);
+
 
         String code = MessageBundle.generateTokenString() + "_" + System.currentTimeMillis();
 
@@ -156,11 +154,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
     @Override
-    public void saveStore(RequestJsonDto requestJson, HttpHeaders headers ) throws Exception {
+    public void saveStore(RequestJsonDto requestJson, HeaderDto headerDto ) throws Exception {
         log.info("++++++++++++ Saving Store "+requestJson.getStores().size()+" +++++++++++++++");
-
-        HeaderDto headerDto = new HeaderDto();
-        GeneralUtil.fillHeaderCredential(headers, headerDto);
 
         List<StoreEntity> stores = requestJson.getStores();
         StoresBrandEntity newStoresBrand = requestJson.getStoresBrand();
@@ -234,7 +229,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public MerchantEntity getMerchantById(Integer id) throws Exception {
+    public MerchantEntity getMerchantById(HeaderDto headerDto) throws Exception {
+        int id = Integer.parseInt(headerDto.getId());
         MerchantEntity merchantEntity = merchantDaoService.find(id);
         if(merchantEntity == null)
             throw new YSException("VLD011");
@@ -281,16 +277,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
     @Override
-    public List<StoresBrandEntity> findBrandList(HttpHeaders headers) throws Exception {
-        HeaderDto headerDto = new HeaderDto();
-        GeneralUtil.fillHeaderCredential(headers, headerDto);
-
-        MerchantEntity dbMerchant;
-        if(headerDto.getId() != null)  {
+    public List<StoresBrandEntity> findBrandList(HeaderDto headerDto) throws Exception {
+        MerchantEntity dbMerchant =null;
+        if(headerDto.getId() != null)
              dbMerchant = merchantDaoService.find(Integer.parseInt(headerDto.getId()));
-        } else {
-             dbMerchant = null;
-        }
+
         List<StoresBrandEntity> storesBrands;
 
         if(dbMerchant != null)
@@ -306,28 +297,17 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public StoresBrandEntity findBrandBrandDetail(HttpHeaders headers) throws Exception {
-
-        HeaderDto headerDto = new HeaderDto();
-        GeneralUtil.fillHeaderCredential(headers, headerDto);
-
-        StoresBrandEntity storesBrand;
-        if(headerDto.getId() != null)  {
-            storesBrand = merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
-        } else {
-            storesBrand = null;
-        }
-        return  storesBrand;
+    public StoresBrandEntity findBrandBrandDetail(HeaderDto headerDto) throws Exception {
+        return merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
     }
 
 
 
     @Override
-    public void saveItem(RequestJsonDto requestJson, HttpHeaders headers) throws Exception {
+    public void saveItem(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++ Saving Item +++++++++++++++");
 
-        HeaderDto headerDto = new HeaderDto();
-        GeneralUtil.fillHeaderCredential(headers, headerDto);
+
 
         ItemEntity item = requestJson.getItem();
         List<CategoryEntity> itemCategories = requestJson.getItemCategories();
@@ -338,16 +318,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<StoreEntity> findStoresByBrand(HttpHeaders headers) throws Exception {
-        HeaderDto headerDto = new HeaderDto();
-        GeneralUtil.fillHeaderCredential(headers, headerDto);
-
-        List<StoreEntity> stores;
-        if(headerDto.getId() != null)  {
-            stores =  merchantDaoService.findStoreByBrand(Integer.parseInt(headerDto.getId()));
-        } else {
-            stores = null;
-        }
-        return  stores;
+    public List<StoreEntity> findStoresByBrand(HeaderDto headerDto) throws Exception {
+        return merchantDaoService.findStoreByBrand(Integer.parseInt(headerDto.getId()));
     }
 }

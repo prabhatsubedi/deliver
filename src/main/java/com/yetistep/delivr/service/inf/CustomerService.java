@@ -1,8 +1,8 @@
 package com.yetistep.delivr.service.inf;
 
+import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
-import com.yetistep.delivr.model.UserEntity;
 
 import java.util.List;
 
@@ -14,9 +14,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface CustomerService {
-    public void saveCustomer(CustomerEntity customer) throws Exception;
+    public void saveCustomer(CustomerEntity customer, HeaderDto headerDto) throws Exception;
 
-    public void addCustomerAddress(Integer customerId, List<AddressEntity> addresses) throws Exception;
+    public void addCustomerAddress(HeaderDto headerDto, List<AddressEntity> addresses) throws Exception;
 
-    public void setMobileCode(UserEntity user) throws Exception;
+    public void setMobileCode(HeaderDto headerDto) throws Exception;
 }

@@ -2,7 +2,6 @@ package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
-import com.yetistep.delivr.model.UserEntity;
 
 import java.util.List;
 
@@ -14,13 +13,13 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface DeliveryBoyService {
-    public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy) throws Exception;
+    public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception;
 
-    public DeliveryBoyEntity findDeliveryBoyById(Integer id) throws Exception;
+    public DeliveryBoyEntity findDeliveryBoyById(HeaderDto headerDto) throws Exception;
 
     public List<DeliveryBoyEntity> findAllDeliverBoy() throws Exception;
 
-    public Boolean updateDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
+    public Boolean updateDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity, HeaderDto headerDto) throws Exception;
 
     public Boolean updateDeliveryBoyStatus(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
 

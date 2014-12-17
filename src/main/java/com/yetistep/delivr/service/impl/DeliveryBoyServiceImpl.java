@@ -36,8 +36,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     UserDaoService userDaoService;
 
     @Override
-    public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy) throws Exception {
+    public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Delivery Boy +++++++++++++++++");
+        deliveryBoy.getUser().setUsername(headerDto.getUsername());
+        deliveryBoy.getUser().setPassword(headerDto.getPassword());
         UserEntity user = deliveryBoy.getUser();
         if ((user.getUsername() == null || user.getPassword() == null) || (user.getUsername().isEmpty() || user.getPassword().isEmpty()))
             throw new YSException("VLD009");
@@ -77,7 +79,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public DeliveryBoyEntity findDeliveryBoyById(Integer id) throws Exception {
+    public DeliveryBoyEntity findDeliveryBoyById(HeaderDto headerDto) throws Exception {
+        Integer id = Integer.parseInt(headerDto.getId());
         log.info("Retrieving Deliver Boy With ID:" + id);
         DeliveryBoyEntity deliveryBoyEntity = deliveryBoyDaoService.find(id);
         if (deliveryBoyEntity == null) {
@@ -99,15 +102,14 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public Boolean updateDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception {
+    public Boolean updateDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity, HeaderDto headerDto) throws Exception {
         DeliveryBoyEntity dBoyEntity = deliveryBoyDaoService.find(deliveryBoyEntity.getId());
         if (dBoyEntity == null) {
             throw new YSException("VLD011");
         }
-
-        dBoyEntity.getUser().setUsername(deliveryBoyEntity.getUser().getMobileNumber());
-        dBoyEntity.getUser().setPassword(GeneralUtil.encryptPassword(deliveryBoyEntity.getUser().getPassword()));
-        dBoyEntity.getUser().setMobileNumber(deliveryBoyEntity.getUser().getMobileNumber());
+        dBoyEntity.getUser().setUsername(headerDto.getUsername());
+        dBoyEntity.getUser().setPassword(GeneralUtil.encryptPassword(headerDto.getPassword()));
+        dBoyEntity.getUser().setMobileNumber(headerDto.getUsername());
         for(AddressEntity addressEntity: deliveryBoyEntity.getUser().getAddresses()){
             for(AddressEntity address: dBoyEntity.getUser().getAddresses()){
                 if(address.getId().equals(addressEntity.getId())){

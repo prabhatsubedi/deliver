@@ -3,9 +3,7 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
-import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
-import com.yetistep.delivr.service.inf.UserService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
 import org.apache.log4j.Logger;
@@ -40,7 +38,7 @@ public class DeliveryBoyController extends AbstractManager{
         try{
 
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.PASSWORD, GeneralUtil.ACCESS_TOKEN);
 
             validateMobileClient(headerDto.getAccessToken());
 

@@ -48,17 +48,11 @@ public class ManagerController {
     public ResponseEntity<ServiceResponse> saveDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoy) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto);
-            deliveryBoy.getUser().setUsername(headerDto.getUsername());
-            deliveryBoy.getUser().setPassword(headerDto.getPassword());
-            deliveryBoyService.saveDeliveryBoy(deliveryBoy);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.PASSWORD);
+            deliveryBoyService.saveDeliveryBoy(deliveryBoy, headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Delivery Boy has been saved successfully");
-//            HttpHeaders httpHeaders = new HttpHeaders();
-//            httpHeaders.add("deliveryBoyId", deliveryBoy.getUser().getId() + "");
-//            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
-
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
@@ -71,8 +65,9 @@ public class ManagerController {
     public ResponseEntity<ServiceResponse> getDeliveryBoy(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto);
-            DeliveryBoyEntity deliveryBoy = deliveryBoyService.findDeliveryBoyById(Integer.parseInt(headerDto.getId()));
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            DeliveryBoyEntity deliveryBoy = deliveryBoyService.findDeliveryBoyById(headerDto);
+
             ServiceResponse serviceResponse = new ServiceResponse("Details of delivery boy with ID: "+headerDto.getId());
             serviceResponse.addParam("deliveryBoy", deliveryBoy);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -88,6 +83,7 @@ public class ManagerController {
     public ResponseEntity<ServiceResponse> getAllDeliveryBoy() {
         try {
             List<DeliveryBoyEntity> deliveryBoyEntities = deliveryBoyService.findAllDeliverBoy();
+
             ServiceResponse serviceResponse = new ServiceResponse("List of delivery boys");
             serviceResponse.addParam("deliveryBoys", deliveryBoyEntities);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -103,6 +99,7 @@ public class ManagerController {
     public ResponseEntity<ServiceResponse> updateDeliveryBoyStatus(@RequestBody DeliveryBoyEntity deliveryBoyEntity) {
         try {
             deliveryBoyService.updateDeliveryBoyStatus(deliveryBoyEntity);
+
             ServiceResponse serviceResponse = new ServiceResponse("Delivery Boy status has been updated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
@@ -117,10 +114,9 @@ public class ManagerController {
     public ResponseEntity<ServiceResponse> updateDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoy) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto);
-            deliveryBoy.getUser().setUsername(headerDto.getUsername());
-            deliveryBoy.getUser().setPassword(headerDto.getPassword());
-            deliveryBoyService.updateDeliveryBoy(deliveryBoy);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.PASSWORD);
+            deliveryBoyService.updateDeliveryBoy(deliveryBoy, headerDto);
+
             ServiceResponse serviceResponse = new ServiceResponse("Delivery Boy has been updated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
@@ -155,9 +151,7 @@ public class ManagerController {
 
             ServiceResponse serviceResponse = new ServiceResponse("Merchant retrieved successfully");
             serviceResponse.addParam("merchants", merchantEntities);
-
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
-
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while getting merchants", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
@@ -171,6 +165,7 @@ public class ManagerController {
     public ResponseEntity<ServiceResponse> updateUserStatus(@RequestBody UserEntity userEntity) {
         try{
             userService.changeUserStatus(userEntity);
+
             ServiceResponse serviceResponse = new ServiceResponse("User status updated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
@@ -186,8 +181,9 @@ public class ManagerController {
     public ResponseEntity<ServiceResponse> getMerchantById(@RequestHeader HttpHeaders headers) {
         try{
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto);
-            MerchantEntity merchantEntity = merchantService.getMerchantById(Integer.parseInt(headerDto.getId()));
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            MerchantEntity merchantEntity = merchantService.getMerchantById(headerDto);
+
             ServiceResponse serviceResponse = new ServiceResponse("Merchant retrieved successfully with ID: "+headerDto.getId());
             serviceResponse.addParam("merchant", merchantEntity);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -204,6 +200,7 @@ public class ManagerController {
     public ResponseEntity<ServiceResponse> getActionLogs(@RequestBody(required = false) Page page) {
         try{
             PaginationDto paginationDto = managerService.getActionLog(page);
+
             ServiceResponse serviceResponse = new ServiceResponse("List of action log");
             serviceResponse.addParam("actionLog", paginationDto);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -212,7 +209,6 @@ public class ManagerController {
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
-
     }
 
 }

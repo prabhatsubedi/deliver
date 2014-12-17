@@ -2,9 +2,9 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.model.CountryEntity;
 import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.AdminService;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.service.inf.UserService;
@@ -46,10 +46,10 @@ public class AnonController {
     @RequestMapping(value = "/save_merchant", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> processRegistration(@RequestHeader HttpHeaders headers, @RequestBody MerchantEntity merchant){
-
         try{
-
-            merchantService.saveMerchant(merchant, headers);
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME);
+            merchantService.saveMerchant(merchant, headerDto);
 
              /* Response Success */
             // JSON Information
@@ -88,8 +88,8 @@ public class AnonController {
     public ResponseEntity<ServiceResponse> validateUser(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto);
-            userService.checkUserExistence(headerDto.getUsername());
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME);
+            userService.checkUserExistence(headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("User name available");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -105,7 +105,12 @@ public class AnonController {
     public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto actionType) {
         try{
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            if (actionType.toString().equals(PasswordActionType.NEW.toString()) ||
+                    actionType.toString().equals(PasswordActionType.RESET.toString())) {
+                GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.PASSWORD, GeneralUtil.VERIFICATION_CODE);
+            }else {
+                GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME);
+            }
             String msg = userService.performPasswordAction(headerDto, actionType.getActionType());
 
             ServiceResponse serviceResponse = new ServiceResponse(msg);
@@ -117,20 +122,19 @@ public class AnonController {
         }
     }
     @RequestMapping(value = "/change_password")
-    public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders httpHeaders, @RequestBody UserEntity userEntity) throws Exception {
-
+    public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders httpHeaders) throws Exception {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(httpHeaders, headerDto);
+            GeneralUtil.fillHeaderCredential(httpHeaders, headerDto, GeneralUtil.ID, GeneralUtil.PASSWORD, GeneralUtil.NEW_PASSWORD);
+            userService.changePassword(headerDto);
 
-            userService.changePassword(headerDto, userEntity);
             ServiceResponse serviceResponse = new ServiceResponse("User password changed successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error occurred while changing password", e);
             HttpHeaders headers = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+            return new ResponseEntity<ServiceResponse>(headers, HttpStatus.EXPECTATION_FAILED);
         }
     }
 

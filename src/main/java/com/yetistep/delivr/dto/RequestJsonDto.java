@@ -24,9 +24,6 @@ public class RequestJsonDto {
     private List<Integer> categories;
     private List<PreferencesEntity> preferences;
 
-    /* For sending verification code, Used at ClientController.setMobileCode */
-    private String verificationCode;
-
     /*Add item properties*/
     private ItemEntity item;
     private List<CategoryEntity> itemCategories;
@@ -77,14 +74,6 @@ public class RequestJsonDto {
 
     public void setPreferences(List<PreferencesEntity> preferences) {
         this.preferences = preferences;
-    }
-
-    public String getVerificationCode() {
-        return verificationCode;
-    }
-
-    public void setVerificationCode(String verificationCode) {
-        this.verificationCode = verificationCode;
     }
 
     public ItemEntity getItem() {

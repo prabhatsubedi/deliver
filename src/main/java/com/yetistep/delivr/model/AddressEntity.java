@@ -22,6 +22,7 @@ public class AddressEntity implements Serializable {
     private String country;
     private String countryCode;
     private UserEntity user;
+    private OrderEntity order;
     private String latitude;
     private String longitude;
 
@@ -108,5 +109,14 @@ public class AddressEntity implements Serializable {
 
     public void setUser(UserEntity user) {
         this.user = user;
+    }
+
+    @OneToMany(mappedBy = "address")
+    public OrderEntity getOrder() {
+        return order;
+    }
+
+    public void setOrder(OrderEntity order) {
+        this.order = order;
     }
 }

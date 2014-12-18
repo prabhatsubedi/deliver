@@ -282,7 +282,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                 var store_list = "";
 
-                for(var i = 0; i < 2; i++) {
+                for(var i = 0; i < storeBrands.length; i++) {
 
                     var storeBrand = storeBrands[i];
                     console.log(storeBrand);

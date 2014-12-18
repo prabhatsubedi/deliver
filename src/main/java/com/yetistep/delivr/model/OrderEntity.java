@@ -3,7 +3,6 @@ package com.yetistep.delivr.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -45,7 +44,7 @@ public class OrderEntity implements Serializable {
     private BigDecimal deliveryBoyShare;
     private BigDecimal systemShare;
     private Timestamp orderDate;
-    private DBoyOrderHistory dBoyOrderHistory;
+    private DBoyOrderHistoryEntity dBoyOrderHistory;
 
 
     @Id
@@ -256,11 +255,11 @@ public class OrderEntity implements Serializable {
 
     @JsonIgnore
     @OneToOne(mappedBy = "order")
-    public DBoyOrderHistory getdBoyOrderHistory() {
+    public DBoyOrderHistoryEntity getdBoyOrderHistory() {
         return dBoyOrderHistory;
     }
 
-    public void setdBoyOrderHistory(DBoyOrderHistory dBoyOrderHistory) {
+    public void setdBoyOrderHistory(DBoyOrderHistoryEntity dBoyOrderHistory) {
         this.dBoyOrderHistory = dBoyOrderHistory;
     }
 }

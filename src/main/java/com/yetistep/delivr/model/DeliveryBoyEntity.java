@@ -44,7 +44,7 @@ public class DeliveryBoyEntity implements Serializable {
     private BigDecimal previousDue;
     private String licenseNumber;
     private String vehicleNumber;
-    private List<DBoyOrderHistory> dBoyOrderHistories;
+    private List<DBoyOrderHistoryEntity> dBoyOrderHistories;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -235,11 +235,11 @@ public class DeliveryBoyEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "deliveryBoy")
-    public List<DBoyOrderHistory> getdBoyOrderHistories() {
+    public List<DBoyOrderHistoryEntity> getdBoyOrderHistories() {
         return dBoyOrderHistories;
     }
 
-    public void setdBoyOrderHistories(List<DBoyOrderHistory> dBoyOrderHistories) {
+    public void setdBoyOrderHistories(List<DBoyOrderHistoryEntity> dBoyOrderHistories) {
         this.dBoyOrderHistories = dBoyOrderHistories;
     }
 }

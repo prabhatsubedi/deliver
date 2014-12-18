@@ -16,7 +16,7 @@ import java.util.Date;
  */
 @Entity(name = "DBoyOrderHistory")
 @Table(name = "dboy_order_history")
-public class DBoyOrderHistory implements Serializable {
+public class DBoyOrderHistoryEntity implements Serializable {
     private Integer id;
     private BigDecimal distanceTravelled;
     private DeliveryStatus deliveryStatus;

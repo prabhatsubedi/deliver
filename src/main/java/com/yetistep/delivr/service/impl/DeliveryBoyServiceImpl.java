@@ -167,4 +167,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         //DeliveryBoyEntity deliveryBoyEntity = deliveryBoyDaoService.find(userEntity.getDeliveryBoy().getId());
         return deliveryBoyEntity;
     }
+
+    @Override
+    public List<DeliveryBoyEntity> getAllCapableDeliveryBoys() throws Exception {
+        return deliveryBoyDaoService.findAllCapableDeliveryBoys();
+    }
 }

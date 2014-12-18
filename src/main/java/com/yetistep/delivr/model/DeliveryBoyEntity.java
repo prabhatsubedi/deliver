@@ -38,8 +38,6 @@ public class DeliveryBoyEntity implements Serializable {
     private BigDecimal availableAmount;
     private BigDecimal bankAmount;
     private BigDecimal walletAmount;
-    private String latitude;
-    private String longitude;
     private BigDecimal advanceAmount;
     private BigDecimal previousDue;
     private String licenseNumber;
@@ -159,24 +157,6 @@ public class DeliveryBoyEntity implements Serializable {
 
     public void setAvailableAmount(BigDecimal availableAmount) {
         this.availableAmount = availableAmount;
-    }
-
-    @Column(name = "latitude")
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    @Column(name = "longitude")
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
     }
 
     @Column(name = "advance_amount", precision = 16, scale = 4)

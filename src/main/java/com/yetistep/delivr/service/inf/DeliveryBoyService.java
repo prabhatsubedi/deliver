@@ -25,4 +25,6 @@ public interface DeliveryBoyService {
 
     public DeliveryBoyEntity dboyLogin(HeaderDto headerDto) throws Exception;
 
+    public List<DeliveryBoyEntity> getAllCapableDeliveryBoys() throws Exception;
+
 }

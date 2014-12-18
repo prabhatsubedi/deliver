@@ -22,6 +22,8 @@ public class AddressEntity implements Serializable {
     private String country;
     private String countryCode;
     private UserEntity user;
+    private String latitude;
+    private String longitude;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -77,6 +79,24 @@ public class AddressEntity implements Serializable {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
+    }
+
+    @Column(name = "latitude")
+    public String getLatitude() {
+        return latitude;
+    }
+
+    @Column(name = "longitude")
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 
     @JsonBackReference

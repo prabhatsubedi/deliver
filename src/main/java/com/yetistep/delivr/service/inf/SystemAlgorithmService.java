@@ -1,6 +1,8 @@
 package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.model.CourierTransactionEntity;
+import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.OrderEntity;
 
 /**
  * Created with IntelliJ IDEA.

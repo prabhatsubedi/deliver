@@ -1,9 +1,19 @@
 package com.yetistep.delivr.service.impl;
 
+import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.CourierTransactionEntity;
+import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
+import com.yetistep.delivr.service.inf.SystemPropertyService;
+import com.yetistep.delivr.util.BigDecimalUtil;
+import com.yetistep.delivr.util.DateUtil;
+import com.yetistep.delivr.util.GeoCodingUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.util.Scanner;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,6 +26,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
 
     @Autowired
     SystemPropertyService systemPropertyService;
+
     private static final BigDecimal TWO = new BigDecimal(2);
     public static final BigDecimal ZERO = BigDecimal.ZERO;
 
@@ -185,11 +196,11 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         return courierTransactionEntity;
     }
 
-  
     @Override
     public void courierBoyAccounting(DeliveryBoyEntity deliveryBoy, OrderEntity order) throws Exception {
         //To change body of implemented methods use File | Settings | File Templates.
     }
+
 
     public static void courierBoyAccountings(DeliveryBoyEntity deliveryBoy, OrderEntity order, MerchantEntity merchant, BigDecimal orderAmtReceived){
         BigDecimal orderAmount = order.getTotalCost();

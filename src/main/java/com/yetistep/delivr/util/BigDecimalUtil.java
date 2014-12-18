@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  * To change this template use File | Settings | File Templates.
  */
 public class BigDecimalUtil {
-
+    private static final BigDecimal HUNDRED = new BigDecimal(100);
     public static boolean isGreaterThen(BigDecimal param1, BigDecimal param2){
          if(param1.compareTo(param2) == 1){
              return true;
@@ -18,8 +18,19 @@ public class BigDecimalUtil {
         return false;
     }
 
+    public static final boolean isGreaterThenOrEqualTo(BigDecimal param1, BigDecimal param2){
+        if(param1.compareTo(param2) == 1 || param1.compareTo(param2) == 0){
+            return true;
+        }
+        return false;
+    }
+
     public static boolean isLessThanZero(BigDecimal param) {
         return isLessThen(param, BigDecimal.ZERO);
+    }
+
+    public static boolean isGreaterThenZero(BigDecimal param){
+        return isGreaterThen(param, BigDecimal.ZERO);
     }
 
     public static boolean isLessThen(BigDecimal param1, BigDecimal param2){
@@ -52,10 +63,6 @@ public class BigDecimalUtil {
         return false;
     }
 
-    public static BigDecimal pctOf(BigDecimal pct, BigDecimal amount){
-        return pct.divide(new BigDecimal("100")).multiply(amount);
-    }
-
     public static boolean isZero(BigDecimal param1){
         if(param1.compareTo(BigDecimal.ZERO) == 0){
             return true;
@@ -68,5 +75,9 @@ public class BigDecimalUtil {
             return true;
         }
         return false;
+    }
+
+    public static BigDecimal percentageOf(BigDecimal base, BigDecimal pct){
+        return base.multiply(pct).divide(HUNDRED);
     }
 }

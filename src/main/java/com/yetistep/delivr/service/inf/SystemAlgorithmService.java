@@ -1,7 +1,6 @@
 package com.yetistep.delivr.service.inf;
 
-import com.yetistep.delivr.model.DeliveryBoyEntity;
-import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.CourierTransactionEntity;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +10,7 @@ import com.yetistep.delivr.model.OrderEntity;
  * To change this template use File | Settings | File Templates.
  */
 public interface SystemAlgorithmService {
-    public void calculateCourierEarning() throws Exception;
+    public CourierTransactionEntity calculateCourierEarning() throws Exception;
 
     public void courierBoyAccounting(DeliveryBoyEntity deliveryBoy, OrderEntity order) throws Exception;
 }

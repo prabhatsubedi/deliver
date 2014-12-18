@@ -10,8 +10,8 @@ import java.math.BigDecimal;
  * Time: 12:41 PM
  * To change this template use File | Settings | File Templates.
  */
-//@Entity(name = "CourierTransactionEntity")
-//@Table(name = "courier_transaction")
+@Entity(name = "CourierTransactionEntity")
+@Table(name = "courier_transaction")
 public class CourierTransactionEntity {
     private Integer id;
     //FIXME
@@ -36,11 +36,10 @@ public class CourierTransactionEntity {
     private BigDecimal customerPays;
     private BigDecimal paidToCourier;
     private BigDecimal profit;
-    private Integer timeTaken;
 
-    //@Id
-    //@GeneratedValue
-    //@Column(name="id")
+    @Id
+    @GeneratedValue
+    @Column(name="id")
     public Integer getId() {
         return id;
     }
@@ -74,7 +73,7 @@ public class CourierTransactionEntity {
         this.deliveryBoyId = deliveryBoyId;
     }
 
-    @Column(name ="order_total")
+    @Column(name ="order_total", precision = 16, scale = 2)
     public BigDecimal getOrderTotal() {
         return orderTotal;
     }
@@ -83,6 +82,7 @@ public class CourierTransactionEntity {
         this.orderTotal = orderTotal;
     }
 
+    @Column(name ="commission_pct", precision = 4, scale = 2)
     public BigDecimal getCommissionPct() {
         return commissionPct;
     }
@@ -91,6 +91,7 @@ public class CourierTransactionEntity {
         this.commissionPct = commissionPct;
     }
 
+    @Column(name ="store_to_customer_distance", precision = 5, scale = 2)
     public BigDecimal getStoreToCustomerDistance() {
         return storeToCustomerDistance;
     }
@@ -99,6 +100,7 @@ public class CourierTransactionEntity {
         this.storeToCustomerDistance = storeToCustomerDistance;
     }
 
+    @Column(name ="courier_to_store_distance", precision = 5, scale = 2)
     public BigDecimal getCourierToStoreDistance() {
         return courierToStoreDistance;
     }
@@ -107,6 +109,7 @@ public class CourierTransactionEntity {
         this.courierToStoreDistance = courierToStoreDistance;
     }
 
+    @Column(name ="service_fee_pct", precision = 4, scale = 2)
     public BigDecimal getServiceFeePct() {
         return serviceFeePct;
     }
@@ -115,6 +118,7 @@ public class CourierTransactionEntity {
         this.serviceFeePct = serviceFeePct;
     }
 
+    @Column(name ="additional_delivery_amt", precision = 16, scale = 2)
     public BigDecimal getAdditionalDeliveryAmt() {
         return additionalDeliveryAmt;
     }
@@ -123,6 +127,7 @@ public class CourierTransactionEntity {
         this.additionalDeliveryAmt = additionalDeliveryAmt;
     }
 
+    @Column(name ="customer_discount", precision = 5, scale = 2)
     public BigDecimal getCustomerDiscount() {
         return customerDiscount;
     }
@@ -131,6 +136,7 @@ public class CourierTransactionEntity {
         this.customerDiscount = customerDiscount;
     }
 
+    @Column(name ="surge_factor")
     public Integer getSurgeFactor() {
         return surgeFactor;
     }
@@ -139,6 +145,7 @@ public class CourierTransactionEntity {
         this.surgeFactor = surgeFactor;
     }
 
+    @Column(name ="delivery_cost_without_additional_dv_amt", precision = 16, scale = 2)
     public BigDecimal getDeliveryCostWithoutAdditionalDvAmt() {
         return deliveryCostWithoutAdditionalDvAmt;
     }
@@ -147,6 +154,7 @@ public class CourierTransactionEntity {
         this.deliveryCostWithoutAdditionalDvAmt = deliveryCostWithoutAdditionalDvAmt;
     }
 
+    @Column(name ="service_fee_amt", precision = 16, scale = 2)
     public BigDecimal getServiceFeeAmt() {
         return serviceFeeAmt;
     }
@@ -155,6 +163,7 @@ public class CourierTransactionEntity {
         this.serviceFeeAmt = serviceFeeAmt;
     }
 
+    @Column(name ="delivery_charge_before_discount", precision = 16, scale = 2)
     public BigDecimal getDeliveryChargedBeforeDiscount() {
         return deliveryChargedBeforeDiscount;
     }
@@ -163,6 +172,7 @@ public class CourierTransactionEntity {
         this.deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount;
     }
 
+    @Column(name ="customer_balance_before_discount", precision = 16, scale = 2)
     public BigDecimal getCustomerBalanceBeforeDiscount() {
         return customerBalanceBeforeDiscount;
     }
@@ -171,6 +181,7 @@ public class CourierTransactionEntity {
         this.customerBalanceBeforeDiscount = customerBalanceBeforeDiscount;
     }
 
+    @Column(name ="delivery_charge_after_discount", precision = 16, scale = 2)
     public BigDecimal getDeliveryChargedAfterDiscount() {
         return deliveryChargedAfterDiscount;
     }
@@ -179,6 +190,7 @@ public class CourierTransactionEntity {
         this.deliveryChargedAfterDiscount = deliveryChargedAfterDiscount;
     }
 
+    @Column(name ="customer_balance_after_discount", precision = 16, scale = 2)
     public BigDecimal getCustomerBalanceAfterDiscount() {
         return customerBalanceAfterDiscount;
     }
@@ -187,6 +199,7 @@ public class CourierTransactionEntity {
         this.customerBalanceAfterDiscount = customerBalanceAfterDiscount;
     }
 
+    @Column(name ="customer_pays", precision = 16, scale = 2)
     public BigDecimal getCustomerPays() {
         return customerPays;
     }
@@ -195,6 +208,7 @@ public class CourierTransactionEntity {
         this.customerPays = customerPays;
     }
 
+    @Column(name ="paid_to_courier", precision = 16, scale = 2)
     public BigDecimal getPaidToCourier() {
         return paidToCourier;
     }
@@ -203,6 +217,7 @@ public class CourierTransactionEntity {
         this.paidToCourier = paidToCourier;
     }
 
+    @Column(name ="profit", precision = 16, scale = 2)
     public BigDecimal getProfit() {
         return profit;
     }
@@ -211,11 +226,4 @@ public class CourierTransactionEntity {
         this.profit = profit;
     }
 
-    public Integer getTimeTaken() {
-        return timeTaken;
-    }
-
-    public void setTimeTaken(Integer timeTaken) {
-        this.timeTaken = timeTaken;
-    }
 }

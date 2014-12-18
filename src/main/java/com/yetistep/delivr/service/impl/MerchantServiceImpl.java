@@ -302,18 +302,21 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<CategoryEntity> itemCategories = requestJson.getItemCategories();
         List<Integer> itemStores = requestJson.getItemStores();
         List<ItemsAttributeEntity> itemsAttributes = requestJson.getItemsAttributes();
-        List<ItemsImageEntity> itemsImages = requestJson.getItemsImages();
+        List<String> itemsImages = requestJson.getItemsImages();
 
         CategoryEntity category;
         //save stores category
         if(itemCategories.size()>0){
-            int i;
-           for(i = 1; i<itemCategories.size()-1; i++){
+            CategoryEntity parentCategory = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
+            itemCategories.set(0, parentCategory);
+           int i;
+           for(i = 1; i<itemCategories.size(); i++){
                itemCategories.get(i).setParent(itemCategories.get(i-1));
+               itemCategories.get(i).setFeatured(false);
            }
             merchantDaoService.saveCategories(itemCategories);
             //get items category
-            category = itemCategories.get(itemCategories.size());
+            category = itemCategories.get(itemCategories.size()-1);
         }else{
             category = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
         }
@@ -325,20 +328,43 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             ItemsStoreEntity itemsStoreEntity = new ItemsStoreEntity();
             StoreEntity store = merchantDaoService.getStoreById(itemsStore);
             itemsStoreEntity.setStore(store);
+            itemsStoreEntity.setItem(item);
             itemsStoreEntities.add(itemsStoreEntity);
         }
+
+        for(ItemsAttributeEntity itemsAttribute: itemsAttributes){
+            itemsAttribute.setItem(item);
+        }
+
         item.setItemsStores(itemsStoreEntities);
         item.setAttributes(itemsAttributes);
 
         List<String> images = new ArrayList<>();
-        for (ItemsImageEntity itemsImageEntity: itemsImages){
-            images.add(itemsImageEntity.getUrl());
-            itemsImageEntity.setUrl(null);
+        for (String image: itemsImages){
+            images.add(image);
         }
 
-        //merchantDaoService.saveItem(item);
+        merchantDaoService.saveItem(item);
 
+        if (images != null) {
+            log.info("Uploading item images to S3 Bucket ");
 
+            String dir = MessageBundle.separateString("/", "item", "item" + item.getId());
+            boolean isLocal = MessageBundle.isLocalHost();
+
+            List<ItemsImageEntity> itemsImageEntities = new ArrayList<>();
+            int i = 0;
+            for(String image: images){
+                ItemsImageEntity itemsImage = new ItemsImageEntity();
+                String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId();
+                String s3PathImage = GeneralUtil.saveImageToBucket(image, itemImageUrl, dir, true);
+                itemsImage.setUrl(s3PathImage);
+                itemsImage.setItem(item);
+                itemsImageEntities.add(itemsImage);
+                i++;
+            }
+             merchantDaoService.saveItemImages(itemsImageEntities);
+        }
 
     }
 

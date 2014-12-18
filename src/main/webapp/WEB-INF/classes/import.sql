@@ -18,10 +18,6 @@ INSERT INTO categories (id, created_date, featured, name, priority, parent_id, s
 
 INSERT INTO categories (id, created_date, featured, name, priority, parent_id, store_id) VALUES (NULL, CURRENT_TIMESTAMP, '0', 'Soft Drinks', NULL, 1, NULL), (NULL, CURRENT_TIMESTAMP, '0', 'Alcoholic Beverages', NULL, 1, NULL), (NULL, CURRENT_TIMESTAMP, '0', 'Confectionery', NULL, 1, NULL);
 
-
-DROP TABLE items_store;
-DROP TABLE items_image;
-
 TRUNCATE TABLE preferences;
 INSERT INTO preferences (pref_key,VALUE) VALUES('CURRENCY','$'),('DBOY_ADDITIONAL_PER_KM_CHARGE','5'),('DBOY_PER_KM_CHARGE_UPTO_2KM','50'),('DBOY_PER_KM_CHARGE_ABOVE_2KM','30'),('RESERVED_COMM_PER_BY_SYSTEM','50'),('SURGE_FACTOR_7AM_9PM','1'),('SURGE_FACTOR_9_10PM','2'),('SURGE_FACTOR_10_11PM','3'),('SURGE_FACTOR_11PM_7AM','4'),('DBOY_COMMISSION','80'),('DBOY_MIN_AMOUNT','50'),('MERCHANT_VAT','13'),('MERCHANT_SERVICE_CHARGE','10'),('ANDROID_APP_VER_NO','0.1'),('WEB_APP_VER_NO','0.1');
 

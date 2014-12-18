@@ -1,6 +1,8 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.yetistep.delivr.util.JsonDateSerializer;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -172,6 +174,7 @@ public class StoreEntity implements Serializable {
         this.longitude = longitude;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getCreatedDate() {
         return createdDate;

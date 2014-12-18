@@ -1,11 +1,18 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.yetistep.delivr.util.JsonDateSerializer;
+import com.yetistep.delivr.util.JsonTimeDeserializer;
+import com.yetistep.delivr.util.JsonTimeSerializer;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,10 +30,10 @@ public class ItemEntity implements Serializable {
     private String name;
     private List<ItemsImageEntity> itemsImage;
     private List<ItemsOrderEntity> itemsOrder;
-    private String Description;
+    private String description;
     private Integer availableQuantity;
-    private Timestamp availableStartTime;
-    private Timestamp availableEndTime;
+    private Date availableStartTime;
+    private Date availableEndTime;
     private List<ItemsStoreEntity> itemsStores;
     private List<ItemsAttributeEntity> attributes;
     //private Set<OrderEntity> order;
@@ -34,13 +41,13 @@ public class ItemEntity implements Serializable {
     private Integer minOrderQuantity;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
-    private Integer listingDays;
+    //private Timestamp validTill;
     private Boolean paymentMethodCd;  //cash on demand
     private Boolean paymentMethodCc; //credit card
     private Integer unitPrice;
     private String currencyType;
-    private String multiSelectOffer;
-    private String singleSelectOffer;
+    private Boolean multiSelectOffer;
+    private Boolean singleSelectOffer;
     private String additionalOffer;
     private Integer approxSize;
     private Integer approxWeight;
@@ -75,7 +82,8 @@ public class ItemEntity implements Serializable {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsImageEntity> getItemsImage() {
         return itemsImage;
     }
@@ -85,6 +93,7 @@ public class ItemEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "item")
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsOrderEntity> getItemsOrder() {
         return itemsOrder;
     }
@@ -95,11 +104,11 @@ public class ItemEntity implements Serializable {
 
     @Column(name = "description")
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
     @Column(name = "available_quantity")
@@ -111,25 +120,30 @@ public class ItemEntity implements Serializable {
         this.availableQuantity = availableQuantity;
     }
 
+    @Temporal(TemporalType.TIME)
+    @JsonDeserialize(using = JsonTimeDeserializer.class)
     @Column(name = "available_start_time")
-    public Timestamp getAvailableStartTime() {
+    public Date getAvailableStartTime() {
         return availableStartTime;
     }
 
-    public void setAvailableStartTime(Timestamp availableStartTime) {
+    public void setAvailableStartTime(Date availableStartTime) {
         this.availableStartTime = availableStartTime;
     }
 
+    @Temporal(TemporalType.TIME)
+    @JsonDeserialize(using = JsonTimeDeserializer.class)
     @Column(name = "available_end_time")
-    public Timestamp getAvailableEndTime() {
+    public Date getAvailableEndTime() {
         return availableEndTime;
     }
 
-    public void setAvailableEndTime(Timestamp availableEndTime) {
+    public void setAvailableEndTime(Date availableEndTime) {
         this.availableEndTime = availableEndTime;
     }
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsStoreEntity> getItemsStores() {
         return itemsStores;
     }
@@ -138,7 +152,8 @@ public class ItemEntity implements Serializable {
         this.itemsStores = itemsStores;
     }
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsAttributeEntity> getAttributes() {
         return attributes;
     }
@@ -174,6 +189,7 @@ public class ItemEntity implements Serializable {
         this.minOrderQuantity = minOrderQuantity;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = false)
     public Timestamp getCreatedDate() {
         return createdDate;
@@ -183,6 +199,7 @@ public class ItemEntity implements Serializable {
         this.createdDate = createdDate;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "modified_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = true)
     public Timestamp getModifiedDate() {
         return modifiedDate;
@@ -192,14 +209,14 @@ public class ItemEntity implements Serializable {
         this.modifiedDate = modifiedDate;
     }
 
-    @Column(name = "listing_days")
-    public Integer getListingDays() {
-        return listingDays;
+    /*@Column(name = "valid_till")
+    public Timestamp getValidTill() {
+        return validTill;
     }
 
-    public void setListingDays(Integer listing_days) {
-        this.listingDays = listingDays;
-    }
+    public void setValidTill(Timestamp validTill) {
+        this.validTill = validTill;
+    }*/
 
     @Column(name = "payment_method_cd", columnDefinition = "TINYINT(1)")
     public Boolean getPaymentMethodCd() {
@@ -237,21 +254,21 @@ public class ItemEntity implements Serializable {
         this.currencyType = currencyType;
     }
 
-    @Column(name = "multi_select_offer", columnDefinition = "longtext")
-    public String getMultiSelectOffer() {
+    @Column(name = "multi_select_offer", columnDefinition = "TINYINT(1)")
+    public Boolean getMultiSelectOffer() {
         return multiSelectOffer;
     }
 
-    public void setMultiSelectOffer(String multiSelectOffer) {
+    public void setMultiSelectOffer(Boolean multiSelectOffer) {
         this.multiSelectOffer = multiSelectOffer;
     }
 
-    @Column(name = "single_select_offer", columnDefinition = "longtext")
-    public String getSingleSelectOffer() {
+    @Column(name = "single_select_offer", columnDefinition = "TINYINT(1)")
+    public Boolean getSingleSelectOffer() {
         return singleSelectOffer;
     }
 
-    public void setSingleSelectOffer(String singleSelectOffer) {
+    public void setSingleSelectOffer(Boolean singleSelectOffer) {
         this.singleSelectOffer = singleSelectOffer;
     }
 

@@ -230,4 +230,23 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
             i++;
         }
     }
+
+    @Override
+    public void saveItem(ItemEntity value) throws Exception {
+        getCurrentSession().save(value);
+    }
+
+    @Override
+    public void saveItemImages(List<ItemsImageEntity> itemsImageEntities) throws Exception {
+        Integer i = 0;
+        for (ItemsImageEntity value: itemsImageEntities) {
+            getCurrentSession().save(value);
+            if ( i % 20 == 0 ) { //20, same as the JDBC batch size
+                //flush a batch of inserts and release memory:
+                getCurrentSession().flush();
+                getCurrentSession().clear();
+            }
+            i++;
+        }
+    }
 }

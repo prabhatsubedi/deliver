@@ -1,13 +1,17 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.yetistep.delivr.util.JsonDateSerializer;
+import com.yetistep.delivr.util.JsonTimeDeserializer;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,8 +30,8 @@ public class StoresBrandEntity implements Serializable {
    private List<StoreEntity> store;
    private List<BrandsCategoryEntity> brandsCategory;
    private String brandName;
-   private String openingTime;
-   private String closingTime;
+   private Date openingTime;
+   private Date closingTime;
    private String brandLogo;
    private String brandImage;
    private String brandUrl;
@@ -86,21 +90,25 @@ public class StoresBrandEntity implements Serializable {
         this.brandName = brandName;
     }
 
+    @Temporal(TemporalType.TIME)
+    @JsonDeserialize(using = JsonTimeDeserializer.class)
     @Column(name = "opening_time", nullable = false)
-    public String getOpeningTime() {
+    public Date getOpeningTime() {
         return openingTime;
     }
 
-    public void setOpeningTime(String openingTime) {
+    public void setOpeningTime(Date openingTime) {
         this.openingTime = openingTime;
     }
 
+    @Temporal(TemporalType.TIME)
+    @JsonDeserialize(using = JsonTimeDeserializer.class)
     @Column(name = "closing_time", nullable = false)
-    public String getClosingTime() {
+    public Date getClosingTime() {
         return closingTime;
     }
 
-    public void setClosingTime(String closingTime) {
+    public void setClosingTime(Date closingTime) {
         this.closingTime = closingTime;
     }
 
@@ -150,7 +158,7 @@ public class StoresBrandEntity implements Serializable {
     }
 
     @Column(name = "created_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    @JsonSerialize
+    @JsonSerialize(using = JsonDateSerializer.class)
     public Timestamp getCreatedDate() {
         return createdDate;
     }

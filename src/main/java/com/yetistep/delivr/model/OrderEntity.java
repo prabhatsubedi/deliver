@@ -30,6 +30,7 @@ public class OrderEntity implements Serializable {
     private JobOrderStatus orderStatus;
     //private ItemEntity item;
     private List<ItemsOrderEntity> itemsOrder;
+    private AddressEntity address;
     private DeliveryBoyEntity deliveryBoy;
     private CustomerEntity customer;
     private StoreEntity store;
@@ -123,6 +124,16 @@ public class OrderEntity implements Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    public AddressEntity getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressEntity address) {
+        this.address = address;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_boy_id")
     public DeliveryBoyEntity getDeliveryBoy() {
         return deliveryBoy;
@@ -189,7 +200,7 @@ public class OrderEntity implements Serializable {
         this.totalCost = totalCost;
     }
 
-    @Column(name = "transportaion_charge", precision = 4, scale = 2)
+    @Column(name = "transportation_charge", precision = 4, scale = 2)
     public BigDecimal getTransportationCharge() {
         return transportationCharge;
     }

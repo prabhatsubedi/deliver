@@ -1,5 +1,7 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -29,7 +31,8 @@ public class ItemsImageEntity implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "item_id")
     public ItemEntity getItem() {
         return item;

@@ -22,3 +22,14 @@ INSERT INTO preferences (pref_key,VALUE) VALUES
 ('MERCHANT_SERVICE_CHARGE','10'),
 ('ANDROID_APP_VER_NO','0.1'),
 ('WEB_APP_VER_NO','0.1');
+
+ALTER TABLE items DROP COLUMN listing_days;
+ALTER TABLE items DROP COLUMN available_start_time;
+ALTER TABLE items DROP COLUMN available_end_time;
+ALTER TABLE stores_brands DROP COLUMN opening_time;
+ALTER TABLE stores_brands DROP COLUMN closing_time;
+ALTER TABLE items MODIFY COLUMN multi_select_offer tinyint(1);
+ALTER TABLE items MODIFY COLUMN single_select_offer tinyint(1);
+ALTER TABLE orders DROP COLUMN transportaion_charge;
+ALTER TABLE delivery_boys DROP COLUMN latitude;
+ALTER TABLE delivery_boys DROP COLUMN longitude;

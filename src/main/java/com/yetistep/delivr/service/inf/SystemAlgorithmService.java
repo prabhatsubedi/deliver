@@ -1,5 +1,8 @@
 package com.yetistep.delivr.service.inf;
 
+import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.OrderEntity;
+
 /**
  * Created with IntelliJ IDEA.
  * User: surendraJ
@@ -9,4 +12,6 @@ package com.yetistep.delivr.service.inf;
  */
 public interface SystemAlgorithmService {
     public void calculateCourierEarning() throws Exception;
+
+    public void courierBoyAccounting(DeliveryBoyEntity deliveryBoy, OrderEntity order) throws Exception;
 }

@@ -34,20 +34,12 @@ if(typeof(Main) == "undefined") var Main = {};
         var loaderDiv = callback["loaderDiv"];
         var requestType = callback["requestType"];
         if (loaderDiv != undefined) {
-            if (loaderDiv == "body") {
-                $(loaderDiv).append('<div class="loader"></div>');
-            } else {
-                $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
-            }
+            $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
         }
 
         function hideLoader() {
             if (loaderDiv != undefined) {
-                if (loaderDiv == "body") {
-                    $(loaderDiv).children('.loader').hide();
-                } else {
-                    $(loaderDiv).removeClass('loader_div').children('.loader').hide();
-                }
+                $(loaderDiv).removeClass('loader_div').children('.loader').hide();
             }
         }
 
@@ -168,6 +160,16 @@ if(typeof(Main) == "undefined") var Main = {};
         return value;
     }
 
+    Main.getURLvalue = function(index) {
+        if(index == undefined) return false;
+
+        var pathname = window.location.pathname;
+        var path_arr = pathname.split('/');
+        path_arr = Main.remove_value(path_arr, "");
+        return path_arr[index];
+
+    };
+
 /*    Main.getURLParameter = function(key, keyvalue) {
         if(key == undefined) return false;
         key = key + "_";
@@ -206,9 +208,4 @@ if(typeof(Main) == "undefined") var Main = {};
 
 $(document).ready(function(){
     Main.elemRatio();
-
-    $('a[merchant-id]').live('click', function(e){
-        Main.saveInSessionStorage('mid', $(this).attr('merchant-id'));
-    });
-
 });

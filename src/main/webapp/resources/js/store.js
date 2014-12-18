@@ -98,9 +98,60 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#open_time').selectpicker({size: 5});
         $('#close_time').selectpicker({size: 5});
 
+        function updateGeoPoints() {
+
+            if(markers.length > 0) {
+                var location_valid = true;
+                var stores = [];
+                var geoPoint;
+                var geoKey;
+                for(geoKey in arrGeoPoints) {
+                    geoPoint = arrGeoPoints[geoKey];
+//                        if(geoPoint.name == ""){
+//                            location_valid = false;
+//                        }
+                    geoPoint.name = $('#brand_name').val();
+                    if(geoPoint.street == ""){
+                        location_valid = false;
+                    }
+                    if(geoPoint.city == ""){
+                        location_valid = false;
+                    }
+                    if(geoPoint.state == ""){
+                        location_valid = false;
+                    }
+                    if(geoPoint.country == ""){
+                        location_valid = false;
+                    }
+                    /*                    if(geoPoint.contactNo == ""){
+                     location_valid = false;
+                     }
+                     if(geoPoint.contactPerson == ""){
+                     location_valid = false;
+                     }*/
+                    stores.push(geoPoint);
+                    if(location_valid == false) break;
+                }
+
+                if(!location_valid) {
+                    alert('All fields of all store locations are required.');
+                    var current_index = Object.keys(arrGeoPoints).indexOf(geoKey);
+                    google.maps.event.trigger(markers[current_index], 'click');
+                    map.panTo(markers[current_index].position);
+                }
+
+                return {valid: location_valid, stores: stores};
+
+            } else {
+                alert("Please add at least 1 store location.");
+                return {valid: false};
+            }
+
+        };
+
         $('#form_store').validate({
             submitHandler: function() {
-                var loaderDiv = "#store_section .store_content";
+                var loaderDiv = "#store_section .form_content";
                 $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
 
                 var geoKeyObject = arrGeoPoints[$(".save_marker").eq(0).attr('data-id')];
@@ -124,6 +175,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                 setTimeout(function(){
                     $(loaderDiv).removeClass('loader_div').children('.loader').hide();
+                    updateGeoPoints();
                 }, 200);
 
                 return false;
@@ -135,84 +187,44 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#city').rules('add', {required: true});
         $('#state').rules('add', {required: true});
         $('#country').rules('add', {required: true});
-        $('#contact_no').rules('add', {required: true, contactNumber: true});
-        $('#contact_person').rules('add', {required: true});
+//        $('#contact_no').rules('add', {required: true, contactNumber: true});
+//        $('#contact_person').rules('add', {required: true});
 
         $('#form_brand').validate({
             submitHandler: function() {
+                var geoPoints = updateGeoPoints();
+                if(geoPoints.valid) {
 
-                if(markers.length > 0) {
-                    var location_valid = true;
-                    var stores = [];
-                    var geoPoint;
-                    var geoKey;
-                    for(geoKey in arrGeoPoints) {
-                        geoPoint = arrGeoPoints[geoKey];
-//                        if(geoPoint.name == ""){
-//                            location_valid = false;
-//                        }
-                        geoPoint.name = $('#brand_name').val();
-                        if(geoPoint.street == ""){
-                            location_valid = false;
-                        }
-                        if(geoPoint.city == ""){
-                            location_valid = false;
-                        }
-                        if(geoPoint.state == ""){
-                            location_valid = false;
-                        }
-                        if(geoPoint.country == ""){
-                            location_valid = false;
-                        }
-                        if(geoPoint.contactNo == ""){
-                            location_valid = false;
-                        }
-                        if(geoPoint.contactPerson == ""){
-                            location_valid = false;
-                        }
-                        stores.push(geoPoint);
-                        if(location_valid == false) break;
+                    var data = {};
+                    var stores_brand = {};
+
+                    stores_brand.brandName = $('#brand_name').val();
+                    stores_brand.openingTime = $('#open_time').val();
+                    stores_brand.closingTime = $('#close_time').val();
+                    stores_brand.brandLogo = $('#brand_logo img').attr('src');
+                    stores_brand.brandImage = $('#brand_image img').attr('src');
+                    stores_brand.brandUrl = $('#brand_url').val();
+
+
+                    var categories = $('#store_categories').val();
+                    var arr_categories = [];
+                    if(categories == "All") {
+                        $('#store_categories option').not('option[value="All"]').each(function(){
+                            arr_categories.push($(this).val());
+                        });
+                        categories = arr_categories;
                     }
+                    data.stores = geoPoints.stores;
+                    data.storesBrand = stores_brand;
+                    data.categories = categories;
 
-                    if(location_valid) {
-                        var data = {};
-                        var stores_brand = {};
+                    Store.addStore(data, {merchantId: Main.getFromLocalStorage('mid')});
 
-                        stores_brand.brandName = $('#brand_name').val();
-                        stores_brand.openingTime = $('#open_time').val();
-                        stores_brand.closingTime = $('#close_time').val();
-                        stores_brand.brandLogo = $('#brand_logo img').attr('src');
-                        stores_brand.brandImage = $('#brand_image img').attr('src');
-                        stores_brand.brandUrl = $('#brand_url').val();
-
-
-                        var categories = $('#store_categories').val();
-                        var arr_categories = [];
-                        if(categories == "All") {
-                            $('#store_categories option').not('option[value="All"]').each(function(){
-                                arr_categories.push($(this).val());
-                            });
-                            categories = arr_categories;
-                        }
-                        data.stores = stores;
-                        data.storesBrand = stores_brand;
-                        data.categories = categories;
-
-                        Store.addStore(data, {merchantId: Main.getFromSessionStorage('mid')});
-                    } else {
-                        alert('All fields of all store locations are required.');
-                        var current_index = Object.keys(arrGeoPoints).indexOf(geoKey);
-                        google.maps.event.trigger(markers[current_index], 'click');
-                        map.panTo(markers[current_index].position);
-                    }
-
-                } else {
-                    alert("Please add at least 1 store location.");
                 }
-
                 return false;
             }
         });
+
         $('#brand_name').rules('add', {required: true});
         $('#brand_image_input').rules('add', {imageRequired: true});
         $('#brand_logo_input').rules('add', {imageRequired: true});

@@ -43,9 +43,9 @@
             <div class="form_container full_width clearfix">
                 <div class="row">
                     <div id="brand_section" class="col-lg-6">
-                        <div class="store_section">
-                            <div class="store_head">Store</div>
-                            <div class="store_content">
+                        <div class="form_section">
+                            <div class="form_head">Store</div>
+                            <div class="form_content">
                                 <form role="form" id="form_brand" method="POST" action="">
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="brand_name" name="brand_name" placeholder="Store Brand Name">
@@ -83,16 +83,16 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn_green">Add Brand</button>
+                                        <button type="submit" class="btn btn_green">Add Store</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
                     <div id="store_section" class="col-lg-6">
-                        <div class="store_section">
-                            <div class="store_head">Store Location</div>
-                            <div class="store_content clearfix">
+                        <div class="form_section">
+                            <div class="form_head">Store Location</div>
+                            <div class="form_content clearfix">
 
                                 <div class="map-container">
                                     <div id="search_box">
@@ -109,8 +109,8 @@
                                     <div class="form-group clearfix">
                                         <button type="button" class="btn btn_green marker_nav marker_prev" disabled="disabled">Prev</button>
                                         <button type="button" class="btn btn_green marker_nav marker_next" disabled="disabled">Next</button>
-                                        <button type="button" class="btn btn_green cancel_marker" disabled="disabled">Remove</button>
-                                        <button type="submit" class="btn btn_green save_marker" disabled="disabled">Save Changes</button>
+                                        <button type="button" class="btn btn_green cancel_marker" disabled="disabled">Remove Marker</button>
+                                        <button type="submit" class="btn btn_green save_marker" disabled="disabled">Save Address</button>
                                     </div>
 <%--                                    <div class="form-group">
                                         <input type="text" class="form-control" id="store_name" name="store_name" placeholder="Store Name">
@@ -128,16 +128,16 @@
                                         <input type="text" class="form-control" id="country" name="country" placeholder="Country">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="contact_no" name="contact_no" placeholder="Contact No.">
+                                        <input type="text" class="form-control" id="contact_no" name="contact_no" placeholder="Contact No. (Optional)">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="contact_person" name="contact_person" placeholder="Contact Person">
+                                        <input type="text" class="form-control" id="contact_person" name="contact_person" placeholder="Contact Person (Optional)">
                                     </div>
                                     <div class="form-group clearfix">
                                         <button type="button" class="btn btn_green marker_nav marker_prev" disabled="disabled">Prev</button>
                                         <button type="button" class="btn btn_green marker_nav marker_next" disabled="disabled">Next</button>
-                                        <button type="button" class="btn btn_green cancel_marker" disabled="disabled">Remove</button>
-                                        <button type="submit" class="btn btn_green save_marker" disabled="disabled">Save Changes</button>
+                                        <button type="button" class="btn btn_green cancel_marker" disabled="disabled">Remove Marker</button>
+                                        <button type="submit" class="btn btn_green save_marker" disabled="disabled">Save Address</button>
                                     </div>
                                 </form>
                             </div>

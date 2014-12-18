@@ -611,18 +611,18 @@ body.assistance_page {
     font-size: 20px;
 }
 
-.store_section {
+.form_section {
     border: 1px solid #d6d5d5;
     background-color: #f6f6f6;
 }
-.store_section .store_head {
+.form_section .form_head {
     background-color: #FFFFFF;
     border-bottom: 1px solid #d6d5d5;
     color: #ff9235;
     font-size: 18px;
     padding: 10px 20px;
 }
-.store_section .store_content {
+.form_section .form_content {
     padding: 15px 15px 0px 15px;
 }
 

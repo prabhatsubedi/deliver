@@ -29,6 +29,9 @@
             $(this).addClass('active');
         });
 
+        if(Main.getURLvalue(2) != undefined && $.isNumeric(Main.getURLvalue(2)) && (Main.getURLvalue(1) == 'dashboard' || Main.getURLvalue(1) == 'profile'))
+            Main.saveInLocalStorage('mid', Main.getURLvalue(2));
+
     });
 
 </script>

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,7 +23,7 @@ public class AddressEntity implements Serializable {
     private String country;
     private String countryCode;
     private UserEntity user;
-    private OrderEntity order;
+    private List<OrderEntity> order;
     private String latitude;
     private String longitude;
 
@@ -112,11 +113,12 @@ public class AddressEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "address")
-    public OrderEntity getOrder() {
+    public List<OrderEntity> getOrder() {
         return order;
     }
 
-    public void setOrder(OrderEntity order) {
+    public void setOrder(List<OrderEntity> order) {
         this.order = order;
     }
+
 }

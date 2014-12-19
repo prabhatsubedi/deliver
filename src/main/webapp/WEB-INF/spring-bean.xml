@@ -24,5 +24,6 @@
     <bean id = "actionLogDaoService" class="com.yetistep.delivr.dao.impl.ActionLogDaoServiceImpl" />
     <bean id = "countryDaoService" class="com.yetistep.delivr.dao.impl.CountryDaoServiceImpl" />
     <bean id = "preferencesDaoService" class="com.yetistep.delivr.dao.impl.PreferencesDaoServiceImpl" />
+    <bean id = "courierTransactionDaoService" class="com.yetistep.delivr.dao.impl.CourierTransactionDaoServiceImpl" />
 
  </beans>

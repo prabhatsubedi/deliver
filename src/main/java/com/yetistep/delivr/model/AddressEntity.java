@@ -84,15 +84,15 @@ public class AddressEntity implements Serializable {
     }
 
     @Column(name = "latitude")
-    public String getLatitude() {
+     public String getLatitude() {
         return latitude;
     }
 
-    @Column(name = "longitude")
     public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
+    @Column(name = "longitude")
     public String getLongitude() {
         return longitude;
     }

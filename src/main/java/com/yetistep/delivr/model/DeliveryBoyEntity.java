@@ -43,6 +43,8 @@ public class DeliveryBoyEntity implements Serializable {
     private String licenseNumber;
     private String vehicleNumber;
     private List<DBoyOrderHistoryEntity> dBoyOrderHistories;
+    private String latitude;
+    private String longitude;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -221,5 +223,23 @@ public class DeliveryBoyEntity implements Serializable {
 
     public void setdBoyOrderHistories(List<DBoyOrderHistoryEntity> dBoyOrderHistories) {
         this.dBoyOrderHistories = dBoyOrderHistories;
+    }
+
+    @Column(name = "latitude")
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    @Column(name = "longitude")
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 }

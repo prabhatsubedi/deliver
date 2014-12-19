@@ -8,11 +8,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,8 +33,8 @@ public class StoreEntity implements Serializable {
     private String country;
     private String contactNo;
     private String contactPerson;
-    private BigDecimal latitude;
-    private BigDecimal longitude;
+    private String latitude;
+    private String longitude;
     private Timestamp createdDate;
 
     @Id
@@ -146,20 +143,20 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name="latitude", nullable = false)
-    public BigDecimal getLatitude() {
+    public String getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(BigDecimal latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
     @Column(name="longitude", nullable = false)
-    public BigDecimal getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(BigDecimal longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 

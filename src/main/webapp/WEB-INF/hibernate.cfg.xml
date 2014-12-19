@@ -32,7 +32,7 @@
        <mapping class="com.yetistep.delivr.model.CategoryEntity"/>
        <mapping class="com.yetistep.delivr.model.ItemEntity"/>
        <mapping class="com.yetistep.delivr.model.ItemsAttributeEntity"/>
-       <mapping class="com.yetistep.delivr.model.ItemsAttributesTypesEntity"/>
+       <mapping class="com.yetistep.delivr.model.ItemsAttributesTypeEntity"/>
        <mapping class="com.yetistep.delivr.model.ItemsImageEntity"/>
        <mapping class="com.yetistep.delivr.model.ItemsStoreEntity"/>
        <mapping class="com.yetistep.delivr.model.OrderEntity"/>

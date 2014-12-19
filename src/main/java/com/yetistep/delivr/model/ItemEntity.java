@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
 import com.yetistep.delivr.util.JsonTimeDeserializer;
-import com.yetistep.delivr.util.JsonTimeSerializer;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -36,7 +35,7 @@ public class ItemEntity implements Serializable {
     private Date availableStartTime;
     private Date availableEndTime;
     private List<ItemsStoreEntity> itemsStores;
-    private List<ItemsAttributesTypesEntity> attributes;
+    private List<ItemsAttributesTypeEntity> attributesTypes;
     //private Set<OrderEntity> order;
     private Integer maxOrderQuantity;
     private Integer minOrderQuantity;
@@ -160,12 +159,12 @@ public class ItemEntity implements Serializable {
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
-    public List<ItemsAttributesTypesEntity> getAttributes() {
-        return attributes;
+    public List<ItemsAttributesTypeEntity> getAttributesTypes() {
+        return attributesTypes;
     }
 
-    public void setAttributes(List<ItemsAttributesTypesEntity> attributes) {
-        this.attributes = attributes;
+    public void setAttributesTypes(List<ItemsAttributesTypeEntity> attributesTypes) {
+        this.attributesTypes = attributesTypes;
     }
 
     /*@OneToMany(mappedBy = "item")

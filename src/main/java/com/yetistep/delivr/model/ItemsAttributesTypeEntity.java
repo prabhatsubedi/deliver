@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Entity(name = "ItemsAttributesTypes")
 @Table(name = "items_attributes_types")
-public class ItemsAttributesTypesEntity {
+public class ItemsAttributesTypeEntity {
 
    private Integer id;
    private ItemEntity item;
@@ -46,7 +46,7 @@ public class ItemsAttributesTypesEntity {
         this.item = item;
     }
 
-    @OneToMany(mappedBy = "type")
+    @OneToMany(mappedBy = "type", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsAttributeEntity> getItemsAttribute() {
         return itemsAttribute;

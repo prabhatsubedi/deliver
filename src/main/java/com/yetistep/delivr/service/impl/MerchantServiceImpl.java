@@ -301,7 +301,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         ItemEntity item = requestJson.getItem();
         List<CategoryEntity> itemCategories = requestJson.getItemCategories();
         List<Integer> itemStores = requestJson.getItemStores();
-        List<ItemsAttributesTypesEntity> itemsAttributes = requestJson.getItemsAttributes();
+        List<ItemsAttributesTypeEntity> itemsAttributesTypes = requestJson.getItemsAttributesTypes();
         List<String> itemsImages = requestJson.getItemsImages();
 
         CategoryEntity category;
@@ -332,12 +332,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             itemsStoreEntities.add(itemsStoreEntity);
         }
 
-        for(ItemsAttributesTypesEntity itemsAttribute: itemsAttributes){
-            itemsAttribute.setItem(item);
+        for(ItemsAttributesTypeEntity itemsAttributeType: itemsAttributesTypes){
+            itemsAttributeType.setItem(item);
+            for (ItemsAttributeEntity itemsAttribute: itemsAttributeType.getItemsAttribute()) {
+                itemsAttribute.setType(itemsAttributeType);
+            }
         }
 
         item.setItemsStores(itemsStoreEntities);
-        item.setAttributes(itemsAttributes);
+        item.setAttributesTypes(itemsAttributesTypes);
 
         List<String> images = new ArrayList<>();
         for (String image: itemsImages){
@@ -346,7 +349,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         merchantDaoService.saveItem(item);
 
-        if (images != null) {
+        if (images != null && images.size()>0) {
             log.info("Uploading item images to S3 Bucket ");
 
             String dir = MessageBundle.separateString("/", "item", "item" + item.getId());

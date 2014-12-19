@@ -69,7 +69,7 @@ public class ItemEntity implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     public CategoryEntity getCategory() {
         return category;
     }

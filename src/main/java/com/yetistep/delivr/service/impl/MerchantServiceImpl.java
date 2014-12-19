@@ -415,4 +415,14 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         return  categories;
     }
+
+    @Override
+    public List<ItemEntity> findCategoriesItems(HeaderDto headerDto) throws Exception {
+        return merchantDaoService.getCategoriesItems(Integer.parseInt(headerDto.getId()));
+    }
+
+    @Override
+    public ItemEntity getItemDetail(HeaderDto headerDto) throws Exception {
+        return merchantDaoService.getItemDetail(Integer.parseInt(headerDto.getId()));
+    }
 }

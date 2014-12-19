@@ -46,4 +46,8 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public void saveCategories(List<CategoryEntity> categories) throws Exception;
 
     public void saveItemImages(List<ItemsImageEntity> itemsImageEntities) throws Exception;
+
+    public List<ItemEntity> getCategoriesItems(Integer categoryId) throws Exception;
+
+    public ItemEntity getItemDetail(Integer itemId) throws Exception;
 }

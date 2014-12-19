@@ -2,10 +2,7 @@ package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.model.CategoryEntity;
-import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.model.StoreEntity;
-import com.yetistep.delivr.model.StoresBrandEntity;
+import com.yetistep.delivr.model.*;
 
 import java.util.List;
 
@@ -17,6 +14,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface MerchantService {
+
     public void saveMerchant(MerchantEntity merchant, HeaderDto headerDto) throws Exception;
 
     public void activateMerchant(MerchantEntity merchantEntity) throws Exception;
@@ -42,4 +40,9 @@ public interface MerchantService {
     public List<CategoryEntity> findCategoriesByBrand(HeaderDto headerDto) throws Exception;
 
     public List<CategoryEntity> findChildCategories(RequestJsonDto requestJson) throws Exception;
+
+    public List<ItemEntity> findCategoriesItems(HeaderDto headerDto) throws Exception;
+
+    public ItemEntity getItemDetail(HeaderDto headerDto) throws Exception;
+
 }

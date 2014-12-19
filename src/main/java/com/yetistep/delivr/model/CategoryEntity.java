@@ -77,6 +77,7 @@ public class CategoryEntity implements Serializable {
         this.brandsCategory = brandsCategory;
     }
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
     public StoresBrandEntity getStoresBrand() {

@@ -2,10 +2,7 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.model.CategoryEntity;
-import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.model.StoreEntity;
-import com.yetistep.delivr.model.StoresBrandEntity;
+import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
@@ -185,7 +182,58 @@ public class MerchantController {
         }
     }
 
+   /* @RequestMapping(value = "/get_stores_items", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> findStoresItems(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            //List<StoresBrandEntity> storesBrand = merchantService.findItemList(headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Items has been retrieved successfully");
+            //serviceResponse.addParam("storesBrand", storesBrand);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }*/
 
+
+    @RequestMapping(value = "/get_categories_items", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> findCategoriesItems(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            List<ItemEntity> items = merchantService.findCategoriesItems(headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Items has been retrieved successfully");
+            serviceResponse.addParam("items", items);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
+    @RequestMapping(value = "/get_items_detail", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getItemDetail(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            ItemEntity item = merchantService.getItemDetail(headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Items has been retrieved successfully");
+            serviceResponse.addParam("item", item);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
 
 

@@ -62,6 +62,7 @@ public class StoresBrandEntity implements Serializable {
         this.merchant = merchant;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<StoreEntity> getStore() {
@@ -72,6 +73,7 @@ public class StoresBrandEntity implements Serializable {
         this.store = store;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<BrandsCategoryEntity> getBrandsCategory() {
@@ -82,6 +84,7 @@ public class StoresBrandEntity implements Serializable {
         this.brandsCategory = brandsCategory;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<CategoryEntity> getCategories() {

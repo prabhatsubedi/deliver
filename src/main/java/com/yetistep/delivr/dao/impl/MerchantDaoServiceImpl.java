@@ -249,4 +249,18 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
             i++;
         }
     }
+
+    @Override
+    public List<ItemEntity> getCategoriesItems(Integer categoryId) throws Exception {
+        List<ItemEntity> items = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
+
+        items = criteria.list();
+        return items.size() > 0 ? items : null;
+    }
+
+    @Override
+    public ItemEntity getItemDetail(Integer id) throws Exception {
+        return (ItemEntity) getCurrentSession().get(ItemEntity.class, id);
+    }
 }

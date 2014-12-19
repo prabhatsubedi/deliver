@@ -10,6 +10,7 @@ import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.BigDecimalUtil;
 import com.yetistep.delivr.util.DateUtil;
 import com.yetistep.delivr.util.GeoCodingUtil;
+import com.yetistep.delivr.util.YSException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
@@ -41,7 +42,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         BigDecimal DBOY_PER_KM_CHARGE_ABOVE_2KM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_2KM));
         BigDecimal DBOY_COMMISSION = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_COMMISSION));
         BigDecimal DBOY_MIN_AMOUNT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_MIN_AMOUNT));
-
+        BigDecimal deliveryVat = new BigDecimal(13);//FIXME Get from preferences
         /* Dependency From Other Entity */
         BigDecimal merchantServicePct = new BigDecimal(10); //FIXME retrieve from Item
         BigDecimal merchantVatPct = new BigDecimal(13); // FIXME retrieve from Item
@@ -117,8 +118,12 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
 
         /* 11. ====== Delivery charged to customer before Discount ======== */
         BigDecimal deliveryChargedBeforeDiscount = ZERO;
-        if(BigDecimalUtil.isGreaterThenOrEqualTo(deliveryCostWithoutAdditionalDvAmt, customerDiscount))
+        if(BigDecimalUtil.isGreaterThenOrEqualTo(deliveryCostWithoutAdditionalDvAmt, customerDiscount)){
             deliveryChargedBeforeDiscount = deliveryCostWithoutAdditionalDvAmt.subtract(customerDiscount);
+            deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, deliveryVat));
+        }
+
+
 
         /* 12. ======= Customer Available balance before discount ====== */
         BigDecimal customerBalanceBeforeDiscount = new BigDecimal(250); //FIXME Get From Customer Entity
@@ -150,6 +155,8 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         BigDecimal profit = ZERO;
         profit = BigDecimalUtil.percentageOf(totalOrder, commissionPct).add(deliveryChargedBeforeDiscount).add(serviceFeeAmt).subtract(paidToCourier);
 
+        if(BigDecimalUtil.isLessThen(profit, BigDecimal.ONE))
+            throw new YSException("ORD001");
         //TODO: Set To Database and return
 
         CourierTransactionEntity courierTransactionEntity = new CourierTransactionEntity();

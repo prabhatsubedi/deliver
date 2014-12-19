@@ -162,7 +162,7 @@ public class DateUtil {
             }
             return valid;
         } else {
-            throw new YSException("VLD012");
+            throw new YSException("VLD013");
         }
 
     }

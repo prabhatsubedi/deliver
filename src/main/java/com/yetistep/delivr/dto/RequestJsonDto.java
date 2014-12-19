@@ -28,7 +28,7 @@ public class RequestJsonDto {
     private ItemEntity item;
     private List<CategoryEntity> itemCategories;
     private List<Integer> itemStores;
-    private List<ItemsAttributeEntity> itemsAttributes;
+    private List<ItemsAttributesTypesEntity> itemsAttributes;
     private List<String> itemsImages;
 
     /*Get child categories properties*/
@@ -105,11 +105,11 @@ public class RequestJsonDto {
         this.itemStores = itemStores;
     }
 
-    public List<ItemsAttributeEntity> getItemsAttributes() {
+    public List<ItemsAttributesTypesEntity> getItemsAttributes() {
         return itemsAttributes;
     }
 
-    public void setItemsAttributes(List<ItemsAttributeEntity> itemsAttributes) {
+    public void setItemsAttributes(List<ItemsAttributesTypesEntity> itemsAttributes) {
         this.itemsAttributes = itemsAttributes;
     }
 

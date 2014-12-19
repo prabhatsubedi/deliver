@@ -10,6 +10,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Date;
@@ -35,7 +36,7 @@ public class ItemEntity implements Serializable {
     private Date availableStartTime;
     private Date availableEndTime;
     private List<ItemsStoreEntity> itemsStores;
-    private List<ItemsAttributeEntity> attributes;
+    private List<ItemsAttributesTypesEntity> attributes;
     //private Set<OrderEntity> order;
     private Integer maxOrderQuantity;
     private Integer minOrderQuantity;
@@ -46,11 +47,16 @@ public class ItemEntity implements Serializable {
     private Boolean paymentMethodCc; //credit card
     private Integer unitPrice;
     private String currencyType;
-    private Boolean multiSelectOffer;
-    private Boolean singleSelectOffer;
+    //private Boolean multiSelectOffer;
+    //private Boolean singleSelectOffer;
     private String additionalOffer;
     private Integer approxSize;
     private Integer approxWeight;
+    private String returnPolicy;
+    private Integer deliveryFee;
+    private String promoCode;
+    private BigDecimal vat;
+    private BigDecimal serviceCharge;
 
 
     @Id
@@ -154,11 +160,11 @@ public class ItemEntity implements Serializable {
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
-    public List<ItemsAttributeEntity> getAttributes() {
+    public List<ItemsAttributesTypesEntity> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(List<ItemsAttributeEntity> attributes) {
+    public void setAttributes(List<ItemsAttributesTypesEntity> attributes) {
         this.attributes = attributes;
     }
 
@@ -254,24 +260,6 @@ public class ItemEntity implements Serializable {
         this.currencyType = currencyType;
     }
 
-    @Column(name = "multi_select_offer", columnDefinition = "TINYINT(1)")
-    public Boolean getMultiSelectOffer() {
-        return multiSelectOffer;
-    }
-
-    public void setMultiSelectOffer(Boolean multiSelectOffer) {
-        this.multiSelectOffer = multiSelectOffer;
-    }
-
-    @Column(name = "single_select_offer", columnDefinition = "TINYINT(1)")
-    public Boolean getSingleSelectOffer() {
-        return singleSelectOffer;
-    }
-
-    public void setSingleSelectOffer(Boolean singleSelectOffer) {
-        this.singleSelectOffer = singleSelectOffer;
-    }
-
     @Column(name = "additional_offer")
     public String getAdditionalOffer() {
         return additionalOffer;
@@ -299,5 +287,49 @@ public class ItemEntity implements Serializable {
         this.approxWeight = approxWeight;
     }
 
+    @Column(name = "return_policy")
+    public String getReturnPolicy() {
+        return returnPolicy;
+    }
+
+    public void setReturnPolicy(String returnPolicy) {
+        this.returnPolicy = returnPolicy;
+    }
+
+    @Column(name = "delivery_fee")
+    public Integer getDeliveryFee() {
+        return deliveryFee;
+    }
+
+    public void setDeliveryFee(Integer deliveryFee) {
+        this.deliveryFee = deliveryFee;
+    }
+
+    @Column(name = "promo_code")
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
+    }
+
+    @Column(name = "vat")
+    public BigDecimal getVat() {
+        return vat;
+    }
+
+    public void setVat(BigDecimal vat) {
+        this.vat = vat;
+    }
+
+    @Column(name = "service_charge")
+    public BigDecimal getServiceCharge() {
+        return serviceCharge;
+    }
+
+    public void setServiceCharge(BigDecimal serviceCharge) {
+        this.serviceCharge = serviceCharge;
+    }
 
 }

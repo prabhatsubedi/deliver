@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class ItemsAttributeEntity implements Serializable {
 
     private Integer id;
-    private ItemEntity item;
+    private ItemsAttributesTypesEntity type;
     private String attribute;
     private Integer unitPrice;
 
@@ -34,13 +34,13 @@ public class ItemsAttributeEntity implements Serializable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "item_id")
-    public ItemEntity getItem() {
-        return item;
+    @JoinColumn(name = "item_attribute_type_id")
+    public ItemsAttributesTypesEntity getType() {
+        return type;
     }
 
-    public void setItem(ItemEntity item) {
-        this.item = item;
+    public void setType(ItemsAttributesTypesEntity type) {
+        this.type = type;
     }
 
     @Column(name = "attribute")

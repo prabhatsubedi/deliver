@@ -301,7 +301,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         ItemEntity item = requestJson.getItem();
         List<CategoryEntity> itemCategories = requestJson.getItemCategories();
         List<Integer> itemStores = requestJson.getItemStores();
-        List<ItemsAttributeEntity> itemsAttributes = requestJson.getItemsAttributes();
+        List<ItemsAttributesTypesEntity> itemsAttributes = requestJson.getItemsAttributes();
         List<String> itemsImages = requestJson.getItemsImages();
 
         CategoryEntity category;
@@ -332,7 +332,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             itemsStoreEntities.add(itemsStoreEntity);
         }
 
-        for(ItemsAttributeEntity itemsAttribute: itemsAttributes){
+        for(ItemsAttributesTypesEntity itemsAttribute: itemsAttributes){
             itemsAttribute.setItem(item);
         }
 

@@ -48,6 +48,7 @@ public class OrderEntity implements Serializable {
     private DBoyOrderHistoryEntity dBoyOrderHistory;
 
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -273,4 +274,5 @@ public class OrderEntity implements Serializable {
     public void setdBoyOrderHistory(DBoyOrderHistoryEntity dBoyOrderHistory) {
         this.dBoyOrderHistory = dBoyOrderHistory;
     }
+
 }

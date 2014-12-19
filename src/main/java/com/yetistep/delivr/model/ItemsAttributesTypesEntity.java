@@ -22,7 +22,7 @@ public class ItemsAttributesTypesEntity {
    private ItemEntity item;
    private List<ItemsAttributeEntity> itemsAttribute;
    private String type;
-   private Boolean multiselect;
+   private Boolean multiSelect;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,7 +46,7 @@ public class ItemsAttributesTypesEntity {
         this.item = item;
     }
 
-    @OneToMany(mappedBy = "itemAttributeType")
+    @OneToMany(mappedBy = "type")
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsAttributeEntity> getItemsAttribute() {
         return itemsAttribute;
@@ -66,11 +66,11 @@ public class ItemsAttributesTypesEntity {
     }
 
     @Column(name = "multi_select")
-    public Boolean getMultiselect() {
-        return multiselect;
+    public Boolean getMultiSelect() {
+        return multiSelect;
     }
 
-    public void setMultiselect(Boolean multiselect) {
-        this.multiselect = multiselect;
+    public void setMultiSelect(Boolean multiSelect) {
+        this.multiSelect = multiSelect;
     }
 }

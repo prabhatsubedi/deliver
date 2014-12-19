@@ -122,7 +122,7 @@ public class MerchantController {
     public ResponseEntity<ServiceResponse> saveItem(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             merchantService.saveItem(requestJson, headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Item has been saved successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -159,7 +159,7 @@ public class MerchantController {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             List<CategoryEntity> categories = merchantService.findCategoriesByBrand(headerDto);
-            ServiceResponse serviceResponse = new ServiceResponse("Stores has been retrieved successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Categories has been retrieved successfully");
             serviceResponse.addParam("categories", categories);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {

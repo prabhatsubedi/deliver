@@ -34,3 +34,4 @@ ALTER TABLE orders DROP COLUMN transportaion_charge;
 ALTER TABLE delivery_boys DROP COLUMN latitude;
 ALTER TABLE delivery_boys DROP COLUMN longitude;
 ALTER TABLE items_attributes DROP COLUMN item_id;
+ALTER TABLE categories DROP COLUMN store_id;

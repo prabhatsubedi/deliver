@@ -304,6 +304,10 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<ItemsAttributesTypeEntity> itemsAttributesTypes = requestJson.getItemsAttributesTypes();
         List<String> itemsImages = requestJson.getItemsImages();
 
+        StoresBrandEntity storesBrand = merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
+        if(storesBrand == null)
+            throw new YSException("VLD012");
+
         CategoryEntity category;
         //save stores category
         if(itemCategories.size()>0){
@@ -313,6 +317,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
            for(i = 1; i<itemCategories.size(); i++){
                itemCategories.get(i).setParent(itemCategories.get(i-1));
                itemCategories.get(i).setFeatured(false);
+               itemCategories.get(i).setStoresBrand(storesBrand);
            }
             merchantDaoService.saveCategories(itemCategories);
             //get items category

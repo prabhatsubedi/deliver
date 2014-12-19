@@ -1,6 +1,8 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.yetistep.delivr.util.JsonDateSerializer;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -26,7 +28,7 @@ public class CategoryEntity implements Serializable {
    private List<ItemEntity> item;
    private List<CategoryEntity> child;
    private List<BrandsCategoryEntity> brandsCategory;
-   private StoreEntity store;
+   private StoresBrandEntity storesBrand;
    private String name;
    private Boolean featured;
    private Integer priority;
@@ -75,6 +77,16 @@ public class CategoryEntity implements Serializable {
         this.brandsCategory = brandsCategory;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id")
+    public StoresBrandEntity getStoresBrand() {
+        return storesBrand;
+    }
+
+    public void setStoresBrand(StoresBrandEntity storesBrand) {
+        this.storesBrand = storesBrand;
+    }
+
     @JsonIgnore
     @OneToMany(mappedBy = "category")
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -84,17 +96,6 @@ public class CategoryEntity implements Serializable {
 
     public void setItem(List<ItemEntity> item) {
         this.item = item;
-    }
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "store_id")
-    public StoreEntity getStore() {
-        return store;
-    }
-
-    public void setStore(StoreEntity store) {
-        this.store = store;
     }
 
 
@@ -125,6 +126,7 @@ public class CategoryEntity implements Serializable {
         this.priority = priority;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getCreatedDate() {
         return createdDate;

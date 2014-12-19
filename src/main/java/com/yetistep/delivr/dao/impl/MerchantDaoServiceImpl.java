@@ -208,8 +208,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
                 .add(Projections.property("name"), "name")
         ).setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
 
-        Criterion rest1 = Restrictions.and(Restrictions.isNull("store"), Restrictions.eq("parent.id", parentId));
-        Criterion rest2 = Restrictions.and(Restrictions.eq("store.id", storeId), Restrictions.eq("parent.id", parentId));
+        Criterion rest1 = Restrictions.and(Restrictions.isNull("storesBrand"), Restrictions.eq("parent.id", parentId));
+        Criterion rest2 = Restrictions.and(Restrictions.eq("storesBrand.id", storeId), Restrictions.eq("parent.id", parentId));
 
         criteria.add(Restrictions.or(rest1, rest2));
 

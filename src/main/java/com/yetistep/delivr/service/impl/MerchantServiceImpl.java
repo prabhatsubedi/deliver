@@ -301,8 +301,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         ItemEntity item = requestJson.getItem();
         List<CategoryEntity> itemCategories = requestJson.getItemCategories();
         List<Integer> itemStores = requestJson.getItemStores();
-        List<ItemsAttributesTypeEntity> itemsAttributesTypes = requestJson.getItemsAttributesTypes();
-        List<String> itemsImages = requestJson.getItemsImages();
+        List<ItemsAttributesTypeEntity> itemsAttributesTypes = requestJson.getItemAttributesTypes();
+        List<String> itemsImages = requestJson.getItemImages();
 
         StoresBrandEntity storesBrand = merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
         if(storesBrand == null)

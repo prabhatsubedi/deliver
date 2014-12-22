@@ -1,6 +1,7 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -112,6 +113,7 @@ public class AddressEntity implements Serializable {
         this.user = user;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "address")
     public List<OrderEntity> getOrder() {
         return order;

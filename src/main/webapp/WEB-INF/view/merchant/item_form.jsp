@@ -7,6 +7,21 @@
 
     <%@include file="../includes/head.jsp" %>
 
+    <script type="text/javascript" src="/resources/js/jquery.validate.js"></script>
+    <script type="text/javascript" src="/resources/js/html2canvas.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery.Jcrop.js"></script>
+    <script type="text/javascript" src="/resources/js/image.js"></script>
+
+    <link rel="stylesheet" href="/resources/css/jquery.Jcrop.css" type="text/css" />
+    <link rel="stylesheet" href="/resources/css/jcrop.css" type="text/css" />
+
+    <script type="text/javascript" src="/resources/js/item.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            Item.loadAddItem();
+        });
+    </script>
+
 
 </head>
 <body>
@@ -24,107 +39,209 @@
         <div class="main_content">
             <div class="form_container full_width clearfix">
                 <div class="row">
-                    <div id="item_info_basic" class="col-lg-6">
-                        <div class="form_section">
-                            <div class="form_head">Store</div>
+                    <div class="form_section">
+                        <div class="col-lg-6">
+                            <div class="form_head">Category</div>
                             <div class="form_content">
-                                <form role="form" id="form_brand" method="POST" action="">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="brand_name" name="brand_name" placeholder="Store Brand Name">
-                                    </div>
-                                    <div class="brand_images clearfix">
-                                        <div id="brand_image" class="pull-right drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
-                                            <div class="drop_info">Drop image file <br /> (or click to browse)</div>
-                                            <div class="drop_title">Brand Image</div>
-                                        </div>
-                                        <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="brand_image_input" name="brand_image_input" class="hidden" />
-                                        <div id="brand_logo" class="pull-left drop_zone unselectable text-center maintain_ratio" mr-width="200" mr-height="200">
-                                            <div class="drop_info">Drop image file <br /> (or click to browse)</div>
-                                            <div class="drop_title">Brand Logo</div>
-                                        </div>
-                                        <input type="file" onchange="Image.readURL(this)" id="brand_logo_input" name="brand_logo_input" class="hidden" />
-                                    </div>
-                                    <div class="form-group clearfix store_open_close">
-                                        <div class="col-lg-6">
-                                            <select id="open_time" name="open_time" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                                <option value="none">Select Opening Time</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <select id="close_time" name="close_time" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                                <option value="none">Select Closing Time</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="brand_url" name="brand_url" placeholder="Store URL">
-                                    </div>
-                                    <div class="form-group">
-                                        <select id="store_categories" name="store_categories" class="haveall compelselection col-xs-12 no_pad no_margin" data-style="form-control" multiple="multiple">
-                                            <option value="All">All</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn_green">Add Brand</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="info_item" class="col-lg-6">
-                        <div class="form_section">
-                            <div class="form_head">Store Location</div>
-                            <div class="form_content clearfix">
-
-                                <div class="map-container">
-                                    <div id="search_box">
-                                        <input id="pac-input" class="controls" type="text" placeholder="Enter Postal/Zipcode to focus map & place marker. Click on marker to add address.">
-                                    </div>
-                                    <div id="custom_map_controls" class="clearfix">
-                                        <div id="scroll_zoom" class="pull-left">Enable Scroll Zoom</div>
-                                        <div id="clear_markers" class="pull-left">Clear All Markers</div>
-                                    </div>
-                                    <div id="map-canvas"></div>
+                                <div class="form-group">
+                                    <select id="item_category" name="item_category" class="col-xs-12 no_pad no_margin" data-style="form-control">
+                                        <option value="none">Select Item Category</option>
+                                        <option value="cat1">cat1</option>
+                                        <option value="cat2">cat2</option>
+                                    </select>
                                 </div>
-
-                                <form role="form" id="form_store" method="POST" action="">
-                                    <div class="form-group clearfix">
-                                        <button type="button" class="btn btn_green marker_nav marker_prev" disabled="disabled">Prev</button>
-                                        <button type="button" class="btn btn_green marker_nav marker_next" disabled="disabled">Next</button>
-                                        <button type="button" class="btn btn_green cancel_marker" disabled="disabled">Remove</button>
-                                        <button type="submit" class="btn btn_green save_marker" disabled="disabled">Save Changes</button>
+                            </div>
+                            <div class="form_head">Stores</div>
+                            <div class="form_content">
+                                <div class="form-group">
+                                    <select id="item_brand" name="item_brand" class="col-xs-12 no_pad no_margin" data-style="form-control">
+                                        <option value="none">Select Store Brand</option>
+                                        <option value="brand1">brand1</option>
+                                        <option value="brand2">brand2</option>
+                                    </select>
+                                </div>
+                                <div id="item_store_container" class="form-group">
+                                    <div class="item_store table_div">
+                                        <div class="image_store td_div"> <img src="/resources/images/delivr-logo.png" /> </div>
+                                        <div class="name_store td_div"> Store Address </div>
+                                        <div class="check_store td_div"> <label class="glyphicon glyphicon-ok"><input type="checkbox" class="checkbox" /></label> </div>
                                     </div>
-                                    <%--                                    <div class="form-group">
-                                                                            <input type="text" class="form-control" id="store_name" name="store_name" placeholder="Store Name">
-                                                                        </div>--%>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="street" name="street" placeholder="Street">
+                                    <div class="item_store table_div">
+                                        <div class="image_store td_div"> <img src="/resources/images/delivr-logo.png" /> </div>
+                                        <div class="name_store td_div"> Store Address </div>
+                                        <div class="check_store td_div"> <label class="glyphicon glyphicon-ok"><input type="checkbox" class="checkbox" /></label> </div>
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="city" name="city" placeholder="City">
+                                    <div class="item_store table_div">
+                                        <div class="image_store td_div"> <img src="/resources/images/delivr-logo.png" /> </div>
+                                        <div class="name_store td_div"> Store Address </div>
+                                        <div class="check_store td_div"> <label class="glyphicon glyphicon-ok"><input type="checkbox" class="checkbox" /></label> </div>
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="state" name="state" placeholder="State">
+                                </div>
+                            </div>
+                            <div class="form_head">Basic Info</div>
+                            <div class="form_content">
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Item Name</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="item_name" name="item_name">
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="country" name="country" placeholder="Country">
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Description</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="description" name="description">
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="contact_no" name="contact_no" placeholder="Contact No.">
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Size</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="item_size" name="item_size">
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="contact_person" name="contact_person" placeholder="Contact Person">
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Weight</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="item_weight" name="item_weight">
                                     </div>
-                                    <div class="form-group clearfix">
-                                        <button type="button" class="btn btn_green marker_nav marker_prev" disabled="disabled">Prev</button>
-                                        <button type="button" class="btn btn_green marker_nav marker_next" disabled="disabled">Next</button>
-                                        <button type="button" class="btn btn_green cancel_marker" disabled="disabled">Remove</button>
-                                        <button type="submit" class="btn btn_green save_marker" disabled="disabled">Save Changes</button>
+                                </div>
+                            </div>
+                            <div class="form_head">Images</div>
+                            <div class="form_content">
+                                <div class="product_images form-group clearfix">
+                                    <div class="product_image col-lg-4">
+                                        <div id="product_image1" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
+                                            <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                        </div>
+                                        <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="product_image1_input" name="product_image1_input" class="hidden" />
                                     </div>
-                                </form>
+                                    <div class="product_image col-lg-4">
+                                        <div id="product_image2" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
+                                            <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                        </div>
+                                        <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="product_image2_input" name="product_image2_input" class="hidden" />
+                                    </div>
+                                    <div class="product_image col-lg-4">
+                                        <div id="product_image3" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
+                                            <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                        </div>
+                                        <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="product_image3_input" name="product_image3_input" class="hidden" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form_head">Additional Info</div>
+                            <div class="form_content">
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Available Start Time</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="available_start_time" name="available_start_time">
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Available End Time</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="available_end_time" name="available_end_time">
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Available Quantity</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="quantity" name="quantity">
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Max Order Quantity</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="min_order" name="min_order">
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Min Order Quantity</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="max_order" name="max_order">
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Additional Offer</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="additional_offer" name="additional_offer">
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Return Policy</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="return_policy" name="return_policy">
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Delivery Fee</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="delivery_fee" name="delivery_fee">
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Promo Code</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="promo_code" name="promo_code">
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">VAT</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="vat" name="vat">
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label">Service Charge</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="service_charge" name="service_charge">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form_head">Attributes</div>
+                            <div class="form_content">
                             </div>
                         </div>
                     </div>
+                    <div class="col-lg-6">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="crop_img_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+
+                <img id="jcrop_target" />
+
+                <div class="preview-pane preview-pane-org">
+                    <div class="preview-container">
+                        <img id="jcrop_preview"  />
+                    </div>
+                </div>
+                <div class="preview-pane">
+                    <div class="preview-head">Preview</div>
+                    <div class="preview-container-dup">
+                        <img id="jcrop_preview_dup" />
+                    </div>
+                    <div class="preview-options">
+                        <div class="aspect_ratio">
+                            <label style="font-weight: normal; line-height: 30px; margin-bottom: 0px;"><input type="checkbox" id="ar_lock" class="check" style="float: left; margin-right: 5px; margin-top: 9px;"/>Maintain Aspect ratio</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="col-lg-6 no_pad">
+                    <button type="button" id="cancel_preview" class="btn btn-primary">Cancel</button>
+                </div>
+                <div class="col-lg-6 no_pad">
+                    <button type="button" id="apply_preview" class="btn btn-primary">Crop Image</button>
                 </div>
             </div>
         </div>

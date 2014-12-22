@@ -22,22 +22,23 @@ if(typeof(Manager) == "undefined") var Manager = {};
             for(i = 0; i < merchants.length; i++){
                 var merchant = merchants[i];
 
-                var userId = merchant.id;
+                var merchantId = merchant.id;
+                var userId = merchant.user.id;
                 var status = merchant.userStatus;
                 var link_activation = "", link_profile = "";
 
                 if(status == "VERIFIED") {
-                    link_activation = '<a href="#" data-id="' + userId + '"  data-status="' + status + '"  data-toggle="modal" data-target="#modal_activation">Activate</a>';
+                    link_activation = '<a href="#" data-id="' + merchantId + '"  data-status="' + status + '"  data-toggle="modal" data-target="#modal_activation">Activate</a>';
                 } else if(status == "ACTIVE") {
                     link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '"  data-status="' + status + '" >Deactivate</a>';
                 } else if (status == "INACTIVE") {
                     link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '" data-status="' + status + '" >Activate</a>';
                 }
-                link_profile = '<a href="/merchant/profile/' + userId  + '">Profile</a>';
+                link_profile = '<a href="/merchant/profile/' + merchantId  + '">Profile</a>';
                 var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
-                var link_merchant = '<a href="/merchant/dashboard/' + userId  + '">' + merchant.businessTitle + '</a>';
+                var link_merchant = '<a href="/merchant/dashboard/' + merchantId  + '">' + merchant.businessTitle + '</a>';
 
-                var row = [userId, link_merchant, merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
+                var row = [merchantId, link_merchant, merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
                 tdata.push(row);
             }
 

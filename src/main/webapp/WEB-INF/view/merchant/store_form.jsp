@@ -51,12 +51,12 @@
                                         <input type="text" class="form-control" id="brand_name" name="brand_name" placeholder="Store Brand Name">
                                     </div>
                                     <div class="brand_images clearfix">
-                                        <div id="brand_image" class="pull-right drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
+                                        <div id="brand_image" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
                                             <div class="drop_info">Drop image file <br /> (or click to browse)</div>
                                             <div class="drop_title">Brand Image</div>
                                         </div>
                                         <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="brand_image_input" name="brand_image_input" class="hidden" />
-                                        <div id="brand_logo" class="pull-left drop_zone unselectable text-center maintain_ratio" mr-width="200" mr-height="200">
+                                        <div id="brand_logo" class="drop_zone unselectable text-center maintain_ratio" mr-width="200" mr-height="200">
                                             <div class="drop_info">Drop image file <br /> (or click to browse)</div>
                                             <div class="drop_title">Brand Logo</div>
                                         </div>

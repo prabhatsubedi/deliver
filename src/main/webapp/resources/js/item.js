@@ -2,7 +2,7 @@ if(typeof(Item) == "undefined") var Item = {};
 
 (function ($){
 
-    Item.loadAddItem = function(data, headers) {
+    Item.loadAddItem = function() {
 
         Image.dropZone('#product_image1_input', '#product_image1');
         Image.dropZone('#product_image2_input', '#product_image2');

@@ -90,7 +90,7 @@ if(typeof(Store) == "undefined") var Store = {};
         var timeSelect = "";
         for(i = 0; i < 24; i++) {
             var time = i + "";
-            time = time.length == 1 ? "0" + time : time;
+            time = (time.length == 1 ? "0" + time : time) + ":00:00";
             timeSelect += '<option value="' + time + '">' + time + '</option>';
         }
         $('#open_time, #close_time').append(timeSelect);

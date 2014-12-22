@@ -1,7 +1,9 @@
 package com.yetistep.delivr.dao.inf;
 
 import com.yetistep.delivr.abs.GenericDaoService;
+import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
+import com.yetistep.delivr.model.OrderEntity;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,4 +13,8 @@ import com.yetistep.delivr.model.CustomerEntity;
  * To change this template use File | Settings | File Templates.
  */
 public interface CustomerDaoService extends GenericDaoService<Integer, CustomerEntity> {
+
+    public AddressEntity findAddressById(Integer id) throws Exception;
+
+    public void saveOrder(OrderEntity order) throws Exception;
 }

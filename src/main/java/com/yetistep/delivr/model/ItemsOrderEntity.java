@@ -18,8 +18,10 @@ public class ItemsOrderEntity implements Serializable {
     private Integer id;
     private ItemEntity item;
     private OrderEntity order;
+    private StoreEntity store;
     private Integer quantity;
-    private BigDecimal item_total;
+    private BigDecimal unitPrice;
+    private BigDecimal itemTotal;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -52,6 +54,16 @@ public class ItemsOrderEntity implements Serializable {
         this.order = order;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    public StoreEntity getStore() {
+        return store;
+    }
+
+    public void setStore(StoreEntity store) {
+        this.store = store;
+    }
+
     @Column(name = "quantity")
     public Integer getQuantity() {
         return quantity;
@@ -61,12 +73,21 @@ public class ItemsOrderEntity implements Serializable {
         this.quantity = quantity;
     }
 
-    @Column(name = "item_total", precision = 4, scale = 2)
-    public BigDecimal getItem_total() {
-        return item_total;
+    @Column(name = "unit_price")
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
     }
 
-    public void setItem_total(BigDecimal item_total) {
-        this.item_total = item_total;
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    @Column(name = "item_total", precision = 19, scale = 2)
+    public BigDecimal getItemTotal() {
+        return itemTotal;
+    }
+
+    public void setItemTotal(BigDecimal itemTotal) {
+        this.itemTotal = itemTotal;
     }
 }

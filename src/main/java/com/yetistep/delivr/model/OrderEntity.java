@@ -1,8 +1,10 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.util.JsonDateSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -33,7 +35,7 @@ public class OrderEntity implements Serializable {
     private AddressEntity address;
     private DeliveryBoyEntity deliveryBoy;
     private CustomerEntity customer;
-    private StoreEntity store;
+    private StoresBrandEntity storesBrand;
     private BigDecimal customerChargeableDistance; //Paid by customer
     private BigDecimal systemChargeableDistance; //Paid by system
     //private BigDecimal itemTotal;
@@ -115,7 +117,7 @@ public class OrderEntity implements Serializable {
         this.item = item;
     }*/
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     public List<ItemsOrderEntity> getItemsOrder() {
         return itemsOrder;
     }
@@ -156,16 +158,16 @@ public class OrderEntity implements Serializable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
-    public StoreEntity getStore() {
-        return store;
+    @JoinColumn(name = "brand_id")
+    public StoresBrandEntity getStoresBrand() {
+        return storesBrand;
     }
 
-    public void setStore(StoreEntity store) {
-        this.store = store;
+    public void setStoresBrand(StoresBrandEntity storesBrand) {
+        this.storesBrand = storesBrand;
     }
 
-    @Column(name = "customer_chargeable_distance", precision = 4, scale = 2)
+    @Column(name = "customer_chargeable_distance", precision = 19, scale = 2)
     public BigDecimal getCustomerChargeableDistance() {
         return customerChargeableDistance;
     }
@@ -174,7 +176,7 @@ public class OrderEntity implements Serializable {
         this.customerChargeableDistance = customerChargeableDistance;
     }
 
-    @Column(name = "system_chargeable_distance", precision = 4, scale = 2)
+    @Column(name = "system_chargeable_distance", precision = 19, scale = 2)
     public BigDecimal getSystemChargeableDistance() {
         return systemChargeableDistance;
     }
@@ -192,7 +194,7 @@ public class OrderEntity implements Serializable {
         this.itemTotal = itemTotal;
     }*/
 
-    @Column(name = "total_cost", precision = 4, scale = 2)
+    @Column(name = "total_cost", precision = 19, scale = 2)
     public BigDecimal getTotalCost() {
         return totalCost;
     }
@@ -201,7 +203,7 @@ public class OrderEntity implements Serializable {
         this.totalCost = totalCost;
     }
 
-    @Column(name = "transportation_charge", precision = 4, scale = 2)
+    @Column(name = "transportation_charge", precision = 19, scale = 2)
     public BigDecimal getTransportationCharge() {
         return transportationCharge;
     }
@@ -210,7 +212,7 @@ public class OrderEntity implements Serializable {
         this.transportationCharge = transportationCharge;
     }
 
-    @Column(name = "system_service_charge", precision = 4, scale = 2)
+    @Column(name = "system_service_charge", precision = 19, scale = 2)
     public BigDecimal getSystemServiceCharge() {
         return systemServiceCharge;
     }
@@ -219,7 +221,7 @@ public class OrderEntity implements Serializable {
         this.systemServiceCharge = systemServiceCharge;
     }
 
-    @Column(name = "delivery_charge", precision = 4, scale = 2)
+    @Column(name = "delivery_charge", precision = 19, scale = 2)
     public BigDecimal getDeliveryCharge() {
         return deliveryCharge;
     }
@@ -228,7 +230,7 @@ public class OrderEntity implements Serializable {
         this.deliveryCharge = deliveryCharge;
     }
 
-    @Column(name = "grand_total", precision = 4, scale = 2)
+    @Column(name = "grand_total", precision = 19, scale = 2)
     public BigDecimal getGrandTotal() {
         return grandTotal;
     }
@@ -237,7 +239,7 @@ public class OrderEntity implements Serializable {
         this.grandTotal = grandTotal;
     }
 
-    @Column(name = "delivery_boy_share", precision = 4, scale = 2)
+    @Column(name = "delivery_boy_share", precision = 19, scale = 2)
     public BigDecimal getDeliveryBoyShare() {
         return deliveryBoyShare;
     }
@@ -246,7 +248,7 @@ public class OrderEntity implements Serializable {
         this.deliveryBoyShare = deliveryBoyShare;
     }
 
-    @Column(name = "system_share", precision = 4, scale = 2)
+    @Column(name = "system_share", precision = 19, scale = 2)
     public BigDecimal getSystemShare() {
         return systemShare ;
     }
@@ -256,6 +258,7 @@ public class OrderEntity implements Serializable {
     }
 
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "order_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getOrderDate() {
         return orderDate;

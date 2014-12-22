@@ -1,6 +1,7 @@
 package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 
@@ -19,4 +20,6 @@ public interface CustomerService {
     public void addCustomerAddress(HeaderDto headerDto, List<AddressEntity> addresses) throws Exception;
 
     public void setMobileCode(HeaderDto headerDto) throws Exception;
+
+    public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception;
 }

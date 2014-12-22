@@ -25,7 +25,7 @@ public class StoreEntity implements Serializable {
     private Integer id;
     private StoresBrandEntity storesBrand;
     private List<ItemsStoreEntity> itemsStore;
-    private List<OrderEntity> order;
+    private List<ItemsOrderEntity> itemsOrder;
     private String name;
     private String street;
     private String city;
@@ -71,12 +71,12 @@ public class StoreEntity implements Serializable {
 
     @OneToMany(mappedBy = "store")
     @LazyCollection(LazyCollectionOption.FALSE)
-    public List<OrderEntity> getOrder() {
-        return order;
+    public List<ItemsOrderEntity> getItemsOrder() {
+        return itemsOrder;
     }
 
-    public void setOrder(List<OrderEntity> order) {
-        this.order = order;
+    public void setItemsOrder(List<ItemsOrderEntity> itemsOrder) {
+        this.itemsOrder = itemsOrder;
     }
 
     @Column(name="name", nullable = false)

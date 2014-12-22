@@ -103,7 +103,7 @@ public class MerchantController {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            StoresBrandEntity storesBrand = merchantService.findBrandBrandDetail(headerDto);
+            StoresBrandEntity storesBrand = merchantService.findBrandDetail(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Stores detail has been retrieved successfully");
             serviceResponse.addParam("storesBrand", storesBrand);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -182,22 +182,22 @@ public class MerchantController {
         }
     }
 
-   /* @RequestMapping(value = "/get_stores_items", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_stores_items", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> findStoresItems(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            //List<StoresBrandEntity> storesBrand = merchantService.findItemList(headerDto);
+            List<ItemEntity> items = merchantService.findStoresItems(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Items has been retrieved successfully");
-            //serviceResponse.addParam("storesBrand", storesBrand);
+            serviceResponse.addParam("items", items);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
-    }*/
+    }
 
 
     @RequestMapping(value = "/get_categories_items", method = RequestMethod.GET)

@@ -35,3 +35,14 @@ ALTER TABLE delivery_boys DROP COLUMN latitude;
 ALTER TABLE delivery_boys DROP COLUMN longitude;
 ALTER TABLE items_attributes DROP COLUMN item_id;
 ALTER TABLE categories DROP COLUMN store_id;
+
+ALTER TABLE `orders` DROP `customer_chargeable_distance` ,
+DROP `delivery_boy_share` ,
+DROP `delivery_charge` ,
+DROP `grand_total` ,
+DROP `system_chargeable_distance` ,
+DROP `system_service_charge` ,
+DROP `system_share` ,
+DROP `total_cost` ,
+DROP `transportation_charge` ;
+ALTER TABLE `items_orders` DROP `item_total` ;

@@ -36,6 +36,16 @@ public class RequestJsonDto {
     private Integer categoryStoreId;
 
 
+    /*save order properties*/
+
+    private OrderEntity ordersOrder;
+    private List<ItemsOrderEntity> ordersItemsOrder;
+    private Integer ordersBrandId;
+    private Integer ordersCustomerId;
+    private Integer ordersAddressId;
+
+
+
 
 
 
@@ -135,5 +145,45 @@ public class RequestJsonDto {
 
     public void setCategoryStoreId(Integer categoryStoreId) {
         this.categoryStoreId = categoryStoreId;
+    }
+
+    public OrderEntity getOrdersOrder() {
+        return ordersOrder;
+    }
+
+    public void setOrdersOrder(OrderEntity ordersOrder) {
+        this.ordersOrder = ordersOrder;
+    }
+
+    public List<ItemsOrderEntity> getOrdersItemsOrder() {
+        return ordersItemsOrder;
+    }
+
+    public void setOrdersItemsOrder(List<ItemsOrderEntity> ordersItemsOrder) {
+        this.ordersItemsOrder = ordersItemsOrder;
+    }
+
+    public Integer getOrdersBrandId() {
+        return ordersBrandId;
+    }
+
+    public void setOrdersBrandId(Integer ordersBrandId) {
+        this.ordersBrandId = ordersBrandId;
+    }
+
+    public Integer getOrdersCustomerId() {
+        return ordersCustomerId;
+    }
+
+    public void setOrdersCustomerId(Integer ordersCustomerId) {
+        this.ordersCustomerId = ordersCustomerId;
+    }
+
+    public Integer getOrdersAddressId() {
+        return ordersAddressId;
+    }
+
+    public void setOrdersAddressId(Integer ordersAddressId) {
+        this.ordersAddressId = ordersAddressId;
     }
 }

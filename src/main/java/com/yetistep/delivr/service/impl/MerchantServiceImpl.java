@@ -414,7 +414,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public List<ItemEntity> findStoresItems(HeaderDto headerDto) throws Exception {
         List<ItemsStoreEntity> itemsStores = merchantDaoService.findItemsStores(Integer.parseInt(headerDto.getId()));
         if(itemsStores == null)
-            throw new YSException("VLD015");
+            throw new YSException("VLD016");
 
         List<ItemEntity> items = new ArrayList<ItemEntity>();
         for (ItemsStoreEntity itemsStore:itemsStores){

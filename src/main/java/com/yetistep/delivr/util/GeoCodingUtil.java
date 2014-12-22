@@ -1,5 +1,15 @@
 package com.yetistep.delivr.util;
 
+import com.google.maps.DistanceMatrixApi;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DistanceMatrix;
+import com.google.maps.model.DistanceMatrixElement;
+import com.google.maps.model.DistanceMatrixRow;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: surendraJ
@@ -23,5 +33,30 @@ public class GeoCodingUtil {
         int meterConversion = 1609;
 
         return new Float(dist * meterConversion).floatValue();
+    }
+
+    public static GeoApiContext getGeoApiContext(){
+        // Replace the API key below with a valid API key.
+        GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyAnm8zVlUj2KSh5nZA_MD72xZuSBPlmjEg");
+        return context;
+    }
+
+    public static List<BigDecimal> getListOfDistances(String[] origin, String destination[]) throws Exception {
+        List<BigDecimal> distance = new ArrayList<BigDecimal>();
+        GeoApiContext context = GeoCodingUtil.getGeoApiContext();
+        DistanceMatrix distanceMatrix = DistanceMatrixApi.getDistanceMatrix(context, origin, destination).await();
+        for(DistanceMatrixRow distanceMatrixRow: distanceMatrix.rows){
+            for(DistanceMatrixElement element: distanceMatrixRow.elements){
+                distance.add(new BigDecimal(element.distance.inMeters));
+            }
+        }
+        return distance;
+    }
+
+    public static String getLatLong(String latitude, String longitude){
+        if(latitude == null || latitude.isEmpty() || longitude == null || longitude.isEmpty()){
+            throw new YSException("VLD015");
+        }
+        return latitude+","+longitude;
     }
 }

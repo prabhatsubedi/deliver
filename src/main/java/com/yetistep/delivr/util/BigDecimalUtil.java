@@ -1,6 +1,7 @@
 package com.yetistep.delivr.util;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -79,5 +80,21 @@ public class BigDecimalUtil {
 
     public static BigDecimal percentageOf(BigDecimal base, BigDecimal pct){
         return base.multiply(pct).divide(HUNDRED);
+    }
+
+    public static int getMinimumIndex(List<BigDecimal> values){
+        int minIndex = -1;
+        if(values != null && values.size() > 0){
+            int i = 0;
+            BigDecimal minValue = values.get(0);
+            for(BigDecimal value: values){
+                if(isLessThen(value, minValue)){
+                    minValue = value;
+                    minIndex = i;
+                }
+                i++;
+            }
+        }
+        return minIndex;
     }
 }

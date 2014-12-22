@@ -288,7 +288,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public StoresBrandEntity findBrandBrandDetail(HeaderDto headerDto) throws Exception {
+    public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception {
         return merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
     }
 
@@ -424,5 +424,10 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     @Override
     public ItemEntity getItemDetail(HeaderDto headerDto) throws Exception {
         return merchantDaoService.getItemDetail(Integer.parseInt(headerDto.getId()));
+    }
+
+    @Override
+    public List<ItemEntity> findStoresItems(HeaderDto headerDto) throws Exception {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

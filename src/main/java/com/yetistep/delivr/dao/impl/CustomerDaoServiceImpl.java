@@ -1,7 +1,9 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.CustomerDaoService;
+import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
+import com.yetistep.delivr.model.OrderEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +56,15 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         return sessionFactory.getCurrentSession();
     }
 
+    @Override
+    public AddressEntity findAddressById(Integer id) throws Exception {
+        return (AddressEntity) getCurrentSession().get(AddressEntity.class, id);
+    }
+
+    @Override
+    public void saveOrder(OrderEntity value) throws Exception {
+        getCurrentSession().save(value);
+    }
 }
 
 

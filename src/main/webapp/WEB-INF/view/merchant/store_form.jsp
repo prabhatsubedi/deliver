@@ -106,12 +106,12 @@
                                 </div>
 
                                 <form role="form" id="form_store" method="POST" action="">
-                                    <div class="form-group clearfix">
+<%--                                    <div class="form-group clearfix">
                                         <button type="button" class="btn btn_green marker_nav marker_prev" disabled="disabled">Prev</button>
                                         <button type="button" class="btn btn_green marker_nav marker_next" disabled="disabled">Next</button>
                                         <button type="button" class="btn btn_green cancel_marker" disabled="disabled">Remove Marker</button>
                                         <button type="submit" class="btn btn_green save_marker" disabled="disabled">Save Address</button>
-                                    </div>
+                                    </div>--%>
 <%--                                    <div class="form-group">
                                         <input type="text" class="form-control" id="store_name" name="store_name" placeholder="Store Name">
                                     </div>--%>

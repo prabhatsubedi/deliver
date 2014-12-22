@@ -98,7 +98,7 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#open_time').selectpicker({size: 5});
         $('#close_time').selectpicker({size: 5});
 
-        function updateGeoPoints() {
+        function updateGeoPoints(alert) {
 
             if(markers.length > 0) {
                 var location_valid = true;
@@ -134,7 +134,7 @@ if(typeof(Store) == "undefined") var Store = {};
                 }
 
                 if(!location_valid) {
-                    alert('All fields of all store locations are required.');
+                    if(alert) alert('All fields of all store locations are required.');
                     var current_index = Object.keys(arrGeoPoints).indexOf(geoKey);
                     google.maps.event.trigger(markers[current_index], 'click');
                     map.panTo(markers[current_index].position);
@@ -175,8 +175,8 @@ if(typeof(Store) == "undefined") var Store = {};
 
                 setTimeout(function(){
                     $(loaderDiv).removeClass('loader_div').children('.loader').hide();
-                    updateGeoPoints();
-                }, 200);
+                    updateGeoPoints(false);
+                }, 500);
 
                 return false;
             }

@@ -457,6 +457,7 @@ $(document).ready(function(){
                                 $('.cancel_marker', marker_address).removeAttr('disabled');
                                 this.setAnimation(google.maps.Animation.BOUNCE);
                                 markerPrevNext(this);
+                                $('#form_store').valid();
                             });
                             google.maps.event.addListener(marker, 'rightclick', function () {
                                 this.setMap(null);

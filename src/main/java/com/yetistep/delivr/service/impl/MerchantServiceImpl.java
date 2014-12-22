@@ -158,23 +158,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         log.info("++++++++++++ Saving Store " + requestJson.getStores().size() + " +++++++++++++++");
 
         List<StoreEntity> stores = requestJson.getStores();
-        StoresBrandEntity newStoresBrand = requestJson.getStoresBrand();
+        StoresBrandEntity storesBrand = requestJson.getStoresBrand();
         List<Integer> categories = requestJson.getCategories();
-
-        //StoresBrandEntity newStoresBrand = new StoresBrandEntity();
 
         MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
         if(dbMerchant == null)
             throw new YSException("VLD011");
 
-
-        StoresBrandEntity storesBrand;
-        if(newStoresBrand.getId()==null){
-             //if brand with current name not exists add brand
-             storesBrand = merchantDaoService.getBrandByBrandName(newStoresBrand.getBrandName()) == null?newStoresBrand:merchantDaoService.getBrandByBrandName(newStoresBrand.getBrandName());
-        } else {
-             storesBrand =  newStoresBrand;
-        }
         String brandLogo = storesBrand.getBrandLogo();
         String brandImage = storesBrand.getBrandImage();
 
@@ -185,24 +175,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             List<BrandsCategoryEntity> brandsCategories = new ArrayList<BrandsCategoryEntity>();
 
             for (Integer categoryId: categories){
-                BrandsCategoryEntity brandsCategory = merchantDaoService.getBrandsCategory(store.getStoresBrand().getId(), categoryId);
-
-                //if brands category with current category and and brand add brandCategory
-                if(brandsCategory == null){
                     BrandsCategoryEntity newBrandsCategory = new BrandsCategoryEntity();
                     CategoryEntity category = merchantDaoService.getCategoryById(categoryId);
                     newBrandsCategory.setCategory(category);
                     newBrandsCategory.setStoresBrand(store.getStoresBrand());
                     brandsCategories.add(newBrandsCategory);
-                }else{
-                    brandsCategory.setStoresBrand(store.getStoresBrand());
-                    brandsCategories.add(brandsCategory);
-                }
             }
 
             store.getStoresBrand().setBrandsCategory(brandsCategories);
             store.getStoresBrand().setMerchant(dbMerchant);
-
 
             store.getStoresBrand().setBrandLogo(null);
             store.getStoresBrand().setBrandImage(null);
@@ -227,6 +208,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             merchantDaoService.updateStoresBrand(brand);
         }
     }
+
+
+
 
     @Override
     public MerchantEntity getMerchantById(HeaderDto headerDto) throws Exception {
@@ -428,6 +412,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public List<ItemEntity> findStoresItems(HeaderDto headerDto) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        List<ItemsStoreEntity> itemsStores = merchantDaoService.findItemsStores(Integer.parseInt(headerDto.getId()));
+        if(itemsStores == null)
+            throw new YSException("VLD015");
+
+        List<ItemEntity> items = new ArrayList<ItemEntity>();
+        for (ItemsStoreEntity itemsStore:itemsStores){
+              ItemEntity item = merchantDaoService.getItemDetail(itemsStore.getItem().getId());
+            items.add(item);
+        }
+        return items;
     }
 }

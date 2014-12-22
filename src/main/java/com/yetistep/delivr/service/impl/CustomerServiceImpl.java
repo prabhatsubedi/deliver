@@ -138,6 +138,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         for (ItemsOrderEntity iOrder: itemsOrder){
             ItemEntity item = merchantDaoService.getItemDetail(iOrder.getItem().getId());
+
             iOrder.setItem(item);
             iOrder.setOrder(order);
         }

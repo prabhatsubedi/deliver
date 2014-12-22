@@ -1,5 +1,7 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -20,7 +22,6 @@ public class ItemsOrderEntity implements Serializable {
     private OrderEntity order;
     private StoreEntity store;
     private Integer quantity;
-    private BigDecimal unitPrice;
     private BigDecimal itemTotal;
 
     @Id
@@ -34,7 +35,8 @@ public class ItemsOrderEntity implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     public ItemEntity getItem() {
         return item;
@@ -44,6 +46,7 @@ public class ItemsOrderEntity implements Serializable {
         this.item = item;
     }
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
     public OrderEntity getOrder() {
@@ -54,6 +57,7 @@ public class ItemsOrderEntity implements Serializable {
         this.order = order;
     }
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     public StoreEntity getStore() {
@@ -71,15 +75,6 @@ public class ItemsOrderEntity implements Serializable {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
-    }
-
-    @Column(name = "unit_price")
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
     }
 
     @Column(name = "item_total", precision = 19, scale = 2)

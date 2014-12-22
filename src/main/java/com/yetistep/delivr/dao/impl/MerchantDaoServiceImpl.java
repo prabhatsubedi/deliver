@@ -254,7 +254,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public List<ItemEntity> getCategoriesItems(Integer categoryId) throws Exception {
         List<ItemEntity> items = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
-
+        criteria.add(Restrictions.eq("category.id", categoryId));
         items = criteria.list();
         return items.size() > 0 ? items : null;
     }
@@ -262,5 +262,16 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Override
     public ItemEntity getItemDetail(Integer id) throws Exception {
         return (ItemEntity) getCurrentSession().get(ItemEntity.class, id);
+    }
+
+
+    @Override
+    public List<ItemsStoreEntity> findItemsStores(Integer storeId) throws Exception {
+        List<ItemsStoreEntity> itemsStores = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemsStoreEntity.class);
+        criteria.add(Restrictions.eq("store.id", storeId));
+        itemsStores = criteria.list();
+
+        return itemsStores.size() > 0 ? itemsStores : null;
     }
 }

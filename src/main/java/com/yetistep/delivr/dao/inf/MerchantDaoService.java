@@ -50,4 +50,7 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public List<ItemEntity> getCategoriesItems(Integer categoryId) throws Exception;
 
     public ItemEntity getItemDetail(Integer itemId) throws Exception;
+
+    public List<ItemsStoreEntity> findItemsStores(Integer storeId) throws Exception;
+
 }

@@ -178,10 +178,9 @@ if(typeof(Manager) == "undefined") var Manager = {};
                 var job_status = 0;
                 var balance = 0;
                 var action = '<div class="action_links">' +
-                    '<a href="#">View on Map</a>' +
-                    '<a href="#">View Accounts</a>' +
+                    '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "'+id+'"  data-target="#modal_map">View on Map</a>' +
+                    '<a href="#" data-toggle="modal" class="update_courier_boy_account"  data-cbid = "'+id+'" data-target="#modal_account">Update Accounts</a>' +
                     '</div>';
-
 
                 var row = [id, link_courier_staff, number, order_no, order_name, job_status, balance, action];
                 tdata.push(row);
@@ -199,5 +198,28 @@ if(typeof(Manager) == "undefined") var Manager = {};
         Main.request('/organizer/get_dboys', {}, callback);
 
     };
+
+   Manager.getCourierBoyMap = function(){
+         $('body').delegate('.view_courier_boy_map', 'click', function(){
+             var id = $(this).data("cbid");
+             if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
+             var callback = function(status, data){
+                 console.log(data);
+                 if(!data.success){
+                     alert(data.message);
+                     return;
+
+                     var courierStaffs = data.params.deliveryBoy;
+                 }
+             }
+             callback.loaderDiv = ".view_courier_boy_map";
+             callback.requestType = "GET";
+             var headers = {};
+             headers.id = id;
+             Main.request('/organizer/get_dboy', {}, callback, headers);
+         });
+   }
+
+
 
 })(jQuery);

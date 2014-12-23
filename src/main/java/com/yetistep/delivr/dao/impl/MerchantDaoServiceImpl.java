@@ -167,7 +167,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
                 .add(Projections.property("brandLogo"), "brandLogo")
                 .add(Projections.property("brandImage"), "brandImage")
                 .add(Projections.property("featured"), "featured")
-                .add(Projections.property("priority"), "priority")
+                .add(Projections.property("merchant"), "merchant")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.eq("merchant.id", merchantId)) ;
         stores = criteria.list();

@@ -87,6 +87,7 @@ public class BigDecimalUtil {
         if(values != null && values.size() > 0){
             int i = 0;
             BigDecimal minValue = values.get(0);
+            minIndex = 0;
             for(BigDecimal value: values){
                 if(isLessThen(value, minValue)){
                     minValue = value;

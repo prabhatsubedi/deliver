@@ -1,7 +1,9 @@
 package com.yetistep.delivr.util;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.enums.VehicleType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -148,6 +150,24 @@ public class GeneralUtil {
     public static String generateMobileCode(){
         int code = (int) (Math.random()*9000+1000);
         return String.valueOf(code);
+    }
+
+    public static PreferenceType getTimeTakenFor(VehicleType vehicleType){
+        PreferenceType preferenceType = null;
+        if(VehicleType.BICYCLE.equals(vehicleType)){
+            preferenceType = PreferenceType.TIME_TO_TRAVEL_ONE_KM_ON_BICYCLE;
+        }else if(VehicleType.ON_FOOT.equals(vehicleType)){
+            preferenceType = PreferenceType.TIME_TO_TRAVEL_ONE_KM_ON_FOOT;
+        }else if(VehicleType.MOTORBIKE.equals(vehicleType)){
+            preferenceType = PreferenceType.TIME_TO_TRAVEL_ONE_KM_ON_MOTORBIKE;
+        }else if(VehicleType.CAR.equals(vehicleType)){
+            preferenceType = PreferenceType.TIME_TO_TRAVEL_ONE_KM_ON_CAR;
+        }else if(VehicleType.TRUCK.equals(vehicleType)){
+            preferenceType = PreferenceType.TIME_TO_TRAVEL_ONE_KM_ON_TRUCK;
+        }else if(VehicleType.OTHERS.equals(vehicleType)){
+            preferenceType = PreferenceType.TIME_TO_TRAVEL_ONE_KM_ON_OTHERS;
+        }
+        return preferenceType;
     }
 
 }

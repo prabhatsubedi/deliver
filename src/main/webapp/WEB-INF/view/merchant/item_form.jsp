@@ -41,70 +41,7 @@
                 <div class="row">
                     <div class="form_section">
                         <div class="col-lg-6">
-                            <div class="form_head">Category</div>
-                            <div class="form_content">
-                                <div class="form-group">
-                                    <select id="item_category" name="item_category" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                        <option value="none">Select Item Category</option>
-                                        <option value="cat1">cat1</option>
-                                        <option value="cat2">cat2</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form_head">Stores</div>
-                            <div class="form_content">
-                                <div class="form-group">
-                                    <select id="item_brand" name="item_brand" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                        <option value="none">Select Store Brand</option>
-                                        <option value="brand1">brand1</option>
-                                        <option value="brand2">brand2</option>
-                                    </select>
-                                </div>
-                                <div id="item_store_container" class="form-group">
-                                    <div class="item_store table_div">
-                                        <div class="image_store td_div"> <img src="/resources/images/delivr-logo.png" /> </div>
-                                        <div class="name_store td_div"> Store Address </div>
-                                        <div class="check_store td_div"> <label class="glyphicon glyphicon-ok"><input type="checkbox" class="checkbox" /></label> </div>
-                                    </div>
-                                    <div class="item_store table_div">
-                                        <div class="image_store td_div"> <img src="/resources/images/delivr-logo.png" /> </div>
-                                        <div class="name_store td_div"> Store Address </div>
-                                        <div class="check_store td_div"> <label class="glyphicon glyphicon-ok"><input type="checkbox" class="checkbox" /></label> </div>
-                                    </div>
-                                    <div class="item_store table_div">
-                                        <div class="image_store td_div"> <img src="/resources/images/delivr-logo.png" /> </div>
-                                        <div class="name_store td_div"> Store Address </div>
-                                        <div class="check_store td_div"> <label class="glyphicon glyphicon-ok"><input type="checkbox" class="checkbox" /></label> </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form_head">Basic Info</div>
-                            <div class="form_content">
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Item Name</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="item_name" name="item_name">
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Description</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="description" name="description">
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Size</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="item_size" name="item_size">
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Weight</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="item_weight" name="item_weight">
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="form_head">Images</div>
                             <div class="form_content">
                                 <div class="product_images form-group clearfix">
@@ -128,85 +65,217 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form_head">Available Stores</div>
+                            <div class="form_content">
+                                <div class="form-group">
+                                    <select id="item_brand" name="item_brand" class="col-xs-12 no_pad no_margin" data-style="form-control">
+                                        <option value="none">Select Store</option>
+                                        <option value="brand1">brand1</option>
+                                        <option value="brand2">brand2</option>
+                                    </select>
+                                </div>
+                                <div id="item_store_container" class="form-group">
+                                    <div class="item_store table_div">
+                                        <div class="image_store td_div"> <img src="/resources/images/delivr-logo.png" /> </div>
+                                        <div class="name_store td_div"> Store Address </div>
+                                        <div class="check_store td_div"> <label class="glyphicon glyphicon-ok check_label"><input type="checkbox" class="checkbox" /></label> </div>
+                                    </div>
+                                    <div class="item_store table_div">
+                                        <div class="image_store td_div"> <img src="/resources/images/delivr-logo.png" /> </div>
+                                        <div class="name_store td_div"> Store Address </div>
+                                        <div class="check_store td_div"> <label class="glyphicon glyphicon-ok check_label"><input type="checkbox" class="checkbox" /></label> </div>
+                                    </div>
+                                    <div class="item_store table_div">
+                                        <div class="image_store td_div"> <img src="/resources/images/delivr-logo.png" /> </div>
+                                        <div class="name_store td_div"> Store Address </div>
+                                        <div class="check_store td_div"> <label class="glyphicon glyphicon-ok check_label"><input type="checkbox" class="checkbox" /></label> </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form_head">Category</div>
+                            <div class="form_content">
+                                <div class="form-group">
+                                    <select id="item_category" name="item_category" class="col-xs-12 no_pad no_margin" data-style="form-control">
+                                        <option value="none">Select Item Category</option>
+                                        <option value="cat1">cat1</option>
+                                        <option value="cat2">cat2</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form_head">Basic Info</div>
+                            <div class="form_content">
+                                <div class="row">
+                                    <div class="form-group clearfix">
+                                        <label class="col-lg-4 floated_label" for="name_item">Item Name</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="name_item" name="name_item">
+                                        </div>
+                                    </div>
+                                    <div class="form-group clearfix">
+                                        <label class="col-lg-4 floated_label" for="description">Description</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="description" name="description">
+                                        </div>
+                                    </div>
+                                    <div class="form-group clearfix">
+                                        <label class="col-lg-4 floated_label" for="item_size">Size</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="item_size" name="item_size">
+                                        </div>
+                                    </div>
+                                    <div class="form-group clearfix">
+                                        <label class="col-lg-4 floated_label" for="item_weight">Weight</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="item_weight" name="item_weight">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-6">
+
                             <div class="form_head">Additional Info</div>
                             <div class="form_content">
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Available Start Time</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="available_start_time" name="available_start_time">
+                                <div class="row">
+                                    <div class="form-group clearfix">
+                                        <label class="col-lg-4 floated_label" for="available_start_time">Available Time</label>
+                                        <div class="col-lg-8">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" id="available_start_time" name="available_start_time" placeholder="Start Time">
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" id="available_end_time" name="available_end_time" placeholder="End Time">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Available End Time</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="available_end_time" name="available_end_time">
+<%--                                    <div class="form-group clearfix">
+                                        <label class="col-lg-4 floated_label">Available Quantity</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="quantity" name="quantity">
+                                        </div>
+                                    </div>--%>
+                                    <div class="form-group clearfix">
+                                        <label class="col-lg-4 floated_label" for="min_order">Order Quantity</label>
+                                        <div class="col-lg-8">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" id="min_order" name="min_order" placeholder="Min.">
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" id="max_order" name="max_order" placeholder="Max.">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Available Quantity</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="quantity" name="quantity">
+                                    <div class="form-group clearfix">
+                                        <label class="col-lg-4 floated_label" for="additional_offer">Additional Offer</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="additional_offer" name="additional_offer" value="N/A">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Max Order Quantity</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="min_order" name="min_order">
+                                    <div class="form-group clearfix">
+                                        <label class="col-lg-4 floated_label" for="return_policy">Return Policy</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="return_policy" name="return_policy" value="N/A">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Min Order Quantity</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="max_order" name="max_order">
+                                    <div class="form-group clearfix">
+                                        <label class="col-lg-4 floated_label" for="delivery_fee">Delivery Fee</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="delivery_fee" name="delivery_fee" value="N/A">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Additional Offer</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="additional_offer" name="additional_offer">
+                                    <div class="form-group clearfix">
+                                        <label class="col-lg-4 floated_label" for="vat">VAT</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="vat" name="vat" value="0">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Return Policy</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="return_policy" name="return_policy">
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Delivery Fee</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="delivery_fee" name="delivery_fee">
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Promo Code</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="promo_code" name="promo_code">
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">VAT</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="vat" name="vat">
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-lg-4 floated_label">Service Charge</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="service_charge" name="service_charge">
+                                    <div class="form-group clearfix">
+                                        <label class="col-lg-4 floated_label" for="service_charge">Service Charge</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="service_charge" name="service_charge" value="0">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form_head">Attributes</div>
+                            <div class="form_head">Pricing & Attributes</div>
                             <div class="form_content">
+                                <div class="form-group clearfix row">
+                                    <label class="col-lg-4 floated_label" for="price">Price</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="price" name="price">
+                                    </div>
+                                </div>
+                                <input type="text" name="check_attr" id="check_attr" class="hidden">
+                                <div class="item_attributes"></div>
+                                <div class="form-group">
+                                    <button type="button" id="add_attr_type" class="btn btn_green">Add Attribute Type</button>
+                                </div>
                             </div>
+
                         </div>
-                    </div>
-                    <div class="col-lg-6">
 
                     </div>
+
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="block_attr_template hidden">
+    <div class="block_attr form-group">
+        <div class="attr_head form-group clearfix">
+            <div class="row">
+                <div class="col-lg-6">
+                    <input type="text" class="form-control" name="attr_type" placeholder="Atribute Title">
+                </div>
+                <div class="col-lg-6">
+                    <label for="multi_selection">Multi-selectable</label>
+                    <label class="glyphicon glyphicon-ok check_label"><input type="checkbox" id="multi_selection" class="checkbox"></label>
+                    <button type="button" class="btn btn_green btn_red remove_attr_block glyphicon glyphicon-remove"></button>
+                </div>
+            </div>
+        </div>
+        <div class="attr_list">
+            <div class="form-group clearfix">
+                <div class="col-lg-6">
+                    <input type="text" class="form-control" name="attr_label" placeholder="Attribute Name">
+                </div>
+                <div class="col-lg-6 with_remove">
+                    <div class="price_container">
+                        <input type="text" class="form-control" name="attr_val" placeholder="Price">
+                    </div>
+                    <button type="button" class="btn btn_green btn_red remove_attr glyphicon glyphicon-remove"></button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <div class="col-lg-12">
+                <button type="button" class="btn btn_green add_attr">Add Attribute</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="attr_list_template hidden">
+    <div class="form-group clearfix">
+        <div class="col-lg-6">
+            <input type="text" class="form-control" name="attr_label" placeholder="Attribute Name">
+        </div>
+        <div class="col-lg-6 with_remove">
+            <div class="price_container">
+                <input type="text" class="form-control" name="attr_val" placeholder="Price">
+            </div>
+            <button type="button" class="btn btn_green btn_red remove_attr glyphicon glyphicon-remove"></button>
         </div>
     </div>
 </div>

@@ -41,8 +41,8 @@
 </div>
 
 
-<div class="box_store_template hidden">
-    <div class="box_store table_div">
+<div class="block_store_template hidden">
+    <div class="block_store table_div">
         <div class="store_logo td_div">
             <img class="img-responsive" />
         </div>

@@ -37,7 +37,7 @@ body.loader_div > .loader {
 .modal .modal-content {
     border-radius: 0px;
 }
-.unselectable {
+.unselectable, label {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -552,6 +552,10 @@ body.assistance_page {
     padding: 0 20px;
     line-height: 40px;
 }
+.btn_red, .btn_red:focus, .btn_red:hover {
+    background-color: #F7941D;
+    color: #9C5209;
+}
 .btn_green.pull-right {
     margin-left: 10px;
 }
@@ -695,42 +699,42 @@ body.assistance_page {
     display: table-cell;
     vertical-align: top;
 }
-.box_store {
+.block_store {
     background-color: #FFFFFF;
     border:  1px solid #cac9c9;
     margin-bottom: 20px;
 }
-.box_store .td_div {
+.block_store .td_div {
     padding: 20px;
 }
-.box_store .store_logo {
+.block_store .store_logo {
     width: 200px;
 }
-.box_store .store_logo img {
+.block_store .store_logo img {
     border: 1px solid #ebebeb;
     padding: 10px;
     width: 100%;
 }
-.box_store .store_info .store_name {
+.block_store .store_info .store_name {
     color: #282828;
     font-size: 24px;
     font-weight: bold;
     line-height: 100%;
     margin-bottom: 5px;
 }
-.box_store .store_info .store_address_list {
+.block_store .store_info .store_address_list {
     font-size: 12px;
     color: #686868;
 }
-.box_store .store_info .store_address_list ul {
+.block_store .store_info .store_address_list ul {
     list-style: none;
     margin: 0px;
     padding: 0px;
 }
-.box_store .store_actions {
+.block_store .store_actions {
     width: 250px;
 }
-.box_store .store_actions .btn {
+.block_store .store_actions .btn {
     font-size: 20px;
     line-height: 45px;
     border-bottom-width: 2px;
@@ -759,11 +763,11 @@ body.assistance_page {
     vertical-align: middle;
 }
 #item_store_container .check_store {
-    text-align: center;
     vertical-align: middle;
     width: 60px;
 }
-#item_store_container .check_store label {
+label.check_label {
+    text-align: center;
     border: 3px solid #b5b5b5;
     cursor: pointer;
     font-size: 10px;
@@ -773,13 +777,13 @@ body.assistance_page {
     width: 18px;
     color: #FFFFFF;
 }
-#item_store_container .check_store label.icon_semi {
+label.check_label.icon_semi {
     color: #CCCCCC;
 }
-#item_store_container .check_store label.icon_full {
+label.check_label.icon_full {
     color: #333343;
 }
-#item_store_container .check_store input {
+label.check_label .checkbox {
     display: none;
 }
 .product_images {
@@ -789,6 +793,52 @@ body.assistance_page {
 .product_images .product_image {
     padding: 0px 4px;
     position: relative;
+}
+
+.block_attr {
+    border: 1px solid #cbcaca;
+}
+.block_attr .attr_head {
+    line-height: 48px;
+    border-bottom: 1px solid #cbcaca;
+    text-align: right;
+}
+.block_attr .attr_head .remove_attr_block {
+    border: 1px solid #cbcaca;
+    border-radius: 0;
+    font-size: 20px;
+    height: 50px;
+    line-height: 50px;
+    margin-left: 10px;
+    margin-right: -1px;
+    margin-top: -6px;
+    padding: 0;
+    width: 50px;
+}
+.block_attr .attr_head label[for="multi_selection"] {
+    margin: 0px 10px 0px 0px;
+}
+.block_attr .attr_head .form-control {
+    margin: -1px;
+}
+.block_attr .attr_list .with_remove {
+    position: relative;
+}
+.block_attr .attr_list .with_remove .price_container {
+    margin-right: 50px;
+}
+.block_attr .attr_list .with_remove .remove_attr {
+    border: 1px solid #cbcaca;
+    border-left: none;
+    border-radius: 0;
+    font-size: 20px;
+    height: 50px;
+    line-height: 50px;
+    padding: 0;
+    position: absolute;
+    right: 15px;
+    top: 0;
+    width: 50px;
 }
 /*
 .product_images {

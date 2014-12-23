@@ -230,7 +230,7 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#brand_logo_input').rules('add', {imageRequired: true});
         $('#open_time').rules('add', {notEqual: "none"});
         $('#close_time').rules('add', {notEqual: "none"});
-        $('#brand_url').rules('add', {required: true, url: true});
+        $('#brand_url').rules('add', {url: true});
         $('#store_categories').rules('add', {minSelection: 1});
 
         $('.cancel_marker').live('click', function(){
@@ -278,7 +278,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                 var storeBrands = data.params.storesBrand;
 
-                var elem = $('.box_store_template');
+                var elem = $('.block_store_template');
 
                 var store_list = "";
 
@@ -302,7 +302,7 @@ if(typeof(Store) == "undefined") var Store = {};
                     $('.store_address_list ul', elem).html(address_list);
                     $('.add_items').attr('href', '/merchant/item/form/create/' + storeBrand.id);
 
-                    store_list += $('.box_store_template').html();
+                    store_list += elem.html();
 
                 }
 

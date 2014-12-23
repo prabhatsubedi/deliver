@@ -63,7 +63,7 @@ public class StoresBrandEntity implements Serializable {
         this.merchant = merchant;
     }
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<StoreEntity> getStore() {

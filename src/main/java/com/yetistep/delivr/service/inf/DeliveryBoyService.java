@@ -27,4 +27,6 @@ public interface DeliveryBoyService {
 
     public List<DeliveryBoyEntity> getAllCapableDeliveryBoys() throws Exception;
 
+    public Boolean updateLocationOfDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
+
 }

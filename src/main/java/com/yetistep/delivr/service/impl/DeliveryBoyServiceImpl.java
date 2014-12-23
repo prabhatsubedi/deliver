@@ -11,6 +11,7 @@ import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.util.GeneralUtil;
+import com.yetistep.delivr.util.GeoCodingUtil;
 import com.yetistep.delivr.util.MessageBundle;
 import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
@@ -171,5 +172,18 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Override
     public List<DeliveryBoyEntity> getAllCapableDeliveryBoys() throws Exception {
         return deliveryBoyDaoService.findAllCapableDeliveryBoys();
+    }
+
+    @Override
+    public Boolean updateLocationOfDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception {
+        log.info("Updating location of Delivery Boy with ID:"+deliveryBoyEntity.getId());
+        DeliveryBoyEntity dBoyEntity = deliveryBoyDaoService.find(deliveryBoyEntity.getId());
+        if (dBoyEntity == null) {
+            throw new YSException("VLD011");
+        }
+        GeoCodingUtil.getLatLong(deliveryBoyEntity.getLatitude(), deliveryBoyEntity.getLongitude());
+        dBoyEntity.setLatitude(deliveryBoyEntity.getLatitude());
+        dBoyEntity.setLongitude(deliveryBoyEntity.getLongitude());
+        return deliveryBoyDaoService.update(dBoyEntity);
     }
 }

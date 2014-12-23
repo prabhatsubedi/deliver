@@ -71,8 +71,6 @@
                                 <div class="form-group">
                                     <select id="item_brand" name="item_brand" class="col-xs-12 no_pad no_margin" data-style="form-control">
                                         <option value="none">Select Store</option>
-                                        <option value="brand1">brand1</option>
-                                        <option value="brand2">brand2</option>
                                     </select>
                                 </div>
                                 <div id="item_store_container" class="form-group">

@@ -44,8 +44,10 @@ var storeBrands = undefined;
                     var brandList = '';
                     storeBrands = data.params.storesBrand;
                     for(var i = 0; i < storeBrands.length; i++) {
-                        brandList += '<option value="' + storeBrands.id + '">' + storeBrands.id + '</option>';
+                        brandList += '<option value="' + storeBrands[i].id + '">' + storeBrands[i].brandName + '</option>';
                     }
+                    $('#item_brand').append(brandList);
+                    $('#item_brand').selectpicker('refresh');
 
                 } else {
                     alert(data.message);

@@ -765,6 +765,7 @@ body.assistance_page {
 #item_store_container .check_store {
     vertical-align: middle;
     width: 60px;
+    text-align: center;
 }
 label.check_label {
     text-align: center;

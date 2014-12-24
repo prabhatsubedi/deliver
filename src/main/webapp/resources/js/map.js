@@ -44,7 +44,7 @@ $(document).ready(function(){
             if (status == google.maps.GeocoderStatus.OK) {
                 if(typeof map != 'undefined'){
                     if(noCenter != true)
-                    map.setCenter(results[0].geometry.location);
+                        map.setCenter(results[0].geometry.location);
 
                     if(noBounds != true)
                         map.fitBounds(results[0].geometry.bounds);
@@ -61,7 +61,7 @@ $(document).ready(function(){
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             scrollwheel: false
         }
-        map = new google.maps.Map(document.getElementById("no-edit-map-canvas"), myOptions);
+        map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
 
         geo_coding(selectedCountry);
 

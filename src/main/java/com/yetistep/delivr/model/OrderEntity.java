@@ -35,7 +35,7 @@ public class OrderEntity implements Serializable {
     private AddressEntity address;
     private DeliveryBoyEntity deliveryBoy;
     private CustomerEntity customer;
-    private StoresBrandEntity storesBrand;
+    private StoreEntity store;
     private BigDecimal customerChargeableDistance; //Paid by customer
     private BigDecimal systemChargeableDistance; //Paid by system
     //private BigDecimal itemTotal;
@@ -48,6 +48,7 @@ public class OrderEntity implements Serializable {
     private BigDecimal systemShare;
     private Timestamp orderDate;
     private DBoyOrderHistoryEntity dBoyOrderHistory;
+    private Integer assignedTime;
 
 
 
@@ -158,13 +159,13 @@ public class OrderEntity implements Serializable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "brand_id")
-    public StoresBrandEntity getStoresBrand() {
-        return storesBrand;
+    @JoinColumn(name = "store_id")
+    public StoreEntity getStore() {
+        return store;
     }
 
-    public void setStoresBrand(StoresBrandEntity storesBrand) {
-        this.storesBrand = storesBrand;
+    public void setStore(StoreEntity store) {
+        this.store = store;
     }
 
     @Column(name = "customer_chargeable_distance", precision = 19, scale = 2)
@@ -278,4 +279,12 @@ public class OrderEntity implements Serializable {
         this.dBoyOrderHistory = dBoyOrderHistory;
     }
 
+    @Column(name = "assigned_time")
+    public Integer getAssignedTime() {
+        return assignedTime;
+    }
+
+    public void setAssignedTime(Integer assignedTime) {
+        this.assignedTime = assignedTime;
+    }
 }

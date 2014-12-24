@@ -30,7 +30,6 @@ public class StoresBrandEntity implements Serializable {
    private List<StoreEntity> store;
    private List<BrandsCategoryEntity> brandsCategory;
    private List<CategoryEntity> categories;
-   private List<OrderEntity> order;
    private String brandName;
    private Date openingTime;
    private Date closingTime;
@@ -94,17 +93,6 @@ public class StoresBrandEntity implements Serializable {
 
     public void setCategories(List<CategoryEntity> categories) {
         this.categories = categories;
-    }
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    public List<OrderEntity> getOrder() {
-        return order;
-    }
-
-    public void setOrder(List<OrderEntity> order) {
-        this.order = order;
     }
 
     @Column(name = "brand_name")

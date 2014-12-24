@@ -26,6 +26,7 @@ public class StoreEntity implements Serializable {
     private StoresBrandEntity storesBrand;
     private List<ItemsStoreEntity> itemsStore;
     private List<ItemsOrderEntity> itemsOrder;
+    private List<OrderEntity> order;
     private String name;
     private String street;
     private String city;
@@ -78,6 +79,18 @@ public class StoreEntity implements Serializable {
     public void setItemsOrder(List<ItemsOrderEntity> itemsOrder) {
         this.itemsOrder = itemsOrder;
     }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    public List<OrderEntity> getOrder() {
+        return order;
+    }
+
+    public void setOrder(List<OrderEntity> order) {
+        this.order = order;
+    }
+
 
     @Column(name="name", nullable = false)
     public String getName() {

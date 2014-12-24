@@ -3,10 +3,11 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.model.*;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -151,6 +152,10 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
                 .add(Projections.property("city"), "city")
                 .add(Projections.property("state"), "state")
                 .add(Projections.property("country"), "country")
+                .add(Projections.property("latitude"), "latitude")
+                .add(Projections.property("longitude"), "longitude")
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("name"), "name")
         ).setResultTransformer(Transformers.aliasToBean(StoreEntity.class));
         stores = criteria.list();
 

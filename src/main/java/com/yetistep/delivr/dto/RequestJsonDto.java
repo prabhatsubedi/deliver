@@ -41,6 +41,7 @@ public class RequestJsonDto {
     private OrderEntity ordersOrder;
     private List<ItemsOrderEntity> ordersItemsOrder;
     private Integer ordersBrandId;
+    private Integer ordersStoreId;
     private Integer ordersCustomerId;
     private Integer ordersAddressId;
 
@@ -169,6 +170,14 @@ public class RequestJsonDto {
 
     public void setOrdersBrandId(Integer ordersBrandId) {
         this.ordersBrandId = ordersBrandId;
+    }
+
+    public Integer getOrdersStoreId() {
+        return ordersStoreId;
+    }
+
+    public void setOrdersStoreId(Integer ordersStoreId) {
+        this.ordersStoreId = ordersStoreId;
     }
 
     public Integer getOrdersCustomerId() {

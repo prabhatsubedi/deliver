@@ -48,6 +48,7 @@ public class OrderEntity implements Serializable {
     private BigDecimal systemShare;
     private Timestamp orderDate;
     private DBoyOrderHistoryEntity dBoyOrderHistory;
+    private List<DeliveryBoySelectionEntity> deliveryBoySelections;
     private Integer assignedTime;
 
 
@@ -277,6 +278,16 @@ public class OrderEntity implements Serializable {
 
     public void setdBoyOrderHistory(DBoyOrderHistoryEntity dBoyOrderHistory) {
         this.dBoyOrderHistory = dBoyOrderHistory;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    public List<DeliveryBoySelectionEntity> getDeliveryBoySelections() {
+        return deliveryBoySelections;
+    }
+
+    public void setDeliveryBoySelections(List<DeliveryBoySelectionEntity> deliveryBoySelections) {
+        this.deliveryBoySelections = deliveryBoySelections;
     }
 
     @Column(name = "assigned_time")

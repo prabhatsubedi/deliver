@@ -43,6 +43,7 @@ public class DeliveryBoyEntity implements Serializable {
     private String licenseNumber;
     private String vehicleNumber;
     private List<DBoyOrderHistoryEntity> dBoyOrderHistories;
+    private List<DeliveryBoySelectionEntity> deliveryBoySelections;
     private List<DBoyAdvanceAmountEntity> dBoyAdvanceAmounts;
     private List<DBoySubmittedAmountEntity> dBoySubmittedAmount;
     private String latitude;
@@ -225,6 +226,16 @@ public class DeliveryBoyEntity implements Serializable {
 
     public void setdBoyOrderHistories(List<DBoyOrderHistoryEntity> dBoyOrderHistories) {
         this.dBoyOrderHistories = dBoyOrderHistories;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "deliveryBoy")
+    public List<DeliveryBoySelectionEntity> getDeliveryBoySelections() {
+        return deliveryBoySelections;
+    }
+
+    public void setDeliveryBoySelections(List<DeliveryBoySelectionEntity> deliveryBoySelections) {
+        this.deliveryBoySelections = deliveryBoySelections;
     }
 
     @JsonIgnore

@@ -45,6 +45,7 @@
        <mapping class="com.yetistep.delivr.model.PreferencesEntity"/>
        <mapping class="com.yetistep.delivr.model.DBoyAdvanceAmountEntity"/>
        <mapping class="com.yetistep.delivr.model.DBoySubmittedAmountEntity"/>
+       <mapping class="com.yetistep.delivr.model.DeliveryBoySelectionEntity"/>
 
 
     </session-factory>

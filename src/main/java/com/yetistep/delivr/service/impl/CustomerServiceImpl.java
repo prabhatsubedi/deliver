@@ -1,6 +1,7 @@
 package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.CustomerDaoService;
+import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
@@ -10,13 +11,18 @@ import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.CustomerService;
-import com.yetistep.delivr.service.inf.MerchantService;
+import com.yetistep.delivr.service.inf.SystemPropertyService;
+import com.yetistep.delivr.util.BigDecimalUtil;
 import com.yetistep.delivr.util.GeneralUtil;
+import com.yetistep.delivr.util.GeoCodingUtil;
 import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +44,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     MerchantDaoService merchantDaoService;
+
+    @Autowired
+    DeliveryBoyDaoService deliveryBoyDaoService;
+
+    @Autowired
+    SystemPropertyService systemPropertyService;
 
     @Override
     public void saveCustomer(CustomerEntity customer, HeaderDto headerDto) throws Exception {
@@ -108,7 +120,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
-
         OrderEntity order = requestJson.getOrdersOrder();
         List<ItemsOrderEntity> itemsOrder = requestJson.getOrdersItemsOrder();
         Integer brandId = requestJson.getOrdersBrandId();
@@ -128,8 +139,13 @@ public class CustomerServiceImpl implements CustomerService {
         if (brand == null)
             throw new YSException("VLD012");
 
+//        Integer storeId = requestJson.getOrdersStoreId();
+//        StoreEntity storeEntity = merchantDaoService.getStoreById(storeId);
+//        if(storeEntity == null)
+//            throw new YSException("VLD016");
+
+
         order.setAddress(address);
-        order.setStoresBrand(brand);
         order.setCustomer(customer);
 
         order.setOrderVerificationStatus(false);
@@ -145,7 +161,64 @@ public class CustomerServiceImpl implements CustomerService {
 
         order.setItemsOrder(itemsOrder);
 
+
+
+        List<StoreEntity> stores = merchantDaoService.findStoreByBrand(brandId);
+        StoreEntity store = findNearestStoreFromCustomer(order, stores);
+
+        order.setStore(store);
+        order.setOrderName(store.getName()+" to "+ order.getAddress().getStreet());
+        order.setOrderVerificationCode(Integer.parseInt(GeneralUtil.generateMobileCode()));
+        //TODO Send code message to customer
+        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, deliveryBoyDaoService.findAllCapableDeliveryBoys());
+
         customerDaoService.saveOrder(order);
 
     }
+
+
+    private StoreEntity findNearestStoreFromCustomer(OrderEntity order, List<StoreEntity> stores) throws Exception {
+        String orderAddress[] = {GeoCodingUtil.getLatLong(order.getAddress().getLatitude(), order.getAddress().getLongitude())};
+        String storeAddress[] = new String[stores.size()];
+        int i = 0;
+        for(StoreEntity store: stores){
+            storeAddress[i] = GeoCodingUtil.getLatLong(store.getLatitude(), store.getLongitude());
+            i++;
+        }
+        List<BigDecimal> distanceList = GeoCodingUtil.getListOfDistances(orderAddress, storeAddress);
+        int leastDistanceIndex = BigDecimalUtil.getMinimumIndex(distanceList);
+        order.setCustomerChargeableDistance(distanceList.get(leastDistanceIndex));
+        return stores.get(leastDistanceIndex);
+
+    }
+
+    private List<DeliveryBoySelectionEntity> calculateStoreToDeliveryBoyDistance(StoreEntity store, List<DeliveryBoyEntity> capableDeliveryBoys) throws Exception {
+        String storeAddress[] = {GeoCodingUtil.getLatLong(store.getLatitude(), store.getLongitude())};
+        String deliveryBoyAddress[] = new String[capableDeliveryBoys.size()];
+        int i = 0;
+        for (DeliveryBoyEntity deliveryBoy : capableDeliveryBoys) {
+            deliveryBoyAddress[i] = GeoCodingUtil.getLatLong(deliveryBoy.getLatitude(), deliveryBoy.getLongitude());
+            i++;
+        }
+        List<BigDecimal> distanceList = GeoCodingUtil.getListOfDistances(storeAddress, deliveryBoyAddress);
+        List<DeliveryBoySelectionEntity> selectionDetails = new ArrayList<DeliveryBoySelectionEntity>();
+        i = 0;
+        for (BigDecimal distance : distanceList) {
+            DeliveryBoySelectionEntity deliveryBoySelectionEntity = new DeliveryBoySelectionEntity();
+            deliveryBoySelectionEntity.setDistanceToStore(distance);
+            deliveryBoySelectionEntity.setDeliveryBoy(capableDeliveryBoys.get(i));
+            int timeFactor = Integer.parseInt(systemPropertyService.readPrefValue(GeneralUtil.getTimeTakenFor(capableDeliveryBoys.get(i).getVehicleType())));
+
+            System.out.println("Time Factor:"+timeFactor);
+            Integer timeRequired = distance.divide(new BigDecimal(1000)).multiply(new BigDecimal(timeFactor)).setScale(0, RoundingMode.HALF_UP).intValue();
+            deliveryBoySelectionEntity.setTimeRequired(timeRequired);
+            selectionDetails.add(deliveryBoySelectionEntity);
+            i++;
+             //TODO Filter delivery boys by profit criteria - Push Notifications
+            System.out.println(selectionDetails.toString());
+        }
+        return selectionDetails;
+    }
+
+
 }

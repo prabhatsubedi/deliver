@@ -58,8 +58,8 @@ public class DeliveryBoyController extends AbstractManager{
     public ResponseEntity<ServiceResponse> updateDeliveryBoyLocation(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoy) {
         try{
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-            validateMobileClient(headerDto.getAccessToken());
+            GeneralUtil.fillHeaderCredential(headers, headerDto/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
 
             deliveryBoyService.updateLocationOfDeliveryBoy(deliveryBoy);
             ServiceResponse serviceResponse = new ServiceResponse("Location of delivery boy updated successfully");

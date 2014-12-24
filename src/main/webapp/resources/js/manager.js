@@ -178,7 +178,7 @@ if(typeof(Manager) == "undefined") var Manager = {};
                 var job_status = 0;
                 var balance = 0;
                 var action = '<div class="action_links">' +
-                    '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "'+id+'"  data-target="#modal_map">View on Map</a>' +
+                    '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "'+id+'">View on Map</a>' +
                     '<a href="#" data-toggle="modal" class="update_courier_boy_account"  data-cbid = "'+id+'" data-target="#modal_account">Update Accounts</a>' +
                     '</div>';
 
@@ -201,22 +201,62 @@ if(typeof(Manager) == "undefined") var Manager = {};
 
    Manager.getCourierBoyMap = function(){
          $('body').delegate('.view_courier_boy_map', 'click', function(){
+             $('#modal_map').modal('show');
              var id = $(this).data("cbid");
-             if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
-             var callback = function(status, data){
-                 console.log(data);
-                 if(!data.success){
-                     alert(data.message);
-                     return;
-
+             setTimeout(function(){
+                 noEditInitialise();
+                //if(!noEditInitialised) noEditInitialise(); else google.maps.event.trigger(map, 'resize');
+                 var callback = function(status, data){
+                     if(!data.success){
+                         alert(data.message);
+                         return;
+                     }
                      var courierStaffs = data.params.deliveryBoy;
+                     var srclatlng = new google.maps.LatLng(courierStaffs.latitude, courierStaffs.longitude);
+                     var destlatlang =  new google.maps.LatLng("27.6891424", "85.324561");
+                     map.setZoom(12);
+                     map.setCenter(srclatlng);
+
+                     new google.maps.Marker({
+                         position: srclatlng,
+                         map: map
+                         //draggable: true
+                     });
+
+                    new google.maps.Marker({
+                         position: destlatlang,
+                         map: map
+                         //draggable: true
+                     });
+
+                     var request = {
+                         origin: srclatlng,
+                         destination: destlatlang,
+                         travelMode: google.maps.DirectionsTravelMode.DRIVING
+                     };
+
+                     var directionsService = new google.maps.DirectionsService();
+                     var directionsDisplay = new google.maps.DirectionsRenderer();
+
+                     directionsService.route (request, function (result, status) {
+                         console.log(status);
+                         console.log(result);
+                         if (status == google.maps.DirectionsStatus.OK) {
+                             directionsDisplay.setDirections(result);
+                         } else {
+                             alert ("Directions was not successful because " + status);
+                         }
+                     });
+
+                     directionsDisplay.setMap(map);
+
                  }
-             }
-             callback.loaderDiv = ".view_courier_boy_map";
-             callback.requestType = "GET";
-             var headers = {};
-             headers.id = id;
-             Main.request('/organizer/get_dboy', {}, callback, headers);
+                 callback.loaderDiv = ".view_courier_boy_map";
+                 callback.requestType = "GET";
+                 var headers = {};
+                 headers.id = id;
+                 Main.request('/organizer/get_dboy', {}, callback, headers);
+             }, 300);
          });
    }
 

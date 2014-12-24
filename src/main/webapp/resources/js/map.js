@@ -1,5 +1,6 @@
 var selectedCountry = Main.country;
 var initialized = false;
+var noEditInitialised = false;
 var geocoder;
 var infowindow;
 var map;
@@ -8,6 +9,7 @@ var marker;
 var arrGeoPoints = {};
 var redeem_location = [];
 var initialize;
+var noEditInitialise;
 
 // Sets the map on all markers in the array.
 function setAllMap(map) {
@@ -35,14 +37,17 @@ function deleteMarkers() {
 
 $(document).ready(function(){
 
-    function geo_coding(address)
+    function geo_coding(address, noBounds, noCenter)
     {
         geocoder = new google.maps.Geocoder();
         geocoder.geocode( { 'address': address}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 if(typeof map != 'undefined'){
+                    if(noCenter != true)
                     map.setCenter(results[0].geometry.location);
-                    map.fitBounds(results[0].geometry.bounds);
+
+                    if(noBounds != true)
+                        map.fitBounds(results[0].geometry.bounds);
                 }
             } else {
                 alert("Geocode was not successful for the following reason: " + status);
@@ -56,7 +61,7 @@ $(document).ready(function(){
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             scrollwheel: false
         }
-        map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+        map = new google.maps.Map(document.getElementById("no-edit-map-canvas"), myOptions);
 
         geo_coding(selectedCountry);
 
@@ -141,6 +146,22 @@ $(document).ready(function(){
         });
 
     }
+
+    noEditInitialise = function(){
+        var myOptions = {
+            zoom: 10,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            scrollwheel: false
+        }
+        map = new google.maps.Map(document.getElementById("no-edit-map-canvas"), myOptions);
+
+        geo_coding(selectedCountry, true, true);
+
+        infowindow = new google.maps.InfoWindow();
+
+        noEditInitialised = true;
+    }
+
 
     function locationToKey(location) {
         return (location.lat()+ '_' + location.lng()).replace(/[.-]/g, '_');

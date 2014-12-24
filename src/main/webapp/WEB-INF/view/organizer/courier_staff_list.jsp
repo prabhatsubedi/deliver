@@ -9,9 +9,10 @@
 
     <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
     <link href="/resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="/resources/css/maps.css" rel="stylesheet" type="text/css" media="screen"/>
     <script type="text/javascript" src="/resources/js/manager.js"></script>
     <script type="text/javascript" src="/resources/js/map.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false&libraries=places" type="text/javascript"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 
     <script type="text/javascript">
 
@@ -38,12 +39,8 @@
                 <h4 class="modal-title" id="mapLabel">Courier staff map</h4>
             </div>
             <div class="modal-body">
-                <div id="custom_map_controls" class="clearfix">
-                    <div id="scroll_zoom" class="pull-left">Enable Scroll Zoom</div>
-                    <div id="clear_markers" class="pull-left">Clear All Markers</div>
-                </div>
-                <div id="map-canvas">
-
+                <div class="db-map-container">
+                  <div id="no-edit-map-canvas"></div>
                 </div>
             </div>
         </div>

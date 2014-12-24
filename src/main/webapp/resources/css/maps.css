@@ -161,3 +161,7 @@
 .pac-container {
     z-index: 2000 !important;
 }
+
+#no-edit-map-canvas {
+    height: 400px;
+}

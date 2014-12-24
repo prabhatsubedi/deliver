@@ -13,5 +13,7 @@ public enum JobOrderStatus {
     IN_ROUTE_TO_PICK_UP, /* when delivery boy clicks START JOB */
     AT_STORE, /* when delivery boy clicks AT STORE */
     IN_ROUTE_TO_DELIVERY, /* when delivery boy clicks IN ROUTE TO DELIVERY */
-    DELIVERED; /*when delivery boy enter the receive CODE */
+    DELIVERED, /* when delivery boy enter the receive CODE */
+    CANCELLED, /* when order has been cancelled */
+    UNSUCCESSFUL; /* when order gets failed */
 }

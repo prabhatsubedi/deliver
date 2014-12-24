@@ -211,24 +211,7 @@ public class ManagerController {
         }
     }
 
-    @RequestMapping(value = "/update_dboy_account", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<ServiceResponse> updateDboyAccount(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoyEntity) {
-        try{
-            HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            DeliveryBoyEntity deliveryBoy = managerService.updateDboyAccount(headerDto, deliveryBoyEntity);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Delivery boy account updated successfully with ID: "+headerDto.getId());
-            serviceResponse.addParam("deliveryBoy", deliveryBoy);
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
-        } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while delivery boy account: ", e);
-            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
-        }
-
-    }
 
 
 

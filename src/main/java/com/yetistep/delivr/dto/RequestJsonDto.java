@@ -3,6 +3,7 @@ package com.yetistep.delivr.dto;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.model.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -37,13 +38,16 @@ public class RequestJsonDto {
 
 
     /*save order properties*/
-
     private OrderEntity ordersOrder;
     private List<ItemsOrderEntity> ordersItemsOrder;
     private Integer ordersBrandId;
     private Integer ordersStoreId;
     private Integer ordersCustomerId;
     private Integer ordersAddressId;
+
+    /*update account properties*/
+    private BigDecimal submittedAmount;
+    private BigDecimal advanceAmount;
 
 
 
@@ -194,5 +198,21 @@ public class RequestJsonDto {
 
     public void setOrdersAddressId(Integer ordersAddressId) {
         this.ordersAddressId = ordersAddressId;
+    }
+
+    public BigDecimal getSubmittedAmount() {
+        return submittedAmount;
+    }
+
+    public void setSubmittedAmount(BigDecimal submittedAmount) {
+        this.submittedAmount = submittedAmount;
+    }
+
+    public BigDecimal getAdvanceAmount() {
+        return advanceAmount;
+    }
+
+    public void setAdvanceAmount(BigDecimal advanceAmount) {
+        this.advanceAmount = advanceAmount;
     }
 }

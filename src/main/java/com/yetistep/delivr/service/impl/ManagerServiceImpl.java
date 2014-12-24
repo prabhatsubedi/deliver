@@ -4,6 +4,7 @@ import com.yetistep.delivr.dao.inf.ActionLogDaoService;
 import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.ActionLogEntity;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.Page;
@@ -45,13 +46,18 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public DeliveryBoyEntity updateDboyAccount(HeaderDto headerDto, DeliveryBoyEntity deliveryBoyEntity) throws Exception {
+    public DeliveryBoyEntity updateDboyAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
 
         DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
-        dBoy.setAdvanceAmount(deliveryBoyEntity.getAdvanceAmount());
-        dBoy.setBankAmount(dBoy.getBankAmount().add(deliveryBoyEntity.getAdvanceAmount()));
+        dBoy.setAdvanceAmount(requestJsonDto.getAdvanceAmount());
+        dBoy.setBankAmount(dBoy.getBankAmount().add(requestJsonDto.getAdvanceAmount()));
         deliveryBoyDaoService.update(dBoy);
 
         return dBoy;
+    }
+
+    @Override
+    public DeliveryBoyEntity ackSubmittedAmount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -17,7 +18,7 @@ import java.sql.Timestamp;
  */
 @Entity(name="DboyAdvanceAmountEntity")
 @Table(name = "dboy_advance_amounts")
-public class DBoyAdvanceAmountEntity {
+public class DBoyAdvanceAmountEntity implements Serializable {
 
     private Integer id;
     private Timestamp date;

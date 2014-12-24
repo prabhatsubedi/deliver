@@ -667,14 +667,14 @@ body.assistance_page {
 .store_open_close {
     margin: 15px -15px;
 }
-.store_open_close div:first-child:after {
+/*.store_open_close div:first-child:after {
     content: "-";
     font-size: 20px;
     line-height: 50px;
     position: absolute;
     right: -4px;
     top: 0;
-}
+}*/
 .brand_images {
     margin-bottom: 15px;
     position: relative;
@@ -748,15 +748,6 @@ body.assistance_page {
 #item_store_container .item_store:first-child {
     border-top: 1px solid #e7e7e7;
 }
-#item_store_container .image_store {
-    width: 70px;
-    border-right: 1px solid #e7e7e7;
-    padding: 10px;
-    background-color: #FFFFFF;
-}
-#item_store_container .image_store img {
-    width: 100%;
-}
 #item_store_container .name_store {
     font-size: 16px;
     padding: 15px;
@@ -812,7 +803,7 @@ label.check_label .checkbox {
     line-height: 50px;
     margin-left: 10px;
     margin-right: -1px;
-    margin-top: -6px;
+    margin-top: -5px;
     padding: 0;
     width: 50px;
 }
@@ -839,6 +830,28 @@ label.check_label .checkbox {
     position: absolute;
     right: 15px;
     top: 0;
+    width: 50px;
+}
+.add_categories {
+    position: relative;
+}
+.add_categories .new_category_fields {
+    margin-right: 100px;
+}
+.add_categories .action_buttons {
+    position: absolute;
+    right: 0px;
+    top: -1px;
+    font-size: 0px;
+}
+.add_categories .action_buttons button {
+    border: 1px solid #cbcaca;
+    border-left: none;
+    border-radius: 0;
+    font-size: 20px;
+    height: 50px;
+    line-height: 50px;
+    padding: 0;
     width: 50px;
 }
 /*

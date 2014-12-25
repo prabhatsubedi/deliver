@@ -35,6 +35,7 @@ public class ItemsOrderEntity implements Serializable {
         this.id = id;
     }
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     public ItemEntity getItem() {

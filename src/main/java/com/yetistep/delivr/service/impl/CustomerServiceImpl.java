@@ -187,7 +187,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         List<BigDecimal> distanceList = GeoCodingUtil.getListOfDistances(orderAddress, storeAddress);
         int leastDistanceIndex = BigDecimalUtil.getMinimumIndex(distanceList);
-        order.setCustomerChargeableDistance(distanceList.get(leastDistanceIndex));
+        order.setCustomerChargeableDistance(BigDecimalUtil.getDistanceInKiloMeters(distanceList.get(leastDistanceIndex)));
         return stores.get(leastDistanceIndex);
 
     }
@@ -205,13 +205,13 @@ public class CustomerServiceImpl implements CustomerService {
         i = 0;
         for (BigDecimal distance : distanceList) {
             DeliveryBoySelectionEntity deliveryBoySelectionEntity = new DeliveryBoySelectionEntity();
-            deliveryBoySelectionEntity.setDistanceToStore(distance);
+            deliveryBoySelectionEntity.setDistanceToStore(BigDecimalUtil.getDistanceInKiloMeters(distance));
             deliveryBoySelectionEntity.setDeliveryBoy(capableDeliveryBoys.get(i));
             deliveryBoySelectionEntity.setStoreToCustomerDistance(order.getCustomerChargeableDistance());
             deliveryBoySelectionEntity.setOrder(order);
             int timeFactor = Integer.parseInt(systemPropertyService.readPrefValue(GeneralUtil.getTimeTakenFor(capableDeliveryBoys.get(i).getVehicleType())));
 
-            Integer timeRequired = distance.divide(new BigDecimal(1000)).multiply(new BigDecimal(timeFactor)).setScale(0, RoundingMode.HALF_UP).intValue();
+            Integer timeRequired = BigDecimalUtil.getDistanceInKiloMeters(distance).multiply(new BigDecimal(timeFactor)).setScale(0, RoundingMode.HALF_UP).intValue();
             deliveryBoySelectionEntity.setTimeRequired(timeRequired);
             deliveryBoySelectionEntity.setAccepted(false);
             selectionDetails.add(deliveryBoySelectionEntity);

@@ -19,6 +19,8 @@ import java.util.List;
  */
 public class GeoCodingUtil {
 
+    private static final String GOOGLE_MAP_API_KEY = "AIzaSyAnm8zVlUj2KSh5nZA_MD72xZuSBPlmjEg";
+
     //Return In Miter
     public static Float getDistance(double lat1, double lng1, double lat2, double lng2) {
         double earthRadius = 3958.75;
@@ -37,10 +39,24 @@ public class GeoCodingUtil {
 
     public static GeoApiContext getGeoApiContext(){
         // Replace the API key below with a valid API key.
-        GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyAnm8zVlUj2KSh5nZA_MD72xZuSBPlmjEg");
+        GeoApiContext context = new GeoApiContext().setApiKey(GOOGLE_MAP_API_KEY);
         return context;
     }
 
+
+    /**
+     * This method return list of distances based on origin and destination addresses.
+     * Example:
+     *         String origin[] = [{27.2133,85.2323}];
+     *         String destination[] = [{27.9133,85.4323},{27.5333,85.7723}];
+     *         List<BigDecimal> distanceList = getListOfDistances(origin, destination);
+     * @param origin Takes array of String as parameter which contains combination of both
+     *               latitude and longitude of origin address.
+     * @param destination  Takes array of String as parameter which contains combination of both
+     *               latitude and longitude of origin address.
+     * @return  list of distances BigDecimal values.
+     * @throws Exception
+     */
     public static List<BigDecimal> getListOfDistances(String[] origin, String destination[]) throws Exception {
         List<BigDecimal> distance = new ArrayList<BigDecimal>();
         GeoApiContext context = GeoCodingUtil.getGeoApiContext();

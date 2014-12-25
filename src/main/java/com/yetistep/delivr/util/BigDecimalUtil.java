@@ -98,4 +98,13 @@ public class BigDecimalUtil {
         }
         return minIndex;
     }
+
+    public static BigDecimal getDistanceInKiloMeters(BigDecimal distanceInMeters){
+        return distanceInMeters.divide(new BigDecimal(1000));
+    }
+
+    public static BigDecimal getDistanceInMeters(BigDecimal distanceInKiloMeters){
+        return distanceInKiloMeters.multiply(new BigDecimal(1000));
+    }
+
 }

@@ -39,192 +39,200 @@
         <div class="main_content">
             <div class="form_container full_width clearfix">
                 <div class="row">
-                    <div class="form_section">
-                        <div class="col-lg-6">
+                    <form role="form" id="form_item" method="POST" action="">
+                        <div class="form_section clearfix">
+                            <div class="col-lg-6">
 
-                            <div class="form_head">Images</div>
-                            <div class="form_content">
-                                <div class="product_images form-group clearfix">
-                                    <div class="product_image col-lg-4">
-                                        <div id="product_image1" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
-                                            <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                <div class="form_head">Images</div>
+                                <div class="form_content">
+                                    <div class="product_images form-group clearfix">
+                                        <div class="product_image col-lg-4">
+                                            <div id="product_image1" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
+                                                <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                            </div>
+                                            <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="product_image1_input" name="product_image1_input" class="hidden" />
                                         </div>
-                                        <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="product_image1_input" name="product_image1_input" class="hidden" />
-                                    </div>
-                                    <div class="product_image col-lg-4">
-                                        <div id="product_image2" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
-                                            <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                        <div class="product_image col-lg-4">
+                                            <div id="product_image2" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
+                                                <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                            </div>
+                                            <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="product_image2_input" name="product_image2_input" class="hidden" />
                                         </div>
-                                        <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="product_image2_input" name="product_image2_input" class="hidden" />
-                                    </div>
-                                    <div class="product_image col-lg-4">
-                                        <div id="product_image3" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
-                                            <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                        <div class="product_image col-lg-4">
+                                            <div id="product_image3" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
+                                                <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                            </div>
+                                            <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="product_image3_input" name="product_image3_input" class="hidden" />
                                         </div>
-                                        <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="product_image3_input" name="product_image3_input" class="hidden" />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="form_head">Basic Info</div>
-                            <div class="form_content">
-                                <div class="row">
-                                    <div class="form-group clearfix">
-                                        <label class="col-lg-4 floated_label" for="name_item">Item Name</label>
-                                        <div class="col-lg-8">
-                                            <input type="text" class="form-control" id="name_item" name="name_item">
+                                <div class="form_head">Basic Info</div>
+                                <div class="form_content">
+                                    <div class="row">
+                                        <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label" for="name_item">Item Name</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="name_item" name="name_item">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group clearfix">
-                                        <label class="col-lg-4 floated_label" for="description">Description</label>
-                                        <div class="col-lg-8">
-                                            <input type="text" class="form-control" id="description" name="description">
+                                        <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label" for="description">Description</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="description" name="description">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group clearfix">
-                                        <label class="col-lg-4 floated_label" for="additional_offer">Additional Offer</label>
-                                        <div class="col-lg-8">
-                                            <input type="text" class="form-control" id="additional_offer" name="additional_offer" value="N/A">
+                                        <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label" for="additional_offer">Additional Offer</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="additional_offer" name="additional_offer" value="N/A">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <%--                                    <div class="form-group clearfix">
-                                                                            <label class="col-lg-4 floated_label" for="item_size">Size</label>
-                                                                            <div class="col-lg-8">
-                                                                                <input type="text" class="form-control" id="item_size" name="item_size">
+                                        <%--                                    <div class="form-group clearfix">
+                                                                                <label class="col-lg-4 floated_label" for="item_size">Size</label>
+                                                                                <div class="col-lg-8">
+                                                                                    <input type="text" class="form-control" id="item_size" name="item_size">
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                        <div class="form-group clearfix">
-                                                                            <label class="col-lg-4 floated_label" for="item_weight">Weight</label>
-                                                                            <div class="col-lg-8">
-                                                                                <input type="text" class="form-control" id="item_weight" name="item_weight">
-                                                                            </div>
-                                                                        </div>--%>
+                                                                            <div class="form-group clearfix">
+                                                                                <label class="col-lg-4 floated_label" for="item_weight">Weight</label>
+                                                                                <div class="col-lg-8">
+                                                                                    <input type="text" class="form-control" id="item_weight" name="item_weight">
+                                                                                </div>
+                                                                            </div>--%>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form_head">Available Stores</div>
-                            <div class="form_content">
-                                <div class="form-group">
-                                    <select id="item_brand" name="item_brand" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                        <option value="none">Select Store</option>
-                                    </select>
-                                </div>
-                                <div id="item_store_container" class="form-group">
-                                </div>
-                            </div>
-                            <div class="form_head">Category</div>
-                            <div class="form_content">
-                                <div id="category_container">
+                                <div class="form_head">Available Stores</div>
+                                <div class="form_content">
                                     <div class="form-group">
-                                        <select class="category_options col-xs-12 no_pad no_margin" data-style="form-control">
-                                            <option value="none">Select Category</option>
+                                        <select id="item_brand" name="item_brand" class="col-xs-12 no_pad no_margin" data-style="form-control">
+                                            <option value="none">Select Store</option>
                                         </select>
                                     </div>
-                                </div>
-                                <div class="form-group add_categories hidden">
-                                    <div class="new_category_fields">
-                                        <input type="text" class="form-control hidden" id="new_category" name="new_category" placeholder="Category Name">
-                                        <input type="text" class="form-control hidden" id="new_subcategory" name="new_subcategory" placeholder="Subcategory Name">
-                                    </div>
-                                    <div class="action_buttons">
-                                        <button type="button" id="save_category" class="btn btn_green glyphicon glyphicon-ok"></button>
-                                        <button type="button" id="cancel_category" class="btn btn_green btn_red glyphicon glyphicon-remove"></button>
+                                    <input type="text" class="hidden" name="validate_stores" id="validate_stores">
+                                    <div id="item_store_container" class="form-group">
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <button class="btn btn_green" id="add_category" type="button">Add Category</button>
-                                    <button class="btn btn_green" id="add_subcategory" type="button">Add Subcategory</button>
+                                <div class="form_head">Category</div>
+                                <div class="form_content">
+                                    <input type="text" id="validate_categories" name="validate_categories" class="hidden" />
+                                    <div id="category_container">
+                                        <div class="form-group">
+                                            <select class="category_options col-xs-12 no_pad no_margin" data-style="form-control">
+                                                <option value="none">Select Category</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group add_categories hidden">
+                                        <div class="new_category_fields">
+                                            <input type="text" class="form-control hidden" id="new_category" name="new_category" placeholder="Category Name">
+                                            <input type="text" class="form-control hidden" id="new_subcategory" name="new_subcategory" placeholder="Subcategory Name">
+                                        </div>
+                                        <div class="action_buttons">
+                                            <button type="button" id="save_category" class="btn btn_green glyphicon glyphicon-ok"></button>
+                                            <button type="button" id="cancel_category" class="btn btn_green btn_red glyphicon glyphicon-remove"></button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn_green" id="add_category" type="button">Add Category</button>
+                                        <button class="btn btn_green" id="add_subcategory" type="button">Add Subcategory</button>
+                                    </div>
                                 </div>
+
+                            </div>
+
+                            <div class="col-lg-6">
+
+                                <div class="form_head">Additional Info</div>
+                                <div class="form_content">
+                                    <div class="row">
+                                        <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label" for="available_start_time">Available Time</label>
+                                            <div class="col-lg-8">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <select id="available_start_time" name="available_start_time" class="col-xs-12 no_pad no_margin" data-style="form-control">
+                                                            <option value="none">Select Opening Time</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <select id="available_end_time" name="available_end_time" class="col-xs-12 no_pad no_margin" data-style="form-control">
+                                                            <option value="none">Select Closing Time</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+    <%--                                    <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label">Available Quantity</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="quantity" name="quantity">
+                                            </div>
+                                        </div>--%>
+                                        <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label" for="min_order">Order Quantity</label>
+                                            <div class="col-lg-8">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <input type="text" class="form-control" id="min_order" name="min_order" placeholder="Min.">
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" class="form-control" id="max_order" name="max_order" placeholder="Max.">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label" for="return_policy">Return Policy</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="return_policy" name="return_policy" value="N/A">
+                                            </div>
+                                        </div>
+                                        <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label" for="delivery_fee">Delivery Fee</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="delivery_fee" name="delivery_fee" value="0">
+                                            </div>
+                                        </div>
+                                        <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label" for="vat">VAT</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="vat" name="vat" value="0">
+                                            </div>
+                                        </div>
+                                        <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label" for="service_charge">Service Charge</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="service_charge" name="service_charge" value="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form_head">Pricing & Attributes</div>
+                                <div class="form_content">
+                                    <div class="form-group clearfix row">
+                                        <label class="col-lg-4 floated_label" for="price">Price</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="price" name="price">
+                                        </div>
+                                    </div>
+                                    <input type="text" id="validate_attributes" name="validate_attributes" class="hidden" />
+                                    <div class="item_attributes"></div>
+                                    <div class="form-group">
+                                        <button type="button" id="add_attr_type" class="btn btn_green">Add Attribute Type</button>
+                                    </div>
+                                </div>
+
                             </div>
 
                         </div>
 
-                        <div class="col-lg-6">
-
-                            <div class="form_head">Additional Info</div>
-                            <div class="form_content">
-                                <div class="row">
-                                    <div class="form-group clearfix">
-                                        <label class="col-lg-4 floated_label" for="available_start_time">Available Time</label>
-                                        <div class="col-lg-8">
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <select id="available_start_time" name="available_start_time" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                                        <option value="none">Select Opening Time</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <select id="available_end_time" name="available_end_time" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                                        <option value="none">Select Closing Time</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-<%--                                    <div class="form-group clearfix">
-                                        <label class="col-lg-4 floated_label">Available Quantity</label>
-                                        <div class="col-lg-8">
-                                            <input type="text" class="form-control" id="quantity" name="quantity">
-                                        </div>
-                                    </div>--%>
-                                    <div class="form-group clearfix">
-                                        <label class="col-lg-4 floated_label" for="min_order">Order Quantity</label>
-                                        <div class="col-lg-8">
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <input type="text" class="form-control" id="min_order" name="min_order" placeholder="Min.">
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <input type="text" class="form-control" id="max_order" name="max_order" placeholder="Max.">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group clearfix">
-                                        <label class="col-lg-4 floated_label" for="return_policy">Return Policy</label>
-                                        <div class="col-lg-8">
-                                            <input type="text" class="form-control" id="return_policy" name="return_policy" value="N/A">
-                                        </div>
-                                    </div>
-                                    <div class="form-group clearfix">
-                                        <label class="col-lg-4 floated_label" for="delivery_fee">Delivery Fee</label>
-                                        <div class="col-lg-8">
-                                            <input type="text" class="form-control" id="delivery_fee" name="delivery_fee" value="N/A">
-                                        </div>
-                                    </div>
-                                    <div class="form-group clearfix">
-                                        <label class="col-lg-4 floated_label" for="vat">VAT</label>
-                                        <div class="col-lg-8">
-                                            <input type="text" class="form-control" id="vat" name="vat" value="0">
-                                        </div>
-                                    </div>
-                                    <div class="form-group clearfix">
-                                        <label class="col-lg-4 floated_label" for="service_charge">Service Charge</label>
-                                        <div class="col-lg-8">
-                                            <input type="text" class="form-control" id="service_charge" name="service_charge" value="0">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form_head">Pricing & Attributes</div>
-                            <div class="form_content">
-                                <div class="form-group clearfix row">
-                                    <label class="col-lg-4 floated_label" for="price">Price</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="price" name="price">
-                                    </div>
-                                </div>
-                                <input type="text" name="check_attr" id="check_attr" class="hidden">
-                                <div class="item_attributes"></div>
-                                <div class="form-group">
-                                    <button type="button" id="add_attr_type" class="btn btn_green">Add Attribute Type</button>
-                                </div>
-                            </div>
-
+                        <div class="col-lg-12" style="margin-top: 15px;">
+                            <button class="btn btn_green" type="submit">Add Item</button>
                         </div>
 
-                    </div>
-
+                    </form>
                 </div>
             </div>
         </div>
@@ -262,7 +270,7 @@
             </div>
         </div>
         <div class="attr_list">
-            <div class="form-group clearfix">
+            <div class="form-group clearfix attr_li">
                 <div class="col-lg-6">
                     <input type="text" class="form-control" name="attr_label" placeholder="Attribute Name">
                 </div>
@@ -283,7 +291,7 @@
 </div>
 
 <div class="attr_list_template hidden">
-    <div class="form-group clearfix">
+    <div class="form-group clearfix attr_li">
         <div class="col-lg-6">
             <input type="text" class="form-control" name="attr_label" placeholder="Attribute Name">
         </div>

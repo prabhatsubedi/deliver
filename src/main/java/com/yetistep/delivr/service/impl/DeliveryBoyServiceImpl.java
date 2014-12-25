@@ -205,8 +205,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         boolean orderAcceptance = deliveryBoySelectionDaoService.checkOrderAcceptedStatus(orderId);
         if(orderAcceptance){
             deliveryBoySelectionEntity.setAccepted(true);
+            DeliveryBoyEntity deliveryBoyEntity = deliveryBoySelectionEntity.getDeliveryBoy();
+            deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()+1);
+            deliveryBoyEntity.setTotalOrderTaken(deliveryBoyEntity.getTotalOrderTaken()+1);
+            deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);
+
             OrderEntity orderEntity = deliveryBoySelectionEntity.getOrder();
-            orderEntity.setDeliveryBoy(deliveryBoySelectionEntity.getDeliveryBoy());
+            orderEntity.setDeliveryBoy(deliveryBoyEntity);
             orderEntity.setAssignedTime(deliveryBoySelectionEntity.getTimeRequired());
             orderEntity.setSystemChargeableDistance(deliveryBoySelectionEntity.getDistanceToStore());
             return orderDaoService.update(orderEntity);

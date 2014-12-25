@@ -180,10 +180,8 @@ public class CustomerServiceImpl implements CustomerService {
     private StoreEntity findNearestStoreFromCustomer(OrderEntity order, List<StoreEntity> stores) throws Exception {
         String orderAddress[] = {GeoCodingUtil.getLatLong(order.getAddress().getLatitude(), order.getAddress().getLongitude())};
         String storeAddress[] = new String[stores.size()];
-        int i = 0;
-        for(StoreEntity store: stores){
-            storeAddress[i] = GeoCodingUtil.getLatLong(store.getLatitude(), store.getLongitude());
-            i++;
+        for (int i = 0; i < stores.size(); i++) {
+            storeAddress[i] = GeoCodingUtil.getLatLong(stores.get(i).getLatitude(), stores.get(i).getLongitude());
         }
         List<BigDecimal> distanceList = GeoCodingUtil.getListOfDistances(orderAddress, storeAddress);
         int leastDistanceIndex = BigDecimalUtil.getMinimumIndex(distanceList);
@@ -195,27 +193,26 @@ public class CustomerServiceImpl implements CustomerService {
     private List<DeliveryBoySelectionEntity> calculateStoreToDeliveryBoyDistance(StoreEntity store, List<DeliveryBoyEntity> capableDeliveryBoys, OrderEntity order) throws Exception {
         String storeAddress[] = {GeoCodingUtil.getLatLong(store.getLatitude(), store.getLongitude())};
         String deliveryBoyAddress[] = new String[capableDeliveryBoys.size()];
-        int i = 0;
-        for (DeliveryBoyEntity deliveryBoy : capableDeliveryBoys) {
-            deliveryBoyAddress[i] = GeoCodingUtil.getLatLong(deliveryBoy.getLatitude(), deliveryBoy.getLongitude());
-            i++;
+        for(int i=0; i<capableDeliveryBoys.size(); i++){
+            deliveryBoyAddress[i] = GeoCodingUtil.getLatLong(capableDeliveryBoys.get(i).getLatitude(), capableDeliveryBoys.get(i).getLongitude());
         }
+
+
         List<BigDecimal> distanceList = GeoCodingUtil.getListOfDistances(storeAddress, deliveryBoyAddress);
         List<DeliveryBoySelectionEntity> selectionDetails = new ArrayList<DeliveryBoySelectionEntity>();
-        i = 0;
-        for (BigDecimal distance : distanceList) {
+
+        for (int i = 0; i < distanceList.size(); i++) {
             DeliveryBoySelectionEntity deliveryBoySelectionEntity = new DeliveryBoySelectionEntity();
-            deliveryBoySelectionEntity.setDistanceToStore(BigDecimalUtil.getDistanceInKiloMeters(distance));
+            deliveryBoySelectionEntity.setDistanceToStore(BigDecimalUtil.getDistanceInKiloMeters(distanceList.get(i)));
             deliveryBoySelectionEntity.setDeliveryBoy(capableDeliveryBoys.get(i));
             deliveryBoySelectionEntity.setStoreToCustomerDistance(order.getCustomerChargeableDistance());
             deliveryBoySelectionEntity.setOrder(order);
             int timeFactor = Integer.parseInt(systemPropertyService.readPrefValue(GeneralUtil.getTimeTakenFor(capableDeliveryBoys.get(i).getVehicleType())));
 
-            Integer timeRequired = BigDecimalUtil.getDistanceInKiloMeters(distance).multiply(new BigDecimal(timeFactor)).setScale(0, RoundingMode.HALF_UP).intValue();
+            Integer timeRequired = BigDecimalUtil.getDistanceInKiloMeters(distanceList.get(i)).multiply(new BigDecimal(timeFactor)).setScale(0, RoundingMode.HALF_UP).intValue();
             deliveryBoySelectionEntity.setTimeRequired(timeRequired);
             deliveryBoySelectionEntity.setAccepted(false);
             selectionDetails.add(deliveryBoySelectionEntity);
-            i++;
              //TODO Filter delivery boys by profit criteria - Push Notifications
             log.info(selectionDetails.toString());
         }

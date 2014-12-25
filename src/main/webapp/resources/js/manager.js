@@ -342,13 +342,14 @@ if(typeof(Manager) == "undefined") var Manager = {};
                     return;
                 }
 
-                if($("#due_amount_val").val() == 0 || $("#due_amount_val").val() == null)
+                if($("#due_amount_val").val() == 0 || $("#due_amount_val").val() == null){
+                    $(this).prop("checked", false);
                     return;
+                }
 
                 var callback = function(status, data){
                     if(!data.success){
                         alert(data.message);
-                        $('#submit').prop("checked", false);
                         return;
                     }
                     var courierStaff = data.params.deliveryBoy;
@@ -357,6 +358,7 @@ if(typeof(Manager) == "undefined") var Manager = {};
                     $(".available_balance").text(courierStaff.walletAmount+courierStaff.bankAmount);
                     $(".to_be_submitted").text(courierStaff.walletAmount);
                     $("#to_be_submitted_val").val(courierStaff.walletAmount);
+                    $(this).prop("checked", false);
                 }
                 callback.loaderDiv = "body";
                 callback.requestType = "POST";
@@ -378,13 +380,14 @@ if(typeof(Manager) == "undefined") var Manager = {};
                     return;
                 }
 
-                if($("#to_be_submitted_val").val() == 0 || $("#to_be_submitted_val").val() == null)
+                if($("#to_be_submitted_val").val() == 0 || $("#to_be_submitted_val").val() == null) {
+                    $('#submit').prop("checked", false);
                     return;
+                }
 
                 var callback = function(status, data){
                     if(!data.success){
                         alert(data.message);
-                        $('#submit').prop("checked", false);
                         return;
                     }
                     var courierStaff = data.params.deliveryBoy;
@@ -393,6 +396,7 @@ if(typeof(Manager) == "undefined") var Manager = {};
                     $(".available_balance").text(courierStaff.walletAmount+courierStaff.bankAmount);
                     $(".to_be_submitted").text(courierStaff.walletAmount);
                     $("#to_be_submitted_val").val(courierStaff.walletAmount);
+                    $('#submit').prop("checked", false);
                 }
                 callback.loaderDiv = "body";
                 callback.requestType = "POST";

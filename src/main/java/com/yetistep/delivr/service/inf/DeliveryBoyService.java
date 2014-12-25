@@ -29,4 +29,6 @@ public interface DeliveryBoyService {
 
     public Boolean updateLocationOfDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
 
+    public Boolean acceptOrder(Integer deliveryBoyId, Integer orderId) throws Exception ;
+
 }

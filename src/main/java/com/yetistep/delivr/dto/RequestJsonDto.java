@@ -49,6 +49,8 @@ public class RequestJsonDto {
     private BigDecimal submittedAmount;
     private BigDecimal advanceAmount;
 
+    /*For accepting delivery order*/
+    private Integer orderId;
 
 
 
@@ -214,5 +216,13 @@ public class RequestJsonDto {
 
     public void setAdvanceAmount(BigDecimal advanceAmount) {
         this.advanceAmount = advanceAmount;
+    }
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 }

@@ -11,4 +11,8 @@ import com.yetistep.delivr.model.DeliveryBoySelectionEntity;
  * To change this template use File | Settings | File Templates.
  */
 public interface DeliveryBoySelectionDaoService extends GenericDaoService<Integer, DeliveryBoySelectionEntity> {
+    /* Can accept if returned true, i.e. No body has accepted . */
+    public Boolean checkOrderAcceptedStatus(Integer orderId) throws Exception;
+
+    public DeliveryBoySelectionEntity getSelectionDetails(Integer orderId, Integer deliveryBoyId) throws Exception;
 }

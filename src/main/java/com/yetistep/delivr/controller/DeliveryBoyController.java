@@ -2,6 +2,7 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.util.GeneralUtil;
@@ -58,14 +59,32 @@ public class DeliveryBoyController extends AbstractManager{
     public ResponseEntity<ServiceResponse> updateDeliveryBoyLocation(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoy) {
         try{
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto/*, GeneralUtil.ACCESS_TOKEN*/);
-            //validateMobileClient(headerDto.getAccessToken());
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
 
             deliveryBoyService.updateLocationOfDeliveryBoy(deliveryBoy);
             ServiceResponse serviceResponse = new ServiceResponse("Location of delivery boy updated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred during updating location of delivery boy", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/accept_order", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> acceptOrderFromDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
+
+            deliveryBoyService.acceptOrder(Integer.parseInt(headerDto.getId()), requestJsonDto.getOrderId());
+            ServiceResponse serviceResponse = new ServiceResponse("Order has been accepted successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while accepting order", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

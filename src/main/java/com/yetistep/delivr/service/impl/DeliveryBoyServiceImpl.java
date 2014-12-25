@@ -1,14 +1,13 @@
 package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
+import com.yetistep.delivr.dao.inf.DeliveryBoySelectionDaoService;
+import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.Role;
-import com.yetistep.delivr.model.AddressEntity;
-import com.yetistep.delivr.model.DeliveryBoyEntity;
-import com.yetistep.delivr.model.RoleEntity;
-import com.yetistep.delivr.model.UserEntity;
+import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.GeoCodingUtil;
@@ -35,6 +34,12 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
     @Autowired
     UserDaoService userDaoService;
+
+    @Autowired
+    OrderDaoService orderDaoService;
+
+    @Autowired
+    DeliveryBoySelectionDaoService deliveryBoySelectionDaoService;
 
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
@@ -185,5 +190,27 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         dBoyEntity.setLatitude(deliveryBoyEntity.getLatitude());
         dBoyEntity.setLongitude(deliveryBoyEntity.getLongitude());
         return deliveryBoyDaoService.update(dBoyEntity);
+    }
+
+    @Override
+    public Boolean acceptOrder(Integer deliveryBoyId, Integer orderId) throws Exception {
+        log.info("Accepting Order By delivery Boy with ID:"+deliveryBoyId);
+
+        DeliveryBoySelectionEntity deliveryBoySelectionEntity = deliveryBoySelectionDaoService.getSelectionDetails(orderId, deliveryBoyId);
+        if(deliveryBoySelectionEntity == null){
+            throw new YSException("VLD017");
+        }
+
+        /* Returns true if order can be accepted else returns false */
+        boolean orderAcceptance = deliveryBoySelectionDaoService.checkOrderAcceptedStatus(orderId);
+        if(orderAcceptance){
+            deliveryBoySelectionEntity.setAccepted(true);
+            OrderEntity orderEntity = deliveryBoySelectionEntity.getOrder();
+            orderEntity.setDeliveryBoy(deliveryBoySelectionEntity.getDeliveryBoy());
+            orderEntity.setAssignedTime(deliveryBoySelectionEntity.getTimeRequired());
+            orderEntity.setSystemChargeableDistance(deliveryBoySelectionEntity.getDistanceToStore());
+            return orderDaoService.update(orderEntity);
+        }
+        throw new YSException("ORD001");
     }
 }

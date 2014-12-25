@@ -2,8 +2,10 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.DeliveryBoySelectionDaoService;
 import com.yetistep.delivr.model.DeliveryBoySelectionEntity;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -51,5 +53,23 @@ public class DeliverBoySelectionDaoServiceImpl implements DeliveryBoySelectionDa
     public Session getCurrentSession() throws Exception {
         Session session = sessionFactory.getCurrentSession();
         return session;
+    }
+
+    @Override
+    public Boolean checkOrderAcceptedStatus(Integer orderId) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(DeliveryBoySelectionEntity.class)
+                .add(Restrictions.eq("order.id", orderId))
+                .add(Restrictions.eq("accepted", true));
+        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = criteria.list();
+        return deliveryBoySelectionEntities.size() == 0 ? true : false;
+    }
+
+    @Override
+    public DeliveryBoySelectionEntity getSelectionDetails(Integer orderId, Integer deliveryBoyId) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(DeliveryBoySelectionEntity.class)
+                .add(Restrictions.eq("order.id", orderId))
+                .add(Restrictions.eq("deliveryBoy.id", deliveryBoyId));
+        DeliveryBoySelectionEntity deliveryBoySelectionEntity = (DeliveryBoySelectionEntity) criteria.uniqueResult();
+        return deliveryBoySelectionEntity;
     }
 }

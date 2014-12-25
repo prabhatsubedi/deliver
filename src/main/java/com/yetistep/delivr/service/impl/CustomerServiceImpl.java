@@ -170,8 +170,8 @@ public class CustomerServiceImpl implements CustomerService {
         order.setOrderName(store.getName()+" to "+ order.getAddress().getStreet());
         order.setOrderVerificationCode(Integer.parseInt(GeneralUtil.generateMobileCode()));
         //TODO Send code message to customer
-        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, deliveryBoyDaoService.findAllCapableDeliveryBoys());
-
+        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, deliveryBoyDaoService.findAllCapableDeliveryBoys(), order);
+        order.setDeliveryBoySelections(deliveryBoySelectionEntities);
         customerDaoService.saveOrder(order);
 
     }
@@ -192,7 +192,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-    private List<DeliveryBoySelectionEntity> calculateStoreToDeliveryBoyDistance(StoreEntity store, List<DeliveryBoyEntity> capableDeliveryBoys) throws Exception {
+    private List<DeliveryBoySelectionEntity> calculateStoreToDeliveryBoyDistance(StoreEntity store, List<DeliveryBoyEntity> capableDeliveryBoys, OrderEntity order) throws Exception {
         String storeAddress[] = {GeoCodingUtil.getLatLong(store.getLatitude(), store.getLongitude())};
         String deliveryBoyAddress[] = new String[capableDeliveryBoys.size()];
         int i = 0;
@@ -207,15 +207,17 @@ public class CustomerServiceImpl implements CustomerService {
             DeliveryBoySelectionEntity deliveryBoySelectionEntity = new DeliveryBoySelectionEntity();
             deliveryBoySelectionEntity.setDistanceToStore(distance);
             deliveryBoySelectionEntity.setDeliveryBoy(capableDeliveryBoys.get(i));
+            deliveryBoySelectionEntity.setStoreToCustomerDistance(order.getCustomerChargeableDistance());
+            deliveryBoySelectionEntity.setOrder(order);
             int timeFactor = Integer.parseInt(systemPropertyService.readPrefValue(GeneralUtil.getTimeTakenFor(capableDeliveryBoys.get(i).getVehicleType())));
 
-            System.out.println("Time Factor:"+timeFactor);
             Integer timeRequired = distance.divide(new BigDecimal(1000)).multiply(new BigDecimal(timeFactor)).setScale(0, RoundingMode.HALF_UP).intValue();
             deliveryBoySelectionEntity.setTimeRequired(timeRequired);
+            deliveryBoySelectionEntity.setAccepted(false);
             selectionDetails.add(deliveryBoySelectionEntity);
             i++;
              //TODO Filter delivery boys by profit criteria - Push Notifications
-            System.out.println(selectionDetails.toString());
+            log.info(selectionDetails.toString());
         }
         return selectionDetails;
     }

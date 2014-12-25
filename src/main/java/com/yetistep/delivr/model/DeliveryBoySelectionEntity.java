@@ -18,7 +18,7 @@ public class DeliveryBoySelectionEntity {
     private BigDecimal storeToCustomerDistance;
     private BigDecimal distanceToStore;
     private Integer timeRequired;
-    private Boolean isAccepted;
+    private Boolean accepted;
     private DeliveryBoyEntity deliveryBoy;
     private OrderEntity order;
 
@@ -63,11 +63,11 @@ public class DeliveryBoySelectionEntity {
 
     @Column(name = "accepted", nullable = false, columnDefinition = "TINYINT(1)")
     public Boolean getAccepted() {
-        return isAccepted;
+        return accepted;
     }
 
     public void setAccepted(Boolean accepted) {
-        isAccepted = accepted;
+        this.accepted = accepted;
     }
 
     @ManyToOne
@@ -99,7 +99,7 @@ public class DeliveryBoySelectionEntity {
                 ", timeRequired=" + timeRequired +
                 ", deliveryBoy=" + deliveryBoy.getId() +
                 ", order=" + order +
-                ", isAccepted=" + isAccepted +
+                ", isAccepted=" + accepted +
                 '}';
     }
 }

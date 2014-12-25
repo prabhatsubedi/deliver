@@ -152,6 +152,9 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
             paidToCourier = DBOY_MIN_AMOUNT.add(additionalDeliveryAmt);
 
         /* 16 ===== Profit ====== */
+        //FIXME:
+        // min profit % from system preferences
+        // total order * profit% = >  actual profit
         BigDecimal profit = ZERO;
         profit = BigDecimalUtil.percentageOf(totalOrder, commissionPct).add(deliveryChargedBeforeDiscount).add(serviceFeeAmt).subtract(paidToCourier);
 

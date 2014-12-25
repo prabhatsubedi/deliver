@@ -74,7 +74,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if (profileImage != null && !profileImage.isEmpty()) {
             log.info("Uploading Profile Image of delivery boy to S3 Bucket ");
 
-            String dir = MessageBundle.separateString("/", "DBoy", "DBoy" + deliveryBoy.getId());
+            String dir = MessageBundle.separateString("/", "DBoys", "DBoy_" + deliveryBoy.getId());
             boolean isLocal = MessageBundle.isLocalHost();
             String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + deliveryBoy.getId();
             String s3Path = GeneralUtil.saveImageToBucket(profileImage, imageName, dir, true);

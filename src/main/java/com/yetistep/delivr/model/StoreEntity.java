@@ -8,6 +8,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -37,7 +38,8 @@ public class StoreEntity implements Serializable {
     private String latitude;
     private String longitude;
     private Timestamp createdDate;
-
+    //Transient Variable
+    private BigDecimal customerToStoreDistance;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
@@ -181,5 +183,14 @@ public class StoreEntity implements Serializable {
 
     public void setCreatedDate(Timestamp createdDate) {
         this.createdDate = createdDate;
+    }
+
+    @Transient
+    public BigDecimal getCustomerToStoreDistance() {
+        return customerToStoreDistance;
+    }
+
+    public void setCustomerToStoreDistance(BigDecimal customerToStoreDistance) {
+        this.customerToStoreDistance = customerToStoreDistance;
     }
 }

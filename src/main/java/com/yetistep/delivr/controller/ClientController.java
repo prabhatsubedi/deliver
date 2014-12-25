@@ -5,7 +5,9 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
+import com.yetistep.delivr.model.StoresBrandEntity;
 import com.yetistep.delivr.model.UserEntity;
+import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
@@ -42,6 +44,9 @@ public class ClientController extends AbstractManager{
 
     @Autowired
     CustomerService customerService;
+
+    @Autowired
+    ClientService clientService;
 
     @RequestMapping(value = "/save_customer", method = RequestMethod.POST)
     @ResponseBody
@@ -135,6 +140,24 @@ public class ClientController extends AbstractManager{
             ServiceResponse serviceResponse = new ServiceResponse("Order has been saved successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/store_brands/page/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getBrands(@RequestBody (required = false) RequestJsonDto requestJsonDto, @PathVariable("id") Integer pageId){
+        try{
+//            select * from stores_brands where featured is not null order by priority asc;
+//            select * from stores_brands order by isnull(featured),featured asc;
+            List<StoresBrandEntity> storesBrandEntities = clientService.getBrands(requestJsonDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Brands fetched successfully");
+            serviceResponse.addParam("storeBrand", storesBrandEntities);
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch(Exception e) {
             GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);

@@ -17,6 +17,7 @@
     <bean id = "accountService" class="com.yetistep.delivr.service.impl.AccountServiceImpl" />
     <bean id = "systemPropertyService" class="com.yetistep.delivr.service.impl.SystemPropertyServiceImpl" />
     <bean id = "systemAlgorithmService" class="com.yetistep.delivr.service.impl.SystemAlgorithmServiceImpl" />
+    <bean id = "clientService" class="com.yetistep.delivr.service.impl.ClientServiceImpl" />
 
     <bean id = "deliveryBoyDaoService" class="com.yetistep.delivr.dao.impl.DeliveryBoyDaoServiceImpl" />
     <bean id = "customerDaoService" class="com.yetistep.delivr.dao.impl.CustomerDaoServiceImpl" />
@@ -27,5 +28,7 @@
     <bean id = "courierTransactionDaoService" class="com.yetistep.delivr.dao.impl.CourierTransactionDaoServiceImpl" />
     <bean id = "orderDaoService" class="com.yetistep.delivr.dao.impl.OrderDaoServiceImpl" />
     <bean id = "deliveryBoySelectionDaoService" class="com.yetistep.delivr.dao.impl.DeliverBoySelectionDaoServiceImpl" />
+    <bean id = "storesBrandDaoService" class="com.yetistep.delivr.dao.impl.StoresBrandDaoServiceImpl" />
+    <bean id = "storeDaoService" class="com.yetistep.delivr.dao.impl.StoreDaoServiceImpl" />
 
  </beans>

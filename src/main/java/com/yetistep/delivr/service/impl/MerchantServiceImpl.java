@@ -196,8 +196,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         if (brandLogo != null && !brandLogo.isEmpty() && brandImage != null && !brandImage.isEmpty()) {
             log.info("Uploading brand logo and image to S3 Bucket ");
-
-            String dir = MessageBundle.separateString("/", "brand", "brand" + brand.getId());
+            String dir = MessageBundle.separateString("/", "Merchant_"+dbMerchant.getId(), "Brand_"+ brand.getId());
             boolean isLocal = MessageBundle.isLocalHost();
             String brandLogoName = "brand_logo" + (isLocal ? "_tmp_" : "_") + brand.getId();
             String brandImageName = "brand_image" + (isLocal ? "_tmp_" : "_") + brand.getId();

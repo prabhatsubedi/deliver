@@ -2,6 +2,9 @@ package com.yetistep.delivr.dto;
 
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.mobile.CustomerInfo;
+import com.yetistep.delivr.model.mobile.DeviceInfo;
+import com.yetistep.delivr.model.mobile.GpsInfo;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -48,6 +51,10 @@ public class RequestJsonDto {
     /*update account properties*/
     private BigDecimal submittedAmount;
     private BigDecimal advanceAmount;
+    /* For Mobile */
+    private GpsInfo gpsInfo;
+    private DeviceInfo deviceInfo;
+    private CustomerInfo customerInfo;
 
     /*For accepting delivery order*/
     private Integer orderId;
@@ -224,5 +231,29 @@ public class RequestJsonDto {
 
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
+    }
+
+    public GpsInfo getGpsInfo() {
+        return gpsInfo;
+    }
+
+    public void setGpsInfo(GpsInfo gpsInfo) {
+        this.gpsInfo = gpsInfo;
+    }
+
+    public DeviceInfo getDeviceInfo() {
+        return deviceInfo;
+    }
+
+    public void setDeviceInfo(DeviceInfo deviceInfo) {
+        this.deviceInfo = deviceInfo;
+    }
+
+    public CustomerInfo getCustomerInfo() {
+        return customerInfo;
+    }
+
+    public void setCustomerInfo(CustomerInfo customerInfo) {
+        this.customerInfo = customerInfo;
     }
 }

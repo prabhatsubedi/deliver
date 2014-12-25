@@ -48,12 +48,12 @@ public class AccountantController {
         }
     }
 
-    @RequestMapping(value = "/dboy_ack_payment", method = RequestMethod.GET)
+    @RequestMapping(value = "/dboy_ack_payment", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getMerchantById(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+    public ResponseEntity<ServiceResponse> dBoyAckPayment(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             DeliveryBoyEntity deliveryBoy = managerService.ackSubmittedAmount(headerDto, requestJsonDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Delivery boy payment acknowledged successfully with ID: "+headerDto.getId());
@@ -66,6 +66,24 @@ public class AccountantController {
         }
     }
 
+
+    @RequestMapping(value = "/dboy_wallet_payment", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> dBoyWalletPayment(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            DeliveryBoyEntity deliveryBoy = managerService.walletSubmittedAmount(headerDto, requestJsonDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Delivery boy payment submitted successfully with ID: "+headerDto.getId());
+            serviceResponse.addParam("deliveryBoy", deliveryBoy);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving merchant: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
 
 

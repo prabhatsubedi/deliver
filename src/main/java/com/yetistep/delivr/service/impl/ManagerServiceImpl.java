@@ -5,13 +5,15 @@ import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.model.ActionLogEntity;
-import com.yetistep.delivr.model.DeliveryBoyEntity;
-import com.yetistep.delivr.model.Page;
+import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.ManagerService;
+import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,8 +51,21 @@ public class ManagerServiceImpl implements ManagerService {
     public DeliveryBoyEntity updateDboyAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
 
         DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
+
+        if(dBoy.getPreviousDue().compareTo(BigDecimal.ZERO) != 0)
+            throw new YSException("ERR015");
+
         dBoy.setAdvanceAmount(requestJsonDto.getAdvanceAmount());
         dBoy.setBankAmount(dBoy.getBankAmount().add(requestJsonDto.getAdvanceAmount()));
+
+        List<DBoyAdvanceAmountEntity> dBoyAdvanceAmounts = new ArrayList<DBoyAdvanceAmountEntity>();
+        DBoyAdvanceAmountEntity dBoyAdvanceAmount = new DBoyAdvanceAmountEntity();
+        dBoyAdvanceAmount.setAmountAdvance(requestJsonDto.getAdvanceAmount());
+        dBoyAdvanceAmount.setDeliveryBoy(dBoy);
+        dBoyAdvanceAmounts.add(dBoyAdvanceAmount);
+
+        dBoy.setdBoyAdvanceAmounts(dBoyAdvanceAmounts);
+
         deliveryBoyDaoService.update(dBoy);
 
         return dBoy;
@@ -58,6 +73,37 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public DeliveryBoyEntity ackSubmittedAmount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
+
+        dBoy.setPreviousDue(BigDecimal.ZERO);
+
+        List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
+        DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();
+        dBoySubmittedAmount.setAmountReceived(requestJsonDto.getSubmittedAmount());
+        dBoySubmittedAmount.setDeliveryBoy(dBoy);
+        dBoySubmittedAmounts.add(dBoySubmittedAmount);
+        dBoy.setdBoySubmittedAmount(dBoySubmittedAmounts);
+
+        deliveryBoyDaoService.update(dBoy);
+
+        return dBoy;
+    }
+
+    @Override
+    public DeliveryBoyEntity walletSubmittedAmount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
+        DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
+
+        dBoy.setWalletAmount(BigDecimal.ZERO);
+
+        List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
+        DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();
+        dBoySubmittedAmount.setAmountReceived(requestJsonDto.getSubmittedAmount());
+        dBoySubmittedAmount.setDeliveryBoy(dBoy);
+        dBoySubmittedAmounts.add(dBoySubmittedAmount);
+        dBoy.setdBoySubmittedAmount(dBoySubmittedAmounts);
+
+        deliveryBoyDaoService.update(dBoy);
+
+        return dBoy;
     }
 }

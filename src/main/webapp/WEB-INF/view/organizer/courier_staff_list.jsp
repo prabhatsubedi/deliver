@@ -12,6 +12,7 @@
     <link href="/resources/css/maps.css" rel="stylesheet" type="text/css" media="screen"/>
     <script type="text/javascript" src="/resources/js/manager.js"></script>
     <script type="text/javascript" src="/resources/js/map.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery.validate.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 
     <script type="text/javascript">
@@ -20,6 +21,10 @@
 
             Manager.getCourierStaffs();
             Manager.getCourierBoyMap();
+            Manager.getCourierBoyAccount();
+            Manager.updateCourierBoyAccount();
+            Manager.submitCourierBoyPreviousAmount();
+            Manager.submitCourierBoyWalletAmount();
 
         });
 
@@ -40,7 +45,7 @@
             </div>
             <div class="modal-body">
                 <div class="db-map-container">
-                  <div id="no-edit-map-canvas"></div>
+                    <div id="no-edit-map-canvas"></div>
                 </div>
             </div>
         </div>
@@ -56,38 +61,40 @@
                 <h4 class="modal-title" id="accountLabel">Update Account</h4>
             </div>
             <div class="modal-body">
-                <table id="accountTable" class="dataTable no-footer" role="grid" aria-describedby="accountTable">
-                    <tr>
-                        <th>SN</th>
-                        <th>Title</th>
-                        <th>Amount</th>
-                        <th>Action</th>
-                    </tr>
-                    <tr>
-                        <td>Previous Day Due Amount</td>
-                        <td class="due_amount"></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Current Available Balance</td>
-                        <td class="available_balance"></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Today's Amount to be submitted to Account</td>
-                        <td class="to_be_submitted"></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Advance Amount</td>
-                        <td class="advance_amount"></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </table>
+                <div class="table-view">
+                    <input type="hidden" id="due_amount_val">
+                    <input type="hidden" id="to_be_submitted_val">
+                    <table id="accountTable" class="dataTable no-footer" role="grid" aria-describedby="accountTable">
+                        <tr>
+                            <th>SN</th>
+                            <th>Title</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr>
+                            <th>1</th>
+                            <td>Previous Day Due Amount</td>
+                            <td class="due_amount"></td>
+                            <td><input type="checkbox" id="ack"></td>
+                        </tr>
+                        <tr>
+                            <th>2</th>
+                            <td>Current Available Balance</td>
+                            <td class="available_balance"></td>
+                        </tr>
+                        <tr>
+                            <th>3</th>
+                            <td>Today's Amount to be submitted to Account</td>
+                            <td class="to_be_submitted"></td>
+                            <td><input type="checkbox" id="submit"></td>
+                        </tr>
+                        <tr>
+                            <th>4</th>
+                            <td>Advance Amount</td>
+                            <td class="advance_amount form_container"><input type="text" id="advance_amount_val" class="form-control"></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

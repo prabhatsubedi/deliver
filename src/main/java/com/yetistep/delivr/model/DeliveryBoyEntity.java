@@ -239,7 +239,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "deliveryBoy")
+    @OneToMany(mappedBy = "deliveryBoy", cascade = CascadeType.ALL)
     public List<DBoyAdvanceAmountEntity> getdBoyAdvanceAmounts() {
         return dBoyAdvanceAmounts;
     }
@@ -249,7 +249,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "deliveryBoy")
+    @OneToMany(mappedBy = "deliveryBoy", cascade = CascadeType.ALL)
     public List<DBoySubmittedAmountEntity> getdBoySubmittedAmount() {
         return dBoySubmittedAmount;
     }

@@ -211,8 +211,8 @@ if(typeof(Manager) == "undefined") var Manager = {};
                          alert(data.message);
                          return;
                      }
-                     var courierStaffs = data.params.deliveryBoy;
-                     var srclatlng = new google.maps.LatLng(courierStaffs.latitude, courierStaffs.longitude);
+                     var courierStaff = data.params.deliveryBoy;
+                     var srclatlng = new google.maps.LatLng(courierStaff.latitude, courierStaff.longitude);
                      var destlatlang =  new google.maps.LatLng("27.6891424", "85.324561");
                      map.setZoom(12);
                      map.setCenter(srclatlng);
@@ -260,6 +260,149 @@ if(typeof(Manager) == "undefined") var Manager = {};
          });
    }
 
+    Manager.getCourierBoyAccount = function(){
+        $('body').delegate('.update_courier_boy_account', 'click', function(){
+            var id = $(this).data("cbid");
+            $('#modal_account').data('cbid', id);
+            var callback = function(status, data){
+                if(!data.success){
+                    alert(data.message);
+                    return;
+                }
+                var courierStaff = data.params.deliveryBoy;
+                console.log(courierStaff);
+                $(".due_amount").text(courierStaff.previousDue);
+                $("#due_amount_val").val(courierStaff.previousDue)
+                $(".available_balance").text(courierStaff.walletAmount+courierStaff.bankAmount);
+                $(".to_be_submitted").text(courierStaff.walletAmount);
+                $("#to_be_submitted_val").val(courierStaff.walletAmount);
+                $('#modal_account').data('cbname', courierStaff.user.fullName);
+
+            }
+            callback.loaderDiv = ".update_courier_boy_account";
+            callback.requestType = "GET";
+            var headers = {};
+            headers.id = id;
+            Main.request('/organizer/get_dboy', {}, callback, headers);
+        });
+    }
+
+    Manager.updateCourierBoyAccount = function(){
+        $('body').delegate('#advance_amount_val', 'keypress', function(event){
+            if($('#advance_amount_val').hasClass('error')){
+                $('#advance_amount_val').removeClass('error');
+            }
+            var cbid = $('#modal_account').data('cbid');
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+                if($(this).val() == null)
+                    return;
+
+                if(isNaN($('#advance_amount_val').val())) {
+                    $('#advance_amount_val').addClass('error');
+                    return;
+                }
+
+                var conf = confirm("Are you sure you want to add advance amount for '"+$('#modal_account').data('cbname')+"'?");
+                if(!conf) {
+                    $('#advance_amount_val').val('');
+                    return;
+                }
+
+                var callback = function(status, data){
+                    if(!data.success){
+                        alert(data.message);
+                        return;
+                    }
+                    var courierStaff = data.params.deliveryBoy;
+                    $(".due_amount").text(courierStaff.previousDue);
+                    $("#due_amount_val").val(courierStaff.previousDue)
+                    $(".available_balance").text(courierStaff.walletAmount+courierStaff.bankAmount);
+                    $(".to_be_submitted").text(courierStaff.walletAmount);
+                    $("#to_be_submitted_val").val(courierStaff.walletAmount);
+                    $('#advance_amount_val').val('');
+                }
+                callback.loaderDiv = "body";
+                callback.requestType = "POST";
+                var headers = {};
+                headers.id = cbid;
+                Main.request('/accountant/update_dboy_account', {advanceAmount:$(this).val()}, callback, headers);
+            }
+
+        });
+    }
+
+    Manager.submitCourierBoyPreviousAmount = function(){
+        $('body').delegate('#ack', 'click', function(){
+            var cbid = $('#modal_account').data('cbid');
+            if($(this).prop("checked")){
+                 var conf =  confirm("Are you sure you want to acknowledge  RS."+$("#due_amount_val").val()+" from '"+$('#modal_account').data('cbname')+"'?");
+                if(!conf) {
+                    $(this).prop("checked", false);
+                    return;
+                }
+
+                if($("#due_amount_val").val() == 0 || $("#due_amount_val").val() == null)
+                    return;
+
+                var callback = function(status, data){
+                    if(!data.success){
+                        alert(data.message);
+                        $('#submit').prop("checked", false);
+                        return;
+                    }
+                    var courierStaff = data.params.deliveryBoy;
+                    $(".due_amount").text(courierStaff.previousDue);
+                    $("#due_amount_val").val(courierStaff.previousDue)
+                    $(".available_balance").text(courierStaff.walletAmount+courierStaff.bankAmount);
+                    $(".to_be_submitted").text(courierStaff.walletAmount);
+                    $("#to_be_submitted_val").val(courierStaff.walletAmount);
+                }
+                callback.loaderDiv = "body";
+                callback.requestType = "POST";
+                var headers = {};
+                headers.id = cbid;
+                Main.request('/accountant/dboy_ack_payment', {submittedAmount:$("#due_amount_val").val()}, callback, headers);
+
+            }
+        });
+    }
+
+    Manager.submitCourierBoyWalletAmount = function(){
+        $('body').delegate('#submit', 'click', function(){
+            var cbid = $('#modal_account').data('cbid');
+            if($(this).prop("checked")){
+                var conf =  confirm("Are you sure you want to submit RS."+$("#to_be_submitted_val").val()+" from '"+$('#modal_account').data('cbname')+"'?");
+                if(!conf) {
+                    $(this).prop("checked", false);
+                    return;
+                }
+
+                if($("#to_be_submitted_val").val() == 0 || $("#to_be_submitted_val").val() == null)
+                    return;
+
+                var callback = function(status, data){
+                    if(!data.success){
+                        alert(data.message);
+                        $('#submit').prop("checked", false);
+                        return;
+                    }
+                    var courierStaff = data.params.deliveryBoy;
+                    $(".due_amount").text(courierStaff.previousDue);
+                    $("#due_amount_val").val(courierStaff.previousDue)
+                    $(".available_balance").text(courierStaff.walletAmount+courierStaff.bankAmount);
+                    $(".to_be_submitted").text(courierStaff.walletAmount);
+                    $("#to_be_submitted_val").val(courierStaff.walletAmount);
+                }
+                callback.loaderDiv = "body";
+                callback.requestType = "POST";
+                var headers = {};
+                headers.id = cbid;
+                Main.request('/accountant/dboy_wallet_payment', {submittedAmount:$("#to_be_submitted_val").val()}, callback, headers);
+
+            }
+        });
+    }
 
 
 })(jQuery);

@@ -71,7 +71,6 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("priority"), "priority")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.isNotNull("featured")) ;
-        criteria.addOrder(Order.asc("priority"));
         storesBrandEntities = criteria.list();
         return storesBrandEntities.size() > 0 ? storesBrandEntities : null;
 

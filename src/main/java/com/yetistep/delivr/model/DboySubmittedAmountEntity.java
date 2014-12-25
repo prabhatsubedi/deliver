@@ -21,7 +21,6 @@ import java.sql.Timestamp;
 class DBoySubmittedAmountEntity implements Serializable {
 
     private Integer id;
-    private Timestamp submissionDate;
     private DeliveryBoyEntity deliveryBoy;
     private BigDecimal amountReceived;
     private Timestamp ackDate;
@@ -35,16 +34,6 @@ class DBoySubmittedAmountEntity implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "submission_date", columnDefinition="TIMESTAMP")
-    public Timestamp getSubmissionDate() {
-        return submissionDate;
-    }
-
-    public void setSubmissionDate(Timestamp submissionDate) {
-        this.submissionDate = submissionDate;
     }
 
     @JsonIgnore

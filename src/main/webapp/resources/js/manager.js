@@ -36,7 +36,7 @@ if(typeof(Manager) == "undefined") var Manager = {};
                 }
                 link_profile = '<a href="/merchant/profile/' + merchantId  + '">Profile</a>';
                 var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
-                var link_merchant = '<a href="/merchant/dashboard/' + merchantId  + '">' + merchant.businessTitle + '</a>';
+                var link_merchant = '<a href="/merchant/store/list/' + merchantId  + '">' + merchant.businessTitle + '</a>';
 
                 var row = [merchantId, link_merchant, merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
                 tdata.push(row);

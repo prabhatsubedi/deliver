@@ -69,7 +69,7 @@ var data_categories_names = [];
                     for(var i = 0; i < storeBrands.length; i++) {
                         var storeBrand = storeBrands[i];
                         storesById[storeBrand.id] = storeBrand.store;
-                        brandList += '<option value="' + storeBrand.id + '">' + storeBrand.brandName + '</option>';
+                        brandList += '<option value="' + storeBrand.id + '" data-open="' + storeBrand.openingTime + '" data-close="' + storeBrand.closingTime + '">' + storeBrand.brandName + '</option>';
                     }
                     $('#item_brand').append(brandList);
                     $('#item_brand').selectpicker('refresh');
@@ -103,6 +103,11 @@ var data_categories_names = [];
             $('#item_store_container').html(stores_html);
             $('#item_store_container .check_label').addClass('icon_full');
             $('#item_store_container .checkbox').attr('checked', 'checked');
+
+            $('#available_start_time').val($('option:selected', this).attr('data-open'));
+            $('#available_start_time').selectpicker('refresh');
+            $('#available_end_time').val($('option:selected', this).attr('data-close'));
+            $('#available_end_time').selectpicker('refresh');
         });
 
         $('#category_container .category_options').live('change', function(){

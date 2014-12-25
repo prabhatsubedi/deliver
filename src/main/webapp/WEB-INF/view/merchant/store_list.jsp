@@ -9,16 +9,6 @@
 
     <script type="text/javascript" src="/resources/js/store.js"></script>
 
-    <script type="text/javascript">
-
-        $(document).ready(function(){
-
-            Store.listStores({merchantId: Main.getFromLocalStorage('mid')});
-
-        });
-
-    </script>
-
 
 </head>
 <body>
@@ -58,6 +48,16 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+
+        Store.listStores({merchantId: Main.getFromLocalStorage('mid')});
+
+    });
+
+</script>
 
 </body>
 </html>

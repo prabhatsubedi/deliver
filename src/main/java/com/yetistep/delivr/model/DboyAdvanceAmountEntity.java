@@ -18,7 +18,7 @@ import java.sql.Timestamp;
  */
 @Entity(name="DboyAdvanceAmountEntity")
 @Table(name = "dboy_advance_amounts")
-public class DBoyAdvanceAmountEntity implements Serializable {
+class DBoyAdvanceAmountEntity implements Serializable {
 
     private Integer id;
     private Timestamp date;

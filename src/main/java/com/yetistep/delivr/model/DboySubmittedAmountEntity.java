@@ -16,7 +16,7 @@ import java.sql.Timestamp;
  * Time: 11:34 AM
  * To change this template use File | Settings | File Templates.
  */
-@Entity(name = "DboySubmittedAmountEntity")
+@Entity(name = "DBoySubmittedAmountEntity")
 @Table(name = "dboy_submitted_amounts")
 public class DBoySubmittedAmountEntity implements Serializable {
 

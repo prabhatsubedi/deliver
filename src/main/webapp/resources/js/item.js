@@ -1,6 +1,8 @@
 if(typeof(Item) == "undefined") var Item = {};
 
 var storesById = {};
+var data_categories_id = 0;
+var data_categories_names = [];
 
 (function ($){
 
@@ -343,7 +345,10 @@ var storesById = {};
                     if($('option:selected', this).attr('data-new') == "true") {
                         category.name = $(this).val();
                         itemCategories.push(category);
+                        data_categories_names.push($(this).val());
                     } else {
+                        data_categories_id = $(this).val();
+                        data_categories_names = [];
                         itemCategories = [];
                         category.id = $(this).val();
                         itemCategories.push(category);
@@ -425,6 +430,48 @@ var storesById = {};
 
                 if (data.success == true) {
                     alert(data.message);
+
+                    $('#category_container select.category_options').each(function(){
+                        if($('option:selected', this).attr('data-new') == "true") {
+                            $(this).parent('.form-group').remove();
+                        }
+                    });
+
+                    var j = 0;
+                    function update_subcat(parent_id) {
+
+                        Main.request('/merchant/get_child_categories', {parentCategoryId: parent_id, categoryStoreId: $('#item_brand').val()}, function(status, data) {
+
+                            if (data.success == true) {
+                                console.log(data);
+                                var categories = data.params.categories;
+                                if(categories != null) {
+                                    var subCategory = $('.select_category_template').clone();
+                                    var cat_list = '';
+                                    for(var i = 0; i < categories.length; i++) {
+                                        console.log(categories[i].name + ' ==== ' +data_categories_names[j]);
+                                        cat_list += '<option value="' + categories[i].id + '" ' + (categories[i].name == data_categories_names[j] ? 'selected="selected"' : '') + '>' + categories[i].name + '</option>';
+                                        if(categories[i].name == data_categories_names[j]) {
+                                            data_categories_id = categories[i].id;
+                                        }
+                                    }
+                                    $('select', subCategory).addClass('category_options').append(cat_list);
+                                    $('#category_container').append(subCategory.html());
+                                    $('#category_container .category_options').selectpicker('refresh');
+                                    j++;
+                                    update_subcat(data_categories_id);
+                                }
+
+                            } else {
+                                alert(data.message);
+                            }
+
+                        });
+
+                    }
+                    update_subcat(data_categories_id);
+
+
                 } else {
                     alert(data.message);
                 }

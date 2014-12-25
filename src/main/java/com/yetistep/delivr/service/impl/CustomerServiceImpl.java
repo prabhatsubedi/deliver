@@ -149,7 +149,7 @@ public class CustomerServiceImpl implements CustomerService {
         order.setCustomer(customer);
 
         order.setOrderVerificationStatus(false);
-        order.setDeliveryStatus(DeliveryStatus.UNSUCCESSFUL);
+        order.setDeliveryStatus(DeliveryStatus.PENDING);
         order.setOrderStatus(JobOrderStatus.ORDER_ACCEPTED);
 
         for (ItemsOrderEntity iOrder: itemsOrder){

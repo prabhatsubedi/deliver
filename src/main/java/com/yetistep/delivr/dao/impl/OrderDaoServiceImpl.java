@@ -1,11 +1,15 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.OrderDaoService;
+import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,5 +54,20 @@ public class OrderDaoServiceImpl implements OrderDaoService {
     @Override
     public Session getCurrentSession() throws Exception {
         return sessionFactory.getCurrentSession();
+    }
+
+    @Override
+    public List<OrderEntity> getActiveOrdersList(Integer deliverBoyId) throws Exception {
+        List<JobOrderStatus> jobOrderStatusList = new ArrayList<JobOrderStatus>();
+        jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED);
+        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
+        jobOrderStatusList.add(JobOrderStatus.AT_STORE);
+        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class)
+                .add(Restrictions.eq("deliveryBoy.id", deliverBoyId))
+                .add(Restrictions.in("orderStatus", jobOrderStatusList));
+        List<OrderEntity> orderEntities = criteria.list();
+        return orderEntities;
     }
 }

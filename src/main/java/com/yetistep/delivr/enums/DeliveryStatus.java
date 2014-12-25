@@ -8,8 +8,8 @@ package com.yetistep.delivr.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum DeliveryStatus {
+    PENDING,
     SUCCESSFUL,
-    UNSUCCESSFUL,
     CANCELLED,
     ASSIGNED_TO_OTHER;
 }

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -148,13 +149,18 @@ public class ClientController extends AbstractManager{
 
     @RequestMapping(value = "/store_brands/page/{id}", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getBrands(@RequestBody (required = false) RequestJsonDto requestJsonDto, @PathVariable("id") Integer pageId){
+    public ResponseEntity<ServiceResponse> getBrands(@RequestBody (required = false) RequestJsonDto requestJsonDto, @PathVariable("id") Integer pageNumber){
         try{
 //            select * from stores_brands where featured is not null order by priority asc;
 //            select * from stores_brands order by isnull(featured),featured asc;
-            List<StoresBrandEntity> storesBrandEntities = clientService.getBrands(requestJsonDto);
+            Map<String, Object> map = clientService.getBrands(requestJsonDto, pageNumber);
             ServiceResponse serviceResponse = new ServiceResponse("Brands fetched successfully");
-            serviceResponse.addParam("storeBrand", storesBrandEntities);
+            if(map.get("featured") !=null)
+                serviceResponse.addParam("featuredBrands", map.get("featured"));
+            if(map.get("all")!=null)
+                serviceResponse.addParam("otherBrands", map.get("all"));
+            if(map.get("page")!=null)
+                serviceResponse.addParam("pageInfo", map.get("page"));
 
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch(Exception e) {

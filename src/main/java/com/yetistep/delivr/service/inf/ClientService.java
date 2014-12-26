@@ -4,6 +4,7 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.StoresBrandEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,5 +14,5 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface ClientService {
-    public List<StoresBrandEntity> getBrands(RequestJsonDto requestJsonDto) throws Exception;
+    public Map<String, Object> getBrands(RequestJsonDto requestJsonDto, Integer pageId) throws Exception;
 }

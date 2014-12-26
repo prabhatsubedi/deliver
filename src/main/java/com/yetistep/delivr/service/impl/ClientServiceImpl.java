@@ -5,16 +5,15 @@ import com.yetistep.delivr.dao.inf.StoresBrandDaoService;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
+import com.yetistep.delivr.model.mobile.PageInfo;
+import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.util.GeoCodingUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,7 +31,7 @@ public class ClientServiceImpl implements ClientService {
     StoreDaoService storeDaoService;
 
     @Override
-    public List<StoresBrandEntity> getBrands(RequestJsonDto requestJsonDto) throws Exception {
+    public Map<String, Object> getBrands(RequestJsonDto requestJsonDto, Integer pageId) throws Exception {
         log.info("+++++++++ Getting all brands +++++++++++++++");
 
         /* Featured Brand List Only */
@@ -41,6 +40,7 @@ public class ClientServiceImpl implements ClientService {
         /* Priority Brands Not Featured */
         List<StoresBrandEntity> priorityBrands = null;
         boolean isBrandWitDistanceSort = false;
+
         if (requestJsonDto.getGpsInfo() == null) {
             //FIXME : Check Customer in Database and retrieve lat & long]
             priorityBrands = storesBrandDaoService.findPriorityBrands(null);
@@ -50,11 +50,7 @@ public class ClientServiceImpl implements ClientService {
         }
 
         /* Add Both Brand in One List */
-        List<StoresBrandEntity> storeBrandResult = null;
-        if (featuredBrands == null)
-            storeBrandResult = new ArrayList<>(featuredBrands);
-        else
-            storeBrandResult = new ArrayList<>();
+        List<StoresBrandEntity> storeBrandResult = new ArrayList<>();
 
         if (priorityBrands != null)
             storeBrandResult.addAll(priorityBrands);
@@ -87,7 +83,7 @@ public class ClientServiceImpl implements ClientService {
 
             //Now Combine all brand in one list
             for (StoreEntity storeEntity : storeEntities) {
-                if (!containsBrandId(storeBrandResult, storeEntity.getStoresBrand().getId())) {
+                if (!containsBrandId(storeBrandResult, storeEntity.getStoresBrand().getId()) && !containsBrandId(featuredBrands, storeEntity.getStoresBrand().getId())) {
                     StoresBrandEntity tempBrand = new StoresBrandEntity();
                     tempBrand.setId(storeEntity.getStoresBrand().getId());
                     tempBrand.setOpeningTime(storeEntity.getStoresBrand().getOpeningTime());
@@ -106,9 +102,19 @@ public class ClientServiceImpl implements ClientService {
         }
 
         // Perform sorted store pagination
+        PageInfo pageInfo = null;
+        if(storeBrandResult!=null && storeBrandResult.size() > 0){
+            StaticPagination staticPagination= new StaticPagination();
+            staticPagination.paginate(storeBrandResult, pageId);
+            pageInfo = staticPagination;
+        }
 
+        Map<String, Object> map = new HashMap<>();
+        map.put("featured", featuredBrands);
+        map.put("all", storeBrandResult);
+        map.put("page", pageInfo);
 
-        return storeBrandResult;
+        return map;
     }
 
     class StoreDistanceComparator implements Comparator<StoreEntity> {

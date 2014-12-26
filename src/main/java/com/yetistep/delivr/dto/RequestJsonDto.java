@@ -25,6 +25,7 @@ public class RequestJsonDto {
     /*Add store properties*/
     private List<StoreEntity> stores;
     private StoresBrandEntity storesBrand;
+    private List<StoresBrandEntity> storesBrandEntities;
     private List<Integer> categories;
     private List<PreferencesEntity> preferences;
 
@@ -87,6 +88,14 @@ public class RequestJsonDto {
 
     public void setStoresBrand(StoresBrandEntity storesBrand) {
         this.storesBrand = storesBrand;
+    }
+
+    public List<StoresBrandEntity> getStoresBrandEntities() {
+        return storesBrandEntities;
+    }
+
+    public void setStoresBrandEntities(List<StoresBrandEntity> storesBrandEntities) {
+        this.storesBrandEntities = storesBrandEntities;
     }
 
     public List<Integer> getCategories() {

@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.ActionLogDaoService;
 import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
+import com.yetistep.delivr.dao.inf.StoresBrandDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
@@ -12,9 +13,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,14 +33,18 @@ public class ManagerServiceImpl implements ManagerService {
     @Autowired
     DeliveryBoyDaoService deliveryBoyDaoService;
 
+    @Autowired
+    StoresBrandDaoService storesBrandDaoService;
+
     @Override
     public PaginationDto getActionLog(Page page) throws Exception {
         log.info("Retrieving list of action logs:");
         PaginationDto paginationDto = new PaginationDto();
-        paginationDto.setNumberOfRows(actionLogDaoService.getTotalNumberOfActionLogs());
+        Integer totalRows = actionLogDaoService.getTotalNumberOfActionLogs();
+        paginationDto.setNumberOfRows(totalRows);
         List<ActionLogEntity> actionLogEntities;
         if(page != null){
-            page.setTotalRows(actionLogDaoService.getTotalNumberOfActionLogs());
+            page.setTotalRows(totalRows);
             actionLogEntities = actionLogDaoService.findActionLogPaginated(page);
         }else{
             actionLogEntities = actionLogDaoService.findAll();
@@ -105,5 +111,47 @@ public class ManagerServiceImpl implements ManagerService {
         deliveryBoyDaoService.update(dBoy);
 
         return dBoy;
+    }
+
+    @Override
+    public List<StoresBrandEntity> findFeaturedAndPrioritizedStoreBrands() throws Exception {
+        return storesBrandDaoService.findFeaturedAndPriorityBrands();
+    }
+
+    @Override
+    public PaginationDto findNonFeaturedAndPrioritizedStoreBrands(Page page) throws Exception {
+        log.info("Retrieving list of Non Featured & prioritized store brands");
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows = storesBrandDaoService.getTotalNumberOfStoreBrands();
+        paginationDto.setNumberOfRows(totalRows);
+        List<StoresBrandEntity> storesBrandEntities;
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+        storesBrandEntities = storesBrandDaoService.findExceptFeaturedAndPriorityBrands(page);
+        paginationDto.setData(storesBrandEntities);
+        return paginationDto;
+    }
+
+    @Override
+    public Boolean updateFeatureAndPriorityOfStoreBrands(List<StoresBrandEntity> storesBrands) throws Exception {
+        checkDuplicatePriorities(storesBrands);
+        return storesBrandDaoService.updateFeatureAndPriorityOfStoreBrands(storesBrands);
+    }
+
+    /**
+     * checks duplicate priority as well as checks both featured and prioritized restrictions
+     */
+    private Boolean checkDuplicatePriorities(List<StoresBrandEntity> storesBrands) throws Exception{
+        Set<Integer> priorities = new HashSet<Integer>();
+        for(StoresBrandEntity storesBrand: storesBrands){
+            if(storesBrand.getPriority() != null){
+                if(storesBrand.getFeatured() != null && storesBrand.getFeatured())
+                    throw new YSException("VLD019");
+                if(!priorities.add(storesBrand.getPriority()))
+                    throw new YSException("VLD018");
+            }
+        }
+        return true;
     }
 }

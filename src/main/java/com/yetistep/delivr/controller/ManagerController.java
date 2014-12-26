@@ -2,10 +2,7 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
-import com.yetistep.delivr.model.DeliveryBoyEntity;
-import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.model.Page;
-import com.yetistep.delivr.model.UserEntity;
+import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.*;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
@@ -211,8 +208,49 @@ public class ManagerController {
         }
     }
 
+    @RequestMapping(value = "/get_special_brands", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getFeaturedAndPrioritizedStoreBrands() {
+        try{
+            List<StoresBrandEntity> storeBrands = managerService.findFeaturedAndPrioritizedStoreBrands();
+            ServiceResponse serviceResponse = new ServiceResponse("List of featured and prioritized store brands");
+            serviceResponse.addParam("storeBrands", storeBrands);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving list of featured and prioritized store brands", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
+    @RequestMapping(value = "/get_other_brands", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getNonFeaturedAndPrioritizedStoreBrands(@RequestBody(required = false) Page page) {
+        try{
+            PaginationDto paginationDto = managerService.findNonFeaturedAndPrioritizedStoreBrands(page);
 
+            ServiceResponse serviceResponse = new ServiceResponse("List of non featured & prioritized log");
+            serviceResponse.addParam("storeBrands", paginationDto);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving list of non featured and prioritized store brands:", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
+    @RequestMapping(value = "/update_special_brands", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateFeatureAndPriorityOfStoreBrands(@RequestBody List<StoresBrandEntity> storeBrands) {
+        try{
+            managerService.updateFeatureAndPriorityOfStoreBrands(storeBrands);
+            ServiceResponse serviceResponse = new ServiceResponse("Feature & priority of stores brands updated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while updating feature and priority of store brands:", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
 }

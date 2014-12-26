@@ -1,6 +1,7 @@
 package com.yetistep.delivr.dao.inf;
 
 import com.yetistep.delivr.abs.GenericDaoService;
+import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.StoresBrandEntity;
 
 import java.util.List;
@@ -16,4 +17,9 @@ public interface StoresBrandDaoService extends GenericDaoService<Integer, Stores
     public List<StoresBrandEntity> findFeaturedBrands() throws Exception;
     public List<StoresBrandEntity> findPriorityBrands(String priority) throws Exception;
 
+    public List<StoresBrandEntity> findFeaturedAndPriorityBrands() throws Exception;
+    public Integer getTotalNumberOfStoreBrands() throws Exception;
+    public List<StoresBrandEntity> findExceptFeaturedAndPriorityBrands(Page page) throws Exception;
+
+    public Boolean updateFeatureAndPriorityOfStoreBrands(List<StoresBrandEntity> storeBrands) throws Exception;
 }

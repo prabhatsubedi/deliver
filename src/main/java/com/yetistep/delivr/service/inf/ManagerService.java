@@ -5,6 +5,9 @@ import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.Page;
+import com.yetistep.delivr.model.StoresBrandEntity;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,4 +24,10 @@ public interface ManagerService {
     public DeliveryBoyEntity ackSubmittedAmount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 
     public DeliveryBoyEntity walletSubmittedAmount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
+
+    public List<StoresBrandEntity> findFeaturedAndPrioritizedStoreBrands() throws Exception;
+
+    public PaginationDto findNonFeaturedAndPrioritizedStoreBrands(Page page) throws Exception;
+
+    public Boolean updateFeatureAndPriorityOfStoreBrands(List<StoresBrandEntity> storesBrands) throws Exception;
 }

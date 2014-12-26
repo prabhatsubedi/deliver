@@ -15,7 +15,7 @@ public class Page {
     private String sortBy;
     private String sortOrder;
     private Integer rowNumber;
-    private Long totalRows;
+    private Integer totalRows;
 
     public Integer getPageNumber() {
         return pageNumber;
@@ -57,11 +57,11 @@ public class Page {
        this.rowNumber = rowNumber;
     }
 
-    public Long getTotalRows() {
+    public Integer getTotalRows() {
         return totalRows;
     }
 
-    public void setTotalRows(Long totalRows) {
+    public void setTotalRows(Integer totalRows) {
         this.totalRows = totalRows;
     }
 

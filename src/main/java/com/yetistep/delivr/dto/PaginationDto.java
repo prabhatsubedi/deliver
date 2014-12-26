@@ -12,15 +12,15 @@ import java.util.List;
  */
 public class PaginationDto implements Serializable{
     /* Total number of rows. */
-    private Long numberOfRows;
+    private Integer numberOfRows;
     /* List of entities to be sent. */
     private List<?> data;
 
-    public Long getNumberOfRows() {
+    public Integer getNumberOfRows() {
         return numberOfRows;
     }
 
-    public void setNumberOfRows(Long numberOfRows) {
+    public void setNumberOfRows(Integer numberOfRows) {
         this.numberOfRows = numberOfRows;
     }
 

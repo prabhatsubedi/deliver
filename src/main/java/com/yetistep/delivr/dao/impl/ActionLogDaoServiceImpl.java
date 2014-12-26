@@ -66,10 +66,10 @@ public class ActionLogDaoServiceImpl implements ActionLogDaoService {
     }
 
     @Override
-    public Long getTotalNumberOfActionLogs() throws Exception {
+    public Integer getTotalNumberOfActionLogs() throws Exception {
         Criteria criteriaCount = getCurrentSession().createCriteria(ActionLogEntity.class);
         criteriaCount.setProjection(Projections.rowCount());
         Long count = (Long) criteriaCount.uniqueResult();
-        return count;
+        return (count != null) ? count.intValue() : null;
     }
 }

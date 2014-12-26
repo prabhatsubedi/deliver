@@ -287,9 +287,9 @@ if(typeof(Store) == "undefined") var Store = {};
                     for(var i = 0; i < storeBrands.length; i++) {
 
                         var storeBrand = storeBrands[i];
-                        console.log(storeBrand);
+                        console.log(storeBrand.id);
                         $('.store_logo img', elem).attr('src', storeBrand.brandLogo);
-                        $('.store_name', elem).html(storeBrand.brandName);
+                        $('.store_name', elem).html('<a href="/merchant/store/view/' + storeBrand.id + '">' + storeBrand.brandName + '</a>');
                         var stores = storeBrand.store;
                         var address_list = "";
                         for(var j in stores) {

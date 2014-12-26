@@ -59,33 +59,8 @@ var data_categories_names = [];
             }
         }
 
-        function get_stores(headers) {
-            var callback = function(status, data) {
+        function brand_change(brandId) {
 
-                if (data.success == true) {
-
-                    var brandList = '';
-                    var storeBrands = data.params.storesBrand;
-                    for(var i = 0; i < storeBrands.length; i++) {
-                        var storeBrand = storeBrands[i];
-                        storesById[storeBrand.id] = storeBrand.store;
-                        brandList += '<option value="' + storeBrand.id + '" data-open="' + storeBrand.openingTime + '" data-close="' + storeBrand.closingTime + '">' + storeBrand.brandName + '</option>';
-                    }
-                    $('#item_brand').append(brandList);
-                    $('#item_brand').selectpicker('refresh');
-
-                } else {
-                    alert(data.message);
-                }
-
-            };
-            callback.requestType = "GET";
-            Main.request('/merchant/get_stores', {}, callback, headers);
-        }
-        get_stores({merchantId: Main.getFromLocalStorage('mid')});
-
-        $('#item_brand').live('change', function(){
-            var brandId = $(this).val();
             var storeLocations = storesById[brandId];
             var stores_html = "";
             if(storeLocations != undefined) {
@@ -104,10 +79,47 @@ var data_categories_names = [];
             $('#item_store_container .check_label').addClass('icon_full');
             $('#item_store_container .checkbox').attr('checked', 'checked');
 
-            $('#available_start_time').val($('option:selected', this).attr('data-open'));
+            $('#available_start_time').val($('option:selected', '#item_brand').attr('data-open'));
             $('#available_start_time').selectpicker('refresh');
-            $('#available_end_time').val($('option:selected', this).attr('data-close'));
+            $('#available_end_time').val($('option:selected', '#item_brand').attr('data-close'));
             $('#available_end_time').selectpicker('refresh');
+
+        }
+
+        function get_stores(headers) {
+            var callback = function(status, data) {
+                var brand_id = undefined;
+
+                if (data.success == true) {
+
+                    var brandList = '';
+                    var storeBrands = data.params.storesBrand;
+                    for(var i = 0; i < storeBrands.length; i++) {
+                        var storeBrand = storeBrands[i];
+                        storesById[storeBrand.id] = storeBrand.store;
+                        brandList += '<option value="' + storeBrand.id + '" data-open="' + storeBrand.openingTime + '" data-close="' + storeBrand.closingTime + '" >' + storeBrand.brandName + '</option>';
+                    }
+                    $('#item_brand').append(brandList);
+
+                    if(Main.getURLvalue(4) != undefined && $.isNumeric(Main.getURLvalue(4))) {
+                        brand_id = Main.getURLvalue(4);
+                        $('#item_brand').val(brand_id);
+                        brand_change(brand_id);
+                    }
+                    $('#item_brand').selectpicker('refresh');
+
+                } else {
+                    alert(data.message);
+                }
+
+            };
+            callback.requestType = "GET";
+            Main.request('/merchant/get_stores', {}, callback, headers);
+        }
+        get_stores({merchantId: Main.getFromLocalStorage('mid')});
+
+        $('#item_brand').live('change', function(){
+            brand_change($(this).val());
         });
 
         $('#category_container .category_options').live('change', function(){
@@ -475,6 +487,12 @@ var data_categories_names = [];
 
                     }
                     update_subcat(data_categories_id);
+
+                    $('.product_image .drop_zone').html('<div class="drop_info">Drop image file <br> (or click to browse)</div>');
+                    $('#name_item, #description, #min_order, #max_order, #price').val('');
+                    $('#additional_offer, #return_policy').val('N/A');
+                    $('#delivery_fee, #vat, #service_charge').val('0');
+                    $('.item_attributes').html('');
 
 
                 } else {

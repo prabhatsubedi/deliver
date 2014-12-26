@@ -279,33 +279,36 @@ if(typeof(Store) == "undefined") var Store = {};
             if (data.success == true) {
 
                 var storeBrands = data.params.storesBrand;
-
-                var elem = $('.block_store_template');
-
                 var store_list = "";
 
-                for(var i = 0; i < storeBrands.length; i++) {
+                if(storeBrands.length > 0) {
+                    var elem = $('.block_store_template');
 
-                    var storeBrand = storeBrands[i];
-                    console.log(storeBrand);
-                    $('.store_logo img', elem).attr('src', storeBrand.brandLogo);
-                    $('.store_name', elem).html(storeBrand.brandName);
-                    var stores = storeBrand.store;
-                    var address_list = "";
-                    for(var j in stores) {
-                        var store = stores[j];
-                        var address = [];
-                        address.push(store.street);
-                        address.push(store.city);
-                        address.push(store.state);
-                        address.push(store.country);
-                        address_list += '<li>' + address.join(', ') + '</li>';
+                    for(var i = 0; i < storeBrands.length; i++) {
+
+                        var storeBrand = storeBrands[i];
+                        console.log(storeBrand);
+                        $('.store_logo img', elem).attr('src', storeBrand.brandLogo);
+                        $('.store_name', elem).html(storeBrand.brandName);
+                        var stores = storeBrand.store;
+                        var address_list = "";
+                        for(var j in stores) {
+                            var store = stores[j];
+                            var address = [];
+                            address.push(store.street);
+                            address.push(store.city);
+                            address.push(store.state);
+                            address.push(store.country);
+                            address_list += '<li>' + address.join(', ') + '</li>';
+                        }
+                        $('.store_address_list ul', elem).html(address_list);
+                        $('.add_items').attr('href', '/merchant/item/form/create/' + storeBrand.id);
+
+                        store_list += elem.html();
+
                     }
-                    $('.store_address_list ul', elem).html(address_list);
-                    $('.add_items').attr('href', '/merchant/item/form/create/' + storeBrand.id);
-
-                    store_list += elem.html();
-
+                } else {
+                    store_list += "No stores are available.";
                 }
 
                 $('.main_content').append(store_list);

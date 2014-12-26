@@ -494,7 +494,6 @@ var data_categories_names = [];
                     $('#delivery_fee, #vat, #service_charge').val('0');
                     $('.item_attributes').html('');
 
-
                 } else {
                     alert(data.message);
                 }

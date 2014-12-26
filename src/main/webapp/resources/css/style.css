@@ -858,7 +858,7 @@ label.check_label .checkbox {
 
 /* Item Listing page */
 .item_listing {
-    margin: -20px 0px -20px -45px;
+    margin: -20px -15px -20px -45px;
 }
 .categories_container {
     width: 360px;
@@ -885,5 +885,27 @@ label.check_label .checkbox {
     padding-left: 75px;
 }
 .items_container {
-    padding: 20px 0px 20px 20px;
+    padding: 15px 0px 15px 15px;
+}
+.items_container .item_container  {
+    padding: 15px;
+}
+.items_container .block_item  {
+    border: 1px solid #bcbbbb;
+}
+.items_container .block_item .item_image  {
+    border-bottom: 1px solid #bcbbbb;
+}
+.items_container .block_item .item_infos  {
+    padding: 15px 20px;
+    background-color: #FFFFFF;
+    font-size: 16px;
+}
+.items_container .block_item .item_infos p  {
+    margin: 0px;
+}
+.items_container .block_item .item_infos .item_name  {
+    font-weight: bold;
+}
+.items_container .block_item .item_infos .item_price  {
 }

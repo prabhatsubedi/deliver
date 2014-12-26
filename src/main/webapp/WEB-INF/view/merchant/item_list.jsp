@@ -43,8 +43,97 @@
                             <li><a href="#">Clothing, Shoes</a></li>
                         </ul>
                     </div>
-                    <div class="items_container td_div">items</div>
+                    <div class="items_container td_div">
+
+                        <div class="item_container col-lg-4">
+                            <div class="block_item">
+                                <div class="item_image">
+                                    <img src="/resources/images/720x400.jpg" class="img-responsive">
+                                </div>
+                                <div class="item_infos">
+                                    <p class="item_name">Item Name</p>
+                                    <p class="item_price">Rs. <span>86987</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item_container col-lg-4">
+                            <div class="block_item">
+                                <div class="item_image">
+                                    <img src="/resources/images/720x400.jpg" class="img-responsive">
+                                </div>
+                                <div class="item_infos">
+                                    <p class="item_name">Item Name</p>
+                                    <p class="item_price">Rs. <span>86987</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item_container col-lg-4">
+                            <div class="block_item">
+                                <div class="item_image">
+                                    <img src="/resources/images/720x400.jpg" class="img-responsive">
+                                </div>
+                                <div class="item_infos">
+                                    <p class="item_name">Item Name</p>
+                                    <p class="item_price">Rs. <span>86987</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item_container col-lg-4">
+                            <div class="block_item">
+                                <div class="item_image">
+                                    <img src="/resources/images/720x400.jpg" class="img-responsive">
+                                </div>
+                                <div class="item_infos">
+                                    <p class="item_name">Item Name</p>
+                                    <p class="item_price">Rs. <span>86987</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item_container col-lg-4">
+                            <div class="block_item">
+                                <div class="item_image">
+                                    <img src="/resources/images/720x400.jpg" class="img-responsive">
+                                </div>
+                                <div class="item_infos">
+                                    <p class="item_name">Item Name</p>
+                                    <p class="item_price">Rs. <span>86987</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item_container col-lg-4">
+                            <div class="block_item">
+                                <div class="item_image">
+                                    <img src="/resources/images/720x400.jpg" class="img-responsive">
+                                </div>
+                                <div class="item_infos">
+                                    <p class="item_name">Item Name</p>
+                                    <p class="item_price">Rs. <span>86987</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="item_container_template hidden">
+    <div class="item_container col-lg-4">
+        <div class="block_item">
+            <div class="item_image">
+                <img src="/resources/images/720x400.jpg" class="img-responsive">
+            </div>
+            <div class="item_actions">
+                <a href="#">Edit</a>
+                <a href="#">View</a>
             </div>
         </div>
     </div>

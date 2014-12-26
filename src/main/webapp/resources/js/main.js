@@ -7,6 +7,7 @@ if(typeof(Main) == "undefined") var Main = {};
 (function ($){
 
     Main.country = "Nepal";
+    Main.docHeight = window.innerHeight;
 
     Main.saveInSessionStorage = function (key, value){
         sessionStorage.setItem(key, value);
@@ -139,19 +140,6 @@ if(typeof(Main) == "undefined") var Main = {};
         return word.substr(0, 1).toUpperCase() + word.substr(1).toLowerCase();
     };
 
-    Main.elemRatio = function() {
-        function elem_ratio() {
-            $('.maintain_ratio').each(function(){
-                var mthis = $(this);
-                mthis.height((mthis.attr('mr-height')/mthis.attr('mr-width'))*mthis.width())
-            });
-        }
-        $(window).resize(function(){
-            elem_ratio();
-        });
-        setTimeout(elem_ratio, 500);
-    };
-
     Main.remove_value = function(value, remove) {
         if(value.indexOf(remove) > -1) {
             value.splice(value.indexOf(remove), 1);
@@ -204,8 +192,29 @@ if(typeof(Main) == "undefined") var Main = {};
 
     };*/
 
+    Main.elemRatio = function() {
+        function elem_ratio() {
+            $('.maintain_ratio').each(function(){
+                var mthis = $(this);
+                mthis.height((mthis.attr('mr-height')/mthis.attr('mr-width'))*mthis.width())
+            });
+        }
+        $(window).resize(function(){
+            elem_ratio();
+        });
+        setTimeout(elem_ratio, 500);
+    };
+
+    Main.fullHeight = function() {
+        $('.full_height').each(function() {
+            var offsetTop = $(this).offset().top;
+            $(this).height(Main.docHeight - offsetTop);
+        });
+    };
+
 })(jQuery);
 
 $(document).ready(function(){
     Main.elemRatio();
+    Main.fullHeight();
 });

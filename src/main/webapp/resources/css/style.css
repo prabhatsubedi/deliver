@@ -561,6 +561,7 @@ body.assistance_page {
 }
 .main_container .body .main_content {
     padding: 20px 30px 20px 45px;
+    position: relative;
 }
 
 /* FORM CSS */
@@ -853,4 +854,36 @@ label.check_label .checkbox {
     line-height: 50px;
     padding: 0;
     width: 50px;
+}
+
+/* Item Listing page */
+.item_listing {
+    margin: -20px 0px -20px -45px;
+}
+.categories_container {
+    width: 360px;
+    background-color: #FFFFFF;
+    border-right: 1px solid #dbdada;
+}
+.categories_container li {
+    padding: 0px;
+}
+.categories_container li a {
+    color: #8e8e8e;
+    font-size: 15px;
+}
+.categories_container li a {
+    padding-left: 30px;
+}
+.categories_container li li a {
+    padding-left: 45px;
+}
+.categories_container li li li a {
+    padding-left: 60px;
+}
+.categories_container li li li li a {
+    padding-left: 75px;
+}
+.items_container {
+    padding: 20px 0px 20px 20px;
 }

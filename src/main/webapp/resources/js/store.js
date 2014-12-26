@@ -98,7 +98,7 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#open_time').selectpicker({size: 5});
         $('#close_time').selectpicker({size: 5});
 
-        function updateGeoPoints(alert) {
+        function updateGeoPoints(showAlert) {
 
             if(markers.length > 0) {
                 var location_valid = true;
@@ -134,7 +134,7 @@ if(typeof(Store) == "undefined") var Store = {};
                 }
 
                 if(!location_valid) {
-                    if(alert) alert('All fields of all store locations are required.');
+                    if(showAlert != false) alert('All fields of all store locations are required.');
                     var current_index = Object.keys(arrGeoPoints).indexOf(geoKey);
                     google.maps.event.trigger(markers[current_index], 'click');
                     map.panTo(markers[current_index].position);
@@ -193,6 +193,7 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#form_brand').validate({
             submitHandler: function() {
                 var geoPoints = updateGeoPoints();
+                console.log(geoPoints);
                 if(geoPoints.valid) {
 
                     var data = {};
@@ -220,7 +221,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                     Store.addStore(data, {merchantId: Main.getFromLocalStorage('mid')});
 
-                }
+                };
                 return false;
             }
         });
@@ -259,6 +260,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
             if (data.success == true) {
                 alert(data.message);
+                window.location = "/merchant/store/list";
             } else {
                 alert(data.message);
             }

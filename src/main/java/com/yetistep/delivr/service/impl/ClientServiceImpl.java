@@ -52,7 +52,7 @@ public class ClientServiceImpl implements ClientService {
         /* Add Both Brand in One List */
         List<StoresBrandEntity> storeBrandResult = new ArrayList<>();
 
-        if (priorityBrands != null)
+        if (priorityBrands.size() > 0)
             storeBrandResult.addAll(priorityBrands);
 
         /* Other then Featured and Priority List, Should be Sort by Customer Distance */
@@ -103,7 +103,7 @@ public class ClientServiceImpl implements ClientService {
 
         // Perform sorted store pagination
         PageInfo pageInfo = null;
-        if(storeBrandResult!=null && storeBrandResult.size() > 0){
+        if(storeBrandResult.size() > 0){
             StaticPagination staticPagination= new StaticPagination();
             staticPagination.paginate(storeBrandResult, pageId);
             pageInfo = staticPagination;

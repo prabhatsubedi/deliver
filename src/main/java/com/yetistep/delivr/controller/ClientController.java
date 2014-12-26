@@ -155,11 +155,8 @@ public class ClientController extends AbstractManager{
 //            select * from stores_brands order by isnull(featured),featured asc;
             Map<String, Object> map = clientService.getBrands(requestJsonDto, pageNumber);
             ServiceResponse serviceResponse = new ServiceResponse("Brands fetched successfully");
-            if(map.get("featured") !=null)
                 serviceResponse.addParam("featuredBrands", map.get("featured"));
-            if(map.get("all")!=null)
                 serviceResponse.addParam("otherBrands", map.get("all"));
-            if(map.get("page")!=null)
                 serviceResponse.addParam("pageInfo", map.get("page"));
 
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

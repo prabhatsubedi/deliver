@@ -180,7 +180,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         stores = criteria.list();
 
         //return stores;
-        return stores.size() > 0 ? stores : null;
+        return stores;
     }
 
     @Override

@@ -72,7 +72,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.isNotNull("featured")) ;
         storesBrandEntities = criteria.list();
-        return storesBrandEntities.size() > 0 ? storesBrandEntities : null;
+        return storesBrandEntities;
 
     }
 
@@ -102,7 +102,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
         }
 
         storesBrandEntities = criteria.list();
-        return storesBrandEntities.size() > 0 ? storesBrandEntities : null;
+        return storesBrandEntities;
     }
 
     @Override

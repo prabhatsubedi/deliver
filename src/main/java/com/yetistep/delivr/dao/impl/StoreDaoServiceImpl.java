@@ -63,6 +63,6 @@ public class StoreDaoServiceImpl implements StoreDaoService{
         criteria.add(Restrictions.not(Restrictions.in("storesBrand.id",ignoreBrand)));
         storeEntities = criteria.list();
 
-        return storeEntities.size() > 0 ? storeEntities : null;
+        return storeEntities;
     }
 }

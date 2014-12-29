@@ -11,6 +11,7 @@ public class PageInfo {
     private Integer pageSize;
     private Integer totalRows;
     private Integer totalPage;
+    private Integer pageNumber;
 
     public Integer getPageSize() {
         return pageSize;
@@ -34,5 +35,13 @@ public class PageInfo {
 
     public void setTotalPage(Integer totalPage) {
         this.totalPage = totalPage;
+    }
+
+    public Integer getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(Integer pageNumber) {
+        this.pageNumber = pageNumber;
     }
 }

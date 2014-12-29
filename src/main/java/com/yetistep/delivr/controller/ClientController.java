@@ -147,13 +147,13 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/store_brands/page/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/store_brands", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getBrands(@RequestBody (required = false) RequestJsonDto requestJsonDto, @PathVariable("id") Integer pageNumber){
+    public ResponseEntity<ServiceResponse> getBrands(@RequestBody (required = false) RequestJsonDto requestJsonDto){
         try{
 //            select * from stores_brands where featured is not null order by priority asc;
 //            select * from stores_brands order by isnull(featured),featured asc;
-            Map<String, Object> map = clientService.getBrands(requestJsonDto, pageNumber);
+            Map<String, Object> map = clientService.getBrands(requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("Brands fetched successfully");
                 serviceResponse.addParam("featuredBrands", map.get("featured"));
                 serviceResponse.addParam("otherBrands", map.get("all"));

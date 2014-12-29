@@ -12,9 +12,10 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class StaticPagination extends PageInfo{
+    List<? extends Object> list;
 
     public StaticPagination(){
-        setPageSize(20);
+        setPageSize(3);
     }
 
    public StaticPagination paginate(List<? extends Object> raw, Integer pageId) {
@@ -27,9 +28,16 @@ public class StaticPagination extends PageInfo{
            raw = raw.subList(0, getTotalRows());
 
        setTotalPage((int) Math.ceil(getTotalRows().doubleValue()/getPageSize().doubleValue()));
-
+       setList(raw);
        return this;
 
    }
 
+    public List<? extends Object> getList() {
+        return list;
+    }
+
+    public void setList(List<? extends Object> list) {
+        this.list = list;
+    }
 }

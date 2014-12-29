@@ -5,6 +5,7 @@ import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.CustomerInfo;
 import com.yetistep.delivr.model.mobile.DeviceInfo;
 import com.yetistep.delivr.model.mobile.GpsInfo;
+import com.yetistep.delivr.model.mobile.PageInfo;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -56,6 +57,7 @@ public class RequestJsonDto {
     private GpsInfo gpsInfo;
     private DeviceInfo deviceInfo;
     private CustomerInfo customerInfo;
+    private PageInfo pageInfo;
 
     /*For accepting delivery order*/
     private Integer orderId;
@@ -264,5 +266,13 @@ public class RequestJsonDto {
 
     public void setCustomerInfo(CustomerInfo customerInfo) {
         this.customerInfo = customerInfo;
+    }
+
+    public PageInfo getPageInfo() {
+        return pageInfo;
+    }
+
+    public void setPageInfo(PageInfo pageInfo) {
+        this.pageInfo = pageInfo;
     }
 }

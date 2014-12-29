@@ -8,6 +8,7 @@ import com.yetistep.delivr.model.StoresBrandEntity;
 import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.service.inf.ClientService;
+import com.yetistep.delivr.util.DateUtil;
 import com.yetistep.delivr.util.GeoCodingUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class ClientServiceImpl implements ClientService {
     StoreDaoService storeDaoService;
 
     @Override
-    public Map<String, Object> getBrands(RequestJsonDto requestJsonDto, Integer pageId) throws Exception {
+    public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++ Getting all brands +++++++++++++++");
 
         /* Featured Brand List Only */
@@ -57,15 +58,21 @@ public class ClientServiceImpl implements ClientService {
 
         /* Other then Featured and Priority List, Should be Sort by Customer Distance */
         if (isBrandWitDistanceSort) {
-            List<Integer> list = new ArrayList<>();
-            list.add(3);
+            /* Now Ignore Brand */
+            List<Integer> ignoreList = new ArrayList<>();
+            for(StoresBrandEntity storesBrandEntity : featuredBrands){
+                ignoreList.add(storesBrandEntity.getId());
+            }
 
-            List<StoreEntity> storeEntities = storeDaoService.findStores(list);
+            for(StoresBrandEntity storesBrandEntity : priorityBrands) {
+                ignoreList.add(storesBrandEntity.getId());
+            }
+
+            List<StoreEntity> storeEntities = storeDaoService.findStores(ignoreList);
 
         /* Extract Latitude and Longitude */
             String[] storeDistance = new String[storeEntities.size()];
-//        String[] customerDistance = {requestJsonDto.getGpsInfo().getLatitude(), requestJsonDto.getGpsInfo().getLongitude()};
-            String[] customerDistance = {"27.6991101,85.3350114"};
+            String[] customerDistance = {GeoCodingUtil.getLatLong(requestJsonDto.getGpsInfo().getLatitude(), requestJsonDto.getGpsInfo().getLongitude())};
 
             for (int i = 0; i < storeEntities.size(); i++) {
                 storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
@@ -103,15 +110,28 @@ public class ClientServiceImpl implements ClientService {
 
         // Perform sorted store pagination
         PageInfo pageInfo = null;
+        List<StoresBrandEntity> sortedList = new ArrayList<>();
         if(storeBrandResult.size() > 0){
+            Integer pageId = 1;
+            if(requestJsonDto.getPageInfo()!=null)
+                pageId = requestJsonDto.getPageInfo().getPageNumber();
+
             StaticPagination staticPagination= new StaticPagination();
             staticPagination.paginate(storeBrandResult, pageId);
+            sortedList = (List<StoresBrandEntity>) staticPagination.getList();
+            staticPagination.setList(null);
             pageInfo = staticPagination;
         }
 
+        // Check Store Opening Time
+        setStoreOpenSet(featuredBrands);
+        setStoreOpenSet(sortedList);
+
+        //Response Data
+
         Map<String, Object> map = new HashMap<>();
         map.put("featured", featuredBrands);
-        map.put("all", storeBrandResult);
+        map.put("all", sortedList);
         map.put("page", pageInfo);
 
         return map;
@@ -132,5 +152,12 @@ public class ClientServiceImpl implements ClientService {
             }
         }
         return false;
+    }
+
+    private void setStoreOpenSet(List<StoresBrandEntity> storesBrandEntities) throws Exception{
+        for(StoresBrandEntity storesBrandEntity : storesBrandEntities) {
+            storesBrandEntity.setOpenStatus(DateUtil.isTimeBetweenTwoTime(storesBrandEntity.getOpeningTime().toString(),
+                    storesBrandEntity.getClosingTime().toString(), DateUtil.getCurrentTime().toString()));
+        }
     }
 }

@@ -39,6 +39,8 @@ public class StoresBrandEntity implements Serializable {
    private Boolean featured;
    private Integer priority;
    private Timestamp createdDate;
+    //Transient Variable
+   private Boolean openStatus;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -179,5 +181,14 @@ public class StoresBrandEntity implements Serializable {
 
     public void setCreatedDate(Timestamp createdDate) {
         this.createdDate = createdDate;
+    }
+
+    @Transient
+    public Boolean getOpenStatus() {
+        return openStatus;
+    }
+
+    public void setOpenStatus(Boolean openStatus) {
+        this.openStatus = openStatus;
     }
 }

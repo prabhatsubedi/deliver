@@ -14,5 +14,5 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public interface ClientService {
-    public Map<String, Object> getBrands(RequestJsonDto requestJsonDto, Integer pageId) throws Exception;
+    public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception;
 }

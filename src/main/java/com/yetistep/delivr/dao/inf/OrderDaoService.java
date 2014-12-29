@@ -13,5 +13,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity> {
-     public List<OrderEntity> getActiveOrdersList(Integer deliverBoyId) throws Exception;
+    public List<OrderEntity> getActiveOrdersList(Integer deliverBoyId) throws Exception;
+
+    public OrderEntity getLastActiveOrder(Integer deliverBoyId) throws Exception;
 }

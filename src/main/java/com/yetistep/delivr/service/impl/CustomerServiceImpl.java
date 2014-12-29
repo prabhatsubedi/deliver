@@ -3,10 +3,7 @@ package com.yetistep.delivr.service.impl;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.enums.DeliveryStatus;
-import com.yetistep.delivr.enums.JobOrderStatus;
-import com.yetistep.delivr.enums.PreferenceType;
-import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
@@ -193,7 +190,16 @@ public class CustomerServiceImpl implements CustomerService {
         String storeAddress[] = {GeoCodingUtil.getLatLong(store.getLatitude(), store.getLongitude())};
         String deliveryBoyAddress[] = new String[capableDeliveryBoys.size()];
         for (int i = 0; i < capableDeliveryBoys.size(); i++) {
-            deliveryBoyAddress[i] = GeoCodingUtil.getLatLong(capableDeliveryBoys.get(i).getLatitude(), capableDeliveryBoys.get(i).getLongitude());
+            if(capableDeliveryBoys.get(i).getAvailabilityStatus().equals(DBoyStatus.BUSY)){
+                OrderEntity previousActiveOrder = orderDaoService.getLastActiveOrder(capableDeliveryBoys.get(i).getId());
+                if (previousActiveOrder != null) {
+                    deliveryBoyAddress[i] = GeoCodingUtil.getLatLong(previousActiveOrder.getAddress().getLatitude(), previousActiveOrder.getAddress().getLongitude());
+                }else{
+                    deliveryBoyAddress[i] = GeoCodingUtil.getLatLong(capableDeliveryBoys.get(i).getLatitude(), capableDeliveryBoys.get(i).getLongitude());
+                }
+            }else{
+                deliveryBoyAddress[i] = GeoCodingUtil.getLatLong(capableDeliveryBoys.get(i).getLatitude(), capableDeliveryBoys.get(i).getLongitude());
+            }
         }
 
 
@@ -239,10 +245,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private int findRemainingTimeForPreviousOrder(Integer deliveryBoyId) throws Exception {
-        List<OrderEntity> previousActiveOrders = orderDaoService.getActiveOrdersList(deliveryBoyId);
-        if (previousActiveOrders.size() > 0) {
-            Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), previousActiveOrders.get(0).getOrderDate().getTime());
-            int remainingTime = previousActiveOrders.get(0).getRemainingTime() - minuteDiff.intValue();
+        OrderEntity previousActiveOrder = orderDaoService.getLastActiveOrder(deliveryBoyId);
+        if (previousActiveOrder != null) {
+            Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), previousActiveOrder.getOrderDate().getTime());
+            int remainingTime = previousActiveOrder.getRemainingTime() - minuteDiff.intValue();
             if (remainingTime <= 0)
                 return 0;
             else

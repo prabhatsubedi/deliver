@@ -206,6 +206,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()+1);
             deliveryBoyEntity.setTotalOrderTaken(deliveryBoyEntity.getTotalOrderTaken()+1);
             deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);
+            deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.BUSY);
 
             OrderEntity orderEntity = deliveryBoySelectionEntity.getOrder();
             orderEntity.setRemainingTime(deliveryBoySelectionEntity.getTotalTimeRequired());

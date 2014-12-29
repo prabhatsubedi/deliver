@@ -72,4 +72,21 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         List<OrderEntity> orderEntities = criteria.list();
         return orderEntities;
     }
+
+    @Override
+    public OrderEntity getLastActiveOrder(Integer deliverBoyId) throws Exception {
+        List<JobOrderStatus> jobOrderStatusList = new ArrayList<JobOrderStatus>();
+        jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED);
+        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
+        jobOrderStatusList.add(JobOrderStatus.AT_STORE);
+        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class)
+                .add(Restrictions.eq("deliveryBoy.id", deliverBoyId))
+                .add(Restrictions.in("orderStatus", jobOrderStatusList))
+                .addOrder(Order.desc("orderDate"))
+                .setMaxResults(1);
+        List<OrderEntity> orderEntities = criteria.list();
+        return orderEntities.size() == 1 ? orderEntities.get(0) : null;
+    }
 }

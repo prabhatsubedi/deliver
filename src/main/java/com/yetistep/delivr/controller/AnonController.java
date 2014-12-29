@@ -127,10 +127,9 @@ public class AnonController {
         try {
             HeaderDto headerDto = new HeaderDto();
 
-            Integer userId = null;
             List<String> hd = httpHeaders.get("id");
             if (hd == null || hd.size() == 0)
-                    httpHeaders.add("id", SessionManager.getUserId().toString());
+                  httpHeaders.add("id", SessionManager.getUserId().toString());
 
             GeneralUtil.fillHeaderCredential(httpHeaders, headerDto, GeneralUtil.ID, GeneralUtil.PASSWORD, GeneralUtil.NEW_PASSWORD);
             userService.changePassword(headerDto);

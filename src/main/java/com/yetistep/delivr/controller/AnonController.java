@@ -10,6 +10,7 @@ import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.service.inf.UserService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
+import com.yetistep.delivr.util.SessionManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -125,6 +126,12 @@ public class AnonController {
     public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders httpHeaders) throws Exception {
         try {
             HeaderDto headerDto = new HeaderDto();
+
+            Integer userId = null;
+            List<String> hd = httpHeaders.get("id");
+            if (hd == null || hd.size() == 0)
+                    httpHeaders.add("id", SessionManager.getUserId().toString());
+
             GeneralUtil.fillHeaderCredential(httpHeaders, headerDto, GeneralUtil.ID, GeneralUtil.PASSWORD, GeneralUtil.NEW_PASSWORD);
             userService.changePassword(headerDto);
 

@@ -105,7 +105,7 @@ public class GeneralUtil {
         }
     }
 
-    private static String extractHeader(HttpHeaders headers, String field) throws Exception{
+    public static String extractHeader(HttpHeaders headers, String field) throws Exception{
         List<String> hd = headers.get(field);
         if (hd != null && hd.size() > 0)
             return hd.get(0);

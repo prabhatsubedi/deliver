@@ -208,7 +208,7 @@ public class ManagerController {
         }
     }
 
-    @RequestMapping(value = "/get_special_brands", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_special_brands", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> getFeaturedAndPrioritizedStoreBrands() {
         try{

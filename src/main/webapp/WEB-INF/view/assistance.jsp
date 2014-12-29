@@ -7,7 +7,6 @@
 
     <%@include file="includes/head.jsp" %>
 
-    <script type="text/javascript" src="/resources/js/jquery.validate.js"></script>
 
     <script type="text/javascript">
 

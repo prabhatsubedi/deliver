@@ -1,4 +1,3 @@
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <div class="sidebar">
     <div class="sidebar_logo">
         <a href="/merchant/dashboard"><img src="/resources/images/delivr-logo.png" class="img-responsive" /></a>
@@ -22,6 +21,12 @@
     $(document).ready(function(){
 
         var pathname = window.location.pathname;
+        $('.sidebar_menu li a').each(function(){
+            if(pathname.indexOf($(this).attr('href')) > -1) {
+                $(this).addClass('active');
+                return false;
+            }
+        });
         $('.sidebar_menu li a[href="' + pathname + '"]').addClass('active');
 
         $('.sidebar_menu li a').click(function(){

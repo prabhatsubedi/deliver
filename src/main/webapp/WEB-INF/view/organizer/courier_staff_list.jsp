@@ -12,7 +12,6 @@
     <link href="/resources/css/maps.css" rel="stylesheet" type="text/css" media="screen"/>
     <script type="text/javascript" src="/resources/js/manager.js"></script>
     <script type="text/javascript" src="/resources/js/map.js"></script>
-    <script type="text/javascript" src="/resources/js/jquery.validate.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 
     <script type="text/javascript">

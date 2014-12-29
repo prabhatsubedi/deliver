@@ -45,7 +45,7 @@ public class MainController {
             } else if (role.toString().equals(Role.ROLE_ACCOUNTANT.toString())) {
                 model.setViewName("accountant/dashboard");
             } else if (role.toString().equals(Role.ROLE_MERCHANT.toString())) {
-                model.setViewName("merchant/dashboard");
+                model.setViewName("merchant/store/list");
             }
         } else {
             model.setViewName("login");
@@ -67,7 +67,7 @@ public class MainController {
             } else if (role.toString().equals(Role.ROLE_ACCOUNTANT.toString())) {
                 url = "accountant/dashboard";
             } else if (role.toString().equals(Role.ROLE_MERCHANT.toString())) {
-                url = "merchant/dashboard";
+                url = "merchant/store/list";
             }
         }
         ServiceResponse serviceResponse = new ServiceResponse("User has been logged in successfully");

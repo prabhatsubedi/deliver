@@ -40,7 +40,7 @@ if(typeof(Main) == "undefined") var Main = {};
 
         function hideLoader() {
             if (loaderDiv != undefined) {
-                $(loaderDiv).removeClass('loader_div').children('.loader').hide();
+                $(loaderDiv).removeClass('loader_div').children('.loader').hide().remove();
             }
         }
 
@@ -108,6 +108,27 @@ if(typeof(Main) == "undefined") var Main = {};
         callback.loaderDiv = ".assist_containers";
 
         Main.request('/anon/password_assist', data, callback, headers);
+
+    };
+
+    Main.changePassword = function(headers) {
+
+        $("button[type='submit']").attr("disabled",true);
+
+        var callback = function (status, data) {
+            $("button[type='submit']").removeAttr("disabled");
+
+            if (data.success == true) {
+                alert(data.message);
+                $('#modal_password').modal('hide');
+            } else {
+                alert(data.message);
+            }
+        };
+
+        callback.loaderDiv = "#modal_password .modal-content";
+
+        Main.request('/anon/change_password', {}, callback, headers);
 
     };
 

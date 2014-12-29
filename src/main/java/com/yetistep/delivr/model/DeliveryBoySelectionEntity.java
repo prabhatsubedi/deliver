@@ -18,6 +18,7 @@ public class DeliveryBoySelectionEntity {
     private BigDecimal storeToCustomerDistance;
     private BigDecimal distanceToStore;
     private Integer timeRequired;
+    private Integer totalTimeRequired;
     private Boolean accepted;
     private DeliveryBoyEntity deliveryBoy;
     private OrderEntity order;
@@ -59,6 +60,15 @@ public class DeliveryBoySelectionEntity {
 
     public void setTimeRequired(Integer timeRequired) {
         this.timeRequired = timeRequired;
+    }
+
+    @Column(name = "total_time_required")
+    public Integer getTotalTimeRequired() {
+        return totalTimeRequired;
+    }
+
+    public void setTotalTimeRequired(Integer totalTimeRequired) {
+        this.totalTimeRequired = totalTimeRequired;
     }
 
     @Column(name = "accepted", nullable = false, columnDefinition = "TINYINT(1)")

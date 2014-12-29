@@ -6,6 +6,7 @@ import com.yetistep.delivr.model.OrderEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -66,7 +67,8 @@ public class OrderDaoServiceImpl implements OrderDaoService {
 
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class)
                 .add(Restrictions.eq("deliveryBoy.id", deliverBoyId))
-                .add(Restrictions.in("orderStatus", jobOrderStatusList));
+                .add(Restrictions.in("orderStatus", jobOrderStatusList))
+                .addOrder(Order.desc("orderDate"));
         List<OrderEntity> orderEntities = criteria.list();
         return orderEntities;
     }

@@ -9,10 +9,7 @@ import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
-import com.yetistep.delivr.util.GeneralUtil;
-import com.yetistep.delivr.util.GeoCodingUtil;
-import com.yetistep.delivr.util.MessageBundle;
-import com.yetistep.delivr.util.YSException;
+import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -211,6 +208,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);
 
             OrderEntity orderEntity = deliveryBoySelectionEntity.getOrder();
+            orderEntity.setRemainingTime(deliveryBoySelectionEntity.getTotalTimeRequired());
             orderEntity.setDeliveryBoy(deliveryBoyEntity);
             orderEntity.setAssignedTime(deliveryBoySelectionEntity.getTimeRequired());
             orderEntity.setSystemChargeableDistance(deliveryBoySelectionEntity.getDistanceToStore());

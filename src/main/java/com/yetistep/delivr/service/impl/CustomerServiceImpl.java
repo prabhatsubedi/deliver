@@ -1,21 +1,16 @@
 package com.yetistep.delivr.service.impl;
 
-import com.yetistep.delivr.dao.inf.CustomerDaoService;
-import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
-import com.yetistep.delivr.dao.inf.MerchantDaoService;
-import com.yetistep.delivr.dao.inf.UserDaoService;
+import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
-import com.yetistep.delivr.util.BigDecimalUtil;
-import com.yetistep.delivr.util.GeneralUtil;
-import com.yetistep.delivr.util.GeoCodingUtil;
-import com.yetistep.delivr.util.YSException;
+import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,6 +46,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     SystemPropertyService systemPropertyService;
+
+    @Autowired
+    OrderDaoService orderDaoService;
 
     @Override
     public void saveCustomer(CustomerEntity customer, HeaderDto headerDto) throws Exception {
@@ -193,13 +192,15 @@ public class CustomerServiceImpl implements CustomerService {
     private List<DeliveryBoySelectionEntity> calculateStoreToDeliveryBoyDistance(StoreEntity store, List<DeliveryBoyEntity> capableDeliveryBoys, OrderEntity order) throws Exception {
         String storeAddress[] = {GeoCodingUtil.getLatLong(store.getLatitude(), store.getLongitude())};
         String deliveryBoyAddress[] = new String[capableDeliveryBoys.size()];
-        for(int i=0; i<capableDeliveryBoys.size(); i++){
+        for (int i = 0; i < capableDeliveryBoys.size(); i++) {
             deliveryBoyAddress[i] = GeoCodingUtil.getLatLong(capableDeliveryBoys.get(i).getLatitude(), capableDeliveryBoys.get(i).getLongitude());
         }
 
 
         List<BigDecimal> distanceList = GeoCodingUtil.getListOfDistances(storeAddress, deliveryBoyAddress);
         List<DeliveryBoySelectionEntity> selectionDetails = new ArrayList<DeliveryBoySelectionEntity>();
+        List<Integer> timeDetails = new ArrayList<Integer>();
+        int timeAtStore = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.TIME_AT_STORE));
 
         for (int i = 0; i < distanceList.size(); i++) {
             DeliveryBoySelectionEntity deliveryBoySelectionEntity = new DeliveryBoySelectionEntity();
@@ -209,15 +210,45 @@ public class CustomerServiceImpl implements CustomerService {
             deliveryBoySelectionEntity.setOrder(order);
             int timeFactor = Integer.parseInt(systemPropertyService.readPrefValue(GeneralUtil.getTimeTakenFor(capableDeliveryBoys.get(i).getVehicleType())));
 
-            Integer timeRequired = BigDecimalUtil.getDistanceInKiloMeters(distanceList.get(i)).multiply(new BigDecimal(timeFactor)).setScale(0, RoundingMode.HALF_UP).intValue();
-            deliveryBoySelectionEntity.setTimeRequired(timeRequired);
+            BigDecimal totalDistance = BigDecimalUtil.getDistanceInKiloMeters(distanceList.get(i)).add(order.getCustomerChargeableDistance());
+            Integer timeRequired = totalDistance.multiply(new BigDecimal(timeFactor)).setScale(0, RoundingMode.HALF_UP).intValue();
+
+            deliveryBoySelectionEntity.setTimeRequired(timeRequired + timeAtStore);
+            int timeRemaining = findRemainingTimeForPreviousOrder(capableDeliveryBoys.get(i).getId()) + timeRequired + timeAtStore;
+            deliveryBoySelectionEntity.setTotalTimeRequired(timeRemaining);
+            timeDetails.add(timeRemaining);
+
             deliveryBoySelectionEntity.setAccepted(false);
             selectionDetails.add(deliveryBoySelectionEntity);
-             //TODO Filter delivery boys by profit criteria - Push Notifications
             log.info(selectionDetails.toString());
         }
-        return selectionDetails;
+        return filterDeliveryBoySelection(selectionDetails, timeDetails);
+        //TODO Filter delivery boys by profit criteria - Push Notifications
     }
 
+    private List<DeliveryBoySelectionEntity> filterDeliveryBoySelection(List<DeliveryBoySelectionEntity> selectionEntities, List<Integer> timeDetails) throws Exception {
+        List<DeliveryBoySelectionEntity> filteredDBoys = new ArrayList<DeliveryBoySelectionEntity>();
+        int minimumTime = Collections.min(timeDetails);
+        int deviationInTime = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DEVIATION_IN_TIME));
+        for (DeliveryBoySelectionEntity deliveryBoySelectionEntity : selectionEntities) {
+            if ((deliveryBoySelectionEntity.getTotalTimeRequired() - minimumTime) <= deviationInTime) {
+                filteredDBoys.add(deliveryBoySelectionEntity);
+            }
+        }
+        return filteredDBoys;
+    }
 
+    private int findRemainingTimeForPreviousOrder(Integer deliveryBoyId) throws Exception {
+        List<OrderEntity> previousActiveOrders = orderDaoService.getActiveOrdersList(deliveryBoyId);
+        if (previousActiveOrders.size() > 0) {
+            Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), previousActiveOrders.get(0).getOrderDate().getTime());
+            int remainingTime = previousActiveOrders.get(0).getRemainingTime() - minuteDiff.intValue();
+            if (remainingTime <= 0)
+                return 0;
+            else
+                return remainingTime;
+        } else {
+            return 0;
+        }
+    }
 }

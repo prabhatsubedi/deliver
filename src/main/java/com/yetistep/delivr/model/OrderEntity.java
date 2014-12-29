@@ -50,6 +50,7 @@ public class OrderEntity implements Serializable {
     private DBoyOrderHistoryEntity dBoyOrderHistory;
     private List<DeliveryBoySelectionEntity> deliveryBoySelections;
     private Integer assignedTime;
+    private Integer remainingTime;
 
 
 
@@ -297,5 +298,14 @@ public class OrderEntity implements Serializable {
 
     public void setAssignedTime(Integer assignedTime) {
         this.assignedTime = assignedTime;
+    }
+
+    @Column(name = "remaining_time")
+    public Integer getRemainingTime() {
+        return remainingTime;
+    }
+
+    public void setRemainingTime(Integer remainingTime) {
+        this.remainingTime = remainingTime;
     }
 }

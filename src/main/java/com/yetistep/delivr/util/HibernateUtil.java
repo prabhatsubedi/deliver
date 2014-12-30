@@ -21,22 +21,24 @@ public class HibernateUtil {
      */
     public static void fillPaginationCriteria(Criteria criteria, Page page, Class clazz) throws Exception{
         if (page != null) {
-            /* Pagination implementation*/
-            if(page.getPageNumber()!= null && page.getPageSize() != null){
-                criteria.setFirstResult(page.getValidRowNumber()).setMaxResults(page.getPageSize());
-            }
-            /* Order By Implementation*/
-            if (page.getSortOrder() != null && page.getSortBy() != null) {
-                /* Throws NoSuchFieldException if field doesn't exist. */
-                try{
-                    clazz.getDeclaredField(page.getSortBy());
-                } catch(NoSuchFieldException e){
-                    throw new YSException("JSN005");
+            if(page.getTotalRows() > 0){
+                /* Pagination implementation*/
+                if(page.getPageNumber()!= null && page.getPageSize() != null){
+                    criteria.setFirstResult(page.getValidRowNumber()).setMaxResults(page.getPageSize());
                 }
-                if (page.getSortOrder().equalsIgnoreCase("asc")) {
-                    criteria.addOrder(Order.asc(page.getSortBy()));
-                } else if (page.getSortOrder().equalsIgnoreCase("desc"))  {
-                    criteria.addOrder(Order.desc(page.getSortBy()));
+                /* Order By Implementation*/
+                if (page.getSortOrder() != null && page.getSortBy() != null) {
+                /* Throws NoSuchFieldException if field doesn't exist. */
+                    try{
+                        clazz.getDeclaredField(page.getSortBy());
+                    } catch(NoSuchFieldException e){
+                        throw new YSException("JSN005");
+                    }
+                    if (page.getSortOrder().equalsIgnoreCase("asc")) {
+                        criteria.addOrder(Order.asc(page.getSortBy()));
+                    } else if (page.getSortOrder().equalsIgnoreCase("desc"))  {
+                        criteria.addOrder(Order.desc(page.getSortBy()));
+                    }
                 }
             }
         }

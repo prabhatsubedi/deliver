@@ -236,4 +236,30 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         remainingTime = (remainingTime < 0) ? 0 : remainingTime;
         orderEntity.setRemainingTime(remainingTime);
     }
+
+    @Override
+    public Boolean changeOrderStatus(OrderEntity orderEntity, Integer deliveryBoyId) throws Exception{
+        OrderEntity order = orderDaoService.find(orderEntity.getId());
+        if(order == null){
+            throw new YSException("VLD017");
+        }
+        JobOrderStatus orderStatus = orderEntity.getOrderStatus();
+        order.setOrderStatus(orderStatus);
+        if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)){
+            //Task to be done while in route to pick up
+            //Push notification to customer for notifying job has been started
+        }else if(orderStatus.equals(JobOrderStatus.AT_STORE)){
+            //Task to be done while delivery boy is at store
+            //Such as bill upload
+            //Bill edit
+        }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)){
+
+        }else if(orderStatus.equals(JobOrderStatus.DELIVERED)){
+            //Code set, ratings
+        }else if(orderStatus.equals(JobOrderStatus.CANCELLED)){
+            //reason
+        }
+        orderDaoService.update(order);
+        return true;
+    }
 }

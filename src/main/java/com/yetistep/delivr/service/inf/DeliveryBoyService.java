@@ -34,4 +34,6 @@ public interface DeliveryBoyService {
 
     public List<OrderEntity> getActiveOrders(Integer deliveryBoyId) throws Exception;
 
+    public Boolean changeOrderStatus(OrderEntity orderEntity, Integer deliveryBoyId) throws Exception;
+
 }

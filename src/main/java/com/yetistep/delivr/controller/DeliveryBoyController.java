@@ -112,4 +112,22 @@ public class DeliveryBoyController extends AbstractManager{
         }
     }
 
+    @RequestMapping(value = "/update_job_status", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateJobOrderStatus(@RequestHeader HttpHeaders headers, @RequestBody OrderEntity order) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
+
+            deliveryBoyService.changeOrderStatus(order, Integer.parseInt(headerDto.getId()));
+            ServiceResponse serviceResponse = new ServiceResponse("Job order status changed successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while updating job status", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 }

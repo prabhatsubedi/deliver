@@ -41,7 +41,7 @@
                     <sec:authorize access="hasRole('ROLE_MERCHANT')">
                         <li><a href="/merchant/profile">Profile</a></li>
                     </sec:authorize>
-                    <li><a href="#" id="change_password" data-target="#modal_password" data-toggle="modal">Change Password</a></li>
+                    <li><a href="#" data-target="#modal_password" data-toggle="modal">Change Password</a></li>
                     <li><a href="#" onclick="Main.doLogout()">Logout</a></li>
                 </ul>
             </div>
@@ -61,13 +61,13 @@
                 </div>
                 <div class="modal-body body_padding">
                     <div class="form-group">
-                        <input type="password" class="form-control" id="old_password" name="old_password" placeholder="Old Password">
+                        <input type="password" class="form-control" id="change_old_password" name="change_old_password" placeholder="Old Password">
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                        <input type="password" class="form-control" id="change_password" name="change_password" placeholder="Password">
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" id="re_password" name="re_password" placeholder="Retype Password">
+                        <input type="password" class="form-control" id="change_re_password" name="change_re_password" placeholder="Retype Password">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -102,8 +102,8 @@
 
                     var headers = {};
 
-                    headers.password = $('#old_password').val();
-                    headers.newPassword = $('#password').val();
+                    headers.password = $('#change_old_password').val();
+                    headers.newPassword = $('#change_password').val();
 
                     Main.changePassword(headers);
 
@@ -111,9 +111,15 @@
 
                 }
             });
-            $('#old_password').rules('add', {required: true, minlength: 6});
-            $('#password').rules('add', {required: true, minlength: 6});
-            $('#re_password').rules('add', {required: true, minlength: 6, equalTo: '#password'});
+
+            $('#modal_password').on('hidden.bs.modal', function(){
+                $('#form_password')[0].reset();
+                $('#form_password').validate().resetForm();
+            });
+
+            $('#change_old_password').rules('add', {required: true, minlength: 6});
+            $('#change_password').rules('add', {required: true, minlength: 6});
+            $('#change_re_password').rules('add', {required: true, minlength: 6, equalTo: '#change_password'});
 
         });
 

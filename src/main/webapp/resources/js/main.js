@@ -32,15 +32,18 @@ if(typeof(Main) == "undefined") var Main = {};
         if(parameter.stringify != false)
             headers['Content-Type'] = 'application/json';
 
-        var loaderDiv = callback["loaderDiv"];
-        var requestType = callback["requestType"];
-        if (loaderDiv != undefined) {
-            $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
-        }
-
-        function hideLoader() {
+        var hideLoader = function(){};
+        if(callback != undefined) {
+            var loaderDiv = callback["loaderDiv"];
+            var requestType = callback["requestType"];
             if (loaderDiv != undefined) {
-                $(loaderDiv).removeClass('loader_div').children('.loader').hide().remove();
+                $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
+            }
+
+            hideLoader = function () {
+                if (loaderDiv != undefined) {
+                    $(loaderDiv).removeClass('loader_div').children('.loader').hide().remove();
+                }
             }
         }
 
@@ -54,12 +57,12 @@ if(typeof(Main) == "undefined") var Main = {};
             success: function (data) {
 //                setTimeout(function (){
                 hideLoader();
-                return callback("success", data);
+                if (callback != undefined) return callback("success", data);
 //                }, 3000);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 hideLoader();
-                return callback("error", {success: false, message: XMLHttpRequest.getResponseHeader("errorMessage")});
+                if (callback != undefined) return callback("error", {success: false, message: XMLHttpRequest.getResponseHeader("errorMessage")});
             }
         });
     };

@@ -889,12 +889,14 @@ label.check_label .checkbox {
 }
 .items_container .item_container  {
     padding: 15px;
+    cursor: move;
 }
 .items_container .block_item  {
     border: 1px solid #bcbbbb;
 }
 .items_container .block_item .item_image  {
     border-bottom: 1px solid #bcbbbb;
+    position: relative;
 }
 .items_container .block_item .item_infos  {
     padding: 15px 20px;
@@ -908,4 +910,9 @@ label.check_label .checkbox {
     font-weight: bold;
 }
 .items_container .block_item .item_infos .item_price  {
+}
+.items_container .form_content {
+    padding: 15px;
+    min-height: 150px;
+    position: relative;
 }

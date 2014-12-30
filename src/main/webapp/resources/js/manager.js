@@ -155,6 +155,74 @@ if(typeof(Manager) == "undefined") var Manager = {};
 
     };
 
+    Manager.check_store_type = function(featured_count, prioritized_count) {
+
+        var featured_check = featured_count < 6;
+        var prioritized_check = prioritized_count < 6;
+
+        $('#featured_stores, #prioritized_stores, #other_stores').sortable('option', {connectWith: false});
+        if(featured_check && prioritized_check) {
+            $('#featured_stores, #prioritized_stores, #other_stores').sortable('option', {connectWith: "#featured_stores, #prioritized_stores, #other_stores"});
+        } else if(featured_check && !prioritized_check) {
+            $('#featured_stores, #prioritized_stores, #other_stores').sortable('option', {connectWith: "#featured_stores, #other_stores"});
+        } else if(!featured_check && prioritized_check) {
+            $('#featured_stores, #prioritized_stores, #other_stores').sortable('option', {connectWith: "#prioritized_stores, #other_stores"});
+        } else {
+            $('#featured_stores, #prioritized_stores, #other_stores').sortable('option', {connectWith: "#other_stores"});
+        }
+
+    };
+
+    Manager.stores = function(data, prioritized){
+
+        var url = "/organizer/";
+        if(prioritized) {
+            url += 'get_special_brands';
+        } else {
+            url += 'get_other_brands';
+        }
+        var callback = function (status, data) {
+            var featured_count = 0;
+            var prioritized_count = 0;
+            if (data.success == true) {
+                var stores = data.params.storeBrands;
+                if('data' in stores) {
+                    var total_stores = stores.numberOfRows;
+                    stores = stores.data;
+                    for(var i = 0; i < stores.length; i++) {
+                        var elem = $('.block_store_template').clone();
+                        $('.item_container', elem).attr('data-id', stores[i].id);
+                        $('.item_image img', elem).attr('src', stores[i].brandImage);
+                        $('.item_infos .item_name', elem).html(stores[i].brandName);
+                        $('#other_stores').append(elem.html());
+                    }
+
+
+                } else {
+
+                    for(var i = 0; i < stores.length; i++) {
+                        stores[i].featured ? featured_count++ : prioritized_count++;
+                        var elem = $('.block_store_template').clone();
+                        $('.item_container', elem).attr('data-id', stores[i].id);
+                        $('.item_image img', elem).attr('src', stores[i].brandImage);
+                        $('.item_infos .item_name', elem).html(stores[i].brandName);
+                        $(stores[i].featured ? '#featured_stores' : '#prioritized_stores').append(elem.html());
+                    }
+
+                }
+
+            }
+            Manager.check_store_type(featured_count, prioritized_count);
+
+        };
+
+
+        callback.loaderDiv = "body";
+
+        Main.request(url, data, callback);
+
+    };
+
     Manager.getCourierStaffs = function() {
 
         var callback = function (status, data) {

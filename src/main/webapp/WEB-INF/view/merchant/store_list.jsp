@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="store_actions td_div">
-            <a class="btn btn-default btn_logins add_items merchant_link">Add Item</a>
+            <a class="btn btn-default btn_logins add_items">Add Item</a>
         </div>
     </div>
 </div>

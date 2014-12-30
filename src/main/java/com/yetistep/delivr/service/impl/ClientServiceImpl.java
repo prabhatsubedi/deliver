@@ -78,7 +78,7 @@ public class ClientServiceImpl implements ClientService {
                 storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
             }
 
-            List<BigDecimal> distanceList = GeoCodingUtil.getListOfDistances(customerDistance, storeDistance);
+            List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
 
             //Set Distance to Store Entity
             for (int i = 0; i < storeEntities.size(); i++) {
@@ -141,7 +141,8 @@ public class ClientServiceImpl implements ClientService {
 
         @Override
         public int compare(StoreEntity o1, StoreEntity o2) {
-            return Integer.parseInt(o1.getCustomerToStoreDistance().subtract(o2.getCustomerToStoreDistance()).toString());
+            BigDecimal distanceSub = o1.getCustomerToStoreDistance().subtract(o2.getCustomerToStoreDistance());
+            return distanceSub.intValue();
         }
     }
 

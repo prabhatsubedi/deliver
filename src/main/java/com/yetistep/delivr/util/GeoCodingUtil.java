@@ -20,7 +20,7 @@ import java.util.List;
 public class GeoCodingUtil {
 
    // private static final String GOOGLE_MAP_API_KEY = "AIzaSyAnm8zVlUj2KSh5nZA_MD72xZuSBPlmjEg";
-   private static final String GOOGLE_MAP_API_KEY = "AIzaSyAkpDVXvLgVAL87I189yx5b-VD6FAoFLYo";
+   private static final String GOOGLE_MAP_API_KEY = "AIzaSyCdr9eotT5ocnlRRhQoDxmZqYlN-Bbk5aE";
 
     //Return In Miter
     public static Float getDistance(double lat1, double lng1, double lat2, double lng2) {
@@ -36,6 +36,20 @@ public class GeoCodingUtil {
         int meterConversion = 1609;
 
         return new Float(dist * meterConversion).floatValue();
+    }
+
+
+    public static List<BigDecimal> getListOfAirDistances(String[] origin, String destination[]) throws Exception {
+        List<BigDecimal> distanceList = new ArrayList<BigDecimal>();
+        double lat1 = Double.parseDouble(origin[0].split(",")[0]);
+        double lng1 = Double.parseDouble(origin[0].split(",")[1]);
+        for (int i = 0; i < destination.length; i++) {
+            double lat2 = Double.parseDouble(destination[i].split(",")[0]);
+            double lng2 = Double.parseDouble(destination[i].split(",")[1]);
+            Float distance = getDistance(lat1, lng1, lat2, lng2);
+            distanceList.add(new BigDecimal(distance));
+        }
+        return distanceList;
     }
 
     public static GeoApiContext getGeoApiContext(){

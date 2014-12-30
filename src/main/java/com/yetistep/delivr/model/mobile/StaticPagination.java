@@ -1,7 +1,5 @@
 package com.yetistep.delivr.model.mobile;
 
-import com.yetistep.delivr.model.StoresBrandEntity;
-
 import java.util.List;
 
 /**
@@ -22,9 +20,10 @@ public class StaticPagination extends PageInfo{
        setTotalRows(raw.size());
 
        //set first page result and return to the user
-       if(getTotalRows() > getPageSize())
-           raw  = raw.subList(((pageId-1)*getPageSize()), getPageSize() * pageId);
-       else
+       if(getTotalRows() > getPageSize()){
+           int lastIndex = (getTotalRows() > (getPageSize() * pageId)) ? (getPageSize() * pageId) : getTotalRows();
+           raw  = raw.subList(((pageId-1)*getPageSize()), lastIndex);
+       }else
            raw = raw.subList(0, getTotalRows());
 
        setTotalPage((int) Math.ceil(getTotalRows().doubleValue()/getPageSize().doubleValue()));

@@ -1,9 +1,7 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.StoreDaoService;
-import com.yetistep.delivr.dao.inf.StoresBrandDaoService;
 import com.yetistep.delivr.model.StoreEntity;
-import com.yetistep.delivr.model.StoresBrandEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -60,7 +58,8 @@ public class StoreDaoServiceImpl implements StoreDaoService{
     public List<StoreEntity> findStores(List<Integer> ignoreBrand) throws Exception {
         List<StoreEntity> storeEntities = null;
         Criteria criteria = getCurrentSession().createCriteria(StoreEntity.class);
-        criteria.add(Restrictions.not(Restrictions.in("storesBrand.id",ignoreBrand)));
+        if (ignoreBrand.size() > 0)
+            criteria.add(Restrictions.not(Restrictions.in("storesBrand.id", ignoreBrand)));
         storeEntities = criteria.list();
 
         return storeEntities;

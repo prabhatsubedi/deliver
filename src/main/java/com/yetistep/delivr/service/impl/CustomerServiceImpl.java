@@ -179,11 +179,14 @@ public class CustomerServiceImpl implements CustomerService {
         for (int i = 0; i < stores.size(); i++) {
             storeAddress[i] = GeoCodingUtil.getLatLong(stores.get(i).getLatitude(), stores.get(i).getLongitude());
         }
-        List<BigDecimal> distanceList = GeoCodingUtil.getListOfDistances(orderAddress, storeAddress);
-        int leastDistanceIndex = BigDecimalUtil.getMinimumIndex(distanceList);
-        order.setCustomerChargeableDistance(BigDecimalUtil.getDistanceInKiloMeters(distanceList.get(leastDistanceIndex)));
-        return stores.get(leastDistanceIndex);
+        List<BigDecimal> distanceList =  GeoCodingUtil.getListOfAirDistances(orderAddress, storeAddress);
+        int minimumIndex = distanceList.indexOf(Collections.min(distanceList));
 
+        StoreEntity nearestStore = stores.get(minimumIndex);
+        String finalStore[] = new String[1];
+        finalStore[0] = GeoCodingUtil.getLatLong(nearestStore.getLatitude(), nearestStore.getLongitude());
+        order.setCustomerChargeableDistance(BigDecimalUtil.getDistanceInKiloMeters( GeoCodingUtil.getListOfDistances(orderAddress, finalStore).get(0)));
+        return nearestStore;
     }
 
     private List<DeliveryBoySelectionEntity> calculateStoreToDeliveryBoyDistance(StoreEntity store, List<DeliveryBoyEntity> capableDeliveryBoys, OrderEntity order) throws Exception {

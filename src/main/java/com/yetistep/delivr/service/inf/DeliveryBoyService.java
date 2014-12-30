@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.OrderEntity;
 
 import java.util.List;
 
@@ -30,5 +31,7 @@ public interface DeliveryBoyService {
     public Boolean updateLocationOfDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
 
     public Boolean acceptOrder(Integer deliveryBoyId, Integer orderId) throws Exception ;
+
+    public List<OrderEntity> getActiveOrders(Integer deliveryBoyId) throws Exception;
 
 }

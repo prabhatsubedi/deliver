@@ -51,7 +51,7 @@ public class OrderEntity implements Serializable {
     private List<DeliveryBoySelectionEntity> deliveryBoySelections;
     private Integer assignedTime;
     private Integer remainingTime;
-
+    private Integer elapsedTime;
 
 
     @Id
@@ -307,5 +307,14 @@ public class OrderEntity implements Serializable {
 
     public void setRemainingTime(Integer remainingTime) {
         this.remainingTime = remainingTime;
+    }
+
+    @Transient
+    public Integer getElapsedTime() {
+        return elapsedTime;
+    }
+
+    public void setElapsedTime(Integer elapsedTime) {
+        this.elapsedTime = elapsedTime;
     }
 }

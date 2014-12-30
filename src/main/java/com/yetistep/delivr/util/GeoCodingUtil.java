@@ -19,7 +19,8 @@ import java.util.List;
  */
 public class GeoCodingUtil {
 
-    private static final String GOOGLE_MAP_API_KEY = "AIzaSyAnm8zVlUj2KSh5nZA_MD72xZuSBPlmjEg";
+   // private static final String GOOGLE_MAP_API_KEY = "AIzaSyAnm8zVlUj2KSh5nZA_MD72xZuSBPlmjEg";
+   private static final String GOOGLE_MAP_API_KEY = "AIzaSyAkpDVXvLgVAL87I189yx5b-VD6FAoFLYo";
 
     //Return In Miter
     public static Float getDistance(double lat1, double lng1, double lat2, double lng2) {

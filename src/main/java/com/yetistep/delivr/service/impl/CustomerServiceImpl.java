@@ -146,7 +146,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         order.setOrderVerificationStatus(false);
         order.setDeliveryStatus(DeliveryStatus.PENDING);
-        order.setOrderStatus(JobOrderStatus.ORDER_ACCEPTED);
+        order.setOrderStatus(JobOrderStatus.ORDER_PLACED);
 
         for (ItemsOrderEntity iOrder: itemsOrder){
             ItemEntity item = merchantDaoService.getItemDetail(iOrder.getItem().getId());

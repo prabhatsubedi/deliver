@@ -7,7 +7,9 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -65,10 +67,19 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         jobOrderStatusList.add(JobOrderStatus.AT_STORE);
         jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
 
-        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class)
-                .add(Restrictions.eq("deliveryBoy.id", deliverBoyId))
-                .add(Restrictions.in("orderStatus", jobOrderStatusList))
-                .addOrder(Order.desc("orderDate"));
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("orderName"), "orderName")
+                .add(Projections.property("orderStatus"), "orderStatus")
+                .add(Projections.property("customerChargeableDistance"), "customerChargeableDistance")
+                .add(Projections.property("systemChargeableDistance"), "systemChargeableDistance")
+                .add(Projections.property("orderDate"), "orderDate")
+                .add(Projections.property("assignedTime"), "assignedTime")
+                .add(Projections.property("remainingTime"), "remainingTime")
+        ).setResultTransformer(Transformers.aliasToBean(OrderEntity.class));
+        criteria.add(Restrictions.eq("deliveryBoy.id", deliverBoyId))
+                .add(Restrictions.in("orderStatus", jobOrderStatusList));
         List<OrderEntity> orderEntities = criteria.list();
         return orderEntities;
     }

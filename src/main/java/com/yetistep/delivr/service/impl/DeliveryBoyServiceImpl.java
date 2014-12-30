@@ -6,6 +6,7 @@ import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.DBoyStatus;
+import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
@@ -213,8 +214,26 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             orderEntity.setDeliveryBoy(deliveryBoyEntity);
             orderEntity.setAssignedTime(deliveryBoySelectionEntity.getTimeRequired());
             orderEntity.setSystemChargeableDistance(deliveryBoySelectionEntity.getDistanceToStore());
+            orderEntity.setOrderStatus(JobOrderStatus.ORDER_ACCEPTED);
             return orderDaoService.update(orderEntity);
         }
         throw new YSException("ORD001");
+    }
+
+    @Override
+    public List<OrderEntity> getActiveOrders(Integer deliveryBoyId) throws Exception{
+        List<OrderEntity> orderEntities = orderDaoService.getActiveOrdersList(deliveryBoyId);
+        for(OrderEntity orderEntity: orderEntities){
+            updateRemainingAndElapsedTime(orderEntity);
+        }
+        return orderEntities;
+    }
+
+    private void updateRemainingAndElapsedTime(OrderEntity orderEntity){
+        Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), orderEntity.getOrderDate().getTime());
+        int remainingTime = orderEntity.getRemainingTime() - minuteDiff.intValue();
+        orderEntity.setElapsedTime(minuteDiff.intValue());
+        remainingTime = (remainingTime < 0) ? 0 : remainingTime;
+        orderEntity.setRemainingTime(remainingTime);
     }
 }

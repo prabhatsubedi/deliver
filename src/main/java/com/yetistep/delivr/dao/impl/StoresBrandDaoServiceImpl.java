@@ -165,6 +165,9 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
         if (storeBrands.size() > 0) {
             String priorityLoop = "priority = CASE id";
             String featureLoop = ", featured = CASE id";
+            /* This two lines are required if no store brands with priorityLoop or featuredLoop found */
+            priorityLoop += " WHEN -1 THEN 7 ";
+            featureLoop += " WHEN -1 THEN false ";
             for (StoresBrandEntity storeBrand : storeBrands) {
                 priorityLoop += " WHEN " + storeBrand.getId() + " THEN " + storeBrand.getPriority();
                 featureLoop += " WHEN " + storeBrand.getId() + " THEN " + storeBrand.getFeatured();
@@ -175,7 +178,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
         } else {
             updateHQL += "featured = NULL, priority = NULL";
         }
-
+        System.err.println("HQL:"+updateHQL);
         Query query = getCurrentSession().createQuery(updateHQL);
         query.executeUpdate();
         return true;

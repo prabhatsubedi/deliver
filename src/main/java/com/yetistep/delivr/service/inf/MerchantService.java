@@ -46,4 +46,7 @@ public interface MerchantService {
     public ItemEntity getItemDetail(HeaderDto headerDto) throws Exception;
 
     public List<ItemEntity> findStoresItems(HeaderDto headerDto) throws Exception;
+
+    public List<CategoryEntity> findMerchantsDefaultCategory(HeaderDto headerDto) throws Exception;
+
 }

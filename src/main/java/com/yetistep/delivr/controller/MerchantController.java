@@ -235,6 +235,24 @@ public class MerchantController {
         }
     }
 
+    @RequestMapping(value = "/get_merchants_categories", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> findMerchantsCategories(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
+            List<CategoryEntity> categories = merchantService.findMerchantsDefaultCategory(headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Categories has been retrieved successfully");
+            serviceResponse.addParam("categories", categories);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
 
 
 

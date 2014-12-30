@@ -1,6 +1,6 @@
 package com.yetistep.delivr.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
 import org.hibernate.annotations.LazyCollection;
@@ -20,6 +20,7 @@ import java.util.List;
  */
 @Entity(name="CategoryEntity")
 @Table(name="categories")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class CategoryEntity implements Serializable {
 
 
@@ -45,8 +46,9 @@ public class CategoryEntity implements Serializable {
         this.id = id;
     }
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference("parent")
+    @JoinColumn(name = "parent_id")
     public CategoryEntity getParent() {
         return parent;
     }
@@ -55,8 +57,8 @@ public class CategoryEntity implements Serializable {
         this.parent = parent;
     }
 
-    @JsonIgnore
     @OneToMany(mappedBy = "parent")
+    @JsonManagedReference("parent")
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<CategoryEntity> getChild() {
         return child;

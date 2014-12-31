@@ -918,6 +918,18 @@ label.check_label .checkbox {
 .items_container .block_item:hover .item_image .add_items {
     display: block;
 }
+.items_container .block_item .item_image .special_item {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+    color: #666666;
+    font-size: 10px;
+    opacity: 0.9;
+    padding: 2px 8px;
+    position: absolute;
+    right: 2px;
+    top: 2px;
+}
 .items_container .block_item .item_infos {
     padding: 15px 20px;
     background-color: #FFFFFF;

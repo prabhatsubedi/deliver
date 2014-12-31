@@ -102,7 +102,7 @@
                     </div>
                     <div class="clearfix">
                         <button class="btn btn_green pull-right" type="submit">Add</button>
-                        <a class="btn btn_green pull-right cancel" href="/courier_staff">Cancel</a>
+                        <a class="btn btn_green pull-right cancel" href="/organizer/courier_staff/list">Cancel</a>
                     </div>
                 </form>
             </div>

@@ -45,7 +45,7 @@
                     </div>
                     <div class="items_container td_div">
 
-                        <div class="item_container col-lg-4">
+                        <div class="item_container col-lg-3">
                             <div class="block_item">
                                 <div class="item_image">
                                     <img src="/resources/images/720x400.jpg" class="img-responsive">
@@ -57,7 +57,7 @@
                             </div>
                         </div>
 
-                        <div class="item_container col-lg-4">
+                        <div class="item_container col-lg-3">
                             <div class="block_item">
                                 <div class="item_image">
                                     <img src="/resources/images/720x400.jpg" class="img-responsive">
@@ -69,7 +69,7 @@
                             </div>
                         </div>
 
-                        <div class="item_container col-lg-4">
+                        <div class="item_container col-lg-3">
                             <div class="block_item">
                                 <div class="item_image">
                                     <img src="/resources/images/720x400.jpg" class="img-responsive">
@@ -81,7 +81,7 @@
                             </div>
                         </div>
 
-                        <div class="item_container col-lg-4">
+                        <div class="item_container col-lg-3">
                             <div class="block_item">
                                 <div class="item_image">
                                     <img src="/resources/images/720x400.jpg" class="img-responsive">
@@ -93,7 +93,7 @@
                             </div>
                         </div>
 
-                        <div class="item_container col-lg-4">
+                        <div class="item_container col-lg-3">
                             <div class="block_item">
                                 <div class="item_image">
                                     <img src="/resources/images/720x400.jpg" class="img-responsive">
@@ -105,7 +105,7 @@
                             </div>
                         </div>
 
-                        <div class="item_container col-lg-4">
+                        <div class="item_container col-lg-3">
                             <div class="block_item">
                                 <div class="item_image">
                                     <img src="/resources/images/720x400.jpg" class="img-responsive">
@@ -126,7 +126,7 @@
 
 
 <div class="item_container_template hidden">
-    <div class="item_container col-lg-4">
+    <div class="item_container col-lg-3">
         <div class="block_item">
             <div class="item_image">
                 <img src="/resources/images/720x400.jpg" class="img-responsive">

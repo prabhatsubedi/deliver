@@ -70,7 +70,7 @@
                 var featured_count = $('#featured_stores .item_container').length;
                 var prioritized_count = $('#prioritized_stores .item_container').length;
                 Manager.check_store_type(featured_count, prioritized_count);
-                Main.request('/organizer/update_special_brands', arrdata)
+                Main.request('/organizer/update_special_brands', arrdata);
             }
         };
 

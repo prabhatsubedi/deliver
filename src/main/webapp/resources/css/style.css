@@ -889,13 +889,12 @@ label.check_label .checkbox {
 }
 .items_container .item_container {
     padding: 15px;
+}
+.items_container .ui-sortable .item_container {
     cursor: move;
 }
 .merchant_stores .items_container {
     padding-left: 0px;
-}
-.merchant_stores .items_container .item_container {
-    cursor: auto;
 }
 .items_container .block_item {
     border: 1px solid #bcbbbb;

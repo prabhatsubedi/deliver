@@ -8,6 +8,7 @@ if(typeof(Main) == "undefined") var Main = {};
 
     Main.country = "Nepal";
     Main.docHeight = window.innerHeight;
+    Main.ajax = undefined;
 
     Main.saveInSessionStorage = function (key, value){
         sessionStorage.setItem(key, value);
@@ -47,7 +48,7 @@ if(typeof(Main) == "undefined") var Main = {};
             }
         }
 
-        $.ajax({
+        Main.ajax = $.ajax({
             url: url,
             type: requestType != undefined ? requestType : "POST",
             data: parameter.stringify == false ? parameter : JSON.stringify(parameter),
@@ -62,7 +63,7 @@ if(typeof(Main) == "undefined") var Main = {};
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 hideLoader();
-                if (callback != undefined) return callback("error", {success: false, message: XMLHttpRequest.getResponseHeader("errorMessage")});
+                if (callback != undefined && errorThrown != "abort") return callback("error", {success: false, message: XMLHttpRequest.getResponseHeader("errorMessage")});
             }
         });
     };

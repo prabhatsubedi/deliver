@@ -6,6 +6,7 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
+import com.yetistep.delivr.service.inf.UserService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
 import org.apache.log4j.Logger;
@@ -30,6 +31,9 @@ import java.util.List;
 public class DeliveryBoyController extends AbstractManager{
     @Autowired
     DeliveryBoyService deliveryBoyService;
+
+    @Autowired
+    UserService userService;
 
     Logger log = Logger.getLogger(DeliveryBoyController.class);
 
@@ -125,6 +129,24 @@ public class DeliveryBoyController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while updating job status", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/change_password")
+    public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders headers) throws Exception {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID, GeneralUtil.PASSWORD, GeneralUtil.NEW_PASSWORD/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
+            userService.changePassword(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Password changed successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error occurred while changing password", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

@@ -20,7 +20,7 @@
 
 
         <!-- Drop and re-create the database schema on startup -->
-        <property name="hbm2ddl.auto">update</property>
+        <property name="hbm2ddl.auto">create</property>
 
        <mapping class="com.yetistep.delivr.model.UserEntity" />
        <mapping class="com.yetistep.delivr.model.RoleEntity" />
@@ -47,6 +47,7 @@
        <mapping class="com.yetistep.delivr.model.DBoySubmittedAmountEntity"/>
        <mapping class="com.yetistep.delivr.model.DeliveryBoySelectionEntity"/>
        <mapping class="com.yetistep.delivr.model.UserDeviceEntity"/>
+       <mapping class="com.yetistep.delivr.model.RatingEntity"/>
 
 
     </session-factory>

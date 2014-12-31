@@ -47,11 +47,13 @@ public class OrderEntity implements Serializable {
     private BigDecimal deliveryBoyShare;
     private BigDecimal systemShare;
     private Timestamp orderDate;
-    private DBoyOrderHistoryEntity dBoyOrderHistory;
+    private List<DBoyOrderHistoryEntity> dBoyOrderHistories;
     private List<DeliveryBoySelectionEntity> deliveryBoySelections;
     private Integer assignedTime;
     private Integer remainingTime;
     private Integer elapsedTime;
+    private RatingEntity rating;
+    private List<String> attachments;
 
 
     @Id
@@ -272,13 +274,13 @@ public class OrderEntity implements Serializable {
     }
 
     @JsonIgnore
-    @OneToOne(mappedBy = "order")
-    public DBoyOrderHistoryEntity getdBoyOrderHistory() {
-        return dBoyOrderHistory;
+    @OneToMany(mappedBy = "order")
+    public List<DBoyOrderHistoryEntity> getdBoyOrderHistories() {
+        return dBoyOrderHistories;
     }
 
-    public void setdBoyOrderHistory(DBoyOrderHistoryEntity dBoyOrderHistory) {
-        this.dBoyOrderHistory = dBoyOrderHistory;
+    public void setdBoyOrderHistories(List<DBoyOrderHistoryEntity> dBoyOrderHistories) {
+        this.dBoyOrderHistories = dBoyOrderHistories;
     }
 
     @JsonIgnore
@@ -316,5 +318,25 @@ public class OrderEntity implements Serializable {
 
     public void setElapsedTime(Integer elapsedTime) {
         this.elapsedTime = elapsedTime;
+    }
+
+    @OneToOne(mappedBy = "order")
+    public RatingEntity getRating() {
+        return rating;
+    }
+
+    public void setRating(RatingEntity rating) {
+        this.rating = rating;
+    }
+
+    @ElementCollection
+    @CollectionTable(name = "order_attachments", joinColumns = @JoinColumn(name = "order_id"))
+    @Column(name = "url")
+    public List<String> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<String> attachments) {
+        this.attachments = attachments;
     }
 }

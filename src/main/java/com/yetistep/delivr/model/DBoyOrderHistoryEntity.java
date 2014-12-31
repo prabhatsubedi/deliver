@@ -5,7 +5,7 @@ import com.yetistep.delivr.enums.DeliveryStatus;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,9 +21,10 @@ public class DBoyOrderHistoryEntity implements Serializable {
     private BigDecimal distanceTravelled;
     private DeliveryStatus deliveryStatus;
     private BigDecimal amountEarned;
-    private Date timeTaken;
-    private Integer rating;
-    private String ratingComments;
+    private Timestamp orderAcceptedAt;
+    private Timestamp jobStartedAt;
+    private Timestamp reachedStoreAt;
+    private Timestamp orderCompletedAt;
     private DeliveryBoyEntity deliveryBoy;
     private OrderEntity order;
 
@@ -65,31 +66,40 @@ public class DBoyOrderHistoryEntity implements Serializable {
         this.amountEarned = amountEarned;
     }
 
-    @Temporal(TemporalType.TIME)
-    public Date getTimeTaken() {
-        return timeTaken;
+    @Column(name="order_accepted_at")
+    public Timestamp getOrderAcceptedAt() {
+        return orderAcceptedAt;
     }
 
-    public void setTimeTaken(Date timeTaken) {
-        this.timeTaken = timeTaken;
+    public void setOrderAcceptedAt(Timestamp orderAcceptedAt) {
+        this.orderAcceptedAt = orderAcceptedAt;
     }
 
-    @Column(name="rating")
-    public Integer getRating() {
-        return rating;
+    @Column(name="job_started_at")
+    public Timestamp getJobStartedAt() {
+        return jobStartedAt;
     }
 
-    public void setRating(Integer rating) {
-        this.rating = rating;
+    public void setJobStartedAt(Timestamp jobStartedAt) {
+        this.jobStartedAt = jobStartedAt;
     }
 
-    @Column(name="rating_comments")
-    public String getRatingComments() {
-        return ratingComments;
+    @Column(name="reached_stored_at")
+    public Timestamp getReachedStoreAt() {
+        return reachedStoreAt;
     }
 
-    public void setRatingComments(String ratingComments) {
-        this.ratingComments = ratingComments;
+    public void setReachedStoreAt(Timestamp reachedStoreAt) {
+        this.reachedStoreAt = reachedStoreAt;
+    }
+
+    @Column(name="completed_at")
+    public Timestamp getOrderCompletedAt() {
+        return orderCompletedAt;
+    }
+
+    public void setOrderCompletedAt(Timestamp orderCompletedAt) {
+        this.orderCompletedAt = orderCompletedAt;
     }
 
     @ManyToOne
@@ -102,7 +112,7 @@ public class DBoyOrderHistoryEntity implements Serializable {
         this.deliveryBoy = deliveryBoy;
     }
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "order_id")
     public OrderEntity getOrder() {
         return order;

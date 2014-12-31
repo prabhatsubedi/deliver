@@ -65,10 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
         log.info("++++++++++++++ Logging Customer ++++++++++++++++");
-//        UserDeviceEntity customerDeviceEntity = requestJsonDto.getCustomerDevice();
-//        CustomerEntity customerEntity = requestJsonDto.getCustomer();
-        //UserEntity userEntity = new UserEntity();
-        //Set Family
+
         UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
         ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
 
@@ -78,48 +75,43 @@ public class CustomerServiceImpl implements CustomerService {
 
         //Now Signup Process
         CustomerEntity registeredCustomer = customerDaoService.find(customerEntity.getFacebookId());
-        //UserEntity registeredUser = registeredCustomer.getUser();
 
-//        //If Account already exist
-        if(registeredCustomer != null) {
+        //If Account already exist
+        if (registeredCustomer != null) {
             //If Client Permission granted after denied first time then email & DOB should updated
-            if((customerEntity.getUser().getEmailAddress() !=null && !customerEntity.getUser().getEmailAddress().isEmpty()) &&
-                    (registeredCustomer.getUser().getEmailAddress()==null || registeredCustomer.getUser().getEmailAddress().isEmpty())) {
+            if ((customerEntity.getUser().getEmailAddress() != null && !customerEntity.getUser().getEmailAddress().isEmpty()) &&
+                    (registeredCustomer.getUser().getEmailAddress() == null || registeredCustomer.getUser().getEmailAddress().isEmpty()))
                 registeredCustomer.getUser().setEmailAddress(customerEntity.getUser().getEmailAddress());
-            }
 
-            registeredCustomer.getUser().setUserDevice(customerEntity.getUser().getUserDevice());
+
+            //Update User Device
+            registeredCustomer.getUser().getUserDevice().setUuid(customerEntity.getUser().getUserDevice().getUuid());
+            registeredCustomer.getUser().getUserDevice().setDeviceToken(customerEntity.getUser().getUserDevice().getDeviceToken());
+            registeredCustomer.getUser().getUserDevice().setFamily(customerEntity.getUser().getUserDevice().getFamily());
+            registeredCustomer.getUser().getUserDevice().setFamilyName(customerEntity.getUser().getUserDevice().getFamilyName());
+            registeredCustomer.getUser().getUserDevice().setName(customerEntity.getUser().getUserDevice().getName());
+            registeredCustomer.getUser().getUserDevice().setBrand(customerEntity.getUser().getUserDevice().getBrand());
+            registeredCustomer.getUser().getUserDevice().setModel(customerEntity.getUser().getUserDevice().getModel());
+            registeredCustomer.getUser().getUserDevice().setDpi(customerEntity.getUser().getUserDevice().getDpi());
+            registeredCustomer.getUser().getUserDevice().setHeight(customerEntity.getUser().getUserDevice().getHeight());
+            registeredCustomer.getUser().getUserDevice().setWidth(customerEntity.getUser().getUserDevice().getWidth());
+
+
             validateUserDevice(registeredCustomer.getUser().getUserDevice());
             customerDaoService.update(registeredCustomer);
 
         } else {
-             validateUserDevice(customerEntity.getUser().getUserDevice());
-            if(customerEntity.getLatitude()!=null) {
+            validateUserDevice(customerEntity.getUser().getUserDevice());
+            if (customerEntity.getLatitude() != null) {
                 customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
                 customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());
             }
 
-             customerDaoService.save(customerEntity);
+            customerDaoService.save(customerEntity);
 
         }
     }
 
-    private void validateNSaveUserDevice(UserDeviceEntity userDevice, BigInteger customerId) throws Exception {
-        Validator.validateString(userDevice.getName(), "Invalid Name");
-        Validator.validateString(userDevice.getFamily(), "Invalid Family");
-        Validator.validateString(userDevice.getFamilyName(), "Invalid Family Name");
-        Validator.validateString(userDevice.getBrand(), "Invalid Brand");
-        Validator.validateString(userDevice.getBrand(), "Invalid UUID");
-
-        //save, update userdevice
-        //clientDevice.setCus(clientId);
-
-        if (userDeviceDaoService.find(customerId, userDevice.getUuid()) != null) {
-            userDeviceDaoService.update(userDevice);
-        } else {
-            userDeviceDaoService.save(userDevice);
-        }
-    }
 
     private void validateUserDevice(UserDeviceEntity userDevice) throws Exception {
         Validator.validateString(userDevice.getName(), "Invalid Name");
@@ -128,6 +120,7 @@ public class CustomerServiceImpl implements CustomerService {
         Validator.validateString(userDevice.getBrand(), "Invalid Brand");
         Validator.validateString(userDevice.getBrand(), "Invalid UUID");
     }
+
 
     @Override
     public void saveCustomer(CustomerEntity customer, HeaderDto headerDto) throws Exception {

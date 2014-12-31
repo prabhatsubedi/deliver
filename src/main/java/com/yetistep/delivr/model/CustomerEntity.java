@@ -166,7 +166,7 @@ public class CustomerEntity implements Serializable {
         this.longitude = longitude;
     }
 
-    @Column (name = "facebook_id")
+    @Column (name = "facebook_id", unique = true)
     public Long getFacebookId() {
         return facebookId;
     }

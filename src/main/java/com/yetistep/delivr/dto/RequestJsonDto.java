@@ -58,7 +58,8 @@ public class RequestJsonDto {
     private DeviceInfo deviceInfo;
     private CustomerInfo customerInfo;
     private PageInfo pageInfo;
-
+    private UserDeviceEntity customerDevice;
+    private CustomerEntity customer;
     /*For accepting delivery order*/
     private Integer orderId;
 
@@ -262,6 +263,22 @@ public class RequestJsonDto {
 
     public CustomerInfo getCustomerInfo() {
         return customerInfo;
+    }
+
+    public UserDeviceEntity getCustomerDevice() {
+        return customerDevice;
+    }
+
+    public CustomerEntity getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
+    }
+
+    public void setCustomerDevice(UserDeviceEntity customerDevice) {
+        this.customerDevice = customerDevice;
     }
 
     public void setCustomerInfo(CustomerInfo customerInfo) {

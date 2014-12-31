@@ -49,24 +49,24 @@ public class ClientController extends AbstractManager{
     @Autowired
     ClientService clientService;
 
-    @RequestMapping(value = "/save_customer", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<ServiceResponse> processRegistration(@RequestHeader HttpHeaders headers, @RequestBody CustomerEntity customer) {
-        UserEntity user = customer.getUser();
-        try {
-            HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.PASSWORD/*, GeneralUtil.ACCESS_TOKEN*/);
-            //validateMobileClient(headerDto.getAccessToken());
-            customerService.saveCustomer(customer, headerDto);
-
-            ServiceResponse serviceResponse = new ServiceResponse("Customer has been created successfully");
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
-        } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while creating customer", e);
-            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
-        }
-    }
+//    @RequestMapping(value = "/save_customer", method = RequestMethod.POST)
+//    @ResponseBody
+//    public ResponseEntity<ServiceResponse> processRegistration(@RequestHeader HttpHeaders headers, @RequestBody CustomerEntity customer) {
+//        UserEntity user = customer.getUser();
+//        try {
+//            HeaderDto headerDto = new HeaderDto();
+//            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.PASSWORD/*, GeneralUtil.ACCESS_TOKEN*/);
+//            //validateMobileClient(headerDto.getAccessToken());
+//            customerService.saveCustomer(customer, headerDto);
+//
+//            ServiceResponse serviceResponse = new ServiceResponse("Customer has been created successfully");
+//            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            GeneralUtil.logError(log, "Error Occurred while creating customer", e);
+//            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+//            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+//        }
+//    }
 
     @RequestMapping(value = "/access_token", method = RequestMethod.GET)
     public
@@ -149,19 +149,35 @@ public class ClientController extends AbstractManager{
 
     @RequestMapping(value = "/store_brands", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getBrands(@RequestBody (required = false) RequestJsonDto requestJsonDto){
-        try{
-//            select * from stores_brands where featured is not null order by priority asc;
-//            select * from stores_brands order by isnull(featured),featured asc;
+    public ResponseEntity<ServiceResponse> getBrands(@RequestBody(required = false) RequestJsonDto requestJsonDto) {
+        try {
             Map<String, Object> map = clientService.getBrands(requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("Brands fetched successfully");
+            if(requestJsonDto.getPageInfo()== null) {
                 serviceResponse.addParam("featuredBrands", map.get("featured"));
-                serviceResponse.addParam("otherBrands", map.get("all"));
                 serviceResponse.addParam("pageInfo", map.get("page"));
+            }
+            serviceResponse.addParam("otherBrands", map.get("all"));
+
 
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
-        } catch(Exception e) {
+        } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value="/login", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> customerLogin(@RequestBody CustomerEntity customerEntity) {
+        try {
+            customerService.login(customerEntity);
+            ServiceResponse serviceResponse = new ServiceResponse("Customer Login Successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred customer login", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

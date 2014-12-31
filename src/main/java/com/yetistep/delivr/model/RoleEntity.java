@@ -39,7 +39,7 @@ public class RoleEntity implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "role", nullable = false, unique = true)
+    @Column(name = "role", unique = true)
     @Enumerated(EnumType.STRING)
     public Role getRole() {
         return role;

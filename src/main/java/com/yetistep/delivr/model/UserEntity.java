@@ -48,7 +48,7 @@ public class UserEntity implements Serializable {
     private Boolean subscribeNewsletter;
     private List<ActionLogEntity> actionLogEntities;
     private List<AddressEntity> addresses;
-
+    private UserDeviceEntity userDevice;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -79,6 +79,8 @@ public class UserEntity implements Serializable {
         this.deliveryBoy = deliveryBoy;
     }
 
+
+
     @JsonBackReference("merchant-user")
     @OneToOne(mappedBy = "user")
     public MerchantEntity getMerchant() {
@@ -98,7 +100,7 @@ public class UserEntity implements Serializable {
         this.customer = customer;
     }
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "username", unique = true)
     public String getUsername() {
         return username;
     }
@@ -108,7 +110,7 @@ public class UserEntity implements Serializable {
     }
 
     @JsonIgnore
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     public String getPassword() {
         return password;
     }
@@ -117,7 +119,7 @@ public class UserEntity implements Serializable {
         this.password = password;
     }
 
-    @Column(name = "full_name", nullable = false)
+    @Column(name = "full_name")
     public String getFullName() {
         return fullName;
     }
@@ -126,7 +128,7 @@ public class UserEntity implements Serializable {
         this.fullName = fullName;
     }
 
-    @Column(name="gender", nullable = true)
+    @Column(name="gender")
     @Type(type="com.yetistep.delivr.enums.GenderCustom")
     public Gender getGender() {
         return gender;
@@ -136,7 +138,7 @@ public class UserEntity implements Serializable {
         this.gender = gender;
     }
 
-    @Column(name = "mobile_number", nullable = false)
+    @Column(name = "mobile_number")
     public String getMobileNumber() {
         return mobileNumber;
     }
@@ -145,7 +147,7 @@ public class UserEntity implements Serializable {
         this.mobileNumber = mobileNumber;
     }
 
-    @Column(name = "mobile_verification_status", nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(name = "mobile_verification_status", columnDefinition = "TINYINT(1)")
     public Boolean getMobileVerificationStatus() {
         return mobileVerificationStatus;
     }
@@ -192,7 +194,7 @@ public class UserEntity implements Serializable {
         this.createdDate = createdDate;
     }
 
-    @Column(name = "black_list_status", nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(name = "black_list_status", columnDefinition = "TINYINT(1)")
     public Boolean getBlacklistStatus() {
         return blacklistStatus;
     }
@@ -201,7 +203,7 @@ public class UserEntity implements Serializable {
         this.blacklistStatus = blacklistStatus;
     }
 
-    @Column(name = "verification_status", nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(name = "verification_status", columnDefinition = "TINYINT(1)")
     public Boolean getVerifiedStatus() {
         return verifiedStatus;
     }
@@ -230,7 +232,7 @@ public class UserEntity implements Serializable {
         this.verificationCode = verificationCode;
     }
 
-    @Column(name = "subscribe_newsletter", nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(name = "subscribe_newsletter", columnDefinition = "TINYINT(1)")
     public Boolean getSubscribeNewsletter() {
         return subscribeNewsletter;
     }
@@ -257,5 +259,15 @@ public class UserEntity implements Serializable {
 
     public void setAddresses(List<AddressEntity> addresses) {
         this.addresses = addresses;
+    }
+
+    @JsonManagedReference
+    @OneToOne(mappedBy = "user" ,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    public UserDeviceEntity getUserDevice() {
+        return userDevice;
+    }
+
+    public void setUserDevice(UserDeviceEntity userDevice) {
+        this.userDevice = userDevice;
     }
 }

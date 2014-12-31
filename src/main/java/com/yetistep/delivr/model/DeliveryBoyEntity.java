@@ -51,7 +51,7 @@ public class DeliveryBoyEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     public Integer getId() {
         return id;
     }
@@ -81,7 +81,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.order = order;
     }
 
-    @Column(name = "availability_status", nullable = false)
+    @Column(name = "availability_status")
     @Enumerated(EnumType.ORDINAL)
     public DBoyStatus getAvailabilityStatus() {
         return availabilityStatus;
@@ -91,7 +91,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.availabilityStatus = availabilityStatus;
     }
 
-    @Column(name = "average_rating", nullable = false, precision = 4, scale = 2)
+    @Column(name = "average_rating", precision = 4, scale = 2)
     public BigDecimal getAverageRating() {
         return averageRating;
     }
@@ -100,7 +100,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.averageRating = averageRating;
     }
 
-    @Column(name = "total_order_taken", nullable = false)
+    @Column(name = "total_order_taken")
     public Integer getTotalOrderTaken() {
         return totalOrderTaken;
     }
@@ -109,7 +109,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.totalOrderTaken = totalOrderTaken;
     }
 
-    @Column(name = "total_order_delivered", nullable = false)
+    @Column(name = "total_order_delivered")
     public Integer getTotalOrderDelivered() {
         return totalOrderDelivered;
     }
@@ -118,7 +118,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.totalOrderDelivered = totalOrderDelivered;
     }
 
-    @Column(name = "total_order_undelivered", nullable = false)
+    @Column(name = "total_order_undelivered")
     public Integer getTotalOrderUndelivered() {
         return totalOrderUndelivered;
     }
@@ -127,7 +127,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.totalOrderUndelivered = totalOrderUndelivered;
     }
 
-    @Column(name = "total_earnings", nullable = false, precision = 16, scale = 4)
+    @Column(name = "total_earnings", precision = 16, scale = 4)
     public BigDecimal getTotalEarnings() {
         return totalEarnings;
     }
@@ -136,7 +136,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.totalEarnings = totalEarnings;
     }
 
-    @Column(name = "vehicle_type", nullable = false)
+    @Column(name = "vehicle_type")
     @Type(type="com.yetistep.delivr.enums.VehicleTypeCustom")
     public VehicleType getVehicleType() {
         return vehicleType;
@@ -146,7 +146,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.vehicleType = vehicleType;
     }
 
-    @Column(name = "active_order_no", nullable = false)
+    @Column(name = "active_order_no")
     public Integer getActiveOrderNo() {
         return activeOrderNo;
     }

@@ -1,18 +1,28 @@
 package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.*;
+import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.*;
+import com.yetistep.delivr.enums.DeliveryStatus;
+import com.yetistep.delivr.enums.Gender;
+import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
+import com.yetistep.delivr.util.*;
+import net.sf.uadetector.ReadableUserAgent;
+import net.sf.uadetector.UserAgentStringParser;
+import net.sf.uadetector.service.UADetectorServiceFactory;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,33 +57,105 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     OrderDaoService orderDaoService;
 
+    @Autowired
+    HttpServletRequest httpServletRequest;
+
+    @Autowired
+    UserDeviceDaoService userDeviceDaoService;
+    @Override
+    public void login(CustomerEntity customerEntity) throws Exception {
+        log.info("++++++++++++++ Logging Customer ++++++++++++++++");
+//        UserDeviceEntity customerDeviceEntity = requestJsonDto.getCustomerDevice();
+//        CustomerEntity customerEntity = requestJsonDto.getCustomer();
+        //UserEntity userEntity = new UserEntity();
+        //Set Family
+        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+        ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
+
+        customerEntity.getUser().getUserDevice().setFamily(agent.getOperatingSystem().getFamily().toString());
+        customerEntity.getUser().getUserDevice().setFamilyName(agent.getOperatingSystem().getFamilyName());
+        customerEntity.getUser().getUserDevice().setName(agent.getOperatingSystem().getName());
+
+        //Now Signup Process
+        CustomerEntity registeredCustomer = customerDaoService.find(customerEntity.getFacebookId());
+        //UserEntity registeredUser = registeredCustomer.getUser();
+
+//        //If Account already exist
+        if(registeredCustomer != null) {
+            //If Client Permission granted after denied first time then email & DOB should updated
+            if((customerEntity.getUser().getEmailAddress() !=null && !customerEntity.getUser().getEmailAddress().isEmpty()) &&
+                    (registeredCustomer.getUser().getEmailAddress()==null || registeredCustomer.getUser().getEmailAddress().isEmpty())) {
+                registeredCustomer.getUser().setEmailAddress(customerEntity.getUser().getEmailAddress());
+            }
+
+            registeredCustomer.getUser().setUserDevice(customerEntity.getUser().getUserDevice());
+            validateUserDevice(registeredCustomer.getUser().getUserDevice());
+            customerDaoService.update(registeredCustomer);
+
+        } else {
+             validateUserDevice(customerEntity.getUser().getUserDevice());
+            if(customerEntity.getLatitude()!=null) {
+                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
+                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());
+            }
+
+             customerDaoService.save(customerEntity);
+
+        }
+    }
+
+    private void validateNSaveUserDevice(UserDeviceEntity userDevice, BigInteger customerId) throws Exception {
+        Validator.validateString(userDevice.getName(), "Invalid Name");
+        Validator.validateString(userDevice.getFamily(), "Invalid Family");
+        Validator.validateString(userDevice.getFamilyName(), "Invalid Family Name");
+        Validator.validateString(userDevice.getBrand(), "Invalid Brand");
+        Validator.validateString(userDevice.getBrand(), "Invalid UUID");
+
+        //save, update userdevice
+        //clientDevice.setCus(clientId);
+
+        if (userDeviceDaoService.find(customerId, userDevice.getUuid()) != null) {
+            userDeviceDaoService.update(userDevice);
+        } else {
+            userDeviceDaoService.save(userDevice);
+        }
+    }
+
+    private void validateUserDevice(UserDeviceEntity userDevice) throws Exception {
+        Validator.validateString(userDevice.getName(), "Invalid Name");
+        Validator.validateString(userDevice.getFamily(), "Invalid Family");
+        Validator.validateString(userDevice.getFamilyName(), "Invalid Family Name");
+        Validator.validateString(userDevice.getBrand(), "Invalid Brand");
+        Validator.validateString(userDevice.getBrand(), "Invalid UUID");
+    }
+
     @Override
     public void saveCustomer(CustomerEntity customer, HeaderDto headerDto) throws Exception {
-        customer.getUser().setUsername(headerDto.getUsername());
-        customer.getUser().setPassword(headerDto.getPassword());
-        UserEntity userEntity = customer.getUser();
-        if (userEntity.getUsername() == null || userEntity.getPassword() == null || userEntity.getUsername().isEmpty() || userEntity.getPassword().isEmpty())
-            throw new YSException("VLD009");
-
-        /* Setting Default value of customer while sign up. */
-        RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_CUSTOMER);
-        userEntity.setRole(userRole);
-        userEntity.setPassword(GeneralUtil.encryptPassword(userEntity.getPassword()));
-        userEntity.setMobileNumber(userEntity.getUsername());
-        userEntity.setMobileVerificationStatus(false);
-        userEntity.setVerifiedStatus(false);
-        userEntity.setBlacklistStatus(false);
-        userEntity.setSubscribeNewsletter(false);
-
-        customer.setTotalOrderPlaced(0);
-        customer.setTotalOrderDelivered(0);
-        customer.setFriendsInvitationCount(0);
-        customer.setReferredFriendsCount(0);
-        customerDaoService.save(customer);
-
-        String verifyCode = GeneralUtil.generateMobileCode();
-        customer.getUser().setVerificationCode(verifyCode);
-        customerDaoService.update(customer);
+//        customer.getUser().setUsername(headerDto.getUsername());
+//        customer.getUser().setPassword(headerDto.getPassword());
+//        UserEntity userEntity = customer.getUser();
+//        if (userEntity.getUsername() == null || userEntity.getPassword() == null || userEntity.getUsername().isEmpty() || userEntity.getPassword().isEmpty())
+//            throw new YSException("VLD009");
+//
+//        /* Setting Default value of customer while sign up. */
+//        RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_CUSTOMER);
+//        userEntity.setRole(userRole);
+//        userEntity.setPassword(GeneralUtil.encryptPassword(userEntity.getPassword()));
+//        userEntity.setMobileNumber(userEntity.getUsername());
+//        userEntity.setMobileVerificationStatus(false);
+//        userEntity.setVerifiedStatus(false);
+//        userEntity.setBlacklistStatus(false);
+//        userEntity.setSubscribeNewsletter(false);
+//
+//        customer.setTotalOrderPlaced(0);
+//        customer.setTotalOrderDelivered(0);
+//        customer.setFriendsInvitationCount(0);
+//        customer.setReferredFriendsCount(0);
+//        customerDaoService.save(customer);
+//
+//        String verifyCode = GeneralUtil.generateMobileCode();
+//        customer.getUser().setVerificationCode(verifyCode);
+//        customerDaoService.update(customer);
 
 //        if (profileImage != null && !profileImage.isEmpty()) {
 //            log.info("Uploading Profile Image of delivery boy to S3 Bucket ");
@@ -89,16 +171,16 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void addCustomerAddress(HeaderDto headerDto, List<AddressEntity> addresses) throws Exception {
-        int customerId = Integer.parseInt(headerDto.getId());
-        CustomerEntity customerEntity = customerDaoService.find(customerId);
-        if(customerEntity == null){
-            throw new YSException("VLD011");
-        }
-        for(AddressEntity address: addresses){
-            address.setUser(customerEntity.getUser());
-        }
-        customerEntity.getUser().setAddresses(addresses);
-        customerDaoService.save(customerEntity);
+//        int customerId = Integer.parseInt(headerDto.getId());
+//        CustomerEntity customerEntity = customerDaoService.find(customerId);
+//        if(customerEntity == null){
+//            throw new YSException("VLD011");
+//        }
+//        for(AddressEntity address: addresses){
+//            address.setUser(customerEntity.getUser());
+//        }
+//        customerEntity.getUser().setAddresses(addresses);
+//        customerDaoService.save(customerEntity);
     }
 
     @Override
@@ -123,7 +205,10 @@ public class CustomerServiceImpl implements CustomerService {
         Integer addressId = requestJson.getOrdersAddressId();
 
         StoresBrandEntity brand = merchantDaoService.findBrandDetail(brandId);
-        CustomerEntity customer = customerDaoService.find(customerId);
+        //FIXME Dummy Value =
+        Long id = 5435435435435435L;
+        CustomerEntity customer = customerDaoService.find(id);
+//        CustomerEntity customer = customerDaoService.find(customerId);
         AddressEntity address = customerDaoService.findAddressById(addressId);
 
         if(address == null)

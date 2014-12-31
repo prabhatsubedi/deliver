@@ -44,7 +44,7 @@ public class MerchantEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     public Integer getId() {
         return id;
     }
@@ -85,7 +85,7 @@ public class MerchantEntity implements Serializable {
         this.storesBrand = storesBrand;
     }
 
-    @Column(name = "partnership_status", nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(name = "partnership_status", columnDefinition = "TINYINT(1)")
     public Boolean getPartnershipStatus() {
         return partnershipStatus;
     }
@@ -130,7 +130,7 @@ public class MerchantEntity implements Serializable {
         this.agreementDetail = agreementDetail;
     }
 
-    @Column(name = "business_title", nullable = false)
+    @Column(name = "business_title")
     public String getBusinessTitle() {
         return businessTitle;
     }

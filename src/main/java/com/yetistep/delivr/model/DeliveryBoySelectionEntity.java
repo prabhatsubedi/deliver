@@ -71,7 +71,7 @@ public class DeliveryBoySelectionEntity {
         this.totalTimeRequired = totalTimeRequired;
     }
 
-    @Column(name = "accepted", nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(name = "accepted", columnDefinition = "TINYINT(1)")
     public Boolean getAccepted() {
         return accepted;
     }

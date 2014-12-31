@@ -29,7 +29,7 @@ public class DBoyOrderHistoryEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     public Integer getId() {
         return id;
     }

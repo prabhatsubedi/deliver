@@ -27,7 +27,6 @@ public class AddressEntity implements Serializable {
     private List<OrderEntity> order;
     private String latitude;
     private String longitude;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -48,7 +47,7 @@ public class AddressEntity implements Serializable {
         this.street = street;
     }
 
-    @Column(name = "city", nullable = false)
+    @Column(name = "city")
     public String getCity() {
         return city;
     }
@@ -57,7 +56,7 @@ public class AddressEntity implements Serializable {
         this.city = city;
     }
 
-    @Column(name = "state", nullable = false)
+    @Column(name = "state")
     public String getState() {
         return state;
     }
@@ -66,7 +65,7 @@ public class AddressEntity implements Serializable {
         this.state = state;
     }
 
-    @Column(name = "country", nullable = false)
+    @Column(name = "country")
     public String getCountry() {
         return country;
     }
@@ -75,7 +74,7 @@ public class AddressEntity implements Serializable {
         this.country = country;
     }
 
-    @Column(name = "country_code", nullable = false)
+    @Column(name = "country_code")
     public String getCountryCode() {
         return countryCode;
     }
@@ -122,5 +121,6 @@ public class AddressEntity implements Serializable {
     public void setOrder(List<OrderEntity> order) {
         this.order = order;
     }
+
 
 }

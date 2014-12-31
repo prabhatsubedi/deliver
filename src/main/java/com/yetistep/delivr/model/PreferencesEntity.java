@@ -18,7 +18,7 @@ public class PreferencesEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     public Integer getId() {
         return id;
     }
@@ -27,7 +27,7 @@ public class PreferencesEntity {
         this.id = id;
     }
 
-    @Column(name = "pref_key", nullable = false, unique = true)
+    @Column(name = "pref_key", unique = true)
     public String getPrefKey() {
         return prefKey;
     }
@@ -36,7 +36,7 @@ public class PreferencesEntity {
         this.prefKey = prefKey;
     }
 
-    @Column(name = "value", nullable = false)
+    @Column(name = "value")
     public String getValue() {
         return value;
     }

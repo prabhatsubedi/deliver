@@ -108,7 +108,7 @@ public class StoresBrandEntity implements Serializable {
 
     @Temporal(TemporalType.TIME)
     @JsonDeserialize(using = JsonTimeDeserializer.class)
-    @Column(name = "opening_time", nullable = false)
+    @Column(name = "opening_time")
     public Date getOpeningTime() {
         return openingTime;
     }
@@ -119,7 +119,7 @@ public class StoresBrandEntity implements Serializable {
 
     @Temporal(TemporalType.TIME)
     @JsonDeserialize(using = JsonTimeDeserializer.class)
-    @Column(name = "closing_time", nullable = false)
+    @Column(name = "closing_time")
     public Date getClosingTime() {
         return closingTime;
     }

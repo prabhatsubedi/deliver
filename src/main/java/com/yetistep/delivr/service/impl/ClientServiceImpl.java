@@ -123,10 +123,6 @@ public class ClientServiceImpl implements ClientService {
             pageInfo = staticPagination;
         }
 
-        // Check Store Opening Time
-        setStoreOpenSet(featuredBrands);
-        setStoreOpenSet(sortedList);
-
         //Response Data
 
         Map<String, Object> map = new HashMap<>();

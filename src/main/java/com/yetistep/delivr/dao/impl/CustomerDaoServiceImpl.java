@@ -4,10 +4,13 @@ import com.yetistep.delivr.dao.inf.CustomerDaoService;
 import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.OrderEntity;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -64,6 +67,16 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
     @Override
     public void saveOrder(OrderEntity value) throws Exception {
         getCurrentSession().save(value);
+    }
+
+    @Override
+    public CustomerEntity find(Long facebookId) throws Exception {
+        List<CustomerEntity> customerEntities = null;
+        Criteria criteria = getCurrentSession().createCriteria(CustomerEntity.class);
+        criteria.add(Restrictions.eq("facebookId", facebookId));
+        customerEntities = criteria.list();
+        return customerEntities.size() > 0 ? customerEntities.get(0) : null;
+
     }
 }
 

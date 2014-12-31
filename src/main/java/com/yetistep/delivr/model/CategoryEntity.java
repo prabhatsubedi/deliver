@@ -102,7 +102,7 @@ public class CategoryEntity implements Serializable {
     }
 
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     public String getName() {
         return name;
     }

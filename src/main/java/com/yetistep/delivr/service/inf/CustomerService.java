@@ -4,6 +4,7 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
+import com.yetistep.delivr.model.UserEntity;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface CustomerService {
+    public void login(CustomerEntity customerEntity) throws Exception;
+
     public void saveCustomer(CustomerEntity customer, HeaderDto headerDto) throws Exception;
 
     public void addCustomerAddress(HeaderDto headerDto, List<AddressEntity> addresses) throws Exception;

@@ -60,9 +60,9 @@ public abstract class AbstractManager {
         String timeStr = null;
         String family = agent.getOperatingSystem().getFamily().toString();
 
-        if (family.toUpperCase().equals("IOS")) {
+        if (family.toUpperCase().indexOf("IOS")>= 0 || family.toUpperCase().indexOf("MAC")>= 0) {
             timeStr = RNCryptoEncDec.decryptAccessToken(token);
-        } else{
+        } else if(family.toUpperCase().indexOf("ANDROID") > 0){
             timeStr = EncDecUtil.decryptAccessToken(token, MessageBundle.getSecretKey());
         }
         Long timeVal = Long.valueOf(timeStr).longValue();

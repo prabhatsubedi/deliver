@@ -21,7 +21,7 @@ public class CountryEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     public Integer getId() {
         return id;
     }
@@ -30,7 +30,7 @@ public class CountryEntity implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "country_name", nullable = false, unique = true)
+    @Column(name = "country_name", unique = true)
     public String getCountryName() {
         return countryName;
     }
@@ -57,7 +57,7 @@ public class CountryEntity implements Serializable {
         this.currencyName = currencyName;
     }
 
-    @Column(name = "country_code", nullable = false)
+    @Column(name = "country_code")
     public String getCountryCode() {
         return countryCode;
     }

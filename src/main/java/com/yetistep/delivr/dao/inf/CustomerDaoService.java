@@ -5,6 +5,8 @@ import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.OrderEntity;
 
+import java.math.BigInteger;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Sagar
@@ -17,4 +19,6 @@ public interface CustomerDaoService extends GenericDaoService<Integer, CustomerE
     public AddressEntity findAddressById(Integer id) throws Exception;
 
     public void saveOrder(OrderEntity order) throws Exception;
+
+    public CustomerEntity find(Long facebookId) throws Exception;
 }

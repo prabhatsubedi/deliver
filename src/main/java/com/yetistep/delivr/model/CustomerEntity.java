@@ -1,8 +1,13 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.yetistep.delivr.util.JsonDateSerializer;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -18,6 +23,9 @@ public class CustomerEntity implements Serializable {
 
     private Integer id;
     private UserEntity user;
+    private Long facebookId;
+    private String profileUrl;
+    private Boolean allowShare;
     private List<OrderEntity> order;
     private Integer totalOrderPlaced;
     private Integer totalOrderDelivered;
@@ -30,10 +38,9 @@ public class CustomerEntity implements Serializable {
     private String creditCardId;
     private String latitude;
     private String longitude;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id", nullable = false)
+    @Column(name="id")
     public Integer getId() {
         return id;
     }
@@ -61,7 +68,7 @@ public class CustomerEntity implements Serializable {
         this.order = order;
     }
 
-    @Column(name = "total_order_placed", nullable = false)
+    @Column(name = "total_order_placed")
     public Integer getTotalOrderPlaced() {
         return totalOrderPlaced;
     }
@@ -70,7 +77,7 @@ public class CustomerEntity implements Serializable {
         this.totalOrderPlaced = totalOrderPlaced;
     }
 
-    @Column(name = "total_order_delivered", nullable = false)
+    @Column(name = "total_order_delivered")
     public Integer getTotalOrderDelivered() {
         return totalOrderDelivered;
     }
@@ -88,7 +95,7 @@ public class CustomerEntity implements Serializable {
         this.averageRating = averageRating;
     }
 
-    @Column(name = "friends_invitation_count", nullable = false)
+    @Column(name = "friends_invitation_count")
     public Integer getFriendsInvitationCount() {
         return friendsInvitationCount;
     }
@@ -106,7 +113,7 @@ public class CustomerEntity implements Serializable {
         this.referenceUrl = referenceUrl;
     }
 
-    @Column(name = "referred_friends_count", nullable = false)
+    @Column(name = "referred_friends_count")
     public Integer getReferredFriendsCount() {
         return referredFriendsCount;
     }
@@ -158,5 +165,33 @@ public class CustomerEntity implements Serializable {
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
+
+    @Column (name = "facebook_id")
+    public Long getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(Long facebookId) {
+        this.facebookId = facebookId;
+    }
+
+    @Column(name = "profile_url")
+    public String getProfileUrl() {
+        return profileUrl;
+    }
+
+    public void setProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
+    @Column(name = "allow_share", columnDefinition = "TINYINT(1)")
+    public Boolean getAllowShare() {
+        return allowShare;
+    }
+
+    public void setAllowShare(Boolean allowShare) {
+        this.allowShare = allowShare;
+    }
+
 
 }

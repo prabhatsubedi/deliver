@@ -94,7 +94,7 @@ public class StoreEntity implements Serializable {
     }
 
 
-    @Column(name="name", nullable = false)
+    @Column(name="name")
     public String getName() {
         return name;
     }
@@ -121,7 +121,7 @@ public class StoreEntity implements Serializable {
         this.state = state;
     }
 
-    @Column(name="city", nullable = false)
+    @Column(name="city")
     public String getCity() {
         return city;
     }
@@ -130,7 +130,7 @@ public class StoreEntity implements Serializable {
         this.city = city;
     }
 
-    @Column(name="country", nullable = false)
+    @Column(name="country")
     public String getCountry() {
         return country;
     }
@@ -139,7 +139,7 @@ public class StoreEntity implements Serializable {
         this.country = country;
     }
 
-    @Column(name="contact_no", nullable = false)
+    @Column(name="contact_no")
     public String getContactNo() {
         return contactNo;
     }
@@ -148,7 +148,7 @@ public class StoreEntity implements Serializable {
         this.contactNo = contactNo;
     }
 
-    @Column(name = "contact_person", nullable = false)
+    @Column(name = "contact_person")
     public String getContactPerson() {
         return contactPerson;
     }
@@ -157,7 +157,7 @@ public class StoreEntity implements Serializable {
         this.contactPerson = contactPerson;
     }
 
-    @Column(name="latitude", nullable = false)
+    @Column(name="latitude")
     public String getLatitude() {
         return latitude;
     }
@@ -166,7 +166,7 @@ public class StoreEntity implements Serializable {
         this.latitude = latitude;
     }
 
-    @Column(name="longitude", nullable = false)
+    @Column(name="longitude")
     public String getLongitude() {
         return longitude;
     }

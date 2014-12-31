@@ -16,6 +16,4 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
     public List<OrderEntity> getActiveOrdersList(Integer deliverBoyId) throws Exception;
 
     public OrderEntity getLastActiveOrder(Integer deliverBoyId) throws Exception;
-
-    public List<OrderEntity> getPastOrders(Integer deliveryBoyId) throws Exception;
 }

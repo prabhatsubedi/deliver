@@ -101,8 +101,4 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         return orderEntities.size() == 1 ? orderEntities.get(0) : null;
     }
 
-    @Override
-    public List<OrderEntity> getPastOrders(Integer deliveryBoyId) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
 }

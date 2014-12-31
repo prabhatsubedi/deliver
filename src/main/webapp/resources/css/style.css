@@ -887,29 +887,57 @@ label.check_label .checkbox {
 .items_container {
     padding: 15px 0px 15px 15px;
 }
-.items_container .item_container  {
+.items_container .item_container {
     padding: 15px;
     cursor: move;
 }
-.items_container .block_item  {
+.merchant_stores .items_container {
+    padding-left: 0px;
+}
+.merchant_stores .items_container .item_container {
+    cursor: auto;
+}
+.items_container .block_item {
     border: 1px solid #bcbbbb;
 }
-.items_container .block_item .item_image  {
+.items_container .block_item .item_image {
     border-bottom: 1px solid #bcbbbb;
     position: relative;
+    min-height: 50px;
 }
-.items_container .block_item .item_infos  {
+.items_container .block_item .item_image .add_items {
+    border-bottom-width: 2px;
+    bottom: 0;
+    font-size: 16px;
+    line-height: 30px;
+    padding: 0 15px;
+    position: absolute;
+    right: 2px;
+    width: auto;
+    display: none;
+}
+.items_container .block_item:hover .item_image .add_items {
+    display: block;
+}
+.items_container .block_item .item_infos {
     padding: 15px 20px;
     background-color: #FFFFFF;
     font-size: 16px;
 }
-.items_container .block_item .item_infos p  {
+.items_container .block_item .item_infos p {
     margin: 0px;
 }
-.items_container .block_item .item_infos .item_name  {
+.items_container .block_item .item_infos .item_name {
     font-weight: bold;
 }
-.items_container .block_item .item_infos .item_price  {
+.items_container .block_item .item_infos .item_name a {
+    color: #333333;
+    display: block;
+    margin: -15px;
+    padding: 15px;
+    text-decoration: none;
+}
+.items_container .block_item .item_infos .item_price {
 }
 .items_container .form_content {
     padding: 15px;

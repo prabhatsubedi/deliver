@@ -24,27 +24,25 @@
             <h1 class="pull-left">Stores</h1>
             <a class="btn btn_green pull-right merchant_link" href="/merchant/store/form/create">Add Store</a>
         </div>
-        <div class="main_content">
+        <div class="main_content merchant_stores">
+            <div class="items_container row">
 
+            </div>
         </div>
     </div>
 </div>
 
 
 <div class="block_store_template hidden">
-    <div class="block_store table_div">
-        <div class="store_logo td_div">
-            <img class="img-responsive" />
-        </div>
-        <div class="store_info td_div">
-            <div class="store_name"></div>
-            <div class="store_address_list">
-                <ul>
-                </ul>
+    <div class="item_container unselectable col-lg-2">
+        <div class="block_item">
+            <div class="item_image">
+                <img src="/resources/images/720x400.jpg" class="img-responsive">
+                <a class="btn btn-default btn_logins add_items">Add Item</a>
             </div>
-        </div>
-        <div class="store_actions td_div">
-            <a class="btn btn-default btn_logins add_items">Add Item</a>
+            <div class="item_infos">
+                <p class="item_name">Item Name</p>
+            </div>
         </div>
     </div>
 </div>

@@ -274,7 +274,7 @@ public class OrderEntity implements Serializable {
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     public List<DBoyOrderHistoryEntity> getdBoyOrderHistories() {
         return dBoyOrderHistories;
     }

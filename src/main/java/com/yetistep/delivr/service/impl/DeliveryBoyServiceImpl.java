@@ -6,6 +6,7 @@ import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.DBoyStatus;
+import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.*;
@@ -15,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -215,6 +217,17 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             orderEntity.setAssignedTime(deliveryBoySelectionEntity.getTimeRequired());
             orderEntity.setSystemChargeableDistance(deliveryBoySelectionEntity.getDistanceToStore());
             orderEntity.setOrderStatus(JobOrderStatus.ORDER_ACCEPTED);
+
+            List<DBoyOrderHistoryEntity> dBoyOrderHistoryEntities = new ArrayList<DBoyOrderHistoryEntity>();
+            DBoyOrderHistoryEntity dBoyOrderHistoryEntity = new DBoyOrderHistoryEntity();
+            dBoyOrderHistoryEntity.setDeliveryBoy(deliveryBoyEntity);
+            dBoyOrderHistoryEntity.setOrder(orderEntity);
+            dBoyOrderHistoryEntity.setOrderAcceptedAt(DateUtil.getCurrentTimestampSQL());
+            dBoyOrderHistoryEntity.setDistanceTravelled(BigDecimal.ZERO);
+            dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.PENDING);
+            dBoyOrderHistoryEntities.add(dBoyOrderHistoryEntity);
+            orderEntity.setdBoyOrderHistories(dBoyOrderHistoryEntities);
+
             return orderDaoService.update(orderEntity);
         }
         throw new YSException("ORD001");

@@ -80,10 +80,13 @@ public class CustomerServiceImpl implements CustomerService {
         if (registeredCustomer != null) {
             //If Client Permission granted after denied first time then email & DOB should updated
             if ((customerEntity.getUser().getEmailAddress() != null && !customerEntity.getUser().getEmailAddress().isEmpty()) &&
-                    (registeredCustomer.getUser().getEmailAddress() == null || registeredCustomer.getUser().getEmailAddress().isEmpty()))
+                    (!registeredCustomer.getUser().getEmailAddress().equals(customerEntity.getUser().getEmailAddress())))
                 registeredCustomer.getUser().setEmailAddress(customerEntity.getUser().getEmailAddress());
 
+            if(customerEntity.getFbToken()!=null && !customerEntity.getFbToken().isEmpty())
+                registeredCustomer.setFbToken(customerEntity.getFbToken());
 
+             log.info("++++++++++++ Updating Customer Info +++++++++++++");
             //Update User Device
             registeredCustomer.getUser().getUserDevice().setUuid(customerEntity.getUser().getUserDevice().getUuid());
             registeredCustomer.getUser().getUserDevice().setDeviceToken(customerEntity.getUser().getUserDevice().getDeviceToken());
@@ -102,10 +105,10 @@ public class CustomerServiceImpl implements CustomerService {
 
         } else {
             validateUserDevice(customerEntity.getUser().getUserDevice());
-            if (customerEntity.getLatitude() != null) {
-                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
-                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());
-            }
+//            if (customerEntity.getLatitude() != null) {
+//                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
+//                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());
+//            }
 
             customerDaoService.save(customerEntity);
 

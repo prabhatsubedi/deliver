@@ -62,7 +62,7 @@ public abstract class AbstractManager {
 
         if (family.toUpperCase().indexOf("IOS")>= 0 || family.toUpperCase().indexOf("MAC")>= 0) {
             timeStr = RNCryptoEncDec.decryptAccessToken(token);
-        } else if(family.toUpperCase().indexOf("ANDROID") > 0){
+        } else if(family.toUpperCase().indexOf("ANDROID")>=0){
             timeStr = EncDecUtil.decryptAccessToken(token, MessageBundle.getSecretKey());
         }
         Long timeVal = Long.valueOf(timeStr).longValue();

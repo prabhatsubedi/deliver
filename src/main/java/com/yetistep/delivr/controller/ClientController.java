@@ -170,8 +170,12 @@ public class ClientController extends AbstractManager{
 
     @RequestMapping(value="/login", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> customerLogin(@RequestBody CustomerEntity customerEntity) {
+    public ResponseEntity<ServiceResponse> customerLogin(@RequestHeader HttpHeaders headers, @RequestBody CustomerEntity customerEntity) {
         try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
+
             customerService.login(customerEntity);
             ServiceResponse serviceResponse = new ServiceResponse("Customer Login Successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

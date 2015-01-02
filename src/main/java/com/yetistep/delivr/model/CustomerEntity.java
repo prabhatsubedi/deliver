@@ -24,6 +24,7 @@ public class CustomerEntity implements Serializable {
     private Integer id;
     private UserEntity user;
     private Long facebookId;
+    private String fbToken;
     private String profileUrl;
     private Boolean allowShare;
     private List<OrderEntity> order;
@@ -173,6 +174,15 @@ public class CustomerEntity implements Serializable {
 
     public void setFacebookId(Long facebookId) {
         this.facebookId = facebookId;
+    }
+
+    @Column(name ="fb_token")
+    public String getFbToken() {
+        return fbToken;
+    }
+
+    public void setFbToken(String fbToken) {
+        this.fbToken = fbToken;
     }
 
     @Column(name = "profile_url")

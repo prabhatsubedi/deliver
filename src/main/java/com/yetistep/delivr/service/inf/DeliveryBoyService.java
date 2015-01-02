@@ -3,6 +3,8 @@ package com.yetistep.delivr.service.inf;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.Page;
+import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
 
 import java.util.List;
 
@@ -36,4 +38,5 @@ public interface DeliveryBoyService {
 
     public Boolean changeOrderStatus(OrderEntity orderEntity, Integer deliveryBoyId) throws Exception;
 
+    public List<PastDeliveriesDto> getPastDeliveries(Page page, Integer deliveryBoyId) throws Exception;
 }

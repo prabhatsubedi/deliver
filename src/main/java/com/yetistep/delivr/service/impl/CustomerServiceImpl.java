@@ -1,17 +1,15 @@
 package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.*;
-import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.enums.*;
+import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.DeliveryStatus;
-import com.yetistep.delivr.enums.Gender;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
-import com.yetistep.delivr.util.*;
 import com.yetistep.delivr.util.*;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -202,8 +199,8 @@ public class CustomerServiceImpl implements CustomerService {
 
         StoresBrandEntity brand = merchantDaoService.findBrandDetail(brandId);
         //FIXME Dummy Value =
-        Long id = 5435435435435435L;
-        CustomerEntity customer = customerDaoService.find(id);
+        //Long id = 5435435435435435L;
+        CustomerEntity customer = customerDaoService.find(customerId);
 //        CustomerEntity customer = customerDaoService.find(customerId);
         AddressEntity address = customerDaoService.findAddressById(addressId);
 

@@ -5,6 +5,8 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.Page;
+import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.UserService;
 import com.yetistep.delivr.util.GeneralUtil;
@@ -116,6 +118,25 @@ public class DeliveryBoyController extends AbstractManager{
         }
     }
 
+    @RequestMapping(value = "/past_deliveries", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getCurrentDeliveries(@RequestHeader HttpHeaders headers, @RequestBody(required = false) Page page) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
+
+            List<PastDeliveriesDto> pastDeliveries = deliveryBoyService.getPastDeliveries(page, Integer.parseInt(headerDto.getId()));
+            ServiceResponse serviceResponse = new ServiceResponse("List of past deliveries retrieved successfully");
+            serviceResponse.addParam("pastDeliveries", pastDeliveries);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving list of past deliveries", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     @RequestMapping(value = "/update_job_status", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> updateJobOrderStatus(@RequestHeader HttpHeaders headers, @RequestBody OrderEntity order) {
@@ -138,8 +159,8 @@ public class DeliveryBoyController extends AbstractManager{
     public ResponseEntity<ServiceResponse> changePassword(@RequestHeader HttpHeaders headers) throws Exception {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID, GeneralUtil.PASSWORD, GeneralUtil.NEW_PASSWORD/*, GeneralUtil.ACCESS_TOKEN*/);
-            //validateMobileClient(headerDto.getAccessToken());
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID, GeneralUtil.PASSWORD, GeneralUtil.NEW_PASSWORD, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
             userService.changePassword(headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Password changed successfully");

@@ -1,15 +1,13 @@
 package com.yetistep.delivr.service.impl;
 
-import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
-import com.yetistep.delivr.dao.inf.DeliveryBoySelectionDaoService;
-import com.yetistep.delivr.dao.inf.OrderDaoService;
-import com.yetistep.delivr.dao.inf.UserDaoService;
+import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
@@ -40,6 +38,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
     @Autowired
     DeliveryBoySelectionDaoService deliveryBoySelectionDaoService;
+
+    @Autowired
+    DBoyOrderHistoryDaoService dBoyOrderHistoryDaoService;
 
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
@@ -274,5 +275,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
         orderDaoService.update(order);
         return true;
+    }
+
+    @Override
+    public List<PastDeliveriesDto> getPastDeliveries(Page page, Integer deliveryBoyId) throws Exception {
+        return dBoyOrderHistoryDaoService.getPastOrders(page, deliveryBoyId);
     }
 }

@@ -20,6 +20,7 @@ public class PastDeliveriesDto {
     private String orderName;
     private JobOrderStatus orderStatus;
     private BigDecimal distanceTravelled;
+    private BigDecimal amountEarned;
     private Timestamp jobStartedAt;
     private Timestamp completedAt;
     private Integer timeTaken;
@@ -62,6 +63,14 @@ public class PastDeliveriesDto {
 
     public void setDistanceTravelled(BigDecimal distanceTravelled) {
         this.distanceTravelled = distanceTravelled;
+    }
+
+    public BigDecimal getAmountEarned() {
+        return amountEarned;
+    }
+
+    public void setAmountEarned(BigDecimal amountEarned) {
+        this.amountEarned = amountEarned;
     }
 
     @JsonIgnore

@@ -3,7 +3,6 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.DBoyOrderHistoryDaoService;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.model.DBoyOrderHistoryEntity;
-import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
 import org.hibernate.Criteria;
@@ -63,20 +62,23 @@ public class DBoyOrderHistoryDaoServiceImpl implements DBoyOrderHistoryDaoServic
 
     @Override
     public List<PastDeliveriesDto> getPastOrders(Page page, Integer deliveryBoyId) throws Exception {
+        //TODO Page Implementation
         List<DeliveryStatus> deliveryStatus = new ArrayList<DeliveryStatus>();
         deliveryStatus.add(DeliveryStatus.ASSIGNED_TO_OTHER);
         deliveryStatus.add(DeliveryStatus.CANCELLED);
         deliveryStatus.add(DeliveryStatus.SUCCESSFUL);
 
         Criteria criteria = getCurrentSession().createCriteria(DBoyOrderHistoryEntity.class);
+        criteria.createAlias("order", "o");
         criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
-                .add(Projections.property("order.id"), "orderId")
-                .add(Projections.property("order.orderStatus"), "orderStatus")
-                .add(Projections.property("order.orderName"), "orderName")
+                .add(Projections.property("o.id"), "orderId")
+                .add(Projections.property("o.orderStatus"), "orderStatus")
+                .add(Projections.property("o.orderName"), "orderName")
                 .add(Projections.property("distanceTravelled"), "distanceTravelled")
-                //.add(Projections.sqlProjection("(orderCompletedAt - orderAcceptedAt) as timeTaken", new String[]{"timeTaken"}, new org.hibernate.type.DateType[]{new org.hibernate.type.DateType()}),"timeTaken")
-        ).setResultTransformer(Transformers.aliasToBean(OrderEntity.class));
+                .add(Projections.property("orderCompletedAt"), "completedAt")
+                .add(Projections.property("jobStartedAt"), "jobStartedAt")
+        ).setResultTransformer(Transformers.aliasToBean(PastDeliveriesDto.class));
         criteria.add(Restrictions.eq("deliveryBoy.id", deliveryBoyId))
                 .add(Restrictions.in("deliveryStatus", deliveryStatus));
         List<PastDeliveriesDto> pastDeliveries = criteria.list();

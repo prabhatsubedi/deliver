@@ -1,8 +1,11 @@
 package com.yetistep.delivr.model.mobile.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.util.DateUtil;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,6 +20,8 @@ public class PastDeliveriesDto {
     private String orderName;
     private JobOrderStatus orderStatus;
     private BigDecimal distanceTravelled;
+    private Timestamp jobStartedAt;
+    private Timestamp completedAt;
     private Integer timeTaken;
 
     public Integer getId() {
@@ -59,11 +64,38 @@ public class PastDeliveriesDto {
         this.distanceTravelled = distanceTravelled;
     }
 
+    @JsonIgnore
+    public Timestamp getJobStartedAt() {
+        return jobStartedAt;
+    }
+
+    public void setJobStartedAt(Timestamp jobStartedAt) {
+        this.jobStartedAt = jobStartedAt;
+        setTimeTaken();
+    }
+
+    @JsonIgnore
+    public Timestamp getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(Timestamp completedAt) {
+        this.completedAt = completedAt;
+        setTimeTaken();
+    }
+
     public Integer getTimeTaken() {
         return timeTaken;
     }
 
     public void setTimeTaken(Integer timeTaken) {
         this.timeTaken = timeTaken;
+    }
+
+    private void setTimeTaken(){
+        if(getCompletedAt()!=null && getJobStartedAt() != null){
+            Double minuteDiff = DateUtil.getMinDiff(getCompletedAt().getTime(), getJobStartedAt().getTime());
+            this.timeTaken = minuteDiff.intValue();
+        }
     }
 }

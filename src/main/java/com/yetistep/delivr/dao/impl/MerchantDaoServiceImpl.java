@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.model.*;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
@@ -124,8 +125,21 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         brandsCategories = criteria.list();
 
         return brandsCategories.size() > 0 ? brandsCategories : null;
-
     }
+
+    @Override
+    public List<CategoryEntity> findFinalCategoryList(Integer brandId) throws Exception {
+        //"SELECT id FROM categories AS Cat WHERE Cat.id NOT IN (SELECT Cat.parent_id FROM categories Cat WHERE Cat.parent_id IS NOT NULL) && (brand_id = 1 OR brand_id IS NULL)";
+        String hqlQuery = "FROM CategoryEntity cat WHERE cat.id NOT IN (SELECT cat.parent.id FROM CategoryEntity cat WHERE cat.parent IS NOT NULL) AND (cat.storesBrand.id = :brandId OR cat.storesBrand IS NULL)";
+
+        Query query = sessionFactory.getCurrentSession().createQuery(hqlQuery);
+        query.setParameter("brandId", brandId);
+        List<CategoryEntity> categories = query.list();
+        return categories.size() > 0 ? categories : null;
+    }
+
+
+
 
     @Override
     public List<CategoryEntity> findParentCategories() throws Exception {
@@ -179,8 +193,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.eq("merchant.id", merchantId)) ;
         stores = criteria.list();
-
-        //return stores;
         return stores;
     }
 
@@ -230,25 +242,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
 
     @Override
-    public List<CategoryEntity> findFinalCategories(Integer storeId) throws Exception {
-        List<CategoryEntity> categories = new ArrayList<>();
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
-
-        criteria.setProjection(Projections.projectionList()
-                .add(Projections.property("id"), "id")
-                .add(Projections.property("name"), "name")
-        ).setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
-
-        Criterion rest1 = Restrictions.and(Restrictions.isNull("storesBrand"), Restrictions.isNull("child"));
-        Criterion rest2 = Restrictions.and(Restrictions.eq("storesBrand.id", storeId), Restrictions.isNull("child"));
-
-        criteria.add(Restrictions.or(rest1, rest2));
-
-        categories = criteria.list();
-        return categories.size() > 0 ? categories : null;
-    }
-
-    @Override
     public void saveCategories(List<CategoryEntity> categories) throws Exception {
         Integer i = 0;
         for (CategoryEntity value: categories) {
@@ -286,6 +279,17 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<ItemEntity> items = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
         criteria.add(Restrictions.eq("category.id", categoryId));
+        items = criteria.list();
+        return items.size() > 0 ? items : null;
+    }
+
+    @Override
+    public List<ItemEntity> findItemByCategory(List<Integer> categoryId) throws Exception {
+        List<ItemEntity> items = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
+        criteria.add(Restrictions.in("category.id", categoryId));
+        criteria.add(Restrictions.sqlRestriction("1=1 order by rand()"));
+        criteria.setMaxResults(2);
         items = criteria.list();
         return items.size() > 0 ? items : null;
     }

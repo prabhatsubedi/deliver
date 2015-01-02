@@ -1,5 +1,6 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
@@ -24,7 +25,6 @@ import java.util.Date;
 @Entity(name = "ItemEntity")
 @Table(name = "items")
 public class ItemEntity implements Serializable {
-
     private Integer id;
     private CategoryEntity category;
     private String name;
@@ -69,6 +69,7 @@ public class ItemEntity implements Serializable {
         this.id = id;
     }
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     public CategoryEntity getCategory() {
         return category;

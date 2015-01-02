@@ -1,5 +1,6 @@
 package com.yetistep.delivr.service.impl;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -380,14 +382,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     //findChildCategories
     @Override
     public List<CategoryEntity> findChildCategories(RequestJsonDto requestJson) throws Exception {
-
         Integer parentId = requestJson.getParentCategoryId();
         Integer storeId = requestJson.getCategoryStoreId();
 
         CategoryEntity category = merchantDaoService.getCategoryById(parentId);
         StoreEntity store = merchantDaoService.getStoreById(storeId);
-
-
         List<CategoryEntity> categories;
 
         if(category != null && store != null){
@@ -435,6 +434,49 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         return categories;
+    }
 
+
+    @Override
+    public List<CategoryEntity> findParentCategoriesItems(RequestJsonDto requestJson) throws Exception {
+        Integer parentId = requestJson.getParentCategoryId();
+        Integer storeId = requestJson.getCategoryStoreId();
+
+        List<CategoryEntity> childCategories =  merchantDaoService.findChildCategories(parentId, storeId);
+
+        List<CategoryEntity> finalCategories =  merchantDaoService.findFinalCategoryList(storeId);
+
+       for (CategoryEntity finalCategory: finalCategories){
+
+           CategoryEntity finalCat = finalCategory;
+
+           while (finalCategory.getParent() != null && !childCategories.contains(finalCategory.getParent())){
+               finalCategory = finalCategory.getParent();
+           }
+
+           if(childCategories.contains(finalCategory.getParent())) {
+               List<CategoryEntity> parentsChild = finalCategory.getParent().getChild();
+               parentsChild.add(finalCat);
+               finalCategory.getParent().setChild(parentsChild);
+           }
+
+       }
+
+        for (CategoryEntity childCategory: childCategories){
+            List<Integer> childsChildId = new ArrayList<Integer>();
+            if(childCategory.getChild() != null){
+                for(CategoryEntity childsChildCategory: childCategory.getChild()){
+                    childsChildId.add(childsChildCategory.getId());
+                }
+            }
+
+            if(childsChildId.size() > 0){
+                List<ItemEntity> categoriesItems = merchantDaoService.findItemByCategory(childsChildId);
+                childCategory.setItem(categoriesItems);
+            }
+            childCategory.setChild(null);
+        }
+
+        return  childCategories;
     }
 }

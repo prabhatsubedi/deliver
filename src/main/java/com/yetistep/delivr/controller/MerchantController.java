@@ -253,7 +253,20 @@ public class MerchantController {
     }
 
 
-
+    @RequestMapping(value = "/get_parent_categories_items", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> findParentCategoriesItems(@RequestBody RequestJsonDto requestJson) {
+        try {
+            List<CategoryEntity> categories = merchantService.findParentCategoriesItems(requestJson);
+            ServiceResponse serviceResponse = new ServiceResponse("Items has been retrieved successfully");
+            serviceResponse.addParam("categories", categories);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
 
 }

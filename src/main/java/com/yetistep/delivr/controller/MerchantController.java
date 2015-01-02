@@ -200,13 +200,11 @@ public class MerchantController {
     }
 
 
-    @RequestMapping(value = "/get_categories_items", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_categories_items", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> findCategoriesItems(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> findCategoriesItems(@RequestBody RequestJsonDto requestJson) {
         try {
-            HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            List<ItemEntity> items = merchantService.findCategoriesItems(headerDto);
+            List<ItemEntity> items = merchantService.findCategoriesItems(requestJson);
             ServiceResponse serviceResponse = new ServiceResponse("Items has been retrieved successfully");
             serviceResponse.addParam("items", items);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

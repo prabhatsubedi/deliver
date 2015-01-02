@@ -49,7 +49,7 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public void saveItemImages(List<ItemsImageEntity> itemsImageEntities) throws Exception;
 
-    public List<ItemEntity> getCategoriesItems(Integer categoryId) throws Exception;
+    public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId) throws Exception;
 
     public ItemEntity getItemDetail(Integer itemId) throws Exception;
 

@@ -29,6 +29,7 @@ public class StoresBrandEntity implements Serializable {
    private MerchantEntity merchant;
    private List<StoreEntity> store;
    private List<BrandsCategoryEntity> brandsCategory;
+   private List<ItemEntity> items;
    private List<CategoryEntity> categories;
    private String brandName;
    private Date openingTime;
@@ -84,6 +85,16 @@ public class StoresBrandEntity implements Serializable {
 
     public void setBrandsCategory(List<BrandsCategoryEntity> brandsCategory) {
         this.brandsCategory = brandsCategory;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "storesBrand")
+    public List<ItemEntity> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemEntity> items) {
+        this.items = items;
     }
 
     @JsonIgnore

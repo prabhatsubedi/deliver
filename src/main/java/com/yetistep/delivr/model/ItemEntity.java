@@ -27,6 +27,7 @@ import java.util.Date;
 public class ItemEntity implements Serializable {
     private Integer id;
     private CategoryEntity category;
+    private StoresBrandEntity storesBrand;
     private String name;
     private List<ItemsImageEntity> itemsImage;
     private List<ItemsOrderEntity> itemsOrder;
@@ -77,6 +78,17 @@ public class ItemEntity implements Serializable {
 
     public void setCategory(CategoryEntity category) {
         this.category = category;
+    }
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id")
+    public StoresBrandEntity getStoresBrand() {
+        return storesBrand;
+    }
+
+    public void setStoresBrand(StoresBrandEntity storesBrand) {
+        this.storesBrand = storesBrand;
     }
 
     @Column(name = "name")

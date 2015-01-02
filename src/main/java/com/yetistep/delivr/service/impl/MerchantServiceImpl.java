@@ -312,6 +312,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         item.setCategory(category);
+        item.setStoresBrand(storesBrand);
 
         List<ItemsStoreEntity> itemsStoreEntities = new ArrayList<>();
         for(Integer itemsStore: itemStores){
@@ -399,8 +400,10 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<ItemEntity> findCategoriesItems(HeaderDto headerDto) throws Exception {
-        return merchantDaoService.getCategoriesItems(Integer.parseInt(headerDto.getId()));
+    public List<ItemEntity> findCategoriesItems(RequestJsonDto requestJson) throws Exception {
+        Integer categoryId = requestJson.getParentCategoryId();
+        Integer brandId = requestJson.getCategoryStoreId();
+        return merchantDaoService.getCategoriesItems(categoryId, brandId);
     }
 
     @Override

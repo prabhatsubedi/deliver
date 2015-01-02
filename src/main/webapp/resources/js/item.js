@@ -513,13 +513,17 @@ var data_categories_names = [];
         Item.getBrands();
 
         $('#item_brand').live('change', function(e){
-            $('.categories_container').addClass('loader_div').append('<div class="loader"></div>');
             Item.getBrandCategories($(this).val());
         });
 
         $('.cateogry_list a').live('click', function(e){
             e.preventDefault();
             if(e.target == this) {
+
+                var cat_name = $(this).text();
+
+                $('.current_category').removeClass('current_category');
+                $(this).addClass('current_category');
 
                 if($(this).siblings('ul').length == 1) {
 
@@ -540,11 +544,12 @@ var data_categories_names = [];
                                     var item = category.item[j];
                                     var elem = $('.item_container_template').clone();
                                     if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
-                                    $('.item_name', elem).html(item.name);
-                                    $('.item_name a', elem).html('/merchant/item/view/' + item.id);
+                                    $('.item_name a', elem).attr('href', '/merchant/item/view/' + item.id).html(item.name);
                                     $('.item_price span', elem).html(item.unitPrice);
                                     item_list += elem.html();
                                 }
+
+                                item_list += '<a href="#" class="view_more" data-id="' + category.id + '">View More >></a>';
 
                                 item_list += '</div>';
                             }
@@ -572,15 +577,19 @@ var data_categories_names = [];
                             var item_list = '';
                             var items = data.params.items;
 
+                            var item_list = '<div class="form_section">';
+                            item_list += '<div class="form_head">' + cat_name + '</div>';
+                            item_list += '<div class="form_content clearfix">';
                             for(var j = 0; j < items.length; j++) {
                                 var item = items[j];
                                 var elem = $('.item_container_template').clone();
                                 if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
-                                $('.item_name', elem).html(item.name);
-                                $('.item_name a', elem).html('/merchant/item/view/' + item.id);
+                                $('.item_name a', elem).attr('href', '/merchant/item/view/' + item.id).html(item.name);
                                 $('.item_price span', elem).html(item.unitPrice);
                                 item_list += elem.html();
                             }
+                            item_list += '</div>';
+                            item_list += '</div>';
 
                             $('.items_container').html(item_list);
 
@@ -598,6 +607,15 @@ var data_categories_names = [];
             }
         });
 
+        $('a.view_more').live('click', function(){
+
+            var elem = $('.cateogry_list a[data-id="' + $(this).attr('data-id') + '"]');
+            elem.parents('ul.hidden').removeClass('hidden');
+            elem.parents('ul.nav').siblings('a').children('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            $(elem).trigger('click');
+
+        });
+
         $('.cateogry_list .glyphicon').live('click', function(){
             if($(this).hasClass('glyphicon-plus')) {
                 $(this).parent('a').siblings('ul').removeClass('hidden');
@@ -605,6 +623,8 @@ var data_categories_names = [];
             } else if ($(this).hasClass('glyphicon-minus')) {
                 $(this).parent('a').siblings('ul').addClass('hidden');
                 $(this).removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $('.glyphicon-minus', $(this).parent('a').parent('li')).removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $('ul', $(this).parent('a').parent('li')).addClass('hidden');
             }
         });
 
@@ -622,11 +642,11 @@ var data_categories_names = [];
                     for(var i = 0; i < storeBrands.length; i++) {
                         var storeBrand = storeBrands[i];
                         storesById[storeBrand.id] = storeBrand.store;
-                        brandList += '<option value="' + storeBrand.id + '" >' + storeBrand.brandName + '</option>';
+                        brandList += '<option value="' + storeBrand.id + '" ><img src="' + storeBrand.brandLogo + '" />' + storeBrand.brandName + '</option>';
                     }
                     $('#item_brand').html(brandList);
                     $('#item_brand').selectpicker('refresh');
-                    $('.categories_container .bootstrap-select').removeClass('hidden');
+                    $('.heading h1 .bootstrap-select').removeClass('hidden');
 
                     Item.getBrandCategories(storeBrands[0].id);
                 }
@@ -648,23 +668,23 @@ var data_categories_names = [];
 
             var categories = data.params.categories;
             var category_list = '';
-            var padding = 30;
+            var padding = 40;
             function categoryList(categories, padding, load) {
                 category_list += '<ul class="nav nav-stacked ' + (load ? "" : "hidden") + '">';
                 for(var i = 0; i < categories.length; i++) {
                     category_list += '<li><a href="#" data-id="' + categories[i].id + '" style="padding-left: ' + padding + 'px"><span class="glyphicon ' + (categories[i].child.length > 0 ? 'glyphicon-plus' : '') + '"></span>' + categories[i].name + '</a>';
-                    if(categories[i].child.length > 0) categoryList(categories[i].child, padding + 15);
+                    if(categories[i].child.length > 0) categoryList(categories[i].child, padding + 20);
                     category_list += '</li>';
                 }
                 category_list += '</ul>';
             }
             categoryList(categories, padding, true);
             $('.cateogry_list').html(category_list);
-            $('.categories_container').removeClass('loader_div').children('.loader').hide().remove();
             $('.cateogry_list > ul > li:first-child > a').trigger('click');
 
         };
         callback.requestType = "GET";
+        callback.loaderDiv = ".body";
         Main.request('/merchant/get_brands_categories', {}, callback, {id: brandId});
 
     };

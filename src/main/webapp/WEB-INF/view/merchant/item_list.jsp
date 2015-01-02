@@ -23,24 +23,25 @@
 
     <%@include file="../includes/header.jsp" %>
 
-    <div class="body">
+    <div class="body loader_div">
         <div class="heading clearfix">
-            <h1 class="pull-left">Items</h1>
+            <h1 class="pull-left brand_container">
+                <select id="item_brand" name="item_brand" class="col-xs-12 no_pad no_margin hidden" data-style="form-control">
+                </select>
+            </h1>
             <a class="btn btn_green pull-right" href="/merchant/item/form/create/">Add Item</a>
         </div>
         <div class="main_content">
             <div class="item_listing">
                 <div class="table_div">
-                    <div class="categories_container td_div full_height loader_div">
-                        <select id="item_brand" name="item_brand" class="col-xs-12 no_pad no_margin hidden" data-style="form-control">
-                        </select>
+                    <div class="categories_container td_div full_height">
                         <div class="cateogry_list"></div>
-                        <div class="loader"></div>
                     </div>
-                    <div class="items_container td_div loader_div"><div class="loader"></div></div>
+                    <div class="items_container td_div"></div>
                 </div>
             </div>
         </div>
+        <div class="loader"></div>
     </div>
 </div>
 

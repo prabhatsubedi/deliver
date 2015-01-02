@@ -281,4 +281,30 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     public List<PastDeliveriesDto> getPastDeliveries(Page page, Integer deliveryBoyId) throws Exception {
         return dBoyOrderHistoryDaoService.getPastOrders(page, deliveryBoyId);
     }
+
+    @Override
+    public Boolean changeDeliveryBoyStatus(DeliveryBoyEntity deliveryBoyEntity) throws Exception {
+        log.info("Updating Status of Delivery Boy to:" + deliveryBoyEntity.getAvailabilityStatus());
+        DeliveryBoyEntity dBoyEntity = deliveryBoyDaoService.find(deliveryBoyEntity.getId());
+        if (dBoyEntity == null) {
+            throw new YSException("VLD011");
+        }
+        if(deliveryBoyEntity.getAvailabilityStatus().equals(DBoyStatus.FREE)){
+            if(dBoyEntity.getActiveOrderNo() > 0){
+                throw new YSException("DBY001");
+            }
+            if (deliveryBoyEntity.getLatitude() != null && deliveryBoyEntity.getLongitude() != null) {
+                dBoyEntity.setLatitude(deliveryBoyEntity.getLatitude());
+                dBoyEntity.setLongitude(deliveryBoyEntity.getLongitude());
+            }
+        }else if(deliveryBoyEntity.getAvailabilityStatus().equals(DBoyStatus.NOT_AVAILABLE)){
+            if(!dBoyEntity.getAvailabilityStatus().equals(DBoyStatus.FREE)){
+               throw new YSException("DBY001");
+            }
+        }else{
+            throw new YSException("DBY002");
+        }
+        dBoyEntity.setAvailabilityStatus(deliveryBoyEntity.getAvailabilityStatus());
+        return deliveryBoyDaoService.update(dBoyEntity);
+    }
 }

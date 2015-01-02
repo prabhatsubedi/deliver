@@ -104,8 +104,8 @@ public class DeliveryBoyController extends AbstractManager{
     public ResponseEntity<ServiceResponse> getCurrentDeliveries(@RequestHeader HttpHeaders headers) {
         try{
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
-            //validateMobileClient(headerDto.getAccessToken());
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
 
             List<OrderEntity> activeOrders = deliveryBoyService.getActiveOrders (Integer.parseInt(headerDto.getId()));
             ServiceResponse serviceResponse = new ServiceResponse("List of current deliveries retrieved successfully");
@@ -123,8 +123,8 @@ public class DeliveryBoyController extends AbstractManager{
     public ResponseEntity<ServiceResponse> getCurrentDeliveries(@RequestHeader HttpHeaders headers, @RequestBody(required = false) Page page) {
         try{
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
-            //validateMobileClient(headerDto.getAccessToken());
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
 
             List<PastDeliveriesDto> pastDeliveries = deliveryBoyService.getPastDeliveries(page, Integer.parseInt(headerDto.getId()));
             ServiceResponse serviceResponse = new ServiceResponse("List of past deliveries retrieved successfully");
@@ -173,4 +173,21 @@ public class DeliveryBoyController extends AbstractManager{
         }
     }
 
+    @RequestMapping(value = "/update_dboy_status", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateDeliveryBoyStatus(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoyEntity) {
+        try {
+           /* HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());*/
+            deliveryBoyService.changeDeliveryBoyStatus(deliveryBoyEntity);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Delivery Boy status has been updated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while updating delivery boy status", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

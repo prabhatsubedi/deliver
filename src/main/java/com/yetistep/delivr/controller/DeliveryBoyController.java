@@ -118,7 +118,7 @@ public class DeliveryBoyController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/past_deliveries", method = RequestMethod.GET)
+    @RequestMapping(value = "/past_deliveries", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> getCurrentDeliveries(@RequestHeader HttpHeaders headers, @RequestBody(required = false) Page page) {
         try{

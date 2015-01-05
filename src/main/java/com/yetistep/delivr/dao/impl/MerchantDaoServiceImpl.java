@@ -245,6 +245,25 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
 
     @Override
+    public List<CategoryEntity> findFinalCategories(Integer storeId) throws Exception {
+        List<CategoryEntity> categories = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
+
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("name"), "name")
+        ).setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
+
+        Criterion rest1 = Restrictions.and(Restrictions.isNull("storesBrand"), Restrictions.isNull("child"));
+        Criterion rest2 = Restrictions.and(Restrictions.eq("storesBrand.id", storeId), Restrictions.isNull("child"));
+
+        criteria.add(Restrictions.or(rest1, rest2));
+
+        categories = criteria.list();
+        return categories.size() > 0 ? categories : null;
+    }
+
+    @Override
     public void saveCategories(List<CategoryEntity> categories) throws Exception {
         Integer i = 0;
         for (CategoryEntity value: categories) {

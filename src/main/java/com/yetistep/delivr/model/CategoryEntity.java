@@ -18,7 +18,7 @@ import java.util.List;
  * Time: 2:34 PM
  * To change this template use File | Settings | File Templates.
  */
-@Entity(name="CategoryEntity")
+@Entity(name="categories")
 @Table(name="categories")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class CategoryEntity implements Serializable {
@@ -34,7 +34,8 @@ public class CategoryEntity implements Serializable {
    private Boolean featured;
    private Integer priority;
    private Timestamp createdDate;
-
+    //Transient
+   private Integer parentId;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
@@ -138,4 +139,12 @@ public class CategoryEntity implements Serializable {
         this.createdDate = createdDate;
     }
 
+    @Transient
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
 }

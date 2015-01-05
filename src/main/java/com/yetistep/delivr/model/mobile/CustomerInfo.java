@@ -11,7 +11,7 @@ import java.math.BigInteger;
  */
 public class CustomerInfo {
     private String fbToken;
-    private BigInteger clientId;
+    private Long clientId;
     private Integer userId;
 
     public String getFbToken() {
@@ -22,11 +22,11 @@ public class CustomerInfo {
         this.fbToken = fbToken;
     }
 
-    public BigInteger getClientId() {
+    public Long getClientId() {
         return clientId;
     }
 
-    public void setClientId(BigInteger clientId) {
+    public void setClientId(Long clientId) {
         this.clientId = clientId;
     }
 

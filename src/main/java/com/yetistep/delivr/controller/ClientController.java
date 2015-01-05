@@ -6,6 +6,9 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.StoresBrandEntity;
+import com.yetistep.delivr.model.UserEntity;
+import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.util.GeneralUtil;
@@ -181,6 +184,44 @@ public class ClientController extends AbstractManager{
 
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred customer login", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/parent_category/brand/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getParentCategory(@PathVariable("id") Integer brandId) {
+        try{
+            List<CategoryDto> categoryDtoList = clientService.getParentCategory(brandId);
+            ServiceResponse serviceResponse = new ServiceResponse("Parent Category Retrieved Successfully");
+            serviceResponse.addParam("categories", categoryDtoList);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        }  catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting parent category", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value  = "/sub_category/brand/{brandId}/subcat/{catId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getSubCategory(@PathVariable("brandId") Integer brandId, @PathVariable("catId") Integer categoryId) {
+        try{
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setBrandId(brandId);
+            categoryDto.setId(categoryId);
+
+            List<CategoryDto> categoryDtoList = clientService.getSubCategory(categoryDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Sub Category Retrieved Successfully");
+            serviceResponse.addParam("categories", categoryDtoList);
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting parent category", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

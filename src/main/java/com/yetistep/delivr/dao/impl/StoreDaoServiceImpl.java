@@ -1,13 +1,17 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.StoreDaoService;
+import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.StoreEntity;
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,5 +67,28 @@ public class StoreDaoServiceImpl implements StoreDaoService{
         storeEntities = criteria.list();
 
         return storeEntities;
+    }
+
+    @Override
+    public List<CategoryEntity> findItemCategory(Integer brandId) throws Exception {
+        List<CategoryEntity> categoryEntities = new ArrayList<>();
+        String sql ="SELECT DISTINCT(cat.id), cat.name, cat.parent.id FROM StoreEntity store " +
+                "INNER JOIN ItemsStoreEntity ist ON(ist.store.id = store.id) " +
+                "INNER JOIN ItemEntity it ON(it.id = ist.item.id) " +
+                "INNER JOIN CategoryEntity cat ON(cat.id = it.category.id) "+
+                "WHERE store.storesBrand.id = "+brandId;
+
+        String sql1 = "SELECT DISTINCT DISTINCT(cat.id), cat.name, cat.parent_id as parentId FROM stores store " +
+                "INNER JOIN items_stores ist ON(ist.store_id = store.id) " +
+                "INNER JOIN items it ON(it.id = ist.item_id) " +
+                "INNER JOIN categories cat ON(cat.id = it.category_id) " +
+                "WHERE store.stores_brand_id = " + brandId;
+        SQLQuery query =  getCurrentSession().createSQLQuery(sql1);
+//        query.addEntity(CategoryEntity.class);
+
+        query.setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
+        categoryEntities = query.list();
+
+        return categoryEntities;
     }
 }

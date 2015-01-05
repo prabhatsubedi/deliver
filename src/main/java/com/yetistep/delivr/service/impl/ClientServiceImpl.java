@@ -1,9 +1,16 @@
 package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.OrderDaoService;
+import com.yetistep.delivr.dao.inf.CategoryDaoService;
+import com.yetistep.delivr.dao.inf.CustomerDaoService;
 import com.yetistep.delivr.dao.inf.StoreDaoService;
 import com.yetistep.delivr.dao.inf.StoresBrandDaoService;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.model.CategoryEntity;
+import com.yetistep.delivr.model.CustomerEntity;
+import com.yetistep.delivr.model.StoreEntity;
+import com.yetistep.delivr.model.StoresBrandEntity;
+import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.StaticPagination;
@@ -35,6 +42,11 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     OrderDaoService orderDaoService;
 
+    @Autowired
+    CustomerDaoService customerDaoService;
+
+    @Autowired
+    CategoryDaoService categoryDaoService;
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++ Getting all brands +++++++++++++++");
@@ -45,13 +57,22 @@ public class ClientServiceImpl implements ClientService {
         /* Priority Brands Not Featured */
         List<StoresBrandEntity> priorityBrands = null;
         boolean isBrandWitDistanceSort = false;
-
+        String lat = null;
+        String lon = null;
         if (requestJsonDto.getGpsInfo() == null) {
-            //FIXME : Check Customer in Database and retrieve lat & long]
+            CustomerEntity customerEntity =  customerDaoService.find(requestJsonDto.getCustomerInfo().getClientId());
+            if(customerEntity == null)
+                throw new YSException("VLD011");
+
+            lat = customerEntity.getLatitude();
+            lon = customerEntity.getLongitude();
+
             priorityBrands = storesBrandDaoService.findPriorityBrands(null);
         } else {
             priorityBrands = storesBrandDaoService.findPriorityBrands("Not Null");
             isBrandWitDistanceSort = true;
+            lat = requestJsonDto.getGpsInfo().getLatitude();
+            lon = requestJsonDto.getGpsInfo().getLongitude();
         }
 
         /* Add Both Brand in One List */
@@ -76,7 +97,7 @@ public class ClientServiceImpl implements ClientService {
 
         /* Extract Latitude and Longitude */
             String[] storeDistance = new String[storeEntities.size()];
-            String[] customerDistance = {GeoCodingUtil.getLatLong(requestJsonDto.getGpsInfo().getLatitude(), requestJsonDto.getGpsInfo().getLongitude())};
+            String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
 
             for (int i = 0; i < storeEntities.size(); i++) {
                 storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
@@ -135,6 +156,115 @@ public class ClientServiceImpl implements ClientService {
         map.put("page", pageInfo);
 
         return map;
+    }
+
+    @Override
+    public List<CategoryDto> getParentCategory(Integer brandId) throws Exception {
+        log.info("++++++++++ Getting Parent Category and list cat id +++++++++++++");
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        CategoryDto categoryDto = null;
+        List<CategoryEntity> categoryEntities = storeDaoService.findItemCategory(brandId);
+
+        for(CategoryEntity categoryEntity : categoryEntities){
+            categoryDto = new CategoryDto();
+            if(categoryEntity.getParentId() == null){
+                categoryDto.setValues(categoryEntity);
+                categoryDto.setHasNext(false);
+            } else {
+                //Search  Main Parent Category
+                CategoryEntity resultCat = categoryDaoService.find(categoryEntity.getId());
+                Integer hasPrevParent = 0;
+                CategoryEntity cat = null;
+                //LOOP for parent (Search Parent and Category)
+                while(hasPrevParent != null) {
+                    // 2nd Level Search
+                    if(resultCat.getParent().getParent()==null) {
+                        categoryDto.setValues(resultCat.getParent());
+                        break;
+                    }
+
+                    //Multi Level Search
+                    if(cat == null)
+                        cat = resultCat.getParent();
+                    else
+                        cat = cat.getParent();
+
+                    if(cat == null || cat.getParent() == null)
+                        break;
+
+                    hasPrevParent = cat.getParent().getId();
+                    categoryDto.setValues(cat.getParent());
+
+                }
+
+                categoryDto.setHasNext(true);
+            }
+
+           Boolean isAlreadyContain = false;
+           for(CategoryDto temp : categoryDtoList){
+               if(temp.getId() == categoryDto.getId())
+                   isAlreadyContain  = true;
+           }
+
+           if(!isAlreadyContain)
+                categoryDtoList.add(categoryDto);
+
+        }
+        return categoryDtoList;
+    }
+
+    @Override
+    public List<CategoryDto> getSubCategory(CategoryDto categoryDto) throws Exception {
+        log.info("+++++++++++++ Getting Sub Category ++++++++++++++");
+        List<CategoryDto> list = new ArrayList<>();
+        Integer brandId = categoryDto.getBrandId();
+        Integer nextId = categoryDto.getId();
+        List<CategoryEntity> categoryEntities = storeDaoService.findItemCategory(brandId);
+
+        for(CategoryEntity categoryEntity : categoryEntities){
+            CategoryEntity cat = null;
+            CategoryEntity resultCat = categoryDaoService.find(categoryEntity.getId());
+            CategoryDto resultDto = new CategoryDto();
+            Integer hasNext = 0;
+            while(hasNext !=null){
+
+                if(resultCat.getParent().getId()==nextId) {
+                    resultDto.setValues(resultCat);
+                    resultDto.setHasNext(false);
+                    hasNext = null;
+                    break;
+                }
+
+                if(cat == null)
+                    cat = resultCat.getParent();
+                else
+                    cat = cat.getParent();
+
+                if(cat == null || cat.getParent() == null)
+                    break;
+
+                if(cat.getParent().getId() == nextId){
+                    resultDto.setValues(cat);
+                    resultDto.setHasNext(true);
+                    hasNext = null;
+                    break;
+                }
+
+                resultDto.setValues(cat.getParent());
+            }
+
+            if(hasNext == null){
+                Boolean isAlreadyContain = false;
+                for(CategoryDto temp : list){
+                    if(temp.getId() == resultDto.getId())
+                        isAlreadyContain  = true;
+                }
+
+                if(!isAlreadyContain)
+                    list.add(resultDto);
+            }
+        }
+        return list;
     }
 
     class StoreDistanceComparator implements Comparator<StoreEntity> {

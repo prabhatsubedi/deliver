@@ -220,8 +220,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(orderStatus.equals(JobOrderStatus.ORDER_ACCEPTED)){
             return acceptDeliveryOrder(orderEntity.getId(), deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)){
-            //Task to be done while in route to pick up
-            //Push notification to customer for notifying job has been started
+            return startJob(order, deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.AT_STORE)){
             //Task to be done while delivery boy is at store
             //Such as bill upload
@@ -278,6 +277,21 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             return orderDaoService.update(orderEntity);
         }
         throw new YSException("ORD001");
+    }
+
+    private Boolean startJob(OrderEntity order, Integer deliveryBoyId) throws Exception{
+        if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
+            throw new YSException("ORD003");
+        }
+        order.setOrderStatus(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
+        List<DBoyOrderHistoryEntity> orderHistoryEntities = order.getdBoyOrderHistories();
+        for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: orderHistoryEntities){
+            if(dBoyOrderHistoryEntity.getDeliveryBoy().getId().equals(deliveryBoyId)){
+                dBoyOrderHistoryEntity.setJobStartedAt(DateUtil.getCurrentTimestampSQL());
+                break;
+            }
+        }
+        return orderDaoService.update(order);
     }
 
     @Override

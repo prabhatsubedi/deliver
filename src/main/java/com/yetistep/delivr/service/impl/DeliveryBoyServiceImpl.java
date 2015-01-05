@@ -226,9 +226,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             //Such as bill upload
             //Bill edit
         }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)){
-
+             return goRouteToDelivery(order, deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.DELIVERED)){
-            //Code set, ratings
+            return deliverOrder(orderEntity, order, deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.CANCELLED)){
             //reason
         }else{
@@ -291,6 +291,53 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 break;
             }
         }
+        return orderDaoService.update(order);
+    }
+
+    private Boolean goRouteToDelivery(OrderEntity order, Integer deliveryBoyId) throws Exception {
+        if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
+            throw new YSException("ORD003");
+        }
+        order.setOrderStatus(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+        return orderDaoService.update(order);
+    }
+
+    private Boolean deliverOrder(OrderEntity orderEntity, OrderEntity order, Integer deliveryBoyId) throws Exception {
+        if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
+            throw new YSException("ORD003");
+        }
+        if(!orderEntity.getOrderVerificationCode().equals(order.getOrderVerificationCode())){
+            throw new YSException("ORD004");
+        }
+        order.setDeliveryStatus(DeliveryStatus.SUCCESSFUL);
+        order.setOrderStatus(JobOrderStatus.DELIVERED);
+
+        List<DBoyOrderHistoryEntity> orderHistoryEntities = order.getdBoyOrderHistories();
+        for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: orderHistoryEntities){
+            if(dBoyOrderHistoryEntity.getDeliveryBoy().getId().equals(deliveryBoyId)){
+                dBoyOrderHistoryEntity.setOrderCompletedAt(DateUtil.getCurrentTimestampSQL());
+                dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.SUCCESSFUL);
+                dBoyOrderHistoryEntity.setDistanceTravelled(order.getCustomerChargeableDistance().add(order.getSystemChargeableDistance()));
+                break;
+            }
+        }
+
+        DeliveryBoyEntity deliveryBoyEntity = order.getDeliveryBoy();
+        deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()-1);
+        if(deliveryBoyEntity.getActiveOrderNo() == 0){
+            deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.FREE);
+        }
+        deliveryBoyEntity.setTotalOrderDelivered(deliveryBoyEntity.getTotalOrderDelivered() + 1);
+        deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered() - 1);
+
+        RatingEntity rating = order.getRating();
+        if(rating == null){
+            rating = new RatingEntity();
+            rating.setOrder(order);
+        }
+        rating.setCustomerRating(orderEntity.getRating().getCustomerRating());
+        rating.setDeliveryBoyComment(orderEntity.getRating().getDeliveryBoyComment());
+        order.setRating(rating);
         return orderDaoService.update(order);
     }
 

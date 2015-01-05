@@ -1,6 +1,7 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
@@ -82,6 +83,7 @@ public class OrderEntity implements Serializable {
         return orderVerificationCode;
     }
 
+    @JsonProperty
     public void setOrderVerificationCode(Integer orderVerificationCode) {
         this.orderVerificationCode = orderVerificationCode;
     }
@@ -320,7 +322,7 @@ public class OrderEntity implements Serializable {
         this.elapsedTime = elapsedTime;
     }
 
-    @OneToOne(mappedBy = "order")
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     public RatingEntity getRating() {
         return rating;
     }

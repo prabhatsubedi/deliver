@@ -1,15 +1,16 @@
 package com.yetistep.delivr.service.impl;
 
+import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.dao.inf.StoreDaoService;
 import com.yetistep.delivr.dao.inf.StoresBrandDaoService;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.model.StoreEntity;
-import com.yetistep.delivr.model.StoresBrandEntity;
+import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.util.DateUtil;
 import com.yetistep.delivr.util.GeoCodingUtil;
+import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,6 +31,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     StoreDaoService storeDaoService;
+
+    @Autowired
+    OrderDaoService orderDaoService;
 
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
@@ -156,5 +160,55 @@ public class ClientServiceImpl implements ClientService {
             storesBrandEntity.setOpenStatus(DateUtil.isTimeBetweenTwoTime(storesBrandEntity.getOpeningTime().toString(),
                     storesBrandEntity.getClosingTime().toString(), DateUtil.getCurrentTime().toString()));
         }
+    }
+
+    @Override
+    public OrderEntity getOrderById(Integer orderId) throws Exception {
+        OrderEntity order = orderDaoService.find(orderId);
+        if(order == null){
+           throw new YSException("VLD017");
+        }
+
+        AddressEntity address = new AddressEntity();
+        address.setId(order.getAddress().getId());
+        address.setStreet(order.getAddress().getStreet());
+        address.setCity(order.getAddress().getCity());
+        address.setState(order.getAddress().getState());
+        address.setCountry(order.getAddress().getCountry());
+        address.setCountryCode(order.getAddress().getCountryCode());
+        address.setLatitude(order.getAddress().getLatitude());
+        address.setLongitude(order.getAddress().getLongitude());
+        order.setAddress(address);
+
+        StoreEntity store = new StoreEntity();
+        store.setName(order.getStore().getName());
+        store.setCity(order.getStore().getCity());
+        store.setState(order.getStore().getState());
+        store.setCountry(order.getStore().getCountry());
+        store.setContactNo(order.getStore().getContactNo());
+        store.setLatitude(order.getStore().getLatitude());
+        store.setLongitude(order.getStore().getLongitude());
+        order.setStore(store);
+
+        CustomerEntity customer = new CustomerEntity();
+        customer.setId(order.getCustomer().getId());
+        UserEntity user = new UserEntity();
+        user.setId(order.getCustomer().getUser().getId());
+        user.setFullName(order.getCustomer().getUser().getFullName());
+        user.setMobileNumber(order.getCustomer().getUser().getMobileNumber());
+        customer.setUser(user);
+        order.setCustomer(customer);
+
+        List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
+        for(ItemsOrderEntity itemOrder: itemsOrder){
+            ItemEntity item = new ItemEntity();
+            item.setId(itemOrder.getItem().getId());
+            item.setName(itemOrder.getItem().getName());
+            itemOrder.setItem(item);
+        }
+
+        order.setDeliveryBoy(null);
+        order.setAttachments(null);
+        return order;
     }
 }

@@ -161,7 +161,6 @@ public class OrderEntity implements Serializable {
         this.customer = customer;
     }
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     public StoreEntity getStore() {

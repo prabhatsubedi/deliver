@@ -1,9 +1,8 @@
 package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.model.StoresBrandEntity;
+import com.yetistep.delivr.model.OrderEntity;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,4 +14,6 @@ import java.util.Map;
  */
 public interface ClientService {
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception;
+
+    public OrderEntity getOrderById(Integer orderId) throws Exception;
 }

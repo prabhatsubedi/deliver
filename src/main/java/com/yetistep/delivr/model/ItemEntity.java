@@ -1,5 +1,6 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -110,6 +111,7 @@ public class ItemEntity implements Serializable {
         this.itemsImage = itemsImage;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "item")
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsOrderEntity> getItemsOrder() {

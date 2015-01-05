@@ -32,8 +32,6 @@ public interface DeliveryBoyService {
 
     public Boolean updateLocationOfDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
 
-    public Boolean acceptOrder(Integer deliveryBoyId, Integer orderId) throws Exception ;
-
     public List<OrderEntity> getActiveOrders(Integer deliveryBoyId) throws Exception;
 
     public Boolean changeOrderStatus(OrderEntity orderEntity, Integer deliveryBoyId) throws Exception;

@@ -194,12 +194,58 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public Boolean acceptOrder(Integer deliveryBoyId, Integer orderId) throws Exception {
+    public List<OrderEntity> getActiveOrders(Integer deliveryBoyId) throws Exception{
+        List<OrderEntity> orderEntities = orderDaoService.getActiveOrdersList(deliveryBoyId);
+        for(OrderEntity orderEntity: orderEntities){
+            updateRemainingAndElapsedTime(orderEntity);
+        }
+        return orderEntities;
+    }
+
+    private void updateRemainingAndElapsedTime(OrderEntity orderEntity){
+        Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), orderEntity.getOrderDate().getTime());
+        int remainingTime = orderEntity.getRemainingTime() - minuteDiff.intValue();
+        orderEntity.setElapsedTime(minuteDiff.intValue());
+        remainingTime = (remainingTime < 0) ? 0 : remainingTime;
+        orderEntity.setRemainingTime(remainingTime);
+    }
+
+    @Override
+    public Boolean changeOrderStatus(OrderEntity orderEntity, Integer deliveryBoyId) throws Exception{
+        OrderEntity order = orderDaoService.find(orderEntity.getId());
+        if(order == null){
+            throw new YSException("VLD017");
+        }
+        JobOrderStatus orderStatus = orderEntity.getOrderStatus();
+        if(orderStatus.equals(JobOrderStatus.ORDER_ACCEPTED)){
+            return acceptDeliveryOrder(orderEntity.getId(), deliveryBoyId);
+        }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)){
+            //Task to be done while in route to pick up
+            //Push notification to customer for notifying job has been started
+        }else if(orderStatus.equals(JobOrderStatus.AT_STORE)){
+            //Task to be done while delivery boy is at store
+            //Such as bill upload
+            //Bill edit
+        }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)){
+
+        }else if(orderStatus.equals(JobOrderStatus.DELIVERED)){
+            //Code set, ratings
+        }else if(orderStatus.equals(JobOrderStatus.CANCELLED)){
+            //reason
+        }else{
+            throw new YSException("ORD002");
+        }
+        order.setOrderStatus(orderStatus);
+        orderDaoService.update(order);
+        return true;
+    }
+
+    private Boolean acceptDeliveryOrder(Integer orderId, Integer deliveryBoyId) throws Exception {
         log.info("Accepting Order By delivery Boy with ID:"+deliveryBoyId);
 
         DeliveryBoySelectionEntity deliveryBoySelectionEntity = deliveryBoySelectionDaoService.getSelectionDetails(orderId, deliveryBoyId);
         if(deliveryBoySelectionEntity == null){
-            throw new YSException("VLD017");
+            throw new YSException("ORD003");
         }
 
         /* Returns true if order can be accepted else returns false */
@@ -232,49 +278,6 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             return orderDaoService.update(orderEntity);
         }
         throw new YSException("ORD001");
-    }
-
-    @Override
-    public List<OrderEntity> getActiveOrders(Integer deliveryBoyId) throws Exception{
-        List<OrderEntity> orderEntities = orderDaoService.getActiveOrdersList(deliveryBoyId);
-        for(OrderEntity orderEntity: orderEntities){
-            updateRemainingAndElapsedTime(orderEntity);
-        }
-        return orderEntities;
-    }
-
-    private void updateRemainingAndElapsedTime(OrderEntity orderEntity){
-        Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), orderEntity.getOrderDate().getTime());
-        int remainingTime = orderEntity.getRemainingTime() - minuteDiff.intValue();
-        orderEntity.setElapsedTime(minuteDiff.intValue());
-        remainingTime = (remainingTime < 0) ? 0 : remainingTime;
-        orderEntity.setRemainingTime(remainingTime);
-    }
-
-    @Override
-    public Boolean changeOrderStatus(OrderEntity orderEntity, Integer deliveryBoyId) throws Exception{
-        OrderEntity order = orderDaoService.find(orderEntity.getId());
-        if(order == null){
-            throw new YSException("VLD017");
-        }
-        JobOrderStatus orderStatus = orderEntity.getOrderStatus();
-        order.setOrderStatus(orderStatus);
-        if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)){
-            //Task to be done while in route to pick up
-            //Push notification to customer for notifying job has been started
-        }else if(orderStatus.equals(JobOrderStatus.AT_STORE)){
-            //Task to be done while delivery boy is at store
-            //Such as bill upload
-            //Bill edit
-        }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)){
-
-        }else if(orderStatus.equals(JobOrderStatus.DELIVERED)){
-            //Code set, ratings
-        }else if(orderStatus.equals(JobOrderStatus.CANCELLED)){
-            //reason
-        }
-        orderDaoService.update(order);
-        return true;
     }
 
     @Override

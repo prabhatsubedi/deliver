@@ -76,6 +76,7 @@ public class OrderEntity implements Serializable {
         this.orderName = orderName;
     }
 
+    @JsonIgnore
     @Column(name = "order_verification_code")
     public Integer getOrderVerificationCode() {
         return orderVerificationCode;

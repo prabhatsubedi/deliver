@@ -18,7 +18,7 @@ import java.util.List;
  * Time: 2:34 PM
  * To change this template use File | Settings | File Templates.
  */
-@Entity(name="categories")
+@Entity(name="CategoryEntity")
 @Table(name="categories")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class CategoryEntity implements Serializable {

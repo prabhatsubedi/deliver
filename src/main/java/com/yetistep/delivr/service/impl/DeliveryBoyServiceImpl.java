@@ -222,9 +222,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)){
             return startJob(order, deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.AT_STORE)){
-            //Task to be done while delivery boy is at store
-            //Such as bill upload
-            //Bill edit
+            //Such as bill upload and Bill edit
+            return reachedStore(order, deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)){
              return goRouteToDelivery(order, deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.DELIVERED)){
@@ -288,6 +287,22 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: orderHistoryEntities){
             if(dBoyOrderHistoryEntity.getDeliveryBoy().getId().equals(deliveryBoyId)){
                 dBoyOrderHistoryEntity.setJobStartedAt(DateUtil.getCurrentTimestampSQL());
+                break;
+            }
+        }
+        return orderDaoService.update(order);
+    }
+
+    private Boolean reachedStore(OrderEntity order, Integer deliveryBoyId) throws Exception {
+        if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
+            throw new YSException("ORD003");
+        }
+        order.setOrderStatus(JobOrderStatus.AT_STORE);
+        List<DBoyOrderHistoryEntity> orderHistoryEntities = order.getdBoyOrderHistories();
+        for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: orderHistoryEntities){
+            if(dBoyOrderHistoryEntity.getDeliveryBoy().getId().equals(deliveryBoyId)){
+                dBoyOrderHistoryEntity.setDistanceTravelled(order.getSystemChargeableDistance());
+                dBoyOrderHistoryEntity.setReachedStoreAt(DateUtil.getCurrentTimestampSQL());
                 break;
             }
         }

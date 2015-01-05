@@ -414,7 +414,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     @Override
     public List<ItemEntity> findStoresItems(HeaderDto headerDto) throws Exception {
         List<ItemsStoreEntity> itemsStores = merchantDaoService.findItemsStores(Integer.parseInt(headerDto.getId()));
-        if(itemsStores == null)
+        if(itemsStores.size() == 0)
             throw new YSException("VLD016");
 
         List<ItemEntity> items = new ArrayList<ItemEntity>();
@@ -446,6 +446,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Integer storeId = requestJson.getCategoryStoreId();
 
         List<CategoryEntity> childCategories =  merchantDaoService.findChildCategories(parentId, storeId);
+
+
 
         List<CategoryEntity> finalCategories =  merchantDaoService.findFinalCategoryList(storeId);
 

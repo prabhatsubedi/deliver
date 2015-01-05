@@ -122,6 +122,9 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<BrandsCategoryEntity> brandsCategories = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BrandsCategoryEntity.class);
         criteria.add(Restrictions.eq("storesBrand.id", brandId));
+        /*String hqlQuery = "SELECT bc.category FROM BrandsCategoryEntity bc LEFT JOIN bc.category c WHERE (bc.storesBrand.id = :brandId OR bc.storesBrand.id IS NULL) AND (c.storesBrand.id = :brandId OR c.storesBrand.id IS NULL)";
+        Query query = sessionFactory.getCurrentSession().createQuery(hqlQuery);
+        query.setParameter("brandId", brandId);*/
         brandsCategories = criteria.list();
 
         return brandsCategories.size() > 0 ? brandsCategories : null;
@@ -225,14 +228,14 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public List<CategoryEntity> findChildCategories(Integer parentId, Integer storeId) throws Exception {
         List<CategoryEntity> categories = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
-
+        //criteria.createAlias("child", "child");
        /* criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("name"), "name")
         ).setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));*/
 
         Criterion rest1 = Restrictions.and(Restrictions.isNull("storesBrand"), Restrictions.eq("parent.id", parentId));
-        Criterion rest2 = Restrictions.and(Restrictions.eq("storesBrand.id", storeId), Restrictions.eq("parent.id", parentId));
+        Criterion rest2 = Restrictions.and(Restrictions.eq("storesBrand.id", storeId), Restrictions.eq("parent.id", parentId)/*, Restrictions.eq("child.storesBrand.id", storeId)*/);
 
         criteria.add(Restrictions.or(rest1, rest2));
 
@@ -307,6 +310,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         criteria.add(Restrictions.eq("store.id", storeId));
         itemsStores = criteria.list();
 
-        return itemsStores.size() > 0 ? itemsStores : null;
+        return itemsStores;
     }
 }

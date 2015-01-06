@@ -384,7 +384,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
         if(deliveryBoyEntity.getAvailabilityStatus().equals(DBoyStatus.FREE)){
             if(dBoyEntity.getActiveOrderNo() > 0){
-                throw new YSException("DBY001");
+                dBoyEntity.setAvailabilityStatus(DBoyStatus.BUSY);
+            }else{
+                dBoyEntity.setAvailabilityStatus(DBoyStatus.FREE);
             }
             if (deliveryBoyEntity.getLatitude() != null && deliveryBoyEntity.getLongitude() != null) {
                 dBoyEntity.setLatitude(deliveryBoyEntity.getLatitude());
@@ -394,10 +396,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             if(!dBoyEntity.getAvailabilityStatus().equals(DBoyStatus.FREE)){
                throw new YSException("DBY001");
             }
+            dBoyEntity.setAvailabilityStatus(DBoyStatus.NOT_AVAILABLE);
         }else{
             throw new YSException("DBY002");
         }
-        dBoyEntity.setAvailabilityStatus(deliveryBoyEntity.getAvailabilityStatus());
         return deliveryBoyDaoService.update(dBoyEntity);
     }
 

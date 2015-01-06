@@ -10,6 +10,7 @@ import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.StaticPagination;
+import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.util.DateUtil;
 import com.yetistep.delivr.util.GeoCodingUtil;
@@ -343,5 +344,12 @@ public class ClientServiceImpl implements ClientService {
         order.setDeliveryBoy(null);
         order.setAttachments(null);
         return order;
+    }
+
+    @Override
+    public List<ItemDto> getItems(Integer brandId, Integer categoryId) throws Exception {
+        List<ItemDto> itemDtos = new ArrayList<>();
+        return itemDtos;
+
     }
 }

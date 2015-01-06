@@ -1,13 +1,12 @@
 package com.yetistep.delivr.service.impl;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.Role;
-import com.yetistep.delivr.enums.UserStatus;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.*;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -138,14 +136,14 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             * user status is updated based on verified status(true ==> ACTIVE, false ==> INACTIVE).
             */
             if(merchantEntity.getUser().getPassword().isEmpty()){
-                merchantEntity.setUserStatus(UserStatus.UNVERIFIED);
+                merchantEntity.setStatus(Status.UNVERIFIED);
             }else if(merchantEntity.getCommissionPercentage() == null){
-                merchantEntity.setUserStatus(UserStatus.VERIFIED);
+                merchantEntity.setStatus(Status.VERIFIED);
             }else{
                 if(merchantEntity.getUser().getVerifiedStatus()){
-                    merchantEntity.setUserStatus(UserStatus.ACTIVE);
+                    merchantEntity.setStatus(Status.ACTIVE);
                 }else{
-                    merchantEntity.setUserStatus(UserStatus.INACTIVE);
+                    merchantEntity.setStatus(Status.INACTIVE);
                 }
             }
             merchantEntity.getUser().setRole(null);
@@ -227,14 +225,14 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             * user status is updated based on verified status(true ==> ACTIVE, false ==> INACTIVE).
             */
         if(merchantEntity.getUser().getPassword().isEmpty()){
-            merchantEntity.setUserStatus(UserStatus.UNVERIFIED);
+            merchantEntity.setStatus(Status.UNVERIFIED);
         }else if(merchantEntity.getCommissionPercentage() == null){
-            merchantEntity.setUserStatus(UserStatus.VERIFIED);
+            merchantEntity.setStatus(Status.VERIFIED);
         }else{
             if(merchantEntity.getUser().getVerifiedStatus()){
-                merchantEntity.setUserStatus(UserStatus.ACTIVE);
+                merchantEntity.setStatus(Status.ACTIVE);
             }else{
-                merchantEntity.setUserStatus(UserStatus.INACTIVE);
+                merchantEntity.setStatus(Status.INACTIVE);
             }
         }
         merchantEntity.getUser().setRole(null);

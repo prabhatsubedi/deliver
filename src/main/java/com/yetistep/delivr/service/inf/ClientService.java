@@ -1,9 +1,11 @@
 package com.yetistep.delivr.service.inf;
 
+import com.yetistep.delivr.dao.impl.ItemDaoServiceImpl;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
 import com.yetistep.delivr.model.mobile.CategoryDto;
+import com.yetistep.delivr.model.mobile.dto.ItemDto;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,8 @@ public interface ClientService {
 
 
     public OrderEntity getOrderById(Integer orderId) throws Exception;
+
+    public List<ItemDto> getItems(Integer brandId, Integer categoryId) throws Exception;
 
 
 }

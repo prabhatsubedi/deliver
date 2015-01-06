@@ -7,6 +7,6 @@ package com.yetistep.delivr.enums;
  * Time: 10:39 AM
  * To change this template use File | Settings | File Templates.
  */
-public enum UserStatus {
+public enum Status {
     UNVERIFIED, VERIFIED, ACTIVE, INACTIVE;
 }

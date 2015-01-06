@@ -3,7 +3,7 @@ package com.yetistep.delivr.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yetistep.delivr.enums.MerchantType;
-import com.yetistep.delivr.enums.UserStatus;
+import com.yetistep.delivr.enums.Status;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -40,7 +40,7 @@ public class MerchantEntity implements Serializable {
     private String businessLogo;
     private String companyRegistrationNo;
     private String vatNo;
-    private UserStatus userStatus;
+    private Status status;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -167,11 +167,11 @@ public class MerchantEntity implements Serializable {
     }
 
     @Transient
-    public UserStatus getUserStatus() {
-        return userStatus;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

@@ -27,7 +27,7 @@ public class ItemDaoServiceImpl implements ItemDaoService{
 
     @Override
     public ItemEntity find(Integer id) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return (ItemEntity) getCurrentSession().get(ItemEntity.class, id);
     }
 
     @Override

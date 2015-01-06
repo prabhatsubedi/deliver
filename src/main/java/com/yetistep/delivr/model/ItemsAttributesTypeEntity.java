@@ -19,10 +19,11 @@ import java.util.List;
 public class ItemsAttributesTypeEntity {
 
    private Integer id;
-   private ItemEntity item;
-   private List<ItemsAttributeEntity> itemsAttribute;
    private String type;
    private Boolean multiSelect;
+   private ItemEntity item;
+   private List<ItemsAttributeEntity> itemsAttribute;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -65,7 +66,7 @@ public class ItemsAttributesTypeEntity {
         this.type = type;
     }
 
-    @Column(name = "multi_select")
+    @Column(name = "multi_select", columnDefinition = "TINYINT(1)")
     public Boolean getMultiSelect() {
         return multiSelect;
     }

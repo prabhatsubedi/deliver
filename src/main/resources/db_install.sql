@@ -49,3 +49,4 @@ ALTER TABLE `items_orders` DROP `item_total` ;
 
 ########## 2015.01.06 ######################
 ALTER TABLE items MODIFY unit_price DECIMAL(19, 2);
+ALTER TABLE items_attributes_types MODIFY multi_select TINYINT(1) NULL;

@@ -3,11 +3,7 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.model.AddressEntity;
-import com.yetistep.delivr.model.CustomerEntity;
-import com.yetistep.delivr.model.OrderEntity;
-import com.yetistep.delivr.model.StoresBrandEntity;
-import com.yetistep.delivr.model.UserEntity;
+import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.ClientService;
@@ -261,6 +257,23 @@ public class ClientController extends AbstractManager{
 
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while retrieving items", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_item_detail/item/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getItemDetail(@PathVariable("id") Integer itemId) {
+        try {
+            ItemEntity item = clientService.getItemDetail(itemId);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Item Detail retrieved Successfully");
+            serviceResponse.addParam("item", item);
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving Item Detail", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

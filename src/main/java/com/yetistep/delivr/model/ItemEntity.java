@@ -28,17 +28,12 @@ import java.util.Date;
 @Table(name = "items")
 public class ItemEntity implements Serializable {
     private Integer id;
-    private CategoryEntity category;
-    private StoresBrandEntity storesBrand;
     private String name;
-    private List<ItemsImageEntity> itemsImage;
-    private List<ItemsOrderEntity> itemsOrder;
     private String description;
     private Integer availableQuantity;
     private Date availableStartTime;
     private Date availableEndTime;
-    private List<ItemsStoreEntity> itemsStores;
-    private List<ItemsAttributesTypeEntity> attributesTypes;
+
     //private Set<OrderEntity> order;
     private Integer maxOrderQuantity;
     private Integer minOrderQuantity;
@@ -60,6 +55,13 @@ public class ItemEntity implements Serializable {
     private BigDecimal vat;
     private BigDecimal serviceCharge;
     private Status status;
+
+    private CategoryEntity category;
+    private StoresBrandEntity storesBrand;
+    private List<ItemsImageEntity> itemsImage;
+    private List<ItemsOrderEntity> itemsOrder;
+    private List<ItemsStoreEntity> itemsStores;
+    private List<ItemsAttributesTypeEntity> attributesTypes;
 
 
     @Id

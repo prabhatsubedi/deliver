@@ -343,21 +343,21 @@ var data_categories_names = [];
                 var itemImages = [];
 
                 item.name = $('#name_item').val();
-                item.description = $('#description').val();
+                if($('#description').val() != "") item.description = $('#description').val();
                 item.availableStartTime = $('#available_start_time').val();
                 item.availableEndTime = $('#available_end_time').val();
-                item.availableQuantity = 0;
+                //item.availableQuantity = 0;
                 item.maxOrderQuantity = $('#max_order').val();
                 item.minOrderQuantity = $('#min_order').val();
                 item.unitPrice = $('#price').val();
-                item.additionalOffer = $('#additional_offer').val();
-                item.approxSize = "";
-                item.approxWeight = "";
-                item.returnPolicy = $('#return_policy').val();
-                item.deliveryFee = $('#delivery_fee').val();
-                item.promoCode = "";
-                item.vat = $('#vat').val();
-                item.serviceCharge = $('#service_charge').val();
+                if($('#additional_offer').val() != "N/A" && $('#additional_offer').val() != "") item.additionalOffer = $('#additional_offer').val();
+                //item.approxSize = "";
+                //item.approxWeight = "";
+                if($('#return_policy').val() != "N/A" && $('#return_policy').val() != "") item.returnPolicy = $('#return_policy').val();
+                if($('#delivery_fee').val() != "0") item.deliveryFee = $('#delivery_fee').val();
+                //item.promoCode = "";
+                if($('#vat').val() != "0") item.vat = $('#vat').val();
+                if($('#service_charge').val() != "0") item.serviceCharge = $('#service_charge').val();
                 item.status = "ACTIVE";
 
 /*                $('#category_container select.category_options').each(function(){

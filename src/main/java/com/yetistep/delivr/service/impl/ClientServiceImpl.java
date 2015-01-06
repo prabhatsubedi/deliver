@@ -377,4 +377,37 @@ public class ClientServiceImpl implements ClientService {
         return items;
 
     }
+
+    @Override
+    public ItemEntity getItemDetail(Integer itemId) throws Exception {
+        log.info("++++++++++++ Getting Item Detail of id " + itemId + " +++++++++++++");
+
+        ItemEntity itemEntity = itemDaoService.find(itemId);
+        BigDecimal price = itemEntity.getUnitPrice();
+
+        if(itemEntity.getServiceCharge()!=null && BigDecimalUtil.isNotZero(itemEntity.getServiceCharge())) {
+            price = price.add(BigDecimalUtil.percentageOf(price, itemEntity.getServiceCharge()));
+        }
+
+        //Vat
+        if(itemEntity.getVat()!=null && BigDecimalUtil.isNotZero(itemEntity.getVat())) {
+            price = price.add(BigDecimalUtil.percentageOf(price, itemEntity.getVat()));
+        }
+
+        itemEntity.setUnitPrice(price.setScale(2, BigDecimal.ROUND_UP));
+
+        if(itemEntity.getAttributesTypes().size() == 0)
+            itemEntity.setAttributesTypes(null);
+
+        itemEntity.setItemsStores(null);
+        itemEntity.setItemsOrder(null);
+        itemEntity.setStatus(null);
+        itemEntity.setCreatedDate(null);
+        itemEntity.setModifiedDate(null);
+        itemEntity.setVat(null);
+        itemEntity.setServiceCharge(null);
+
+
+        return itemEntity;
+    }
 }

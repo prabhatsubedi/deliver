@@ -416,10 +416,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         String dir = MessageBundle.separateString("/", "Orders", "Order" + order.getId());
         boolean isLocal = MessageBundle.isLocalHost();
         List<String> attachments = orderEntity.getAttachments();
-        for (int i = 0; i < order.getAttachments().size(); i++) {
-            String bill = order.getAttachments().get(i);
+        for (String bill: order.getAttachments()) {
             if (bill != null && !bill.isEmpty()) {
-                String imageName = "bill" + (isLocal ? "_tmp_" : "_") + (i+1);
+                String imageName = "bill" + (isLocal ? "_tmp_" : "_") + System.currentTimeMillis();
                 String s3Path = GeneralUtil.saveImageToBucket(bill, imageName, dir, true);
                 attachments.add(s3Path);
             }

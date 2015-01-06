@@ -404,10 +404,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public Boolean uploadBills(OrderEntity order) throws Exception {
+    public Boolean uploadBills(OrderEntity order, Integer deliveryBoyId) throws Exception {
         OrderEntity orderEntity = orderDaoService.find(order.getId());
         if(orderEntity == null){
-            throw new YSException("");
+            throw new YSException("VLD017");
+        }
+        if(!deliveryBoyId.equals(orderEntity.getDeliveryBoy().getId())){
+            throw new YSException("ORD003");
         }
         log.info("Uploading Bill of an order to S3 Bucket ");
         String dir = MessageBundle.separateString("/", "Orders", "Order" + order.getId());

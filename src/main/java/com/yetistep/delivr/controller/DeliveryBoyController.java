@@ -176,10 +176,10 @@ public class DeliveryBoyController extends AbstractManager{
     @ResponseBody
     public ResponseEntity<ServiceResponse> uploadBill(@RequestHeader HttpHeaders headers, @RequestBody OrderEntity order) {
         try {
-           /* HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-            validateMobileClient(headerDto.getAccessToken());*/
-            deliveryBoyService.uploadBills(order);
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
+//            validateMobileClient(headerDto.getAccessToken());
+            deliveryBoyService.uploadBills(order, Integer.parseInt(headerDto.getId()));
             ServiceResponse serviceResponse = new ServiceResponse("Attachments has been uploaded successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {

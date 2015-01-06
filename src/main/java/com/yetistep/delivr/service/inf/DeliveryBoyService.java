@@ -40,7 +40,7 @@ public interface DeliveryBoyService {
 
     public Boolean changeDeliveryBoyStatus(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
 
-    public Boolean uploadBills(OrderEntity order) throws Exception;
+    public Boolean uploadBills(OrderEntity order, Integer deliveryBoyId) throws Exception;
 
     public DeliveryBoyEntity getProfileOfDeliveryBoy(Integer deliveryBoyId) throws Exception;
 }

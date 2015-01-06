@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Item</title>
+    <title>Item Detail</title>
 
     <%@include file="../includes/head.jsp" %>
 
@@ -17,7 +17,8 @@
     <script type="text/javascript" src="/resources/js/item.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            Item.loadAddItem();
+            var itemId = Main.getURLvalue(3);
+            Item.loadItem(itemId);
         });
     </script>
 
@@ -33,7 +34,7 @@
 
     <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left">Add Item</h1>
+            <h1 class="pull-left">Item Detail</h1>
         </div>
         <div class="main_content">
             <div class="form_container full_width clearfix">
@@ -42,100 +43,27 @@
                         <div class="form_section clearfix">
                             <div class="col-lg-6">
 
-                                <div class="form_head">Images</div>
+                                <div class="form_head">Item Information</div>
                                 <div class="form_content">
                                     <div class="product_images form-group clearfix">
                                         <div class="product_image col-lg-4">
-                                            <div id="product_image1" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
+                                            <div id="product_image1" class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
                                                 <div class="drop_info">Drop image file <br /> (or click to browse)</div>
                                             </div>
-                                            <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="product_image1_input" name="product_image1_input" class="hidden" />
+                                            <input type="file" onchange="Image.readURL(this)" data-dimension="400x400" id="product_image1_input" name="product_image1_input" class="hidden" />
                                         </div>
                                         <div class="product_image col-lg-4">
-                                            <div id="product_image2" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
+                                            <div id="product_image2" class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
                                                 <div class="drop_info">Drop image file <br /> (or click to browse)</div>
                                             </div>
-                                            <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="product_image2_input" name="product_image2_input" class="hidden" />
+                                            <input type="file" onchange="Image.readURL(this)" data-dimension="400x400" id="product_image2_input" name="product_image2_input" class="hidden" />
                                         </div>
                                         <div class="product_image col-lg-4">
-                                            <div id="product_image3" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
+                                            <div id="product_image3" class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
                                                 <div class="drop_info">Drop image file <br /> (or click to browse)</div>
                                             </div>
-                                            <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="product_image3_input" name="product_image3_input" class="hidden" />
+                                            <input type="file" onchange="Image.readURL(this)" data-dimension="400x400" id="product_image3_input" name="product_image3_input" class="hidden" />
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div class="form_head">Basic Info</div>
-                                <div class="form_content">
-                                    <div class="row">
-                                        <div class="form-group clearfix">
-                                            <label class="col-lg-4 floated_label" for="name_item">Item Name</label>
-                                            <div class="col-lg-8">
-                                                <input type="text" class="form-control" id="name_item" name="name_item">
-                                            </div>
-                                        </div>
-                                        <div class="form-group clearfix">
-                                            <label class="col-lg-4 floated_label" for="description">Description</label>
-                                            <div class="col-lg-8">
-                                                <input type="text" class="form-control" id="description" name="description">
-                                            </div>
-                                        </div>
-                                        <div class="form-group clearfix">
-                                            <label class="col-lg-4 floated_label" for="additional_offer">Additional Offer</label>
-                                            <div class="col-lg-8">
-                                                <input type="text" class="form-control" id="additional_offer" name="additional_offer" value="N/A">
-                                            </div>
-                                        </div>
-                                        <%--                                    <div class="form-group clearfix">
-                                                                                <label class="col-lg-4 floated_label" for="item_size">Size</label>
-                                                                                <div class="col-lg-8">
-                                                                                    <input type="text" class="form-control" id="item_size" name="item_size">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group clearfix">
-                                                                                <label class="col-lg-4 floated_label" for="item_weight">Weight</label>
-                                                                                <div class="col-lg-8">
-                                                                                    <input type="text" class="form-control" id="item_weight" name="item_weight">
-                                                                                </div>
-                                                                            </div>--%>
-                                    </div>
-                                </div>
-
-                                <div class="form_head">Available Stores</div>
-                                <div class="form_content">
-                                    <div class="form-group">
-                                        <select id="item_brand" name="item_brand" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                            <option value="none">Select Store</option>
-                                        </select>
-                                    </div>
-                                    <input type="text" class="hidden" name="validate_stores" id="validate_stores">
-                                    <div id="item_store_container" class="form-group">
-                                    </div>
-                                </div>
-                                <div class="form_head">Category</div>
-                                <div class="form_content">
-                                    <input type="text" id="validate_categories" name="validate_categories" class="hidden" />
-                                    <div id="category_container">
-                                        <div class="form-group">
-                                            <select class="category_options col-xs-12 no_pad no_margin" data-style="form-control">
-                                                <option value="none">Select Category</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group add_categories hidden">
-                                        <div class="new_category_fields">
-                                            <input type="text" class="form-control hidden" id="new_category" name="new_category" placeholder="Category Name">
-                                            <input type="text" class="form-control hidden" id="new_subcategory" name="new_subcategory" placeholder="Subcategory Name">
-                                        </div>
-                                        <div class="action_buttons">
-                                            <button type="button" id="save_category" class="btn btn_green glyphicon glyphicon-ok"></button>
-                                            <button type="button" id="cancel_category" class="btn btn_green btn_red glyphicon glyphicon-remove"></button>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn_green" id="add_category" type="button">Add Category</button>
-                                        <button class="btn btn_green" id="add_subcategory" type="button">Add Subcategory</button>
                                     </div>
                                 </div>
 
@@ -143,7 +71,7 @@
 
                             <div class="col-lg-6">
 
-                                <div class="form_head">Additional Info</div>
+                                <div class="form_head">Similar Items</div>
                                 <div class="form_content">
                                     <div class="row">
                                         <div class="form-group clearfix">
@@ -208,27 +136,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form_head">Pricing & Attributes</div>
-                                <div class="form_content">
-                                    <div class="form-group clearfix row">
-                                        <label class="col-lg-4 floated_label" for="price">Price</label>
-                                        <div class="col-lg-8">
-                                            <input type="text" class="form-control" id="price" name="price">
-                                        </div>
-                                    </div>
-                                    <input type="text" id="validate_attributes" name="validate_attributes" class="hidden" />
-                                    <div class="item_attributes"></div>
-                                    <div class="form-group">
-                                        <button type="button" id="add_attr_type" class="btn btn_green">Add Attribute Type</button>
-                                    </div>
-                                </div>
 
                             </div>
 
-                        </div>
-
-                        <div class="col-lg-12" style="margin-top: 15px;">
-                            <button class="btn btn_green" type="submit">Add Item</button>
                         </div>
 
                     </form>

@@ -14,6 +14,15 @@ var data_categories_names = [];
         Image.dropZone('#product_image2_input', '#product_image2');
         Image.dropZone('#product_image3_input', '#product_image3');
 
+        $('.product_image').hover(function(){
+            if($('img', this).length == 1)$('.remove_image', this).removeClass('hidden');
+        }, function(){
+            $('.remove_image', this).addClass('hidden');
+        });
+        $('.product_image .remove_image').click(function(){
+            $(this).addClass('hidden').siblings('.drop_zone').html('<div class="drop_info">Drop image file <br> (or click to browse)</div>');
+        });
+
         $('select.haveall').live('change', function(){
             if($(this).val() != null && $('option', this).length == $(this).val().length + 1)
                 $(this).selectpicker('selectAll');
@@ -402,6 +411,7 @@ var data_categories_names = [];
                 data.itemStores = itemStores;
                 data.itemAttributesTypes = itemAttributesTypes;
                 data.itemImages = itemImages;
+                data.status = "ACTIVE";
 
                 Item.addItem(data, {id: $('#item_brand').val()});
 
@@ -688,5 +698,17 @@ var data_categories_names = [];
         Main.request('/merchant/get_brands_categories', {}, callback, {id: brandId});
 
     };
+
+    Item.loadItem = function(itemId) {
+
+        var callback = function(status, data) {
+
+            console.log(data);
+
+        };
+        callback.requestType = "GET";
+        callback.loaderDiv = ".body";
+        Main.request('/merchant/get_items_detail', {}, callback, {id: itemId});
+    }
 
 })(jQuery);

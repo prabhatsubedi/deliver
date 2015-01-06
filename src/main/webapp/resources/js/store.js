@@ -218,6 +218,7 @@ if(typeof(Store) == "undefined") var Store = {};
                     data.stores = geoPoints.stores;
                     data.storesBrand = stores_brand;
                     data.categories = categories;
+                    data.status = "ACTIVE";
 
                     Store.addStore(data, {merchantId: Main.getFromLocalStorage('mid')});
 

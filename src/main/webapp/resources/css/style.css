@@ -788,6 +788,18 @@ label.check_label .checkbox {
     padding: 0px 4px;
     position: relative;
 }
+.product_images .product_image .remove_image {
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+    font-size: 18px;
+    height: 40px;
+    line-height: 40px;
+    padding: 0;
+    position: absolute;
+    right: 14px;
+    top: 10px;
+    width: 40px;
+}
 
 .block_attr {
     border: 1px solid #cbcaca;
@@ -979,7 +991,6 @@ label.check_label .checkbox {
     display: block;
     margin: -15px;
     padding: 15px;
-    text-decoration: none;
 }
 .items_container .block_item .item_infos .item_price {
 }

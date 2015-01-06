@@ -652,6 +652,9 @@ body.assistance_page {
     background-color: #FFFFFF;
     cursor: pointer;
 }
+.page_item_view .drop_zone {
+    cursor: auto;
+}
 .drop_zone.error {
     border: 1px solid #ff9235;
 }
@@ -1000,6 +1003,26 @@ label.check_label .checkbox {
     position: relative;
 }
 
+
+/* item view page */
+
+.detail_row {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #CCCCCC;
+}
+.detail_row .detail_label {
+    color: #999999;
+    font-size: 16px;
+}
+.detail_row .detail_value {
+    color: #666666;
+    font-size: 14px;
+}
+.detail_row .detail_value:empty {
+    color: #666666;
+    font-size: 14px;
+}
 
 
 /*Profile Css Start*/

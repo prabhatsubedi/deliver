@@ -37,11 +37,11 @@
     <div class="item_container unselectable col-lg-2">
         <div class="block_item">
             <div class="item_image">
-                <img src="/resources/images/720x400.jpg" class="img-responsive">
+                <img class="img-responsive">
                 <a class="btn btn-default btn_logins add_items">Add Item</a>
             </div>
             <div class="item_infos">
-                <p class="item_name">Item Name</p>
+                <p class="item_name"></p>
             </div>
         </div>
     </div>

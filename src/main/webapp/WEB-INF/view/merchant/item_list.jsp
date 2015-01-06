@@ -50,11 +50,11 @@
     <div class="item_container col-lg-3">
         <div class="block_item">
             <div class="item_image">
-                <img src="/resources/images/720x400.jpg" class="img-responsive">
+                <img class="img-responsive">
             </div>
             <div class="item_infos">
-                <p class="item_name"><a href="#">Item Name</a></p>
-                <p class="item_price">Rs. <span>86987</span></p>
+                <p class="item_name"><a href="#"></a></p>
+                <p class="item_price">Rs. <span></span></p>
             </div>
         </div>
     </div>

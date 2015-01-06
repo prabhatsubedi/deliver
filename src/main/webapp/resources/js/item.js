@@ -358,6 +358,7 @@ var data_categories_names = [];
                 item.promoCode = "";
                 item.vat = $('#vat').val();
                 item.serviceCharge = $('#service_charge').val();
+                item.status = "ACTIVE";
 
 /*                $('#category_container select.category_options').each(function(){
                     var cat_key = $('option:selected', this).attr('data-new') == "true" ? "name" : "id";
@@ -411,7 +412,6 @@ var data_categories_names = [];
                 data.itemStores = itemStores;
                 data.itemAttributesTypes = itemAttributesTypes;
                 data.itemImages = itemImages;
-                data.status = "ACTIVE";
 
                 Item.addItem(data, {id: $('#item_brand').val()});
 
@@ -705,9 +705,20 @@ var data_categories_names = [];
 
             console.log(data);
 
+            if (data.success == true) {
+
+                var item = data.params.item;
+                for(var i = 0; i < item.itemsImage.length; i++) {
+                    $('.product_image .drop_zone').eq(i).html('<img src="' + item.itemsImage[i].url + '" style="height: 100%;" class="img-responsive" />');
+                }
+
+            } else {
+                alert(data.message);
+            }
+
         };
         callback.requestType = "GET";
-        callback.loaderDiv = ".body";
+        callback.loaderDiv = "body";
         Main.request('/merchant/get_items_detail', {}, callback, {id: itemId});
     }
 

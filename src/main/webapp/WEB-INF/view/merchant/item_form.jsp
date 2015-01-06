@@ -146,7 +146,7 @@
 
                             <div class="col-lg-6">
 
-                                <div class="form_head">Additional Info</div>
+                                <div class="form_head">Additional Information</div>
                                 <div class="form_content">
                                     <div class="row">
                                         <div class="form-group clearfix">

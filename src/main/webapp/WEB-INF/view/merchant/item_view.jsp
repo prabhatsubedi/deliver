@@ -24,7 +24,7 @@
 
 
 </head>
-<body>
+<body class="page_item_view">
 
 <%@include file="../includes/sidebar_merchant.jsp" %>
 
@@ -47,24 +47,57 @@
                                 <div class="form_content">
                                     <div class="product_images form-group clearfix">
                                         <div class="product_image col-lg-4">
-                                            <div id="product_image1" class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
-                                                <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                            <div class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
+                                                <div class="drop_info">no image available</div>
                                             </div>
-                                            <input type="file" onchange="Image.readURL(this)" data-dimension="400x400" id="product_image1_input" name="product_image1_input" class="hidden" />
                                         </div>
                                         <div class="product_image col-lg-4">
-                                            <div id="product_image2" class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
-                                                <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                            <div class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
+                                                <div class="drop_info">no image available</div>
                                             </div>
-                                            <input type="file" onchange="Image.readURL(this)" data-dimension="400x400" id="product_image2_input" name="product_image2_input" class="hidden" />
                                         </div>
                                         <div class="product_image col-lg-4">
-                                            <div id="product_image3" class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
-                                                <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                            <div class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
+                                                <div class="drop_info">no image available</div>
                                             </div>
-                                            <input type="file" onchange="Image.readURL(this)" data-dimension="400x400" id="product_image3_input" name="product_image3_input" class="hidden" />
                                         </div>
                                     </div>
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Item Name</label>
+                                        <div class="detail_value item_name"></div>
+                                    </div>
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Description</label>
+                                        <div class="detail_value description"></div>
+                                    </div>
+
+                                    <div class="detail_row">
+                                        <div class="detail_label">Additional Offer</div>
+                                        <div class="detail_value additional_offer"></div>
+                                    </div>
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Available Stores </label>
+                                        <div class="detail_value">ValueValueValueValueValueValue</div>
+                                    </div>
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Category </label>
+                                        <div class="detail_value">ValueValueValueValueValueValue</div>
+                                    </div>
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Additional Information </label>
+                                        <div class="detail_value">ValueValueValueValueValueValue</div>
+                                    </div>
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Pricing and Attributes </label>
+                                        <div class="detail_value">ValueValueValueValueValueValue</div>
+                                    </div>
+
                                 </div>
 
                             </div>

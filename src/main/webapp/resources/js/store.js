@@ -111,6 +111,7 @@ if(typeof(Store) == "undefined") var Store = {};
 //                            location_valid = false;
 //                        }
                     geoPoint.name = $('#brand_name').val();
+                    geoPoint.status = "ACTIVE";
                     if(geoPoint.street == ""){
                         location_valid = false;
                     }
@@ -205,6 +206,7 @@ if(typeof(Store) == "undefined") var Store = {};
                     stores_brand.brandLogo = $('#brand_logo img').attr('src');
                     stores_brand.brandImage = $('#brand_image img').attr('src');
                     stores_brand.brandUrl = $('#brand_url').val();
+                    stores_brand.status = "ACTIVE";
 
 
                     var categories = $('#store_categories').val();
@@ -218,7 +220,6 @@ if(typeof(Store) == "undefined") var Store = {};
                     data.stores = geoPoints.stores;
                     data.storesBrand = stores_brand;
                     data.categories = categories;
-                    data.status = "ACTIVE";
 
                     Store.addStore(data, {merchantId: Main.getFromLocalStorage('mid')});
 

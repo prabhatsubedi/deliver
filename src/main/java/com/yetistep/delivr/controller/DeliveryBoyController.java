@@ -171,4 +171,21 @@ public class DeliveryBoyController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/upload_bill", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> uploadBill(@RequestHeader HttpHeaders headers, @RequestBody OrderEntity order) {
+        try {
+           /* HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());*/
+            deliveryBoyService.uploadBills(order);
+            ServiceResponse serviceResponse = new ServiceResponse("Attachments has been uploaded successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while loading attachments", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

@@ -39,4 +39,6 @@ public interface DeliveryBoyService {
     public List<PastDeliveriesDto> getPastDeliveries(Page page, Integer deliveryBoyId) throws Exception;
 
     public Boolean changeDeliveryBoyStatus(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
+
+    public Boolean uploadBills(OrderEntity order) throws Exception;
 }

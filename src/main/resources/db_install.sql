@@ -46,3 +46,6 @@ DROP `system_share` ,
 DROP `total_cost` ,
 DROP `transportation_charge` ;
 ALTER TABLE `items_orders` DROP `item_total` ;
+
+########## 2015.01.06 ######################
+ALTER TABLE items MODIFY unit_price DECIMAL(19, 2);

@@ -46,7 +46,7 @@ public class ItemEntity implements Serializable {
     //private Timestamp validTill;
     private Boolean paymentMethodCd;  //cash on demand
     private Boolean paymentMethodCc; //credit card
-    private Integer unitPrice;
+    private BigDecimal unitPrice;
     private String currencyType;
     //private Boolean multiSelectOffer;
     //private Boolean singleSelectOffer;
@@ -257,11 +257,11 @@ public class ItemEntity implements Serializable {
     }
 
     @Column(name = "unit_price")
-    public Integer getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(Integer unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 

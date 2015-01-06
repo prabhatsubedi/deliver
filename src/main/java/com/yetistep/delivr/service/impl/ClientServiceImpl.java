@@ -1,10 +1,6 @@
 package com.yetistep.delivr.service.impl;
 
-import com.yetistep.delivr.dao.inf.OrderDaoService;
-import com.yetistep.delivr.dao.inf.CategoryDaoService;
-import com.yetistep.delivr.dao.inf.CustomerDaoService;
-import com.yetistep.delivr.dao.inf.StoreDaoService;
-import com.yetistep.delivr.dao.inf.StoresBrandDaoService;
+import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.CustomerEntity;
@@ -47,6 +43,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     CategoryDaoService categoryDaoService;
+
+    @Autowired
+    ItemDaoService itemDaoService;
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++ Getting all brands +++++++++++++++");
@@ -163,7 +162,7 @@ public class ClientServiceImpl implements ClientService {
         log.info("++++++++++ Getting Parent Category and list cat id +++++++++++++");
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         CategoryDto categoryDto = null;
-        List<CategoryEntity> categoryEntities = storeDaoService.findItemCategory(brandId);
+        List<CategoryEntity> categoryEntities = itemDaoService.findItemCategory(brandId);
 
         for(CategoryEntity categoryEntity : categoryEntities){
             categoryDto = new CategoryDto();
@@ -215,11 +214,14 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public List<CategoryDto> getSubCategory(CategoryDto categoryDto) throws Exception {
-        log.info("+++++++++++++ Getting Sub Category ++++++++++++++");
+        log.info("+++++++++++++ Getting Sub Category Of " + categoryDto.getId() + " +++++++++");
         List<CategoryDto> list = new ArrayList<>();
         Integer brandId = categoryDto.getBrandId();
         Integer nextId = categoryDto.getId();
-        List<CategoryEntity> categoryEntities = storeDaoService.findItemCategory(brandId);
+        List<CategoryEntity> categoryEntities = itemDaoService.findItemCategory(brandId);
+
+        if(categoryEntities == null || categoryEntities.size() == 0)
+            throw new YSException("VLD012");
 
         for(CategoryEntity categoryEntity : categoryEntities){
             CategoryEntity cat = null;
@@ -264,6 +266,7 @@ public class ClientServiceImpl implements ClientService {
                     list.add(resultDto);
             }
         }
+
         return list;
     }
 

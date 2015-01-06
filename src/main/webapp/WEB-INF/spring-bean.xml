@@ -33,5 +33,7 @@
     <bean id = "userDeviceDaoService" class="com.yetistep.delivr.dao.impl.UserDeviceDaoServiceImpl" />
     <bean id = "dBoyOrderHistoryDaoService" class="com.yetistep.delivr.dao.impl.DBoyOrderHistoryDaoServiceImpl" />
     <bean id = "categoryDaoService" class="com.yetistep.delivr.dao.impl.CategoryDaoServiceImpl" />
+    <bean id = "itemDaoService" class="com.yetistep.delivr.dao.impl.ItemDaoServiceImpl" />
+
 
  </beans>

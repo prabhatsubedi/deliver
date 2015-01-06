@@ -16,6 +16,6 @@ import java.util.List;
 public interface StoreDaoService extends GenericDaoService<Integer, StoreEntity>{
     public List<StoreEntity> findStores(List<Integer> ignoreBrand) throws Exception;
 
-    public List<CategoryEntity> findItemCategory(Integer brandId) throws Exception;
+//    public List<CategoryEntity> findItemCategory(Integer brandId) throws Exception;
 
 }

@@ -69,26 +69,21 @@ public class StoreDaoServiceImpl implements StoreDaoService{
         return storeEntities;
     }
 
-    @Override
-    public List<CategoryEntity> findItemCategory(Integer brandId) throws Exception {
-        List<CategoryEntity> categoryEntities = new ArrayList<>();
-        String sql ="SELECT DISTINCT(cat.id), cat.name, cat.parent.id FROM StoreEntity store " +
-                "INNER JOIN ItemsStoreEntity ist ON(ist.store.id = store.id) " +
-                "INNER JOIN ItemEntity it ON(it.id = ist.item.id) " +
-                "INNER JOIN CategoryEntity cat ON(cat.id = it.category.id) "+
-                "WHERE store.storesBrand.id = "+brandId;
-
-        String sql1 = "SELECT DISTINCT DISTINCT(cat.id), cat.name, cat.parent_id as parentId FROM stores store " +
-                "INNER JOIN items_stores ist ON(ist.store_id = store.id) " +
-                "INNER JOIN items it ON(it.id = ist.item_id) " +
-                "INNER JOIN categories cat ON(cat.id = it.category_id) " +
-                "WHERE store.stores_brand_id = " + brandId;
-        SQLQuery query =  getCurrentSession().createSQLQuery(sql1);
-//        query.addEntity(CategoryEntity.class);
-
-        query.setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
-        categoryEntities = query.list();
-
-        return categoryEntities;
-    }
+//    @Override
+//    public List<CategoryEntity> findItemCategory(Integer brandId) throws Exception {
+//        List<CategoryEntity> categoryEntities = new ArrayList<>();
+//
+//        String sql1 = "SELECT DISTINCT DISTINCT(cat.id), cat.name, cat.parent_id as parentId FROM stores store " +
+//                "INNER JOIN items_stores ist ON(ist.store_id = store.id) " +
+//                "INNER JOIN items it ON(it.id = ist.item_id) " +
+//                "INNER JOIN categories cat ON(cat.id = it.category_id) " +
+//                "WHERE store.stores_brand_id = " + brandId;
+//        SQLQuery query =  getCurrentSession().createSQLQuery(sql1);
+////        query.addEntity(CategoryEntity.class);
+//
+//        query.setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
+//        categoryEntities = query.list();
+//
+//        return categoryEntities;
+//    }
 }

@@ -24,4 +24,6 @@ public interface ClientService {
 
 
     public OrderEntity getOrderById(Integer orderId) throws Exception;
+
+
 }

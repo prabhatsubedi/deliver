@@ -15,18 +15,14 @@
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 
     <script type="text/javascript">
-
         $(document).ready(function () {
-
             Manager.getCourierStaffs();
             Manager.getCourierBoyMap();
             Manager.getCourierBoyAccount();
             Manager.updateCourierBoyAccount();
             Manager.submitCourierBoyPreviousAmount();
             Manager.submitCourierBoyWalletAmount();
-
         });
-
     </script>
 
 

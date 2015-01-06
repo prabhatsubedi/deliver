@@ -341,7 +341,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         if (images != null && images.size()>0) {
             log.info("Uploading item images to S3 Bucket ");
 
-            String dir = MessageBundle.separateString("/", "item", "item" + item.getId());
+            String dir = MessageBundle.separateString("/", "Merchant_"+storesBrand.getMerchant().getId(), "Brand_"+ storesBrand.getId(), "item" + item.getId());
             boolean isLocal = MessageBundle.isLocalHost();
 
             List<ItemsImageEntity> itemsImageEntities = new ArrayList<>();

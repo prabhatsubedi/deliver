@@ -132,12 +132,12 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             }
         }
 
-        dBoyEntity.getUser().setUsername(deliveryBoyEntity.getUser().getUsername());
+        dBoyEntity.getUser().setUsername(deliveryBoyEntity.getUser().getMobileNumber());
         dBoyEntity.getUser().setFullName(deliveryBoyEntity.getUser().getFullName());
         dBoyEntity.getUser().setEmailAddress(deliveryBoyEntity.getUser().getEmailAddress());
         dBoyEntity.getUser().setMobileNumber(deliveryBoyEntity.getUser().getMobileNumber());
         dBoyEntity.getUser().setGender(deliveryBoyEntity.getUser().getGender());
-        dBoyEntity.getUser().setVerifiedStatus(deliveryBoyEntity.getUser().getVerifiedStatus());
+        dBoyEntity.getUser().setStatus(deliveryBoyEntity.getUser().getStatus());
 
         dBoyEntity.setVehicleNumber(deliveryBoyEntity.getVehicleNumber());
         dBoyEntity.setVehicleType(deliveryBoyEntity.getVehicleType());
@@ -145,6 +145,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         String profileImage = deliveryBoyEntity.getUser().getProfileImage();
         if (profileImage != null && !profileImage.isEmpty()) {
+
+            log.info("Deleting Profile Image of delivery boy to S3 Bucket ");
+            AmazonUtil.deleteFileFromBucket(dBoyEntity.getUser().getProfileImage());
+
             log.info("Uploading Profile Image of delivery boy to S3 Bucket ");
 
             String dir = MessageBundle.separateString("/", "DBoy", "DBoy" + dBoyEntity.getId());

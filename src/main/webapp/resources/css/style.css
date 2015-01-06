@@ -1013,6 +1013,11 @@ label.check_label .checkbox {
     width: 96%;
 }
 
+.profile_container .form_container{
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
 .profile_body {
     float: left;
     width: 100%;
@@ -1128,12 +1133,27 @@ label.check_label .checkbox {
     width: 100%;
 }
 
-.info_edit.editable > input, .info_edit.editable > select {
-    border: 0 none;
+.profile_info .form-control {
+    border: 0 none !important;
     line-height: 56px;
+    height: 57px;
     margin: 0;
     padding: 0 0 0 5%;
     width: 100%;
+    display: block;
+}
+
+.profile_info .form-control button{
+    border: 0 none;
+    line-height: 56px;
+    height: 57px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.profile_info .bootstrap-select button.dropdown-toggle{
+    border: 0 none !important;
 }
 
 

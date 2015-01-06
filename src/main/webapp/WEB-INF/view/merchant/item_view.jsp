@@ -44,7 +44,7 @@
                             <div class="col-lg-6">
 
                                 <div class="form_head">Item Information</div>
-                                <div class="form_content">
+                                <div class="form_content item_info">
                                     <div class="product_images form-group clearfix">
                                         <div class="product_image col-lg-4">
                                             <div class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
@@ -80,22 +80,53 @@
 
                                     <div class="detail_row">
                                         <label class="detail_label">Available Stores </label>
-                                        <div class="detail_value">ValueValueValueValueValueValue</div>
+                                        <div class="detail_value"><div class="brand_name"></div><ul class="brand_stores"></ul></div>
                                     </div>
 
                                     <div class="detail_row">
                                         <label class="detail_label">Category </label>
-                                        <div class="detail_value">ValueValueValueValueValueValue</div>
+                                        <div class="detail_value"><ul class="item_category"></ul></div>
                                     </div>
 
                                     <div class="detail_row">
                                         <label class="detail_label">Additional Information </label>
-                                        <div class="detail_value">ValueValueValueValueValueValue</div>
+                                        <div class="detail_value">
+                                            <div class="clearfix">
+                                                <div class="sub_label">Available Time</div>
+                                                <div class="sub_value available_time"></div>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="sub_label">Order Quantity</div>
+                                                <div class="sub_value order_quantity"></div>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="sub_label">VAT</div>
+                                                <div class="sub_value vat"></div>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="sub_label">Service Charge</div>
+                                                <div class="sub_value service_charge"></div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="detail_row">
                                         <label class="detail_label">Pricing and Attributes </label>
-                                        <div class="detail_value">ValueValueValueValueValueValue</div>
+                                        <div class="detail_value pricing_attributes">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="2">Attributes</th>
+                                                        <th rowspan="2">Price</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Type</th>
+                                                        <th>Name</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
                                     </div>
 
                                 </div>

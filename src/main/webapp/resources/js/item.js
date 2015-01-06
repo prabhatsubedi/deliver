@@ -708,9 +708,49 @@ var data_categories_names = [];
             if (data.success == true) {
 
                 var item = data.params.item;
-                for(var i = 0; i < item.itemsImage.length; i++) {
-                    $('.product_image .drop_zone').eq(i).html('<img src="' + item.itemsImage[i].url + '" style="height: 100%;" class="img-responsive" />');
+                var itemImages = item.itemsImage;
+                var itemsStores = item.itemsStores;
+                var itemCategories = ['top cat', 'subcat', 'sub sub cat'];
+                var attributesTypes = item.attributesTypes;
+
+                for(var i = 0; i < itemImages.length; i++) {
+                    $('.product_image .drop_zone').eq(i).html('<img src="' + itemImages[i].url + '" style="height: 100%;" class="img-responsive" />');
                 }
+
+                $('.item_info .item_name').html(item.name);
+                $('.item_info .description').html(item.description);
+                $('.item_info .additional_offer').html(item.additionalOffer);
+
+                var item_stores = "";
+                for(var i = 0; i < itemsStores.length; i++) {
+                    var storeLocation = itemsStores[i];
+                    item_stores +='<li class="item_store">street, city, state, country</li>';
+                }
+                $('.product_image .brand_name').html(item.brandName);
+                $('.product_image .brand_stores').html(item_stores);
+
+                var item_categories = "";
+                for(var i = 0; i < itemCategories.length; i++) {
+                    var itemCategory = itemCategories[i];
+                    item_categories +='<li class="item_store">' + itemCategory + '</li>';
+                }
+                $('.product_image .item_categories').html(item_categories);
+                $('.product_image .available_time').html(item.availableStartTime + " - " + item.availableEndTime);
+                $('.product_image .order_quantity').html("Min " + item.minOrderQuantity + " - Max " + item.maxOrderQuantity);
+                $('.product_image .vat').html(item.vat + " %");
+                $('.product_image .service_charge').html(item.serviceCharge + " %");
+
+                var attributes_types = "";
+                for(var i = 0; i < attributesTypes.length; i++) {
+                    var attributesType = attributesTypes[i];
+                    attributes_types += '<tr>';
+                    attributes_types += '<td>' + attributesType.type + '</td>';
+                    attributes_types += '<td>' + attributesType.type + '</td>';
+                    attributes_types += '<td>' + attributesType.type + '</td>';
+                    attributes_types += '</tr>';
+                }
+                $('.product_image .pricing_attributes tbody').html(attributes_types);
+
 
             } else {
                 alert(data.message);

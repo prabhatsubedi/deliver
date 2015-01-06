@@ -1019,9 +1019,8 @@ label.check_label .checkbox {
     color: #666666;
     font-size: 14px;
 }
-.detail_row .detail_value:empty {
-    color: #666666;
-    font-size: 14px;
+.detail_row .detail_value:empty:before {
+    content: "\00a0";
 }
 
 

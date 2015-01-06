@@ -403,14 +403,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(orderEntity == null){
             throw new YSException("");
         }
+        log.info("Uploading Bill of an order to S3 Bucket ");
+        String dir = MessageBundle.separateString("/", "Orders", "Order" + order.getId());
+        boolean isLocal = MessageBundle.isLocalHost();
         List<String> attachments = orderEntity.getAttachments();
         for (int i = 0; i < order.getAttachments().size(); i++) {
             String bill = order.getAttachments().get(i);
             if (bill != null && !bill.isEmpty()) {
-                log.info("Uploading Bill of an order to S3 Bucket ");
-
-                String dir = MessageBundle.separateString("/", "Orders", "Order" + order.getId());
-                boolean isLocal = MessageBundle.isLocalHost();
                 String imageName = "bill" + (isLocal ? "_tmp_" : "_") + (i+1);
                 String s3Path = GeneralUtil.saveImageToBucket(bill, imageName, dir, true);
                 attachments.add(s3Path);

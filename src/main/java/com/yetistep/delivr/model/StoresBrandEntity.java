@@ -91,6 +91,7 @@ public class StoresBrandEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "storesBrand")
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemEntity> getItems() {
         return items;
     }

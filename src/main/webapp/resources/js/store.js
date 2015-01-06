@@ -3,6 +3,7 @@ if(typeof(Store) == "undefined") var Store = {};
 (function ($){
 
     Store.loadAddStore = function() {
+        $('.form_container').addClass('hidden');
 
         $('option:selected').removeAttr('selected');
         Image.dropZone('#brand_image_input', '#brand_image');

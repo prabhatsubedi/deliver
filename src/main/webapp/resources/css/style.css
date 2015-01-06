@@ -1178,6 +1178,45 @@ label.check_label .checkbox {
 .profile_info .bootstrap-select button.dropdown-toggle{
     border: 0 none !important;
 }
-
-
 /*Profile Css End*/
+
+/*Store Detail Css Start*/
+.view_container .store_view, .view_container .store_list {
+    background-color: white;
+    width: 100%;
+}
+
+.store_view_header {
+    border-bottom: 1px solid #d4d4d4;
+    height: 80px;
+    width: 100%;
+}
+
+.actions {
+    margin-right: 30px;
+    margin-top: 15px;
+}
+
+.store_view_header .actions .status {
+    background-color: #eeeded;
+    border-radius: 4px;
+    height: 46px;
+    padding: 10px;
+    width: 150px;
+}
+
+.on, .off {
+    background-color: #F7941D;
+    border-radius: 4px;
+    height: 26px;
+    max-width: 75%;
+}
+
+.off {
+    width: 30%;
+    margin-left: -5%;
+    background-color: #D27B12;
+}
+
+
+/*Store Detail Css End*/

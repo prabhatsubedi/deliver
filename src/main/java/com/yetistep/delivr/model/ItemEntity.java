@@ -73,8 +73,9 @@ public class ItemEntity implements Serializable {
         this.id = id;
     }
 
-    @JsonIgnore
+
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
     public CategoryEntity getCategory() {
         return category;
     }
@@ -83,8 +84,8 @@ public class ItemEntity implements Serializable {
         this.category = category;
     }
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "brand_id")
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;

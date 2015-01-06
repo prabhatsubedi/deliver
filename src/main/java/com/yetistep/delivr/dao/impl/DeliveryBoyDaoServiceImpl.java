@@ -3,9 +3,12 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -66,4 +69,19 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         return session;
     }
 
+    @Override
+    public DeliveryBoyEntity getProfileInformation(Integer deliveryBoyId) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(DeliveryBoyEntity.class);
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("totalEarnings"), "totalEarnings")
+                .add(Projections.property("activeOrderNo"), "activeOrderNo")
+                .add(Projections.property("totalOrderTaken"), "totalOrderTaken")
+                .add(Projections.property("previousDue"), "previousDue")
+                .add(Projections.property("availableAmount"), "availableAmount")
+                .add(Projections.property("walletAmount"), "walletAmount")
+        ).setResultTransformer(Transformers.aliasToBean(DeliveryBoyEntity.class));
+        criteria.add(Restrictions.eq("id", deliveryBoyId));
+        return (DeliveryBoyEntity) criteria.uniqueResult();
+    }
 }

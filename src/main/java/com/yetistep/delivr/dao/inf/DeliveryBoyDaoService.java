@@ -14,4 +14,6 @@ import java.util.List;
  */
 public interface DeliveryBoyDaoService extends GenericDaoService<Integer, DeliveryBoyEntity> {
     public List<DeliveryBoyEntity> findAllCapableDeliveryBoys() throws Exception;
+
+    public DeliveryBoyEntity getProfileInformation(Integer deliveryBoyId) throws Exception;
 }

@@ -417,4 +417,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
         return orderDaoService.update(orderEntity);
     }
+
+    @Override
+    public DeliveryBoyEntity getProfileOfDeliveryBoy(Integer deliveryBoyId) throws Exception {
+        DeliveryBoyEntity deliveryBoy = deliveryBoyDaoService.getProfileInformation(deliveryBoyId);
+        if(deliveryBoy == null){
+            throw new YSException("VLD011");
+        }
+        return deliveryBoy;
+    }
 }

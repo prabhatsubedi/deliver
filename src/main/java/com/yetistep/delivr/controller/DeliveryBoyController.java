@@ -188,4 +188,22 @@ public class DeliveryBoyController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/get_profile", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getProfileInformation(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
+            DeliveryBoyEntity deliveryBoy = deliveryBoyService.getProfileOfDeliveryBoy(Integer.parseInt(headerDto.getId()));
+            ServiceResponse serviceResponse = new ServiceResponse("Information of delivery boy retrieved successfully");
+            serviceResponse.addParam("deliveryBoy", deliveryBoy);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving information of delivery boy", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

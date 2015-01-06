@@ -339,6 +339,7 @@ public class ClientServiceImpl implements ClientService {
             ItemEntity item = new ItemEntity();
             item.setId(itemOrder.getItem().getId());
             item.setName(itemOrder.getItem().getName());
+            item.setUnitPrice(itemOrder.getItem().getUnitPrice());
             itemOrder.setItem(item);
         }
 

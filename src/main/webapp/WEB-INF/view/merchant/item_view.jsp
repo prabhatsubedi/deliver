@@ -63,69 +63,72 @@
                                         </div>
                                     </div>
 
-                                    <div class="detail_row">
-                                        <label class="detail_label">Item Name</label>
-                                        <div class="detail_value item_name"></div>
-                                    </div>
+                                    <div class="other_info">
+                                        <div class="detail_row">
+                                            <label class="detail_label">Item Name</label>
+                                            <div class="detail_value item_name"></div>
+                                        </div>
 
-                                    <div class="detail_row">
-                                        <label class="detail_label">Description</label>
-                                        <div class="detail_value description"></div>
-                                    </div>
+                                        <div class="detail_row">
+                                            <label class="detail_label">Description</label>
+                                            <div class="detail_value description"></div>
+                                        </div>
 
-                                    <div class="detail_row">
-                                        <div class="detail_label">Additional Offer</div>
-                                        <div class="detail_value additional_offer"></div>
-                                    </div>
+                                        <div class="detail_row">
+                                            <div class="detail_label">Additional Offer</div>
+                                            <div class="detail_value additional_offer"></div>
+                                        </div>
 
-                                    <div class="detail_row">
-                                        <label class="detail_label">Available Stores </label>
-                                        <div class="detail_value"><div class="brand_name"></div><ul class="brand_stores"></ul></div>
-                                    </div>
+                                        <div class="detail_row">
+                                            <label class="detail_label">Available Stores </label>
+                                            <div class="detail_value available_stores"><div class="brand_name"></div><ul class="brand_stores"></ul></div>
+                                        </div>
 
-                                    <div class="detail_row">
-                                        <label class="detail_label">Category </label>
-                                        <div class="detail_value"><ul class="item_category"></ul></div>
-                                    </div>
+                                        <div class="detail_row">
+                                            <label class="detail_label">Category </label>
+                                            <div class="detail_value"><ul class="item_category breadcrumb"></ul></div>
+                                        </div>
 
-                                    <div class="detail_row">
-                                        <label class="detail_label">Additional Information </label>
-                                        <div class="detail_value">
-                                            <div class="clearfix">
-                                                <div class="sub_label">Available Time</div>
-                                                <div class="sub_value available_time"></div>
-                                            </div>
-                                            <div class="clearfix">
-                                                <div class="sub_label">Order Quantity</div>
-                                                <div class="sub_value order_quantity"></div>
-                                            </div>
-                                            <div class="clearfix">
-                                                <div class="sub_label">VAT</div>
-                                                <div class="sub_value vat"></div>
-                                            </div>
-                                            <div class="clearfix">
-                                                <div class="sub_label">Service Charge</div>
-                                                <div class="sub_value service_charge"></div>
+                                        <div class="detail_row">
+                                            <label class="detail_label">Additional Information </label>
+                                            <div class="detail_value additional_information">
+                                                <div class="clearfix">
+                                                    <div class="sub_label pull-left">Available Time</div>
+                                                    <div class="sub_value pull-left available_time"></div>
+                                                </div>
+                                                <div class="clearfix">
+                                                    <div class="sub_label pull-left">Order Quantity</div>
+                                                    <div class="sub_value pull-left order_quantity"></div>
+                                                </div>
+                                                <div class="clearfix">
+                                                    <div class="sub_label pull-left">VAT</div>
+                                                    <div class="sub_value pull-left vat"></div>
+                                                </div>
+                                                <div class="clearfix">
+                                                    <div class="sub_label pull-left">Service Charge</div>
+                                                    <div class="sub_value pull-left service_charge"></div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="detail_row">
-                                        <label class="detail_label">Pricing and Attributes </label>
-                                        <div class="detail_value pricing_attributes">
-                                            <table>
-                                                <thead>
-                                                    <tr>
-                                                        <th colspan="2">Attributes</th>
-                                                        <th rowspan="2">Price</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Type</th>
-                                                        <th>Name</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody></tbody>
-                                            </table>
+                                        <div class="detail_row">
+                                            <label class="detail_label">Pricing and Attributes </label>
+                                            <div class="detail_value pricing_attributes">
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="3">Attributes</th>
+                                                            <th rowspan="2">Price<br/>(Rs.)</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Type</th>
+                                                            <th>Selection</th>
+                                                            <th>Name</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
 

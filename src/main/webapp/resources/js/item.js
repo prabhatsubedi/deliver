@@ -709,8 +709,9 @@ var data_categories_names = [];
 
                 var item = data.params.item;
                 var itemImages = item.itemsImage;
-                var itemsStores = item.itemsStores;
-                var itemCategories = ['top cat', 'subcat', 'sub sub cat'];
+                var storesBrand = item.storesBrand;
+                var itemStores = storesBrand.store;
+                var itemCategory = item.category;
                 var attributesTypes = item.attributesTypes;
 
                 for(var i = 0; i < itemImages.length; i++) {
@@ -722,34 +723,49 @@ var data_categories_names = [];
                 $('.item_info .additional_offer').html(item.additionalOffer);
 
                 var item_stores = "";
-                for(var i = 0; i < itemsStores.length; i++) {
-                    var storeLocation = itemsStores[i];
-                    item_stores +='<li class="item_store">street, city, state, country</li>';
+                for(var i = 0; i < itemStores.length; i++) {
+                    var storeLocation = itemStores[i];
+                    item_stores +='<li>' + storeLocation.street + ', ' + storeLocation.city + ', ' + storeLocation.state + ', ' + storeLocation.country + '</li>';
                 }
-                $('.product_image .brand_name').html(item.brandName);
-                $('.product_image .brand_stores').html(item_stores);
+                $('.item_info .brand_name').html(storesBrand.brandName);
+                $('.item_info .brand_stores').html(item_stores);
 
-                var item_categories = "";
-                for(var i = 0; i < itemCategories.length; i++) {
-                    var itemCategory = itemCategories[i];
-                    item_categories +='<li class="item_store">' + itemCategory + '</li>';
+                var item_categories = '<li>' + itemCategory.name + '</li>';
+                function getChild(category) {
+                    if(category.child.length == 1) {
+                        var childCat = category.child[0];
+                        item_categories += '<li>' + childCat.name + '</li>';
+                        getChild(childCat);
+                    }
                 }
-                $('.product_image .item_categories').html(item_categories);
-                $('.product_image .available_time').html(item.availableStartTime + " - " + item.availableEndTime);
-                $('.product_image .order_quantity').html("Min " + item.minOrderQuantity + " - Max " + item.maxOrderQuantity);
-                $('.product_image .vat').html(item.vat + " %");
-                $('.product_image .service_charge').html(item.serviceCharge + " %");
+                getChild(itemCategory);
+                $('.item_info .item_category').html(item_categories);
+
+                $('.item_info .available_time').html(item.availableStartTime + " - " + item.availableEndTime);
+                $('.item_info .order_quantity').html("Min " + item.minOrderQuantity + " - Max " + item.maxOrderQuantity);
+                $('.item_info .vat').html(item.vat + " %");
+                $('.item_info .service_charge').html(item.serviceCharge + " %");
 
                 var attributes_types = "";
                 for(var i = 0; i < attributesTypes.length; i++) {
                     var attributesType = attributesTypes[i];
+                    var itemAttributes = attributesType.itemsAttribute;
                     attributes_types += '<tr>';
-                    attributes_types += '<td>' + attributesType.type + '</td>';
-                    attributes_types += '<td>' + attributesType.type + '</td>';
-                    attributes_types += '<td>' + attributesType.type + '</td>';
+                    attributes_types += '<td rowspan="' + itemAttributes.length + '">' + attributesType.type + '</td>';
+                    attributes_types += '<td rowspan="' + itemAttributes.length + '">' + (attributesType.multiSelect ? 'Multiple' : 'Single') + '</td>';
+                    var itemAttribute = itemAttributes[0];
+                    attributes_types += '<td>' + itemAttribute.attribute + '</td>';
+                    attributes_types += '<td>' + itemAttribute.unitPrice + '</td>';
                     attributes_types += '</tr>';
+                    for(var j = 1; j < itemAttributes.length; j++) {
+                        itemAttribute = itemAttributes[j];
+                        attributes_types += '<tr>';
+                        attributes_types += '<td>' + itemAttribute.attribute + '</td>';
+                        attributes_types += '<td>' + itemAttribute.unitPrice + '</td>';
+                        attributes_types += '</tr>';
+                    }
                 }
-                $('.product_image .pricing_attributes tbody').html(attributes_types);
+                $('.item_info .pricing_attributes tbody').html(attributes_types);
 
 
             } else {

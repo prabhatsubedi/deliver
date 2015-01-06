@@ -1006,10 +1006,20 @@ label.check_label .checkbox {
 
 /* item view page */
 
-.detail_row {
+.item_info .other_info {
+    padding: 15px 15px 0px 15px;
+    background-color: #FFFFFF;
     margin-bottom: 15px;
-    padding-bottom: 15px;
+    border: 1px solid #d6d5d5;
+}
+.detail_row {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #CCCCCC;
+}
+.detail_row:last-child {
+    margin-bottom: 0px;
+    border-bottom: none;
 }
 .detail_row .detail_label {
     color: #999999;
@@ -1022,7 +1032,45 @@ label.check_label .checkbox {
 .detail_row .detail_value:empty:before {
     content: "\00a0";
 }
-
+.detail_row .available_stores .brand_name {
+    font-weight: bold;
+}
+.detail_row .available_stores .brand_stores {
+    padding-left: 15px;
+}
+.detail_row .item_category {
+    background-color: transparent;
+    margin: 0px;
+    padding: 0px;
+}
+.detail_row .item_category > li + li:before {
+    color: #aaa;
+    content: ">";
+    font-weight: bold;
+    padding: 0 8px 0 10px;
+}
+.detail_row .additional_information .sub_label {
+    font-weight: bold;
+    width: 200px;
+}
+.detail_row .additional_information .sub_label {
+    font-weight: bold;
+    width: 200px;
+}
+.detail_row .pricing_attributes table {
+    width: 100%;
+    border-collapse: separate;
+}
+.detail_row .pricing_attributes table td, .detail_row .pricing_attributes table th {
+    background-color: #eeeded;
+    vertical-align: middle;
+}
+.detail_row .pricing_attributes table th {
+    text-align: center;
+}
+.detail_row .pricing_attributes table thead, .detail_row .pricing_attributes table tbody {
+    margin-bottom: 2px;
+}
 
 /*Profile Css Start*/
 

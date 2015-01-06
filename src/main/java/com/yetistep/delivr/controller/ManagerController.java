@@ -111,7 +111,14 @@ public class ManagerController {
     public ResponseEntity<ServiceResponse> updateDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoy) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.PASSWORD);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME);
+
+            List<String> hd = headers.get("passowrd");
+            if (hd != null && hd.size() > 0)
+                headerDto.setPassword(hd.get(0));
+            else
+                headerDto.setPassword(null);
+
             deliveryBoyService.updateDeliveryBoy(deliveryBoy, headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Delivery Boy has been updated successfully");

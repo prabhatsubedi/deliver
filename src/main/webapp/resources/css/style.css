@@ -1,6 +1,7 @@
 *, *:focus, *:active {
     outline: none !important;
 }
+
 body {
     background-color: #eeeded;
 }
@@ -987,3 +988,142 @@ label.check_label .checkbox {
     min-height: 150px;
     position: relative;
 }
+
+
+
+/*Profile Css Start*/
+
+.profile_container {
+    background-color: white;
+    border: 1px solid #cbcaca;
+    float: left;
+    margin-bottom: 40px;
+    margin-top: 20px;
+    width: 96%;
+}
+
+.profile_body {
+    float: left;
+    width: 100%;
+    padding-bottom: 40px;
+}
+
+.profile_info {
+    float: left;
+    margin-left: 3%;
+    width: 40%;
+}
+
+.profile_map {
+    float: left;
+    width: 54%;
+}
+
+.profile_map_body{
+    float: left;
+    width: 100%;
+}
+
+.profile_map_body #no-edit-map-canvas {
+    border: 1px solid #d9d9d9;
+    float: left;
+    height: 600px;
+    width: 100%;
+}
+
+.profile_header {
+    border-bottom: 1px solid #d9d9d9;
+    float: left;
+    width: 100%;
+}
+
+.profile_header_image {
+    float: left;
+    margin: 30px;
+    width: 14%;
+}
+
+.profile_header_image #drop_zone {
+    float: left;
+    position: relative;
+    width: 100%;
+    border: none;
+    padding: 0;
+
+}
+
+.profile_header_info {
+    float: left;
+    margin-top: 80px;
+}
+
+.profile_header_info .name {
+    color: #f28220;
+    font-size: 26px;
+    line-height: 2;
+}
+
+.profile_header_info .title {
+    color: #a0a0a0;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.profile_sub_title {
+    color: #f28220;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    margin-top: 40px;
+    width: 100%;
+}
+
+.profile_info .info_block {
+    background-color: #f4f4f4;
+    border: 1px solid #dadada;
+    color: #a9a9a9;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 60px;
+    height: 60px;
+    margin-top: 20px;
+    padding-left: 5%;
+    width: 90%;
+}
+
+.action {
+    float: right;
+    margin-right: 30px;
+    margin-top: 20px;
+}
+
+.profile_info .label {
+    color: #a9a9a9;
+    float: left;
+    line-height: 60px;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    width: 30%;
+    font-size: 18px;
+}
+
+.profile_info .val {
+    float: left;
+    width: 70%;
+}
+
+.info_edit > input {
+    width: 100%;
+}
+
+.info_edit.editable > input, .info_edit.editable > select {
+    border: 0 none;
+    line-height: 56px;
+    margin: 0;
+    padding: 0 0 0 5%;
+    width: 100%;
+}
+
+
+/*Profile Css End*/

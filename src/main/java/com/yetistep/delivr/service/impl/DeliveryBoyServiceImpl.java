@@ -115,7 +115,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             throw new YSException("VLD011");
         }
         dBoyEntity.getUser().setUsername(headerDto.getUsername());
+        if(headerDto.getPassword() != null)
         dBoyEntity.getUser().setPassword(GeneralUtil.encryptPassword(headerDto.getPassword()));
+
         dBoyEntity.getUser().setMobileNumber(headerDto.getUsername());
         for(AddressEntity addressEntity: deliveryBoyEntity.getUser().getAddresses()){
             for(AddressEntity address: dBoyEntity.getUser().getAddresses()){
@@ -129,6 +131,14 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 }
             }
         }
+
+        dBoyEntity.getUser().setUsername(deliveryBoyEntity.getUser().getUsername());
+        dBoyEntity.getUser().setFullName(deliveryBoyEntity.getUser().getFullName());
+        dBoyEntity.getUser().setEmailAddress(deliveryBoyEntity.getUser().getEmailAddress());
+        dBoyEntity.getUser().setMobileNumber(deliveryBoyEntity.getUser().getMobileNumber());
+        dBoyEntity.getUser().setGender(deliveryBoyEntity.getUser().getGender());
+        dBoyEntity.getUser().setVerifiedStatus(deliveryBoyEntity.getUser().getVerifiedStatus());
+
         dBoyEntity.setVehicleNumber(deliveryBoyEntity.getVehicleNumber());
         dBoyEntity.setVehicleType(deliveryBoyEntity.getVehicleType());
         dBoyEntity.setLicenseNumber(deliveryBoyEntity.getLicenseNumber());

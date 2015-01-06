@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.ItemDaoService;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.ItemEntity;
+import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -67,5 +68,12 @@ public class ItemDaoServiceImpl implements ItemDaoService{
         categoryEntities = query.list();
 
         return categoryEntities;
+    }
+
+    @Override
+    public List<ItemDto> findItems(Integer brandId, Integer categoryId) throws Exception {
+        List<ItemDto> items = null;
+        String sql = "";
+        return null;
     }
 }

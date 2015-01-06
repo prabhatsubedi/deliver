@@ -3,6 +3,7 @@ package com.yetistep.delivr.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.util.JsonDateSerializer;
 import com.yetistep.delivr.util.JsonTimeDeserializer;
 import org.hibernate.annotations.LazyCollection;
@@ -40,6 +41,7 @@ public class StoresBrandEntity implements Serializable {
    private Boolean featured;
    private Integer priority;
    private Timestamp createdDate;
+   private Status status;
     //Transient Variable
    private Boolean openStatus;
 
@@ -201,5 +203,15 @@ public class StoresBrandEntity implements Serializable {
 
     public void setOpenStatus(Boolean openStatus) {
         this.openStatus = openStatus;
+    }
+
+    @Column(name = "status")
+    @Enumerated(EnumType.ORDINAL)
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

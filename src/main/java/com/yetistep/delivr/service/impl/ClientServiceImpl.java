@@ -368,7 +368,7 @@ public class ClientServiceImpl implements ClientService {
                 price = price.add(BigDecimalUtil.percentageOf(price, itemDto.getVat()));
             }
 
-            itemDto.setPrice(price);
+            itemDto.setPrice(price.setScale(2, BigDecimal.ROUND_UP));
             itemDto.setVat(null);
             itemDto.setServiceCharge(null);
             itemDto.setBrandId(brandId);

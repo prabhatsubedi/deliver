@@ -2,6 +2,7 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.util.JsonDateSerializer;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -38,8 +39,11 @@ public class StoreEntity implements Serializable {
     private String latitude;
     private String longitude;
     private Timestamp createdDate;
+    private Status status;
     //Transient Variable
     private BigDecimal customerToStoreDistance;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
@@ -192,5 +196,15 @@ public class StoreEntity implements Serializable {
 
     public void setCustomerToStoreDistance(BigDecimal customerToStoreDistance) {
         this.customerToStoreDistance = customerToStoreDistance;
+    }
+
+    @Column(name = "status")
+    @Enumerated(EnumType.ORDINAL)
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

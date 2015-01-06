@@ -4,6 +4,7 @@ package com.yetistep.delivr.model;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.Gender;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.util.JsonDateSerializer;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
@@ -49,6 +50,7 @@ public class UserEntity implements Serializable {
     private List<ActionLogEntity> actionLogEntities;
     private List<AddressEntity> addresses;
     private UserDeviceEntity userDevice;
+    private Status status;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -269,5 +271,15 @@ public class UserEntity implements Serializable {
 
     public void setUserDevice(UserDeviceEntity userDevice) {
         this.userDevice = userDevice;
+    }
+
+    @Column(name = "status")
+    @Enumerated(EnumType.ORDINAL)
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

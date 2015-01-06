@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.util.JsonDateSerializer;
 import com.yetistep.delivr.util.JsonTimeDeserializer;
 import org.hibernate.annotations.LazyCollection;
@@ -58,6 +59,7 @@ public class ItemEntity implements Serializable {
     private String promoCode;
     private BigDecimal vat;
     private BigDecimal serviceCharge;
+    private Status status;
 
 
     @Id
@@ -344,6 +346,16 @@ public class ItemEntity implements Serializable {
 
     public void setServiceCharge(BigDecimal serviceCharge) {
         this.serviceCharge = serviceCharge;
+    }
+
+    @Column(name = "status")
+    @Enumerated(EnumType.ORDINAL)
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
 }

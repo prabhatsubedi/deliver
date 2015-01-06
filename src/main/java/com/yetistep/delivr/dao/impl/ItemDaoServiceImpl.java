@@ -1,6 +1,7 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.ItemDaoService;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.ItemEntity;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
@@ -72,8 +73,19 @@ public class ItemDaoServiceImpl implements ItemDaoService{
 
     @Override
     public List<ItemDto> findItems(Integer brandId, Integer categoryId) throws Exception {
-        List<ItemDto> items = null;
-        String sql = "";
-        return null;
+        List<ItemDto> items;
+
+        String sql = "SELECT it.id, it.name, it.description, it.unit_price AS price, it.service_charge as serviceCharge, it.vat, itim.url AS imageUrl FROM items it " +
+                "LEFT JOIN items_images itim ON itim.id = (SELECT MIN(id) FROM items_images WHERE item_id = it.id) " +
+                "WHERE it.brand_id = :brandId AND it.category_id = :categoryId AND status =:status";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("brandId", brandId);
+        query.setParameter("categoryId", categoryId);
+        query.setParameter("status", Status.ACTIVE.ordinal());
+
+        query.setResultTransformer(Transformers.aliasToBean(ItemDto.class));
+        items = query.list();
+
+        return items;
     }
 }

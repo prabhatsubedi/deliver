@@ -12,6 +12,7 @@ import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.ClientService;
+import com.yetistep.delivr.util.BigDecimalUtil;
 import com.yetistep.delivr.util.DateUtil;
 import com.yetistep.delivr.util.GeoCodingUtil;
 import com.yetistep.delivr.util.YSException;
@@ -348,8 +349,31 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public List<ItemDto> getItems(Integer brandId, Integer categoryId) throws Exception {
-        List<ItemDto> itemDtos = new ArrayList<>();
-        return itemDtos;
+        log.info("++++++++++ Getting Items of Brand " + brandId + " +++++++++++");
+
+        List<ItemDto> items = itemDaoService.findItems(brandId, categoryId);
+        if(items.size() == 0)
+            throw new YSException("ITM001");
+
+        for(ItemDto itemDto : items){
+            BigDecimal price = itemDto.getPrice();
+            //Service Charge
+            if(itemDto.getServiceCharge()!=null && BigDecimalUtil.isNotZero(itemDto.getServiceCharge())) {
+                price = price.add(BigDecimalUtil.percentageOf(price, itemDto.getServiceCharge()));
+            }
+
+            //Vat
+            if(itemDto.getVat()!=null && BigDecimalUtil.isNotZero(itemDto.getVat())) {
+                price = price.add(BigDecimalUtil.percentageOf(price, itemDto.getVat()));
+            }
+
+            itemDto.setPrice(price);
+            itemDto.setVat(null);
+            itemDto.setServiceCharge(null);
+            itemDto.setBrandId(brandId);
+        }
+
+        return items;
 
     }
 }

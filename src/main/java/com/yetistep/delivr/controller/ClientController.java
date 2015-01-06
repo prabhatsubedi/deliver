@@ -9,6 +9,7 @@ import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.model.mobile.CategoryDto;
+import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.util.GeneralUtil;
@@ -251,7 +252,11 @@ public class ClientController extends AbstractManager{
     @ResponseBody
     public ResponseEntity<ServiceResponse> getItems(@PathVariable("brandId") Integer brandId, @PathVariable("catId") Integer categoryId) {
         try {
+            List<ItemDto> items = clientService.getItems(brandId, categoryId);
+
             ServiceResponse serviceResponse = new ServiceResponse("Items retrieved Successfully");
+            serviceResponse.addParam("items", items);
+
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
         } catch (Exception e){

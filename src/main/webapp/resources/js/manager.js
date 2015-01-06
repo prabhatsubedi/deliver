@@ -24,7 +24,7 @@ if(typeof(Manager) == "undefined") var Manager = {};
 
                 var merchantId = merchant.id;
                 var userId = merchant.user.id;
-                var status = merchant.userStatus;
+                var status = merchant.status;
                 var link_activation = "", link_profile = "";
 
                 if(status == "VERIFIED") {

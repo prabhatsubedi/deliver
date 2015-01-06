@@ -14,6 +14,8 @@ public class ItemDto {
     private String name;
     private String description;
     private BigDecimal price;
+    private BigDecimal serviceCharge;
+    private BigDecimal vat;
     private String imageUrl;
     private Integer brandId;
 
@@ -63,5 +65,21 @@ public class ItemDto {
 
     public void setBrandId(Integer brandId) {
         this.brandId = brandId;
+    }
+
+    public BigDecimal getServiceCharge() {
+        return serviceCharge;
+    }
+
+    public void setServiceCharge(BigDecimal serviceCharge) {
+        this.serviceCharge = serviceCharge;
+    }
+
+    public BigDecimal getVat() {
+        return vat;
+    }
+
+    public void setVat(BigDecimal vat) {
+        this.vat = vat;
     }
 }

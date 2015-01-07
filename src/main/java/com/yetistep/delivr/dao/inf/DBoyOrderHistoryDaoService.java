@@ -16,4 +16,6 @@ import java.util.List;
  */
 public interface DBoyOrderHistoryDaoService extends GenericDaoService<Integer, DBoyOrderHistoryEntity> {
     public List<PastDeliveriesDto> getPastOrders(Page page, Integer deliveryBoyId) throws Exception;
+
+    public Integer getTotalNumberOfPastDeliveries(Integer deliveryBoyId) throws Exception;
 }

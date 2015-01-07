@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
@@ -376,8 +377,22 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public List<PastDeliveriesDto> getPastDeliveries(Page page, Integer deliveryBoyId) throws Exception {
-        return dBoyOrderHistoryDaoService.getPastOrders(page, deliveryBoyId);
+    public PaginationDto getPastDeliveries(Page page, Integer deliveryBoyId) throws Exception {
+        log.info("Retrieving list of past deliveries");
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows = dBoyOrderHistoryDaoService.getTotalNumberOfPastDeliveries(deliveryBoyId);
+        paginationDto.setNumberOfRows(totalRows);
+        List<PastDeliveriesDto> pastDeliveriesDtos;
+        if(totalRows > 0){
+            if(page != null){
+                page.setTotalRows(totalRows);
+            }
+            pastDeliveriesDtos = dBoyOrderHistoryDaoService.getPastOrders(page, deliveryBoyId);
+        }else{
+            pastDeliveriesDtos = new ArrayList<PastDeliveriesDto>();
+        }
+        paginationDto.setData(pastDeliveriesDtos);
+        return paginationDto;
     }
 
     @Override

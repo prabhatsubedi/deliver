@@ -5,9 +5,11 @@ import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.model.DBoyOrderHistoryEntity;
 import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
+import com.yetistep.delivr.util.HibernateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
@@ -81,9 +83,24 @@ public class DBoyOrderHistoryDaoServiceImpl implements DBoyOrderHistoryDaoServic
                 .add(Projections.property("amountEarned"), "amountEarned")
         ).setResultTransformer(Transformers.aliasToBean(PastDeliveriesDto.class));
         criteria.add(Restrictions.eq("deliveryBoy.id", deliveryBoyId))
-                .add(Restrictions.in("deliveryStatus", deliveryStatus));
+                .add(Restrictions.in("deliveryStatus", deliveryStatus))
+                .addOrder(Order.desc("orderCompletedAt"));
+        HibernateUtil.fillPaginationCriteria(criteria, page, DBoyOrderHistoryEntity.class);
         List<PastDeliveriesDto> pastDeliveries = criteria.list();
         return pastDeliveries;
     }
 
+    @Override
+    public Integer getTotalNumberOfPastDeliveries(Integer deliveryBoyId) throws Exception {
+        List<DeliveryStatus> deliveryStatus = new ArrayList<DeliveryStatus>();
+        deliveryStatus.add(DeliveryStatus.ASSIGNED_TO_OTHER);
+        deliveryStatus.add(DeliveryStatus.CANCELLED);
+        deliveryStatus.add(DeliveryStatus.SUCCESSFUL);
+        Criteria criteriaCount = getCurrentSession().createCriteria(DBoyOrderHistoryEntity.class);
+        criteriaCount.setProjection(Projections.rowCount())
+                .add(Restrictions.eq("deliveryBoy.id", deliveryBoyId))
+                .add(Restrictions.in("deliveryStatus", deliveryStatus));
+        Long count = (Long) criteriaCount.uniqueResult();
+        return (count != null) ? count.intValue() : null;
+    }
 }

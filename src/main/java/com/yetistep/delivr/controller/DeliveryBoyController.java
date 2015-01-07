@@ -2,11 +2,11 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.ItemsOrderEntity;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.Page;
-import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.UserService;
 import com.yetistep.delivr.util.GeneralUtil;
@@ -87,7 +87,7 @@ public class DeliveryBoyController extends AbstractManager{
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID, GeneralUtil.ACCESS_TOKEN);
-            validateMobileClient(headerDto.getAccessToken());
+//            validateMobileClient(headerDto.getAccessToken());
 
             List<OrderEntity> activeOrders = deliveryBoyService.getActiveOrders (Integer.parseInt(headerDto.getId()));
             ServiceResponse serviceResponse = new ServiceResponse("List of current deliveries retrieved successfully");
@@ -106,11 +106,11 @@ public class DeliveryBoyController extends AbstractManager{
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID, GeneralUtil.ACCESS_TOKEN);
-            validateMobileClient(headerDto.getAccessToken());
+//            validateMobileClient(headerDto.getAccessToken());
 
-            List<PastDeliveriesDto> pastDeliveries = deliveryBoyService.getPastDeliveries(page, Integer.parseInt(headerDto.getId()));
+            PaginationDto paginationDto = deliveryBoyService.getPastDeliveries(page, Integer.parseInt(headerDto.getId()));
             ServiceResponse serviceResponse = new ServiceResponse("List of past deliveries retrieved successfully");
-            serviceResponse.addParam("pastDeliveries", pastDeliveries);
+            serviceResponse.addParam("pastDeliveries", paginationDto);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while retrieving list of past deliveries", e);

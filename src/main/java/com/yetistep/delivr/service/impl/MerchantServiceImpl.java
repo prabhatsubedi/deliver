@@ -473,21 +473,23 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
            CategoryEntity finalCat = finalCategory;
 
-           while (finalCategory.getParent() != null && !childCategories.contains(finalCategory.getParent())){
-               finalCategory = finalCategory.getParent();
-           }
+           if(!childCategories.contains(finalCat.getId())){
+               while (finalCategory.getParent() != null && !childCategories.contains(finalCategory.getParent())){
+                   finalCategory = finalCategory.getParent();
+               }
 
-           if(childCategories.contains(finalCategory.getParent())) {
-               List<CategoryEntity> parentsChild = finalCategory.getParent().getChild();
-               parentsChild.add(finalCat);
-               finalCategory.getParent().setChild(parentsChild);
+               if(childCategories.contains(finalCategory.getParent())) {
+                   List<CategoryEntity> parentsChild = finalCategory.getParent().getChild();
+                   parentsChild.add(finalCat);
+                   finalCategory.getParent().setChild(parentsChild);
+               }
            }
 
        }
 
         for (CategoryEntity childCategory: childCategories){
             List<Integer> childsChildId = new ArrayList<Integer>();
-            if(childCategory.getChild() != null){
+            if(childCategory.getChild() != null && childCategory.getChild().size() >0 ){
                 for(CategoryEntity childsChildCategory: childCategory.getChild()){
                     childsChildId.add(childsChildCategory.getId());
                 }
@@ -495,6 +497,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
             if(childsChildId.size() > 0){
                 List<ItemEntity> categoriesItems = merchantDaoService.findItemByCategory(childsChildId);
+                for(ItemEntity item: categoriesItems){
+                    item.setCategory(null);
+                    item.setStoresBrand(null);
+                }
+                childCategory.setItem(categoriesItems);
+            }else{
+                List<ItemEntity> categoriesItems = merchantDaoService.getCategoriesItems(childCategory.getId(), childCategory.getStoresBrand().getId());
                 for(ItemEntity item: categoriesItems){
                     item.setCategory(null);
                     item.setStoresBrand(null);

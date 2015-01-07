@@ -1059,17 +1059,21 @@ label.check_label .checkbox {
 }
 .detail_row .pricing_attributes table {
     width: 100%;
-    border-collapse: separate;
+    border-collapse: collapse;
 }
 .detail_row .pricing_attributes table td, .detail_row .pricing_attributes table th {
     background-color: #eeeded;
     vertical-align: middle;
+    border-left: 1px solid #FFF;
+}
+.detail_row .pricing_attributes table tr td:first-child, .detail_row .pricing_attributes table tr th:first-child {
+    border-left: none;
 }
 .detail_row .pricing_attributes table th {
     text-align: center;
 }
 .detail_row .pricing_attributes table thead, .detail_row .pricing_attributes table tbody {
-    margin-bottom: 2px;
+    border-bottom: 2px solid #FFFFFF;
 }
 
 /*Profile Css Start*/

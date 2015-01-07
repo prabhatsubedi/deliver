@@ -750,6 +750,7 @@ var data_categories_names = [];
                 for(var i = 0; i < attributesTypes.length; i++) {
                     var attributesType = attributesTypes[i];
                     var itemAttributes = attributesType.itemsAttribute;
+                    attributes_types += '<tbody>';
                     attributes_types += '<tr>';
                     attributes_types += '<td rowspan="' + itemAttributes.length + '">' + attributesType.type + '</td>';
                     attributes_types += '<td rowspan="' + itemAttributes.length + '">' + (attributesType.multiSelect ? 'Multiple' : 'Single') + '</td>';
@@ -764,8 +765,9 @@ var data_categories_names = [];
                         attributes_types += '<td>' + itemAttribute.unitPrice + '</td>';
                         attributes_types += '</tr>';
                     }
+                    attributes_types += '</tbody>';
                 }
-                $('.item_info .pricing_attributes tbody').html(attributes_types);
+                $('.item_info .pricing_attributes table').append(attributes_types);
 
 
             } else {

@@ -251,10 +251,12 @@
 </div>
 
 <div class="item_store_template hidden">
-    <div class="item_store table_div">
-        <div class="name_store td_div"> </div>
-        <div class="check_store td_div"> <label class="glyphicon glyphicon-ok check_label"><input type="checkbox" class="checkbox" /></label> </div>
-    </div>
+    <label class="check_label">
+        <div class="item_store table_div">
+            <div class="name_store td_div"> </div>
+            <div class="check_store td_div"> <span class="glyphicon glyphicon-ok check_span"></span><input type="checkbox" class="checkbox" /> </div>
+        </div>
+    </label>
 </div>
 
 <div class="block_attr_template hidden">
@@ -265,8 +267,7 @@
                     <input type="text" class="form-control" name="attr_type" placeholder="Atribute Title">
                 </div>
                 <div class="col-lg-6">
-                    <label for="multi_selection">Multi-selectable</label>
-                    <label class="glyphicon glyphicon-ok check_label"><input type="checkbox" id="multi_selection" class="checkbox"></label>
+                    <label class="check_label"><span class="glyphicon glyphicon-ok check_span"></span> Multi-selectable <input type="checkbox" class="checkbox"></label>
                     <button type="button" class="btn btn_green btn_red remove_attr_block glyphicon glyphicon-remove"></button>
                 </div>
             </div>

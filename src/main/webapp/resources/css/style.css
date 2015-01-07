@@ -763,7 +763,19 @@ body.assistance_page {
     width: 60px;
     text-align: center;
 }
+#item_store_container .check_store {
+    vertical-align: middle;
+    width: 60px;
+    text-align: center;
+}
+#item_store_container label.check_label {
+    width: 100%;
+}
 label.check_label {
+    font-weight: normal;
+    margin: 0px;
+}
+label.check_label span.check_span {
     text-align: center;
     border: 3px solid #b5b5b5;
     cursor: pointer;
@@ -774,10 +786,10 @@ label.check_label {
     width: 18px;
     color: #FFFFFF;
 }
-label.check_label.icon_semi {
+label.check_label span.check_span.icon_semi {
     color: #CCCCCC;
 }
-label.check_label.icon_full {
+label.check_label span.check_span.icon_full {
     color: #333343;
 }
 label.check_label .checkbox {
@@ -1319,3 +1331,58 @@ label.check_label .checkbox {
 }
 
 /*Store Detail Css End*/
+
+/* switch css */
+
+.form_head .switch_container {
+    margin-top: -3px;
+}
+.form_head .btn {
+    line-height: 32px;
+    margin-left: 10px;
+    margin-top: -3px;
+}
+.switch_container {
+    background-color: #eeeded;
+    padding: 5px;
+    border-radius: 4px;
+}
+.switch_container .switch {
+    background-color: #d27b12;
+    border-radius: 3px;
+    width: 120px;
+    position: relative;
+    height: 22px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.switch_container .switch .btn_switch {
+    background-color: #f7941d;
+    color: #ffffff;
+    font-size: 10px;
+    padding: 0px 5px;
+    text-align: center;
+    width: 100px;
+    cursor: pointer;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 22px;
+    line-height: 22px;
+    border-radius: 3px;
+    margin: 0px;
+}
+.switch_container .switch .btn_switch.off {
+    left: auto;
+    right: 0px;
+}
+.switch_container .switch .btn_switch.on:before {
+    content: "IN STOCK";
+}
+.switch_container .switch .btn_switch.off:before {
+    content: "OUT OF STOCK";
+}

@@ -7,12 +7,7 @@
 
     <%@include file="../includes/head.jsp" %>
 
-    <script type="text/javascript" src="/resources/js/html2canvas.js"></script>
-    <script type="text/javascript" src="/resources/js/jquery.Jcrop.js"></script>
-    <script type="text/javascript" src="/resources/js/image.js"></script>
-
-    <link rel="stylesheet" href="/resources/css/jquery.Jcrop.css" type="text/css" />
-    <link rel="stylesheet" href="/resources/css/jcrop.css" type="text/css" />
+    <script type="text/javascript" src="/resources/js/jquery-ui.js"></script>
 
     <script type="text/javascript" src="/resources/js/item.js"></script>
     <script type="text/javascript">
@@ -43,7 +38,16 @@
                         <div class="form_section clearfix">
                             <div class="col-lg-6">
 
-                                <div class="form_head">Item Information</div>
+                                <div class="form_head">Item Information
+                                    <div class="pull-right">
+                                        <div class="switch_container pull-left">
+                                            <div class="switch switch_activation">
+                                                <div class="btn_switch on"></div>
+                                            </div>
+                                        </div>
+                                        <a class="btn btn_green pull-left btn_edit" href="/merchant/item/form/edit/">Edit</a>
+                                    </div>
+                                </div>
                                 <div class="form_content item_info">
                                     <div class="product_images form-group clearfix">
                                         <div class="product_image col-lg-4">

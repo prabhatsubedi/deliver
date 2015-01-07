@@ -42,6 +42,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Autowired
     DBoyOrderHistoryDaoService dBoyOrderHistoryDaoService;
 
+    @Autowired
+    ItemsOrderDaoService itemsOrderDaoService;
+
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Delivery Boy +++++++++++++++++");
@@ -433,5 +436,14 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             throw new YSException("VLD011");
         }
         return deliveryBoy;
+    }
+
+    @Override
+    public Boolean addNewItem(ItemsOrderEntity itemsOrderEntity) throws Exception {
+        OrderEntity order = orderDaoService.find(itemsOrderEntity.getOrder().getId());
+        if(order == null)
+            throw new YSException("VLD017");
+        //TODO add price in totalCost of item, grandTotal and service fee
+        return itemsOrderDaoService.save(itemsOrderEntity);
     }
 }

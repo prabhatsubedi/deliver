@@ -2,12 +2,8 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.model.CategoryEntity;
-import com.yetistep.delivr.model.CustomerEntity;
-import com.yetistep.delivr.model.StoreEntity;
-import com.yetistep.delivr.model.StoresBrandEntity;
-import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
@@ -336,13 +332,15 @@ public class ClientServiceImpl implements ClientService {
 
         List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
         for(ItemsOrderEntity itemOrder: itemsOrder){
-            ItemEntity item = new ItemEntity();
-            item.setId(itemOrder.getItem().getId());
-            item.setName(itemOrder.getItem().getName());
-            item.setUnitPrice(itemOrder.getItem().getUnitPrice());
-            itemOrder.setItem(item);
+            if(itemOrder.getItem() != null){
+                ItemEntity item = new ItemEntity();
+                item.setId(itemOrder.getItem().getId());
+                item.setName(itemOrder.getItem().getName());
+                item.setUnitPrice(itemOrder.getItem().getUnitPrice());
+                itemOrder.setItem(item);
+            }
         }
-
+        order.setRating(null);
         order.setDeliveryBoy(null);
         order.setAttachments(null);
         return order;

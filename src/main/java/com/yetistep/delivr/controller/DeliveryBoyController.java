@@ -3,6 +3,7 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.ItemsOrderEntity;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
@@ -202,6 +203,23 @@ public class DeliveryBoyController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while retrieving information of delivery boy", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/add_item", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> addItemToOrder(@RequestHeader HttpHeaders headers, @RequestBody ItemsOrderEntity itemsOrderEntity) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
+            deliveryBoyService.addNewItem(itemsOrderEntity);
+            ServiceResponse serviceResponse = new ServiceResponse("New item has been added successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while adding new item", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

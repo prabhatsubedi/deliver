@@ -34,6 +34,6 @@
     <bean id = "dBoyOrderHistoryDaoService" class="com.yetistep.delivr.dao.impl.DBoyOrderHistoryDaoServiceImpl" />
     <bean id = "categoryDaoService" class="com.yetistep.delivr.dao.impl.CategoryDaoServiceImpl" />
     <bean id = "itemDaoService" class="com.yetistep.delivr.dao.impl.ItemDaoServiceImpl" />
-
+    <bean id = "itemsOrderDaoService" class="com.yetistep.delivr.dao.impl.ItemsOrderDaoServiceImpl" />
 
  </beans>

@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.ItemsOrderEntity;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
@@ -43,4 +44,6 @@ public interface DeliveryBoyService {
     public Boolean uploadBills(OrderEntity order, Integer deliveryBoyId) throws Exception;
 
     public DeliveryBoyEntity getProfileOfDeliveryBoy(Integer deliveryBoyId) throws Exception;
+
+    public Boolean addNewItem(ItemsOrderEntity itemsOrderEntity) throws Exception;
 }

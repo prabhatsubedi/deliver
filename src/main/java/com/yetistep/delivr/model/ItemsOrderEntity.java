@@ -1,6 +1,7 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,9 +21,11 @@ public class ItemsOrderEntity implements Serializable {
     private Integer id;
     private ItemEntity item;
     private OrderEntity order;
-    private StoreEntity store;
     private Integer quantity;
     private BigDecimal itemTotal;
+    private Boolean availabilityStatus;
+    private String note;
+    private String customItem;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,25 +49,15 @@ public class ItemsOrderEntity implements Serializable {
     }
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "order_id")
     public OrderEntity getOrder() {
         return order;
     }
 
+    @JsonProperty
     public void setOrder(OrderEntity order) {
         this.order = order;
-    }
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
-    public StoreEntity getStore() {
-        return store;
-    }
-
-    public void setStore(StoreEntity store) {
-        this.store = store;
     }
 
     @Column(name = "quantity")
@@ -83,5 +76,32 @@ public class ItemsOrderEntity implements Serializable {
 
     public void setItemTotal(BigDecimal itemTotal) {
         this.itemTotal = itemTotal;
+    }
+
+    @Column(name="availability_status", columnDefinition = "TINYINT(1) default true")
+    public Boolean getAvailabilityStatus() {
+        return availabilityStatus;
+    }
+
+    public void setAvailabilityStatus(Boolean availabilityStatus) {
+        this.availabilityStatus = availabilityStatus;
+    }
+
+    @Column(name="note")
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    @Column(name = "custom_item")
+    public String getCustomItem() {
+        return customItem;
+    }
+
+    public void setCustomItem(String customItem) {
+        this.customItem = customItem;
     }
 }

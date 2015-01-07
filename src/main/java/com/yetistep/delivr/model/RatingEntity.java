@@ -72,6 +72,7 @@ public class RatingEntity {
         this.deliveryBoyComment = deliveryBoyComment;
     }
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "order_id")
     public OrderEntity getOrder() {

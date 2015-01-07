@@ -472,26 +472,29 @@ var data_categories_names = [];
                     }
 
                     $('#name_item').val(item.name);
-                    $('description').val(item.description);
-                    $('additional_offer').val(item.additionalOffer);
+                    $('#description').val(item.description);
+                    $('#additional_offer').val(item.additionalOffer);
 
                     var brandId = storesBrand.id;
                     $('#item_brand').val(brandId);
                     $('#item_brand').selectpicker('refresh');
                     brand_change(brandId);
 
-                    var item_categories = '<li>' + itemCategory.name + '</li>';
+                    // resume task from here
+                    /*
+
                     var item_category = itemCategory.id;
+                    $('.category_options').val(item_category);
+                    $('.category_options').selectpicker('refresh');
                     function getChild(category) {
                         if(category.child.length == 1) {
                             var childCat = category.child[0];
-                            child_cat_id = childCat.id;
-                            item_categories += '<li>' + childCat.name + '</li>';
+                            var child_cat_id = childCat.id;
                             getChild(childCat);
                         }
                     }
                     getChild(itemCategory);
-                    $('.item_info .item_category').html(item_categories);
+                    $('.item_info .item_category').html(item_categories);*/
 
                     $('#available_start_time').val(item.availableStartTime);
                     $('#available_end_time').val(item.availableEndTime);
@@ -499,8 +502,9 @@ var data_categories_names = [];
                     $('#available_end_time').selectpicker('refresh');
                     $('#min_order').val(item.minOrderQuantity);
                     $('#max_order').val(item.maxOrderQuantity);
-                    $('.item_info .vat').val(item.vat);
-                    $('.item_info .service_charge').val(item.serviceCharge);
+                    $('#vat').val(item.vat);
+                    $('#service_charge').val(item.serviceCharge);
+                    $('#price').val(item.unitPrice);
 
                     var attributes_types = "";
                     if(attributesTypes.length > 0) {
@@ -510,28 +514,23 @@ var data_categories_names = [];
                             var itemAttribute = itemAttributes[0];
                             var mainElem = $('.block_attr_template').clone();
 
-                            $('.check_span', mainElem).addClass('icon_full');
+                            $('.check_span', mainElem).addClass(attributesType.multiSelect ? 'icon_full' : '');
+                            $('.checkbox', mainElem).attr('checked', attributesType.multiSelect);
+                            $('input[name="attr_type"]', mainElem).attr('value', attributesType.type);
+                            $('input[name="attr_label"]', mainElem).attr('value', itemAttribute.attribute);
+                            $('input[name="attr_val"]', mainElem).attr('value', itemAttribute.unitPrice);
 
-                            attributes_types += '<tbody>';
-                            attributes_types += '<tr>';
-                            attributes_types += '<td rowspan="' + itemAttributes.length + '">' + attributesType.type + '</td>';
-                            attributes_types += '<td rowspan="' + itemAttributes.length + '">' + (attributesType.multiSelect ? 'Multiple' : 'Single') + '</td>';
-                            attributes_types += '<td>' + itemAttribute.attribute + '</td>';
-                            attributes_types += '<td>' + itemAttribute.unitPrice + '</td>';
-                            attributes_types += '</tr>';
                             for(var j = 1; j < itemAttributes.length; j++) {
                                 itemAttribute = itemAttributes[j];
-                                attributes_types += '<tr>';
-                                attributes_types += '<td>' + itemAttribute.attribute + '</td>';
-                                attributes_types += '<td>' + itemAttribute.unitPrice + '</td>';
-                                attributes_types += '</tr>';
+                                var childElem = $('.attr_list_template').clone();
+                                $('input[name="attr_label"]', childElem).attr('value', itemAttribute.attribute);
+                                $('input[name="attr_val"]', childElem).attr('value', itemAttribute.unitPrice);
+                                $('.attr_list', mainElem).append(childElem.html());
                             }
-                            attributes_types += '</tbody>';
+                            attributes_types += mainElem.html();
                         }
-                    } else {
-                        attributes_types += '<tbody><tr><td colspan="4" class="text-center">no attributes available</td></tr></tbody>';
                     }
-                    $('.item_info .pricing_attributes table').append(attributes_types);
+                    $('.item_attributes').append(attributes_types);
 
                 } else {
                     alert(data.message);

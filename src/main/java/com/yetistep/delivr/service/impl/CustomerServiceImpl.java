@@ -231,6 +231,7 @@ public class CustomerServiceImpl implements CustomerService {
 
             iOrder.setItem(item);
             iOrder.setOrder(order);
+            iOrder.setAvailabilityStatus(true);
         }
 
         order.setItemsOrder(itemsOrder);

@@ -46,4 +46,6 @@ public interface DeliveryBoyService {
     public DeliveryBoyEntity getProfileOfDeliveryBoy(Integer deliveryBoyId) throws Exception;
 
     public Boolean addNewItem(ItemsOrderEntity itemsOrderEntity) throws Exception;
+
+    public Boolean updateOrders(List<ItemsOrderEntity> itemOrders) throws Exception;
 }

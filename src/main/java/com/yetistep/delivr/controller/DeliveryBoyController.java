@@ -224,4 +224,21 @@ public class DeliveryBoyController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/update_item_order", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateItemsInOrder(@RequestHeader HttpHeaders headers, @RequestBody List<ItemsOrderEntity> itemsOrders) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
+            deliveryBoyService.updateOrders(itemsOrders);
+            ServiceResponse serviceResponse = new ServiceResponse("Order item has been updated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while updating order item", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

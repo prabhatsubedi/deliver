@@ -446,4 +446,21 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         //TODO add price in totalCost of item, grandTotal and service fee
         return itemsOrderDaoService.save(itemsOrderEntity);
     }
+
+    @Override
+    public Boolean updateOrders(List<ItemsOrderEntity> itemOrders) throws Exception {
+        for(ItemsOrderEntity itemsOrder : itemOrders){
+            ItemsOrderEntity itemsOrderEntity = itemsOrderDaoService.find(itemsOrder.getId());
+            if(itemsOrderEntity == null)
+                throw new YSException("VLD020");
+            itemsOrderEntity.setQuantity(itemsOrder.getQuantity());
+            itemsOrderEntity.setItemTotal(itemsOrder.getItemTotal());
+            itemsOrderEntity.setAvailabilityStatus(itemsOrder.getAvailabilityStatus());
+            itemsOrderEntity.setNote(itemsOrder.getNote());
+            itemsOrderEntity.setCustomItem(itemsOrder.getCustomItem());
+            itemsOrderDaoService.update(itemsOrderEntity);
+        }
+        //TODO add price in totalCost of item, grandTotal and service fee
+        return true;
+    }
 }

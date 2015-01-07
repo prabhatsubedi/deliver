@@ -5,9 +5,14 @@ import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.ItemEntity;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
+import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
+import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -87,5 +92,28 @@ public class ItemDaoServiceImpl implements ItemDaoService{
         items = query.list();
 
         return items;
+    }
+
+    @Override
+    public List<ItemEntity> test(Integer itemId) throws Exception {
+        ProjectionList projectionList = Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("name"), "name")
+                .add(Projections.property("sb.id"), "storesBrand.id")
+                .add(Projections.property("sb.brandName"), "storesBrand.brandName");
+                //.add(Projections.property("ii.id"), "itemsImage.id")
+                //.add(Projections.property("ii.url"), "itemsImage.url");
+
+        Criteria criteria = getCurrentSession().createCriteria(ItemEntity.class)
+        .createAlias("storesBrand", "sb")
+        //.createAlias("itemsImage", "ii")
+        .setProjection(projectionList)
+        .setResultTransformer(new AliasToBeanNestedResultTransformer(ItemEntity.class));
+
+
+        criteria.add(Restrictions.eq("id", itemId));
+        List<ItemEntity> item = criteria.list();
+
+        return item;
     }
 }

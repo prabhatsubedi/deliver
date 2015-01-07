@@ -381,6 +381,7 @@ public class ClientServiceImpl implements ClientService {
         log.info("++++++++++++ Getting Item Detail of id " + itemId + " +++++++++++++");
 
         ItemEntity itemEntity = itemDaoService.find(itemId);
+
         BigDecimal price = itemEntity.getUnitPrice();
 
         if(itemEntity.getServiceCharge()!=null && BigDecimalUtil.isNotZero(itemEntity.getServiceCharge())) {
@@ -397,8 +398,25 @@ public class ClientServiceImpl implements ClientService {
         if(itemEntity.getAttributesTypes().size() == 0)
             itemEntity.setAttributesTypes(null);
 
+        if(itemEntity.getAttributesTypes()!=null && itemEntity.getAttributesTypes().size() !=0) {
+            for(ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()){
+                itemsAttributesTypeEntity.setId(null);
+                itemsAttributesTypeEntity.setItem(null);
+                for(ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
+                    itemsAttributeEntity.setId(null);
+                    itemsAttributeEntity.setType(null);
+                }
+            }
+        }
+
+        for(ItemsImageEntity itemsImageEntity : itemEntity.getItemsImage()) {
+            itemsImageEntity.setId(null);
+        }
+
         itemEntity.setItemsStores(null);
         itemEntity.setItemsOrder(null);
+        itemEntity.setCategory(null);
+        itemEntity.setStoresBrand(null);
         itemEntity.setStatus(null);
         itemEntity.setCreatedDate(null);
         itemEntity.setModifiedDate(null);

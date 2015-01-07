@@ -17,9 +17,9 @@ import java.io.Serializable;
 public class ItemsAttributeEntity implements Serializable {
 
     private Integer id;
-    private ItemsAttributesTypeEntity type;
     private String attribute;
     private Integer unitPrice;
+    private ItemsAttributesTypeEntity type;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

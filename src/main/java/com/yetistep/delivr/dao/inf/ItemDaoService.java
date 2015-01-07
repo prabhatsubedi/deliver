@@ -18,4 +18,6 @@ public interface ItemDaoService extends GenericDaoService<Integer, ItemEntity>{
     public List<CategoryEntity> findItemCategory(Integer brandId) throws Exception;
 
     public List<ItemDto> findItems(Integer brandId, Integer categoryId) throws Exception;
+
+    public List<ItemEntity> test(Integer itemId) throws Exception;
 }

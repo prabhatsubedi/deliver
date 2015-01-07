@@ -291,6 +291,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             orderEntity.setdBoyOrderHistories(dBoyOrderHistoryEntities);
 
             return orderDaoService.update(orderEntity);
+        } else if (deliveryBoyId.equals(deliveryBoySelectionEntity.getDeliveryBoy().getId())) {
+            throw new YSException("ORD005");
         }
         throw new YSException("ORD001");
     }

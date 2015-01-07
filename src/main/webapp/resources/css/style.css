@@ -1018,7 +1018,7 @@ label.check_label .checkbox {
 
 /* item view page */
 
-.item_info .other_info {
+.item_info .other_info, .store_info .other_info {
     padding: 15px 15px 0px 15px;
     background-color: #FFFFFF;
     margin-bottom: 15px;
@@ -1257,81 +1257,6 @@ label.check_label .checkbox {
 }
 /*Profile Css End*/
 
-/*Store Detail Css Start*/
-.view_container .store_view, .view_container .store_list {
-    background-color: white;
-    width: 100%;
-}
-
-.store_view_header {
-    border-bottom: 1px solid #d4d4d4;
-    height: 80px;
-    width: 100%;
-}
-
-.actions {
-    margin-right: 30px;
-    margin-top: 15px;
-}
-
-.store_view_header .actions .status {
-    background-color: #eeeded;
-    border-radius: 4px;
-    height: 46px;
-    padding: 10px;
-    width: 150px;
-}
-
-.on, .off {
-    border-radius: 4px;
-    height: 26px;
-    float: left;
-    text-align: center;
-    max-width: 75%;
-    color: #ffffff;
-    font-weight: bold;
-    line-height: 26px;
-}
-
-.off {
-    width: 30%;
-    margin-left: -5%;
-    background-color: #D27B12;
-}
-
-.on {
-    width: 75%;
-    background-color: #F7941D;
-}
-
-.store_view_detail{
-    width: 100%;
-}
-
-.brand_block{
-    padding: 20px 0 20px 0;
-    border-bottom: 1px solid #d4d4d4;
-}
-
-.brand_image {
-    margin: 0 auto;
-    padding: 20px;
-    position: relative;
-    width: 480px;
-}
-
-.brand_body {
-    width: 100%;
-    border-top: 1px solid #d4d4d4;
-}
-
-.store_view_detail .label{
-    float: left;
-    color: #000;
-}
-
-/*Store Detail Css End*/
-
 /* switch css */
 
 .form_head .switch_container {
@@ -1385,4 +1310,19 @@ label.check_label .checkbox {
 }
 .switch_container .switch .btn_switch.off:before {
     content: "OUT OF STOCK";
+}
+
+/* store detail */
+
+.store_info .switch_container .switch {
+    width: 90px;
+}
+.store_info .switch_container .switch .btn_switch {
+    width: 60px;
+}
+.store_info .switch_container .switch .btn_switch.on:before {
+    content: "ACTIVE";
+}
+.store_info .switch_container .switch .btn_switch.off:before {
+    content: "INACTIVE";
 }

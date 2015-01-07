@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Store View</title>
+    <title>Store Detail</title>
 
     <%@include file="../includes/head.jsp" %>
 
@@ -37,184 +37,73 @@
 
     <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left">View Store</h1>
+            <h1 class="pull-left">Store Detail</h1>
         </div>
         <div class="main_content">
-            <div class="view_container full_width clearfix">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="store_view">
-                            <div class="store_view_header">
-                                <div class="actions pull-right">
-                                    <div class="status">
-                                        <div class="layers">
-                                            <div class="on">
-                                                Active
-                                            </div>
-                                            <div class="off">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="store_view_detail clearfix">
-                                <div class="brand_image">
-
-                                </div>
-                                <div class="brand_body">
-                                    <div class="brand_header brand_block">
-                                        <div class="business_title">Business Name</div>
-                                        <div class="business_name"></div>
-                                    </div>
-                                    <div class="brand_info brand_block">
-                                        <div class="opening_time"><div class="label">Open Time</div><div class="value"></div></div>
-                                        <div class="categories"><div class="label">Categories</div><div class="value"></div></div>
-                                    </div>
-                                    <div class="brand_stores brand_block">
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="store_list">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="form_container full_width clearfix">
                 <div class="row">
-                    <div id="brand_section" class="col-lg-6">
-                        <div class="form_section">
-                            <div class="form_head">Store</div>
-                            <div class="form_content">
-                                <form role="form" id="form_brand" method="POST" action="">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="brand_name" name="brand_name"
-                                               placeholder="Store Brand Name">
-                                    </div>
-                                    <div class="brand_images clearfix">
-                                        <div id="brand_image"
-                                             class="drop_zone unselectable text-center maintain_ratio"
-                                             mr-width="720" mr-height="400">
-                                            <div class="drop_info">Drop image file <br/> (or click to browse)</div>
-                                            <div class="drop_title">Brand Image</div>
-                                        </div>
-                                        <input type="file" onchange="Image.readURL(this)" data-dimension="720x400"
-                                               id="brand_image_input" name="brand_image_input" class="hidden"/>
+                    <div class="form_section store_info clearfix">
+                        <div class="col-lg-6">
 
-                                        <div id="brand_logo"
-                                             class="drop_zone unselectable text-center maintain_ratio"
-                                             mr-width="200" mr-height="200">
-                                            <div class="drop_info">Drop image file <br/> (or click to browse)</div>
-                                            <div class="drop_title">Brand Logo</div>
-                                        </div>
-                                        <input type="file" onchange="Image.readURL(this)" id="brand_logo_input"
-                                               name="brand_logo_input" class="hidden"/>
-                                    </div>
-                                    <div class="form-group clearfix store_open_close">
-                                        <div class="col-lg-6">
-                                            <select id="open_time" name="open_time"
-                                                    class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                                <option value="none">Select Opening Time</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <select id="close_time" name="close_time"
-                                                    class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                                <option value="none">Select Closing Time</option>
-                                            </select>
+                            <div class="form_head">Item Information
+                                <div class="pull-right">
+                                    <div class="switch_container pull-left">
+                                        <div class="switch switch_activation">
+                                            <div class="btn_switch on"></div>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="brand_url" name="brand_url"
-                                               placeholder="Store URL">
-                                    </div>
-                                    <div class="form-group">
-                                        <select id="store_categories" name="store_categories"
-                                                class="haveall compelselection col-xs-12 no_pad no_margin"
-                                                data-style="form-control" multiple="multiple">
-                                            <option value="All">All</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn_green">Add Store</button>
-                                    </div>
-                                </form>
+                                    <a class="btn btn_green pull-left btn_edit" href="/merchant/item/form/edit/">Edit</a>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div id="store_section" class="col-lg-6">
-                        <div class="form_section">
-                            <div class="form_head">Store Location</div>
-                            <div class="form_content clearfix">
-
-                                <div class="map-container">
-                                    <div id="search_box">
-                                        <input id="pac-input" class="controls" type="text"
-                                               placeholder="Enter Postal/Zipcode to focus map & place marker. Click on marker to add address.">
+                            <div class="form_content">
+                                <div class="brand_images clearfix">
+                                    <div id="brand_image" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
+                                        <div class="drop_info">no image available</div>
                                     </div>
-                                    <div id="custom_map_controls" class="clearfix">
-                                        <div id="scroll_zoom" class="pull-left">Enable Scroll Zoom</div>
-                                        <div id="clear_markers" class="pull-left">Clear All Markers</div>
+                                    <div id="brand_logo" class="drop_zone unselectable text-center maintain_ratio" mr-width="200" mr-height="200">
+                                        <div class="drop_info">no image available</div>
                                     </div>
-                                    <div id="map-canvas"></div>
                                 </div>
 
-                                <form role="form" id="form_store" method="POST" action="">
-                                    <%--                                    <div class="form-group clearfix">
-                                                                            <button type="button" class="btn btn_green marker_nav marker_prev" disabled="disabled">Prev</button>
-                                                                            <button type="button" class="btn btn_green marker_nav marker_next" disabled="disabled">Next</button>
-                                                                            <button type="button" class="btn btn_green cancel_marker" disabled="disabled">Remove Marker</button>
-                                                                            <button type="submit" class="btn btn_green save_marker" disabled="disabled">Save Address</button>
-                                                                        </div>--%>
-                                    <%--                                    <div class="form-group">
-                                                                            <input type="text" class="form-control" id="store_name" name="store_name" placeholder="Store Name">
-                                                                        </div>--%>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="street" name="street"
-                                               placeholder="Street">
+                                <div class="other_info">
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Store Name</label>
+                                        <div class="detail_value open_time"></div>
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="city" name="city"
-                                               placeholder="City">
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Open Time</label>
+                                        <div class="detail_value open_time"></div>
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="state" name="state"
-                                               placeholder="State">
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Categories</label>
+                                        <div class="detail_value categories"></div>
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="country" name="country"
-                                               placeholder="Country">
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Store Location</label>
+                                        <div class="detail_value store_location"></div>
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="contact_no" name="contact_no"
-                                               placeholder="Contact No. (Optional)">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="contact_person"
-                                               name="contact_person" placeholder="Contact Person (Optional)">
-                                    </div>
-                                    <div class="form-group clearfix">
-                                        <button type="button" class="btn btn_green marker_nav marker_prev"
-                                                disabled="disabled">Prev
-                                        </button>
-                                        <button type="button" class="btn btn_green marker_nav marker_next"
-                                                disabled="disabled">Next
-                                        </button>
-                                        <button type="button" class="btn btn_green cancel_marker"
-                                                disabled="disabled">Remove Marker
-                                        </button>
-                                        <button type="submit" class="btn btn_green save_marker" disabled="disabled">
-                                            Save Address
-                                        </button>
-                                    </div>
-                                </form>
+
+                                </div>
+
                             </div>
+
                         </div>
+
+                        <div class="col-lg-6">
+
+                            <div class="similar_items items_container hidden">
+                                <div class="form_head">Similar Items</div>
+                                <div class="form_content clearfix"></div>
+                            </div>
+
+                        </div>
+
                     </div>
+
                 </div>
             </div>
         </div>

@@ -319,17 +319,12 @@ if(typeof(Store) == "undefined") var Store = {};
     };
 
     Store.loadStore = function(){
-        $('.form_container').addClass('hidden');
-
         var callback = function (status, data) {
 
             if (data.success == true) {
 
                 var storeBrand = data.params.storesBrand;
                 console.log(storeBrand);
-                $('.brand_image').html('<img src="'+storeBrand.brandImage+'" class="img-responsive"> <img src="'+storeBrand.brandLogo+'" width="200" height="200" style ="position: absolute; bottom: 20px; right:20px;">');
-                $('.business_name').html(storeBrand.brandName);
-                $('.opening_time .value').html(storeBrand.openingTime+'-'+storeBrand.closingTime);
 
             } else {
                 alert(data.message);

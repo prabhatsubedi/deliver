@@ -47,7 +47,7 @@
                             <div class="form_content">
                                 <form role="form" id="form_brand" method="POST" action="">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="brand_name" name="brand_name" placeholder="Store Brand Name">
+                                        <input type="text" class="form-control" id="brand_name" name="brand_name" placeholder="Store Name">
                                     </div>
                                     <div class="brand_images clearfix">
                                         <div id="brand_image" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">

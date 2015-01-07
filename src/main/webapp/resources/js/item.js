@@ -728,12 +728,15 @@ var data_categories_names = [];
                     item_stores +='<li>' + storeLocation.street + ', ' + storeLocation.city + ', ' + storeLocation.state + ', ' + storeLocation.country + '</li>';
                 }
                 $('.item_info .brand_name').html(storesBrand.brandName);
+                var brandId = storesBrand.id;
                 $('.item_info .brand_stores').html(item_stores);
 
                 var item_categories = '<li>' + itemCategory.name + '</li>';
+                var item_category = itemCategory.id;
                 function getChild(category) {
                     if(category.child.length == 1) {
                         var childCat = category.child[0];
+                        child_cat_id = childCat.id;
                         item_categories += '<li>' + childCat.name + '</li>';
                         getChild(childCat);
                     }
@@ -747,27 +750,59 @@ var data_categories_names = [];
                 $('.item_info .service_charge').html(item.serviceCharge + " %");
 
                 var attributes_types = "";
-                for(var i = 0; i < attributesTypes.length; i++) {
-                    var attributesType = attributesTypes[i];
-                    var itemAttributes = attributesType.itemsAttribute;
-                    attributes_types += '<tbody>';
-                    attributes_types += '<tr>';
-                    attributes_types += '<td rowspan="' + itemAttributes.length + '">' + attributesType.type + '</td>';
-                    attributes_types += '<td rowspan="' + itemAttributes.length + '">' + (attributesType.multiSelect ? 'Multiple' : 'Single') + '</td>';
-                    var itemAttribute = itemAttributes[0];
-                    attributes_types += '<td>' + itemAttribute.attribute + '</td>';
-                    attributes_types += '<td>' + itemAttribute.unitPrice + '</td>';
-                    attributes_types += '</tr>';
-                    for(var j = 1; j < itemAttributes.length; j++) {
-                        itemAttribute = itemAttributes[j];
+                if(attributesTypes.length > 0) {
+                    for(var i = 0; i < attributesTypes.length; i++) {
+                        var attributesType = attributesTypes[i];
+                        var itemAttributes = attributesType.itemsAttribute;
+                        attributes_types += '<tbody>';
                         attributes_types += '<tr>';
+                        attributes_types += '<td rowspan="' + itemAttributes.length + '">' + attributesType.type + '</td>';
+                        attributes_types += '<td rowspan="' + itemAttributes.length + '">' + (attributesType.multiSelect ? 'Multiple' : 'Single') + '</td>';
+                        var itemAttribute = itemAttributes[0];
                         attributes_types += '<td>' + itemAttribute.attribute + '</td>';
                         attributes_types += '<td>' + itemAttribute.unitPrice + '</td>';
                         attributes_types += '</tr>';
+                        for(var j = 1; j < itemAttributes.length; j++) {
+                            itemAttribute = itemAttributes[j];
+                            attributes_types += '<tr>';
+                            attributes_types += '<td>' + itemAttribute.attribute + '</td>';
+                            attributes_types += '<td>' + itemAttribute.unitPrice + '</td>';
+                            attributes_types += '</tr>';
+                        }
+                        attributes_types += '</tbody>';
                     }
-                    attributes_types += '</tbody>';
+                } else {
+                    attributes_types += '<tbody><tr><td colspan="4" class="text-center">no attributes available</td></tr></tbody>';
                 }
                 $('.item_info .pricing_attributes table').append(attributes_types);
+
+                var callback = function(status, data) {
+
+                    console.log(data);
+
+                    if (data.success == true) {
+
+                        var item_list = '';
+                        var items = data.params.items;
+                        if(items.length > 0) {
+                            for(var j = 0; j < items.length; j++) {
+                                var item = items[j];
+                                var elem = $('.item_container_template').clone();
+                                if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
+                                $('.item_name a', elem).attr('href', '/merchant/item/view/' + item.id).html(item.name);
+                                $('.item_price span', elem).html(item.unitPrice);
+                                item_list += elem.html();
+                            }
+
+                            $('.items_container .form_content').html(item_list);
+                            $('.items_container').removeClass('hidden');
+                        }
+
+                    }
+
+                };
+
+                Main.request('/merchant/get_categories_items', {parentCategoryId: child_cat_id, categoryStoreId: brandId}, callback);
 
 
             } else {

@@ -77,9 +77,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public void updateStoresBrand(StoresBrandEntity value) throws Exception {
-
         getCurrentSession().update(value);
-
     }
 
 
@@ -98,6 +96,16 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Override
     public CategoryEntity getCategoryById(Integer id) throws Exception {
         return (CategoryEntity) getCurrentSession().get(CategoryEntity.class, id);
+    }
+
+    @Override
+    public  List<CategoryEntity> getCategories() throws Exception {
+        List<CategoryEntity> categories = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
+        criteria.add(Restrictions.isNotNull("parent.id"));
+        categories = criteria.list();
+
+        return categories;
     }
 
     @Override

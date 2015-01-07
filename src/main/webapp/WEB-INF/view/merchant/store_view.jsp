@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Store Form</title>
+    <title>Store View</title>
 
     <%@include file="../includes/head.jsp" %>
 
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="/resources/js/store.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            Store.loadAddStore();
+            Store.loadStore();
         });
     </script>
 
@@ -44,28 +44,35 @@
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="store_view">
-                        <div class="store_view_header">
-                            <div class="actions pull-right">
-                                <div class="status">
-                                    <div class="layers">
-                                        <div class="on">
-                                        </div>
-                                        <div class="off">
+                            <div class="store_view_header">
+                                <div class="actions pull-right">
+                                    <div class="status">
+                                        <div class="layers">
+                                            <div class="on">
+                                                Active
+                                            </div>
+                                            <div class="off">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                    </div>
-                        </div>
-                        <div class="store_view_detail">
-                            <div class="brand_logo">
-                            </div>
-                            <div class="brand_body">
-                                <div class="brand_header">
+                            <div class="store_view_detail clearfix">
+                                <div class="brand_image">
+
                                 </div>
-                                <div class="brand_info">
-                                </div>
-                                <div class="brand_stores">
+                                <div class="brand_body">
+                                    <div class="brand_header brand_block">
+                                        <div class="business_title">Business Name</div>
+                                        <div class="business_name"></div>
+                                    </div>
+                                    <div class="brand_info brand_block">
+                                        <div class="opening_time"><div class="label">Open Time</div><div class="value"></div></div>
+                                        <div class="categories"><div class="label">Categories</div><div class="value"></div></div>
+                                    </div>
+                                    <div class="brand_stores brand_block">
+
+                                    </div>
                                 </div>
                             </div>
                         </div>

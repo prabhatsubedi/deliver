@@ -223,6 +223,9 @@ public class MerchantController {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             ItemEntity item = merchantService.getItemDetail(headerDto);
+            CategoryEntity category = item.getCategory();
+            category.setItem(null);
+            item.setCategory(category);
             ServiceResponse serviceResponse = new ServiceResponse("Items has been retrieved successfully");
             serviceResponse.addParam("item", item);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

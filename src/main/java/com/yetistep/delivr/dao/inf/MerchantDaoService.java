@@ -31,6 +31,8 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public BrandsCategoryEntity getBrandsCategory(Integer brandId, Integer categoryId) throws Exception;
 
+    public  List<CategoryEntity> getCategories() throws Exception;
+
     public List<BrandsCategoryEntity> getBrandsCategory(Integer brandId) throws Exception;
 
     public List<StoreEntity> findStoreByBrand(Integer brandId) throws Exception;

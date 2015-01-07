@@ -91,7 +91,7 @@ public class CategoryEntity implements Serializable {
         this.storesBrand = storesBrand;
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     @OneToMany(mappedBy = "category")
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemEntity> getItem() {

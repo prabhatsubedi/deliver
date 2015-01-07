@@ -3,8 +3,6 @@ if(typeof(Store) == "undefined") var Store = {};
 (function ($){
 
     Store.loadAddStore = function() {
-        $('.form_container').addClass('hidden');
-
         $('option:selected').removeAttr('selected');
         Image.dropZone('#brand_image_input', '#brand_image');
         Image.dropZone('#brand_logo_input', '#brand_logo');
@@ -319,5 +317,32 @@ if(typeof(Store) == "undefined") var Store = {};
         Main.request('/merchant/get_stores', {}, callback, headers);
 
     };
+
+    Store.loadStore = function(){
+        $('.form_container').addClass('hidden');
+
+        var callback = function (status, data) {
+
+            if (data.success == true) {
+
+                var storeBrand = data.params.storesBrand;
+                console.log(storeBrand);
+                $('.brand_image').html('<img src="'+storeBrand.brandImage+'" class="img-responsive"> <img src="'+storeBrand.brandLogo+'" width="200" height="200" style ="position: absolute; bottom: 20px; right:20px;">');
+                $('.business_name').html(storeBrand.brandName);
+                $('.opening_time .value').html(storeBrand.openingTime+'-'+storeBrand.closingTime);
+
+            } else {
+                alert(data.message);
+            }
+
+        };
+
+        var headers = {};
+        callback.loaderDiv = "body";
+        callback.requestType = "GET";
+        headers.id  = Main.getURLvalue(3);
+
+        Main.request('/merchant/get_store_detail', {}, callback, headers);
+    }
 
 })(jQuery);

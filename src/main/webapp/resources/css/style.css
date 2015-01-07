@@ -1271,10 +1271,14 @@ label.check_label .checkbox {
 }
 
 .on, .off {
-    background-color: #F7941D;
     border-radius: 4px;
     height: 26px;
+    float: left;
+    text-align: center;
     max-width: 75%;
+    color: #ffffff;
+    font-weight: bold;
+    line-height: 26px;
 }
 
 .off {
@@ -1283,5 +1287,35 @@ label.check_label .checkbox {
     background-color: #D27B12;
 }
 
+.on {
+    width: 75%;
+    background-color: #F7941D;
+}
+
+.store_view_detail{
+    width: 100%;
+}
+
+.brand_block{
+    padding: 20px 0 20px 0;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.brand_image {
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    width: 480px;
+}
+
+.brand_body {
+    width: 100%;
+    border-top: 1px solid #d4d4d4;
+}
+
+.store_view_detail .label{
+    float: left;
+    color: #000;
+}
 
 /*Store Detail Css End*/

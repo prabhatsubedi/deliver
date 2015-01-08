@@ -55,7 +55,7 @@ public class OrderEntity implements Serializable {
     private Integer elapsedTime;
     private RatingEntity rating;
     private List<String> attachments;
-
+    private OrderCancelEntity orderCancel;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -340,5 +340,16 @@ public class OrderEntity implements Serializable {
 
     public void setAttachments(List<String> attachments) {
         this.attachments = attachments;
+    }
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    public OrderCancelEntity getOrderCancel() {
+        return orderCancel;
+    }
+
+    @JsonProperty
+    public void setOrderCancel(OrderCancelEntity orderCancel) {
+        this.orderCancel = orderCancel;
     }
 }

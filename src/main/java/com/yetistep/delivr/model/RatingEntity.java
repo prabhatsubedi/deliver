@@ -17,9 +17,13 @@ import javax.persistence.*;
 @Table(name = "ratings")
 public class RatingEntity {
     private Integer id;
+    /* Rating of customer */
     private RatingType customerRating;
+    /* Rating of delivery boy */
     private RatingType deliveryBoyRating;
+    /* Comment of customer for delivery boy */
     private String customerComment;
+    /* Comment of delivery boy for customer */
     private String deliveryBoyComment;
     private OrderEntity order;
 

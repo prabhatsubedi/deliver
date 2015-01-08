@@ -48,4 +48,6 @@ public interface DeliveryBoyService {
     public Boolean addNewItem(ItemsOrderEntity itemsOrderEntity) throws Exception;
 
     public Boolean updateOrders(List<ItemsOrderEntity> itemOrders) throws Exception;
+
+    public Boolean cancelOrder(OrderEntity order) throws Exception;
 }

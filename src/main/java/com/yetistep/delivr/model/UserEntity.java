@@ -51,6 +51,8 @@ public class UserEntity implements Serializable {
     private List<AddressEntity> addresses;
     private UserDeviceEntity userDevice;
     private Status status;
+    private List<OrderCancelEntity> orderCancelEntities;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -281,5 +283,15 @@ public class UserEntity implements Serializable {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    public List<OrderCancelEntity> getOrderCancelEntities() {
+        return orderCancelEntities;
+    }
+
+    public void setOrderCancelEntities(List<OrderCancelEntity> orderCancelEntities) {
+        this.orderCancelEntities = orderCancelEntities;
     }
 }

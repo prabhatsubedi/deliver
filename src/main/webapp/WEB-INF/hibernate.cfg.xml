@@ -48,6 +48,7 @@
        <mapping class="com.yetistep.delivr.model.DeliveryBoySelectionEntity"/>
        <mapping class="com.yetistep.delivr.model.UserDeviceEntity"/>
        <mapping class="com.yetistep.delivr.model.RatingEntity"/>
+       <mapping class="com.yetistep.delivr.model.OrderCancelEntity"/>
 
 
     </session-factory>

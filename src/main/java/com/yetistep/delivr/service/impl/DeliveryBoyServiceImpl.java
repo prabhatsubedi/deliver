@@ -346,6 +346,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
         order.setDeliveryStatus(DeliveryStatus.SUCCESSFUL);
         order.setOrderStatus(JobOrderStatus.DELIVERED);
+        order.setOrderVerificationStatus(true);
 
         List<DBoyOrderHistoryEntity> orderHistoryEntities = order.getdBoyOrderHistories();
         for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: orderHistoryEntities){
@@ -479,5 +480,60 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
         //TODO add price in totalCost of item, grandTotal and service fee
         return true;
+    }
+
+    @Override
+    public Boolean cancelOrder(OrderEntity order) throws Exception {
+        OrderEntity orderEntity = orderDaoService.find(order.getId());
+        if(orderEntity == null){
+            throw new YSException("VLD017");
+        }
+        log.info("About to Cancel order with Order ID:"+order.getId());
+
+        /*Setting Ratings */
+        RatingEntity rating = (orderEntity.getRating() == null) ? new RatingEntity() : orderEntity.getRating();
+        if(order.getRating().getCustomerRating()!=null)
+            rating.setCustomerRating(order.getRating().getCustomerRating());
+        if(order.getRating().getDeliveryBoyComment()!=null)
+            rating.setDeliveryBoyComment(order.getRating().getDeliveryBoyComment());
+        if(order.getRating().getDeliveryBoyRating()!=null)
+            rating.setDeliveryBoyRating(order.getRating().getDeliveryBoyRating());
+        if(order.getRating().getCustomerComment()!=null)
+            rating.setCustomerComment(order.getRating().getCustomerComment());
+
+        /*Setting OrderCancelEntity */
+        OrderCancelEntity orderCancelEntity = orderEntity.getOrderCancel();
+        if(orderCancelEntity != null)
+            throw new YSException("ORD006");
+        else
+            orderCancelEntity = new OrderCancelEntity();
+        orderCancelEntity.setCancelledDate(DateUtil.getCurrentTimestampSQL());
+        orderCancelEntity.setReason(order.getOrderCancel().getReason());
+        orderCancelEntity.setJobOrderStatus(orderEntity.getOrderStatus());
+        orderCancelEntity.setUser(order.getOrderCancel().getUser());
+        orderCancelEntity.setOrder(orderEntity);
+
+        orderEntity.setOrderCancel(orderCancelEntity);
+        orderEntity.setOrderStatus(JobOrderStatus.CANCELLED);
+        orderEntity.setDeliveryStatus(DeliveryStatus.CANCELLED);
+
+
+        /* updating order histories */
+        List<DBoyOrderHistoryEntity> dBoyOrderHistoryEntities =  orderEntity.getdBoyOrderHistories();
+        for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: dBoyOrderHistoryEntities){
+            if(dBoyOrderHistoryEntity.getDeliveryStatus().equals(DeliveryStatus.PENDING)){
+                dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.CANCELLED);
+            }
+        }
+
+        /* updating delivery boy */
+        DeliveryBoyEntity deliveryBoyEntity = orderEntity.getDeliveryBoy();
+        deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()-1);
+        if(deliveryBoyEntity.getActiveOrderNo() == 0){
+            deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.FREE);
+        }
+
+        //TODO dboy rating implementation and transaction implementation
+        return orderDaoService.update(orderEntity);
     }
 }

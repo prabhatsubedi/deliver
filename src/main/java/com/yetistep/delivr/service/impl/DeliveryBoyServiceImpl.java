@@ -491,15 +491,17 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         log.info("About to Cancel order with Order ID:"+order.getId());
 
         /*Setting Ratings */
-        RatingEntity rating = (orderEntity.getRating() == null) ? new RatingEntity() : orderEntity.getRating();
-        if(order.getRating().getCustomerRating()!=null)
-            rating.setCustomerRating(order.getRating().getCustomerRating());
-        if(order.getRating().getDeliveryBoyComment()!=null)
-            rating.setDeliveryBoyComment(order.getRating().getDeliveryBoyComment());
-        if(order.getRating().getDeliveryBoyRating()!=null)
-            rating.setDeliveryBoyRating(order.getRating().getDeliveryBoyRating());
-        if(order.getRating().getCustomerComment()!=null)
-            rating.setCustomerComment(order.getRating().getCustomerComment());
+        if (order.getRating() != null){
+            RatingEntity rating = (orderEntity.getRating() == null) ? new RatingEntity() : orderEntity.getRating();
+            if(order.getRating().getCustomerRating()!=null)
+                rating.setCustomerRating(order.getRating().getCustomerRating());
+            if(order.getRating().getDeliveryBoyComment()!=null)
+                rating.setDeliveryBoyComment(order.getRating().getDeliveryBoyComment());
+            if(order.getRating().getDeliveryBoyRating()!=null)
+                rating.setDeliveryBoyRating(order.getRating().getDeliveryBoyRating());
+            if(order.getRating().getCustomerComment()!=null)
+                rating.setCustomerComment(order.getRating().getCustomerComment());
+        }
 
         /*Setting OrderCancelEntity */
         OrderCancelEntity orderCancelEntity = orderEntity.getOrderCancel();
@@ -528,9 +530,11 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         /* updating delivery boy */
         DeliveryBoyEntity deliveryBoyEntity = orderEntity.getDeliveryBoy();
-        deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()-1);
-        if(deliveryBoyEntity.getActiveOrderNo() == 0){
-            deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.FREE);
+        if(deliveryBoyEntity != null){
+            deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()-1);
+            if(deliveryBoyEntity.getActiveOrderNo() == 0){
+                deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.FREE);
+            }
         }
 
         //TODO dboy rating implementation and transaction implementation

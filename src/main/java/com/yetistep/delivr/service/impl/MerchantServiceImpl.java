@@ -377,6 +377,12 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 CategoryEntity newCategory;
                 newCategory = brandsCategory.getCategory();
                 newCategories =  getCategoryTree(allCategories, brandsCategory.getCategory().getId(), brandsCategory.getStoresBrand().getId());
+                List<ItemEntity> items = newCategory.getItem();
+                if(items.size() > 0){
+                    newCategory.setItem(new ArrayList<ItemEntity>());
+                } else {
+                    newCategory.setItem(null);
+                }
                 newCategory.setChild(null);
                 newCategory.setChild(newCategories);
                 categories.add(newCategory);
@@ -393,7 +399,12 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             if(newCategory.getParent().getId()==parent_id && (newCategory.getStoresBrand()== null || newCategory.getStoresBrand().getId() == storeId ))
             {
                 newCategory.setChild(getCategoryTree(categories, newCategory.getId(), storeId));
-                newCategory.setItem(null);
+                List<ItemEntity> items = newCategory.getItem();
+                if(items.size() > 0){
+                    newCategory.setItem(new ArrayList<ItemEntity>());
+                } else {
+                    newCategory.setItem(null);
+                }
                 newCategories.add(newCategory);
             }
           }

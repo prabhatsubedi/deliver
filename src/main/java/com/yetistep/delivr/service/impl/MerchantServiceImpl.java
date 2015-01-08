@@ -502,9 +502,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<CategoryEntity> finalCategories =  merchantDaoService.findFinalCategoryList(storeId);
 
 
-        //set child of each childCategory null so that final categories can be added as the childs of the child category
+        //set child of each childCategory empty so that final categories can be added as the childs of the child category
         for (CategoryEntity childCategory: childCategories){
-            childCategory.setChild(null);
+            childCategory.setChild(new ArrayList<CategoryEntity>());
         }
 
         //add final categories as the childs of the child category

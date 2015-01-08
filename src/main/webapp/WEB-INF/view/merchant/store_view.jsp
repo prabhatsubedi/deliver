@@ -69,7 +69,7 @@
 
                                     <div class="detail_row">
                                         <label class="detail_label">Store Name</label>
-                                        <div class="detail_value open_time"></div>
+                                        <div class="detail_value store_name"></div>
                                     </div>
 
                                     <div class="detail_row">

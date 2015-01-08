@@ -47,12 +47,116 @@ var data_categories_names = [];
             size: 5
         });
 
-        function add_categories(category_options) {
+
+        var loadPopulate = false;
+
+        if(action == "edit") {
+            $('.heading h1').html('Item Edit');
+            document.title = 'Item Edit';
+
+            function populateEdit() {
+                var callback = function(status, data) {
+
+                    console.log(data);
+
+                    if (data.success == true) {
+
+                        var item = data.params.item;
+                        var itemImages = item.itemsImage;
+                        var storesBrand = item.storesBrand;
+                        var itemStores = storesBrand.store;
+                        var itemCategory = item.category;
+                        var attributesTypes = item.attributesTypes;
+
+                        for(var i = 0; i < itemImages.length; i++) {
+                            $('.product_image .drop_zone').eq(i).html('<img src="' + itemImages[i].url + '" style="height: 100%;" class="img-responsive" />');
+                        }
+
+                        $('#name_item').val(item.name);
+                        $('#description').val(item.description);
+                        $('#additional_offer').val(item.additionalOffer);
+
+                        var brandId = storesBrand.id;
+                        $('#item_brand').val(brandId);
+                        $('#item_brand').selectpicker('refresh');
+
+                        var change_callback = function() {
+                            var catId = itemCategory.id;
+                            $('.category_options').val(catId);
+                            $('.category_options').selectpicker('refresh');
+                            function getChild(category) {
+                                if(category.child.length == 1) {
+                                    var childCat = category.child[0];
+                                    catId = childCat.id;
+                                    var fnParams = {};
+                                    fnParams.elem = $('#category_container select.category_options').last();
+                                    fnParams.brandId = brandId;
+                                    fnParams.catId = category.id;
+                                    fnParams.currentCatId = catId;
+                                    getChildCats(fnParams);
+                                    getChild(childCat);
+                                }
+                            }
+                            getChild(itemCategory);
+                        };
+                        brand_change(brandId, change_callback);
+
+                        $('#available_start_time').val(item.availableStartTime);
+                        $('#available_end_time').val(item.availableEndTime);
+                        $('#available_start_time').selectpicker('refresh');
+                        $('#available_end_time').selectpicker('refresh');
+                        $('#min_order').val(item.minOrderQuantity);
+                        $('#max_order').val(item.maxOrderQuantity);
+                        $('#vat').val(item.vat);
+                        $('#service_charge').val(item.serviceCharge);
+                        $('#price').val(item.unitPrice);
+
+                        var attributes_types = "";
+                        if(attributesTypes.length > 0) {
+                            for(var i = 0; i < attributesTypes.length; i++) {
+                                var attributesType = attributesTypes[i];
+                                var itemAttributes = attributesType.itemsAttribute;
+                                var itemAttribute = itemAttributes[0];
+                                var mainElem = $('.block_attr_template').clone();
+
+                                $('.check_span', mainElem).addClass(attributesType.multiSelect ? 'icon_full' : '');
+                                $('.checkbox', mainElem).attr('checked', attributesType.multiSelect);
+                                $('input[name="attr_type"]', mainElem).attr('value', attributesType.type);
+                                $('input[name="attr_label"]', mainElem).attr('value', itemAttribute.attribute);
+                                $('input[name="attr_val"]', mainElem).attr('value', itemAttribute.unitPrice);
+
+                                for(var j = 1; j < itemAttributes.length; j++) {
+                                    itemAttribute = itemAttributes[j];
+                                    var childElem = $('.attr_list_template').clone();
+                                    $('input[name="attr_label"]', childElem).attr('value', itemAttribute.attribute);
+                                    $('input[name="attr_val"]', childElem).attr('value', itemAttribute.unitPrice);
+                                    $('.attr_list', mainElem).append(childElem.html());
+                                }
+                                attributes_types += mainElem.html();
+                            }
+                        }
+                        $('.item_attributes').append(attributes_types);
+
+                    } else {
+                        alert(data.message);
+                    }
+
+                };
+                callback.requestType = "GET";
+                callback.loaderDiv = "body";
+                Main.request('/merchant/get_items_detail', {}, callback, {id: itemId});
+            }
+
+        }
+
+        function add_categories(category_options, change_callback) {
             var elem = $('#category_container .category_options').eq(0);
+            elem.parent('.form-group').nextAll('.form-group').remove();
             elem.html(category_options);
             elem.selectpicker('refresh');
+            if(change_callback != undefined) change_callback();
         }
-        function get_brand_categories(brandId) {
+        function get_brand_categories(brandId, change_callback) {
             var category_options = '<option value="none">Select Category</option>';
             if(brandId != undefined) {
                 var callback = function(status, data) {
@@ -61,7 +165,7 @@ var data_categories_names = [];
                     for(var i = 0; i < categories.length; i++) {
                         category_options += '<option value="' + categories[i].id + '">' + categories[i].name + '</option>';
                     }
-                    add_categories(category_options)
+                    add_categories(category_options, change_callback)
 
                 };
                 callback.requestType = "GET";
@@ -71,7 +175,7 @@ var data_categories_names = [];
             }
         }
 
-        function brand_change(brandId) {
+        function brand_change(brandId, change_callback) {
 
             var storeLocations = storesById[brandId];
             var stores_html = "";
@@ -86,7 +190,7 @@ var data_categories_names = [];
             } else {
                 brandId = undefined;
             }
-            get_brand_categories(brandId);
+            get_brand_categories(brandId, change_callback);
             $('#item_store_container').html(stores_html);
             $('#item_store_container .check_span').addClass('icon_full');
             $('#item_store_container .checkbox').attr('checked', 'checked');
@@ -120,6 +224,11 @@ var data_categories_names = [];
                     }
                     $('#item_brand').selectpicker('refresh');
 
+                    if(action == 'edit' && !loadPopulate){
+                        populateEdit();
+                        loadPopulate = true;
+                    }
+
                 } else {
                     alert(data.message);
                 }
@@ -134,13 +243,16 @@ var data_categories_names = [];
             brand_change($(this).val());
         });
 
-        $('#category_container .category_options').live('change', function(){
+        function getChildCats(fnParams) {
 
-            var cat_id = $(this).val();
-            var store_id = $('#item_brand').val();
-            $(this).parent('.form-group').nextAll('.form-group').remove();
+            var elem = fnParams.elem ;
+            var brandId = fnParams.brandId;
+            var catId = fnParams.catId;
+            var currentCatId = fnParams.currentCatId;
 
-            if(cat_id != "none" && store_id != "none" && $('option:selected', this).attr('data-new') != "true") {
+            elem.parent('.form-group').nextAll('.form-group').remove();
+
+            if(catId != "none" && brandId != "none" && $('option:selected', elem).attr('data-new') != "true") {
 
                 var callback = function(status, data) {
 
@@ -151,7 +263,7 @@ var data_categories_names = [];
                             var subCategory = $('.select_category_template').clone();
                             var cat_list = '';
                             for(var i = 0; i < categories.length; i++) {
-                                cat_list += '<option value="' + categories[i].id + '">' + categories[i].name + '</option>';
+                                cat_list += '<option value="' + categories[i].id + '" ' + (currentCatId == categories[i].id ? 'selected="selected"' : '') + '>' + categories[i].name + '</option>';
                             }
                             $('select', subCategory).addClass('category_options').append(cat_list);
                             $('#category_container').append(subCategory.html());
@@ -163,13 +275,28 @@ var data_categories_names = [];
                     }
 
                 };
-                Main.request('/merchant/get_child_categories', {parentCategoryId: cat_id, categoryStoreId: store_id}, callback);
+
+                if(currentCatId != undefined) callback.async = false;
+                Main.request('/merchant/get_child_categories', {parentCategoryId: catId, categoryStoreId: brandId}, callback);
 
             } else {
 
             }
 
+        }
+
+        $('#category_container .category_options').live('change', function(){
+            var brandId = $('#item_brand').val();
+            var catId = $(this).val();
+
+            var fnParams = {};
+            fnParams.elem = $(this);
+            fnParams.brandId = brandId;
+            fnParams.catId = catId;
+
+            getChildCats(fnParams);
         });
+
         $('#add_category').click(function(){
             $('.add_categories, #new_category, #new_subcategory').addClass('hidden');
             $('.add_categories, #new_category').removeClass('hidden');
@@ -450,98 +577,6 @@ var data_categories_names = [];
         $('select').live('change', function(){
             $(this).siblings('.bootstrap-select').children('.form-control').removeClass('error');
         });
-
-        if(action == "edit") {
-            $('.heading h1').html('Item Edit');
-
-            var callback = function(status, data) {
-
-                console.log(data);
-
-                if (data.success == true) {
-
-                    var item = data.params.item;
-                    var itemImages = item.itemsImage;
-                    var storesBrand = item.storesBrand;
-                    var itemStores = storesBrand.store;
-                    var itemCategory = item.category;
-                    var attributesTypes = item.attributesTypes;
-
-                    for(var i = 0; i < itemImages.length; i++) {
-                        $('.product_image .drop_zone').eq(i).html('<img src="' + itemImages[i].url + '" style="height: 100%;" class="img-responsive" />');
-                    }
-
-                    $('#name_item').val(item.name);
-                    $('#description').val(item.description);
-                    $('#additional_offer').val(item.additionalOffer);
-
-                    var brandId = storesBrand.id;
-                    $('#item_brand').val(brandId);
-                    $('#item_brand').selectpicker('refresh');
-                    brand_change(brandId);
-
-                    // resume task from here
-                    /*
-
-                    var item_category = itemCategory.id;
-                    $('.category_options').val(item_category);
-                    $('.category_options').selectpicker('refresh');
-                    function getChild(category) {
-                        if(category.child.length == 1) {
-                            var childCat = category.child[0];
-                            var child_cat_id = childCat.id;
-                            getChild(childCat);
-                        }
-                    }
-                    getChild(itemCategory);
-                    $('.item_info .item_category').html(item_categories);*/
-
-                    $('#available_start_time').val(item.availableStartTime);
-                    $('#available_end_time').val(item.availableEndTime);
-                    $('#available_start_time').selectpicker('refresh');
-                    $('#available_end_time').selectpicker('refresh');
-                    $('#min_order').val(item.minOrderQuantity);
-                    $('#max_order').val(item.maxOrderQuantity);
-                    $('#vat').val(item.vat);
-                    $('#service_charge').val(item.serviceCharge);
-                    $('#price').val(item.unitPrice);
-
-                    var attributes_types = "";
-                    if(attributesTypes.length > 0) {
-                        for(var i = 0; i < attributesTypes.length; i++) {
-                            var attributesType = attributesTypes[i];
-                            var itemAttributes = attributesType.itemsAttribute;
-                            var itemAttribute = itemAttributes[0];
-                            var mainElem = $('.block_attr_template').clone();
-
-                            $('.check_span', mainElem).addClass(attributesType.multiSelect ? 'icon_full' : '');
-                            $('.checkbox', mainElem).attr('checked', attributesType.multiSelect);
-                            $('input[name="attr_type"]', mainElem).attr('value', attributesType.type);
-                            $('input[name="attr_label"]', mainElem).attr('value', itemAttribute.attribute);
-                            $('input[name="attr_val"]', mainElem).attr('value', itemAttribute.unitPrice);
-
-                            for(var j = 1; j < itemAttributes.length; j++) {
-                                itemAttribute = itemAttributes[j];
-                                var childElem = $('.attr_list_template').clone();
-                                $('input[name="attr_label"]', childElem).attr('value', itemAttribute.attribute);
-                                $('input[name="attr_val"]', childElem).attr('value', itemAttribute.unitPrice);
-                                $('.attr_list', mainElem).append(childElem.html());
-                            }
-                            attributes_types += mainElem.html();
-                        }
-                    }
-                    $('.item_attributes').append(attributes_types);
-
-                } else {
-                    alert(data.message);
-                }
-
-            };
-            callback.requestType = "GET";
-            callback.loaderDiv = "body";
-            Main.request('/merchant/get_items_detail', {}, callback, {id: itemId});
-
-        }
 
     };
 

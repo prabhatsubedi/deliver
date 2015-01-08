@@ -35,9 +35,9 @@ if(typeof(Main) == "undefined") var Main = {};
 
         var hideLoader = function(){};
         if(callback != undefined) {
-            var loaderDiv = callback["loaderDiv"];
+            var loaderDiv = callback.async == false ? 'body' : callback["loaderDiv"];
             var requestType = callback["requestType"];
-            if (loaderDiv != undefined) {
+            if (loaderDiv != undefined && $('.loader', loaderDiv).length == 0) {
                 $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
             }
 
@@ -53,17 +53,17 @@ if(typeof(Main) == "undefined") var Main = {};
             type: requestType != undefined ? requestType : "POST",
             data: parameter.stringify == false ? parameter : JSON.stringify(parameter),
             headers: headers,
+            async: callback.async == false ? false : true,
             statusCode: {
             },
             success: function (data) {
-//                setTimeout(function (){
-                hideLoader();
                 if (callback != undefined) return callback("success", data);
-//                }, 3000);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                hideLoader();
                 if (callback != undefined && errorThrown != "abort") return callback("error", {success: false, message: XMLHttpRequest.getResponseHeader("errorMessage")});
+            },
+            complete: function() {
+                setTimeout(hideLoader, 500)
             }
         });
     };

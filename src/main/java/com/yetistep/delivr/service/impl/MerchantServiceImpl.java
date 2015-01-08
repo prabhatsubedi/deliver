@@ -499,30 +499,39 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Integer storeId = requestJson.getCategoryStoreId();
 
         List<CategoryEntity> childCategories =  merchantDaoService.findChildCategories(parentId, storeId);
-
-
-
         List<CategoryEntity> finalCategories =  merchantDaoService.findFinalCategoryList(storeId);
 
-       for (CategoryEntity finalCategory: finalCategories){
+
+        //set child of each childCategory null so that final categories can be added as the childs of the child category
+        for (CategoryEntity childCategory: childCategories){
+            childCategory.setChild(null);
+        }
+
+        //add final categories as the childs of the child category
+        for (CategoryEntity finalCategory: finalCategories){
 
            CategoryEntity finalCat = finalCategory;
 
+            //check if the final category is child category itself
            if(!childCategories.contains(finalCat.getId())){
                while (finalCategory.getParent() != null && !childCategories.contains(finalCategory.getParent())){
                    finalCategory = finalCategory.getParent();
                }
 
                if(childCategories.contains(finalCategory.getParent())) {
+                   //get all the childs of the child category
                    List<CategoryEntity> parentsChild = finalCategory.getParent().getChild();
                    parentsChild.add(finalCat);
+                   //set new child element of the child category
                    finalCategory.getParent().setChild(parentsChild);
                }
            }
 
        }
 
+        //get items for each child category
         for (CategoryEntity childCategory: childCategories){
+            //get the list of childs id of the child category
             List<Integer> childsChildId = new ArrayList<Integer>();
             if(childCategory.getChild() != null && childCategory.getChild().size() >0 ){
                 for(CategoryEntity childsChildCategory: childCategory.getChild()){
@@ -530,6 +539,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 }
             }
 
+            /*if childs of child category exits get the items of the childs of the child category(final category)
+              else get the items of child category itself as the final category
+             */
             if(childsChildId.size() > 0){
                 List<ItemEntity> categoriesItems = merchantDaoService.findItemByCategory(childsChildId);
                 if(categoriesItems.size() > 0){

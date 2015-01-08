@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Store Detail</title>
+    <title>Store Name</title>
 
     <%@include file="../includes/head.jsp" %>
 
@@ -37,7 +37,7 @@
 
     <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left">Store Detail</h1>
+            <h1 class="pull-left">Stores</h1>
         </div>
         <div class="main_content">
             <div class="form_container full_width clearfix">
@@ -45,15 +45,8 @@
                     <div class="form_section store_info clearfix">
                         <div class="col-lg-6">
 
-                            <div class="form_head">Item Information
-                                <div class="pull-right">
-                                    <div class="switch_container pull-left">
-                                        <div class="switch switch_activation">
-                                            <div class="btn_switch on"></div>
-                                        </div>
-                                    </div>
-                                    <a class="btn btn_green pull-left btn_edit" href="/merchant/item/form/edit/">Edit</a>
-                                </div>
+                            <div class="form_head">
+                                <div class="store_name">Store Name</div>
                             </div>
                             <div class="form_content">
                                 <div class="brand_images clearfix">
@@ -65,12 +58,16 @@
                                     </div>
                                 </div>
 
-                                <div class="other_info">
-
-                                    <div class="detail_row">
-                                        <label class="detail_label">Store Name</label>
-                                        <div class="detail_value store_name"></div>
+                                <div class="detail_options clearfix">
+                                    <a class="btn btn_green pull-right btn_edit glyphicon glyphicon-edit" href="/merchant/item/form/edit/"></a>
+                                    <div class="switch_container pull-right">
+                                        <div class="switch switch_activation">
+                                            <div class="btn_switch on"></div>
+                                        </div>
                                     </div>
+                                </div>
+
+                                <div class="other_info">
 
                                     <div class="detail_row">
                                         <label class="detail_label">Open Time</label>

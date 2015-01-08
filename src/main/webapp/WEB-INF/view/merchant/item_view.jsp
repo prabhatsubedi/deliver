@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Item Detail</title>
+    <title>Item Name</title>
 
     <%@include file="../includes/head.jsp" %>
 
@@ -29,7 +29,8 @@
 
     <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left">Item Detail</h1>
+            <h1 class="pull-left">Item Category</h1>
+            <a class="btn btn_green pull-right" href="/merchant/item/form/create/">Add Item</a>
         </div>
         <div class="main_content">
             <div class="form_container full_width clearfix">
@@ -37,15 +38,9 @@
                     <div class="form_section item_info clearfix">
                         <div class="col-lg-6">
 
-                            <div class="form_head">Item Information
-                                <div class="pull-right">
-                                    <div class="switch_container pull-left">
-                                        <div class="switch switch_activation">
-                                            <div class="btn_switch on"></div>
-                                        </div>
-                                    </div>
-                                    <a class="btn btn_green pull-left btn_edit" href="/merchant/item/form/edit/">Edit</a>
-                                </div>
+                            <div class="form_head clearfix">
+                                <div class="item_name pull-left">Item Name</div>
+                                <div class="item_price pull-right">Rs. <span></span></div>
                             </div>
                             <div class="form_content">
                                 <div class="product_images form-group clearfix">
@@ -66,11 +61,16 @@
                                     </div>
                                 </div>
 
-                                <div class="other_info">
-                                    <div class="detail_row">
-                                        <label class="detail_label">Item Name</label>
-                                        <div class="detail_value item_name"></div>
+                                <div class="detail_options clearfix">
+                                    <a class="btn btn_green pull-right btn_edit glyphicon glyphicon-edit" href="/merchant/item/form/edit/"></a>
+                                    <div class="switch_container pull-right">
+                                        <div class="switch switch_activation">
+                                            <div class="btn_switch on"></div>
+                                        </div>
                                     </div>
+                                </div>
+
+                                <div class="other_info">
 
                                     <div class="detail_row">
                                         <label class="detail_label">Description</label>
@@ -118,17 +118,6 @@
                                         <label class="detail_label">Pricing and Attributes </label>
                                         <div class="detail_value pricing_attributes">
                                             <table>
-                                                <thead>
-                                                    <tr>
-                                                        <th colspan="3">Attributes</th>
-                                                        <th rowspan="2">Price<br/>(Rs.)</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Type</th>
-                                                        <th>Selection</th>
-                                                        <th>Name</th>
-                                                    </tr>
-                                                </thead>
                                             </table>
                                         </div>
                                     </div>

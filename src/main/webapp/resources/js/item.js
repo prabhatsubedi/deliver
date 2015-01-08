@@ -871,11 +871,14 @@ var data_categories_names = [];
                 var itemCategory = item.category;
                 var attributesTypes = item.attributesTypes;
 
+                document.title = item.name;
+                $('.item_info .form_head .item_name').html(item.name);
+                $('.item_info .form_head .item_price span').html(item.unitPrice);
+
                 for(var i = 0; i < itemImages.length; i++) {
                     $('.product_image .drop_zone').eq(i).html('<img src="' + itemImages[i].url + '" style="height: 100%;" class="img-responsive" />');
                 }
 
-                $('.item_info .item_name').html(item.name);
                 $('.item_info .description').html(item.description);
                 $('.item_info .additional_offer').html(item.additionalOffer);
 
@@ -888,17 +891,23 @@ var data_categories_names = [];
                 var brandId = storesBrand.id;
                 $('.item_info .brand_stores').html(item_stores);
 
-                var item_categories = '<li>' + itemCategory.name + '</li>';
+                var catName = itemCategory.name;
+                var item_categories = '<li>' + catName + '</li>';
                 var item_category = itemCategory.id;
-                function getChild(category) {
+                var child_cat_id;
+                    function getChild(category) {
                     if(category.child.length == 1) {
                         var childCat = category.child[0];
                         child_cat_id = childCat.id;
-                        item_categories += '<li>' + childCat.name + '</li>';
+                        catName = childCat.name;
+                        item_categories += '<li>' + catName + '</li>';
                         getChild(childCat);
                     }
                 }
                 getChild(itemCategory);
+
+                $('.heading h1').html(catName);
+                $('.heading .btn').attr('href', '/merchant/item/form/create/' + brandId + '/' + child_cat_id);
                 $('.item_info .item_category').html(item_categories);
 
                 $('.item_info .available_time').html(item.availableStartTime + " - " + item.availableEndTime);
@@ -911,19 +920,18 @@ var data_categories_names = [];
                     for(var i = 0; i < attributesTypes.length; i++) {
                         var attributesType = attributesTypes[i];
                         var itemAttributes = attributesType.itemsAttribute;
-                        attributes_types += '<tbody>';
+                        attributes_types += '<thead>';
                         attributes_types += '<tr>';
-                        attributes_types += '<td rowspan="' + itemAttributes.length + '">' + attributesType.type + '</td>';
-                        attributes_types += '<td rowspan="' + itemAttributes.length + '">' + (attributesType.multiSelect ? 'Multiple' : 'Single') + '</td>';
-                        var itemAttribute = itemAttributes[0];
-                        attributes_types += '<td>' + itemAttribute.attribute + '</td>';
-                        attributes_types += '<td>' + itemAttribute.unitPrice + '</td>';
+                        attributes_types += '<th colspan="3">' + attributesType.type + '</th>';
                         attributes_types += '</tr>';
-                        for(var j = 1; j < itemAttributes.length; j++) {
-                            itemAttribute = itemAttributes[j];
+                        attributes_types += '</thead>';
+                        attributes_types += '<tbody>';
+                        for(var j = 0; j < itemAttributes.length; j++) {
+                            var itemAttribute = itemAttributes[j];
                             attributes_types += '<tr>';
-                            attributes_types += '<td>' + itemAttribute.attribute + '</td>';
-                            attributes_types += '<td>' + itemAttribute.unitPrice + '</td>';
+                            attributes_types += '<td class="select_option"><span class="' + (attributesType.multiSelect ? 'multi_select' : 'single_select') + '"></span></td>';
+                            attributes_types += '<td class="attrib_name">' + itemAttribute.attribute + '</td>';
+                            attributes_types += '<td>Rs. ' + itemAttribute.unitPrice + '</td>';
                             attributes_types += '</tr>';
                         }
                         attributes_types += '</tbody>';
@@ -944,11 +952,13 @@ var data_categories_names = [];
                         if(items.length > 0) {
                             for(var j = 0; j < items.length; j++) {
                                 var item = items[j];
-                                var elem = $('.item_container_template').clone();
-                                if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
-                                $('.item_name a', elem).attr('href', '/merchant/item/view/' + item.id).html(item.name);
-                                $('.item_price span', elem).html(item.unitPrice);
-                                item_list += elem.html();
+                                if(item.id !=itemId) {
+                                    var elem = $('.item_container_template').clone();
+                                    if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
+                                    $('.item_name a', elem).attr('href', '/merchant/item/view/' + item.id).html(item.name);
+                                    $('.item_price span', elem).html(item.unitPrice);
+                                    item_list += elem.html();
+                                }
                             }
 
                             $('.items_container .form_content').html(item_list);

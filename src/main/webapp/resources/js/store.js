@@ -329,6 +329,7 @@ if(typeof(Store) == "undefined") var Store = {};
                 $('#brand_image').html('<img src="' + storeBrand.brandImage + '" style="height: 100%;" class="img-responsive" />');
                 $('#brand_logo').html('<img src="' + storeBrand.brandLogo + '" style="height: 100%;" class="img-responsive" />');
                 $('.store_name').html(storeBrand.brandName);
+                document.title = storeBrand.brandName;
                 $('.open_time').html(storeBrand.openingTime + ' - ' + storeBrand.closingTime);
                 $('.categories').html(storeBrand.brandName);
                 $('.store_location').html(storeBrand.brandName);

@@ -421,7 +421,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public List<ItemEntity> findCategoriesItems(RequestJsonDto requestJson) throws Exception {
         Integer categoryId = requestJson.getParentCategoryId();
         Integer brandId = requestJson.getCategoryStoreId();
-        return merchantDaoService.getCategoriesItems(categoryId, brandId);
+        List<ItemEntity> items = merchantDaoService.getCategoriesItems(categoryId, brandId);
+           if(items.size()>0){
+               for (ItemEntity item: items){
+                   item.getCategory().setItem(null);
+               }
+           }
+        return items;
     }
 
     @Override
@@ -497,16 +503,20 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
             if(childsChildId.size() > 0){
                 List<ItemEntity> categoriesItems = merchantDaoService.findItemByCategory(childsChildId);
-                for(ItemEntity item: categoriesItems){
-                    item.setCategory(null);
-                    item.setStoresBrand(null);
+                if(categoriesItems.size() > 0){
+                    for(ItemEntity item: categoriesItems){
+                        item.setCategory(null);
+                        item.setStoresBrand(null);
+                    }
                 }
                 childCategory.setItem(categoriesItems);
             }else{
-                List<ItemEntity> categoriesItems = merchantDaoService.getCategoriesItems(childCategory.getId(), childCategory.getStoresBrand().getId());
-                for(ItemEntity item: categoriesItems){
-                    item.setCategory(null);
-                    item.setStoresBrand(null);
+                List<ItemEntity> categoriesItems = merchantDaoService.getCategoriesItems(childCategory.getId(), storeId);
+                if(categoriesItems.size() > 0){
+                    for(ItemEntity item: categoriesItems){
+                        item.setCategory(null);
+                        item.setStoresBrand(null);
+                    }
                 }
                 childCategory.setItem(categoriesItems);
             }

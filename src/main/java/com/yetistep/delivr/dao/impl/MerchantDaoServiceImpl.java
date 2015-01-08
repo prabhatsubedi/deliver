@@ -291,7 +291,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
         criteria.add(Restrictions.and(Restrictions.eq("category.id", categoryId), Restrictions.eq("storesBrand.id", brandId)));
         items = criteria.list();
-        return items.size() > 0 ? items : null;
+        return items;
     }
 
     @Override

@@ -103,6 +103,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
         DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();
+
         dBoySubmittedAmount.setAmountReceived(requestJsonDto.getSubmittedAmount());
         dBoySubmittedAmount.setDeliveryBoy(dBoy);
         dBoySubmittedAmounts.add(dBoySubmittedAmount);

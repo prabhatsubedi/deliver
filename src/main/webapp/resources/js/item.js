@@ -54,7 +54,6 @@ var data_categories_names = [];
             size: 5
         });
 
-
         var loadPopulate = false;
 
         function populateEdit(itemId) {
@@ -268,7 +267,7 @@ var data_categories_names = [];
                             var subCategory = $('.select_category_template').clone();
                             var cat_list = '';
                             for(var i = 0; i < categories.length; i++) {
-                                cat_list += '<option value="' + categories[i].id + '" ' + (currentCatId == categories[i].id ? 'selected="selected"' : '') + '>' + categories[i].name + '</option>';
+                                cat_list += '<option value="' + categories[i].id + '" ' + (currentCatId == categories[i].id ? 'selected="selected"' : '') + (categories[i].item == undefined ? '' : 'data-item="true"') + '>' + categories[i].name + '</option>';
                             }
                             $('select', subCategory).addClass('category_options').append(cat_list);
                             $('#category_container').append(subCategory.html());
@@ -290,6 +289,13 @@ var data_categories_names = [];
 
         }
 
+        $('.category_options').on('show.bs.dropdown', function () {
+            if(!$('#item_brand').valid()) {
+                alert("Please select store first.");
+                return false;
+            }
+        })
+
         $('#category_container .category_options').live('change', function(){
             var brandId = $('#item_brand').val();
             var catId = $(this).val();
@@ -307,8 +313,13 @@ var data_categories_names = [];
             $('.add_categories, #new_category').removeClass('hidden');
         });
         $('#add_subcategory').click(function(){
-            $('.add_categories, #new_category, #new_subcategory').addClass('hidden');
-            $('.add_categories, #new_subcategory').removeClass('hidden');
+            var last_child = $('#category_container select.category_options').last();
+            if($('option:selected', last_child).attr('data-item') == undefined) {
+                $('.add_categories, #new_category, #new_subcategory').addClass('hidden');
+                $('.add_categories, #new_subcategory').removeClass('hidden');
+            } else {
+                alert('Subcategory cannot be added to this category. Since, this category contain Items.');
+            }
         });
         $('#save_category').click(function(){
             if(!$('#new_category').hasClass('hidden')) {
@@ -469,6 +480,11 @@ var data_categories_names = [];
 
         $('#form_item').validate({
             submitHandler: function() {
+
+                if($('#category_container select.category_options').length < 2) {
+                    alert('Item is not allowed to add to main category.');
+                    return false;
+                }
 
                 var data = {};
                 var item = {};

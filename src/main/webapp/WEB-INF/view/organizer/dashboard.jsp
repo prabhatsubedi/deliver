@@ -18,7 +18,7 @@
     <%@include file="../includes/header.jsp" %>
 
     <div class="body">
-        body
+        God's View
     </div>
 </div>
 

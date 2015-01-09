@@ -279,10 +279,14 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/save_cart", method = RequestMethod.POST)
+    @RequestMapping(value = "/add_cart", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> saveCart(@RequestHeader HttpHeaders headers, @RequestBody CartEntity cart) {
         try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
+
             clientService.saveCart(cart);
             ServiceResponse serviceResponse = new ServiceResponse("Successfully add to cart");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

@@ -14,6 +14,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface CartDaoService extends GenericDaoService<Integer, CartEntity>{
-     public List<Integer> findCarts(Long clientFBId, Integer brandId) throws Exception;
-     public List<Integer> findCartAttributes(List<Integer> carts) throws Exception;
+    public List<Integer> findCarts(Long clientFBId, Integer brandId) throws Exception;
+
+    public Boolean deleteCarts(List<Integer> carts) throws Exception;
+
 }

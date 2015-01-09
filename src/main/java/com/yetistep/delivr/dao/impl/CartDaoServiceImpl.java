@@ -85,12 +85,13 @@ public class CartDaoServiceImpl implements CartDaoService{
     }
 
     @Override
-    public List<Integer> findCartAttributes(List<Integer> carts) throws Exception {
-        List<Integer> cartAttributes;
-        String sql  = "SELECT id FROM cart_attributes WHERE cart_id IN(:carts)";
-        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+    public Boolean deleteCarts(List<Integer> carts) throws Exception {
+        String sqlAtt = "Delete from cart where id IN(:carts)";
+        SQLQuery query = getCurrentSession().createSQLQuery(sqlAtt);
         query.setParameterList("carts", carts);
-        cartAttributes = query.list();
-        return cartAttributes;
+        query.executeUpdate();
+        return true;
     }
+
+
 }

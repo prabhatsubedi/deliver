@@ -49,6 +49,9 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     CartDaoService cartDaoService;
 
+    @Autowired
+    CartAttributesDaoService cartAttributesDaoService;
+
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++ Getting all brands +++++++++++++++");
@@ -62,8 +65,8 @@ public class ClientServiceImpl implements ClientService {
         String lat = null;
         String lon = null;
         if (requestJsonDto.getGpsInfo() == null) {
-            CustomerEntity customerEntity =  customerDaoService.find(requestJsonDto.getCustomerInfo().getClientId());
-            if(customerEntity == null)
+            CustomerEntity customerEntity = customerDaoService.find(requestJsonDto.getCustomerInfo().getClientId());
+            if (customerEntity == null)
                 throw new YSException("VLD011");
 
             lat = customerEntity.getLatitude();
@@ -87,11 +90,11 @@ public class ClientServiceImpl implements ClientService {
         if (isBrandWitDistanceSort) {
             /* Now Ignore Brand */
             List<Integer> ignoreList = new ArrayList<>();
-            for(StoresBrandEntity storesBrandEntity : featuredBrands){
+            for (StoresBrandEntity storesBrandEntity : featuredBrands) {
                 ignoreList.add(storesBrandEntity.getId());
             }
 
-            for(StoresBrandEntity storesBrandEntity : priorityBrands) {
+            for (StoresBrandEntity storesBrandEntity : priorityBrands) {
                 ignoreList.add(storesBrandEntity.getId());
             }
 
@@ -138,12 +141,12 @@ public class ClientServiceImpl implements ClientService {
         // Perform sorted store pagination
         PageInfo pageInfo = null;
         List<StoresBrandEntity> sortedList = new ArrayList<>();
-        if(storeBrandResult.size() > 0){
+        if (storeBrandResult.size() > 0) {
             Integer pageId = 1;
-            if(requestJsonDto.getPageInfo()!=null)
+            if (requestJsonDto.getPageInfo() != null)
                 pageId = requestJsonDto.getPageInfo().getPageNumber();
 
-            StaticPagination staticPagination= new StaticPagination();
+            StaticPagination staticPagination = new StaticPagination();
             staticPagination.paginate(storeBrandResult, pageId);
             sortedList = (List<StoresBrandEntity>) staticPagination.getList();
             staticPagination.setList(null);
@@ -167,9 +170,9 @@ public class ClientServiceImpl implements ClientService {
         CategoryDto categoryDto = null;
         List<CategoryEntity> categoryEntities = itemDaoService.findItemCategory(brandId);
 
-        for(CategoryEntity categoryEntity : categoryEntities){
+        for (CategoryEntity categoryEntity : categoryEntities) {
             categoryDto = new CategoryDto();
-            if(categoryEntity.getParentId() == null){
+            if (categoryEntity.getParentId() == null) {
                 categoryDto.setValues(categoryEntity);
                 categoryDto.setHasNext(false);
             } else {
@@ -178,20 +181,20 @@ public class ClientServiceImpl implements ClientService {
                 Integer hasPrevParent = 0;
                 CategoryEntity cat = null;
                 //LOOP for parent (Search Parent and Category)
-                while(hasPrevParent != null) {
+                while (hasPrevParent != null) {
                     // 2nd Level Search
-                    if(resultCat.getParent().getParent()==null) {
+                    if (resultCat.getParent().getParent() == null) {
                         categoryDto.setValues(resultCat.getParent());
                         break;
                     }
 
                     //Multi Level Search
-                    if(cat == null)
+                    if (cat == null)
                         cat = resultCat.getParent();
                     else
                         cat = cat.getParent();
 
-                    if(cat == null || cat.getParent() == null)
+                    if (cat == null || cat.getParent() == null)
                         break;
 
                     hasPrevParent = cat.getParent().getId();
@@ -202,13 +205,13 @@ public class ClientServiceImpl implements ClientService {
                 categoryDto.setHasNext(true);
             }
 
-           Boolean isAlreadyContain = false;
-           for(CategoryDto temp : categoryDtoList){
-               if(temp.getId() == categoryDto.getId())
-                   isAlreadyContain  = true;
-           }
+            Boolean isAlreadyContain = false;
+            for (CategoryDto temp : categoryDtoList) {
+                if (temp.getId() == categoryDto.getId())
+                    isAlreadyContain = true;
+            }
 
-           if(!isAlreadyContain)
+            if (!isAlreadyContain)
                 categoryDtoList.add(categoryDto);
 
         }
@@ -223,32 +226,32 @@ public class ClientServiceImpl implements ClientService {
         Integer nextId = categoryDto.getId();
         List<CategoryEntity> categoryEntities = itemDaoService.findItemCategory(brandId);
 
-        if(categoryEntities == null || categoryEntities.size() == 0)
+        if (categoryEntities == null || categoryEntities.size() == 0)
             throw new YSException("VLD012");
 
-        for(CategoryEntity categoryEntity : categoryEntities){
+        for (CategoryEntity categoryEntity : categoryEntities) {
             CategoryEntity cat = null;
             CategoryEntity resultCat = categoryDaoService.find(categoryEntity.getId());
             CategoryDto resultDto = new CategoryDto();
             Integer hasNext = 0;
-            while(hasNext !=null){
+            while (hasNext != null) {
 
-                if(resultCat.getParent().getId()==nextId) {
+                if (resultCat.getParent().getId() == nextId) {
                     resultDto.setValues(resultCat);
                     resultDto.setHasNext(false);
                     hasNext = null;
                     break;
                 }
 
-                if(cat == null)
+                if (cat == null)
                     cat = resultCat.getParent();
                 else
                     cat = cat.getParent();
 
-                if(cat == null || cat.getParent() == null)
+                if (cat == null || cat.getParent() == null)
                     break;
 
-                if(cat.getParent().getId() == nextId){
+                if (cat.getParent().getId() == nextId) {
                     resultDto.setValues(cat);
                     resultDto.setHasNext(true);
                     hasNext = null;
@@ -258,14 +261,14 @@ public class ClientServiceImpl implements ClientService {
                 resultDto.setValues(cat.getParent());
             }
 
-            if(hasNext == null){
+            if (hasNext == null) {
                 Boolean isAlreadyContain = false;
-                for(CategoryDto temp : list){
-                    if(temp.getId() == resultDto.getId())
-                        isAlreadyContain  = true;
+                for (CategoryDto temp : list) {
+                    if (temp.getId() == resultDto.getId())
+                        isAlreadyContain = true;
                 }
 
-                if(!isAlreadyContain)
+                if (!isAlreadyContain)
                     list.add(resultDto);
             }
         }
@@ -291,8 +294,8 @@ public class ClientServiceImpl implements ClientService {
         return false;
     }
 
-    private void setStoreOpenSet(List<StoresBrandEntity> storesBrandEntities) throws Exception{
-        for(StoresBrandEntity storesBrandEntity : storesBrandEntities) {
+    private void setStoreOpenSet(List<StoresBrandEntity> storesBrandEntities) throws Exception {
+        for (StoresBrandEntity storesBrandEntity : storesBrandEntities) {
             storesBrandEntity.setOpenStatus(DateUtil.isTimeBetweenTwoTime(storesBrandEntity.getOpeningTime().toString(),
                     storesBrandEntity.getClosingTime().toString(), DateUtil.getCurrentTime().toString()));
         }
@@ -301,8 +304,8 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public OrderEntity getOrderById(Integer orderId) throws Exception {
         OrderEntity order = orderDaoService.find(orderId);
-        if(order == null){
-           throw new YSException("VLD017");
+        if (order == null) {
+            throw new YSException("VLD017");
         }
 
         AddressEntity address = new AddressEntity();
@@ -336,8 +339,8 @@ public class ClientServiceImpl implements ClientService {
         order.setCustomer(customer);
 
         List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
-        for(ItemsOrderEntity itemOrder: itemsOrder){
-            if(itemOrder.getItem() != null){
+        for (ItemsOrderEntity itemOrder : itemsOrder) {
+            if (itemOrder.getItem() != null) {
                 ItemEntity item = new ItemEntity();
                 item.setId(itemOrder.getItem().getId());
                 item.setName(itemOrder.getItem().getName());
@@ -356,18 +359,18 @@ public class ClientServiceImpl implements ClientService {
         log.info("++++++++++ Getting Items of Brand " + brandId + " +++++++++++");
 
         List<ItemDto> items = itemDaoService.findItems(brandId, categoryId);
-        if(items.size() == 0)
+        if (items.size() == 0)
             throw new YSException("ITM001");
 
-        for(ItemDto itemDto : items){
+        for (ItemDto itemDto : items) {
             BigDecimal price = itemDto.getPrice();
             //Service Charge
-            if(itemDto.getServiceCharge()!=null && BigDecimalUtil.isNotZero(itemDto.getServiceCharge())) {
+            if (itemDto.getServiceCharge() != null && BigDecimalUtil.isNotZero(itemDto.getServiceCharge())) {
                 price = price.add(BigDecimalUtil.percentageOf(price, itemDto.getServiceCharge()));
             }
 
             //Vat
-            if(itemDto.getVat()!=null && BigDecimalUtil.isNotZero(itemDto.getVat())) {
+            if (itemDto.getVat() != null && BigDecimalUtil.isNotZero(itemDto.getVat())) {
                 price = price.add(BigDecimalUtil.percentageOf(price, itemDto.getVat()));
             }
 
@@ -386,28 +389,28 @@ public class ClientServiceImpl implements ClientService {
         log.info("++++++++++++ Getting Item Detail of id " + itemId + " +++++++++++++");
 
         ItemEntity itemEntity = itemDaoService.find(itemId);
-        if(itemEntity == null)
+        if (itemEntity == null)
             throw new YSException("ITM001");
 
-        if(!itemEntity.getStatus().toString().equals(Status.ACTIVE.toString()))
+        if (!itemEntity.getStatus().toString().equals(Status.ACTIVE.toString()))
             throw new YSException("ITM002");
 
 
-        if(itemEntity.getAttributesTypes().size() == 0)
+        if (itemEntity.getAttributesTypes().size() == 0)
             itemEntity.setAttributesTypes(null);
 
-        if(itemEntity.getAttributesTypes()!=null && itemEntity.getAttributesTypes().size() !=0) {
-            for(ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()){
+        if (itemEntity.getAttributesTypes() != null && itemEntity.getAttributesTypes().size() != 0) {
+            for (ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()) {
                 //itemsAttributesTypeEntity.setId(null);
                 itemsAttributesTypeEntity.setItem(null);
-                for(ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
+                for (ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
                     //itemsAttributeEntity.setId(null);
                     itemsAttributeEntity.setType(null);
                 }
             }
         }
 
-        for(ItemsImageEntity itemsImageEntity : itemEntity.getItemsImage()) {
+        for (ItemsImageEntity itemsImageEntity : itemEntity.getItemsImage()) {
             itemsImageEntity.setId(null);
         }
 
@@ -428,27 +431,29 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void saveCart(CartEntity cart) throws Exception {
         log.info("+++++++++++++ Performing Add to Cart of " + cart.getCustomer().getFacebookId() + " +++++++++++");
-        //Check The Cart If Customer Have Previous Cart on different store
-        //If cart on different brand then delete it
-        //cartDaoService.save(cart);
-         //This Will Delete If Cart from Another Brand
+        /*Check The Cart If Customer Have Previous Cart on different store
+        If cart on different brand then delete it */
+        //This Will Delete If Cart from Another Brand
         List<Integer> cartList = cartDaoService.findCarts(cart.getCustomer().getFacebookId(), cart.getStoresBrand().getId());
-        if(cartList.size() > 0){
-            List<Integer> cartAttributes = cartDaoService.findCartAttributes(cartList);
-            //Now Delete Those Operation
-            // Cart and Cart Attributes
+        if (cartList.size() > 0) {
+            log.info("++++++++ Deleting previous cart and and its attributes ++++++++");
+            List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cartList);
+            // Delete Cart Attributes
+            if (cartAttributes.size() > 0)
+                cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+
+            //Delete Carts
+            cartDaoService.deleteCarts(cartList);
         }
 
-            //cartDaoService.delete(cart);
-        //}
 
-        if(cart.getCartAttributes()!=null && cart.getCartAttributes().size() > 0){
-            for(CartAttributesEntity cartAttributesEntity : cart.getCartAttributes()){
+        if (cart.getCartAttributes() != null && cart.getCartAttributes().size() > 0) {
+            for (CartAttributesEntity cartAttributesEntity : cart.getCartAttributes()) {
                 cartAttributesEntity.setCart(cart);
             }
         }
-//
-//        cartDaoService.save(cart);
+
+        cartDaoService.save(cart);
 
     }
 }

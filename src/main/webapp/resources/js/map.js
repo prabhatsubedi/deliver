@@ -177,7 +177,9 @@ $(document).ready(function(){
 
 
     locationToKey = function(location) {
-        return (location.lat()+ '_' + location.lng()).replace(/[.-]/g, '_');
+        var latitude = location.latitude == undefined ? location.lat() : location.latitude ;
+        var longitude = location.longitude == undefined ? location.lng() : location.longitude ;
+        return (latitude+ '_' + longitude).replace(/[.-]/g, '_');
     }
 
     latLngToLocation = function(latitude, longitude) {
@@ -432,16 +434,30 @@ $(document).ready(function(){
                             }
 
                             var geoObj = {};
-                            geoObj.latitude = location.lat();
-                            geoObj.longitude = location.lng();
-                            geoObj.name = name === undefined ? $('#brand_name').val() : name;
-                            geoObj.street = sublocality === undefined ? '' : sublocality;
-                            geoObj.city = city === undefined ? '' : city;
+                            var geoPointData = location.geoPointData;
+                            if(geoPointData != undefined) {
+                                geoObj.latitude = geoPointData.latitude;
+                                geoObj.longitude = geoPointData.longitude;
+                                geoObj.name = geoPointData.name;
+                                geoObj.street = geoPointData.street;
+                                geoObj.city = geoPointData.city;
+//                            geoObj.postalCode = geoPointData.postalCode;
+                                geoObj.state = geoPointData.state;
+                                geoObj.country = geoPointData.country;
+                                geoObj.contactNo = geoPointData.contactNo;
+                                geoObj.contactPerson = geoPointData.contactPerson;
+                            } else {
+                                geoObj.latitude = location.lat();
+                                geoObj.longitude = location.lng();
+                                geoObj.name = name === undefined ? $('#brand_name').val() : name;
+                                geoObj.street = sublocality === undefined ? '' : sublocality;
+                                geoObj.city = city === undefined ? '' : city;
 //                            geoObj.postalCode = postalCode === undefined ? '' : postalCode;
-                            geoObj.state = state === undefined ? '' : state;
-                            geoObj.country = country;
-                            geoObj.contactNo = "";
-                            geoObj.contactPerson = "";
+                                geoObj.state = state === undefined ? '' : state;
+                                geoObj.country = country;
+                                geoObj.contactNo = "";
+                                geoObj.contactPerson = "";
+                            }
 
                             removeAnimation();
                             marker = new google.maps.Marker({
@@ -523,7 +539,8 @@ $(document).ready(function(){
                         alert('No results found');
                     }
                 } else {
-                    alert("Marker placing failed. Please click again to place marker.");
+                    addStoreMarker(location, name);
+//                    alert("Marker placing failed. Please click again to place marker.");
                 }
             });
         }

@@ -3,6 +3,10 @@ if(typeof(Store) == "undefined") var Store = {};
 (function ($){
 
     Store.loadAddStore = function() {
+
+        var action = Main.getURLvalue(3);
+        var storeId = Main.getURLvalue(4);
+
         $('option:selected').removeAttr('selected');
         Image.dropZone('#brand_image_input', '#brand_image');
         Image.dropZone('#brand_logo_input', '#brand_logo');
@@ -250,6 +254,72 @@ if(typeof(Store) == "undefined") var Store = {};
             }
         });
 
+        if(action == "edit") {
+
+            $('.heading h1').html('Store Edit');
+            document.title = 'Store Edit';
+
+            if(storeId != undefined) {
+
+                var callback = function (status, data) {
+
+                    if (data.success == true) {
+
+                        var storeBrand = data.params.storesBrand;
+                        console.log(storeBrand);
+
+                        $('#brand_image').html('<img src="' + storeBrand.brandImage + '" style="height: 100%;" class="img-responsive" />');
+                        $('#brand_logo').html('<img src="' + storeBrand.brandLogo + '" style="height: 100%;" class="img-responsive" />');
+                        $('#brand_name').val(storeBrand.brandName);
+                        $('#open_time').val(storeBrand.openingTime);
+                        $('#open_time').selectpicker('refresh');
+                        $('#close_time').val(storeBrand.closingTime);
+                        $('#close_time').selectpicker('refresh');
+                        $('#brand_url').val(storeBrand.brandUrl);
+
+                        var brandsCategory = storeBrand.brandsCategory;
+                        var storeCatsArr = [];
+                        for(var i = 0; i < brandsCategory.length; i++) {
+                            var itemCat = brandsCategory[i];
+                            storeCatsArr.push(itemCat.id);
+                        }
+                        $('#store_categories').val(storeCatsArr);
+                        $('#store_categories').selectpicker('refresh');
+
+                        var geoPointDatas = {};
+                        var stores = storeBrand.store;
+                        for(var i = 0; i < stores.length; i++) {
+                            var store = stores[i];
+                            var location = latLngToLocation(store.latitude, store.longitude);;
+                            var geoPointData = {};
+                            geoPointData.name = store.name;
+                            geoPointData.street = store.street;
+                            geoPointData.city = store.city;
+                            geoPointData.state = store.state;
+                            geoPointData.country = store.country;
+                            geoPointData.contactNo = store.contactNo;
+                            geoPointData.contactPerson = store.contactPerson;
+                            geoPointData.latitude = store.latitude;
+                            geoPointData.longitude = store.longitude;
+                            location.geoPointData = geoPointData;
+                            addStoreMarker(location);
+                        }
+
+                    } else {
+                        alert(data.message);
+                    }
+
+                };
+
+                callback.loaderDiv = "body";
+                callback.requestType = "GET";
+
+                Main.request('/merchant/get_store_detail', {}, callback, {id: storeId});
+
+            }
+
+        }
+
     };
 
     Store.addStore = function(data, headers) {
@@ -378,20 +448,19 @@ if(typeof(Store) == "undefined") var Store = {};
                     $('.city', elem).html(store.city + ', ' + store.state + ', ' + store.country);
                     $('.contact_person', elem).html(store.contactPerson);
                     $('.contact_no', elem).html(store.contactNo);
-                    $('.btn_view_map', elem).attr('data-index', i);
                     var location = latLngToLocation(store.latitude, store.longitude);
+                    $('.btn_view_map', elem).attr('data-id', locationToKey(location));
                     addStoreMarker(location);
                     store_location += elem.html();
                 }
-
                 $('.store_location').html(store_location);
-                removeAnimation();
 
                 $('.btn_view_map').live('click', function(){
-                    var marker_index = $(this).attr('data-index');
-                    if(marker_index != undefined && $.isNumeric(marker_index) && marker_index >= 0 && marker_index < markers.length) {
-                        google.maps.event.trigger(markers[marker_index], 'click');
-                        map.panTo(markers[marker_index].position);
+                    var geoKey = $(this).attr('data-id');
+                    if(geoKey != undefined) {
+                        var current_index = Object.keys(arrGeoPoints).indexOf(geoKey);
+                        google.maps.event.trigger(markers[current_index], 'click');
+                        map.panTo(markers[current_index].position);
                     }
                 });
 

@@ -73,6 +73,12 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         deliveryBoy.setTotalEarnings(new BigDecimal(0));
         deliveryBoy.setActiveOrderNo(0);
 
+        deliveryBoy.setBankAmount(BigDecimal.ZERO);
+        deliveryBoy.setWalletAmount(BigDecimal.ZERO);
+        deliveryBoy.setAdvanceAmount(BigDecimal.ZERO);
+        deliveryBoy.setAvailableAmount(BigDecimal.ZERO);
+        deliveryBoy.setPreviousDue(BigDecimal.ZERO);
+
         String profileImage = deliveryBoy.getUser().getProfileImage();
         deliveryBoy.getUser().setProfileImage(null);
         deliveryBoyDaoService.save(deliveryBoy);

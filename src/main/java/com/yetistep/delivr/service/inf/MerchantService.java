@@ -51,4 +51,6 @@ public interface MerchantService {
 
     public List<CategoryEntity> findParentCategoriesItems(RequestJsonDto requestJson) throws Exception;
 
+    public void updateStore(RequestJsonDto requestJson) throws Exception;
+
 }

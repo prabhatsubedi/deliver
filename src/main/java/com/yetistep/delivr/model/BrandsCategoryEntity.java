@@ -1,6 +1,7 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -32,7 +33,7 @@ public class BrandsCategoryEntity implements Serializable {
     }
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "stores_brand_id")
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
@@ -43,7 +44,7 @@ public class BrandsCategoryEntity implements Serializable {
     }
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "category_id")
     public CategoryEntity getCategory() {
         return category;

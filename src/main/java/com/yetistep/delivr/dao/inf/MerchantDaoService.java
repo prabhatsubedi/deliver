@@ -17,9 +17,11 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public void saveStore(List<StoreEntity> values) throws Exception;
 
+    public Boolean saveStoresBrand(StoresBrandEntity value) throws Exception;
+
     public void saveItem(ItemEntity item) throws Exception;
 
-    public void updateStoresBrand(StoresBrandEntity value) throws Exception;
+    public Boolean updateStoresBrand(StoresBrandEntity value) throws Exception;
 
     public StoresBrandEntity getBrandByBrandName(String brandName) throws Exception;
 
@@ -62,4 +64,10 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public List<ItemEntity> findItemByCategory(List<Integer> categoryId) throws Exception;
 
     public Boolean findPartnerShipStatusFromOrderId(Integer orderId) throws Exception;
+
+    public  void deleteBrandsCategory(BrandsCategoryEntity value) throws  Exception;
+
+    public  void deleteStore(StoreEntity value) throws Exception;
+
+    public void updateStores(List<StoreEntity> values) throws Exception;
 }

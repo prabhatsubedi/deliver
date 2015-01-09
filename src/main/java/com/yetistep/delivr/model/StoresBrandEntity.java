@@ -69,7 +69,7 @@ public class StoresBrandEntity implements Serializable {
     }
 
 
-    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<StoreEntity> getStore() {
         return store;
@@ -79,7 +79,7 @@ public class StoresBrandEntity implements Serializable {
         this.store = store;
     }
 
-    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<BrandsCategoryEntity> getBrandsCategory() {
         return brandsCategory;

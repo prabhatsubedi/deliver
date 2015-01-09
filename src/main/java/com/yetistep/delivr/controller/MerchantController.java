@@ -48,6 +48,21 @@ public class MerchantController {
         }
     }
 
+    @RequestMapping(value = "/update_store", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateStore(@RequestBody RequestJsonDto requestJson) {
+        try {
+            merchantService.updateStore(requestJson);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Store(Stores) has been updated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while adding store", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @ResponseBody
     @RequestMapping(value = "/get_parent_categories", method = RequestMethod.GET)
     public ResponseEntity<ServiceResponse> getParentCategories(){

@@ -32,7 +32,7 @@ public class ItemsStoreEntity implements Serializable {
     }
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "item_id")
     public ItemEntity getItem() {
         return item;
@@ -43,7 +43,7 @@ public class ItemsStoreEntity implements Serializable {
     }
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "store_id")
     public StoreEntity getStore() {
         return store;

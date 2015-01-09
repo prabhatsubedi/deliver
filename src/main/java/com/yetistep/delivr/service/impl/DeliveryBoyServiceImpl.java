@@ -160,7 +160,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if (profileImage != null && !profileImage.isEmpty()) {
 
             log.info("Deleting Profile Image of delivery boy to S3 Bucket ");
-            AmazonUtil.deleteFileFromBucket(dBoyEntity.getUser().getProfileImage());
+            AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(dBoyEntity.getUser().getProfileImage()));
 
             log.info("Uploading Profile Image of delivery boy to S3 Bucket ");
 

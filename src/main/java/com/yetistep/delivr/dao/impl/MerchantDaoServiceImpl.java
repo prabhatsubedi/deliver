@@ -56,6 +56,11 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
+    public void deleteBrandsCategory(BrandsCategoryEntity value) throws Exception {
+        getCurrentSession().delete(value);
+    }
+
+    @Override
     public Session getCurrentSession() throws Exception {
         Session session = sessionFactory.getCurrentSession();
         return session;
@@ -76,11 +81,33 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public void updateStoresBrand(StoresBrandEntity value) throws Exception {
-        getCurrentSession().update(value);
+    public void updateStores(List<StoreEntity> values) throws Exception {
+        Integer i = 0;
+        for (StoreEntity value: values) {
+            getCurrentSession().update(value);
+            if ( i % 20 == 0 ) { //20, same as the JDBC batch size
+                //flush a batch of inserts and release memory:
+                getCurrentSession().flush();
+                getCurrentSession().clear();
+            }
+            i++;
+        }
     }
 
 
+
+
+    @Override
+    public Boolean updateStoresBrand(StoresBrandEntity value) throws Exception {
+        getCurrentSession().merge(value);
+        return true;
+    }
+
+    @Override
+    public Boolean saveStoresBrand(StoresBrandEntity value) throws Exception {
+        getCurrentSession().save(value);
+        return true;
+    }
 
     @Override
     public StoresBrandEntity getBrandByBrandName(String brandName) throws Exception {
@@ -111,6 +138,11 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Override
     public StoreEntity getStoreById(Integer id) throws Exception {
         return (StoreEntity) getCurrentSession().get(StoreEntity.class, id);
+    }
+
+    @Override
+    public void deleteStore(StoreEntity value) throws Exception{
+        getCurrentSession().delete(value);
     }
 
     @Override

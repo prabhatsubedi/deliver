@@ -14,8 +14,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -176,7 +175,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
             for (Integer categoryId: categories){
                     BrandsCategoryEntity newBrandsCategory = new BrandsCategoryEntity();
-                    CategoryEntity category = merchantDaoService.getCategoryById(categoryId);
+                    CategoryEntity category = new CategoryEntity();
+                    category.setId(categoryId);
                     newBrandsCategory.setCategory(category);
                     newBrandsCategory.setStoresBrand(store.getStoresBrand());
                     brandsCategories.add(newBrandsCategory);
@@ -189,8 +189,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             store.getStoresBrand().setBrandImage(null);
 
         }
+        storesBrand.setStore(stores);
 
-        merchantDaoService.saveStore(stores);
+        merchantDaoService.saveStoresBrand(storesBrand);
 
         StoresBrandEntity brand = stores.get(0).getStoresBrand();
 
@@ -205,6 +206,140 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             brand.setBrandLogo(s3PathLogo);
             brand.setBrandImage(s3PathImage);
             merchantDaoService.updateStoresBrand(brand);
+        }
+    }
+
+    @Override
+    public void updateStore(RequestJsonDto requestJson) throws Exception {
+        List<StoreEntity> stores = requestJson.getStores();
+        StoresBrandEntity storesBrand = requestJson.getStoresBrand();
+        List<Integer> categories = requestJson.getCategories();
+
+        StoresBrandEntity dbStoresBrand = merchantDaoService.findBrandDetail(storesBrand.getId());
+
+        if(dbStoresBrand == null)
+            throw new YSException("VLD011");
+
+        String brandLogo = storesBrand.getBrandLogo();
+        String brandImage = storesBrand.getBrandImage();
+
+        String brandLogoUrl = dbStoresBrand.getBrandLogo();
+        String brandImageUrl = dbStoresBrand.getBrandImage();
+
+        dbStoresBrand.setBrandName(storesBrand.getBrandName());
+        dbStoresBrand.setBrandUrl(storesBrand.getBrandUrl());
+        dbStoresBrand.setOpeningTime(storesBrand.getOpeningTime());
+        dbStoresBrand.setClosingTime(storesBrand.getClosingTime());
+        dbStoresBrand.setClosingTime(storesBrand.getClosingTime());
+        dbStoresBrand.setOpenStatus(storesBrand.getOpenStatus());
+
+
+        Map<Integer, StoreEntity> storeWithId = new HashMap<Integer, StoreEntity>();
+        Map<Integer, StoreEntity> dbStoreWithId = new HashMap<Integer, StoreEntity>();
+
+        List<BrandsCategoryEntity> dbBrandsCategories = dbStoresBrand.getBrandsCategory();
+        Map<Integer, Integer> brandCategoriesIdList = new HashMap<Integer, Integer>();
+        //Map<Integer, BrandsCategoryEntity> brandCategoriesMap= new HashMap<Integer, BrandsCategoryEntity>();
+        for (BrandsCategoryEntity brandsCategory: dbBrandsCategories){
+            //if (categories.contains(brandsCategory.getCategory().getId()) && brandsCategory.getStoresBrand().getId() == storesBrand.getId()) {
+                brandCategoriesIdList.put(brandsCategory.getCategory().getId(), brandsCategory.getId());
+           // }
+            //brandCategoriesMap.put(brandsCategory.getId(), brandsCategory);
+        }
+
+        /*for (BrandsCategoryEntity dbCategory: dbBrandsCategories){
+            if(!categories.contains(dbCategory.getCategory().getId())){
+                dbBrandsCategories.remove(dbCategory);
+            }
+        }*/
+       /* Iterator it = brandCategoriesIdList.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pairs = (Map.Entry)it.next();
+           if(!categories.contains(pairs.getKey())){
+               dbBrandsCategories.remove(brandCategoriesMap.get(pairs.getValue()));
+           }
+        }*/
+
+        //List<BrandsCategoryEntity> brandsCategories = new ArrayList<BrandsCategoryEntity>();
+        for (Integer categoryId: categories){
+            if(brandCategoriesIdList.get(categoryId) == null) {
+                BrandsCategoryEntity newBrandsCategory = new BrandsCategoryEntity();
+                //newBrandsCategory.setId(null);
+                CategoryEntity category = new CategoryEntity();
+                category.setId(categoryId);
+                newBrandsCategory.setCategory(category);
+                newBrandsCategory.setStoresBrand(dbStoresBrand);
+                dbBrandsCategories.add(newBrandsCategory);
+            }
+        }
+
+        dbStoresBrand.setBrandsCategory(dbBrandsCategories);
+        dbStoresBrand.setBrandLogo(null);
+        dbStoresBrand.setBrandImage(null);
+
+        List<StoreEntity> dbStores = dbStoresBrand.getStore();
+        List<Integer> storeIdList = new ArrayList<Integer>();
+
+        for (StoreEntity store: stores){
+            if(store.getId() == null){
+                dbStores.add(store);
+            }
+            storeIdList.add(store.getId());
+            store.setStoresBrand(dbStoresBrand);
+            storeWithId.put(store.getId(), store);
+        }
+
+        for (StoreEntity dbStore:dbStores){
+            if(dbStore.getId() != null)
+                dbStoreWithId.put(dbStore.getId(), dbStore);
+        }
+
+        Iterator itS = dbStoreWithId.entrySet().iterator();
+        while (itS.hasNext()) {
+            Map.Entry pairs = (Map.Entry)itS.next();
+            if(!storeIdList.contains(pairs.getKey())){
+                StoreEntity dbStore =  dbStoreWithId.get(pairs.getKey());
+                dbStore.setStatus(Status.INACTIVE);
+            }else{
+                StoreEntity newStore =  storeWithId.get(pairs.getKey());
+                StoreEntity dbStore =  dbStoreWithId.get(pairs.getKey());
+                dbStore.setName(newStore.getName());
+                dbStore.setContactNo(newStore.getContactNo());
+                dbStore.setStreet(newStore.getStreet());
+                dbStore.setCity(newStore.getCity());
+                dbStore.setState(newStore.getState());
+                dbStore.setCountry(newStore.getCountry());
+                dbStore.setLatitude(newStore.getLatitude());
+                dbStore.setLongitude(newStore.getLongitude());
+                dbStore.setContactPerson(newStore.getContactPerson());
+            }
+        }
+
+        dbStoresBrand.setStore(dbStores);
+
+        merchantDaoService.updateStoresBrand(dbStoresBrand);
+
+        String dir = MessageBundle.separateString("/", "Merchant_"+dbStoresBrand.getMerchant().getId(), "Brand_"+ dbStoresBrand.getId());
+        boolean isLocal = MessageBundle.isLocalHost();
+
+        if (brandLogo != null && !brandLogo.isEmpty()) {
+            log.info("Deleting brand log to S3 Bucket ");
+            AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(brandLogoUrl));
+            log.info("Uploading brand log to S3 Bucket ");
+            String brandLogoName = "brand_logo" + (isLocal ? "_tmp_" : "_") + dbStoresBrand.getId();
+            String s3PathLogo = GeneralUtil.saveImageToBucket(brandLogo, brandLogoName, dir, true);
+            dbStoresBrand.setBrandLogo(s3PathLogo);
+            merchantDaoService.updateStoresBrand(dbStoresBrand);
+        }
+
+        if (brandImage != null && !brandImage.isEmpty()) {
+            log.info("Deleting brand log to S3 Bucket ");
+            AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(brandImageUrl));
+            log.info("Uploading brand image to S3 Bucket ");
+            String brandImageName = "brand_image" + (isLocal ? "_tmp_" : "_") + dbStoresBrand.getId();
+            String s3PathImage = GeneralUtil.saveImageToBucket(brandImage, brandImageName, dir, true);
+            dbStoresBrand.setBrandImage(s3PathImage);
+            merchantDaoService.updateStoresBrand(dbStoresBrand);
         }
     }
 

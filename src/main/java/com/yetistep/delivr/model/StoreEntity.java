@@ -55,7 +55,7 @@ public class StoreEntity implements Serializable {
     }
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "stores_brand_id")
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
@@ -65,7 +65,7 @@ public class StoreEntity implements Serializable {
         this.storesBrand = storesBrand;
     }
 
-    @OneToMany(mappedBy = "store")
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsStoreEntity> getItemsStore() {
         return itemsStore;

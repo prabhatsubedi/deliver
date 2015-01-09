@@ -105,4 +105,16 @@ public class AmazonUtil {
         }
 
     }
+
+    public static String getAmazonS3Key(String fullPath) {
+        // URL May (http://example.com/Cat_Icons/hello.png) ||  example.com/Cat_Icons/hello.png
+        //Checking both condition url
+        if (fullPath.contains("://")) {
+            fullPath = fullPath.substring(fullPath.indexOf('/', 7) + 1);
+            //url = url.substring(url.indexOf("/") + 1);
+        } else {
+            fullPath = fullPath.substring(fullPath.indexOf("/") + 1);
+        }
+        return fullPath;
+    }
 }

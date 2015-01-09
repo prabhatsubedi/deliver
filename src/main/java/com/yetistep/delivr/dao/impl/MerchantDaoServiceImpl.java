@@ -320,4 +320,17 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
         return itemsStores;
     }
+
+    @Override
+    public Boolean findPartnerShipStatusFromOrderId(Integer orderId) throws Exception {
+        String sqlQuery = "SELECT m.partnership_status FROM merchants m " +
+                "INNER JOIN stores_brands sb on sb.merchant_id = m.id " +
+                "INNER JOIN stores s on s.stores_brand_id = sb.id " +
+                "INNER JOIN orders o on o.store_id = s.id where o.id =:orderId";
+
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("orderId", orderId);
+        Boolean partnerShipStatus = (Boolean) query.uniqueResult();
+        return partnerShipStatus;
+    }
 }

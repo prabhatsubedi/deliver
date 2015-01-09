@@ -60,4 +60,6 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public List<CategoryEntity> findFinalCategoryList(Integer brandId) throws Exception;
 
     public List<ItemEntity> findItemByCategory(List<Integer> categoryId) throws Exception;
+
+    public Boolean findPartnerShipStatusFromOrderId(Integer orderId) throws Exception;
 }

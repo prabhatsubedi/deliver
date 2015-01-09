@@ -46,6 +46,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Autowired
     ItemsOrderDaoService itemsOrderDaoService;
 
+    @Autowired
+    MerchantDaoService merchantDaoService;
+
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Delivery Boy +++++++++++++++++");
@@ -308,6 +311,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
             throw new YSException("ORD003");
         }
+        JobOrderStatus.traverseJobStatus(order.getOrderStatus(), JobOrderStatus.IN_ROUTE_TO_PICK_UP);
         order.setOrderStatus(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
         List<DBoyOrderHistoryEntity> orderHistoryEntities = order.getdBoyOrderHistories();
         for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: orderHistoryEntities){
@@ -323,6 +327,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
             throw new YSException("ORD003");
         }
+        JobOrderStatus.traverseJobStatus(order.getOrderStatus(), JobOrderStatus.AT_STORE);
         order.setOrderStatus(JobOrderStatus.AT_STORE);
         List<DBoyOrderHistoryEntity> orderHistoryEntities = order.getdBoyOrderHistories();
         for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: orderHistoryEntities){
@@ -339,6 +344,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
             throw new YSException("ORD003");
         }
+        JobOrderStatus.traverseJobStatus(order.getOrderStatus(), JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         order.setOrderStatus(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         return orderDaoService.update(order);
     }
@@ -350,6 +356,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(!orderEntity.getOrderVerificationCode().equals(order.getOrderVerificationCode())){
             throw new YSException("ORD004");
         }
+        JobOrderStatus.traverseJobStatus(order.getOrderStatus(), JobOrderStatus.DELIVERED);
         order.setDeliveryStatus(DeliveryStatus.SUCCESSFUL);
         order.setOrderStatus(JobOrderStatus.DELIVERED);
         order.setOrderVerificationStatus(true);
@@ -371,6 +378,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
         deliveryBoyEntity.setTotalOrderDelivered(deliveryBoyEntity.getTotalOrderDelivered() + 1);
         deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered() - 1);
+        /*Accounting Implementation*/
+        boolean partnerShipStatus = merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());
+        courierBoyAccountings(deliveryBoyEntity, order, partnerShipStatus);
+        /*Accounting Implementation Completed*/
 
         RatingEntity rating = order.getRating();
         if(rating == null){
@@ -545,5 +556,56 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         //TODO dboy rating implementation and transaction implementation
         return orderDaoService.update(orderEntity);
+    }
+
+    private void courierBoyAccountings(DeliveryBoyEntity deliveryBoy, OrderEntity order, Boolean partnerShipStatus) {
+        BigDecimal orderAmount = order.getTotalCost();
+        BigDecimal orderAmtReceived = order.getGrandTotal();
+        BigDecimal walletAmount = deliveryBoy.getWalletAmount();
+        BigDecimal bankAmount = deliveryBoy.getBankAmount();
+        BigDecimal availableAmount = deliveryBoy.getAvailableAmount();
+
+        System.out.println("== BEFORE TAKING ORDER ==");
+        System.out.print("\t \t Order Amount: " + orderAmount);
+        System.out.print("\t \t Wallet Amount: " + walletAmount);
+        System.out.print("\t \t Bank Amount: " + bankAmount);
+        System.out.println("\t \t Available Amount: " + availableAmount);
+
+        if (!partnerShipStatus) {
+            if (availableAmount.compareTo(orderAmount) != -1) {
+                System.out.print("Sufficient Amount in ==>> ");
+                if (walletAmount.compareTo(orderAmount) != -1) {
+                    System.out.println("[[WALLET]]");
+                    walletAmount = walletAmount.subtract(orderAmount);
+                } else {
+                    System.out.println("[[BANK]]");
+                    bankAmount = bankAmount.subtract(orderAmount.subtract(walletAmount));
+                    walletAmount = BigDecimal.ZERO;
+                }
+                availableAmount = availableAmount.subtract(orderAmount);
+            } else {
+                System.err.println("WARN: Insufficient Amount");
+            }
+        }
+
+        System.out.println("== AFTER TAKING ORDER ==");
+        System.out.print("\t \t Order Amount: " + orderAmount);
+        System.out.print("\t \t Wallet Amount: " + walletAmount);
+        System.out.print("\t \t Bank Amount: " + bankAmount);
+        System.out.println("\t \t Available Amount: " + availableAmount);
+
+        availableAmount = availableAmount.add(orderAmtReceived);
+        walletAmount = walletAmount.add(orderAmtReceived);
+        deliveryBoy.setPreviousDue(walletAmount);
+        deliveryBoy.setBankAmount(bankAmount);
+        deliveryBoy.setWalletAmount(walletAmount);
+        deliveryBoy.setAvailableAmount(availableAmount);
+
+        System.out.println("== AFTER ORDER DELIVERY ==");
+        System.out.print("\t \t Wallet Amount: " + walletAmount);
+        System.out.print("\t \t Bank Amount: " + bankAmount);
+        System.out.print("\t \t Available Amount: " + availableAmount);
+        System.out.println("\t \t Amount to be Submitted: " + walletAmount);
+        System.out.println("=================================================================");
     }
 }

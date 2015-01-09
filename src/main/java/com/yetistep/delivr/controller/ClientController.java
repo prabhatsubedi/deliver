@@ -279,4 +279,20 @@ public class ClientController extends AbstractManager{
         }
     }
 
+    @RequestMapping(value = "/save_cart", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> saveCart(@RequestHeader HttpHeaders headers, @RequestBody CartEntity cart) {
+        try{
+            clientService.saveCart(cart);
+            ServiceResponse serviceResponse = new ServiceResponse("Successfully add to cart");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while saving cart", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+
+    }
+
 }

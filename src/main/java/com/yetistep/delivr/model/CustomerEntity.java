@@ -2,6 +2,8 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -39,6 +41,7 @@ public class CustomerEntity implements Serializable {
     private String creditCardId;
     private String latitude;
     private String longitude;
+    private List<CartEntity> carts;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
@@ -203,5 +206,13 @@ public class CustomerEntity implements Serializable {
         this.allowShare = allowShare;
     }
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    public List<CartEntity> getCarts() {
+        return carts;
+    }
 
+    public void setCarts(List<CartEntity> carts) {
+        this.carts = carts;
+    }
 }

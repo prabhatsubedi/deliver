@@ -44,6 +44,7 @@ public class StoresBrandEntity implements Serializable {
    private Status status;
     //Transient Variable
    private Boolean openStatus;
+   private List<CartEntity> carts;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -213,5 +214,16 @@ public class StoresBrandEntity implements Serializable {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    public List<CartEntity> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<CartEntity> carts) {
+        this.carts = carts;
     }
 }

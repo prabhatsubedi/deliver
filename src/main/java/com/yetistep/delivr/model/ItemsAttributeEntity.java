@@ -1,9 +1,12 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,6 +23,7 @@ public class ItemsAttributeEntity implements Serializable {
     private String attribute;
     private Integer unitPrice;
     private ItemsAttributesTypeEntity type;
+    private List<CartAttributesEntity> cartAttributes;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -59,5 +63,15 @@ public class ItemsAttributeEntity implements Serializable {
 
     public void setUnitPrice(Integer unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    @OneToMany(mappedBy = "itemsAttribute", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    public List<CartAttributesEntity> getCartAttributes() {
+        return cartAttributes;
+    }
+
+    public void setCartAttributes(List<CartAttributesEntity> cartAttributes) {
+        this.cartAttributes = cartAttributes;
     }
 }

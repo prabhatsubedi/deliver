@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dao.impl.ItemDaoServiceImpl;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.model.CartEntity;
 import com.yetistep.delivr.model.ItemEntity;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
@@ -31,6 +32,8 @@ public interface ClientService {
     public List<ItemDto> getItems(Integer brandId, Integer categoryId) throws Exception;
 
     public ItemEntity getItemDetail(Integer itemId) throws Exception;
+
+    public void saveCart(CartEntity cart) throws Exception;
 
 
 }

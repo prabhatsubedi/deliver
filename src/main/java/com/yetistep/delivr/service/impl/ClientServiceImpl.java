@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.PageInfo;
@@ -44,6 +45,10 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     ItemDaoService itemDaoService;
+
+    @Autowired
+    CartDaoService cartDaoService;
+
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++ Getting all brands +++++++++++++++");
@@ -381,29 +386,22 @@ public class ClientServiceImpl implements ClientService {
         log.info("++++++++++++ Getting Item Detail of id " + itemId + " +++++++++++++");
 
         ItemEntity itemEntity = itemDaoService.find(itemId);
+        if(itemEntity == null)
+            throw new YSException("ITM001");
 
-        BigDecimal price = itemEntity.getUnitPrice();
+        if(!itemEntity.getStatus().toString().equals(Status.ACTIVE.toString()))
+            throw new YSException("ITM002");
 
-        if(itemEntity.getServiceCharge()!=null && BigDecimalUtil.isNotZero(itemEntity.getServiceCharge())) {
-            price = price.add(BigDecimalUtil.percentageOf(price, itemEntity.getServiceCharge()));
-        }
-
-        //Vat
-        if(itemEntity.getVat()!=null && BigDecimalUtil.isNotZero(itemEntity.getVat())) {
-            price = price.add(BigDecimalUtil.percentageOf(price, itemEntity.getVat()));
-        }
-
-        itemEntity.setUnitPrice(price.setScale(2, BigDecimal.ROUND_UP));
 
         if(itemEntity.getAttributesTypes().size() == 0)
             itemEntity.setAttributesTypes(null);
 
         if(itemEntity.getAttributesTypes()!=null && itemEntity.getAttributesTypes().size() !=0) {
             for(ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()){
-                itemsAttributesTypeEntity.setId(null);
+                //itemsAttributesTypeEntity.setId(null);
                 itemsAttributesTypeEntity.setItem(null);
                 for(ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
-                    itemsAttributeEntity.setId(null);
+                    //itemsAttributeEntity.setId(null);
                     itemsAttributeEntity.setType(null);
                 }
             }
@@ -425,5 +423,32 @@ public class ClientServiceImpl implements ClientService {
 
 
         return itemEntity;
+    }
+
+    @Override
+    public void saveCart(CartEntity cart) throws Exception {
+        log.info("+++++++++++++ Performing Add to Cart of " + cart.getCustomer().getFacebookId() + " +++++++++++");
+        //Check The Cart If Customer Have Previous Cart on different store
+        //If cart on different brand then delete it
+        //cartDaoService.save(cart);
+         //This Will Delete If Cart from Another Brand
+        List<Integer> cartList = cartDaoService.findCarts(cart.getCustomer().getFacebookId(), cart.getStoresBrand().getId());
+        if(cartList.size() > 0){
+            List<Integer> cartAttributes = cartDaoService.findCartAttributes(cartList);
+            //Now Delete Those Operation
+            // Cart and Cart Attributes
+        }
+
+            //cartDaoService.delete(cart);
+        //}
+
+        if(cart.getCartAttributes()!=null && cart.getCartAttributes().size() > 0){
+            for(CartAttributesEntity cartAttributesEntity : cart.getCartAttributes()){
+                cartAttributesEntity.setCart(cart);
+            }
+        }
+//
+//        cartDaoService.save(cart);
+
     }
 }

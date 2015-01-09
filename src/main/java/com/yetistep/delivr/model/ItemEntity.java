@@ -63,6 +63,7 @@ public class ItemEntity implements Serializable {
     private List<ItemsOrderEntity> itemsOrder;
     private List<ItemsStoreEntity> itemsStores;
     private List<ItemsAttributesTypeEntity> attributesTypes;
+    private List<CartEntity> carts;
 
 
     @Id
@@ -361,4 +362,14 @@ public class ItemEntity implements Serializable {
         this.status = status;
     }
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    public List<CartEntity> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<CartEntity> carts) {
+        this.carts = carts;
+    }
 }

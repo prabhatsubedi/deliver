@@ -37,12 +37,12 @@
     </div>
 </div>
 
-
 <div class="block_store_template hidden">
     <div class="item_container unselectable col-lg-2">
         <div class="block_item">
             <div class="item_image">
                 <img class="img-responsive">
+                <a class="btn btn-default btn_logins add_items">Add Item</a>
             </div>
             <div class="item_infos">
                 <p class="item_name"></p>

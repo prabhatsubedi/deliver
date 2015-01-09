@@ -191,9 +191,11 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     stores = stores.data;
                     for (var i = 0; i < stores.length; i++) {
                         var elem = $('.block_store_template').clone();
-                        $('.item_container', elem).attr('data-id', stores[i].id);
-                        $('.item_image img', elem).attr('src', stores[i].brandImage);
-                        $('.item_infos .item_name', elem).html(stores[i].brandName);
+                        var storeBrand = stores[i];
+                        $('.item_container', elem).attr('data-id', storeBrand.id);
+                        $('.item_image img', elem).attr('src', storeBrand.brandImage);
+                        $('.item_infos .item_name', elem).html('<a href="/merchant/store/view/' + storeBrand.id + '">' + storeBrand.brandName + '</a>');
+                        $('.add_items', elem).attr('href', '/merchant/item/form/create/' + storeBrand.id);
                         $('#other_stores').append(elem.html());
                     }
 
@@ -201,12 +203,14 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 } else {
 
                     for (var i = 0; i < stores.length; i++) {
-                        stores[i].featured ? featured_count++ : prioritized_count++;
+                        var storeBrand = stores[i];
+                        storeBrand.featured ? featured_count++ : prioritized_count++;
                         var elem = $('.block_store_template').clone();
-                        $('.item_container', elem).attr('data-id', stores[i].id);
-                        $('.item_image img', elem).attr('src', stores[i].brandImage);
-                        $('.item_infos .item_name', elem).html(stores[i].brandName);
-                        $(stores[i].featured ? '#featured_stores' : '#prioritized_stores').append(elem.html());
+                        $('.item_container', elem).attr('data-id', storeBrand.id);
+                        $('.item_image img', elem).attr('src', storeBrand.brandImage);
+                        $('.item_infos .item_name', elem).html('<a href="/merchant/store/view/' + storeBrand.id + '">' + storeBrand.brandName + '</a>');
+                        $('.add_items', elem).attr('href', '/merchant/item/form/create/' + storeBrand.id);
+                        $(storeBrand.featured ? '#featured_stores' : '#prioritized_stores').append(elem.html());
                     }
 
                 }

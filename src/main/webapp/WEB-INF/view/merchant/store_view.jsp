@@ -95,8 +95,8 @@
 
                         <div class="col-lg-6">
 
-                            <div class="similar_items items_container hidden">
-                                <div class="form_head">Similar Items</div>
+                            <div class="other_contents items_container hidden">
+                                <div class="form_head">Other Stores</div>
                                 <div class="form_content clearfix"></div>
                             </div>
 
@@ -125,6 +125,21 @@
         </div>
     </div>
 </div>
+
+<div class="block_store_template hidden">
+    <div class="item_container unselectable col-lg-6">
+        <div class="block_item">
+            <div class="item_image">
+                <img class="img-responsive">
+                <a class="btn btn-default btn_logins add_items">Add Item</a>
+            </div>
+            <div class="item_infos">
+                <p class="item_name"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 </body>
 </html>

@@ -468,6 +468,49 @@ if(typeof(Store) == "undefined") var Store = {};
                 alert(data.message);
             }
 
+            var callback = function (status, data) {
+
+                if (data.success == true) {
+
+                    var storeBrands = data.params.storesBrand;
+                    var store_list = "";
+
+                    if(storeBrands.length > 0) {
+
+                        for(var i = 0; i < storeBrands.length; i++) {
+
+                            var storeBrand = storeBrands[i];
+                            if(storeBrand.id != storeId) {
+                                var elem = $('.block_store_template').clone();
+
+                                $('.item_image img', elem).attr('src', storeBrand.brandImage);
+                                $('.item_name', elem).html('<a href="/merchant/store/view/' + storeBrand.id + '">' + storeBrand.brandName + '</a>');
+                                $('.add_items', elem).attr('href', '/merchant/item/form/create/' + storeBrand.id);
+
+                                if(storeBrand.featured == true) $('.item_image', elem).append('<div class="special_item">Featured</div>');
+                                if(storeBrand.priority != undefined) $('.item_image', elem).append('<div class="special_item">Priority : ' + storeBrand.priority + '</div>');
+
+                                store_list += elem.html();
+                            }
+
+                        }
+
+                        $('.items_container .form_content').html(store_list);
+                        $('.items_container').removeClass('hidden');
+
+                    }
+
+                } else {
+                    alert(data.message);
+                }
+
+            };
+
+            callback.loaderDiv = "body";
+            callback.requestType = "GET";
+
+            Main.request('/merchant/get_stores', {}, callback, {merchantId: Main.getFromLocalStorage('mid')});
+
         };
 
         callback.loaderDiv = "body";

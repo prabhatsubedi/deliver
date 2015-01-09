@@ -609,7 +609,7 @@ var data_categories_names = [];
                         if (data.success == true) {
                             console.log(data);
                             var categories = data.params.categories;
-                            if(categories != null) {
+                            if(categories.length > 0) {
                                 var subCategory = $('.select_category_template').clone();
                                 var cat_list = '';
                                 for(var i = 0; i < categories.length; i++) {
@@ -661,11 +661,29 @@ var data_categories_names = [];
             Item.getBrandCategories($(this).val());
         });
 
+        function treeAction(elem, action) {
+
+            if(action == 'open') {
+                elem.parent('a').siblings('ul').removeClass('hidden');
+                elem.removeClass('glyphicon-plus').addClass('glyphicon-minus');
+                $('.glyphicon-minus',elem.parent('a').parent('li').siblings('li')).removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $('ul', elem.parent('a').parent('li').siblings('li')).addClass('hidden');
+            } else {
+                elem.parent('a').siblings('ul').addClass('hidden');
+                elem.removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $('.glyphicon-minus', elem.parent('a').parent('li')).removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $('ul', elem.parent('a').parent('li')).addClass('hidden');
+            }
+
+        }
+
         $('.cateogry_list a').live('click', function(e){
             e.preventDefault();
             if(e.target == this) {
 
                 var cat_name = $(this).text();
+
+                treeAction($('.glyphicon', this), 'open');
 
                 $('.current_category').removeClass('current_category');
                 $(this).addClass('current_category');
@@ -764,14 +782,11 @@ var data_categories_names = [];
         });
 
         $('.cateogry_list .glyphicon').live('click', function(){
-            if($(this).hasClass('glyphicon-plus')) {
-                $(this).parent('a').siblings('ul').removeClass('hidden');
-                $(this).removeClass('glyphicon-plus').addClass('glyphicon-minus');
-            } else if ($(this).hasClass('glyphicon-minus')) {
-                $(this).parent('a').siblings('ul').addClass('hidden');
-                $(this).removeClass('glyphicon-minus').addClass('glyphicon-plus');
-                $('.glyphicon-minus', $(this).parent('a').parent('li')).removeClass('glyphicon-minus').addClass('glyphicon-plus');
-                $('ul', $(this).parent('a').parent('li')).addClass('hidden');
+            var elem = $(this);
+            if(elem.hasClass('glyphicon-plus')) {
+                treeAction(elem, 'open')
+            } else if (elem.hasClass('glyphicon-minus')) {
+                treeAction(elem, 'close')
             }
         });
 

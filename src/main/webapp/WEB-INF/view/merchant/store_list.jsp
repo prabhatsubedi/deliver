@@ -22,7 +22,7 @@
     <div class="body">
         <div class="heading clearfix">
             <h1 class="pull-left">Stores</h1>
-            <a class="btn btn_green pull-right merchant_link" href="/merchant/store/form/create">Add Store</a>
+            <a class="btn btn_green pull-right" href="/merchant/store/form/create">Add Store</a>
         </div>
         <div class="main_content merchant_stores">
             <div class="items_container row">

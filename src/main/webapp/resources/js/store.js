@@ -318,7 +318,36 @@ if(typeof(Store) == "undefined") var Store = {};
 
     };
 
-    Store.loadStore = function(){
+    Store.loadStore = function(storeId){
+
+        $('.btn_edit').attr('href', '/merchant/store/form/edit/' + storeId);
+        if(!initialized) initialize('readonly', true); else google.maps.event.trigger(map, 'resize');
+
+        var dragged = false;
+        function toggleSwitch(value, elem) {
+            if(value == 'on') {
+                elem.css({left: 0}).removeClass('off').addClass('on');
+            } else {
+                elem.css({left: 30}).removeClass('on').addClass('off');
+            }
+            dragged = false;
+        }
+        $('.switch_activation .btn_switch').bind('contextmenu', function(e) {
+            return false;
+        });
+        $('.switch_activation .btn_switch').on('mouseup', function(e){
+            if(!dragged && e.which == 1) toggleSwitch($(this).hasClass('on') ? 'off' : 'on', $(this));
+        });
+        $( ".btn_switch" ).draggable({
+            containment: "parent",
+            start: function( event, ui) {
+                dragged = true;
+            },
+            stop: function( event, ui) {
+                toggleSwitch(ui.position.left > 15 ? 'off' : 'on', ui.helper);
+            }
+        });
+
         var callback = function (status, data) {
 
             if (data.success == true) {
@@ -331,8 +360,40 @@ if(typeof(Store) == "undefined") var Store = {};
                 $('.store_name').html(storeBrand.brandName);
                 document.title = storeBrand.brandName;
                 $('.open_time').html(storeBrand.openingTime + ' - ' + storeBrand.closingTime);
-                $('.categories').html(storeBrand.brandName);
-                $('.store_location').html(storeBrand.brandName);
+
+                var brandsCategory = storeBrand.brandsCategory;
+                var item_categories = "";
+                for(var i = 0; i < brandsCategory.length; i++) {
+                    var itemCat = brandsCategory[i];
+                    item_categories +='<li>' + itemCat.name + '</li>';
+                }
+                $('.categories .detail_list').html(item_categories);
+
+                var store_location = '';
+                var stores = storeBrand.store;
+                for(var i = 0; i < stores.length; i++) {
+                    var store = stores[i];
+                    var elem = $('.block_store_container_template').clone();
+                    $('.street', elem).html(store.street);
+                    $('.city', elem).html(store.city + ', ' + store.state + ', ' + store.country);
+                    $('.contact_person', elem).html(store.contactPerson);
+                    $('.contact_no', elem).html(store.contactNo);
+                    $('.btn_view_map', elem).attr('data-index', i);
+                    var location = latLngToLocation(store.latitude, store.longitude);
+                    addStoreMarker(location);
+                    store_location += elem.html();
+                }
+
+                $('.store_location').html(store_location);
+                removeAnimation();
+
+                $('.btn_view_map').live('click', function(){
+                    var marker_index = $(this).attr('data-index');
+                    if(marker_index != undefined && $.isNumeric(marker_index) && marker_index >= 0 && marker_index < markers.length) {
+                        google.maps.event.trigger(markers[marker_index], 'click');
+                        map.panTo(markers[marker_index].position);
+                    }
+                });
 
             } else {
                 alert(data.message);
@@ -340,12 +401,10 @@ if(typeof(Store) == "undefined") var Store = {};
 
         };
 
-        var headers = {};
         callback.loaderDiv = "body";
         callback.requestType = "GET";
-        headers.id  = Main.getURLvalue(3);
 
-        Main.request('/merchant/get_store_detail', {}, callback, headers);
+        Main.request('/merchant/get_store_detail', {}, callback, {id: storeId});
     }
 
 })(jQuery);

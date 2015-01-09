@@ -84,7 +84,7 @@
 
                                     <div class="detail_row">
                                         <label class="detail_label">Available Stores </label>
-                                        <div class="detail_value available_stores"><div class="brand_name"></div><ul class="brand_stores"></ul></div>
+                                        <div class="detail_value available_stores"><div class="brand_name"></div><ul class="detail_list"></ul></div>
                                     </div>
 
                                     <div class="detail_row">

@@ -8,8 +8,15 @@ var markers = [];
 var marker;
 var arrGeoPoints = {};
 var redeem_location = [];
+var input;
+
+// functions
 var initialize;
 var noEditInitialise;
+var locationToKey;
+var addStoreMarker;
+var latLngToLocation;
+var removeAnimation;
 
 // Sets the map on all markers in the array.
 function setAllMap(map) {
@@ -55,11 +62,11 @@ $(document).ready(function(){
         });
     }
 
-    initialize = function(page) {
+    initialize = function(page, scrollwheel) {
         var myOptions = {
             zoom: 4,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
-            scrollwheel: false
+            scrollwheel: scrollwheel == true ? true : false
         }
         map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
 
@@ -68,60 +75,66 @@ $(document).ready(function(){
         infowindow = new google.maps.InfoWindow();
 
         // Create the search box and link it to the UI element.
-        input = document.getElementById('pac-input');
+        input = $('#pac-input')[0];
         var custom_map_controls = $('#custom_map_controls').clone()[0]
         map.controls[google.maps.ControlPosition.TOP_RIGHT].push(custom_map_controls);
 
-        var searchBox = new google.maps.places.SearchBox(input);
+        if(input != undefined) {
 
-        /*    var marker1 = new google.maps.Marker({
-         map: map
-         });*/
+            var searchBox = new google.maps.places.SearchBox(input);
 
-        // [START region_getplaces]
-        // Listen for the event fired when the user selects an item from the
-        // pick list. Retrieve the matching places for that item.
-        google.maps.event.addListener(searchBox, 'places_changed', function(){
+            /*    var marker1 = new google.maps.Marker({
+             map: map
+             });*/
 
-            var places = searchBox.getPlaces();
-            var foucsedplace;
+            // [START region_getplaces]
+            // Listen for the event fired when the user selects an item from the
+            // pick list. Retrieve the matching places for that item.
+            google.maps.event.addListener(searchBox, 'places_changed', function(){
 
-
-            //for (var i = 0, place; place = places[i]; i++) {
-            foucsedplace = places[0];
-            //}
-            if(page == "add_store")
-                addStoreMarker(foucsedplace.geometry.location, foucsedplace.name);
-            else
-                addMarker(foucsedplace.geometry.location, foucsedplace.name);
-            map.setCenter(foucsedplace.geometry.location);
-            if(foucsedplace.geometry.viewport == undefined) {
-                map.setZoom(19);
-            } else {
-                map.fitBounds(foucsedplace.geometry.viewport);
-            }
-
-            input.blur();
-
-        });
-        // [END region_getplaces]
+                var places = searchBox.getPlaces();
+                var foucsedplace;
 
 
-        // Bias the SearchBox results towards places that are within the bounds of the
-        // current map's viewport.
-        google.maps.event.addListener(map, 'bounds_changed', function() {
-            var bounds = map.getBounds();
-            searchBox.setBounds(bounds);
-        });
+                //for (var i = 0, place; place = places[i]; i++) {
+                foucsedplace = places[0];
+                //}
+                if(page == "add_store")
+                    addStoreMarker(foucsedplace.geometry.location, foucsedplace.name);
+                else
+                    addMarker(foucsedplace.geometry.location, foucsedplace.name);
+                map.setCenter(foucsedplace.geometry.location);
+                if(foucsedplace.geometry.viewport == undefined) {
+                    map.setZoom(19);
+                } else {
+                    map.fitBounds(foucsedplace.geometry.viewport);
+                }
+
+                input.blur();
+
+            });
+            // [END region_getplaces]
 
 
-        google.maps.event.addListener(map, 'click', function(event) {
-            if(page == "add_store")
-                addStoreMarker(event.latLng);
-            else
-                addMarker(event.latLng);
-        });
-        document.getElementById('custom_map_controls').style.display = 'block';
+            // Bias the SearchBox results towards places that are within the bounds of the
+            // current map's viewport.
+            google.maps.event.addListener(map, 'bounds_changed', function() {
+                var bounds = map.getBounds();
+                searchBox.setBounds(bounds);
+            });
+
+        }
+
+        if(page != 'readonly') {
+            google.maps.event.addListener(map, 'click', function(event) {
+                if(page == "add_store")
+                    addStoreMarker(event.latLng);
+                else
+                    addMarker(event.latLng);
+            });
+        }
+
+        $('#custom_map_controls').show();
         //input.style.display = 'block';
 
 
@@ -163,8 +176,12 @@ $(document).ready(function(){
     }
 
 
-    function locationToKey(location) {
+    locationToKey = function(location) {
         return (location.lat()+ '_' + location.lng()).replace(/[.-]/g, '_');
+    }
+
+    latLngToLocation = function(latitude, longitude) {
+        return new google.maps.LatLng(latitude, longitude);
     }
 
     function addMarker(location, name) {
@@ -298,7 +315,7 @@ $(document).ready(function(){
                 }
             });
         }
-        input.blur();
+        if(input != undefined) input.blur();
 
     }
 
@@ -324,7 +341,7 @@ $(document).ready(function(){
 
     });
 
-    function removeAnimation() {
+    removeAnimation = function() {
         for(var i in markers) {
             markers[i].setAnimation(null);
         }
@@ -354,7 +371,7 @@ $(document).ready(function(){
         }
     }
 
-    function addStoreMarker(location, name) {
+    addStoreMarker = function (location, name) {
         var location_check = false;
         for(var i in arrGeoPoints) {
             if(location.lat() == arrGeoPoints[i].latitude && location.lng() == arrGeoPoints[i].longitude) {
@@ -510,7 +527,7 @@ $(document).ready(function(){
                 }
             });
         }
-        input.blur();
+        if(input != undefined) input.blur();
 
     }
 

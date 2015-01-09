@@ -63,7 +63,7 @@ if(typeof(Main) == "undefined") var Main = {};
                 if (callback != undefined && errorThrown != "abort") return callback("error", {success: false, message: XMLHttpRequest.getResponseHeader("errorMessage")});
             },
             complete: function() {
-                setTimeout(hideLoader, 500)
+                setTimeout(hideLoader, 1000)
             }
         });
     };

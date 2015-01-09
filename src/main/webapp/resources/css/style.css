@@ -1016,7 +1016,7 @@ label.check_label .checkbox {
 }
 
 
-/* item view page */
+/* item view */
 
 .item_info .other_info, .store_info .other_info {
     padding: 15px 15px 0px 15px;
@@ -1049,10 +1049,10 @@ label.check_label .checkbox {
 .detail_row .available_stores .brand_name {
     font-weight: bold;
 }
-.detail_row .available_stores .brand_stores {
+.detail_row .detail_list {
     padding-left: 15px;
 }
-.detail_row .available_stores .brand_stores li {
+.detail_row .detail_list li {
     margin-top: 5px;
 }
 .detail_row .item_category {
@@ -1113,6 +1113,38 @@ label.check_label .checkbox {
 .similar_items.items_container {
     padding: 0px;
 }
+
+/* store view */
+
+.detail_value .store_location {
+    margin: 0px -10px;
+}
+.detail_value .store_location .block_store_container {
+    padding: 0px 10px;
+    margin-bottom: 20px;
+}
+.detail_value .store_location .block_store {
+    padding: 15px;
+    margin: 0px;
+}
+.detail_value .store_location .block_store p {
+    margin-bottom: 0px;
+}
+.detail_value .store_location .block_store p:first-child {
+    margin-bottom: 10px;
+}
+.detail_value .store_location .block_store p span {
+    display: block;
+}
+.detail_value .store_location .block_store button {
+    font-size: 12px;
+    padding: 0px;
+    color: #f7941d;
+}
+.detail_value .map-container {
+    margin: 0px;
+}
+
 
 /*Profile Css Start*/
 

@@ -264,7 +264,7 @@ var data_categories_names = [];
                     if (data.success == true) {
                         console.log(data);
                         var categories = data.params.categories;
-                        if(categories != null) {
+                        if(categories.length > 0) {
                             var subCategory = $('.select_category_template').clone();
                             var cat_list = '';
                             for(var i = 0; i < categories.length; i++) {
@@ -682,21 +682,23 @@ var data_categories_names = [];
                             var categories = data.params.categories;
                             for(var i = 0; i < categories.length; i++) {
                                 var category = categories[i];
-                                item_list += '<div class="form_head">' + category.name + '</div>';
-                                item_list += '<div class="form_content clearfix">';
+                                if(category.item.length > 0) {
+                                    item_list += '<div class="form_head">' + category.name + '</div>';
+                                    item_list += '<div class="form_content clearfix">';
 
-                                for(var j = 0; j < category.item.length; j++) {
-                                    var item = category.item[j];
-                                    var elem = $('.item_container_template').clone();
-                                    if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
-                                    $('.item_name a', elem).attr('href', '/merchant/item/view/' + item.id).html(item.name);
-                                    $('.item_price span', elem).html(item.unitPrice);
-                                    item_list += elem.html();
+                                    for(var j = 0; j < category.item.length; j++) {
+                                        var item = category.item[j];
+                                        var elem = $('.item_container_template').clone();
+                                        if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
+                                        $('.item_name a', elem).attr('href', '/merchant/item/view/' + item.id).html(item.name);
+                                        $('.item_price span', elem).html(item.unitPrice);
+                                        item_list += elem.html();
+                                    }
+
+                                    item_list += '<a href="#" class="view_more" data-id="' + category.id + '">View More >></a>';
+
+                                    item_list += '</div>';
                                 }
-
-                                item_list += '<a href="#" class="view_more" data-id="' + category.id + '">View More >></a>';
-
-                                item_list += '</div>';
                             }
                             item_list += '</div>';
 
@@ -894,7 +896,7 @@ var data_categories_names = [];
                 }
                 $('.item_info .brand_name').html(storesBrand.brandName);
                 var brandId = storesBrand.id;
-                $('.item_info .brand_stores').html(item_stores);
+                $('.item_info .detail_list').html(item_stores);
 
                 var catName = itemCategory.name;
                 var item_categories = '<li>' + catName + '</li>';

@@ -203,11 +203,12 @@ if(typeof(Store) == "undefined") var Store = {};
                     var data = {};
                     var stores_brand = {};
 
+                    stores_brand.id = $('#form_brand button[type="submit"]').attr('data-id');
                     stores_brand.brandName = $('#brand_name').val();
                     stores_brand.openingTime = $('#open_time').val();
                     stores_brand.closingTime = $('#close_time').val();
-                    stores_brand.brandLogo = $('#brand_logo img').attr('src');
-                    stores_brand.brandImage = $('#brand_image img').attr('src');
+                    stores_brand.brandLogo = $('#brand_logo img').attr('data-new') ? $('#brand_logo img').attr('src') : undefined;
+                    stores_brand.brandImage = $('#brand_image img').attr('data-new') ? $('#brand_image img').attr('src') : undefined;
                     stores_brand.brandUrl = $('#brand_url').val();
                     stores_brand.status = "ACTIVE";
 
@@ -258,7 +259,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
             $('.heading h1').html('Store Edit');
             document.title = 'Store Edit';
-            $('#form_brand button[type="submit"]').attr('data-action', 'update').html('Update Store');
+            $('#form_brand button[type="submit"]').attr({'data-action': 'update'}).html('Update Store');
 
             if(storeId != undefined) {
 
@@ -271,6 +272,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                         $('#brand_image').html('<img src="' + storeBrand.brandImage + '" style="height: 100%;" class="img-responsive" />');
                         $('#brand_logo').html('<img src="' + storeBrand.brandLogo + '" style="height: 100%;" class="img-responsive" />');
+                        $('#form_brand button[type="submit"]').attr({'data-id': storeBrand.id});
                         $('#brand_name').val(storeBrand.brandName);
                         $('#open_time').val(storeBrand.openingTime);
                         $('#open_time').selectpicker('refresh');

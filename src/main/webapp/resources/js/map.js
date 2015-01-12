@@ -539,7 +539,8 @@ $(document).ready(function(){
                         alert('No results found');
                     }
                 } else {
-                    addStoreMarker(location, name);
+                    setTimeout(function(){ addStoreMarker(location, name); }, 500);
+
 //                    alert("Marker placing failed. Please click again to place marker.");
                 }
             });

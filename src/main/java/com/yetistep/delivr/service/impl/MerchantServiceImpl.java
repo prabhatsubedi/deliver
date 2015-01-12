@@ -226,7 +226,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         String brandLogoUrl = dbStoresBrand.getBrandLogo();
         String brandImageUrl = dbStoresBrand.getBrandImage();
 
-        dbStoresBrand.setBrandName(storesBrand.getBrandName());
+        //dbStoresBrand.setBrandName(storesBrand.getBrandName());
         dbStoresBrand.setBrandUrl(storesBrand.getBrandUrl());
         dbStoresBrand.setOpeningTime(storesBrand.getOpeningTime());
         dbStoresBrand.setClosingTime(storesBrand.getClosingTime());
@@ -274,8 +274,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         dbStoresBrand.setBrandsCategory(dbBrandsCategories);
-        dbStoresBrand.setBrandLogo(null);
-        dbStoresBrand.setBrandImage(null);
+        //dbStoresBrand.setBrandLogo(null);
+        //dbStoresBrand.setBrandImage(null);
 
         List<StoreEntity> dbStores = dbStoresBrand.getStore();
         List<Integer> storeIdList = new ArrayList<Integer>();

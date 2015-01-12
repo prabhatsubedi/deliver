@@ -346,6 +346,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
         JobOrderStatus.traverseJobStatus(order.getOrderStatus(), JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         order.setOrderStatus(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+        boolean partnerShipStatus = merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());
+        courierBoyAccountingsAfterTakingOrder(order.getDeliveryBoy(), order, partnerShipStatus);
         return orderDaoService.update(order);
     }
 
@@ -379,8 +381,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         deliveryBoyEntity.setTotalOrderDelivered(deliveryBoyEntity.getTotalOrderDelivered() + 1);
         deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered() - 1);
         /*Accounting Implementation*/
-        boolean partnerShipStatus = merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());
-        courierBoyAccountings(deliveryBoyEntity, order, partnerShipStatus);
+        courierBoyAccountingsAfterOrderDelivery(deliveryBoyEntity, order);
         /*Accounting Implementation Completed*/
 
         RatingEntity rating = order.getRating();
@@ -558,54 +559,59 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         return orderDaoService.update(orderEntity);
     }
 
-    private void courierBoyAccountings(DeliveryBoyEntity deliveryBoy, OrderEntity order, Boolean partnerShipStatus) {
+    private void courierBoyAccountingsAfterTakingOrder(DeliveryBoyEntity deliveryBoy, OrderEntity order, Boolean partnerShipStatus) throws Exception{
         BigDecimal orderAmount = order.getTotalCost();
-        BigDecimal orderAmtReceived = order.getGrandTotal();
+       // BigDecimal orderAmtReceived = order.getGrandTotal();
         BigDecimal walletAmount = deliveryBoy.getWalletAmount();
         BigDecimal bankAmount = deliveryBoy.getBankAmount();
         BigDecimal availableAmount = deliveryBoy.getAvailableAmount();
 
-        System.out.println("== BEFORE TAKING ORDER ==");
-        System.out.print("\t \t Order Amount: " + orderAmount);
-        System.out.print("\t \t Wallet Amount: " + walletAmount);
-        System.out.print("\t \t Bank Amount: " + bankAmount);
-        System.out.println("\t \t Available Amount: " + availableAmount);
+        log.info("== BEFORE TAKING ORDER == \n " +
+                "Order Amount: " + orderAmount
+                + "\t Wallet Amount: " + walletAmount
+                + "\t Bank Amount: " + bankAmount
+                + "\t Available Amount: " + availableAmount);
 
         if (!partnerShipStatus) {
             if (availableAmount.compareTo(orderAmount) != -1) {
-                System.out.print("Sufficient Amount in ==>> ");
                 if (walletAmount.compareTo(orderAmount) != -1) {
-                    System.out.println("[[WALLET]]");
                     walletAmount = walletAmount.subtract(orderAmount);
                 } else {
-                    System.out.println("[[BANK]]");
                     bankAmount = bankAmount.subtract(orderAmount.subtract(walletAmount));
                     walletAmount = BigDecimal.ZERO;
                 }
                 availableAmount = availableAmount.subtract(orderAmount);
             } else {
-                System.err.println("WARN: Insufficient Amount");
+                throw new YSException("ERR017");
             }
         }
+        deliveryBoy.setWalletAmount(walletAmount);
+        deliveryBoy.setBankAmount(bankAmount);
+        deliveryBoy.setAvailableAmount(availableAmount);
 
-        System.out.println("== AFTER TAKING ORDER ==");
-        System.out.print("\t \t Order Amount: " + orderAmount);
-        System.out.print("\t \t Wallet Amount: " + walletAmount);
-        System.out.print("\t \t Bank Amount: " + bankAmount);
-        System.out.println("\t \t Available Amount: " + availableAmount);
+        log.info("== AFTER TAKING ORDER == "
+                +"\n Order Amount: " + orderAmount
+                +"\t Wallet Amount: " + walletAmount
+                +"\t Bank Amount: " + bankAmount
+                +"\t Available Amount: " + availableAmount);
+    }
+
+    private void courierBoyAccountingsAfterOrderDelivery(DeliveryBoyEntity deliveryBoy, OrderEntity order) {
+        BigDecimal orderAmtReceived = order.getGrandTotal();
+        BigDecimal walletAmount = deliveryBoy.getWalletAmount();
+        BigDecimal bankAmount = deliveryBoy.getBankAmount();
+        BigDecimal availableAmount = deliveryBoy.getAvailableAmount();
 
         availableAmount = availableAmount.add(orderAmtReceived);
         walletAmount = walletAmount.add(orderAmtReceived);
-        deliveryBoy.setPreviousDue(walletAmount);
         deliveryBoy.setBankAmount(bankAmount);
         deliveryBoy.setWalletAmount(walletAmount);
         deliveryBoy.setAvailableAmount(availableAmount);
 
-        System.out.println("== AFTER ORDER DELIVERY ==");
-        System.out.print("\t \t Wallet Amount: " + walletAmount);
-        System.out.print("\t \t Bank Amount: " + bankAmount);
-        System.out.print("\t \t Available Amount: " + availableAmount);
-        System.out.println("\t \t Amount to be Submitted: " + walletAmount);
-        System.out.println("=================================================================");
+        log.info("== AFTER ORDER DELIVERY =="
+                +"\n Wallet Amount: " + walletAmount
+                +"\t Bank Amount: " + bankAmount
+                +"\t Available Amount: " + availableAmount
+                +"\t Amount to be Submitted: " + walletAmount);
     }
 }

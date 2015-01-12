@@ -24,8 +24,8 @@ public class CartEntity {
     private Integer id;
     private Integer orderQuantity;
     private String note;
-    private ItemEntity item;
     private Timestamp modifiedDate;
+    private ItemEntity item;
     private StoresBrandEntity storesBrand;
     private CustomerEntity customer;
     private List<CartAttributesEntity> cartAttributes;

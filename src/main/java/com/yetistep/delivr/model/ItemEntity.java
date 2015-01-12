@@ -57,6 +57,10 @@ public class ItemEntity implements Serializable {
     private BigDecimal serviceCharge;
     private Status status;
 
+    //Transient Value
+    private String imageUrl;
+    private String brandName;
+
     private CategoryEntity category;
     private StoresBrandEntity storesBrand;
     private List<ItemsImageEntity> itemsImage;
@@ -166,6 +170,15 @@ public class ItemEntity implements Serializable {
 
     public void setAvailableEndTime(Date availableEndTime) {
         this.availableEndTime = availableEndTime;
+    }
+
+    @Transient
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
@@ -371,5 +384,14 @@ public class ItemEntity implements Serializable {
 
     public void setCarts(List<CartEntity> carts) {
         this.carts = carts;
+    }
+
+    @Transient
+    public String getBrandName() {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
     }
 }

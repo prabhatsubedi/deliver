@@ -37,5 +37,6 @@
     <bean id = "itemsOrderDaoService" class="com.yetistep.delivr.dao.impl.ItemsOrderDaoServiceImpl" />
     <bean id = "cartDaoService" class="com.yetistep.delivr.dao.impl.CartDaoServiceImpl" />
     <bean id = "cartAttributesDaoService" class="com.yetistep.delivr.dao.impl.CartAttributesDaoServiceImpl" />
+    <bean id = "itemsImageDaoService" class="com.yetistep.delivr.dao.impl.ItemsImageDaoServiceImpl" />
 
  </beans>

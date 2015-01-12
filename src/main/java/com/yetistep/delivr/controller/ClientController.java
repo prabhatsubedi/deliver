@@ -5,6 +5,7 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.CategoryDto;
+import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
@@ -293,6 +294,58 @@ public class ClientController extends AbstractManager{
 
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while saving cart", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+
+    }
+
+    @RequestMapping(value = "/get_my_cart/fbId/{facebookId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getMyCart(@PathVariable("facebookId") Long facebookId) {
+        try {
+            CartDto carts = clientService.getMyCart(facebookId);
+            ServiceResponse serviceResponse = new ServiceResponse("My cart successfully retrieved");
+            serviceResponse.addParam("myCart", carts);
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while getting cart", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/delete_cart/cartId/{cartId}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> deleteCart(@RequestHeader HttpHeaders headers, @PathVariable("cartId") Integer cartId) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
+
+            clientService.deleteCart(cartId);
+            ServiceResponse serviceResponse = new ServiceResponse("Cart deleted successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while deleting cart", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value= "/get_cart_info/fbId/{facebookId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> checkCart(@PathVariable("facebookId") Long facebookId) {
+        try {
+            CartDto cart = clientService.getCartSize(facebookId);
+            ServiceResponse serviceResponse = new ServiceResponse("Cart info retrieved successfully");
+            serviceResponse.addParam("myCart", cart);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while checking cart exist", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

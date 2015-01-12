@@ -3,10 +3,7 @@ package com.yetistep.delivr.service.impl;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
-import com.yetistep.delivr.enums.DBoyStatus;
-import com.yetistep.delivr.enums.DeliveryStatus;
-import com.yetistep.delivr.enums.JobOrderStatus;
-import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
@@ -67,6 +64,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         user.setMobileVerificationStatus(true);
         user.setVerifiedStatus(true);
         user.setSubscribeNewsletter(false);
+        user.setStatus(Status.ACTIVE);
 
         deliveryBoy.setAvailabilityStatus(DBoyStatus.FREE);
         deliveryBoy.setAverageRating(new BigDecimal(0));

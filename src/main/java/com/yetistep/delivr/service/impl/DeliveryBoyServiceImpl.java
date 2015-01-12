@@ -297,6 +297,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             dBoyOrderHistoryEntity.setOrderAcceptedAt(DateUtil.getCurrentTimestampSQL());
             dBoyOrderHistoryEntity.setDistanceTravelled(BigDecimal.ZERO);
             dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.PENDING);
+            dBoyOrderHistoryEntity.setAmountEarned(BigDecimal.ZERO);
             dBoyOrderHistoryEntities.add(dBoyOrderHistoryEntity);
             orderEntity.setdBoyOrderHistories(dBoyOrderHistoryEntities);
 

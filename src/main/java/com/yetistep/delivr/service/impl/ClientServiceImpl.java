@@ -7,6 +7,7 @@ import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.StaticPagination;
+import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.util.BigDecimalUtil;
@@ -51,6 +52,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     CartAttributesDaoService cartAttributesDaoService;
+
+    @Autowired
+    ItemsImageDaoService itemsImageDaoService;
 
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
@@ -414,6 +418,7 @@ public class ClientServiceImpl implements ClientService {
             itemsImageEntity.setId(null);
         }
 
+        itemEntity.setBrandName(itemEntity.getStoresBrand().getBrandName());
         itemEntity.setItemsStores(null);
         itemEntity.setItemsOrder(null);
         itemEntity.setCategory(null);
@@ -446,14 +451,122 @@ public class ClientServiceImpl implements ClientService {
             cartDaoService.deleteCarts(cartList);
         }
 
-
+        List<Integer> inputAttributes = new ArrayList<>();
         if (cart.getCartAttributes() != null && cart.getCartAttributes().size() > 0) {
             for (CartAttributesEntity cartAttributesEntity : cart.getCartAttributes()) {
+                inputAttributes.add(cartAttributesEntity.getItemsAttribute().getId());
                 cartAttributesEntity.setCart(cart);
             }
         }
 
-        cartDaoService.save(cart);
+        //Now Check Same Information
+       List<Integer> prevCartIds = cartDaoService.findCarts(cart.getCustomer().getFacebookId(), cart.getItem().getId(),
+               cart.getStoresBrand().getId(), cart.getNote());
+      Integer updatedCartId = 0;
+      Boolean isUpdated = false;
+      if(prevCartIds.size() > 0){
+           for(Integer cartId: prevCartIds){
+               List<Integer> dbAttributes = cartAttributesDaoService.findCartAttributes(cartId);
+               if(inputAttributes.size() == 0){
+                   if(dbAttributes.size() == 0) {
+                       updatedCartId = cartId;
+                       isUpdated = true;
+                       break;
+                   }
+               } else {
+                   if(dbAttributes.size() > 0){
+                         if(inputAttributes.size() == dbAttributes.size()){
+                             Boolean isSame = true;
+                             for(int i=0; i<inputAttributes.size(); i++){
+                                 if(inputAttributes.get(i) != dbAttributes.get(i)) {
+                                     isSame = false;
+                                     break;
+                                 }
+                             }
+                             if(isSame){
+                                 updatedCartId = cartId;
+                                 isUpdated = true;
+                                 break;
+                             }
+                         }
+                   }
+               }
+           }
 
+          if(isUpdated)
+              cartDaoService.updateOrderQuantity(updatedCartId, cart.getOrderQuantity());
+          else
+              cartDaoService.save(cart);
+
+      } else {
+          //Such Cart is not available
+          cartDaoService.save(cart);
+      }
+
+    }
+
+    @Override
+    public CartDto getMyCart(Long facebookId) throws Exception {
+        log.info("++++++++++++ Getting my carts of client " + facebookId + " ++++++++++++");
+       CartDto cartDto = null;
+       List<CartEntity> cartEntities = cartDaoService.getMyCarts(facebookId);
+
+       StoresBrandEntity storesBrandEntity = new StoresBrandEntity();
+       if(cartEntities !=null && cartEntities.size() > 0){
+           storesBrandEntity = cartEntities.get(0).getStoresBrand();
+
+           for(CartEntity cartEntity : cartEntities){
+               if(cartEntity.getItem() != null){
+                   ItemsImageEntity itemsImageEntity = itemsImageDaoService.findImage(cartEntity.getItem().getId());
+                   if(itemsImageEntity !=null)
+                        cartEntity.getItem().setImageUrl(itemsImageEntity.getUrl());
+
+                   //Add Attribute Price and Unit Price
+                   BigDecimal attributesPrice = cartAttributesDaoService.findAttributesPrice(cartEntity.getId());
+                   cartEntity.getItem().setUnitPrice(cartEntity.getItem().getUnitPrice().add(attributesPrice).multiply(new BigDecimal(cartEntity.getOrderQuantity())));
+               }
+
+               cartEntity.setStoresBrand(null);
+
+           }
+
+           cartDto = new CartDto();
+           cartDto.setStoresBrand(storesBrandEntity);
+           cartDto.setCarts(cartEntities);
+
+       }
+
+
+       return cartDto;
+
+    }
+
+    @Override
+    public void deleteCart(Integer cartId) throws Exception {
+        log.info("++++++ Deleting cart id : " + cartId + " +++++++++");
+        List<Integer> cartList = new ArrayList<>();
+        cartList.add(cartId);
+
+        List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cartList);
+        if (cartAttributes.size() > 0)
+            cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+
+        cartDaoService.deleteCarts(cartList);
+    }
+
+    @Override
+    public CartDto getCartSize(Long facebookId) throws Exception {
+        log.info("++++++ Getting cart info of customer : " + facebookId + " +++++++++");
+        List<CartEntity> carts = cartDaoService.getMyCarts(facebookId);
+
+        CartDto cartDto = new CartDto();
+        cartDto.setTotalCart(carts.size());
+        if(carts.size() > 0){
+            cartDto.setStoresBrand(carts.get(0).getStoresBrand());
+            cartDto.getStoresBrand().setBrandLogo(null);
+        }
+
+
+        return cartDto;
     }
 }

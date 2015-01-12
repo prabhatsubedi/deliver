@@ -5,6 +5,7 @@ import com.yetistep.delivr.model.CartEntity;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,5 +18,11 @@ public interface CartDaoService extends GenericDaoService<Integer, CartEntity>{
     public List<Integer> findCarts(Long clientFBId, Integer brandId) throws Exception;
 
     public Boolean deleteCarts(List<Integer> carts) throws Exception;
+
+    public List<CartEntity> getMyCarts(Long facebookId) throws Exception;
+
+    public List<Integer> findCarts(Long fbId, Integer itemId, Integer brandId, String note) throws Exception;
+
+    public Boolean updateOrderQuantity(Integer cartId, Integer additionalQuantity) throws Exception;
 
 }

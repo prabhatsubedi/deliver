@@ -48,6 +48,8 @@ $(document).ready(function(){
                 objAddress.city = address.city;
                 objAddress.state = address.state;
                 objAddress.country = address.country;
+                objAddress.latitude = address.latitude;
+                objAddress.longitude = address.longitude;
                 objAddress.countryCode = "00977";
 
                 data.website = $('#url').val();

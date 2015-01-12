@@ -9,7 +9,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
         $('option:selected').removeAttr('selected');
         Image.dropZone('#brand_image_input', '#brand_image');
-        Image.dropZone('#brand_logo_input', '#brand_logo');
+        if(action != 'edit') Image.dropZone('#brand_logo_input', '#brand_logo');
 
         var cat_callback = function (status, data) {
             console.log(data);
@@ -203,11 +203,12 @@ if(typeof(Store) == "undefined") var Store = {};
                     var data = {};
                     var stores_brand = {};
 
+                    stores_brand.id = $('#form_brand button[type="submit"]').attr('data-id');
                     stores_brand.brandName = $('#brand_name').val();
                     stores_brand.openingTime = $('#open_time').val();
                     stores_brand.closingTime = $('#close_time').val();
-                    stores_brand.brandLogo = $('#brand_logo img').attr('src');
-                    stores_brand.brandImage = $('#brand_image img').attr('src');
+                    stores_brand.brandLogo = $('#brand_logo img').attr('data-new') ? $('#brand_logo img').attr('src') : undefined;
+                    stores_brand.brandImage = $('#brand_image img').attr('data-new') ? $('#brand_image img').attr('src') : undefined;
                     stores_brand.brandUrl = $('#brand_url').val();
                     stores_brand.status = "ACTIVE";
 
@@ -224,7 +225,7 @@ if(typeof(Store) == "undefined") var Store = {};
                     data.storesBrand = stores_brand;
                     data.categories = categories;
 
-                    Store.addStore(data, {merchantId: Main.getFromLocalStorage('mid')});
+                    Store.addStore(data, {merchantId: Main.getFromLocalStorage('mid')}, $('#form_brand button[type="submit"]').attr('data-action'));
 
                 };
                 return false;
@@ -258,6 +259,8 @@ if(typeof(Store) == "undefined") var Store = {};
 
             $('.heading h1').html('Store Edit');
             document.title = 'Store Edit';
+            $('#form_brand button[type="submit"]').attr({'data-action': 'update'}).html('Update Store');
+            $('#brand_name').attr('disabled', 'disabled');
 
             if(storeId != undefined) {
 
@@ -270,6 +273,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                         $('#brand_image').html('<img src="' + storeBrand.brandImage + '" style="height: 100%;" class="img-responsive" />');
                         $('#brand_logo').html('<img src="' + storeBrand.brandLogo + '" style="height: 100%;" class="img-responsive" />');
+                        $('#form_brand button[type="submit"]').attr({'data-id': storeBrand.id});
                         $('#brand_name').val(storeBrand.brandName);
                         $('#open_time').val(storeBrand.openingTime);
                         $('#open_time').selectpicker('refresh');
@@ -322,7 +326,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
     };
 
-    Store.addStore = function(data, headers) {
+    Store.addStore = function(data, headers, data_action) {
 
         $("button[type='submit']").attr("disabled", true);
 
@@ -339,7 +343,11 @@ if(typeof(Store) == "undefined") var Store = {};
 
         callback.loaderDiv = "body";
 
-        Main.request('/merchant/save_store', data, callback, headers);
+        if(data_action == 'update') {
+            Main.request('/merchant/update_store', data, callback);
+        } else {
+            Main.request('/merchant/save_store', data, callback, headers);
+        }
 
     };
 

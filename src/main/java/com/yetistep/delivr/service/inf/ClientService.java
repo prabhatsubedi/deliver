@@ -7,6 +7,7 @@ import com.yetistep.delivr.model.ItemEntity;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
 import com.yetistep.delivr.model.mobile.CategoryDto;
+import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 
 import java.util.List;
@@ -34,6 +35,12 @@ public interface ClientService {
     public ItemEntity getItemDetail(Integer itemId) throws Exception;
 
     public void saveCart(CartEntity cart) throws Exception;
+
+    public CartDto getMyCart(Long facebookId) throws Exception;
+
+    public void deleteCart(Integer cartId) throws Exception;
+
+    public CartDto getCartSize(Long facebookId) throws Exception;
 
 
 }

@@ -3,16 +3,24 @@
         <a href="/merchant/dashboard"><img src="/resources/images/delivr-logo.png" class="img-responsive" /></a>
     </div>
     <div class="sidebar_menu">
-        <ul class="nav nav-stacked">
-            <sec:authorize access="hasRole('ROLE_ADMIN')">
+        <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
+            <ul class="nav nav-stacked">
                 <li><a href="/organizer/dashboard">Admin Dashboard</a></li>
-            </sec:authorize>
-            <%--<li><a href="/merchant/dashboard">Dashboard</a></li>--%>
-            <li><a href="/merchant/store/list">Stores</a></li>
-            <li><a href="/merchant/item/list">Items</a></li>
-            <li><a href="#">Purchase History</a></li>
-            <li><a href="#">Invoices</a></li>
-        </ul>
+                <li><a class="merchant_name ignore_focus" href="javascript:;">Merchant Name</a>
+        </sec:authorize>
+                    <ul class="nav nav-stacked">
+                        <sec:authorize access="!hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
+                        <li><a class="merchant_name ignore_focus" href="javascript:;">Merchant Name</a></li>
+                        </sec:authorize>
+                        <li><a href="/merchant/store/list">Stores</a></li>
+                        <li><a href="/merchant/item/list">Items</a></li>
+                        <li><a href="#">Purchase History</a></li>
+                        <li><a href="#">Invoices</a></li>
+                    </ul>
+        <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
+                </li>
+            </ul>
+        </sec:authorize>
     </div>
 </div>
 
@@ -29,7 +37,7 @@
         });
         $('.sidebar_menu li a[href="' + pathname + '"]').addClass('active');
 
-        $('.sidebar_menu li a').click(function(){
+        $('.sidebar_menu li a').not('.ignore_focus').click(function(){
             $('.sidebar_menu li a').removeClass('active');
             $(this).addClass('active');
         });

@@ -8,6 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +25,7 @@ public class CartAttributesDaoServiceImpl implements CartAttributesDaoService{
 
     @Override
     public CartAttributesEntity find(Integer id) throws Exception {
+
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -69,5 +72,26 @@ public class CartAttributesDaoServiceImpl implements CartAttributesDaoService{
         query.setParameterList("cartAttributes", cartAttributes);
         query.executeUpdate();
         return true;
+    }
+
+    @Override
+    public BigDecimal findAttributesPrice(Integer cartId) throws Exception {
+        String sql = "SELECT COALESCE(SUM(ia.unit_price), 0) AS atPrice FROM cart_attributes ca " +
+                "INNER JOIN items_attributes ia ON(ia.id = ca.items_attribute_id) " +
+                "WHERE ca.cart_id =:cartId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("cartId", cartId);
+        long value = ((Number)sqlQuery.uniqueResult()).longValue();
+        return new BigDecimal(value);
+    }
+
+    @Override
+    public List<Integer> findCartAttributes(Integer cartId) throws Exception {
+        List<Integer> cartAttributes;
+        String sql  = "SELECT items_attribute_id FROM cart_attributes WHERE cart_id =:cartId";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("cartId", cartId);
+        cartAttributes = query.list();
+        return cartAttributes;
     }
 }

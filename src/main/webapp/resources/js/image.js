@@ -94,7 +94,7 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
     Image.readFile = function (file, container_id) {
 
         var dimension = $(container_id).attr('data-dimension');
-        img_container = $(container_id).siblings('.drop_zone').attr('id');
+        img_container = $(container_id).prev('.drop_zone').attr('id');
         if(dimension != undefined) {
             var dimension_arr = dimension.split('x');
             chk_w = dimension_arr[0];

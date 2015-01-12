@@ -9,7 +9,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
         $('option:selected').removeAttr('selected');
         Image.dropZone('#brand_image_input', '#brand_image');
-        Image.dropZone('#brand_logo_input', '#brand_logo');
+        if(action != 'edit') Image.dropZone('#brand_logo_input', '#brand_logo');
 
         var cat_callback = function (status, data) {
             console.log(data);
@@ -260,6 +260,7 @@ if(typeof(Store) == "undefined") var Store = {};
             $('.heading h1').html('Store Edit');
             document.title = 'Store Edit';
             $('#form_brand button[type="submit"]').attr({'data-action': 'update'}).html('Update Store');
+            $('#brand_name').attr('disabled', 'disabled');
 
             if(storeId != undefined) {
 

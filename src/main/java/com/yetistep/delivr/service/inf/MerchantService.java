@@ -39,6 +39,8 @@ public interface MerchantService {
 
     public List<CategoryEntity> findCategoriesByBrand(HeaderDto headerDto) throws Exception;
 
+    public List<CategoryEntity> findParentCategoriesByBrand(HeaderDto headerDto) throws Exception;
+
     public List<CategoryEntity> findChildCategories(RequestJsonDto requestJson) throws Exception;
 
     public List<ItemEntity> findCategoriesItems(RequestJsonDto requestJson) throws Exception;

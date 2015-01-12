@@ -168,7 +168,6 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             String s3Path = GeneralUtil.saveImageToBucket(profileImage, imageName, dir, true);
             dBoyEntity.getUser().setProfileImage(s3Path);
         }
-
         return deliveryBoyDaoService.update(dBoyEntity);
     }
 
@@ -186,7 +185,6 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Override
     public DeliveryBoyEntity dboyLogin(HeaderDto headerDto) throws Exception {
         log.info("+++++++++++++++ Checking DBOY Credential +++++++++++++++");
-
         UserEntity userEntity = userDaoService.findByUserName(headerDto.getUsername());
 
         if(userEntity == null)

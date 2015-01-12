@@ -881,4 +881,17 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         return  childCategories;
     }
+
+    @Override
+    public List<CategoryEntity> findParentCategoriesByBrand(HeaderDto headerDto) throws Exception {
+        List<BrandsCategoryEntity> brandsCategories =  merchantDaoService.getBrandsCategory(Integer.parseInt(headerDto.getId()));
+        List<CategoryEntity> categories = new ArrayList<>();
+
+        for (BrandsCategoryEntity brandsCategory: brandsCategories){
+            brandsCategory.getCategory().setChild(null);
+            categories.add(brandsCategory.getCategory());
+        }
+
+        return categories;
+    }
 }

@@ -180,25 +180,6 @@ public class ManagerController {
 
     }
 
-    @RequestMapping(value = "/get_merchant", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<ServiceResponse> getMerchantById(@RequestHeader HttpHeaders headers) {
-        try{
-            HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
-            MerchantEntity merchantEntity = merchantService.getMerchantById(headerDto);
-
-            ServiceResponse serviceResponse = new ServiceResponse("Merchant retrieved successfully with ID: "+headerDto.getMerchantId());
-            serviceResponse.addParam("merchant", merchantEntity);
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
-        } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while retrieving merchant: ", e);
-            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
-        }
-
-    }
-
     @RequestMapping(value = "/get_logs", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> getActionLogs(@RequestBody(required = false) Page page) {

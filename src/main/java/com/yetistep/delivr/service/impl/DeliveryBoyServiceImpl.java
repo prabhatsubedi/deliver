@@ -3,10 +3,7 @@ package com.yetistep.delivr.service.impl;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
-import com.yetistep.delivr.enums.DBoyStatus;
-import com.yetistep.delivr.enums.DeliveryStatus;
-import com.yetistep.delivr.enums.JobOrderStatus;
-import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
@@ -529,7 +526,11 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         else
             orderCancelEntity = new OrderCancelEntity();
         orderCancelEntity.setCancelledDate(DateUtil.getCurrentTimestampSQL());
-        orderCancelEntity.setReason(order.getOrderCancel().getReason());
+        if(!order.getOrderCancel().getCancelReason().equals(CancelReason.OTHERS)){
+            orderCancelEntity.setReason(order.getOrderCancel().getCancelReason().toString());
+        }else{
+            orderCancelEntity.setReason(order.getOrderCancel().getReason());
+        }
         orderCancelEntity.setJobOrderStatus(orderEntity.getOrderStatus());
         orderCancelEntity.setUser(order.getOrderCancel().getUser());
         orderCancelEntity.setOrder(orderEntity);
@@ -591,10 +592,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         deliveryBoy.setAvailableAmount(availableAmount);
 
         log.info("== AFTER TAKING ORDER == "
-                +"\n Order Amount: " + orderAmount
-                +"\t Wallet Amount: " + walletAmount
-                +"\t Bank Amount: " + bankAmount
-                +"\t Available Amount: " + availableAmount);
+                + "\n Order Amount: " + orderAmount
+                + "\t Wallet Amount: " + walletAmount
+                + "\t Bank Amount: " + bankAmount
+                + "\t Available Amount: " + availableAmount);
     }
 
     private void courierBoyAccountingsAfterOrderDelivery(DeliveryBoyEntity deliveryBoy, OrderEntity order) {
@@ -610,9 +611,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         deliveryBoy.setAvailableAmount(availableAmount);
 
         log.info("== AFTER ORDER DELIVERY =="
-                +"\n Wallet Amount: " + walletAmount
-                +"\t Bank Amount: " + bankAmount
-                +"\t Available Amount: " + availableAmount
-                +"\t Amount to be Submitted: " + walletAmount);
+                + "\n Wallet Amount: " + walletAmount
+                + "\t Bank Amount: " + bankAmount
+                + "\t Available Amount: " + availableAmount
+                + "\t Amount to be Submitted: " + walletAmount);
     }
 }

@@ -76,6 +76,7 @@
                             <th>2</th>
                             <td>Current Available Balance</td>
                             <td class="available_balance"></td>
+                            <td></td>
                         </tr>
                         <tr>
                             <th>3</th>
@@ -87,6 +88,7 @@
                             <th>4</th>
                             <td>Advance Amount</td>
                             <td class="advance_amount form_container"><input type="text" id="advance_amount_val" class="form-control"></td>
+                            <td></td>
                         </tr>
                     </table>
                 </div>

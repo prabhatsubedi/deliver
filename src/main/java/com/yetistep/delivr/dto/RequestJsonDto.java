@@ -36,6 +36,7 @@ public class RequestJsonDto {
     private List<Integer> itemStores;
     private List<ItemsAttributesTypeEntity> itemAttributesTypes;
     private List<String> itemImages;
+    private List<ItemsImageEntity> editItemImages;
 
     /*Get child categories properties*/
     private Integer parentCategoryId;
@@ -155,6 +156,14 @@ public class RequestJsonDto {
 
     public void setItemImages(List<String> itemImages) {
         this.itemImages = itemImages;
+    }
+
+    public List<ItemsImageEntity> getEditItemImages() {
+        return editItemImages;
+    }
+
+    public void setEditItemImages(List<ItemsImageEntity> editItemImages) {
+        this.editItemImages = editItemImages;
     }
 
     public Integer getParentCategoryId() {

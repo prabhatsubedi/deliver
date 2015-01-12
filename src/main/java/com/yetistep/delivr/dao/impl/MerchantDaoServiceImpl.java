@@ -365,4 +365,25 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Boolean partnerShipStatus = (Boolean) query.uniqueResult();
         return partnerShipStatus;
     }
+
+    @Override
+    public Boolean updateItem(ItemEntity value) throws Exception {
+        getCurrentSession().update(value);
+        return true;
+    }
+
+    @Override
+    public Boolean updateItemImages(List<ItemsImageEntity> ItemsImages) throws Exception {
+        Integer i = 0;
+        for (ItemsImageEntity value: ItemsImages) {
+            getCurrentSession().update(value);
+            if ( i % 20 == 0 ) { //20, same as the JDBC batch size
+                //flush a batch of inserts and release memory:
+                getCurrentSession().flush();
+                getCurrentSession().clear();
+            }
+            i++;
+        }
+        return true;
+    }
 }

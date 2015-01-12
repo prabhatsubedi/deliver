@@ -70,4 +70,8 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public  void deleteStore(StoreEntity value) throws Exception;
 
     public void updateStores(List<StoreEntity> values) throws Exception;
+
+    public Boolean updateItem(ItemEntity Item) throws Exception;
+
+    public Boolean updateItemImages(List<ItemsImageEntity> ItemsImages) throws Exception;
 }

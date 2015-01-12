@@ -32,7 +32,7 @@ public class ItemsImageEntity implements Serializable {
     }
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "item_id")
     public ItemEntity getItem() {
         return item;

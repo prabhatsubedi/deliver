@@ -53,4 +53,6 @@ public interface MerchantService {
 
     public void updateStore(RequestJsonDto requestJson) throws Exception;
 
+    public void updateItem(RequestJsonDto requestJson) throws Exception;
+
 }

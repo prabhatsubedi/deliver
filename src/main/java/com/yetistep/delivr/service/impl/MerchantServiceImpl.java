@@ -426,11 +426,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         if(storesBrand == null)
             throw new YSException("VLD012");
 
-        CategoryEntity category;
-        //save stores category
-        if(itemCategories.size()>0){
-            CategoryEntity parentCategory = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
-            itemCategories.set(0, parentCategory);
+        CategoryEntity category = new CategoryEntity();
+        //save items category
+        if(itemCategories.size()>1){
+            //CategoryEntity parentCategory = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
+            //itemCategories.set(0, parentCategory);
            int i;
            for(i = 1; i<itemCategories.size(); i++){
                itemCategories.get(i).setParent(itemCategories.get(i-1));
@@ -441,7 +441,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             //get items category
             category = itemCategories.get(itemCategories.size()-1);
         }else{
-            category = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
+            category = itemCategories.get(0);
         }
 
         item.setCategory(category);
@@ -450,7 +450,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<ItemsStoreEntity> itemsStoreEntities = new ArrayList<>();
         for(Integer itemsStore: itemStores){
             ItemsStoreEntity itemsStoreEntity = new ItemsStoreEntity();
-            StoreEntity store = merchantDaoService.getStoreById(itemsStore);
+            StoreEntity store = new StoreEntity();
+            store.setId(itemsStore);
             itemsStoreEntity.setStore(store);
             itemsStoreEntity.setItem(item);
             itemsStoreEntities.add(itemsStoreEntity);
@@ -491,6 +492,184 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 i++;
             }
              merchantDaoService.saveItemImages(itemsImageEntities);
+        }
+
+    }
+
+    @Override
+    public void updateItem(RequestJsonDto requestJson) throws Exception {
+        log.info("++++++++++++ Saving Item +++++++++++++++");
+
+        ItemEntity item = requestJson.getItem();
+        List<CategoryEntity> itemCategories = requestJson.getItemCategories();
+        List<Integer> itemStores = requestJson.getItemStores();
+        List<ItemsAttributesTypeEntity> itemsAttributesTypes = requestJson.getItemAttributesTypes();
+        List<ItemsImageEntity> itemsImages = requestJson.getEditItemImages();
+
+        ItemEntity dbItem = merchantDaoService.getItemDetail(item.getId());
+
+        if(dbItem == null){
+            throw new YSException("VLD020");
+        }
+
+        dbItem.setName(item.getName());
+        dbItem.setDescription(item.getDescription());
+        dbItem.setAdditionalOffer(item.getAdditionalOffer());
+        dbItem.setStatus(item.getStatus());
+        dbItem.setAvailableEndTime(item.getAvailableEndTime());
+        dbItem.setAvailableStartTime(item.getAvailableStartTime());
+        dbItem.setCurrencyType(item.getCurrencyType());
+        dbItem.setMaxOrderQuantity(item.getMaxOrderQuantity());
+        dbItem.setMinOrderQuantity(item.getMinOrderQuantity());
+        dbItem.setVat(item.getVat());
+        dbItem.setUnitPrice(item.getUnitPrice());
+
+
+        StoresBrandEntity storesBrand = dbItem.getStoresBrand();
+        CategoryEntity category = new CategoryEntity();
+        //update items category
+        if(itemCategories.size()>1){
+            //get items category
+            category = itemCategories.get(itemCategories.size()-1);
+            int i;
+            for(i = 1; i<itemCategories.size(); i++){
+                itemCategories.get(i).setParent(itemCategories.get(i-1));
+                itemCategories.get(i).setFeatured(false);
+                itemCategories.get(i).setStoresBrand(storesBrand);
+            }
+            //save categories
+            itemCategories.remove(itemCategories.get(0));
+            merchantDaoService.saveCategories(itemCategories);
+        }else{
+            category = itemCategories.get(0);
+        }
+
+        dbItem.setCategory(category);
+
+        List<ItemsStoreEntity> dbItemStoreEntities = dbItem.getItemsStores();
+        List<ItemsAttributesTypeEntity> dbItemsAttributesTypes = dbItem.getAttributesTypes();
+        List<Integer> dbItemsAttributesTypeIdList = new ArrayList<Integer>();
+
+        List<Integer> dbItemsStoreIdList = new ArrayList<Integer>();
+        Map<Integer, ItemsAttributesTypeEntity> dbItemAttributesTypesMap = new HashMap<Integer, ItemsAttributesTypeEntity>();
+        Map<Integer, ItemsAttributeEntity> dbItemAttributesMap = new HashMap<Integer, ItemsAttributeEntity>();
+
+        for (ItemsStoreEntity itemsStore: dbItemStoreEntities){
+            dbItemsStoreIdList.add(itemsStore.getId());
+        }
+
+        for (ItemsAttributesTypeEntity itemsAttributesType: itemsAttributesTypes){
+            dbItemAttributesTypesMap.put(itemsAttributesType.getId(), itemsAttributesType);
+            for (ItemsAttributeEntity attribute: itemsAttributesType.getItemsAttribute()){
+                dbItemAttributesMap.put(attribute.getId(), attribute);
+            }
+        }
+
+        for(Integer itemsStore: itemStores){
+            if(!dbItemsStoreIdList.contains(itemsStore)){
+                ItemsStoreEntity itemsStoreEntity = new ItemsStoreEntity();
+                StoreEntity store = new StoreEntity();
+                store.setId(itemsStore);
+                itemsStoreEntity.setStore(store);
+                itemsStoreEntity.setItem(dbItem);
+                dbItemStoreEntities.add(itemsStoreEntity);
+            }
+        }
+
+
+        for (ItemsAttributesTypeEntity itemsAttributesTypeEntity: dbItemsAttributesTypes)  {
+            dbItemsAttributesTypeIdList.add(itemsAttributesTypeEntity.getId());
+        }
+
+        List<ItemsAttributesTypeEntity> dbItemAttributesTypes = dbItem.getAttributesTypes();
+        for(ItemsAttributesTypeEntity itemsAttributeType: itemsAttributesTypes){
+            if(itemsAttributeType.getId() != null){
+                ItemsAttributesTypeEntity dbItemAttributesType =  dbItemAttributesTypesMap.get(itemsAttributeType.getId());
+                itemsAttributeType.setItem(dbItem);
+                dbItemAttributesType.setMultiSelect(itemsAttributeType.getMultiSelect());
+                dbItemAttributesType.setType(itemsAttributeType.getType());
+                for (ItemsAttributeEntity itemsAttribute: itemsAttributeType.getItemsAttribute()) {
+                    if(itemsAttribute.getId() != null){
+                        ItemsAttributeEntity dbItemAttribute =  dbItemAttributesMap.get(itemsAttribute.getId());
+                        dbItemAttribute.setType(dbItemAttributesType);
+                        dbItemAttribute.setAttribute(itemsAttribute.getAttribute());;
+                        dbItemAttribute.setUnitPrice(itemsAttribute.getUnitPrice());;
+                    }else{
+                        dbItemAttributesType.getItemsAttribute().add(itemsAttribute);
+                    }
+                }
+            }else{
+                itemsAttributeType.setItem(dbItem);
+                dbItemAttributesTypes.add(itemsAttributeType);
+                for (ItemsAttributeEntity itemsAttribute: itemsAttributeType.getItemsAttribute()) {
+                    itemsAttribute.setType(itemsAttributeType);
+                }
+            }
+        }
+
+        dbItem.setItemsStores(dbItemStoreEntities);
+        dbItem.setAttributesTypes(dbItemAttributesTypes);
+
+        List<ItemsImageEntity> dbImages = dbItem.getItemsImage();
+        Map<Integer, ItemsImageEntity> dbItemsImagesIdMap = new HashMap<>();
+        for (ItemsImageEntity itemsImage: dbImages){
+            dbItemsImagesIdMap.put(itemsImage.getId(), itemsImage);
+        }
+
+
+        //add new images
+        List<Integer> itemsImagesIdList = new ArrayList<Integer>();
+        Map<Integer, ItemsImageEntity> itemsImagesIdMap = new HashMap<>();
+        if(itemsImages != null){
+            for (ItemsImageEntity image: itemsImages){
+                if(image.getId() == null){
+                    dbImages.add(image);
+                }   else {
+                    itemsImagesIdMap.put(image.getId(), image);
+                }
+                itemsImagesIdList.add(image.getId());
+            }
+
+            //remove old images
+            Iterator it = dbItemsImagesIdMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pairs = (Map.Entry)it.next();
+                if(!itemsImagesIdList.contains(pairs.getKey())){
+                    dbImages.remove(dbItemsImagesIdMap.get(pairs.getValue()));
+                }
+            }
+        }
+
+
+
+        merchantDaoService.updateItem(dbItem);
+
+        if (dbImages != null && dbImages.size()>0) {
+            log.info("Uploading item images to S3 Bucket ");
+            String dir = MessageBundle.separateString("/", "Merchant_"+storesBrand.getMerchant().getId(), "Brand_"+ storesBrand.getId(), "item" + dbItem.getId());
+            boolean isLocal = MessageBundle.isLocalHost();
+            if(itemsImagesIdMap.size() > 0) {
+                int i = 0;
+                for(ItemsImageEntity image: dbImages){
+                    if(itemsImagesIdMap.get(image.getId()) !=null && itemsImagesIdMap.get(image.getId()).getUrl() != null && !itemsImagesIdMap.get(image.getId()).getUrl().contains("https://")) { //has url  and is updated
+                        if(image.getId() != null){     //not new
+                            AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(image.getUrl()));
+                            String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId();
+                            String s3PathImage = GeneralUtil.saveImageToBucket(itemsImagesIdMap.get(image.getId()).getUrl(), itemImageUrl, dir, true);
+                            image.setUrl(s3PathImage);
+                            image.setItem(dbItem);
+                            i++;
+                        }else{
+                            String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId();
+                            String s3PathImage = GeneralUtil.saveImageToBucket(image.getUrl(), itemImageUrl, dir, true);
+                            image.setUrl(s3PathImage);
+                            image.setItem(dbItem);
+                            i++;
+                        }
+                    }
+                }
+                merchantDaoService.updateItemImages(dbImages);
+            }
         }
 
     }

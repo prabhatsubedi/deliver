@@ -107,7 +107,7 @@ public class ItemEntity implements Serializable {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsImageEntity> getItemsImage() {
         return itemsImage;

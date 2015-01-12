@@ -224,7 +224,7 @@ if(typeof(Store) == "undefined") var Store = {};
                     data.storesBrand = stores_brand;
                     data.categories = categories;
 
-                    Store.addStore(data, {merchantId: Main.getFromLocalStorage('mid')});
+                    Store.addStore(data, {merchantId: Main.getFromLocalStorage('mid')}, $('#form_brand button[type="submit"]').attr('data-action'));
 
                 };
                 return false;
@@ -258,6 +258,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
             $('.heading h1').html('Store Edit');
             document.title = 'Store Edit';
+            $('#form_brand button[type="submit"]').attr('data-action', 'update').html('Update Store');
 
             if(storeId != undefined) {
 
@@ -322,7 +323,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
     };
 
-    Store.addStore = function(data, headers) {
+    Store.addStore = function(data, headers, data_action) {
 
         $("button[type='submit']").attr("disabled", true);
 
@@ -339,7 +340,11 @@ if(typeof(Store) == "undefined") var Store = {};
 
         callback.loaderDiv = "body";
 
-        Main.request('/merchant/save_store', data, callback, headers);
+        if(data_action == 'update') {
+            Main.request('/merchant/update_store', data, callback);
+        } else {
+            Main.request('/merchant/save_store', data, callback, headers);
+        }
 
     };
 

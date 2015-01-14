@@ -107,4 +107,8 @@ public class BigDecimalUtil {
         return distanceInKiloMeters.multiply(new BigDecimal(1000));
     }
 
+    public static BigDecimal calculateCost(int itemQuantity, BigDecimal itemPrice){
+        return itemPrice.multiply(new BigDecimal(itemQuantity));
+    }
+
 }

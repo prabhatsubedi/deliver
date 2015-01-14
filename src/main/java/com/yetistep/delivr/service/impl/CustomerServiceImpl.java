@@ -191,7 +191,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
-        OrderEntity order = requestJson.getOrdersOrder();
+       // OrderEntity order = requestJson.getOrdersOrder();
         List<ItemsOrderEntity> itemsOrder = requestJson.getOrdersItemsOrder();
         Integer brandId = requestJson.getOrdersBrandId();
         Integer customerId = requestJson.getOrdersCustomerId();
@@ -218,7 +218,7 @@ public class CustomerServiceImpl implements CustomerService {
 //        if(storeEntity == null)
 //            throw new YSException("VLD016");
 
-
+        OrderEntity order = new OrderEntity();
         order.setAddress(address);
         order.setCustomer(customer);
 
@@ -226,17 +226,22 @@ public class CustomerServiceImpl implements CustomerService {
         order.setDeliveryStatus(DeliveryStatus.PENDING);
         order.setOrderStatus(JobOrderStatus.ORDER_PLACED);
 
+        BigDecimal itemTotalCost = BigDecimal.ZERO;
         for (ItemsOrderEntity iOrder: itemsOrder){
             ItemEntity item = merchantDaoService.getItemDetail(iOrder.getItem().getId());
 
             iOrder.setItem(item);
             iOrder.setOrder(order);
             iOrder.setAvailabilityStatus(true);
+            BigDecimal itemTotal = BigDecimalUtil.calculateCost(iOrder.getQuantity(), item.getUnitPrice());
+            iOrder.setItemTotal(itemTotal);
+            itemTotalCost = itemTotalCost.add(itemTotal);
         }
 
         order.setItemsOrder(itemsOrder);
-
-
+        order.setTotalCost(itemTotalCost);
+        //TODO grand total includes service charge, discount, etc
+        order.setGrandTotal(itemTotalCost.add(new BigDecimal(1000)));
 
         List<StoreEntity> stores = merchantDaoService.findStoreByBrand(brandId);
         StoreEntity store = findNearestStoreFromCustomer(order, stores);

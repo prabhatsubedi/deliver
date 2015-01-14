@@ -122,6 +122,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("brandUrl"), "brandUrl")
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
+                .add(Projections.property("merchant.id"),"merchantId")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.or(Restrictions.eq("featured", true), Restrictions.gt("priority", 0)))
                     .addOrder(Order.asc("priority"));
@@ -150,6 +151,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("brandUrl"), "brandUrl")
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
+                .add(Projections.property("merchant.id"),"merchantId")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.and(Restrictions.isNull("priority"),
                 Restrictions.or(Restrictions.eq("featured", false), Restrictions.isNull("featured"))));

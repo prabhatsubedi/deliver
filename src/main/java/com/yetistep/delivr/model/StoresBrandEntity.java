@@ -45,6 +45,7 @@ public class StoresBrandEntity implements Serializable {
     //Transient Variable
    private Boolean openStatus;
    private List<CartEntity> carts;
+    private Integer merchantId; //Transient Variable
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -225,5 +226,14 @@ public class StoresBrandEntity implements Serializable {
 
     public void setCarts(List<CartEntity> carts) {
         this.carts = carts;
+    }
+
+    @Transient
+    public Integer getMerchantId() {
+        return merchantId;
+    }
+
+    public void setMerchantId(Integer merchantId) {
+        this.merchantId = merchantId;
     }
 }

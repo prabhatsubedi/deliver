@@ -42,5 +42,7 @@ public interface ClientService {
 
     public CartDto getCartSize(Long facebookId) throws Exception;
 
+    public CartDto getCartDetail(Integer cartId) throws Exception;
+
 
 }

@@ -47,10 +47,10 @@
                             </div>
                             <div class="form_content">
                                 <div class="brand_images clearfix">
-                                    <div id="brand_image" class="drop_zone unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
+                                    <div id="brand_image" class="drop_zone disabled unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
                                         <div class="drop_info">no image available</div>
                                     </div>
-                                    <div id="brand_logo" class="drop_zone unselectable text-center maintain_ratio" mr-width="200" mr-height="200">
+                                    <div id="brand_logo" class="drop_zone disabled unselectable text-center maintain_ratio" mr-width="200" mr-height="200">
                                         <div class="drop_info">no image available</div>
                                     </div>
                                 </div>

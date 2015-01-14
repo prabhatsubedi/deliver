@@ -20,8 +20,8 @@
     <link rel="stylesheet" href="/resources/css/jcrop.css" type="text/css"/>
     <script>
         $(document).ready(function () {
-            CourierStaff.getCourierStaffProfile();
-            CourierStaff.loadEditCourierStaff();
+//            CourierStaff.getCourierStaffProfile();
+//            CourierStaff.loadEditCourierStaff();
         });
     </script>
 
@@ -32,96 +32,123 @@
 
 <div class="main_container">
 <%@include file="../includes/header.jsp" %>
-<div class="body">
-    <div class="heading clearfix">
-        <h1 class="pull-left">Courier Staff Profile</h1>
-    </div>
-    <div class="main_content">
-        <div class="profile_container">
-            <div class="form_container">
+    <div class="body">
+        <div class="heading clearfix">
+            <h1 class="pull-left">Courier Staff Profile</h1>
+        </div>
+        <div class="main_content">
+            <div class="profile_container">
                 <form role="form" id="courier_boy_form" method="POST" action="">
-                    <div class="profile_header">
-                        <div class="profile_header_image">
-                            <div id="drop_zone"
-                                 class="form-group profile_image unselectable text-center image_selected">
+                    <div class="profile_header clearfix">
+                        <div class="profile_header_image pull-left">
+                            <div id="profile_image" class="drop_zone user_image disabled unselectable text-center maintain_ratio" mr-width="200" mr-height="200">
+                                <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                <div class="drop_title">Brand Logo</div>
                             </div>
-                            <input id="id" type="hidden">
-                            <input id="imageInput" class="hidden" type="file" onchange="Image.readURL(this)">
+                            <input type="file" onchange="Image.readURL(this)" id="profile_image_input" name="profile_image_input" class="hidden" />
                         </div>
-                        <div class="profile_header_info">
-                            <div class="name"></div>
-                            <div class="title"></div>
+                        <div class="profile_header_info pull-left">
+                            <div class="info1 business_name"></div>
+                            <div class="info2 contact_person"></div>
                         </div>
-                        <div class="action">
-                            <a class="btn btn_green pull-right edit_btn none_editable">Edit</a>
-
-                            <div class="action_buttons editable">
-                                <a class="btn pull-right btn_green save_btn editable">Save</a>
-                                <a class="btn pull-right btn_green cancel_btn editable">Cancel</a>
+                        <div class="action detail_options pull-right">
+                            <a class="pull-left btn btn_green edit_btn none_editable glyphicon glyphicon-edit"></a>
+                            <div class="pull-left action_buttons editable hidden">
+                                <a class="btn btn_green save_btn editable glyphicon glyphicon-floppy-disk"></a>
+                                <a class="btn btn_green cancel_btn editable glyphicon glyphicon-remove"></a>
                             </div>
                         </div>
                     </div>
                     <div class="profile_body">
-                        <div class="profile_info">
-                            <div class="profile_sub_title">INFORMATION</div>
-                            <div class="info_block name">
-                                <div class="label"> Name</div>
-                                <div class="val">
+                        <div class="form_container full_width clearfix">
+                            <div class="profile_info col-lg-5">
+                                <div class="profile_sub_title">INFORMATION</div>
+
+                                <div class="form-group">
                                     <div class="info_display none_editable"></div>
                                     <div class="info_edit editable">
-                                        <input type="text" class="form-control" id="fullName" name="fullName">
+                                        <input type="text" placeholder="Name of Courier Staff" name="full_name" id="full_name" class="form-control">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="info_block email">
-                                <div class="label"> Email:</div>
-                                <div class="val">
+
+                                <div class="form-group">
                                     <div class="info_display none_editable"></div>
                                     <div class="info_edit editable">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="email" name="email">
-                                        </div>
+                                        <input type="text" placeholder="Email Address (Optional)" name="email" id="email" class="form-control">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="info_block mobile">
-                                <div class="label"> Mobile:</div>
-                                <div class="val">
+
+                                <div class="form-group">
                                     <div class="info_display none_editable"></div>
                                     <div class="info_edit editable">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="mobile" name="mobile"></div>
+                                        <input type="text" placeholder="Mobile No." name="mobile" id="mobile" class="form-control">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="info_block password editable">
-                                <div class="label"> Password:</div>
-                                <div class="val">
-                                    <div class="info_edit editable">
-                                        <div class="form-group">
-                                            <input type="password" class="form-control" id="password"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="info_block gender">
-                                <div class="label"> Gender:</div>
-                                <div class="val">
+
+                                <div class="form-group">
                                     <div class="info_display none_editable"></div>
                                     <div class="info_edit editable">
-                                        <select class="form-control" type="text" id="gender" name="gender">
+                                        <input type="password" placeholder="Password" name="password" id="password" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="info_display none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="Street" name="street" id="street" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="info_display none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="City" name="city" id="city" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="info_display none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="State" name="state" id="state" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="info_display none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="Country" name="country" id="country" class="form-control valid">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="info_display none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="Vehicle No." name="vehicle_no" id="vehicle_no" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="info_display none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="License No." name="license_no" id="license_no" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="info_display none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <select id="gender" name="gender" class="gender col-xs-12 no_pad no_margin" data-style="form-control">
                                             <option value="0">Select Gender</option>
                                             <option value="MALE">Male</option>
                                             <option value="FEMALE">Female</option>
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="info_block vehicle_type">
-                                <div class="label"> Vehicle Type:</div>
-                                <div class="val">
+
+                                <div class="form-group">
                                     <div class="info_display none_editable"></div>
                                     <div class="info_edit editable">
-                                        <select class="form-control" type="text" id="vehicleType" name="vehicleType">
+                                        <select id="vehicle_type" name="vehicle_type" class="vehicle_type col-xs-12 no_pad no_margin" data-style="form-control">
                                             <option value="0">Select Vehicle Type</option>
                                             <option value="ON_FOOT">On Foot</option>
                                             <option value="BICYCLE">Bicycle</option>
@@ -130,89 +157,29 @@
                                             <option value="TRUCK">Truck</option>
                                             <option value="OTHERS">Others</option>
                                         </select>
+                                    </div>
+                                </div>
 
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="info_block state vehicle_no">
-                                <div class="label"> Vehicle No:</div>
-                                <div class="val">
+                                <div class="form-group">
                                     <div class="info_display none_editable"></div>
                                     <div class="info_edit editable">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="vehicleNo" name="vehicleNo"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="info_block state license_no">
-                                <div class="label"> License No:</div>
-                                <div class="val">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="licenseNo" name="licenseNo"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="info_block street">
-                                <div class="label"> Street:</div>
-                                <div class="val">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable"><input type="text" class="form-control" id="street" name="street">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="info_block city">
-                                <div class="label"> City:</div>
-                                <div class="val">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="city" name="city"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="info_block state">
-                                <div class="label"> State:</div>
-                                <div class="val">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="state" name="state"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="info_block country">
-                                <div class="label"> Country:</div>
-                                <div class="val">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="country"  name="country" disabled="disabled">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="info_block status">
-                                <div class="label"> Status:</div>
-                                <div class="val">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <select class="form-control" type="text" id="status">
+                                        <select id="status" name="status" class="status col-xs-12 no_pad no_margin" data-style="form-control">
                                             <option value="ACTIVE">Active</option>
                                             <option value="INACTIVE">Inactive</option>
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="profile_map">
-                            <div class="profile_sub_title">STATUS IN GOOGLE MAP</div>
-                            <div class="profile_map_body">
-                                <div id="no-edit-map-canvas"></div>
-                            </div>
-                            <div class="profile_map_info">
 
+                            </div>
+
+                            <div class="profile_map form-group col-lg-7">
+                                <div class="profile_sub_title">STATUS IN GOOGLE MAP</div>
+                                <div class="profile_map_body">
+                                    <div id="no-edit-map-canvas"></div>
+                                </div>
+                                <div class="profile_map_info">
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -220,7 +187,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <div class="modal fade" id="crop_img_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">

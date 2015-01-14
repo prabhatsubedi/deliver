@@ -306,7 +306,8 @@ public class ClientController extends AbstractManager{
         try {
             CartDto carts = clientService.getMyCart(facebookId);
             ServiceResponse serviceResponse = new ServiceResponse("My cart successfully retrieved");
-            serviceResponse.addParam("myCart", carts);
+            if(carts != null)
+                serviceResponse.addParam("myCart", carts);
 
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
@@ -350,6 +351,19 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
 
+    }
+
+    @RequestMapping(value = "/get_cart_detail/cartId/{cartId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getCartDetail(@PathVariable("cartId") Integer cartId) {
+        try{
+            ServiceResponse serviceResponse = new ServiceResponse("Cart detail retrieved successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while getting cart detail", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
     }
 
 }

@@ -14,6 +14,7 @@ var input;
 var initialize;
 var noEditInitialise;
 var locationToKey;
+var addMarker;
 var addStoreMarker;
 var latLngToLocation;
 var removeAnimation;
@@ -132,6 +133,9 @@ $(document).ready(function(){
                 else
                     addMarker(event.latLng);
             });
+            $('#clear_markers').live('click', function(){
+                deleteMarkers();
+            });
         }
 
         $('#custom_map_controls').show();
@@ -145,9 +149,6 @@ $(document).ready(function(){
         });
 
         initialized = true;
-        $('#clear_markers').live('click', function(){
-            deleteMarkers();
-        });
         $('#scroll_zoom').live('click', function(){
             if(map.scrollwheel) {
                 map.setOptions({scrollwheel: false});
@@ -186,7 +187,7 @@ $(document).ready(function(){
         return new google.maps.LatLng(latitude, longitude);
     }
 
-    function addMarker(location, name) {
+    addMarker = function(location, name) {
         deleteMarkers();
         var location_check = false;
         for(var i in arrGeoPoints) {
@@ -249,14 +250,25 @@ $(document).ready(function(){
                             }
 
                             var geoObj = {};
-                            geoObj.latitude = location.lat();
-                            geoObj.longitude = location.lng();
-                            geoObj.name = name === undefined ? $('#business_name').val() : name;
-                            geoObj.street = sublocality === undefined ? '' : sublocality;
-                            geoObj.city = city === undefined ? '' : city;
-                            geoObj.postalCode = postalCode === undefined ? '' : postalCode;
-                            geoObj.state = state === undefined ? '' : state;
-                            geoObj.country = country;
+                            var geoPointData = location.geoPointData;
+                            if(geoPointData != undefined) {
+                                geoObj.latitude = geoPointData.latitude;
+                                geoObj.longitude = geoPointData.longitude;
+                                geoObj.name = geoPointData.name;
+                                geoObj.street = geoPointData.street;
+                                geoObj.city = geoPointData.city;
+                                geoObj.state = geoPointData.state;
+                                geoObj.country = geoPointData.country;
+                            } else {
+                                geoObj.latitude = location.lat();
+                                geoObj.longitude = location.lng();
+                                geoObj.name = name === undefined ? $('#business_name').val() : name;
+                                geoObj.street = sublocality === undefined ? '' : sublocality;
+                                geoObj.city = city === undefined ? '' : city;
+                                geoObj.postalCode = postalCode === undefined ? '' : postalCode;
+                                geoObj.state = state === undefined ? '' : state;
+                                geoObj.country = country;
+                            }
 
                             marker = new google.maps.Marker({
                                 position: location,
@@ -313,7 +325,8 @@ $(document).ready(function(){
                         alert('No results found');
                     }
                 } else {
-                    alert("Marker placing failed. Please click again to place marker.");
+                    setTimeout(function(){ addStoreMarker(location, name); }, 500);
+//                    alert("Marker placing failed. Please click again to place marker.");
                 }
             });
         }

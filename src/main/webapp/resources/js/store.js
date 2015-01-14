@@ -439,14 +439,6 @@ if(typeof(Store) == "undefined") var Store = {};
                 document.title = storeBrand.brandName;
                 $('.open_time').html(storeBrand.openingTime + ' - ' + storeBrand.closingTime);
 
-                var brandsCategory = storeBrand.brandsCategory;
-                var item_categories = "";
-                for(var i = 0; i < brandsCategory.length; i++) {
-                    var itemCat = brandsCategory[i];
-                    item_categories +='<li>' + itemCat.name + '</li>';
-                }
-                $('.categories .detail_list').html(item_categories);
-
                 var store_location = '';
                 var stores = storeBrand.store;
                 for(var i = 0; i < stores.length; i++) {
@@ -476,7 +468,33 @@ if(typeof(Store) == "undefined") var Store = {};
                 alert(data.message);
             }
 
-            var callback = function (status, data) {
+            var cat_callback = function (status, data) {
+
+                if (data.success == true) {
+
+                    var brandsCategory = data.params.categories;
+
+                    if(brandsCategory.length > 0) {
+
+                        var item_categories = "";
+                        for(var i = 0; i < brandsCategory.length; i++) {
+                            var itemCat = brandsCategory[i];
+                            item_categories +='<li>' + itemCat.name + '</li>';
+                        }
+                        $('.categories .detail_list').html(item_categories);
+
+                    }
+
+                }
+
+            };
+
+            cat_callback.loaderDiv = "body";
+            cat_callback.requestType = "GET";
+
+            Main.request('/merchant/get_brands_parent_categories', {}, cat_callback, {id: storeId});
+
+            var stores_callback = function (status, data) {
 
                 if (data.success == true) {
 
@@ -514,10 +532,10 @@ if(typeof(Store) == "undefined") var Store = {};
 
             };
 
-            callback.loaderDiv = "body";
-            callback.requestType = "GET";
+            stores_callback.loaderDiv = "body";
+            stores_callback.requestType = "GET";
 
-            Main.request('/merchant/get_stores', {}, callback, {merchantId: Main.getFromLocalStorage('mid')});
+            Main.request('/merchant/get_stores', {}, stores_callback, {merchantId: Main.getFromLocalStorage('mid')});
 
         };
 

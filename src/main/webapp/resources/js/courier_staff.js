@@ -168,8 +168,8 @@ if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
 
             $(".profile_header_image #drop_zone").html("<img id='profileImage' src='" + courierStaff.user.profileImage + "' class='img-responsive'>");
 
-            $(".profile_header_info .name").html(courierStaff.user.fullName);
-            $(".profile_header_info .title").html(courierStaff.availabilityStatus);
+            $(".profile_header_info .info1").html(courierStaff.user.fullName);
+            $(".profile_header_info .info2").html(courierStaff.availabilityStatus);
 
             $(".info_block.name .info_display").html(courierStaff.user.fullName);
             $(".info_block.email .info_display").html(courierStaff.user.emailAddress);
@@ -372,7 +372,7 @@ if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
                 console.log(user.profileImage);
                 user.addresses = [address];
 
-                data.id = $('#id').val();
+                data.id = Main.getURLvalue(3);
                 data.vehicleType = $('#vehicleType').val();
                 data.vehicleNumber = $('#vehicleNo').val();
                 data.licenseNumber = $('#licenseNo').val();

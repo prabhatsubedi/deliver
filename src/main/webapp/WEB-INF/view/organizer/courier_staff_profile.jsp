@@ -20,8 +20,8 @@
     <link rel="stylesheet" href="/resources/css/jcrop.css" type="text/css"/>
     <script>
         $(document).ready(function () {
-//            CourierStaff.getCourierStaffProfile();
-//            CourierStaff.loadEditCourierStaff();
+            CourierStaff.getCourierStaffProfile();
+            CourierStaff.loadEditCourierStaff();
         });
     </script>
 
@@ -65,77 +65,35 @@
                                 <div class="profile_sub_title">INFORMATION</div>
 
                                 <div class="form-group">
-                                    <div class="info_display none_editable"></div>
+                                    <div class="info_display val_full_name none_editable"></div>
                                     <div class="info_edit editable">
                                         <input type="text" placeholder="Name of Courier Staff" name="full_name" id="full_name" class="form-control">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <div class="info_display none_editable"></div>
+                                    <div class=" info_display val_email none_editable"></div>
                                     <div class="info_edit editable">
                                         <input type="text" placeholder="Email Address (Optional)" name="email" id="email" class="form-control">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <div class="info_display none_editable"></div>
+                                    <div class=" info_display val_mobile none_editable"></div>
                                     <div class="info_edit editable">
                                         <input type="text" placeholder="Mobile No." name="mobile" id="mobile" class="form-control">
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
+<%--                                <div class="form-group">
+                                    <div class=" info_display val_password none_editable"></div>
                                     <div class="info_edit editable">
                                         <input type="password" placeholder="Password" name="password" id="password" class="form-control">
                                     </div>
-                                </div>
+                                </div>--%>
 
                                 <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Street" name="street" id="street" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="City" name="city" id="city" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="State" name="state" id="state" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Country" name="country" id="country" class="form-control valid">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Vehicle No." name="vehicle_no" id="vehicle_no" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="License No." name="license_no" id="license_no" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
+                                    <div class=" info_display val_gender none_editable"></div>
                                     <div class="info_edit editable">
                                         <select id="gender" name="gender" class="gender col-xs-12 no_pad no_margin" data-style="form-control">
                                             <option value="0">Select Gender</option>
@@ -146,7 +104,35 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <div class="info_display none_editable"></div>
+                                    <div class=" info_display val_street none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="Street" name="street" id="street" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class=" info_display val_city none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="City" name="city" id="city" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class=" info_display val_state none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="State" name="state" id="state" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class=" info_display val_country none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="Country" name="country" id="country" class="form-control valid">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class=" info_display val_vehicle_type none_editable"></div>
                                     <div class="info_edit editable">
                                         <select id="vehicle_type" name="vehicle_type" class="vehicle_type col-xs-12 no_pad no_margin" data-style="form-control">
                                             <option value="0">Select Vehicle Type</option>
@@ -161,7 +147,21 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <div class="info_display none_editable"></div>
+                                    <div class=" info_display val_vehicle_no none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="Vehicle No." name="vehicle_no" id="vehicle_no" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class=" info_display val_license_no none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="License No." name="license_no" id="license_no" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class=" info_display val_status none_editable"></div>
                                     <div class="info_edit editable">
                                         <select id="status" name="status" class="status col-xs-12 no_pad no_margin" data-style="form-control">
                                             <option value="ACTIVE">Active</option>

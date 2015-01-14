@@ -63,7 +63,7 @@
                         </div>
                         <div class="profile_header_info pull-left">
                             <div class="info1 business_name"></div>
-                            <div class="info2 contact_person"></div>
+                            <div class="info2 partner_status"></div>
                         </div>
                         <div class="action detail_options pull-right">
                             <a class="pull-left btn btn_green edit_btn none_editable glyphicon glyphicon-edit"></a>
@@ -117,6 +117,18 @@
                                     <div class="info_display none_editable"></div>
                                     <div class="info_edit editable">
                                         <input type="text" placeholder="VAT" name="vat" id="vat" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="info_display none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="Commission Percent" name="commission" id="commission" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="info_display none_editable"></div>
+                                    <div class="info_edit editable">
+                                        <input type="text" placeholder="Service Fee" name="service_fee" id="service_fee" class="form-control">
                                     </div>
                                 </div>
                             </div>

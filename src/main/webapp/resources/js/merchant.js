@@ -40,7 +40,7 @@ if(typeof(Merchant) == "undefined") var Merchant = {};
 
                 $('#brand_logo').html('<img src="' + merchant.businessLogo + '" class="img-responsive" data-new="true" />')
                 $('.business_name').html(merchant.businessTitle);
-                $('.contact_person').html(merchant.user.fullName);
+                $('.partner_status').html(merchant.partnershipStatus);
                 $('#business_name').val(merchant.businessTitle);
                 $('#url').val(merchant.website);
                 $('#contact_person').val(merchant.user.fullName);
@@ -48,6 +48,8 @@ if(typeof(Merchant) == "undefined") var Merchant = {};
                 $('#contact_no').val(merchant.user.mobileNumber);
                 $('#registration_no').val(merchant.businessTitle);
                 $('#vat').val(merchant.companyRegistrationNo);
+                $('#commission').val(merchant.commissionPercentage);
+                $('#service_fee').val(merchant.serviceFee);
 
                 var store = merchant.user.addresses[0];
                 store.latitude = "27.710668";

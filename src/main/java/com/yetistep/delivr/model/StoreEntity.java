@@ -39,8 +39,8 @@ public class StoreEntity implements Serializable {
     private String longitude;
     private Timestamp createdDate;
     private Status status;
-    //Transient Variable
-    private BigDecimal customerToStoreDistance;
+    private BigDecimal customerToStoreDistance;//Transient Variable
+    private String brandLogo;//Transient Variable
 
 
     @Id
@@ -185,6 +185,15 @@ public class StoreEntity implements Serializable {
 
     public void setCustomerToStoreDistance(BigDecimal customerToStoreDistance) {
         this.customerToStoreDistance = customerToStoreDistance;
+    }
+
+    @Transient
+    public String getBrandLogo() {
+        return brandLogo;
+    }
+
+    public void setBrandLogo(String brandLogo) {
+        this.brandLogo = brandLogo;
     }
 
     @Column(name = "status")

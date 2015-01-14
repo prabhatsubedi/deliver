@@ -331,6 +331,7 @@ public class ClientServiceImpl implements ClientService {
         store.setContactNo(order.getStore().getContactNo());
         store.setLatitude(order.getStore().getLatitude());
         store.setLongitude(order.getStore().getLongitude());
+        store.setBrandLogo(order.getStore().getStoresBrand().getBrandLogo());
         order.setStore(store);
 
         CustomerEntity customer = new CustomerEntity();

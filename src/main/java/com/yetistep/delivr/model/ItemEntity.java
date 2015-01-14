@@ -10,6 +10,7 @@ import com.yetistep.delivr.util.JsonDateSerializer;
 import com.yetistep.delivr.util.JsonTimeDeserializer;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -132,6 +133,7 @@ public class ItemEntity implements Serializable {
         this.itemsOrder = itemsOrder;
     }
 
+    @Type(type="text")
     @Column(name = "description")
     public String getDescription() {
         return description;

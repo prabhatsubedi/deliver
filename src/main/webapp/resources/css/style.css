@@ -666,6 +666,9 @@ body.assistance_page {
     background-color: #FFFFFF;
     cursor: pointer;
 }
+.drop_zone.disabled {
+    cursor: default;
+}
 .page_item_view .drop_zone {
     cursor: auto;
 }
@@ -1163,155 +1166,43 @@ label.check_label .checkbox {
 /*Profile Css Start*/
 
 .profile_container {
-    background-color: white;
-    border: 1px solid #cbcaca;
-    float: left;
-    margin-bottom: 40px;
-    margin-top: 20px;
-    width: 96%;
+    background-color: #FFFFFF;
 }
-
-.profile_container .form_container{
-    max-width: 100% !important;
-    width: 100% !important;
+.profile_header_image .user_image {
+    width: 150px;
+    height: 150px;
 }
-
 .profile_body {
-    float: left;
-    width: 100%;
-    padding-bottom: 40px;
+    padding: 15px;
 }
-
-.profile_info {
-    float: left;
-    margin-left: 3%;
-    width: 40%;
-}
-
-.profile_map {
-    float: left;
-    width: 54%;
-}
-
-.profile_map_body{
-    float: left;
-    width: 100%;
-}
-
 .profile_map_body #no-edit-map-canvas {
     border: 1px solid #d9d9d9;
-    float: left;
-    height: 600px;
-    width: 100%;
+    height: 500px;
 }
-
 .profile_header {
     border-bottom: 1px solid #d9d9d9;
-    float: left;
-    width: 100%;
 }
-
 .profile_header_image {
-    float: left;
     margin: 30px;
-    width: 14%;
 }
-
-.profile_header_image #drop_zone {
-    float: left;
-    position: relative;
-    width: 100%;
-    border: none;
-    padding: 0;
-
-}
-
 .profile_header_info {
-    float: left;
-    margin-top: 80px;
+    margin-top: 75px;
 }
-
-.profile_header_info .name {
+.profile_header_info .info1 {
     color: #f28220;
     font-size: 26px;
-    line-height: 2;
 }
-
-.profile_header_info .title {
+.profile_header_info .info2 {
     color: #a0a0a0;
     font-size: 15px;
     font-weight: bold;
 }
-
 .profile_sub_title {
     color: #f28220;
     font-size: 16px;
     font-weight: bold;
-    margin-bottom: 30px;
-    margin-top: 40px;
+    margin: 20px 0px;
     width: 100%;
-}
-
-.profile_info .info_block {
-    background-color: #f4f4f4;
-    border: 1px solid #dadada;
-    color: #a9a9a9;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 60px;
-    height: 60px;
-    margin-top: 20px;
-    padding-left: 5%;
-    width: 90%;
-}
-
-.action {
-    float: right;
-    margin-right: 30px;
-    margin-top: 20px;
-}
-
-.profile_info .label {
-    color: #a9a9a9;
-    float: left;
-    line-height: 60px;
-    margin: 0;
-    padding: 0;
-    text-align: left;
-    width: 30%;
-    font-size: 18px;
-}
-
-.profile_info .val {
-    float: left;
-    width: 70%;
-}
-
-.info_edit > input {
-    width: 100%;
-}
-
-.profile_info .form-control {
-    border: 0 none !important;
-    line-height: 56px;
-    height: 57px;
-    margin: 0;
-    padding: 0 0 0 5%;
-    width: 100%;
-    display: block;
-}
-
-.profile_info .form-control button{
-    border: 0 none;
-    line-height: 56px;
-    height: 57px;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
-.profile_info .bootstrap-select button.dropdown-toggle{
-    border: 0 none !important;
 }
 /*Profile Css End*/
 
@@ -1319,6 +1210,10 @@ label.check_label .checkbox {
 
 .detail_options {
     margin-top: -5px;
+}
+.detail_options.action {
+    margin-top: 20px;
+    margin-right: 20px;
 }
 .detail_options .btn {
     line-height: 32px;

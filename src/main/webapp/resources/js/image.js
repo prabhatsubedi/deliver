@@ -12,6 +12,8 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
         });
         var elem = custom_zone == undefined ? "#drop_zone" : custom_zone;
         var dropZone = $(elem);
+        dropZone.removeClass('disabled');
+
         dropZone.on('dragover', function (e)
         {
             $(this).addClass("entered");

@@ -569,4 +569,11 @@ public class ClientServiceImpl implements ClientService {
 
         return cartDto;
     }
+
+    @Override
+    public CartDto getCartDetail(Integer cartId) throws Exception {
+        log.info("+++++++++++++ Getting Cart Detail of id " + cartId + " +++++++++++");
+        CartDto cartDto = new CartDto();
+        return cartDto;
+    }
 }

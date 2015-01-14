@@ -281,21 +281,35 @@ if(typeof(Store) == "undefined") var Store = {};
                         $('#close_time').selectpicker('refresh');
                         $('#brand_url').val(storeBrand.brandUrl);
 
-                        var brandsCategory = storeBrand.brandsCategory;
-                        var storeCatsArr = [];
-                        for(var i = 0; i < brandsCategory.length; i++) {
-                            var itemCat = brandsCategory[i];
-                            storeCatsArr.push(itemCat.id);
-                        }
-                        $('#store_categories').val(storeCatsArr);
-                        $('#store_categories').selectpicker('refresh');
+                        var cat_callback = function (status, data) {
 
-                        var geoPointDatas = {};
+                            if (data.success == true) {
+
+                                var brandsCategory = data.params.categories;
+
+                                var storeCatsArr = [];
+                                for(var i = 0; i < brandsCategory.length; i++) {
+                                    var itemCat = brandsCategory[i];
+                                    storeCatsArr.push(itemCat.id);
+                                }
+                                $('#store_categories').val(storeCatsArr);
+                                $('#store_categories').selectpicker('refresh');
+
+                            }
+
+                        };
+
+                        cat_callback.loaderDiv = "body";
+                        cat_callback.requestType = "GET";
+
+                        Main.request('/merchant/get_brands_parent_categories', {}, cat_callback, {id: storeId});
+
                         var stores = storeBrand.store;
                         for(var i = 0; i < stores.length; i++) {
                             var store = stores[i];
                             var location = latLngToLocation(store.latitude, store.longitude);;
                             var geoPointData = {};
+                            geoPointData.id = store.id;
                             geoPointData.name = store.name;
                             geoPointData.street = store.street;
                             geoPointData.city = store.city;

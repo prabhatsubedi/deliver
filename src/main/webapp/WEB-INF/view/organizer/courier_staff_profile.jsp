@@ -85,12 +85,12 @@
                                     </div>
                                 </div>
 
-<%--                                <div class="form-group">
+                                <div class="form-group">
                                     <div class=" info_display val_password none_editable"></div>
                                     <div class="info_edit editable">
                                         <input type="password" placeholder="Password" name="password" id="password" class="form-control">
                                     </div>
-                                </div>--%>
+                                </div>
 
                                 <div class="form-group">
                                     <div class=" info_display val_gender none_editable"></div>

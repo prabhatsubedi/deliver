@@ -40,7 +40,7 @@ if(typeof(Merchant) == "undefined") var Merchant = {};
 
                 $('#brand_logo').html('<img src="' + merchant.businessLogo + '" class="img-responsive" data-new="true" />')
                 $('.business_name').html(merchant.businessTitle);
-                $('.partner_status').html(merchant.partnershipStatus);
+                $('.partner_status').html(merchant.partnershipStatus ? 'PARTNER' : 'NON-PARTNER');
                 $('#business_name').val(merchant.businessTitle);
                 $('#url').val(merchant.website);
                 $('#contact_person').val(merchant.user.fullName);

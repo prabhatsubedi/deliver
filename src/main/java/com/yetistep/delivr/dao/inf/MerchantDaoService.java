@@ -74,4 +74,6 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public Boolean updateItem(ItemEntity Item) throws Exception;
 
     public Boolean updateItemImages(List<ItemsImageEntity> ItemsImages) throws Exception;
+
+    public MerchantEntity getMerchantByOrderId(Integer orderId) throws Exception;
 }

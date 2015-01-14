@@ -155,6 +155,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         dBoyEntity.setLicenseNumber(deliveryBoyEntity.getLicenseNumber());
 
         String profileImage = deliveryBoyEntity.getUser().getProfileImage();
+
+        deliveryBoyDaoService.update(dBoyEntity);
+
         if (profileImage != null && !profileImage.isEmpty()) {
 
             log.info("Deleting Profile Image of delivery boy to S3 Bucket ");
@@ -167,8 +170,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + dBoyEntity.getId();
             String s3Path = GeneralUtil.saveImageToBucket(profileImage, imageName, dir, true);
             dBoyEntity.getUser().setProfileImage(s3Path);
+            deliveryBoyDaoService.update(dBoyEntity);
         }
-        return deliveryBoyDaoService.update(dBoyEntity);
+
+        return true;
     }
 
     @Override

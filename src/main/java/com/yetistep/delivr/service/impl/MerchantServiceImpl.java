@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -60,8 +61,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         merchant.setBusinessLogo("");
 
         merchantDaoService.save(merchant);
-
-        /* Uploading Business Logo To S3 Bucket */
+        /*Uploading Business Logo To S3 Bucket*/
 
         if(base64encoded!=null && !base64encoded.isEmpty()) {
             log.info("Uploading Business Logo to S3 Bucket ");
@@ -199,8 +199,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             log.info("Uploading brand logo and image to S3 Bucket ");
             String dir = MessageBundle.separateString("/", "Merchant_"+dbMerchant.getId(), "Brand_"+ brand.getId());
             boolean isLocal = MessageBundle.isLocalHost();
-            String brandLogoName = "brand_logo" + (isLocal ? "_tmp_" : "_") + brand.getId();
-            String brandImageName = "brand_image" + (isLocal ? "_tmp_" : "_") + brand.getId();
+            String brandLogoName = "brand_logo" + (isLocal ? "_tmp_" : "_") + brand.getId()+System.currentTimeMillis();
+            String brandImageName = "brand_image" + (isLocal ? "_tmp_" : "_") + brand.getId()+System.currentTimeMillis();
             String s3PathLogo = GeneralUtil.saveImageToBucket(brandLogo, brandLogoName, dir, true);
             String s3PathImage = GeneralUtil.saveImageToBucket(brandImage, brandImageName, dir, true);
             brand.setBrandLogo(s3PathLogo);
@@ -326,7 +326,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             log.info("Deleting brand log to S3 Bucket ");
             AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(brandLogoUrl));
             log.info("Uploading brand log to S3 Bucket ");
-            String brandLogoName = "brand_logo" + (isLocal ? "_tmp_" : "_") + dbStoresBrand.getId();
+            String brandLogoName = "brand_logo" + (isLocal ? "_tmp_" : "_") + dbStoresBrand.getId()+System.currentTimeMillis();;
             String s3PathLogo = GeneralUtil.saveImageToBucket(brandLogo, brandLogoName, dir, true);
             dbStoresBrand.setBrandLogo(s3PathLogo);
             merchantDaoService.updateStoresBrand(dbStoresBrand);
@@ -336,7 +336,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             log.info("Deleting brand log to S3 Bucket ");
             AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(brandImageUrl));
             log.info("Uploading brand image to S3 Bucket ");
-            String brandImageName = "brand_image" + (isLocal ? "_tmp_" : "_") + dbStoresBrand.getId();
+            String brandImageName = "brand_image" + (isLocal ? "_tmp_" : "_") + dbStoresBrand.getId()+System.currentTimeMillis();;
             String s3PathImage = GeneralUtil.saveImageToBucket(brandImage, brandImageName, dir, true);
             dbStoresBrand.setBrandImage(s3PathImage);
             merchantDaoService.updateStoresBrand(dbStoresBrand);
@@ -375,15 +375,71 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public Boolean updateMerchant(MerchantEntity merchantEntity) throws Exception {
+    public Boolean updateMerchant(MerchantEntity merchantEntity, HeaderDto headerDto) throws Exception {
         log.info("Updating merchant with ID:"+merchantEntity.getId());
         MerchantEntity merchant = merchantDaoService.find(merchantEntity.getId());
         if(merchant == null)
             throw new YSException("VLD011");
-        merchant.setWebsite(merchantEntity.getWebsite());
+        //set user values
+        merchant.getUser().setUsername(headerDto.getUsername());
+        if(headerDto.getPassword() != null)
+            merchant.getUser().setPassword(GeneralUtil.encryptPassword(headerDto.getPassword()));
+
+
         merchant.getUser().setFullName(merchantEntity.getUser().getFullName());
         merchant.getUser().setMobileNumber(merchantEntity.getUser().getMobileNumber());
-        return merchantDaoService.update(merchant);
+        merchant.getUser().setStatus(merchantEntity.getUser().getStatus());
+        merchant.getUser().setEmailAddress(merchantEntity.getUser().getEmailAddress());
+        merchant.getUser().setGender(merchantEntity.getUser().getGender());
+        //set address value
+        merchant.getUser().getAddresses().get(0).setCity(merchantEntity.getUser().getAddresses().get(0).getCity());
+        merchant.getUser().getAddresses().get(0).setStreet(merchantEntity.getUser().getAddresses().get(0).getStreet());
+        merchant.getUser().getAddresses().get(0).setState(merchantEntity.getUser().getAddresses().get(0).getState());
+        merchant.getUser().getAddresses().get(0).setCountry(merchantEntity.getUser().getAddresses().get(0).getCountry());
+        //merchant values
+        merchant.setWebsite(merchantEntity.getWebsite());
+        merchant.setBusinessTitle(merchantEntity.getBusinessTitle());
+        merchant.setVatNo(merchantEntity.getVatNo());
+        merchant.setCommissionPercentage(merchantEntity.getCommissionPercentage());
+        merchant.setCompanyRegistrationNo(merchantEntity.getCompanyRegistrationNo());
+        merchant.setCompanyRegistrationNo(merchantEntity.getCompanyRegistrationNo());
+
+
+        String businessLogo =  merchantEntity.getBusinessLogo();
+
+
+        /*if (profileImage != null && !profileImage.isEmpty()) {
+
+            log.info("Deleting Profile Image of merchant to S3 Bucket ");
+            AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(merchant.getUser().getProfileImage()));
+
+            log.info("Uploading Profile Image of merchant to S3 Bucket ");
+
+            String dir = MessageBundle.separateString("/", "merchant", "merchant" + merchant.getId());
+            boolean isLocal = MessageBundle.isLocalHost();
+            String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + merchant.getId();
+            String s3Path = GeneralUtil.saveImageToBucket(profileImage, imageName, dir, true);
+            merchant.getUser().setProfileImage(s3Path);
+        }*/
+
+        merchantDaoService.update(merchant);
+
+
+        if(businessLogo!=null && !businessLogo.isEmpty()) {
+            log.info("Deleting Business Logo from S3 Bucket ");
+            AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(merchant.getBusinessLogo()));
+
+            log.info("Uploading Business Logo to S3 Bucket ");
+            String dir = MessageBundle.separateString("/", "Merchant_" + merchant.getId(), "B_Logo");
+            boolean isLocal =  MessageBundle.isLocalHost();
+            String logoName = "logo" + (isLocal ? "_tmp_" : "_") + merchant.getId()+System.currentTimeMillis();
+            String s3Path = GeneralUtil.saveImageToBucket(businessLogo, logoName, dir, true);
+            merchant.setBusinessLogo(s3Path);
+
+             /* Update S3 Location to the Database */
+            merchantDaoService.update(merchant);
+        }
+        return true;
     }
 
     @Override
@@ -484,7 +540,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             int i = 0;
             for(String image: images){
                 ItemsImageEntity itemsImage = new ItemsImageEntity();
-                String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId();
+                String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();
                 String s3PathImage = GeneralUtil.saveImageToBucket(image, itemImageUrl, dir, true);
                 itemsImage.setUrl(s3PathImage);
                 itemsImage.setItem(item);
@@ -654,13 +710,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                     if(itemsImagesIdMap.get(image.getId()) !=null && itemsImagesIdMap.get(image.getId()).getUrl() != null && !itemsImagesIdMap.get(image.getId()).getUrl().contains("https://")) { //has url  and is updated
                         if(image.getId() != null){     //not new
                             AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(image.getUrl()));
-                            String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId();
+                            String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();;
                             String s3PathImage = GeneralUtil.saveImageToBucket(itemsImagesIdMap.get(image.getId()).getUrl(), itemImageUrl, dir, true);
                             image.setUrl(s3PathImage);
                             image.setItem(dbItem);
                             i++;
                         }else{
-                            String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId();
+                            String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();;
                             String s3PathImage = GeneralUtil.saveImageToBucket(image.getUrl(), itemImageUrl, dir, true);
                             image.setUrl(s3PathImage);
                             image.setItem(dbItem);

@@ -243,15 +243,16 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var courierStaff = courierStaffs[i];
 
                 var id = courierStaff.id;
-                var link_courier_staff = '<a href="/organizer/courier_staff/profile/' + id + '">' + courierStaff.user.fullName + '</a>';
+                var link_courier_staff = '<a href="/organizer/courier_staff/order_history/' + id + '">' + courierStaff.user.fullName + '</a>';
                 var number = courierStaff.user.mobileNumber;
                 var order_no = 0;
                 var order_name = 0;
-                var job_status = 0;
-                var balance = 0;
+                var job_status = courierStaff.availabilityStatus;
+                var balance = courierStaff.walletAmount + courierStaff.bankAmount;
                 var action = '<div class="action_links">' +
                     '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' + id + '">View on Map</a>' +
                     '<a href="#" data-toggle="modal" class="update_courier_boy_account"  data-cbid = "' + id + '" data-target="#modal_account">Update Accounts</a>' +
+                    '<a href="/organizer/courier_staff/profile/' + id + '">View Profile</a>' +
                     '</div>';
 
                 var row = [id, link_courier_staff, number, order_no, order_name, job_status, balance, action];

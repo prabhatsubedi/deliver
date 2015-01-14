@@ -81,12 +81,14 @@ public class MerchantController {
         }
     }
 
-    @RequestMapping(value = "/update_merchant", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update_merchant", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> updateMerchant(@RequestBody MerchantEntity merchantEntity) {
+    public ResponseEntity<ServiceResponse> updateMerchant(@RequestHeader HttpHeaders headers, @RequestBody MerchantEntity merchantEntity) {
         try {
-            merchantService.updateMerchant(merchantEntity);
-            ServiceResponse serviceResponse = new ServiceResponse("Merchant has been saved successfully");
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.NEW_PASSWORD);
+            merchantService.updateMerchant(merchantEntity, headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Merchant has been updated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while updating merchant", e);
@@ -333,6 +335,8 @@ public class MerchantController {
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+
 
 
 }

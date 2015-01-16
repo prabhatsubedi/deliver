@@ -156,10 +156,9 @@ var courierProfile;
     };
 
 
-    CourierStaff.getCourierStaffProfile = function (courierProfile) {
+    CourierStaff.getCourierStaffProfile = function (courier_profile) {
         var id = Main.getURLvalue(3);
-        noEditInitialise();
-        //if(!noEditInitialised) noEditInitialise(); else google.maps.event.trigger(map, 'resize');
+        if(!noEditInitialised) noEditInitialise(); else google.maps.event.trigger(map, 'resize');
         var callback = function (status, data) {
             courierProfile = data;
             if (!data.success) {
@@ -168,7 +167,7 @@ var courierProfile;
             }
             var courierStaff = data.params.deliveryBoy;
 
-            $(".profile_header_image #profile_image").html('<img src="' + courierStaff.user.profileImage + '" class="img-responsive" data-new="true" />');
+            $(".profile_header_image #profile_image").html('<img src="' + courierStaff.user.profileImage + '" class="img-responsive" />');
 
             $(".profile_header_info .info1").html(courierStaff.user.fullName);
             $(".profile_header_info .info2").html(courierStaff.availabilityStatus);
@@ -194,51 +193,55 @@ var courierProfile;
             $("#city").val(courierStaff.user.addresses[0].city);
             $("#state").val(courierStaff.user.addresses[0].state);
             $("#country").val(courierStaff.user.addresses[0].country);
-            $("#vehicle_type").attr(courierStaff.vehicleType);
+            $("#vehicle_type").val(courierStaff.vehicleType);
             $("#vehicle_no").val(courierStaff.vehicleNumber);
             $("#license_no").val(courierStaff.licenseNumber);
             $("#status").val(courierStaff.user.status);
 
-            $("#vehicle_type").selectpicker();
             $("#gender").selectpicker();
+            $("#vehicle_type").selectpicker();
             $("#status").selectpicker();
 
-            var srclatlng = new google.maps.LatLng(courierStaff.latitude, courierStaff.longitude);
-            var destlatlang = new google.maps.LatLng("27.6891424", "85.324561");
-            map.setZoom(12);
-            map.setCenter(srclatlng);
+            if(courier_profile == undefined) {
 
-            new google.maps.Marker({
-                position: srclatlng,
-                map: map
-                //draggable: true
-            });
+                var srclatlng = new google.maps.LatLng(courierStaff.latitude, courierStaff.longitude);
+                var destlatlang = new google.maps.LatLng("27.6891424", "85.324561");
+                map.setZoom(12);
+                map.setCenter(srclatlng);
 
-            if (typeof destlatlang != 'undefined') {
                 new google.maps.Marker({
-                    position: destlatlang,
+                    position: srclatlng,
                     map: map
                     //draggable: true
                 });
 
-                var request = {
-                    origin: srclatlng,
-                    destination: destlatlang,
-                    travelMode: google.maps.DirectionsTravelMode.DRIVING
-                };
+                if (typeof destlatlang != 'undefined') {
+                    new google.maps.Marker({
+                        position: destlatlang,
+                        map: map
+                        //draggable: true
+                    });
 
-                var directionsService = new google.maps.DirectionsService();
-                var directionsDisplay = new google.maps.DirectionsRenderer();
+                    var request = {
+                        origin: srclatlng,
+                        destination: destlatlang,
+                        travelMode: google.maps.DirectionsTravelMode.DRIVING
+                    };
 
-                directionsService.route(request, function (result, status) {
-                    if (status == google.maps.DirectionsStatus.OK) {
-                        directionsDisplay.setDirections(result);
-                    } else {
-                        alert("Directions was not successful because " + status);
-                    }
-                });
+                    var directionsService = new google.maps.DirectionsService();
+                    var directionsDisplay = new google.maps.DirectionsRenderer();
 
-                directionsDisplay.setMap(map);
+                    directionsService.route(request, function (result, status) {
+                        if (status == google.maps.DirectionsStatus.OK) {
+                            directionsDisplay.setDirections(result);
+                        } else {
+                            alert("Directions was not successful because " + status);
+                        }
+                    });
+
+                    directionsDisplay.setMap(map);
+                }
+
             }
 
         }
@@ -246,10 +249,10 @@ var courierProfile;
         callback.requestType = "GET";
         var headers = {};
         headers.id = id;
-        if(courierProfile != undefined)
+        if(courier_profile == undefined)
             Main.request('/organizer/get_dboy', {}, callback, headers);
         else
-            callback('', courierProfile);
+            callback('', courier_profile);
     }
 
     CourierStaff.loadEditCourierStaff = function () {
@@ -316,6 +319,7 @@ var courierProfile;
             $(".none_editable").removeClass('hidden');
             $(".editable").addClass('hidden');
             $("#profile_image").addClass('disabled');
+            $("#password").val('');
             CourierStaff.getCourierStaffProfile(courierProfile);
         });
 
@@ -343,15 +347,13 @@ var courierProfile;
 
                 if (elem_image.attr('data-new') == 'true') {
                     user.profileImage = elem_image.attr('src');
-                } else {
-                    user.profileImage = '';
                 }
                 user.addresses = [address];
 
                 data.id = Main.getURLvalue(3);
                 data.vehicleType = $('#vehicle_type').val();
-                data.vehicleNumber = $('#vehicleNo').val();
-                data.licenseNumber = $('#licenseNo').val();
+                data.vehicleNumber = $('#vehicle_no').val();
+                data.licenseNumber = $('#license_no').val();
                 data.user = user;
 
                 var headers = {};

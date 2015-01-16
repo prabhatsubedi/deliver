@@ -51,6 +51,7 @@
        <mapping class="com.yetistep.delivr.model.OrderCancelEntity"/>
        <mapping class="com.yetistep.delivr.model.CartEntity"/>
        <mapping class="com.yetistep.delivr.model.CartAttributesEntity"/>
+       <mapping class="com.yetistep.delivr.model.CourierTransactionEntity" />
 
 
     </session-factory>

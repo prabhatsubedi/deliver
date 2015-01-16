@@ -256,6 +256,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, brand.getMerchant());
         order.setGrandTotal(customerPays.add(order.getDeliveryCharge()).add(order.getSystemServiceCharge()));
         order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
+        order.setSurgeFactor(getSurgeFactor());
         customerDaoService.saveOrder(order);
 
     }
@@ -395,7 +396,7 @@ public class CustomerServiceImpl implements CustomerService {
             customerDiscount = totalCommission.subtract(systemReservedCommissionAmt);
         }
         /* 8. ==== Surge Factor ======= */
-        Integer surgeFactor = getSurgeFactor();
+        Integer surgeFactor = order.getSurgeFactor();
         /* 9. ====== Delivery cost (Does not include additional delivery amt) ============== */
         BigDecimal deliveryCostWithoutAdditionalDvAmt = ZERO;
         if(BigDecimalUtil.isLessThen(storeToCustomerDistance, TWO))

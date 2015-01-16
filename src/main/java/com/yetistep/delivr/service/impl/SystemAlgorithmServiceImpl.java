@@ -163,9 +163,9 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         //TODO: Set To Database and return
 
         CourierTransactionEntity courierTransactionEntity = new CourierTransactionEntity();
-        courierTransactionEntity.setOrderId(1);
-        courierTransactionEntity.setCustomerId(2);
-        courierTransactionEntity.setDeliveryBoyId(2);
+//        courierTransactionEntity.setOrderId(1);
+//        courierTransactionEntity.setCustomerId(2);
+//        courierTransactionEntity.setDeliveryBoyId(2);
         courierTransactionEntity.setOrderTotal(totalOrder);
         courierTransactionEntity.setCommissionPct(commissionPct);
         courierTransactionEntity.setStoreToCustomerDistance(storeToCustomerDistance);

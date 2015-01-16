@@ -1,5 +1,7 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -14,11 +16,6 @@ import java.math.BigDecimal;
 @Table(name = "courier_transaction")
 public class CourierTransactionEntity {
     private Integer id;
-    //FIXME
-    private Integer orderId;
-    private Integer customerId;
-    private Integer deliveryBoyId;
-    //Until Here......
     private BigDecimal orderTotal;
     private BigDecimal commissionPct;
     private BigDecimal storeToCustomerDistance;
@@ -36,6 +33,7 @@ public class CourierTransactionEntity {
     private BigDecimal customerPays;
     private BigDecimal paidToCourier;
     private BigDecimal profit;
+    private OrderEntity order;
 
     @Id
     @GeneratedValue
@@ -46,31 +44,6 @@ public class CourierTransactionEntity {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    public Integer getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Integer customerId) {
-        this.customerId = customerId;
-    }
-
-    public Integer getDeliveryBoyId() {
-        return deliveryBoyId;
-    }
-
-    public void setDeliveryBoyId(Integer deliveryBoyId) {
-        this.deliveryBoyId = deliveryBoyId;
     }
 
     @Column(name ="order_total", precision = 16, scale = 2)
@@ -226,4 +199,14 @@ public class CourierTransactionEntity {
         this.profit = profit;
     }
 
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    public OrderEntity getOrder() {
+        return order;
+    }
+
+    public void setOrder(OrderEntity order) {
+        this.order = order;
+    }
 }

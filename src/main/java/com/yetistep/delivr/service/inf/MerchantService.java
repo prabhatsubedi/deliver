@@ -27,7 +27,7 @@ public interface MerchantService {
 
     public MerchantEntity getMerchantById(HeaderDto headerDto) throws Exception;
 
-    public Boolean updateMerchant(MerchantEntity merchantEntity, HeaderDto headerDto) throws Exception;
+    public Boolean updateMerchant(MerchantEntity merchantEntity/*, HeaderDto headerDto*/) throws Exception;
 
     public List<StoresBrandEntity> findBrandList(HeaderDto headerDto) throws Exception;
 

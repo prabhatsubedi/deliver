@@ -54,8 +54,8 @@
                         <div class="action detail_options pull-right">
                             <a class="pull-left btn btn_green edit_btn none_editable glyphicon glyphicon-edit"></a>
                             <div class="pull-left action_buttons editable hidden">
-                                <a class="btn btn_green save_btn editable glyphicon glyphicon-floppy-disk"></a>
-                                <a class="btn btn_green cancel_btn editable glyphicon glyphicon-remove"></a>
+                                <a class="btn btn_green save_btn glyphicon glyphicon-floppy-disk"></a>
+                                <a class="btn btn_green cancel_btn glyphicon glyphicon-remove"></a>
                             </div>
                         </div>
                     </div>
@@ -196,7 +196,7 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Status</label>
+                                    <label for="status" class="col-lg-4 floated_label no_pad">Status</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_status none_editable"></div>
                                         <div class="info_edit editable hidden">
@@ -207,6 +207,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
 
                             <div class="profile_map form-group col-lg-7">

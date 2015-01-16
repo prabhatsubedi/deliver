@@ -371,12 +371,11 @@ var courierProfile;
         var callback = function (status, data) {
             $("a.save_btn").removeAttr("disabled");
 
+            alert(data.message);
             if (data.success == true) {
                 $(".none_editable").removeClass('hidden');
                 $(".editable").addClass('hidden');
                 CourierStaff.getCourierStaffProfile();
-            } else {
-                alert(data.message);
             }
         };
         callback.loaderDiv = "body";

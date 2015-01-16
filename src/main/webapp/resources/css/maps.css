@@ -93,11 +93,13 @@
 .map-container .infowindow .address_lines {
     margin-bottom: 3px;
 }
-.map-container .infowindow .address_lines .address_value {
+.map-container .infowindow .address_lines .address_value, .map-container .infowindow .address_lines .val_address_value {
     font-size: 11px !important;
     height: 20px !important;
     padding: 0 5px !important;
     line-height: 20px !important;
+    width: 150px !important;
+    overflow: hidden;
 }
 .map-container .infowindow .save_marker {
     border-radius: 3px;

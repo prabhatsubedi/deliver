@@ -227,6 +227,7 @@ public class CustomerServiceImpl implements CustomerService {
         order.setOrderStatus(JobOrderStatus.ORDER_PLACED);
 
         BigDecimal itemTotalCost = BigDecimal.ZERO;
+        BigDecimal customerPays = BigDecimal.ZERO;
         for (ItemsOrderEntity iOrder: itemsOrder){
             ItemEntity item = merchantDaoService.getItemDetail(iOrder.getItem().getId());
 
@@ -236,12 +237,13 @@ public class CustomerServiceImpl implements CustomerService {
             BigDecimal itemTotal = BigDecimalUtil.calculateCost(iOrder.getQuantity(), item.getUnitPrice());
             iOrder.setItemTotal(itemTotal);
             itemTotalCost = itemTotalCost.add(itemTotal);
-        }
 
+            BigDecimal serviceCharge = itemTotal.add(BigDecimalUtil.percentageOf(itemTotal, item.getServiceCharge()));
+            BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(serviceCharge, item.getVat()));
+            customerPays = customerPays.add(serviceAndVatCharge);
+        }
         order.setItemsOrder(itemsOrder);
         order.setTotalCost(itemTotalCost);
-        //TODO grand total includes service charge, discount, etc
-        order.setGrandTotal(itemTotalCost.add(new BigDecimal(1000)));
 
         List<StoreEntity> stores = merchantDaoService.findStoreByBrand(brandId);
         StoreEntity store = findNearestStoreFromCustomer(order, stores);
@@ -251,7 +253,9 @@ public class CustomerServiceImpl implements CustomerService {
         order.setOrderVerificationCode(Integer.parseInt(GeneralUtil.generateMobileCode()));
         //TODO Send code message to customer
         List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, deliveryBoyDaoService.findAllCapableDeliveryBoys(), order);
-        order.setDeliveryBoySelections(deliveryBoySelectionEntities);
+        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, brand.getMerchant());
+        order.setGrandTotal(customerPays.add(order.getDeliveryCharge()).add(order.getSystemServiceCharge()));
+        order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
         customerDaoService.saveOrder(order);
 
     }
@@ -343,5 +347,118 @@ public class CustomerServiceImpl implements CustomerService {
         } else {
             return 0;
         }
+    }
+
+    private List<DeliveryBoySelectionEntity> filterDBoyWithProfitCriteria(OrderEntity order, List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities, MerchantEntity merchant) throws Exception {
+        log.info("Unfiltered Dboys:"+deliveryBoySelectionEntities.toString());
+        List<DeliveryBoySelectionEntity> filteredDeliveryBoys = new ArrayList<DeliveryBoySelectionEntity>();
+        for (DeliveryBoySelectionEntity deliveryBoySelectionEntity : deliveryBoySelectionEntities) {
+            if (checkProfitCriteria(order, deliveryBoySelectionEntity, merchant))
+                filteredDeliveryBoys.add(deliveryBoySelectionEntity);
+        }
+        log.info("Filtered Dboys:"+filteredDeliveryBoys.toString());
+        return filteredDeliveryBoys;
+    }
+
+    private Boolean checkProfitCriteria(OrderEntity order, DeliveryBoySelectionEntity dBoySelection, MerchantEntity merchant)throws Exception {
+        BigDecimal DBOY_ADDITIONAL_PER_KM_CHARGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_ADDITIONAL_PER_KM_CHARGE));
+        BigDecimal RESERVED_COMM_PER_BY_SYSTEM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.RESERVED_COMM_PER_BY_SYSTEM));
+        BigDecimal DBOY_PER_KM_CHARGE_UPTO_2KM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_2KM));
+        BigDecimal DBOY_PER_KM_CHARGE_ABOVE_2KM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_2KM));
+        BigDecimal DBOY_COMMISSION = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_COMMISSION));
+        BigDecimal DBOY_MIN_AMOUNT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_MIN_AMOUNT));
+        BigDecimal DELIVERY_FEE_VAT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
+        BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
+        BigDecimal ADDITIONAL_KM_FREE_LIMIT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ADDITIONAL_KM_FREE_LIMIT));
+        BigDecimal ZERO = BigDecimal.ZERO;
+        BigDecimal TWO = new BigDecimal(2);
+         /* 1. ===== Order Total ======= */
+        BigDecimal totalOrder = order.getTotalCost();
+        /* 2. ======= Commission Percent ====== */
+        BigDecimal commissionPct = merchant.getCommissionPercentage();
+        /* 3. ===== Distance Store to Customer(KM) ======== */
+        BigDecimal storeToCustomerDistance =  dBoySelection.getStoreToCustomerDistance();
+        /* 4. ====== Distance Courier to Store (KM) ======== */
+        BigDecimal courierToStoreDistance = dBoySelection.getDistanceToStore();
+        /* 5. ==== Service Fee % ======= */
+        BigDecimal serviceFeePct = merchant.getServiceFee();
+        /* 6. ====== Additional delivery amt ======= */
+        BigDecimal additionalDeliveryAmt = ZERO;
+        if(BigDecimalUtil.isGreaterThen(courierToStoreDistance, ADDITIONAL_KM_FREE_LIMIT))
+            additionalDeliveryAmt = courierToStoreDistance.subtract(ADDITIONAL_KM_FREE_LIMIT).multiply(DBOY_ADDITIONAL_PER_KM_CHARGE);
+       /* 7. ==== Discount on delivery to customer ======= */
+        BigDecimal customerDiscount = ZERO;
+        BigDecimal systemReservedCommissionAmt = ZERO;
+        if(BigDecimalUtil.isGreaterThenZero(commissionPct)){
+            BigDecimal totalCommission = BigDecimalUtil.percentageOf(totalOrder, commissionPct);
+            systemReservedCommissionAmt = BigDecimalUtil.percentageOf(totalCommission, RESERVED_COMM_PER_BY_SYSTEM);
+            customerDiscount = totalCommission.subtract(systemReservedCommissionAmt);
+        }
+        /* 8. ==== Surge Factor ======= */
+        Integer surgeFactor = getSurgeFactor();
+        /* 9. ====== Delivery cost (Does not include additional delivery amt) ============== */
+        BigDecimal deliveryCostWithoutAdditionalDvAmt = ZERO;
+        if(BigDecimalUtil.isLessThen(storeToCustomerDistance, TWO))
+            deliveryCostWithoutAdditionalDvAmt = DBOY_PER_KM_CHARGE_UPTO_2KM.multiply(new BigDecimal(surgeFactor));
+        else
+            deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply(DBOY_PER_KM_CHARGE_ABOVE_2KM).multiply(new BigDecimal(surgeFactor));
+        /* 10. ======= Service Fee Amount =========== */
+        BigDecimal serviceFeeAmt = BigDecimalUtil.percentageOf(totalOrder, serviceFeePct);
+        /* 11. ====== Delivery charged to customer before Discount ======== */
+        BigDecimal deliveryChargedBeforeDiscount = ZERO;
+        if(BigDecimalUtil.isGreaterThenOrEqualTo(deliveryCostWithoutAdditionalDvAmt, customerDiscount)){
+            deliveryChargedBeforeDiscount = deliveryCostWithoutAdditionalDvAmt.subtract(customerDiscount);
+            deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, DELIVERY_FEE_VAT));
+        }
+        /* 12. ======= Customer Available balance before discount ====== */
+        BigDecimal customerBalanceBeforeDiscount = order.getCustomer().getRewardsEarned();
+        /* 13. ======== Delivery charged to customer After Discount ====== */
+        BigDecimal deliveryChargedAfterDiscount = ZERO;
+        if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
+            deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
+        /* 14. ======= Customer available balance after discount ======== */
+        BigDecimal customerBalanceAfterDiscount = ZERO;
+        if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
+            customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
+
+        /* 15. ====== Customer Pays ========*/
+//        BigDecimal customerPays = BigDecimal.ZERO;
+//        customerPays = customerPays.add(deliveryChargedAfterDiscount).add(serviceFeeAmt);
+//        order.setGrandTotal(customerPays);
+        order.setDeliveryCharge(deliveryChargedAfterDiscount);
+        order.setSystemServiceCharge(serviceFeeAmt);
+
+        /* 16. ======= Paid to Courier ====== */
+        BigDecimal paidToCourier = ZERO;
+        if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.percentageOf(deliveryCostWithoutAdditionalDvAmt, DBOY_COMMISSION), DBOY_MIN_AMOUNT))
+            paidToCourier = BigDecimalUtil.percentageOf(deliveryCostWithoutAdditionalDvAmt, DBOY_COMMISSION).add(additionalDeliveryAmt);
+        else
+            paidToCourier = DBOY_MIN_AMOUNT.add(additionalDeliveryAmt);
+        dBoySelection.setPaidToCourier(paidToCourier);
+
+        /* 16 ===== Profit ====== */
+        // total order * profit% = >  actual profit
+        BigDecimal profit = ZERO;
+        profit = BigDecimalUtil.percentageOf(totalOrder, commissionPct).add(deliveryChargedBeforeDiscount).add(serviceFeeAmt).subtract(paidToCourier);
+
+        if(BigDecimalUtil.isLessThen(profit, BigDecimalUtil.percentageOf(totalOrder, MINIMUM_PROFIT_PERCENTAGE))){
+            System.err.println("No Profit");
+            return false;
+        }
+        return true;
+    }
+
+    private Integer getSurgeFactor() throws Exception{
+        Integer surgeFactor = 0;
+        String currentTime = DateUtil.getCurrentTime().toString();
+        if(DateUtil.isTimeBetweenTwoTime("07:00:00", "21:00:00", currentTime))
+            surgeFactor = 1; // if Time is 7 AM-9 PM
+        else if(DateUtil.isTimeBetweenTwoTime("21:00:00", "22:00:00", currentTime))
+            surgeFactor = 2; // if Time is 9-10 PM
+        else if(DateUtil.isTimeBetweenTwoTime("22:00:00", "23:00:00", currentTime))
+            surgeFactor = 3; // if Time is 10 PM-11 PM
+        else
+            surgeFactor = 4; // if Time is 11 PM-7 AM
+        return surgeFactor;
     }
 }

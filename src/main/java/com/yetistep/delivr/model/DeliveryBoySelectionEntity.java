@@ -20,6 +20,7 @@ public class DeliveryBoySelectionEntity {
     private Integer timeRequired;
     private Integer totalTimeRequired;
     private Boolean accepted;
+    private BigDecimal paidToCourier;
     private DeliveryBoyEntity deliveryBoy;
     private OrderEntity order;
 
@@ -78,6 +79,15 @@ public class DeliveryBoySelectionEntity {
 
     public void setAccepted(Boolean accepted) {
         this.accepted = accepted;
+    }
+
+    @Column(name="paid_to_courier")
+    public BigDecimal getPaidToCourier() {
+        return paidToCourier;
+    }
+
+    public void setPaidToCourier(BigDecimal paidToCourier) {
+        this.paidToCourier = paidToCourier;
     }
 
     @ManyToOne

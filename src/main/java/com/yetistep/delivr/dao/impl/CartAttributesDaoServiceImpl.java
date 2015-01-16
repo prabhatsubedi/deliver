@@ -36,7 +36,8 @@ public class CartAttributesDaoServiceImpl implements CartAttributesDaoService{
 
     @Override
     public Boolean save(CartAttributesEntity value) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        getCurrentSession().save(value);
+        return true;
     }
 
     @Override
@@ -46,6 +47,7 @@ public class CartAttributesDaoServiceImpl implements CartAttributesDaoService{
 
     @Override
     public Boolean delete(CartAttributesEntity value) throws Exception {
+
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -93,5 +95,14 @@ public class CartAttributesDaoServiceImpl implements CartAttributesDaoService{
         query.setParameter("cartId", cartId);
         cartAttributes = query.list();
         return cartAttributes;
+    }
+
+    @Override
+    public Boolean deleteCartAttributes(Integer cartId) throws Exception {
+        String sqlAtt = "Delete from cart_attributes where cart_id=:cartId";
+        SQLQuery query = getCurrentSession().createSQLQuery(sqlAtt);
+        query.setParameter("cartId", cartId);
+        query.executeUpdate();
+        return true;
     }
 }

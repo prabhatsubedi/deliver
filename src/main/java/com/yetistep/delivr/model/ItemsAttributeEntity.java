@@ -22,6 +22,7 @@ public class ItemsAttributeEntity implements Serializable {
     private Integer id;
     private String attribute;
     private Integer unitPrice;
+    private Boolean selected; //Transient Variable
     private ItemsAttributesTypeEntity type;
     private List<CartAttributesEntity> cartAttributes;
 
@@ -63,6 +64,14 @@ public class ItemsAttributeEntity implements Serializable {
 
     public void setUnitPrice(Integer unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public Boolean getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
     }
 
     @OneToMany(mappedBy = "itemsAttribute", cascade = CascadeType.ALL)

@@ -1,6 +1,7 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.StoreDaoService;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.StoreEntity;
 import org.hibernate.Criteria;
@@ -64,6 +65,8 @@ public class StoreDaoServiceImpl implements StoreDaoService{
         Criteria criteria = getCurrentSession().createCriteria(StoreEntity.class);
         if (ignoreBrand.size() > 0)
             criteria.add(Restrictions.not(Restrictions.in("storesBrand.id", ignoreBrand)));
+        criteria.add(Restrictions.eq("status", Status.ACTIVE.ordinal()));
+
         storeEntities = criteria.list();
 
         return storeEntities;

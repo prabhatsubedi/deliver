@@ -46,7 +46,14 @@ public class CartDaoServiceImpl implements CartDaoService{
 
     @Override
     public Boolean update(CartEntity value) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        String sql = "UPDATE cart SET note = :note, order_quantity = :quantity WHERE id = :cartId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("note", value.getNote()!=null ? value.getNote() : null);
+        sqlQuery.setParameter("quantity", value.getOrderQuantity());
+        sqlQuery.setParameter("cartId", value.getId());
+
+        sqlQuery.executeUpdate();
+        return true;
     }
 
     @Override
@@ -140,6 +147,28 @@ public class CartDaoServiceImpl implements CartDaoService{
 
         sqlQuery.executeUpdate();
         return true;
+    }
+
+    @Override
+    public CartEntity findCart(Integer cartId) throws Exception {
+        ProjectionList projectionList = Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("note"), "note")
+                .add(Projections.property("orderQuantity"), "orderQuantity")
+                .add(Projections.property("sb.id"), "storesBrand.id")
+                .add(Projections.property("sb.brandName"), "storesBrand.brandName")
+                .add(Projections.property("i.id"), "item.id");
+
+
+        Criteria criteria = getCurrentSession().createCriteria(CartEntity.class)
+                .createAlias("storesBrand", "sb")
+                .createAlias("item", "i")
+                .setProjection(projectionList)
+                .setResultTransformer(new AliasToBeanNestedResultTransformer(CartEntity.class));
+        criteria.add(Restrictions.eq("id", cartId));
+        CartEntity cart = criteria.list().size()>0 ? (CartEntity) criteria.list().get(0) : null;
+
+        return cart;
     }
 
 

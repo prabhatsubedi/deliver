@@ -3,6 +3,7 @@ package com.yetistep.delivr.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
@@ -20,6 +21,7 @@ import java.util.List;
  */
 @Entity(name = "CartEntity")
 @Table(name = "cart")
+@DynamicUpdate
 public class CartEntity {
     private Integer id;
     private Integer orderQuantity;

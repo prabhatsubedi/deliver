@@ -1,6 +1,7 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.StoresBrandDaoService;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.StoresBrandEntity;
 import com.yetistep.delivr.util.HibernateUtil;
@@ -72,6 +73,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("priority"), "priority")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.isNotNull("featured")) ;
+        criteria.add(Restrictions.eq("status", Status.ACTIVE.ordinal()));
         storesBrandEntities = criteria.list();
         return storesBrandEntities;
 
@@ -91,7 +93,8 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
-        criteria.add(Restrictions.isNull("featured")) ;
+        criteria.add(Restrictions.isNull("featured"));
+        criteria.add(Restrictions.eq("status", Status.ACTIVE.ordinal()));
 
         if(priority == null){
             //All Brands Null at bottom

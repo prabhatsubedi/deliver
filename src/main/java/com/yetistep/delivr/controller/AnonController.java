@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -142,6 +143,14 @@ public class AnonController {
             HttpHeaders headers = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(headers, HttpStatus.EXPECTATION_FAILED);
         }
+    }
+
+    @RequestMapping(value = "/referral/{referral_id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView referral(@PathVariable String referral_id){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("referral");
+        return modelAndView;
     }
 
 }

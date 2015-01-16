@@ -287,6 +287,7 @@ if(typeof(Store) == "undefined") var Store = {};
                             var itemCat = brandsCategory[i];
                             storeCatsArr.push(itemCat.id);
                         }
+                        console.log(storeBrand.brandsCategory);
                         $('#store_categories').val(storeCatsArr);
                         $('#store_categories').selectpicker('refresh');
 

@@ -42,7 +42,6 @@ public class ItemsStoreEntity implements Serializable {
         this.item = item;
     }
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "store_id")
     public StoreEntity getStore() {

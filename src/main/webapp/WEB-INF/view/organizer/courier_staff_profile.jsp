@@ -169,11 +169,10 @@
                                         </select>
                                     </div>
                                 </div>
-
                             </div>
 
                             <div class="profile_map form-group col-lg-7">
-                                <div class="profile_sub_title">STATUS IN GOOGLE MAP</div>
+                                <div class="profile_sub_title">Courier Staff Location</div>
                                 <div class="profile_map_body">
                                     <div id="no-edit-map-canvas"></div>
                                 </div>

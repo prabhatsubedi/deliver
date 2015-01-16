@@ -216,14 +216,14 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         ).setResultTransformer(Transformers.aliasToBean(StoreEntity.class));
         stores = criteria.list();
 
-        return stores.size() > 0 ? stores : null;
+        return stores;
     }
 
     @Override
     public List<StoresBrandEntity> findBrandListByMerchant(Integer merchantId) throws Exception {
         List<StoresBrandEntity> stores = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
-        criteria.setProjection(Projections.projectionList()
+       /* criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("brandName"), "brandName")
                 .add(Projections.property("brandLogo"), "brandLogo")
@@ -233,7 +233,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
                 .add(Projections.property("openingTime"), "openingTime")
                 .add(Projections.property("closingTime"), "closingTime")
                 .add(Projections.property("merchant"), "merchant")
-        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
+        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));*/
         criteria.add(Restrictions.eq("merchant.id", merchantId)) ;
         stores = criteria.list();
         return stores;
@@ -334,7 +334,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         criteria.add(Restrictions.sqlRestriction("1=1 order by rand()"));
         criteria.setMaxResults(2);
         items = criteria.list();
-        return items.size() > 0 ? items : null;
+        return items;
     }
 
     @Override

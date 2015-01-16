@@ -1,5 +1,7 @@
 if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
 
+var courierProfile;
+
 (function ($) {
 
     CourierStaff.loadAddCourierStaff = function () {
@@ -51,7 +53,6 @@ if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
             }
             return result;
         }, "Please select any option.");
-
 
         $.validator.addMethod("imageRequired", function (value, element, arg) {
             var result = true;
@@ -155,11 +156,12 @@ if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
     };
 
 
-    CourierStaff.getCourierStaffProfile = function () {
+    CourierStaff.getCourierStaffProfile = function (courierProfile) {
         var id = Main.getURLvalue(3);
         noEditInitialise();
         //if(!noEditInitialised) noEditInitialise(); else google.maps.event.trigger(map, 'resize');
         var callback = function (status, data) {
+            courierProfile = data;
             if (!data.success) {
                 alert(data.message);
                 return;
@@ -171,39 +173,38 @@ if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
             $(".profile_header_info .info1").html(courierStaff.user.fullName);
             $(".profile_header_info .info2").html(courierStaff.availabilityStatus);
 
-//            $(".val_full_name").html(courierStaff.user.fullName);
-//            $(".val_email").html(courierStaff.user.emailAddress);
-//            $(".val_mobile").html(courierStaff.user.mobileNumber);
-//            $(".val_gender").html(Main.ucfirst(courierStaff.user.gender.toLowerCase()));
-//            $(".val_street").html(courierStaff.user.addresses[0].street);
-//            $(".val_city").html(courierStaff.user.addresses[0].city);
-//            $(".val_state").html(courierStaff.user.addresses[0].state);
-//            $(".val_country").html(courierStaff.user.addresses[0].country);
-//            $(".val_vehicle_type").html(Main.ucfirst(courierStaff.vehicleType.toLowerCase()));
-//            $(".val_vehicle_no").html(courierStaff.vehicleNumber);
-//            $(".val_license_no").html(courierStaff.licenseNumber);
-//            $(".info_block.status .info_display").html(Main.ucfirst(courierStaff.user.status.toLowerCase()));
+            $(".val_full_name").html(courierStaff.user.fullName);
+            $(".val_email").html(courierStaff.user.emailAddress);
+            $(".val_mobile").html(courierStaff.user.mobileNumber);
+            $(".val_gender").html(Main.ucfirst(courierStaff.user.gender));
+            $(".val_street").html(courierStaff.user.addresses[0].street);
+            $(".val_city").html(courierStaff.user.addresses[0].city);
+            $(".val_state").html(courierStaff.user.addresses[0].state);
+            $(".val_country").html(courierStaff.user.addresses[0].country);
+            $(".val_vehicle_type").html(Main.ucfirst(courierStaff.vehicleType));
+            $(".val_vehicle_no").html(courierStaff.vehicleNumber);
+            $(".val_license_no").html(courierStaff.licenseNumber);
+            $(".val_status").html(Main.ucfirst(courierStaff.user.status));
 
             $("#full_name").val(courierStaff.user.fullName);
             $("#email").val(courierStaff.user.emailAddress);
             $("#mobile").val(courierStaff.user.mobileNumber);
-//            $("#password").val(courierStaff.user.password);
             $("#gender").val(courierStaff.user.gender);
             $("#street").val(courierStaff.user.addresses[0].street);
             $("#city").val(courierStaff.user.addresses[0].city);
             $("#state").val(courierStaff.user.addresses[0].state);
             $("#country").val(courierStaff.user.addresses[0].country);
             $("#vehicle_type").attr(courierStaff.vehicleType);
-            $("#status").val(courierStaff.user.status);
             $("#vehicle_no").val(courierStaff.vehicleNumber);
             $("#license_no").val(courierStaff.licenseNumber);
+            $("#status").val(courierStaff.user.status);
 
             $("#vehicle_type").selectpicker();
             $("#gender").selectpicker();
             $("#status").selectpicker();
 
             var srclatlng = new google.maps.LatLng(courierStaff.latitude, courierStaff.longitude);
-            //var destlatlang = new google.maps.LatLng("27.6891424", "85.324561");
+            var destlatlang = new google.maps.LatLng("27.6891424", "85.324561");
             map.setZoom(12);
             map.setCenter(srclatlng);
 
@@ -245,64 +246,13 @@ if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
         callback.requestType = "GET";
         var headers = {};
         headers.id = id;
-        Main.request('/organizer/get_dboy', {}, callback, headers);
+        if(courierProfile != undefined)
+            Main.request('/organizer/get_dboy', {}, callback, headers);
+        else
+            callback('', courierProfile);
     }
 
     CourierStaff.loadEditCourierStaff = function () {
-//        $(".editable").addClass('hidden');
-
-        $('.edit_btn').click(function () {
-            $(".editable").removeClass('hidden');
-            $(".none_editable").addClass('hidden');
-            Image.dropZone('#imageInput');
-
-            $('#courier_boy_form').validate();
-            $('#imageInput').rules('add', {imageRequired: true});
-            $('#full_name').rules('add', {required: true});
-            $('#email').rules('add', {email: true});
-            $('#password').rules('add', {minlength: 6});
-            $('#mobile').rules('add', {required: true, mobileNumber: true, minlength: 10, maxlength: 10});
-            $('#gender').rules('add', {notEqual: 0});
-            $('#street').rules('add', {required: true});
-            $('#city').rules('add', {required: true});
-            $('#state').rules('add', {required: true});
-            $('#country').rules('add', {required: true});
-            $('#vehicle_type').rules('add', {notEqual: 0});
-
-        });
-
-//        $('.cancel_btn').click(function () {
-//            $(".none_editable").removeClass('hidden');
-//            $(".editable").addClass('hidden');
-//        });
-
-        $('#ar_lock').change(function (e) {
-            jcrop_api.setOptions(this.checked ? { aspectRatio: chk_w / chk_h } : { aspectRatio: 0 });
-            jcrop_api.focus();
-        });
-
-        $('#apply_preview').click(function (e) {
-            html2canvas($('.preview-container'), {
-                onrendered: function (canvas) {
-                    var strImage = canvas.toDataURL('image/jpeg');
-                    console.log(strImage);
-                    $('#drop_zone').addClass('image_selected').removeClass('error').html('<img src="' + strImage + '" style="height: 100%;" />');
-                    $('#crop_img_modal').modal('hide');
-                }
-            });
-        });
-
-        $('#cancel_preview').click(function (e) {
-            $('#crop_img_modal').modal('hide');
-        });
-
-        $('#crop_img_modal').on('show.bs.modal', function (e) {
-            $('#ar_lock').prop('checked', true);
-        });
-
-        $('#crop_img_modal').on('hidden.bs.modal', function (e) {
-            $('#crop_img_modal img').attr('src', '');
-        });
 
         $.validator.addMethod("mobileNumber", function (value, element, arg) {
             return this.optional(element) || /[0-9]+$/.test(value);
@@ -320,13 +270,14 @@ if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
             return result;
         }, "Please select any option.");
 
-        $.validator.addMethod("imageRequired", function (value, element, arg) {
+        $.validator.addMethod("imageRequired", function(value, element, arg){
             var result = true;
-            if ($('#drop_zone img').attr('src') == undefined || $('#drop_zone img').attr('src') == "") {
+            var container = $(element).prev('.drop_zone');
+            if($('img', container).attr('src') == undefined || $('img', container).attr('src') == "") {
                 result = false;
-                $('#drop_zone').addClass('error');
+                container.addClass('error');
             } else {
-                $('#drop_zone').removeClass('error');
+                container.removeClass('error');
             }
             return result;
         }, "Only numbers are allowed.");
@@ -341,9 +292,36 @@ if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
             $(this).valid();
         });
 
+        $('.edit_btn').click(function () {
+            $(".editable").removeClass('hidden');
+            $(".none_editable").addClass('hidden');
+            Image.dropZone('#profile_image_input', '#profile_image');
+
+            $('#courier_boy_form').validate();
+            $('#profile_image_input').rules('add', {imageRequired: true});
+            $('#full_name').rules('add', {required: true});
+            $('#email').rules('add', {email: true});
+            $('#password').rules('add', {minlength: 6});
+            $('#mobile').rules('add', {required: true, mobileNumber: true, minlength: 10, maxlength: 10});
+            $('#gender').rules('add', {notEqual: 0});
+            $('#street').rules('add', {required: true});
+            $('#city').rules('add', {required: true});
+            $('#state').rules('add', {required: true});
+            $('#country').rules('add', {required: true});
+            $('#vehicle_type').rules('add', {notEqual: 0});
+
+        });
+
+        $('.cancel_btn').click(function () {
+            $(".none_editable").removeClass('hidden');
+            $(".editable").addClass('hidden');
+            $("#profile_image").addClass('disabled');
+            CourierStaff.getCourierStaffProfile(courierProfile);
+        });
+
         $('.save_btn').click(function () {
             if ($('#courier_boy_form').valid()) {
-                var chk_confirm = confirm('Are you sure you want to edit delivery boy?');
+                var chk_confirm = confirm('Are you sure you want to update delivery boy?');
                 if (!chk_confirm) return false;
 
                 var data = {};
@@ -361,14 +339,13 @@ if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
                 user.mobileNumber = $('#mobile').val();
                 user.gender = $('#gender').val();
                 user.status = $("#status").val();
-                image_src = $('#drop_zone img').attr('src');
+                elem_image = $('#profile_image img');
 
-                if (image_src.indexOf("https://") > -1) {
-                    user.profileImage = '';
+                if (elem_image.attr('data-new') == 'true') {
+                    user.profileImage = elem_image.attr('src');
                 } else {
-                    user.profileImage = $('#drop_zone img').attr('src');
+                    user.profileImage = '';
                 }
-                console.log(user.profileImage);
                 user.addresses = [address];
 
                 data.id = Main.getURLvalue(3);
@@ -400,7 +377,7 @@ if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
                 alert(data.message);
             }
         };
-        callback.loaderDiv = ".main_content";
+        callback.loaderDiv = "body";
         callback.requestType = 'PUT';
         Main.request('/organizer/update_dboy', data, callback, headers);
     };

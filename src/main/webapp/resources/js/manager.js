@@ -157,7 +157,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.check_store_type = function (featured_count, prioritized_count) {
 
-        var featured_check = featured_count < 6;
+/*        var featured_check = featured_count < 6;
         var prioritized_check = prioritized_count < 6;
 
         $('#featured_stores, #prioritized_stores, #other_stores').sortable('option', {connectWith: false});
@@ -169,7 +169,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             $('#featured_stores, #prioritized_stores, #other_stores').sortable('option', {connectWith: "#prioritized_stores, #other_stores"});
         } else {
             $('#featured_stores, #prioritized_stores, #other_stores').sortable('option', {connectWith: "#other_stores"});
-        }
+        }*/
 
     };
 

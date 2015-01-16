@@ -260,6 +260,7 @@ if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
             $('#imageInput').rules('add', {imageRequired: true});
             $('#full_name').rules('add', {required: true});
             $('#email').rules('add', {email: true});
+            $('#password').rules('add', {minlength: 6});
             $('#mobile').rules('add', {required: true, mobileNumber: true, minlength: 10, maxlength: 10});
             $('#gender').rules('add', {notEqual: 0});
             $('#street').rules('add', {required: true});
@@ -270,10 +271,10 @@ if (typeof(CourierStaff) == "undefined") var CourierStaff = {};
 
         });
 
-        $('.cancel_btn').click(function () {
-            $(".none_editable").removeClass('hidden');
-            $(".editable").addClass('hidden');
-        });
+//        $('.cancel_btn').click(function () {
+//            $(".none_editable").removeClass('hidden');
+//            $(".editable").addClass('hidden');
+//        });
 
         $('#ar_lock').change(function (e) {
             jcrop_api.setOptions(this.checked ? { aspectRatio: chk_w / chk_h } : { aspectRatio: 0 });

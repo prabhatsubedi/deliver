@@ -620,4 +620,36 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 + "\t Available Amount: " + availableAmount
                 + "\t Amount to be Submitted: " + walletAmount);
     }
+
+    @Override
+    public OrderEntity viewShoppingList(Integer orderId) throws Exception {
+        MerchantEntity merchant = merchantDaoService.getMerchantByOrderId(orderId);
+        OrderEntity order = orderDaoService.find(orderId);
+        if (order == null) {
+            throw new YSException("VLD017");
+        }
+        OrderEntity orderEntity = new OrderEntity();
+
+        List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
+        List<ItemsOrderEntity> itemsOrderEntities = new ArrayList<ItemsOrderEntity>();
+        ItemsOrderEntity itemsOrderEntity;
+        for (ItemsOrderEntity itemOrder : itemsOrder) {
+            itemsOrderEntity = new ItemsOrderEntity();
+            if (itemOrder.getItem() != null) {
+                ItemEntity item = new ItemEntity();
+                item.setId(itemOrder.getItem().getId());
+                item.setName(itemOrder.getItem().getName());
+                item.setUnitPrice(itemOrder.getItem().getUnitPrice());
+                item.setVat(itemOrder.getItem().getVat());
+                item.setServiceCharge(itemOrder.getItem().getServiceCharge());
+                itemsOrderEntity = itemOrder;
+                itemsOrderEntity.setItem(item);
+            }
+            itemsOrderEntities.add(itemsOrderEntity);
+        }
+
+        orderEntity.setItemsOrder(itemsOrderEntities);
+
+        return orderEntity;
+    }
 }

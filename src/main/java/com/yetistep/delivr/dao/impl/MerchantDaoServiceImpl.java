@@ -386,4 +386,24 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         }
         return true;
     }
+
+    @Override
+    public MerchantEntity getMerchantByOrderId(Integer orderId) throws Exception {
+        String sqlQuery = "SELECT m.id as id, m.partnership_status as partnershipStatus, " +
+                "m.service_fee as serviceFee, m.commission_percentage as commissionPercentage " +
+                "FROM merchants m " +
+                "INNER JOIN stores_brands sb on sb.merchant_id = m.id " +
+                "INNER JOIN stores s on s.stores_brand_id = sb.id " +
+                "INNER JOIN orders o on o.store_id = s.id where o.id =:orderId";
+
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
+                .addScalar("id")
+                .addScalar("partnershipStatus")
+                .addScalar("serviceFee")
+                .addScalar("commissionPercentage")
+                .setResultTransformer( Transformers.aliasToBean(MerchantEntity.class));
+        query.setParameter("orderId", orderId);
+        MerchantEntity merchantEntity = (MerchantEntity) query.uniqueResult();
+        return merchantEntity;
+    }
 }

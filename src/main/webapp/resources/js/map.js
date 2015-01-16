@@ -325,7 +325,7 @@ $(document).ready(function(){
                         alert('No results found');
                     }
                 } else {
-                    setTimeout(function(){ addStoreMarker(location, name); }, 500);
+                    setTimeout(function(){ addMarker(location, name); }, 500);
 //                    alert("Marker placing failed. Please click again to place marker.");
                 }
             });
@@ -449,6 +449,7 @@ $(document).ready(function(){
                             var geoObj = {};
                             var geoPointData = location.geoPointData;
                             if(geoPointData != undefined) {
+                                geoObj.id = geoPointData.id;
                                 geoObj.latitude = geoPointData.latitude;
                                 geoObj.longitude = geoPointData.longitude;
                                 geoObj.name = geoPointData.name;

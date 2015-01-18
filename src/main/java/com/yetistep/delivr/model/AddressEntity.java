@@ -23,10 +23,15 @@ public class AddressEntity implements Serializable {
     private String state;
     private String country;
     private String countryCode;
-    private UserEntity user;
-    private List<OrderEntity> order;
     private String latitude;
     private String longitude;
+    private String fullName;
+    private String mobileNumber;
+    private String verificationCode;
+    private Boolean verified;
+    private UserEntity user;
+    private List<OrderEntity> order;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -99,6 +104,42 @@ public class AddressEntity implements Serializable {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    @Column(name = "full_name")
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    @Column(name = "mobile_no", unique = true)
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    @Column(name = "verification_code")
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    @Column(name = "verified")
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
     }
 
     @JsonBackReference

@@ -65,7 +65,7 @@ public class StoreDaoServiceImpl implements StoreDaoService{
         Criteria criteria = getCurrentSession().createCriteria(StoreEntity.class);
         if (ignoreBrand.size() > 0)
             criteria.add(Restrictions.not(Restrictions.in("storesBrand.id", ignoreBrand)));
-        criteria.add(Restrictions.eq("status", Status.ACTIVE.ordinal()));
+        criteria.add(Restrictions.eq("status", Status.ACTIVE));
 
         storeEntities = criteria.list();
 

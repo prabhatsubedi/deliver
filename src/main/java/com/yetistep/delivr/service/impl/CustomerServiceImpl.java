@@ -164,16 +164,16 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void addCustomerAddress(HeaderDto headerDto, List<AddressEntity> addresses) throws Exception {
-//        int customerId = Integer.parseInt(headerDto.getId());
-//        CustomerEntity customerEntity = customerDaoService.find(customerId);
-//        if(customerEntity == null){
-//            throw new YSException("VLD011");
-//        }
-//        for(AddressEntity address: addresses){
-//            address.setUser(customerEntity.getUser());
-//        }
-//        customerEntity.getUser().setAddresses(addresses);
-//        customerDaoService.save(customerEntity);
+        int customerId = Integer.parseInt(headerDto.getId());
+        CustomerEntity customerEntity = customerDaoService.find(customerId);
+        if(customerEntity == null){
+            throw new YSException("VLD011");
+        }
+        for(AddressEntity address: addresses){
+            address.setUser(customerEntity.getUser());
+        }
+        customerEntity.getUser().setAddresses(addresses);
+        customerDaoService.save(customerEntity);
     }
 
     @Override

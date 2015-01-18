@@ -20,6 +20,11 @@ body {
 .loader_div {
     position: relative;
 }
+.no_image {
+    background-image: url("/resources/images/no-image.jpg") !important;
+    background-position: left top !important;
+    background-repeat: repeat !important;
+}
 .loader {
     background-image : url('/resources/images/loader.gif');
     background-position: center center;

@@ -9,7 +9,6 @@ import com.yetistep.delivr.util.JsonDateSerializer;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -101,7 +100,7 @@ public class ActionLogEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "date_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "date_time")
     public Timestamp getDateTime() {
         return dateTime;
     }
@@ -111,7 +110,12 @@ public class ActionLogEntity implements Serializable {
     }
 
     @PrePersist
-    public void setCurrentTimeStamp(){
-        this.dateTime = new Timestamp(new Date().getTime());
+    public void onCreate(){
+        this.dateTime = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        dateTime = new Timestamp(System.currentTimeMillis());
     }
 }

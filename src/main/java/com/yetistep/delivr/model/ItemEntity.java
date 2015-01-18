@@ -1,8 +1,6 @@
 package com.yetistep.delivr.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.Status;
@@ -16,8 +14,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -231,7 +229,7 @@ public class ItemEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = false)
+    @Column(name = "created_date")
     public Timestamp getCreatedDate() {
         return createdDate;
     }
@@ -241,7 +239,7 @@ public class ItemEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "modified_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = true)
+    @Column(name = "modified_date")
     public Timestamp getModifiedDate() {
         return modifiedDate;
     }
@@ -395,5 +393,15 @@ public class ItemEntity implements Serializable {
 
     public void setBrandName(String brandName) {
         this.brandName = brandName;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        modifiedDate = createdDate = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        modifiedDate = new Timestamp(System.currentTimeMillis());
     }
 }

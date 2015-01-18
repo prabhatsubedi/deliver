@@ -1,6 +1,5 @@
 package com.yetistep.delivr.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
 import org.hibernate.annotations.DynamicUpdate;
@@ -75,7 +74,7 @@ public class CartEntity {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "modified_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "modified_date")
     public Timestamp getModifiedDate() {
         return modifiedDate;
     }
@@ -113,5 +112,15 @@ public class CartEntity {
 
     public void setCartAttributes(List<CartAttributesEntity> cartAttributes) {
         this.cartAttributes = cartAttributes;
+    }
+
+    @PrePersist
+    public void onCreate(){
+        modifiedDate  = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        modifiedDate = new Timestamp(System.currentTimeMillis());
     }
 }

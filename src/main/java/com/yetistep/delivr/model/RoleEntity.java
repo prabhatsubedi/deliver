@@ -8,9 +8,7 @@ import com.yetistep.delivr.util.JsonDateSerializer;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -60,13 +58,18 @@ public class RoleEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_date")
     public Timestamp getCreatedDate() {
         return createdDate;
     }
 
     public void setCreatedDate(Timestamp createdDate) {
         this.createdDate = createdDate;
+    }
+
+    @PrePersist
+    public void onCreate(){
+        createdDate = new Timestamp(System.currentTimeMillis());
     }
 
 }

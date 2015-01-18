@@ -188,7 +188,7 @@ public class StoresBrandEntity implements Serializable {
         this.priority = priority;
     }
 
-    @Column(name = "created_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_date")
     @JsonSerialize(using = JsonDateSerializer.class)
     public Timestamp getCreatedDate() {
         return createdDate;
@@ -235,5 +235,10 @@ public class StoresBrandEntity implements Serializable {
 
     public void setMerchantId(Integer merchantId) {
         this.merchantId = merchantId;
+    }
+
+    @PrePersist
+    public void onCreate(){
+        createdDate = new Timestamp(System.currentTimeMillis());
     }
 }

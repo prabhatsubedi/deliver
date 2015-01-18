@@ -21,7 +21,7 @@ import java.sql.Timestamp;
 public class DBoyAdvanceAmountEntity implements Serializable {
 
     private Integer id;
-    private Timestamp date;
+    private Timestamp advanceDate;
     private DeliveryBoyEntity deliveryBoy;
     private BigDecimal amountAdvance;
 
@@ -37,13 +37,13 @@ public class DBoyAdvanceAmountEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    public Timestamp getDate() {
-        return date;
+    @Column(name = "advance_date")
+    public Timestamp getAdvanceDate() {
+        return advanceDate;
     }
 
-    public void setDate(Timestamp date) {
-        this.date = date;
+    public void setAdvanceDate(Timestamp advanceDate) {
+        this.advanceDate = advanceDate;
     }
 
     @JsonIgnore
@@ -64,5 +64,15 @@ public class DBoyAdvanceAmountEntity implements Serializable {
 
     public void setAmountAdvance(BigDecimal amountAdvance) {
         this.amountAdvance = amountAdvance;
+    }
+
+    @PrePersist
+    public void onCreate(){
+        advanceDate = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        advanceDate = new Timestamp(System.currentTimeMillis());
     }
 }

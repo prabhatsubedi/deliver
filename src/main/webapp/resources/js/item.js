@@ -128,15 +128,20 @@ var data_categories_names = [];
 
                                 $('.check_span', mainElem).addClass(attributesType.multiSelect ? 'icon_full' : '');
                                 $('.checkbox', mainElem).attr('checked', attributesType.multiSelect);
+                                $('.remove_attr_block', mainElem).addClass('hidden');
                                 $('input[name="attr_type"]', mainElem).attr({'data-id': attributesType.id, 'value': attributesType.type});
                                 $('input[name="attr_label"]', mainElem).attr({'data-id': itemAttribute.id, 'value': itemAttribute.attribute});
                                 $('input[name="attr_val"]', mainElem).attr('value', itemAttribute.unitPrice);
+                                $('.remove_attr', mainElem).addClass('hidden');
+                                $('.with_remove', mainElem).removeClass('with_remove');
 
                                 for(var j = 1; j < itemAttributes.length; j++) {
                                     itemAttribute = itemAttributes[j];
                                     var childElem = $('.attr_list_template').clone();
                                     $('input[name="attr_label"]', childElem).attr({'data-id': itemAttribute.id, 'value': itemAttribute.attribute});
                                     $('input[name="attr_val"]', childElem).attr('value', itemAttribute.unitPrice);
+                                    $('.remove_attr', childElem).addClass('hidden');
+                                    $('.with_remove', childElem).removeClass('with_remove');
                                     $('.attr_list', mainElem).append(childElem.html());
                                 }
                                 attributes_types += mainElem.html();

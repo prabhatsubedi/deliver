@@ -599,6 +599,7 @@ var data_categories_names = [];
                 data.itemCategories = itemCategories;
                 data.itemStores = itemStores;
                 data.itemAttributesTypes = itemAttributesTypes;
+                if(itemImages.length == 0) itemImages = undefined;
                 if(action == 'edit')
                     data.editItemImages = itemImages;
                 else

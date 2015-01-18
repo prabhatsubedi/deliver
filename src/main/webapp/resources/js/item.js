@@ -583,14 +583,16 @@ var data_categories_names = [];
                     itemAttributesTypes.push(itemAttribute);
                 });
 
-                $('.product_images img').each(function(){
+                $('.product_images .drop_zone').each(function(){
+                    var elem_img = $('img', this);
                     if(action == 'edit') {
-                        if($(this).attr('data-new') == 'true' && ($(this).attr('src') != undefined || $(this).attr('src') != "")) {
-                            itemImages.push({id: $(this).parent('.drop_zone').attr('data-id'), url: $(this).attr('src')});
-                        }
+                        var image_id = $(this).attr('data-id');
+                        var image_url = elem_img.attr('src') == "" ? undefined : elem_img.attr('src');
+                        if(!(image_url != undefined && elem_img.attr('data-new') != 'true'))
+                            itemImages.push({id: $(this).attr('data-id'), url: elem_img.attr('src')});
                     } else {
-                        if($(this).attr('data-new') == 'true' && ($(this).attr('src') != undefined || $(this).attr('src') != "")) {
-                            itemImages.push($(this).attr('src'));
+                        if(elem_img.attr('data-new') == 'true' && (elem_img.attr('src') != undefined || elem_img.attr('src') != "")) {
+                            itemImages.push(elem_img.attr('src'));
                         }
                     }
                 });

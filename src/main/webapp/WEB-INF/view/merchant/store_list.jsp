@@ -36,8 +36,8 @@
 <div class="block_store_template hidden">
     <div class="item_container unselectable col-lg-2">
         <div class="block_item">
-            <div class="item_image">
-                <img class="img-responsive">
+            <div class="item_image maintain_ratio">
+                <img class="img-responsive no_image" mr-height="720" mr-width="400">
                 <a class="btn btn-default btn_logins add_items">Add Item</a>
             </div>
             <div class="item_infos">

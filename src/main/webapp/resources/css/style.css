@@ -21,9 +21,14 @@ body {
     position: relative;
 }
 .no_image {
-    background-image: url("/resources/images/no-image.jpg") !important;
+    background-image: url("/resources/images/no_image.jpg") !important;
     background-position: left top !important;
     background-repeat: repeat !important;
+}
+.img-responsive {
+    width: 100% !important;
+    height: 100% !important;
+    position: relative;
 }
 .loader {
     background-image : url('/resources/images/loader.gif');
@@ -670,6 +675,7 @@ body.assistance_page {
     padding: 5px;
     background-color: #FFFFFF;
     cursor: pointer;
+    position: relative;
 }
 .drop_zone:before {
     position: absolute;

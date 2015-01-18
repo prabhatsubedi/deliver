@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -365,5 +366,25 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value= "/invite_friend", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> inviteFriend(@RequestHeader HttpHeaders headers, @RequestBody ArrayList<String> emailList) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN, GeneralUtil.ID);
+            validateMobileClient(headerDto.getAccessToken());
+
+            clientService.inviteFriend(headerDto, emailList);
+            ServiceResponse serviceResponse = new ServiceResponse("Friend(s) has been invited successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while inviting friend(s)", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
 }

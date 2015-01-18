@@ -5,6 +5,7 @@ import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.UserService;
@@ -194,5 +195,6 @@ public class UserServiceImpl extends AbstractManager implements UserService{
         user.setVerifiedStatus(userEntity.getVerifiedStatus());
         return userDaoService.update(user);
     }
+
 
 }

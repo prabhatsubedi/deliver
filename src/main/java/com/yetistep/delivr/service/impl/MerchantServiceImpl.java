@@ -648,8 +648,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                     if(itemsAttribute.getId() != null){
                         ItemsAttributeEntity dbItemAttribute =  dbItemAttributesMap.get(itemsAttribute.getId());
                         dbItemAttribute.setType(dbItemAttributesType);
-                        dbItemAttribute.setAttribute(itemsAttribute.getAttribute());;
-                        dbItemAttribute.setUnitPrice(itemsAttribute.getUnitPrice());;
+                        dbItemAttribute.setAttribute(itemsAttribute.getAttribute());
+                        dbItemAttribute.setUnitPrice(itemsAttribute.getUnitPrice());
                     }else{
                         dbItemAttributesType.getItemsAttribute().add(itemsAttribute);
                     }
@@ -710,13 +710,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                     if(itemsImagesIdMap.get(image.getId()) !=null && itemsImagesIdMap.get(image.getId()).getUrl() != null && !itemsImagesIdMap.get(image.getId()).getUrl().contains("https://")) { //has url  and is updated
                         if(image.getId() != null){     //not new
                             AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(image.getUrl()));
-                            String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();;
+                            String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();
                             String s3PathImage = GeneralUtil.saveImageToBucket(itemsImagesIdMap.get(image.getId()).getUrl(), itemImageUrl, dir, true);
                             image.setUrl(s3PathImage);
                             image.setItem(dbItem);
                             i++;
                         }else{
-                            String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();;
+                            String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();
                             String s3PathImage = GeneralUtil.saveImageToBucket(image.getUrl(), itemImageUrl, dir, true);
                             image.setUrl(s3PathImage);
                             image.setItem(dbItem);

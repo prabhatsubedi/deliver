@@ -6,8 +6,16 @@
     <title>Delivr</title>
 
     <%@include file="includes/head.jsp" %>
+    <script type="text/javascript" src="/resources/js/fb.js"></script>
+    <script type="text/javascript" src="/resources/js/date.format.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+             $(".fb_signup").click(function(){
+                 Fb.fbLogin();
+             });
+        });
 
-
+    </script>
 </head>
 <body>
 

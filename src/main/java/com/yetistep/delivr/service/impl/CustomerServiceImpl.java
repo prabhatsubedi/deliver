@@ -344,4 +344,34 @@ public class CustomerServiceImpl implements CustomerService {
             return 0;
         }
     }
+
+    public CustomerEntity getCustomerByFbId(Long facebook_id) throws Exception{
+        CustomerEntity customer = customerDaoService.find(facebook_id);
+        return customer;
+    }
+
+
+    /* Used For Only Manager and Account Registration */
+    public void registerCustomer(UserEntity user, HeaderDto headerDto) throws Exception{
+
+        RoleEntity userRole = userDaoService.getRoleByRole(user.getRole().getRole());
+        user.setRole(userRole);
+
+        CustomerEntity referrer = getCustomerByFbId(Long.parseLong(headerDto.getId()));
+        CustomerEntity cUser = getCustomerByFbId(user.getCustomer().getFacebookId());
+
+        if(cUser != null)
+            throw new YSException("VLD010");
+
+        if(referrer == null)
+            throw new YSException("VLD011");
+
+        if(referrer.getReferredFriendsCount() != null && referrer.getReferredFriendsCount() >= 3)
+            throw new YSException("VLD021");
+
+        user.getCustomer().setReferredBy(Long.parseLong(headerDto.getId()));
+        user.getCustomer().setFbToken(headerDto.getAccessToken());
+        user.getCustomer().setUser(user);
+        userDaoService.save(user);
+    }
 }

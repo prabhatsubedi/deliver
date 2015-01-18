@@ -26,6 +26,7 @@ public class CustomerEntity implements Serializable {
     private Integer id;
     private UserEntity user;
     private Long facebookId;
+    private Long referredBy;
     private String fbToken;
     private String profileUrl;
     private Boolean allowShare;
@@ -177,6 +178,15 @@ public class CustomerEntity implements Serializable {
 
     public void setFacebookId(Long facebookId) {
         this.facebookId = facebookId;
+    }
+
+    @Column (name = "referred_by")
+    public Long getReferredBy() {
+        return referredBy;
+    }
+
+    public void setReferredBy(Long referredBy) {
+        this.referredBy = referredBy;
     }
 
     @Column(name ="fb_token")

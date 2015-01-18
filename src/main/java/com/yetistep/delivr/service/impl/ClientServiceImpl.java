@@ -1,6 +1,8 @@
 package com.yetistep.delivr.service.impl;
 
+import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.*;
+import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
@@ -10,10 +12,7 @@ import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.ClientService;
-import com.yetistep.delivr.util.BigDecimalUtil;
-import com.yetistep.delivr.util.DateUtil;
-import com.yetistep.delivr.util.GeoCodingUtil;
-import com.yetistep.delivr.util.YSException;
+import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,7 +26,7 @@ import java.util.*;
  * Time: 12:37 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ClientServiceImpl implements ClientService {
+public class ClientServiceImpl extends AbstractManager implements ClientService {
     private static final Logger log = Logger.getLogger(ClientServiceImpl.class);
     @Autowired
     StoresBrandDaoService storesBrandDaoService;
@@ -577,4 +576,47 @@ public class ClientServiceImpl implements ClientService {
         CartDto cartDto = new CartDto();
         return cartDto;
     }
+
+    public String inviteFriend(HeaderDto headerDto, ArrayList<String> emailList) throws Exception{
+
+        CustomerEntity client = customerDaoService.find(Long.parseLong(headerDto.getId()));
+
+        String clientName = client.getUser().getFullName();
+        Integer referredFriendsCount = client.getReferredFriendsCount();
+
+        if(referredFriendsCount >= 3)
+            throw new YSException("Your friend invitation already reached the maximum number.");
+
+
+        boolean isLocal =  MessageBundle.isLocalHost();
+        String clientUrl;
+        if(isLocal) {
+            clientUrl = "http://localhost:8080/anon/referral/"+headerDto.getId();
+        }else{
+            clientUrl = "http://delivr.com/anon/referral/"+headerDto.getId();
+        }
+
+        Integer cnt = 0;
+        if(emailList.size()>0){
+            for (String email: emailList){
+                if(referredFriendsCount >= 3)
+                    break;
+                String serverUrl = getServerUrl();
+                String body = "<p>Hi</p>";
+                body += clientName+"<p> has invited you to use delivr application.</p>";
+                body += "<p>to join the delivr please find the following link: </p>";
+                body += "<p>"+clientUrl+"</p>";
+                String subject = " You are invited to use delivr application ";
+                sendMail(email, body, subject);
+                cnt++;
+                referredFriendsCount++;
+            }
+
+            client.setReferredFriendsCount(referredFriendsCount+cnt);
+
+            customerDaoService.update(client);
+        }
+        return "Your "+cnt+" friends has been invited";
+    }
+
 }

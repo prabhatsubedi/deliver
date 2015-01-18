@@ -88,7 +88,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
             String dir = MessageBundle.separateString("/", "DBoys", "DBoy_" + deliveryBoy.getId());
             boolean isLocal = MessageBundle.isLocalHost();
-            String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + deliveryBoy.getId();
+            String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + deliveryBoy.getId()+System.currentTimeMillis();
             String s3Path = GeneralUtil.saveImageToBucket(profileImage, imageName, dir, true);
             deliveryBoy.getUser().setProfileImage(s3Path);
             deliveryBoyDaoService.update(deliveryBoy);
@@ -167,7 +167,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
             String dir = MessageBundle.separateString("/", "DBoy", "DBoy" + dBoyEntity.getId());
             boolean isLocal = MessageBundle.isLocalHost();
-            String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + dBoyEntity.getId();
+            String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + dBoyEntity.getId()+System.currentTimeMillis();
             String s3Path = GeneralUtil.saveImageToBucket(profileImage, imageName, dir, true);
             dBoyEntity.getUser().setProfileImage(s3Path);
             deliveryBoyDaoService.update(dBoyEntity);

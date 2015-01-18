@@ -1,4 +1,4 @@
-var appPermissions = 'email,user_birthday,user_friends';
+var appPermissions = 'email,user_friends';
 var accessToken;
 var clientId;
 var getBasicInfo = true;
@@ -9,11 +9,11 @@ window.fbAsyncInit = function() {
     var hostName = window.location.hostname;
     //set the FB AppId
     if(hostName=="localhost"){
-         apId = "685480531477032";
+         apId = "938896656121323";
     }else if(hostName=="delivr.com" || hostName=="www.delivr.com")
-        apId = "645244498901500";
+        apId = "910783542265968";
     else
-         apId = "645244498901500";//764634910220474
+         apId = "938896656121323";//764634910220474
 
 
     // init the FB JS SDK                                                            n
@@ -26,7 +26,7 @@ window.fbAsyncInit = function() {
         oauth: true// Look for social plugins on the page
     });
 
-    if(typeof(logginCheck) != 'undefined' && logginCheck){
+    /*if(typeof(logginCheck) != 'undefined' && logginCheck){
         FB.getLoginStatus(function(response) {
             if (response.status === 'connected') {
                 // the user is logged in and has authenticated your
@@ -48,7 +48,7 @@ window.fbAsyncInit = function() {
                 // the user isn't logged in to Facebook.
             }
         });
-    }
+    }*/
 };
 
 // Load the SDK asynchronously
@@ -66,84 +66,68 @@ if( typeof (Fb) == "undefined"){
 }
 
 (function (){
-    Fb.fbLogin = function (referal){
+    Fb.fbLogin = function (){
         var fbResponse = function (response){
             if(response.status === 'connected'){
                 accessToken = response.authResponse.accessToken;
-                FB.api('/me', Fb.signUpUser(accessToken, referal));
+                FB.api('/me', Fb.signUpUser(accessToken));
             }else if(response.status ==='unknown'){
                 $("#fb-login-error").text('An error occured.').removeClass('hidden');
             }
         }
-        if(referal){
-            if( referal && typeof FB != 'undefined' ) {
-                FB.login(fbResponse, {scope: appPermissions});
-                fbResponse.loaderDiv = '*';
-            }else{
-                Main.open_alert('', 'Internet connection problem.', 'ok');
-                return false;
-            }
-        } else {
-            Main.open_alert('', 'Invalid parameter.', 'ok');
+        if( typeof FB != 'undefined' ) {
+            FB.login(fbResponse, {scope: appPermissions});
+            fbResponse.loaderDiv = '*';
+        }else{
+            alert('Internet connection problem.');
             return false;
         }
+
     }
 
-    Fb.setRequestHeader = function(){
+    /*Fb.setRequestHeader = function(){
         Main.addRequestHeader('User-Access-Token', accessToken);
         Main.addRequestHeader('Client-Id', clientId);
-    }
+    }*/
 
 
-    Fb.signUpUser = function (accessToken, referal){
+    Fb.signUpUser = function (accessToken){
         var signUpCallback  =   function (user){
-            if(referal){
-                var referred_by =   Fb.getQueryParam("referral");
+                var href =  window.location.href;
+                var referred_by = href.split("/").reverse()[0];
                 if(!referred_by) {
-                    Main.open_alert('', 'Invalid referral.', 'ok');
+                    alert('Invalid referral.');
                     return false;
                 }
-
-                var relationship_status =   user.relationship_status==null? "NA" : user.relationship_status;
-
+                console.log(user);
                 var user_info = {
-                    "clientId":user.id,
-                    "name":user.name,
-                    "profileUrl":user.link,
-                    "dob":(typeof user.birthday !='undefined')? new Date(user.birthday).format("yyyy-mm-dd"):null,
+                    "fullName":user.name,
                     "gender": user.gender?user.gender.toUpperCase():null,
-                    "email":(typeof user.email !='undefined')? user.email:null,
-                    "referredBy": referred_by,
-                    "maritalStatus":user.maritalStatus?user.maritalStatus:''
-                };
-                var requestParam = {"parameter": JSON.stringify(user_info)};
-                Main.request("/referral","POST","json", requestParam, Fb.webSignUpResponse);
-            }else{
-                clientEmail = (typeof user.email !='undefined')? user.email:null;
-                clientId = user.id;
-                var userInfo = {
-                    "userInfo": {
-                        "city": user.city,
-                        "country": user.country,
-                        "dob": (typeof user.birthday !='undefined')? new Date(user.birthday).format("yyyy-mm-dd"):null,
-                        "email": clientEmail,
-                        "clientId": user.id,
-                        "gender": user.gender?user.gender.toUpperCase():null,
-                        "mobile": user.mobile,
-                        "name": user.name,
-                        "profileUrl": user.link,
-                        "state": user.state,
-                        "street": user.street,
-                        "token": accessToken,
-                        "maritalStatus": user.maritalStatus?user.maritalStatus:''
+                    "emailAddress":(typeof user.email !='undefined')? user.email:null,
+                    "customer":{
+                        "profileUrl":user.link,
+                        "facebookId":user.id
+                    },
+                    "role":{
+                        "role":"ROLE_CUSTOMER"
                     }
-                }
-                Fb.webSignInResponse.loaderDiv = '*';
-                Fb.setRequestHeader();
-                Main.mainServiceRequest("ClientService.clientLogin",  userInfo, "POST", Fb.webSignInResponse)
-            }
+                };
+
+
+                var callback = function (status, data) {
+                    if (data.success == true) {
+                        alert(data.message);
+                    } else {
+                        alert(data.message);
+                    }
+                };
+
+                var headers = {};
+                headers.id = referred_by;
+                headers.accessToken = accessToken;
+                Main.request("/anon/register_customer", user_info, callback, headers);
         };
-        signUpCallback.loaderDiv = '*';
+        signUpCallback.loaderDiv = 'body';
         return signUpCallback;
     }
 

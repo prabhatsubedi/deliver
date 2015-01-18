@@ -4,13 +4,14 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.model.CountryEntity;
+import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.service.inf.AdminService;
-import com.yetistep.delivr.service.inf.MerchantService;
-import com.yetistep.delivr.service.inf.UserService;
+import com.yetistep.delivr.model.UserEntity;
+import com.yetistep.delivr.service.inf.*;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
 import com.yetistep.delivr.util.SessionManager;
+import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -43,6 +44,9 @@ public class AnonController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    CustomerService customerService;
 
     /* Controller For All User */
     @RequestMapping(value = "/save_merchant", method = RequestMethod.POST)
@@ -152,5 +156,24 @@ public class AnonController {
         modelAndView.setViewName("referral");
         return modelAndView;
     }
+
+    @RequestMapping(value = "/register_customer")
+    public ResponseEntity<ServiceResponse> registerCustomer(@RequestHeader HttpHeaders httpHeaders, @RequestBody UserEntity customer) throws Exception {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(httpHeaders, headerDto, GeneralUtil.ID, GeneralUtil.ACCESS_TOKEN);
+
+            customerService.registerCustomer(customer, headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("You are registered successfully.");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error occurred while doing Sign Up", e);
+            HttpHeaders headers = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(headers, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
 }

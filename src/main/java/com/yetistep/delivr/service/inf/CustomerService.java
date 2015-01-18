@@ -25,4 +25,8 @@ public interface CustomerService {
     public void setMobileCode(HeaderDto headerDto) throws Exception;
 
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception;
+
+    public CustomerEntity getCustomerByFbId(Long facebook_id) throws Exception;
+
+    public void registerCustomer(UserEntity user, HeaderDto headerDto) throws Exception;
 }

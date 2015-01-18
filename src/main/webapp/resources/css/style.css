@@ -1283,3 +1283,9 @@ label.check_label .checkbox {
 .store_info .switch_container .switch .btn_switch.off:before {
     content: "INACTIVE";
 }
+
+
+/*referral*/
+.fb_signup {
+    cursor: pointer;
+}

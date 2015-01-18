@@ -95,7 +95,7 @@ public class UserEntity implements Serializable {
         this.merchant = merchant;
     }
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     public CustomerEntity getCustomer() {
         return customer;
     }

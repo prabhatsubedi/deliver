@@ -221,6 +221,10 @@ if (typeof(Manager) == "undefined") var Manager = {};
             }
             Manager.check_store_type(featured_count, prioritized_count);
 
+            Main.elemRatio(function() {
+                $('.items_container .item_container').removeClass('invisible');
+            });
+
         };
 
 

@@ -799,6 +799,9 @@ var data_categories_names = [];
                             item_list += '</div>';
 
                             $('.items_container').html(item_list);
+                            Main.elemRatio(function() {
+                                $('.items_container .item_container').removeClass('invisible');
+                            });
 
                         } else {
                             alert(data.message);
@@ -1063,6 +1066,10 @@ var data_categories_names = [];
 
                             $('.items_container .form_content').html(item_list);
                             $('.items_container').removeClass('hidden');
+
+                            Main.elemRatio(function() {
+                                $('.items_container .item_container').removeClass('invisible');
+                            });
                         }
 
                     }

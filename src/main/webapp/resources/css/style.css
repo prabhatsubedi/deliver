@@ -671,6 +671,17 @@ body.assistance_page {
     background-color: #FFFFFF;
     cursor: pointer;
 }
+.drop_zone:before {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    top: 5px;
+    background-image: url("/resources/images/no-image.jpg") !important;
+    background-position: left top !important;
+    background-repeat: repeat !important;
+    content: "";
+}
 .drop_zone.disabled {
     cursor: default;
 }
@@ -684,12 +695,15 @@ body.assistance_page {
     font-size: 14px;
     padding-top: 6px;
     line-height: 18px;
+    position: relative;
 }
 .drop_zone .drop_title {
     left: 0px;
     width: 100%;
     bottom: 10px;
     font-size: 20px;
+    position: relative;
+    padding-top: 10px;
 }
 .store_open_close {
     margin: 15px -15px;

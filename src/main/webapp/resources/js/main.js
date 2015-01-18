@@ -53,7 +53,7 @@ if(typeof(Main) == "undefined") var Main = {};
             type: requestType != undefined ? requestType : "POST",
             data: parameter.stringify == false ? parameter : JSON.stringify(parameter),
             headers: headers,
-            async: callback.async == false ? false : true,
+            async: callback != undefined && callback.async == false ? false : true,
             statusCode: {
             },
             success: function (data) {

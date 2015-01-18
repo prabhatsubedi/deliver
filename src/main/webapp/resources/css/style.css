@@ -677,7 +677,7 @@ body.assistance_page {
     left: 5px;
     right: 5px;
     top: 5px;
-    background-image: url("/resources/images/no-image.jpg") !important;
+    background-image: url("/resources/images/no_image.jpg") !important;
     background-position: left top !important;
     background-repeat: repeat !important;
     content: "";

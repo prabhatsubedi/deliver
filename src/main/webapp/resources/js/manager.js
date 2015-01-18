@@ -38,7 +38,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
                 var link_merchant = '<a href="/merchant/store/list/' + merchantId + '">' + merchant.businessTitle + '</a>';
 
-                var row = [merchantId, link_merchant, merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
+                var row = [merchantId, link_merchant, merchant.partnershipStatus ? 'Partner' : 'Non Partner', merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
                 tdata.push(row);
             }
 

@@ -42,7 +42,7 @@ var disableMapEdit = false;
                 if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
                 var merchant = data.params.merchant;
 
-                $('#brand_logo').html('<img src="' + merchant.businessLogo + '" class="img-responsive" data-new="true" />')
+                $('#brand_logo').html('<img src="' + merchant.businessLogo + '" class="img-responsive" style="height: 100%;" />')
                 $('.business_name').html(merchant.businessTitle);
                 $('.partner_status').html(merchant.partnershipStatus ? 'PARTNER' : 'NON-PARTNER');
 

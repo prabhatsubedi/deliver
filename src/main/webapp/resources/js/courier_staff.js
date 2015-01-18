@@ -167,7 +167,7 @@ var courierProfile;
             }
             var courierStaff = data.params.deliveryBoy;
 
-            $(".profile_header_image #profile_image").html('<img src="' + courierStaff.user.profileImage + '" class="img-responsive" />');
+            $(".profile_header_image #profile_image").html('<img src="' + courierStaff.user.profileImage + '" class="img-responsive" style="height: 100%;" />');
 
             $(".profile_header_info .info1").html(courierStaff.user.fullName);
             $(".profile_header_info .info2").html(courierStaff.availabilityStatus);

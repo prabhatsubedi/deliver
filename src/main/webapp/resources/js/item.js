@@ -17,6 +17,7 @@ var data_categories_names = [];
             itemId = Main.getURLvalue(4);
             $('.heading h1').html('Item Edit');
             document.title = 'Item Edit';
+            $('#form_item button[type="submit"]').attr({'data-action': 'update'}).html('Update Item');
         }
 
         $('option:selected').removeAttr('selected');
@@ -99,9 +100,10 @@ var data_categories_names = [];
                     if(action == 'edit') {
 
                         for(var i = 0; i < itemImages.length; i++) {
-                            $('.product_image .drop_zone').eq(i).html('<img src="' + itemImages[i].url + '" style="height: 100%;" class="img-responsive" />');
+                            $('.product_image .drop_zone').eq(i).attr('data-id', itemImages[i].id).html('<img src="' + itemImages[i].url + '" style="height: 100%;" class="img-responsive" />');
                         }
 
+                        $('#form_item button[type="submit"]').attr({'data-id': item.id});
                         $('#name_item').val(item.name);
                         $('#description').val(item.description);
                         $('#additional_offer').val(item.additionalOffer);
@@ -126,14 +128,14 @@ var data_categories_names = [];
 
                                 $('.check_span', mainElem).addClass(attributesType.multiSelect ? 'icon_full' : '');
                                 $('.checkbox', mainElem).attr('checked', attributesType.multiSelect);
-                                $('input[name="attr_type"]', mainElem).attr('value', attributesType.type);
-                                $('input[name="attr_label"]', mainElem).attr('value', itemAttribute.attribute);
+                                $('input[name="attr_type"]', mainElem).attr({'data-id': attributesType.id, 'value': attributesType.type});
+                                $('input[name="attr_label"]', mainElem).attr({'data-id': itemAttribute.id, 'value': itemAttribute.attribute});
                                 $('input[name="attr_val"]', mainElem).attr('value', itemAttribute.unitPrice);
 
                                 for(var j = 1; j < itemAttributes.length; j++) {
                                     itemAttribute = itemAttributes[j];
                                     var childElem = $('.attr_list_template').clone();
-                                    $('input[name="attr_label"]', childElem).attr('value', itemAttribute.attribute);
+                                    $('input[name="attr_label"]', childElem).attr({'data-id': itemAttribute.id, 'value': itemAttribute.attribute});
                                     $('input[name="attr_val"]', childElem).attr('value', itemAttribute.unitPrice);
                                     $('.attr_list', mainElem).append(childElem.html());
                                 }
@@ -267,7 +269,7 @@ var data_categories_names = [];
 
         function getChildCats(fnParams) {
 
-            var elem = fnParams.elem ;
+            var elem = fnParams.elem;
             var brandId = fnParams.brandId;
             var catId = fnParams.catId;
             var currentCatId = fnParams.currentCatId;
@@ -504,6 +506,9 @@ var data_categories_names = [];
                     return false;
                 }
 
+                var chk_confirm = confirm('Are you sure you want to ' + (action == 'edit' ? 'update' : 'add') + ' item?');
+                if (!chk_confirm) return false;
+
                 var data = {};
                 var item = {};
                 var itemCategories = [];
@@ -511,6 +516,7 @@ var data_categories_names = [];
                 var itemAttributesTypes = [];
                 var itemImages = [];
 
+                item.id = $('#form_item button[type="submit"]').attr('data-id');
                 item.name = $('#name_item').val();
                 if($('#description').val() != "") item.description = $('#description').val();
                 item.availableStartTime = $('#available_start_time').val();
@@ -559,9 +565,11 @@ var data_categories_names = [];
                     var itemAttribute = {};
                     var itemAttributes = [];
                     itemAttribute.type = $('input[name="attr_type"]', this).val();
+                    itemAttribute.id = $('input[name="attr_type"]', this).attr('data-id');
                     itemAttribute.multiSelect =  $('.checkbox', this).prop('checked');
                     $('.attr_list .attr_li', this).each(function(){
                         var attributes = {};
+                        attributes.id = $('input[name="attr_label"]', this).attr('data-id');
                         attributes.attribute = $('input[name="attr_label"]', this).val();
                         attributes.unitPrice = $('input[name="attr_val"]', this).val();
                         itemAttributes.push(attributes);
@@ -571,8 +579,14 @@ var data_categories_names = [];
                 });
 
                 $('.product_images img').each(function(){
-                    if($(this).attr('src') != undefined || $(this).attr('src') != "") {
-                        itemImages.push($(this).attr('src'));
+                    if(action == 'edit') {
+                        if($(this).attr('data-new') == 'true' && ($(this).attr('src') != undefined || $(this).attr('src') != "")) {
+                            itemImages.push({id: $(this).parent('.drop_zone').attr('data-id'), url: $(this).attr('src')});
+                        }
+                    } else {
+                        if($(this).attr('data-new') == 'true' && ($(this).attr('src') != undefined || $(this).attr('src') != "")) {
+                            itemImages.push($(this).attr('src'));
+                        }
                     }
                 });
 
@@ -580,9 +594,12 @@ var data_categories_names = [];
                 data.itemCategories = itemCategories;
                 data.itemStores = itemStores;
                 data.itemAttributesTypes = itemAttributesTypes;
-                data.itemImages = itemImages;
+                if(action == 'edit')
+                    data.editItemImages = itemImages;
+                else
+                    data.itemImages = itemImages;
 
-                Item.addItem(data, {id: $('#item_brand').val()});
+                Item.addItem(data, {id: $('#item_brand').val()}, $('#form_item button[type="submit"]').attr('data-action'));
 
                 return false;
             }
@@ -619,7 +636,7 @@ var data_categories_names = [];
 
     };
 
-    Item.addItem = function(data, headers) {
+    Item.addItem = function(data, headers, data_action) {
 
         $("button[type='submit']").attr("disabled", true);
 
@@ -682,7 +699,22 @@ var data_categories_names = [];
 
         callback.loaderDiv = "body";
 
-        Main.request('/merchant/save_item', data, callback, headers);
+        var callback_edit = function (status, data) {
+            $("button[type='submit']").removeAttr("disabled");
+
+            alert(data.message);
+            if (data.success == true) {
+                $('.product_images img[data-new="true"]').removeAttr('data-new');
+            }
+        };
+
+        callback_edit.loaderDiv = "body";
+
+        if(data_action == 'update') {
+            Main.request('/merchant/update_item', data, callback_edit, headers);
+        } else {
+            Main.request('/merchant/save_item', data, callback, headers);
+        }
 
     };
 

@@ -713,7 +713,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         //add new images
         List<Integer> itemsImagesIdList = new ArrayList<Integer>();
-        Map<Integer, ItemsImageEntity> itemsImagesIdMap = new HashMap<>();
+        //Map<Integer, ItemsImageEntity> itemsImagesIdMap = new HashMap<>();
         if(itemsImages != null){
             for (ItemsImageEntity image: itemsImages){
                 if(image.getId() == null){

@@ -38,7 +38,6 @@ public class CustomerEntity implements Serializable {
     private String referenceUrl;
     private Integer referredFriendsCount;
     private BigDecimal rewardsEarned;
-    private BigDecimal rewardsPending;
     private String creditCardToken;
     private String creditCardId;
     private String latitude;
@@ -137,14 +136,6 @@ public class CustomerEntity implements Serializable {
         this.rewardsEarned = rewardsEarned;
     }
 
-    @Column(name = "rewards_pending")
-    public BigDecimal getRewardsPending() {
-        return rewardsPending;
-    }
-
-    public void setRewardsPending(BigDecimal rewardsPending) {
-        this.rewardsPending = rewardsPending;
-    }
 
     @Column(name = "credit_card_token")
     public String getCreditCardToken() {

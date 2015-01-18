@@ -476,6 +476,16 @@ public class CustomerServiceImpl implements CustomerService {
         user.setRole(userRole);
 
         CustomerEntity referrer = getCustomerByFbId(Long.parseLong(headerDto.getId()));
+
+        Integer referred_friends_count = referrer.getReferredFriendsCount();
+        if(referred_friends_count == null){
+            referred_friends_count = 1;
+        }else{
+            referred_friends_count++;
+        }
+        referrer.setReferredFriendsCount(referred_friends_count);
+        customerDaoService.update(referrer);
+
         CustomerEntity cUser = getCustomerByFbId(user.getCustomer().getFacebookId());
 
         if(cUser != null)
@@ -490,6 +500,7 @@ public class CustomerServiceImpl implements CustomerService {
         user.getCustomer().setReferredBy(Long.parseLong(headerDto.getId()));
         user.getCustomer().setFbToken(headerDto.getAccessToken());
         user.getCustomer().setUser(user);
+        user.getCustomer().setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_REWARD_AMOUNT)));
         userDaoService.save(user);
     }
 }

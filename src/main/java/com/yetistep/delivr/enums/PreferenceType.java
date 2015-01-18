@@ -22,5 +22,8 @@ public enum PreferenceType {
 
     DEVIATION_IN_TIME, TIME_AT_STORE,
 
-    ANDROID_APP_VER_NO, WEB_APP_VER_NO;
+    ANDROID_APP_VER_NO, WEB_APP_VER_NO,
+
+    //Customer Preferences
+    CUSTOMER_REWARD_AMOUNT;
 }

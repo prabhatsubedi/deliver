@@ -588,8 +588,12 @@ var data_categories_names = [];
                     if(action == 'edit') {
                         var image_id = $(this).attr('data-id');
                         var image_url = elem_img.attr('src') == "" ? undefined : elem_img.attr('src');
-                        if(!(image_url != undefined && elem_img.attr('data-new') != 'true'))
-                            itemImages.push({id: $(this).attr('data-id'), url: elem_img.attr('src')});
+                        if(!(image_url != undefined && elem_img.attr('data-new') != 'true') && !(image_id == undefined && image_url == undefined)) {
+                            var obj_img = {};
+                            if(image_id != undefined) obj_img.id = image_id;
+                            if(image_url != undefined) obj_img.url = image_url;
+                            itemImages.push(obj_img);
+                        }
                     } else {
                         if(elem_img.attr('data-new') == 'true' && (elem_img.attr('src') != undefined || elem_img.attr('src') != "")) {
                             itemImages.push(elem_img.attr('src'));

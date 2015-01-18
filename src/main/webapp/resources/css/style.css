@@ -25,9 +25,11 @@ body {
     background-position: left top !important;
     background-repeat: repeat !important;
 }
-.img-responsive {
+img.no_image {
     width: 100% !important;
     height: 100% !important;
+}
+.img-responsive {
     position: relative;
 }
 .loader {

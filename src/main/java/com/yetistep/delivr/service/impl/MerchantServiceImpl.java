@@ -375,34 +375,37 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public Boolean updateMerchant(MerchantEntity merchantEntity, HeaderDto headerDto) throws Exception {
+    public Boolean updateMerchant(MerchantEntity merchantEntity/*, HeaderDto headerDto*/) throws Exception {
         log.info("Updating merchant with ID:"+merchantEntity.getId());
         MerchantEntity merchant = merchantDaoService.find(merchantEntity.getId());
         if(merchant == null)
             throw new YSException("VLD011");
         //set user values
-        merchant.getUser().setUsername(headerDto.getUsername());
-        if(headerDto.getPassword() != null)
-            merchant.getUser().setPassword(GeneralUtil.encryptPassword(headerDto.getPassword()));
+//        merchant.getUser().setUsername(headerDto.getUsername());
+//        if(headerDto.getPassword() != null)
+//            merchant.getUser().setPassword(GeneralUtil.encryptPassword(headerDto.getPassword()));
 
 
         merchant.getUser().setFullName(merchantEntity.getUser().getFullName());
         merchant.getUser().setMobileNumber(merchantEntity.getUser().getMobileNumber());
         merchant.getUser().setStatus(merchantEntity.getUser().getStatus());
-        merchant.getUser().setEmailAddress(merchantEntity.getUser().getEmailAddress());
-        merchant.getUser().setGender(merchantEntity.getUser().getGender());
+        //merchant.getUser().setEmailAddress(merchantEntity.getUser().getEmailAddress());
+        //merchant.getUser().setGender(merchantEntity.getUser().getGender());
         //set address value
         merchant.getUser().getAddresses().get(0).setCity(merchantEntity.getUser().getAddresses().get(0).getCity());
         merchant.getUser().getAddresses().get(0).setStreet(merchantEntity.getUser().getAddresses().get(0).getStreet());
         merchant.getUser().getAddresses().get(0).setState(merchantEntity.getUser().getAddresses().get(0).getState());
         merchant.getUser().getAddresses().get(0).setCountry(merchantEntity.getUser().getAddresses().get(0).getCountry());
+        merchant.getUser().getAddresses().get(0).setCountryCode(merchantEntity.getUser().getAddresses().get(0).getCountryCode());
+        merchant.getUser().getAddresses().get(0).setLatitude(merchantEntity.getUser().getAddresses().get(0).getLatitude());
+        merchant.getUser().getAddresses().get(0).setLongitude(merchantEntity.getUser().getAddresses().get(0).getLongitude());
         //merchant values
         merchant.setWebsite(merchantEntity.getWebsite());
-        merchant.setBusinessTitle(merchantEntity.getBusinessTitle());
+        //merchant.setBusinessTitle(merchantEntity.getBusinessTitle());
         merchant.setVatNo(merchantEntity.getVatNo());
         merchant.setCommissionPercentage(merchantEntity.getCommissionPercentage());
         merchant.setCompanyRegistrationNo(merchantEntity.getCompanyRegistrationNo());
-        merchant.setCompanyRegistrationNo(merchantEntity.getCompanyRegistrationNo());
+        merchant.setServiceFee(merchantEntity.getServiceFee());
 
 
         String businessLogo =  merchantEntity.getBusinessLogo();

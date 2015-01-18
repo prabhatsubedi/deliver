@@ -56,6 +56,8 @@ public class OrderEntity implements Serializable {
     private RatingEntity rating;
     private List<String> attachments;
     private OrderCancelEntity orderCancel;
+    private CourierTransactionEntity courierTransaction;
+    private Integer surgeFactor;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -351,5 +353,24 @@ public class OrderEntity implements Serializable {
     @JsonProperty
     public void setOrderCancel(OrderCancelEntity orderCancel) {
         this.orderCancel = orderCancel;
+    }
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public CourierTransactionEntity getCourierTransaction() {
+        return courierTransaction;
+    }
+
+    public void setCourierTransaction(CourierTransactionEntity courierTransaction) {
+        this.courierTransaction = courierTransaction;
+    }
+
+    @Column(name="surge_factor")
+    public Integer getSurgeFactor() {
+        return surgeFactor;
+    }
+
+    public void setSurgeFactor(Integer surgeFactor) {
+        this.surgeFactor = surgeFactor;
     }
 }

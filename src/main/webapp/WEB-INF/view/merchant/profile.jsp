@@ -37,6 +37,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
         Merchant.loadMerchant();
+        Merchant.loadEditMerchant();
     });
 </script>
 
@@ -68,75 +69,139 @@
                         <div class="action detail_options pull-right">
                             <a class="pull-left btn btn_green edit_btn none_editable glyphicon glyphicon-edit"></a>
                             <div class="pull-left action_buttons editable hidden">
-                                <a class="btn btn_green save_btn editable glyphicon glyphicon-floppy-disk"></a>
-                                <a class="btn btn_green cancel_btn editable glyphicon glyphicon-remove"></a>
+                                <a class="btn btn_green save_btn glyphicon glyphicon-floppy-disk"></a>
+                                <a class="btn btn_green cancel_btn glyphicon glyphicon-remove"></a>
                             </div>
                         </div>
                     </div>
                     <div class="profile_body">
-                        <div class="form_container full_width clearfix">
+                        <div class="form_container form_editable full_width clearfix">
                             <div class="profile_info col-lg-5">
                                 <div class="profile_sub_title">INFORMATION</div>
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Business Name" name="business_name" id="business_name" class="form-control" disabled="disabled">
+
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label no_pad">Business Name</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_business_name"></div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="URL" name="url" id="url" class="form-control">
+
+                                <div class="form-group clearfix">
+                                    <label for="url" class="col-lg-4 floated_label no_pad">URL</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_url none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="url" id="url" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Contact Person" name="contact_person" id="contact_person" class="form-control">
+
+                                <div class="form-group clearfix">
+                                    <label for="contact_person" class="col-lg-4 floated_label no_pad">Contact Person</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_contact_person none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="contact_person" id="contact_person" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Contact Email" name="contact_email" id="contact_email" class="form-control" disabled="disabled">
+
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-4 floated_label no_pad">Contact Email</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_contact_email"></div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Contact No." name="contact_no" id="contact_no" class="form-control">
+
+                                <div class="form-group clearfix">
+                                    <label for="contact_no" class="col-lg-4 floated_label no_pad">Contact No.</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_contact_no none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="contact_no" id="contact_no" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Company Registration No." name="registration_no" id="registration_no" class="form-control">
+
+                                <div class="form-group clearfix">
+                                    <label for="registration_no" class="col-lg-4 floated_label no_pad">Company Registration No.</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_registration_no none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="registration_no" id="registration_no" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="VAT" name="vat" id="vat" class="form-control">
+
+                                <div class="form-group clearfix">
+                                    <label for="vat" class="col-lg-4 floated_label no_pad">VAT</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_vat none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="vat" id="vat" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Commission Percent" name="commission" id="commission" class="form-control">
+
+                                <div class="form-group clearfix">
+                                    <label for="partnership" class="col-lg-4 floated_label no_pad">Partnership Status</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_partnership none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <select id="partnership" name="partnership" class="partnership col-xs-12 no_pad no_margin" data-style="form-control">
+                                                <option value="true">Partner</option>
+                                                <option value="false">Non Partner</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="info_display none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Service Fee" name="service_fee" id="service_fee" class="form-control">
+
+                                <div class="form-group clearfix">
+                                    <label for="commission" class="col-lg-4 floated_label no_pad">Commission Percent</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_commission none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="commission" id="commission" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
+
+                                <div class="form-group clearfix">
+                                    <label for="service_fee" class="col-lg-4 floated_label no_pad">Service Fee</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_service_fee none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="full_name" id="service_fee" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group clearfix">
+                                    <label for="status" class="col-lg-4 floated_label no_pad">Status</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_status none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <select id="status" name="status" class="status col-xs-12 no_pad no_margin" data-style="form-control">
+                                                <option value="ACTIVE">Active</option>
+                                                <option value="INACTIVE">Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div class="profile_map form-group col-lg-7">
                                 <div class="profile_sub_title">BUSINESS LOCATION</div>
                                 <div class="profile_map_body">
                                     <div class="map-container">
+                                        <div id="search_box">
+                                            <input id="pac-input" class="controls" type="text" placeholder="Enter Postal/Zipcode to focus map & place marker. Click on marker to add address.">
+                                        </div>
+                                        <div id="custom_map_controls" class="clearfix">
+                                            <div id="scroll_zoom" class="pull-left">Enable Scroll Zoom</div>
+                                            <div id="clear_markers" class="pull-left">Clear All Markers</div>
+                                        </div>
                                         <div id="map-canvas"></div>
                                     </div>
                                 </div>
@@ -158,19 +223,23 @@
     <div class="infowindow">
         <div class="address_name address_lines">
             <span class="address_span"></span>
-            <input type="text" name="address_name" class="address_value form-control" placeholder="Location Name" >
+            <div class="val_address_value form-control info_display none_editable"></div>
+            <input type="text" name="address_name" class="address_value form-control info_edit editable hidden" placeholder="Location Name" >
         </div>
         <div class="address_street_name address_lines">
             <span class="address_span"></span>
-            <input type="text" name="address_street_name" class="address_value form-control" placeholder="Street Name">
+            <div class="val_address_value form-control info_display none_editable"></div>
+            <input type="text" name="address_street_name" class="address_value form-control info_edit editable hidden" placeholder="Street Name">
         </div>
         <div class="address_city address_lines">
             <span class="address_span"></span>
-            <input type="text" name="address_city" class="address_value form-control" placeholder="City">
+            <div class="val_address_value form-control info_display none_editable"></div>
+            <input type="text" name="address_city" class="address_value form-control info_edit editable hidden" placeholder="City">
         </div>
         <div class="address_state address_lines">
             <span class="address_span"></span>
-            <input type="text" name="address_state" class="address_value form-control" placeholder="State">
+            <div class="val_address_value form-control info_display none_editable"></div>
+            <input type="text" name="address_state" class="address_value form-control info_edit editable hidden" placeholder="State">
         </div>
         <div class="address_lines">
             <button type="button" class="save_marker <%--glyphicon glyphicon-floppy-disk--%> btn btn-primary">Save</button>

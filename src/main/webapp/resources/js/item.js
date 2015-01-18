@@ -17,6 +17,7 @@ var data_categories_names = [];
             itemId = Main.getURLvalue(4);
             $('.heading h1').html('Item Edit');
             document.title = 'Item Edit';
+            $('#form_item button[type="submit"]').attr({'data-action': 'update'}).html('Update Item');
         }
 
         $('option:selected').removeAttr('selected');
@@ -66,7 +67,7 @@ var data_categories_names = [];
                     var item = data.params.item;
                     var itemImages = item.itemsImage;
                     var storesBrand = item.storesBrand;
-                    var itemStores = storesBrand.store;
+                    var itemStores = item.itemsStores;
                     var itemCategory = item.category;
                     var attributesTypes = item.attributesTypes;
 
@@ -93,14 +94,16 @@ var data_categories_names = [];
                         }
                         getChild(itemCategory);
                     };
+                    change_callback.stores = itemStores;
                     brand_change(brandId, change_callback);
 
                     if(action == 'edit') {
 
                         for(var i = 0; i < itemImages.length; i++) {
-                            $('.product_image .drop_zone').eq(i).html('<img src="' + itemImages[i].url + '" style="height: 100%;" class="img-responsive" />');
+                            $('.product_image .drop_zone').eq(i).attr('data-id', itemImages[i].id).html('<img src="' + itemImages[i].url + '" style="height: 100%;" class="img-responsive" />');
                         }
 
+                        $('#form_item button[type="submit"]').attr({'data-id': item.id});
                         $('#name_item').val(item.name);
                         $('#description').val(item.description);
                         $('#additional_offer').val(item.additionalOffer);
@@ -125,15 +128,20 @@ var data_categories_names = [];
 
                                 $('.check_span', mainElem).addClass(attributesType.multiSelect ? 'icon_full' : '');
                                 $('.checkbox', mainElem).attr('checked', attributesType.multiSelect);
-                                $('input[name="attr_type"]', mainElem).attr('value', attributesType.type);
-                                $('input[name="attr_label"]', mainElem).attr('value', itemAttribute.attribute);
+                                $('.remove_attr_block', mainElem).addClass('hidden');
+                                $('input[name="attr_type"]', mainElem).attr({'data-id': attributesType.id, 'value': attributesType.type});
+                                $('input[name="attr_label"]', mainElem).attr({'data-id': itemAttribute.id, 'value': itemAttribute.attribute});
                                 $('input[name="attr_val"]', mainElem).attr('value', itemAttribute.unitPrice);
+                                $('.remove_attr', mainElem).addClass('hidden');
+                                $('.with_remove', mainElem).removeClass('with_remove');
 
                                 for(var j = 1; j < itemAttributes.length; j++) {
                                     itemAttribute = itemAttributes[j];
                                     var childElem = $('.attr_list_template').clone();
-                                    $('input[name="attr_label"]', childElem).attr('value', itemAttribute.attribute);
+                                    $('input[name="attr_label"]', childElem).attr({'data-id': itemAttribute.id, 'value': itemAttribute.attribute});
                                     $('input[name="attr_val"]', childElem).attr('value', itemAttribute.unitPrice);
+                                    $('.remove_attr', childElem).addClass('hidden');
+                                    $('.with_remove', childElem).removeClass('with_remove');
                                     $('.attr_list', mainElem).append(childElem.html());
                                 }
                                 attributes_types += mainElem.html();
@@ -183,6 +191,14 @@ var data_categories_names = [];
 
             var storeLocations = storesById[brandId];
             var stores_html = "";
+            var brand_stores;
+            if(change_callback != undefined) brand_stores = change_callback.stores;
+            var stores_id = [];
+            if(brand_stores != undefined) {
+                for(var i = 0; i < brand_stores.length; i++) {
+                    stores_id.push(brand_stores[i].store.id);
+                }
+            }
             if(storeLocations != undefined) {
                 for(var i = 0; i < storeLocations.length; i++) {
                     var storeLocation = storeLocations[i];
@@ -196,8 +212,17 @@ var data_categories_names = [];
             }
             get_brand_categories(brandId, change_callback);
             $('#item_store_container').html(stores_html);
-            $('#item_store_container .check_span').addClass('icon_full');
-            $('#item_store_container .checkbox').attr('checked', 'checked');
+            if(stores_id.length > 0) {
+                $('#item_store_container .checkbox').each(function(){
+                    if($.inArray(parseInt($(this).attr('data-id')), stores_id) > -1) {
+                        $(this).attr('checked', 'checked');
+                        $(this).siblings('.check_span').addClass('icon_full');
+                    }
+                });
+            } else {
+                $('#item_store_container .checkbox').attr('checked', 'checked');
+                $('#item_store_container .check_span').addClass('icon_full');
+            }
 
             $('#available_start_time').val($('option:selected', '#item_brand').attr('data-open'));
             $('#available_start_time').selectpicker('refresh');
@@ -249,7 +274,7 @@ var data_categories_names = [];
 
         function getChildCats(fnParams) {
 
-            var elem = fnParams.elem ;
+            var elem = fnParams.elem;
             var brandId = fnParams.brandId;
             var catId = fnParams.catId;
             var currentCatId = fnParams.currentCatId;
@@ -486,6 +511,9 @@ var data_categories_names = [];
                     return false;
                 }
 
+                var chk_confirm = confirm('Are you sure you want to ' + (action == 'edit' ? 'update' : 'add') + ' item?');
+                if (!chk_confirm) return false;
+
                 var data = {};
                 var item = {};
                 var itemCategories = [];
@@ -493,6 +521,7 @@ var data_categories_names = [];
                 var itemAttributesTypes = [];
                 var itemImages = [];
 
+                item.id = $('#form_item button[type="submit"]').attr('data-id');
                 item.name = $('#name_item').val();
                 if($('#description').val() != "") item.description = $('#description').val();
                 item.availableStartTime = $('#available_start_time').val();
@@ -541,9 +570,11 @@ var data_categories_names = [];
                     var itemAttribute = {};
                     var itemAttributes = [];
                     itemAttribute.type = $('input[name="attr_type"]', this).val();
+                    itemAttribute.id = $('input[name="attr_type"]', this).attr('data-id');
                     itemAttribute.multiSelect =  $('.checkbox', this).prop('checked');
                     $('.attr_list .attr_li', this).each(function(){
                         var attributes = {};
+                        attributes.id = $('input[name="attr_label"]', this).attr('data-id');
                         attributes.attribute = $('input[name="attr_label"]', this).val();
                         attributes.unitPrice = $('input[name="attr_val"]', this).val();
                         itemAttributes.push(attributes);
@@ -553,8 +584,14 @@ var data_categories_names = [];
                 });
 
                 $('.product_images img').each(function(){
-                    if($(this).attr('src') != undefined || $(this).attr('src') != "") {
-                        itemImages.push($(this).attr('src'));
+                    if(action == 'edit') {
+                        if($(this).attr('data-new') == 'true' && ($(this).attr('src') != undefined || $(this).attr('src') != "")) {
+                            itemImages.push({id: $(this).parent('.drop_zone').attr('data-id'), url: $(this).attr('src')});
+                        }
+                    } else {
+                        if($(this).attr('data-new') == 'true' && ($(this).attr('src') != undefined || $(this).attr('src') != "")) {
+                            itemImages.push($(this).attr('src'));
+                        }
                     }
                 });
 
@@ -562,9 +599,12 @@ var data_categories_names = [];
                 data.itemCategories = itemCategories;
                 data.itemStores = itemStores;
                 data.itemAttributesTypes = itemAttributesTypes;
-                data.itemImages = itemImages;
+                if(action == 'edit')
+                    data.editItemImages = itemImages;
+                else
+                    data.itemImages = itemImages;
 
-                Item.addItem(data, {id: $('#item_brand').val()});
+                Item.addItem(data, {id: $('#item_brand').val()}, $('#form_item button[type="submit"]').attr('data-action'));
 
                 return false;
             }
@@ -601,7 +641,7 @@ var data_categories_names = [];
 
     };
 
-    Item.addItem = function(data, headers) {
+    Item.addItem = function(data, headers, data_action) {
 
         $("button[type='submit']").attr("disabled", true);
 
@@ -664,7 +704,22 @@ var data_categories_names = [];
 
         callback.loaderDiv = "body";
 
-        Main.request('/merchant/save_item', data, callback, headers);
+        var callback_edit = function (status, data) {
+            $("button[type='submit']").removeAttr("disabled");
+
+            alert(data.message);
+            if (data.success == true) {
+                $('.product_images img[data-new="true"]').removeAttr('data-new');
+            }
+        };
+
+        callback_edit.loaderDiv = "body";
+
+        if(data_action == 'update') {
+            Main.request('/merchant/update_item', data, callback_edit, headers);
+        } else {
+            Main.request('/merchant/save_item', data, callback, headers);
+        }
 
     };
 
@@ -905,7 +960,7 @@ var data_categories_names = [];
                 var item = data.params.item;
                 var itemImages = item.itemsImage;
                 var storesBrand = item.storesBrand;
-                var itemStores = storesBrand.store;
+                var itemStores = item.itemsStores;
                 var itemCategory = item.category;
                 var attributesTypes = item.attributesTypes;
 
@@ -922,7 +977,7 @@ var data_categories_names = [];
 
                 var item_stores = "";
                 for(var i = 0; i < itemStores.length; i++) {
-                    var storeLocation = itemStores[i];
+                    var storeLocation = itemStores[i].store;
                     item_stores +='<li>' + storeLocation.street + ', ' + storeLocation.city + ', ' + storeLocation.state + ', ' + storeLocation.country + '</li>';
                 }
                 $('.item_info .brand_name').html(storesBrand.brandName);

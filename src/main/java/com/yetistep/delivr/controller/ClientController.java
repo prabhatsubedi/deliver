@@ -358,7 +358,11 @@ public class ClientController extends AbstractManager{
     @ResponseBody
     public ResponseEntity<ServiceResponse> getCartDetail(@PathVariable("cartId") Integer cartId) {
         try{
+            CartDto cartDto = clientService.getCartDetail(cartId);
+
             ServiceResponse serviceResponse = new ServiceResponse("Cart detail retrieved successfully");
+            serviceResponse.addParam("cartDetail", cartDto);
+
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while getting cart detail", e);
@@ -366,6 +370,25 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/update_cart", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateCart(@RequestHeader HttpHeaders headers, @RequestBody CartEntity cart) {
+        try{
+//            HeaderDto headerDto = new HeaderDto();
+//            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+//            validateMobileClient(headerDto.getAccessToken());
+            clientService.updateCart(cart);
+            ServiceResponse serviceResponse = new ServiceResponse("Cart Updated Successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while updating cart detail", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
     @RequestMapping(value= "/invite_friend", method = RequestMethod.POST)
     @ResponseBody

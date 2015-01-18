@@ -410,6 +410,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                 for (ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
                     //itemsAttributeEntity.setId(null);
                     itemsAttributeEntity.setType(null);
+                    itemsAttributeEntity.setCartAttributes(null);
                 }
             }
         }
@@ -574,7 +575,59 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     public CartDto getCartDetail(Integer cartId) throws Exception {
         log.info("+++++++++++++ Getting Cart Detail of id " + cartId + " +++++++++++");
         CartDto cartDto = new CartDto();
+        //Cart Detail
+        CartEntity cartEntity = cartDaoService.findCart(cartId);
+        if(cartEntity == null)
+            throw new Exception("CRT001");
+
+        //Getting Cart Attributes
+        List<Integer> selectedAttributes = cartAttributesDaoService.findCartAttributes(cartEntity.getId());
+
+        //Getting Item Detail
+        ItemEntity itemEntity = getItemDetail(cartEntity.getItem().getId());
+
+        // Now Check Selected Attributes
+        if(itemEntity.getAttributesTypes() !=null && itemEntity.getAttributesTypes().size() > 0){
+            for (ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()) {
+                //itemsAttributesTypeEntity.setId(null);
+                itemsAttributesTypeEntity.setItem(null);
+                for (ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
+                    //itemsAttributeEntity.setId(null);
+                    if(selectedAttributes.contains(itemsAttributeEntity.getId()))
+                        itemsAttributeEntity.setSelected(true);
+                    else
+                        itemsAttributeEntity.setSelected(false);
+                }
+            }
+        }
+
+        //itemEntity.setBrandName(null);
+        cartEntity.setItem(null);
+        cartDto.setCart(cartEntity);
+        cartDto.setItem(itemEntity);
+
         return cartDto;
+    }
+
+    @Override
+    public void updateCart(CartEntity cart) throws Exception {
+        log.info("+++++++++++ Updating Cart of cart id " + cart.getId() + " ++++++++++++++++++++++");
+
+        // Deleting Cart Attributes
+        cartAttributesDaoService.deleteCartAttributes(cart.getId());
+        //Inserting Cart Attributes
+        if(cart.getCartAttributes()!=null && cart.getCartAttributes().size() > 0){
+            for(CartAttributesEntity cartAttributesEntity : cart.getCartAttributes()){
+                CartEntity cartEntity = new CartEntity();
+                cartEntity.setId(cart.getId());
+                cartAttributesEntity.setCart(cartEntity);
+                cartAttributesDaoService.save(cartAttributesEntity);
+            }
+        }
+
+        // Now Update Cart
+        cartDaoService.update(cart);
+
     }
 
     public String inviteFriend(HeaderDto headerDto, ArrayList<String> emailList) throws Exception{

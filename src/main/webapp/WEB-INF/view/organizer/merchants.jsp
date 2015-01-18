@@ -44,6 +44,7 @@
                     <tr>
                         <th>SN</th>
                         <th><div class="width_150"> Merchant Name </div></th>
+                        <th><div class="width_100"> Type </div></th>
                         <th><div class="width_150"> Contact Person </div></th>
                         <th><div class="width_150"> Email </div></th>
                         <th><div class="width_100"> Contact No. </div></th>

@@ -21,4 +21,6 @@ public interface CartAttributesDaoService extends GenericDaoService<Integer, Car
     public BigDecimal findAttributesPrice(Integer cartId) throws Exception;
 
     public List<Integer> findCartAttributes(Integer cartId) throws Exception;
+
+    public Boolean deleteCartAttributes(Integer cartId) throws Exception;
 }

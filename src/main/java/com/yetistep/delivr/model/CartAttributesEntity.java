@@ -2,6 +2,7 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -14,6 +15,7 @@ import javax.persistence.*;
  */
 @Entity(name = "CartAttributesEntity")
 @Table(name = "cart_attributes")
+@DynamicUpdate
 public class CartAttributesEntity {
     private Integer id;
     private ItemsAttributeEntity itemsAttribute;

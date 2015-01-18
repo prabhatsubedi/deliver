@@ -71,6 +71,8 @@ $(document).ready(function(){
         }
         map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
 
+        deleteMarkers();
+
         geo_coding(selectedCountry);
 
         infowindow = new google.maps.InfoWindow();
@@ -188,6 +190,7 @@ $(document).ready(function(){
     }
 
     addMarker = function(location, name) {
+        if(disableMapEdit) return false;
         deleteMarkers();
         var location_check = false;
         for(var i in arrGeoPoints) {
@@ -254,11 +257,13 @@ $(document).ready(function(){
                             if(geoPointData != undefined) {
                                 geoObj.latitude = geoPointData.latitude;
                                 geoObj.longitude = geoPointData.longitude;
+                                geoObj.id = geoPointData.id;
                                 geoObj.name = geoPointData.name;
                                 geoObj.street = geoPointData.street;
                                 geoObj.city = geoPointData.city;
                                 geoObj.state = geoPointData.state;
                                 geoObj.country = geoPointData.country;
+                                geoObj.countryCode = geoPointData.countryCode;
                             } else {
                                 geoObj.latitude = location.lat();
                                 geoObj.longitude = location.lng();
@@ -290,6 +295,11 @@ $(document).ready(function(){
                             $('.address_postal_code .address_value', marker_address).attr('value', address_postal_code);
                             $('.address_city .address_value', marker_address).attr('value', address_city);
                             $('.address_state .address_value', marker_address).attr('value', address_state);
+                            $('.address_name .val_address_value', marker_address).html(address_name);
+                            $('.address_street_name .val_address_value', marker_address).html(address_street_name);
+                            $('.address_postal_code .val_address_value', marker_address).html(address_postal_code);
+                            $('.address_city .val_address_value', marker_address).html(address_city);
+                            $('.address_state .val_address_value', marker_address).html(address_state);
                             $('.address_lines .save_marker', marker_address).attr('id', locationToKey(location));
                             infowindow.setContent(marker_address.html());
                             infowindow.open(map, marker);
@@ -305,6 +315,11 @@ $(document).ready(function(){
                                 $('.address_postal_code .address_value', marker_address).attr('value', address_postal_code);
                                 $('.address_city .address_value', marker_address).attr('value', address_city);
                                 $('.address_state .address_value', marker_address).attr('value', address_state);
+                                $('.address_name .val_address_value', marker_address).html(address_name);
+                                $('.address_street_name .val_address_value', marker_address).html(address_street_name);
+                                $('.address_postal_code .val_address_value', marker_address).html(address_postal_code);
+                                $('.address_city .val_address_value', marker_address).html(address_city);
+                                $('.address_state .val_address_value', marker_address).html(address_state);
                                 $('.address_lines .save_marker', marker_address).attr('id', locationToKey(location));
                                 infowindow.setContent(marker_address.html());
                                 infowindow.open(map, this);
@@ -335,7 +350,7 @@ $(document).ready(function(){
     }
 
     $('.infowindow .save_marker').live('click', function(){
-
+        if(disableMapEdit) return false;
         var geoKeyObject = arrGeoPoints[$(this).attr('id')];
         var geoParent = $(this).parent().parent();
 

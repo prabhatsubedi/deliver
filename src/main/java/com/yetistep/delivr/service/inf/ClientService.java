@@ -42,6 +42,7 @@ public interface ClientService {
 
     public CartDto getCartDetail(Integer cartId) throws Exception;
 
+    public void updateCart(CartEntity cart) throws Exception;
     public String inviteFriend(HeaderDto headerDto, ArrayList<String> emailList) throws Exception;
 
 }

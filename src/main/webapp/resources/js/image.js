@@ -16,14 +16,17 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
 
         dropZone.on('dragover', function (e)
         {
+            if(dropZone.hasClass('disabled')) return false;
             $(this).addClass("entered");
         });
         dropZone.on('dragleave', function (e)
         {
+            if(dropZone.hasClass('disabled')) return false;
             $(this).removeClass("entered");
         });
         dropZone.on('drop', function (e)
         {
+            if(dropZone.hasClass('disabled')) return false;
             if(e.originalEvent.dataTransfer.files[0] != undefined) {
                 $(this).removeClass("entered").addClass("dropped");
                 var file = e.originalEvent.dataTransfer.files[0];
@@ -39,12 +42,16 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
             }
         });
         dropZone.mousedown('', function(){
+            if(dropZone.hasClass('disabled')) return false;
             $(this).addClass("entered");
         }).mouseleave(function(){
+            if(dropZone.hasClass('disabled')) return false;
             $(this).removeClass("entered");
         }).mouseup(function(){
+            if(dropZone.hasClass('disabled')) return false;
             $(this).removeClass("entered");
         }).click(function(){
+            if(dropZone.hasClass('disabled')) return false;
             $(target_input).trigger('click');
         });
 

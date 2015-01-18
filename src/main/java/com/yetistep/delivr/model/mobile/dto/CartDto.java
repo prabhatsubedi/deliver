@@ -1,6 +1,7 @@
 package com.yetistep.delivr.model.mobile.dto;
 
 import com.yetistep.delivr.model.CartEntity;
+import com.yetistep.delivr.model.ItemEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
 
 import java.util.List;
@@ -13,9 +14,11 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class CartDto {
-    StoresBrandEntity storesBrand;
-    List<CartEntity> carts;
-    Integer totalCart;
+    private StoresBrandEntity storesBrand;
+    private List<CartEntity> carts;
+    private Integer totalCart;
+    private CartEntity cart;
+    private ItemEntity item;
 
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
@@ -39,5 +42,21 @@ public class CartDto {
 
     public void setTotalCart(Integer totalCart) {
         this.totalCart = totalCart;
+    }
+
+    public CartEntity getCart() {
+        return cart;
+    }
+
+    public void setCart(CartEntity cart) {
+        this.cart = cart;
+    }
+
+    public ItemEntity getItem() {
+        return item;
+    }
+
+    public void setItem(ItemEntity item) {
+        this.item = item;
     }
 }

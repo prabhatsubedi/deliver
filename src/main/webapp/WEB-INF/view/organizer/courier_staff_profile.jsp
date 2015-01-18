@@ -54,121 +54,160 @@
                         <div class="action detail_options pull-right">
                             <a class="pull-left btn btn_green edit_btn none_editable glyphicon glyphicon-edit"></a>
                             <div class="pull-left action_buttons editable hidden">
-                                <a class="btn btn_green save_btn editable glyphicon glyphicon-floppy-disk"></a>
-                                <a class="btn btn_green cancel_btn editable glyphicon glyphicon-remove"></a>
+                                <a class="btn btn_green save_btn glyphicon glyphicon-floppy-disk"></a>
+                                <a class="btn btn_green cancel_btn glyphicon glyphicon-remove"></a>
                             </div>
                         </div>
                     </div>
                     <div class="profile_body">
-                        <div class="form_container full_width clearfix">
+                        <div class="form_container form_editable full_width clearfix">
                             <div class="profile_info col-lg-5">
                                 <div class="profile_sub_title">INFORMATION</div>
 
-                                <div class="form-group">
-                                    <div class="info_display val_full_name none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Name of Courier Staff" name="full_name" id="full_name" class="form-control">
+                                <div class="form-group clearfix">
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Name of Courier Staff</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_full_name none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="full_name" id="full_name" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class=" info_display val_email none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Email Address (Optional)" name="email" id="email" class="form-control">
+                                <div class="form-group clearfix">
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Email Address (Optional)</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_email none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="email" id="email" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class=" info_display val_mobile none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Mobile No." name="mobile" id="mobile" class="form-control">
+                                <div class="form-group clearfix">
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Mobile No.</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_mobile none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="mobile" id="mobile" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class=" info_display val_password none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="password" placeholder="Password" name="password" id="password" class="form-control">
+                                <div class="form-group clearfix editable hidden">
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Password</label>
+                                    <div class="col-lg-8">
+                                        <div class="info_edit">
+                                            <input type="password" name="password" id="password" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class=" info_display val_gender none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <select id="gender" name="gender" class="gender col-xs-12 no_pad no_margin" data-style="form-control">
-                                            <option value="0">Select Gender</option>
-                                            <option value="MALE">Male</option>
-                                            <option value="FEMALE">Female</option>
-                                        </select>
+                                <div class="form-group clearfix">
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Gender</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_gender none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <select id="gender" name="gender" class="gender col-xs-12 no_pad no_margin" data-style="form-control">
+                                                <option value="0">Select Gender</option>
+                                                <option value="MALE">Male</option>
+                                                <option value="FEMALE">Female</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class=" info_display val_street none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Street" name="street" id="street" class="form-control">
+                                <div class="form-group clearfix">
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Street</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_street none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="street" id="street" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class=" info_display val_city none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="City" name="city" id="city" class="form-control">
+                                <div class="form-group clearfix">
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">City</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_city none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="city" id="city" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class=" info_display val_state none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="State" name="state" id="state" class="form-control">
+                                <div class="form-group clearfix">
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">State</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_state none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="state" id="state" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class=" info_display val_country none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Country" name="country" id="country" class="form-control valid">
+                                <div class="form-group clearfix">
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Country</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_country none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="country" id="country" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class=" info_display val_vehicle_type none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <select id="vehicle_type" name="vehicle_type" class="vehicle_type col-xs-12 no_pad no_margin" data-style="form-control">
-                                            <option value="0">Select Vehicle Type</option>
-                                            <option value="ON_FOOT">On Foot</option>
-                                            <option value="BICYCLE">Bicycle</option>
-                                            <option value="MOTORBIKE">Motorbike</option>
-                                            <option value="CAR">Car</option>
-                                            <option value="TRUCK">Truck</option>
-                                            <option value="OTHERS">Others</option>
-                                        </select>
+                                <div class="form-group clearfix">
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Vehicle Type</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_vehicle_type none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <select id="vehicle_type" name="vehicle_type" class="vehicle_type col-xs-12 no_pad no_margin" data-style="form-control">
+                                                <option value="0">Select Vehicle Type</option>
+                                                <option value="ON_FOOT">On Foot</option>
+                                                <option value="BICYCLE">Bicycle</option>
+                                                <option value="MOTORBIKE">Motorbike</option>
+                                                <option value="CAR">Car</option>
+                                                <option value="TRUCK">Truck</option>
+                                                <option value="OTHERS">Others</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class=" info_display val_vehicle_no none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="Vehicle No." name="vehicle_no" id="vehicle_no" class="form-control">
+                                <div class="form-group clearfix">
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Vehicle No.</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_vehicle_no none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="vehicle_no" id="vehicle_no" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class=" info_display val_license_no none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <input type="text" placeholder="License No." name="license_no" id="license_no" class="form-control">
+                                <div class="form-group clearfix">
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">License No.</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_license_no none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="license_no" id="license_no" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class=" info_display val_status none_editable"></div>
-                                    <div class="info_edit editable">
-                                        <select id="status" name="status" class="status col-xs-12 no_pad no_margin" data-style="form-control">
-                                            <option value="ACTIVE">Active</option>
-                                            <option value="INACTIVE">Inactive</option>
-                                        </select>
+                                <div class="form-group clearfix">
+                                    <label for="status" class="col-lg-4 floated_label no_pad">Status</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_status none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <select id="status" name="status" class="status col-xs-12 no_pad no_margin" data-style="form-control">
+                                                <option value="ACTIVE">Active</option>
+                                                <option value="INACTIVE">Inactive</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
 
                             <div class="profile_map form-group col-lg-7">

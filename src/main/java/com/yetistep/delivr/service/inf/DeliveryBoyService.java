@@ -1,6 +1,7 @@
 package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.ItemsOrderEntity;
@@ -51,5 +52,5 @@ public interface DeliveryBoyService {
 
     public Boolean cancelOrder(OrderEntity order) throws Exception;
 
-    public OrderEntity viewShoppingList(Integer orderId) throws Exception;
+    public OrderSummaryDto viewShoppingList(Integer orderId) throws Exception;
 }

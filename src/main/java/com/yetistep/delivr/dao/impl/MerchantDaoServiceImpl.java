@@ -401,10 +401,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
                 "INNER JOIN orders o on o.store_id = s.id where o.id =:orderId";
 
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
-                .addScalar("id")
-                .addScalar("partnershipStatus")
-                .addScalar("serviceFee")
-                .addScalar("commissionPercentage")
                 .setResultTransformer( Transformers.aliasToBean(MerchantEntity.class));
         query.setParameter("orderId", orderId);
         MerchantEntity merchantEntity = (MerchantEntity) query.uniqueResult();

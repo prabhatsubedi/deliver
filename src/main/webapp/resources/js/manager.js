@@ -19,6 +19,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var merchants = data.params.merchants;
             var tdata = [];
 
+            var sess_merchants = {};
             for (i = 0; i < merchants.length; i++) {
                 var merchant = merchants[i];
 
@@ -38,9 +39,11 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
                 var link_merchant = '<a href="/merchant/store/list/' + merchantId + '">' + merchant.businessTitle + '</a>';
 
+                sess_merchants[merchantId] = merchant.businessTitle;
                 var row = [merchantId, link_merchant, merchant.partnershipStatus ? 'Partner' : 'Non Partner', merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
                 tdata.push(row);
             }
+            Main.saveInLocalStorage('merchants', JSON.stringify(sess_merchants));
 
             Main.createDataTable("#merchants_table", tdata);
 

@@ -50,6 +50,9 @@
             Main.saveInLocalStorage('mid', Main.getURLvalue(3));
         }
 
+        var sess_merchants = JSON.parse(Main.getFromLocalStorage('merchants'));
+        $('.sidebar .merchant_name').html(sess_merchants[Main.getFromLocalStorage('mid')]);
+
     });
 
 </script>

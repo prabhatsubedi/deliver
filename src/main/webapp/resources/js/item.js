@@ -334,16 +334,22 @@ var data_categories_names = [];
         });
 
         $('#add_category').click(function(){
-            $('.add_categories, #new_category, #new_subcategory').addClass('hidden');
-            $('.add_categories, #new_category').removeClass('hidden');
+            if($('#category_container select.category_options').length > 1) {
+                $('.add_categories, #new_category, #new_subcategory').addClass('hidden');
+                $('.add_categories, #new_category').removeClass('hidden');
+            } else {
+                alert('Top level category creation is not allowed.');
+            }
         });
         $('#add_subcategory').click(function(){
-            var last_child = $('#category_container select.category_options').last();
-            if($('option:selected', last_child).attr('data-item') == undefined) {
-                $('.add_categories, #new_category, #new_subcategory').addClass('hidden');
-                $('.add_categories, #new_subcategory').removeClass('hidden');
-            } else {
-                alert('Subcategory cannot be added to this category. Since, this category contain Items.');
+            if($('#validate_categories').valid()) {
+                var last_child = $('#category_container select.category_options').last();
+                if($('option:selected', last_child).attr('data-item') == undefined) {
+                    $('.add_categories, #new_category, #new_subcategory').addClass('hidden');
+                    $('.add_categories, #new_subcategory').removeClass('hidden');
+                } else {
+                    alert('Subcategory cannot be added to this category. Since, this category contain Items.');
+                }
             }
         });
         $('#save_category').click(function(){

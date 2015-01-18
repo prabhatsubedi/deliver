@@ -617,8 +617,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             dbItemsStoreIdList.add(itemsStore.getId());
         }
 
-        for (ItemsAttributesTypeEntity itemsAttributesType: itemsAttributesTypes){
-            dbItemAttributesTypesMap.put(itemsAttributesType.getId(), itemsAttributesType);
+        for (ItemsAttributesTypeEntity itemsAttributesType: dbItemsAttributesTypes){
+            //dbItemAttributesTypesMap.put(itemsAttributesType.getId(), itemsAttributesType);
             for (ItemsAttributeEntity attribute: itemsAttributesType.getItemsAttribute()){
                 dbItemAttributesMap.put(attribute.getId(), attribute);
             }
@@ -637,6 +637,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
         for (ItemsAttributesTypeEntity itemsAttributesTypeEntity: dbItemsAttributesTypes)  {
+            dbItemAttributesTypesMap.put(itemsAttributesTypeEntity.getId(), itemsAttributesTypeEntity);
             dbItemsAttributesTypeIdList.add(itemsAttributesTypeEntity.getId());
         }
 
@@ -671,12 +672,16 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         List<ItemsImageEntity> dbImages = dbItem.getItemsImage();
         Map<Integer, ItemsImageEntity> dbItemsImagesIdMap = new HashMap<>();
+        Map<Integer, String> dbItemsImagesUrlMap = new HashMap<>();
         for (ItemsImageEntity itemsImage: dbImages){
-            dbItemsImagesIdMap.put(itemsImage.getId(), itemsImage);
+            if(itemsImage.getId() != null){
+                dbItemsImagesIdMap.put(itemsImage.getId(), itemsImage);
+                dbItemsImagesUrlMap.put(itemsImage.getId(), itemsImage.getUrl());
+            }
         }
 
 
-        //add new images
+        /*//add new images
         List<Integer> itemsImagesIdList = new ArrayList<Integer>();
         Map<Integer, ItemsImageEntity> itemsImagesIdMap = new HashMap<>();
         if(itemsImages != null){
@@ -697,35 +702,56 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                     dbImages.remove(dbItemsImagesIdMap.get(pairs.getValue()));
                 }
             }
-        }
+        }*/
+
+
+
 
 
 
         merchantDaoService.updateItem(dbItem);
 
+        //add new images
+        List<Integer> itemsImagesIdList = new ArrayList<Integer>();
+        Map<Integer, ItemsImageEntity> itemsImagesIdMap = new HashMap<>();
+        if(itemsImages != null){
+            for (ItemsImageEntity image: itemsImages){
+                if(image.getId() == null){
+                    dbImages.add(image);
+                } else if(image.getUrl() == null){
+                    dbImages.remove(dbItemsImagesIdMap.get(image.getId()));
+                } else if(image.getId() != null && image.getUrl() != null) {
+                    dbItemsImagesIdMap.get(image.getId()).setUrl(image.getUrl());
+                }
+            }
+        }
+
         if (dbImages != null && dbImages.size()>0) {
             log.info("Uploading item images to S3 Bucket ");
             String dir = MessageBundle.separateString("/", "Merchant_"+storesBrand.getMerchant().getId(), "Brand_"+ storesBrand.getId(), "item" + dbItem.getId());
             boolean isLocal = MessageBundle.isLocalHost();
-            if(itemsImagesIdMap.size() > 0) {
+            if(dbImages.size() > 0) {
                 int i = 0;
                 for(ItemsImageEntity image: dbImages){
-                    if(itemsImagesIdMap.get(image.getId()) !=null && itemsImagesIdMap.get(image.getId()).getUrl() != null && !itemsImagesIdMap.get(image.getId()).getUrl().contains("https://")) { //has url  and is updated
-                        if(image.getId() != null){     //not new
-                            AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(image.getUrl()));
+                    if(image.getId() != null && !image.getUrl().contains("https://")) { //has url  and is updated
+                        //if(image.getId() != null){     //not new
+                            if(image.getUrl() != null && dbItemsImagesUrlMap.get(image.getId()).contains("https://")){
+                                AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(dbItemsImagesUrlMap.get(image.getId())));
+                            }
+
                             String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();
-                            String s3PathImage = GeneralUtil.saveImageToBucket(itemsImagesIdMap.get(image.getId()).getUrl(), itemImageUrl, dir, true);
+                            String s3PathImage = GeneralUtil.saveImageToBucket(image.getUrl(), itemImageUrl, dir, true);
                             image.setUrl(s3PathImage);
                             image.setItem(dbItem);
                             i++;
-                        }else{
+
+                        }else if(image.getId() == null){
                             String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();
                             String s3PathImage = GeneralUtil.saveImageToBucket(image.getUrl(), itemImageUrl, dir, true);
                             image.setUrl(s3PathImage);
                             image.setItem(dbItem);
                             i++;
                         }
-                    }
                 }
                 merchantDaoService.updateItemImages(dbImages);
             }

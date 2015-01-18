@@ -720,6 +720,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                     dbImages.add(image);
                 } else if(image.getUrl() == null){
                     dbImages.remove(dbItemsImagesIdMap.get(image.getId()));
+                    AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(dbItemsImagesUrlMap.get(image.getId())));
                 } else if(image.getId() != null && image.getUrl() != null) {
                     dbItemsImagesIdMap.get(image.getId()).setUrl(image.getUrl());
                 }
@@ -733,6 +734,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             if(dbImages.size() > 0) {
                 int i = 0;
                 for(ItemsImageEntity image: dbImages){
+                    image.setItem(dbItem);
                     if(image.getId() != null && !image.getUrl().contains("https://")) { //has url  and is updated
                         //if(image.getId() != null){     //not new
                             if(image.getUrl() != null && dbItemsImagesUrlMap.get(image.getId()).contains("https://")){

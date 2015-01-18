@@ -376,7 +376,11 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public Boolean updateItemImages(List<ItemsImageEntity> ItemsImages) throws Exception {
         Integer i = 0;
         for (ItemsImageEntity value: ItemsImages) {
-            getCurrentSession().update(value);
+            if(value.getId() == null){
+                getCurrentSession().save(value);
+            }else{
+                getCurrentSession().update(value);
+            }
             if ( i % 20 == 0 ) { //20, same as the JDBC batch size
                 //flush a batch of inserts and release memory:
                 getCurrentSession().flush();

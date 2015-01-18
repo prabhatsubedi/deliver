@@ -227,7 +227,7 @@ public class CustomerServiceImpl implements CustomerService {
         order.setOrderStatus(JobOrderStatus.ORDER_PLACED);
 
         BigDecimal itemTotalCost = BigDecimal.ZERO;
-        BigDecimal customerPays = BigDecimal.ZERO;
+        BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
         for (ItemsOrderEntity iOrder: itemsOrder){
             ItemEntity item = merchantDaoService.getItemDetail(iOrder.getItem().getId());
 
@@ -238,13 +238,14 @@ public class CustomerServiceImpl implements CustomerService {
             iOrder.setItemTotal(itemTotal);
             itemTotalCost = itemTotalCost.add(itemTotal);
 
-            BigDecimal serviceCharge = itemTotal.add(BigDecimalUtil.percentageOf(itemTotal, item.getServiceCharge()));
-            BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(serviceCharge, item.getVat()));
-            customerPays = customerPays.add(serviceAndVatCharge);
+            BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemTotal, item.getServiceCharge());
+            BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemTotal.add(serviceCharge), item.getVat()));
+            itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatCharge);
         }
         order.setItemsOrder(itemsOrder);
         order.setTotalCost(itemTotalCost);
-
+        order.setSurgeFactor(getSurgeFactor());
+        order.setItemServiceAndVatCharge(itemServiceAndVatCharge);
         List<StoreEntity> stores = merchantDaoService.findStoreByBrand(brandId);
         StoreEntity store = findNearestStoreFromCustomer(order, stores);
 
@@ -254,9 +255,7 @@ public class CustomerServiceImpl implements CustomerService {
         //TODO Send code message to customer
         List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, deliveryBoyDaoService.findAllCapableDeliveryBoys(), order);
         List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, brand.getMerchant());
-        order.setGrandTotal(customerPays.add(order.getDeliveryCharge()).add(order.getSystemServiceCharge()));
         order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
-        order.setSurgeFactor(getSurgeFactor());
         customerDaoService.saveOrder(order);
 
     }
@@ -419,13 +418,12 @@ public class CustomerServiceImpl implements CustomerService {
             deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
         /* 14. ======= Customer available balance after discount ======== */
         BigDecimal customerBalanceAfterDiscount = ZERO;
-        if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
+        if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
             customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
 
         /* 15. ====== Customer Pays ========*/
-//        BigDecimal customerPays = BigDecimal.ZERO;
-//        customerPays = customerPays.add(deliveryChargedAfterDiscount).add(serviceFeeAmt);
-//        order.setGrandTotal(customerPays);
+        BigDecimal customerPays = order.getTotalCost().add(deliveryChargedAfterDiscount).add(serviceFeeAmt).add(order.getItemServiceAndVatCharge());
+        order.setGrandTotal(customerPays);
         order.setDeliveryCharge(deliveryChargedAfterDiscount);
         order.setSystemServiceCharge(serviceFeeAmt);
 

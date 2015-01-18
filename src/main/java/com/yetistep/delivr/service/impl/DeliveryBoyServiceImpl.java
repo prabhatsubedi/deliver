@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
@@ -632,13 +633,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public OrderEntity viewShoppingList(Integer orderId) throws Exception {
-        MerchantEntity merchant = merchantDaoService.getMerchantByOrderId(orderId);
+    public OrderSummaryDto viewShoppingList(Integer orderId) throws Exception {
         OrderEntity order = orderDaoService.find(orderId);
         if (order == null) {
             throw new YSException("VLD017");
         }
-        OrderEntity orderEntity = new OrderEntity();
+        MerchantEntity merchant = merchantDaoService.getMerchantByOrderId(orderId);
+        OrderSummaryDto orderSummary = new OrderSummaryDto();
 
         List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
         List<ItemsOrderEntity> itemsOrderEntities = new ArrayList<ItemsOrderEntity>();
@@ -658,9 +659,17 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             itemsOrderEntities.add(itemsOrderEntity);
         }
 
-        orderEntity.setItemsOrder(itemsOrderEntities);
-
-        return orderEntity;
+        orderSummary.setId(order.getId());
+        orderSummary.setItemOrders(itemsOrderEntities);
+        CourierTransactionEntity courierTransaction = order.getCourierTransaction();
+        orderSummary.setSubTotal(courierTransaction.getOrderTotal());
+        orderSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
+        orderSummary.setServiceFee(courierTransaction.getServiceFeeAmt());
+        orderSummary.setDeliveryFee(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
+        orderSummary.setTotalDiscount(courierTransaction.getCustomerBalanceBeforeDiscount().subtract(courierTransaction.getCustomerBalanceAfterDiscount()));
+        orderSummary.setEstimatedTotal(courierTransaction.getCustomerPays());
+        orderSummary.setPartnerShipStatus(merchant.getPartnershipStatus());
+        return orderSummary;
     }
 
     private CourierTransactionEntity setCourierTransaction(OrderEntity order, DeliveryBoySelectionEntity dBoySelection, MerchantEntity merchant)throws Exception {
@@ -721,7 +730,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
         /* 14. ======= Customer available balance after discount ======== */
         BigDecimal customerBalanceAfterDiscount = ZERO;
-        if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
+        if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
             customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
 
         /* 15. ======= Paid to Courier ====== */

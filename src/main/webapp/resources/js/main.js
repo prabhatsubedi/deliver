@@ -217,12 +217,13 @@ if(typeof(Main) == "undefined") var Main = {};
 
     };*/
 
-    Main.elemRatio = function() {
+    Main.elemRatio = function(callback) {
         function elem_ratio() {
             $('.maintain_ratio').each(function(){
                 var mthis = $(this);
-                mthis.height((mthis.attr('mr-height')/mthis.attr('mr-width'))*mthis.width())
+                mthis.height((mthis.attr('mr-height')/mthis.attr('mr-width'))*mthis.width());
             });
+            if(callback != undefined) callback();
         }
         $(window).resize(function(){
             elem_ratio();

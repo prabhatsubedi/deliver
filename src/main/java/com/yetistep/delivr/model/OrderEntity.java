@@ -58,6 +58,7 @@ public class OrderEntity implements Serializable {
     private OrderCancelEntity orderCancel;
     private CourierTransactionEntity courierTransaction;
     private Integer surgeFactor;
+    private BigDecimal itemServiceAndVatCharge;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -372,5 +373,14 @@ public class OrderEntity implements Serializable {
 
     public void setSurgeFactor(Integer surgeFactor) {
         this.surgeFactor = surgeFactor;
+    }
+
+    @Column(name="item_service_vat_charge", precision = 16, scale = 2)
+    public BigDecimal getItemServiceAndVatCharge() {
+        return itemServiceAndVatCharge;
+    }
+
+    public void setItemServiceAndVatCharge(BigDecimal itemServiceAndVatCharge) {
+        this.itemServiceAndVatCharge = itemServiceAndVatCharge;
     }
 }

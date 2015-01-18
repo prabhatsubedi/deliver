@@ -2,6 +2,7 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.ItemsOrderEntity;
@@ -267,9 +268,9 @@ public class DeliveryBoyController extends AbstractManager{
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
             //validateMobileClient(headerDto.getAccessToken());
 
-            OrderEntity order = deliveryBoyService.viewShoppingList(Integer.parseInt(headerDto.getId()));
+            OrderSummaryDto orderSummary = deliveryBoyService.viewShoppingList(Integer.parseInt(headerDto.getId()));
             ServiceResponse serviceResponse = new ServiceResponse("Shopping List retrieved successfully");
-            serviceResponse.addParam("order",order);
+            serviceResponse.addParam("order",orderSummary);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
         } catch (Exception e){

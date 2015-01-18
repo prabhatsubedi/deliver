@@ -380,8 +380,9 @@ if(typeof(Store) == "undefined") var Store = {};
 
                         var storeBrand = storeBrands[i];
                         $('.item_image img', elem).attr('src', storeBrand.brandImage);
-                        $('.item_name', elem).html('<a href="/merchant/store/view/' + storeBrand.id + '">' + storeBrand.brandName + '</a>');
+                        $('.item_name', elem).html('<a href="/merchant/item/list/' + storeBrand.id + '">' + storeBrand.brandName + '</a>');
                         $('.add_items', elem).attr('href', '/merchant/item/form/create/' + storeBrand.id);
+                        $('.view_store', elem).attr('href', '/merchant/store/view/' + storeBrand.id);
 
                         if(storeBrand.featured == true) $('.item_image', elem).append('<div class="special_item">Featured</div>');
                         if(storeBrand.priority != undefined) $('.item_image', elem).append('<div class="special_item">Priority : ' + storeBrand.priority + '</div>');

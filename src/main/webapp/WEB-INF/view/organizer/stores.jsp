@@ -53,12 +53,23 @@
 
 <script type="text/javascript">
 
-    var draggable_initialized = false;
     $(document).ready(function(){
 
+        var re_calculate_width = true;
+        $('.item_container').live('mouseover', function(){
+            if(re_calculate_width == true) {
+                $('.item_container').width($('.item_container').eq(0).width() - 1);
+                $('.item_container').height($('.item_container').eq(0).height());
+                console.log($('.item_container').eq(0).width());
+                re_calculate_width = false;
+            }
+        });
         var sortableParam = {
             revert: true,
             tolerance: 'pointer',
+            containment: '.body',
+            create: function() {
+            },
             stop: function( event, ui ) {
                 var arrdata = [];
                 $('#featured_stores .item_container').each(function(){

@@ -1,7 +1,9 @@
 package com.yetistep.delivr.model;
 
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.Gender;
 import com.yetistep.delivr.enums.Status;
@@ -179,7 +181,7 @@ public class UserEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "last_activity_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "last_activity_date")
     public Timestamp getLastActivityDate() {
         return lastActivityDate;
     }
@@ -189,7 +191,7 @@ public class UserEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_date")
     public Timestamp getCreatedDate() {
         return createdDate;
     }
@@ -293,5 +295,15 @@ public class UserEntity implements Serializable {
 
     public void setOrderCancelEntities(List<OrderCancelEntity> orderCancelEntities) {
         this.orderCancelEntities = orderCancelEntities;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        lastActivityDate = createdDate = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        lastActivityDate = new Timestamp(System.currentTimeMillis());
     }
 }

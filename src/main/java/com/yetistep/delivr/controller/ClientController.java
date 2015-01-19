@@ -375,9 +375,10 @@ public class ClientController extends AbstractManager{
     @ResponseBody
     public ResponseEntity<ServiceResponse> updateCart(@RequestHeader HttpHeaders headers, @RequestBody CartEntity cart) {
         try{
-//            HeaderDto headerDto = new HeaderDto();
-//            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-//            validateMobileClient(headerDto.getAccessToken());
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
+
             clientService.updateCart(cart);
             ServiceResponse serviceResponse = new ServiceResponse("Cart Updated Successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

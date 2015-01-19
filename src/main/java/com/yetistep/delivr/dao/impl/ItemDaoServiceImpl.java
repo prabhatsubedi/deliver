@@ -67,8 +67,10 @@ public class ItemDaoServiceImpl implements ItemDaoService{
 
         String sql = "SELECT DISTINCT DISTINCT(cat.id), cat.name, cat.parent_id as parentId FROM items it " +
                 "INNER JOIN categories cat ON(cat.id = it.category_id) " +
-                "WHERE it.brand_id = " + brandId;
+                "WHERE it.brand_id = :brandId AND it.status =:status";
         SQLQuery query =  getCurrentSession().createSQLQuery(sql);
+        query.setParameter("brandId", brandId);
+        query.setParameter("status", Status.ACTIVE.ordinal());
 
         query.setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
         categoryEntities = query.list();

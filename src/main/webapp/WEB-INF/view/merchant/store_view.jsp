@@ -57,6 +57,7 @@
 
                                 <div class="detail_options clearfix">
                                     <a class="btn btn_green pull-right btn_edit glyphicon glyphicon-edit" href="/merchant/store/form/edit/"></a>
+                                    <a href="/merchant/item/form/create" class="btn btn_green pull-right add_items">Add Item</a>
                                     <div class="switch_container pull-right">
                                         <div class="switch switch_activation">
                                             <div class="btn_switch on"></div>
@@ -131,6 +132,7 @@
         <div class="block_item">
             <div class="item_image maintain_ratio" mr-height="400" mr-width="720">
                 <img class="img-responsive no_image">
+                <a class="btn btn-default btn_logins view_store">View Store</a>
                 <a class="btn btn-default btn_logins add_items">Add Item</a>
             </div>
             <div class="item_infos">

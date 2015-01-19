@@ -57,12 +57,22 @@ public class DBoySubmittedAmountEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "ack_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "ack_date")
     public Timestamp getAckDate() {
         return ackDate;
     }
 
     public void setAckDate(Timestamp ackDate) {
         this.ackDate = ackDate;
+    }
+
+    @PrePersist
+    public void onCreate(){
+        ackDate = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        ackDate = new Timestamp(System.currentTimeMillis());
     }
 }

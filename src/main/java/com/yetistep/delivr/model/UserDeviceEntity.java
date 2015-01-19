@@ -1,12 +1,10 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
 
 import javax.persistence.*;
-import java.math.BigInteger;
 import java.sql.Timestamp;
 
 /**
@@ -54,7 +52,7 @@ public class UserDeviceEntity {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "last_login", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "last_login")
     public Timestamp getLastLogin() {
         return lastLogin;
     }
@@ -154,5 +152,15 @@ public class UserDeviceEntity {
 
     public void setUser(UserEntity user) {
         this.user = user;
+    }
+
+    @PrePersist
+    public void onCreate(){
+        lastLogin = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        lastLogin = new Timestamp(System.currentTimeMillis());
     }
 }

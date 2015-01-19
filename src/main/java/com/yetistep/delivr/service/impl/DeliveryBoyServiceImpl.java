@@ -70,6 +70,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         user.setVerifiedStatus(true);
         user.setSubscribeNewsletter(false);
         user.setStatus(Status.ACTIVE);
+        if(user.getEmailAddress().isEmpty()){
+            user.setEmailAddress(null);
+        }
 
         deliveryBoy.setAvailabilityStatus(DBoyStatus.FREE);
         deliveryBoy.setAverageRating(new BigDecimal(0));

@@ -82,7 +82,7 @@ if(typeof(Main) == "undefined") var Main = {};
             $("button[type='submit']","#login_form").removeAttr("disabled");
 
             if (data.success == true) {
-                window.location.replace(data.params.url);
+                window.location = Main.modifyURL(data.params.url);
             } else {
                 alert(data.message);
             }
@@ -95,7 +95,7 @@ if(typeof(Main) == "undefined") var Main = {};
 
     Main.doLogout = function (data) {
         var callback = function (status, data) {
-            window.location = "/";
+            window.location = Main.modifyURL("/");
         };
         callback.loaderDiv = "body";
         Main.request('/j_spring_security_logout', {}, callback);
@@ -110,7 +110,7 @@ if(typeof(Main) == "undefined") var Main = {};
 
             if (data.success == true) {
                 alert(data.message);
-                window.location = "/";
+                window.location = Main.modifyURL("/");
             } else {
                 alert(data.message);
             }

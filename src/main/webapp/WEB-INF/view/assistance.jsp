@@ -15,7 +15,7 @@
         $(document).ready(function(){
 
             $('.btn_cancel').click(function(){
-                window.location = "/";
+                window.location = Main.modifyURL("/");
             });
 
             $.validator.setDefaults({
@@ -53,7 +53,7 @@
 
             if(action == "NEW" || action == "RESET") {
                 if(path_arr[2] == undefined) {
-                    window.location = "/";
+                    window.location = Main.modifyURL("/");
                     return false;
                 }
                 $('#form_password').validate({

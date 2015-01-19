@@ -69,8 +69,6 @@
             revert: true,
             tolerance: 'pointer',
             containment: '.body',
-            create: function() {
-            },
             stop: function( event, ui ) {
                 var arrdata = [];
                 $('#featured_stores .item_container').each(function(){

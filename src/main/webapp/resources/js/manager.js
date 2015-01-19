@@ -196,6 +196,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         var elem = $('.block_store_template').clone();
                         var storeBrand = stores[i];
                         $('.item_container', elem).attr('data-id', storeBrand.id);
+                        $('.item_container', elem).attr('data-mid', storeBrand.merchantId);
                         $('.item_image img', elem).attr('src', storeBrand.brandImage);
                         $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
                         $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
@@ -211,6 +212,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         storeBrand.featured ? featured_count++ : prioritized_count++;
                         var elem = $('.block_store_template').clone();
                         $('.item_container', elem).attr('data-id', storeBrand.id);
+                        $('.item_container', elem).attr('data-mid', storeBrand.merchantId);
                         $('.item_image img', elem).attr('src', storeBrand.brandImage);
                         $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
                         $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
@@ -233,6 +235,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
         callback.loaderDiv = "body";
 
         Main.request(url, data, callback);
+
+        $('.item_container a').live('click', function(e) {
+            e.preventDefault();
+            var elem_parent = $(this).parents('.item_container');
+            console.log(elem_parent);
+        });
 
     };
 

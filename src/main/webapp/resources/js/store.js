@@ -349,7 +349,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
             if (data.success == true) {
                 alert(data.message);
-                window.location = "/merchant/store/list";
+                window.location = Main.modifyURL("/merchant/store/list");
             } else {
                 alert(data.message);
             }

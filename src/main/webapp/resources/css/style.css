@@ -1173,6 +1173,12 @@ label.check_label .checkbox {
 .detail_value .store_location .block_store {
     padding: 15px;
     margin: 0px;
+    position: relative;
+}
+.detail_value .store_location .block_store .check_label {
+    position: absolute;
+    top: 3px;
+    right: 5px;
 }
 .detail_value .store_location .block_store p {
     margin-bottom: 0px;
@@ -1187,6 +1193,10 @@ label.check_label .checkbox {
     font-size: 12px;
     padding: 0px;
     color: #f7941d;
+}
+.detail_value .store_location .block_store button.inactive_store {
+    color: #AAAAAA;
+    text-decoration: none;
 }
 .detail_value .map-container {
     margin: 0px;

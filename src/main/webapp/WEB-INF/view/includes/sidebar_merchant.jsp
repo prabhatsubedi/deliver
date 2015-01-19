@@ -10,7 +10,7 @@
         </sec:authorize>
                     <ul class="nav nav-stacked">
                         <sec:authorize access="!hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
-                        <li><a class="merchant_name ignore_focus" href="javascript:;">Merchant Name</a></li>
+                        <%--<li><a class="merchant_name ignore_focus" href="javascript:;">Merchant Name</a></li>--%>
                         </sec:authorize>
                         <li><a href="/merchant/store/list">Stores</a></li>
                         <li><a href="/merchant/item/list">Items</a></li>

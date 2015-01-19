@@ -417,6 +417,41 @@ if(typeof(Store) == "undefined") var Store = {};
 
     Store.loadStore = function(storeId){
 
+        $('label.check_label .checkbox').removeAttr("checked");
+
+        $('label.check_label .checkbox').live('click', function(){
+            if($(this).prop('checked')) {
+                $(this).siblings('.check_span').addClass("icon_full");
+            } else {
+                $(this).siblings('.check_span').removeClass("icon_full");
+            }
+        });
+
+        $("label.check_label").live('mouseover', function ( event ) {
+            $('.check_span', this).addClass("icon_semi");
+        });
+
+        $("label.check_label").live('mouseout', function ( event ) {
+            $('.check_span', this).removeClass("icon_semi");
+        });
+
+        function showEdit() {
+            $('.store_status_edit').addClass('hidden');
+            $('.store_status_save').removeClass('hidden');
+        }
+        function hideEdit() {
+            $('.store_status_edit').removeClass('hidden');
+            $('.store_status_save').addClass('hidden');
+        }
+        $('.btns_change').click(showEdit);
+
+        $('.btns_cancel').click(function(){
+            hideEdit();
+        });
+        $('.btns_save').click(function(){
+            hideEdit();
+        });
+
         $('.btn_edit').attr('href', Main.modifyURL('/merchant/store/form/edit/' + storeId));
         $('.add_items').attr('href', Main.modifyURL('/merchant/item/form/create/' + storeId));
         if(!initialized) initialize('readonly', true); else google.maps.event.trigger(map, 'resize');
@@ -466,6 +501,14 @@ if(typeof(Store) == "undefined") var Store = {};
                 for(var i = 0; i < stores.length; i++) {
                     var store = stores[i];
                     var elem = $('.block_store_container_template').clone();
+
+                    if(store.status == "ACTIVE") {
+                        $('.check_span', elem).addClass('icon_full');
+                        $('.checkbox', elem).attr('checked', 'checked');
+                    } else {
+                        $('.inactive_store', elem).removeClass('hidden');
+                    }
+
                     $('.street', elem).html(store.street);
                     $('.city', elem).html(store.city + ', ' + store.state + ', ' + store.country);
                     $('.contact_person', elem).html(store.contactPerson);
@@ -570,6 +613,7 @@ if(typeof(Store) == "undefined") var Store = {};
         callback.requestType = "GET";
 
         Main.request('/merchant/get_store_detail', {}, callback, {id: storeId});
+
     }
 
 })(jQuery);

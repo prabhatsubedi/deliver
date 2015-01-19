@@ -7,10 +7,10 @@
 
     <%@include file="../includes/head.jsp" %>
 
-    <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
-    <link href="/resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" media="screen" />
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.dataTables.min.js"></script>
+    <link href="${pageContext.request.contextPath}/resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" media="screen" />
 
-    <script type="text/javascript" src="/resources/js/manager.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/manager.js"></script>
 
     <script type="text/javascript">
 

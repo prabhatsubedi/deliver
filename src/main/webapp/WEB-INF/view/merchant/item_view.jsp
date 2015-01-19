@@ -7,9 +7,9 @@
 
     <%@include file="../includes/head.jsp" %>
 
-    <script type="text/javascript" src="/resources/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
 
-    <script type="text/javascript" src="/resources/js/item.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/item.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             var itemId = Main.getURLvalue(3);

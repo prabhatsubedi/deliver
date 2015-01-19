@@ -794,7 +794,7 @@ var data_categories_names = [];
                                         var item = category.item[j];
                                         var elem = $('.item_container_template').clone();
                                         if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
-                                        $('.item_name a', elem).attr('href', '/merchant/item/view/' + item.id).html(item.name);
+                                        $('.item_name a', elem).attr('href', Main.modifyURL('/merchant/item/view/' + item.id)).html(item.name);
                                         $('.item_price span', elem).html(item.unitPrice);
                                         item_list += elem.html();
                                     }
@@ -839,7 +839,7 @@ var data_categories_names = [];
                                 var item = items[j];
                                 var elem = $('.item_container_template').clone();
                                 if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
-                                $('.item_name a', elem).attr('href', '/merchant/item/view/' + item.id).html(item.name);
+                                $('.item_name a', elem).attr('href', Main.modifyURL('/merchant/item/view/' + item.id)).html(item.name);
                                 $('.item_price span', elem).html(item.unitPrice);
                                 item_list += elem.html();
                             }
@@ -949,7 +949,7 @@ var data_categories_names = [];
 
     Item.loadItem = function(itemId) {
 
-        $('.btn_edit').attr('href', '/merchant/item/form/edit/' + itemId);
+        $('.btn_edit').attr('href', Main.modifyURL('/merchant/item/form/edit/' + itemId));
 
         var dragged = false;
         function toggleSwitch(value, elem) {
@@ -1025,7 +1025,7 @@ var data_categories_names = [];
                 getChild(itemCategory);
 
                 $('.heading h1').html(catName);
-                $('.heading .btn').attr('href', '/merchant/item/form/create/' + brandId + '/' + itemId);
+                $('.heading .btn').attr('href', Main.modifyURL('/merchant/item/form/create/' + brandId + '/' + itemId));
                 $('.item_info .item_category').html(item_categories);
 
                 $('.item_info .available_time').html(item.availableStartTime + " - " + item.availableEndTime);
@@ -1073,7 +1073,7 @@ var data_categories_names = [];
                                 if(item.id !=itemId) {
                                     var elem = $('.item_container_template').clone();
                                     if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
-                                    $('.item_name a', elem).attr('href', '/merchant/item/view/' + item.id).html(item.name);
+                                    $('.item_name a', elem).attr('href', Main.modifyURL('/merchant/item/view/' + item.id)).html(item.name);
                                     $('.item_price span', elem).html(item.unitPrice);
                                     item_list += elem.html();
                                 }

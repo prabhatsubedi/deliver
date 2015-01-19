@@ -7,7 +7,7 @@
 
     <%@include file="../includes/head.jsp" %>
 
-    <script type="text/javascript" src="/resources/js/store.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/store.js"></script>
 
 
 </head>

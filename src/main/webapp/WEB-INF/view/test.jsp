@@ -10,7 +10,7 @@
 <html>
 <head>
     <title>Testing Demo</title>
-    <script src="<c:url value="/resources/js/add.js" />"></script>
+    <script src="<c:url value="${pageContext.request.contextPath}/resources/js/add.js" />"></script>
 </head>
 <body>
 <h2>Hello</h2>

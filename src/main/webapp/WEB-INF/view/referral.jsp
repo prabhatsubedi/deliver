@@ -6,8 +6,8 @@
     <title>Delivr</title>
 
     <%@include file="includes/head.jsp" %>
-    <script type="text/javascript" src="/resources/js/fb.js"></script>
-    <script type="text/javascript" src="/resources/js/date.format.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/fb.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/date.format.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
              $(".fb_signup").click(function(){
@@ -20,7 +20,7 @@
 <body>
 
 <div class="logo_container">
-    <img src="/resources/images/login-logo.png" class="img-responsive">
+    <img src="${pageContext.request.contextPath}/resources/images/login-logo.png" class="img-responsive">
 </div>
 
 <div class="delivr_info container">

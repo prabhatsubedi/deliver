@@ -7,14 +7,14 @@
 
     <%@include file="../includes/head.jsp" %>
 
-    <script type="text/javascript" src="/resources/js/html2canvas.js"></script>
-    <script type="text/javascript" src="/resources/js/jquery.Jcrop.js"></script>
-    <script type="text/javascript" src="/resources/js/image.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/html2canvas.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.Jcrop.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/image.js"></script>
 
-    <link rel="stylesheet" href="/resources/css/jquery.Jcrop.css" type="text/css" />
-    <link rel="stylesheet" href="/resources/css/jcrop.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jquery.Jcrop.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jcrop.css" type="text/css" />
 
-    <script type="text/javascript" src="/resources/js/item.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/item.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             Item.loadAddItem();

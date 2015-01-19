@@ -7,14 +7,14 @@
 
     <%@include file="../includes/head.jsp" %>
 
-    <script type="text/javascript" src="/resources/js/jquery-ui.js"></script>
-    <script type="text/javascript" src="/resources/js/map.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false&libraries=places"
             type="text/javascript"></script>
 
-    <link rel="stylesheet" href="/resources/css/maps.css" type="text/css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/maps.css" type="text/css"/>
 
-    <script type="text/javascript" src="/resources/js/store.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/store.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             var storeId = Main.getURLvalue(3);

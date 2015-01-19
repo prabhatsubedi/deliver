@@ -12,6 +12,12 @@ if(typeof(Main) == "undefined") var Main = {};
     Main.subFolder = "";
 //    Main.subFolder = "delivr";
 
+    Main.modifyURL = function(url) {
+        if(Main.subFolder != "" && Main.subFolder != undefined)
+            return '/' + Main.subFolder + url;
+        return url;
+    }
+
     Main.saveInSessionStorage = function (key, value){
         sessionStorage.setItem(key, value);
     }
@@ -51,7 +57,7 @@ if(typeof(Main) == "undefined") var Main = {};
         }
 
         Main.ajax = $.ajax({
-            url: url,
+            url: Main.modifyURL(url),
             type: requestType != undefined ? requestType : "POST",
             data: parameter.stringify == false ? parameter : JSON.stringify(parameter),
             headers: headers,
@@ -185,12 +191,6 @@ if(typeof(Main) == "undefined") var Main = {};
         return path_arr[index];
 
     };
-
-    Main.modifyURL = function(url) {
-        if(Main.subFolder != "" && Main.subFolder != undefined)
-            return '/' + Main.subFolder + url;
-        return url;
-    }
 
 /*    Main.getURLParameter = function(key, keyvalue) {
         if(key == undefined) return false;

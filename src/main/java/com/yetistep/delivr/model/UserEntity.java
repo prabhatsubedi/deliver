@@ -182,7 +182,7 @@ public class UserEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "last_activity_date", columnDefinition="TIMESTAMP")
+    @Column(name = "last_activity_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     public Timestamp getLastActivityDate() {
         return lastActivityDate;
     }

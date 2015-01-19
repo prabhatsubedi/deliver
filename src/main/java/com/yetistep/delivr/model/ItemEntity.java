@@ -239,7 +239,7 @@ public class ItemEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "modified_date", columnDefinition="TIMESTAMP")
+    @Column(name = "modified_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     public Timestamp getModifiedDate() {
         return modifiedDate;
     }

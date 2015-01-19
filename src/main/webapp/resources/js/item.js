@@ -1030,8 +1030,8 @@ var data_categories_names = [];
 
                 $('.item_info .available_time').html(item.availableStartTime + " - " + item.availableEndTime);
                 $('.item_info .order_quantity').html("Min " + item.minOrderQuantity + " - Max " + item.maxOrderQuantity);
-                $('.item_info .vat').html(item.vat + " %");
-                $('.item_info .service_charge').html(item.serviceCharge + " %");
+                $('.item_info .vat').html((item.vat == undefined ? 0 : item.vat) + " %");
+                $('.item_info .service_charge').html((item.serviceCharge == undefined ? 0 : item.serviceCharge) + " %");
 
                 var attributes_types = "";
                 if(attributesTypes.length > 0) {

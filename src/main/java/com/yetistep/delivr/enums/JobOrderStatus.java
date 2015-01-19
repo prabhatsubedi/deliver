@@ -18,6 +18,23 @@ public enum JobOrderStatus {
     DELIVERED, /* when delivery boy enter the receive CODE */
     CANCELLED; /* when order has been cancelled or failed */
 
+    public static JobOrderStatus fromInt(int arg){
+        if(arg == 0)
+            return ORDER_PLACED;
+        else if(arg == 1)
+            return ORDER_ACCEPTED;
+        else if(arg == 2)
+            return IN_ROUTE_TO_PICK_UP;
+        else if(arg == 3)
+            return AT_STORE;
+        else if(arg == 4)
+            return IN_ROUTE_TO_DELIVERY;
+        else if(arg == 5)
+            return DELIVERED;
+        else
+            return CANCELLED;
+    }
+
 
     /**
      * This method is used to check validation of job order while traversing from one state to other.

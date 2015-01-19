@@ -664,13 +664,15 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         orderSummary.setId(order.getId());
         orderSummary.setItemOrders(itemsOrderEntities);
-        CourierTransactionEntity courierTransaction = order.getCourierTransaction();
-        orderSummary.setSubTotal(courierTransaction.getOrderTotal());
+        if(order.getCourierTransaction() != null){
+            CourierTransactionEntity courierTransaction = order.getCourierTransaction();
+            orderSummary.setSubTotal(courierTransaction.getOrderTotal());
+            orderSummary.setServiceFee(courierTransaction.getServiceFeeAmt());
+            orderSummary.setDeliveryFee(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
+            orderSummary.setTotalDiscount(courierTransaction.getCustomerBalanceBeforeDiscount().subtract(courierTransaction.getCustomerBalanceAfterDiscount()));
+            orderSummary.setEstimatedTotal(courierTransaction.getCustomerPays());
+        }
         orderSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
-        orderSummary.setServiceFee(courierTransaction.getServiceFeeAmt());
-        orderSummary.setDeliveryFee(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
-        orderSummary.setTotalDiscount(courierTransaction.getCustomerBalanceBeforeDiscount().subtract(courierTransaction.getCustomerBalanceAfterDiscount()));
-        orderSummary.setEstimatedTotal(courierTransaction.getCustomerPays());
         orderSummary.setPartnerShipStatus(merchant.getPartnershipStatus());
         return orderSummary;
     }
@@ -771,5 +773,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         return courierTransactionEntity;
     }
 
-
+    @Override
+    public JobOrderStatus getJobOrderStatusFromOrderId(Integer orderId) throws Exception {
+        return orderDaoService.getJobOrderStatus(orderId);
+    }
 }

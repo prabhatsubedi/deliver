@@ -179,6 +179,10 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void verifyMobile(String mobile, Long facebookId) throws Exception {
         log.info("++++++++ Verifying mobile " + mobile + " +++++++++++");
+        CustomerEntity customerEntity  = customerDaoService.findUser(facebookId);
+        if(customerEntity == null)
+            throw new Exception("VLD011");
+
 
 //        UserEntity userEntity = userDaoService.findByUserName(headerDto.getUsername());
 //        if (userEntity == null)

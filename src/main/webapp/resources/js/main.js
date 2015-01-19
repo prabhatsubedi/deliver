@@ -10,6 +10,7 @@ if(typeof(Main) == "undefined") var Main = {};
     Main.docHeight = window.innerHeight;
     Main.ajax = undefined;
     Main.subFolder = "";
+//    Main.subFolder = "delivr";
 
     Main.saveInSessionStorage = function (key, value){
         sessionStorage.setItem(key, value);

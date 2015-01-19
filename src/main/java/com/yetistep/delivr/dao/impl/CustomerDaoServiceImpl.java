@@ -4,6 +4,7 @@ import com.yetistep.delivr.dao.inf.CustomerDaoService;
 import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.UserEntity;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -89,9 +90,17 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
                "WHERE c.facebook_id = :facebookId";
        SQLQuery query = getCurrentSession().createSQLQuery(sql);
        query.setParameter("facebookId", facebookId);
-       //List<Object> obj = query.list().get(0);
+        List<Object[]> rows = query.list();
+        CustomerEntity customerEntity = null;
 
-       return new CustomerEntity();
+        for (Object[] row : rows) {
+            customerEntity.setId(Integer.parseInt(row[0].toString()));
+            UserEntity userEntity = new UserEntity();
+            userEntity.setId(Integer.parseInt(row[1].toString()));
+            customerEntity.setUser(userEntity);
+        }
+
+       return customerEntity;
     }
 }
 

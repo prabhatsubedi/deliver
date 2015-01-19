@@ -66,7 +66,7 @@ public class DBoyOrderHistoryEntity implements Serializable {
         this.amountEarned = amountEarned;
     }
 
-    @Column(name="order_accepted_at")
+    @Column(name="order_accepted_at", columnDefinition="TIMESTAMP")
     public Timestamp getOrderAcceptedAt() {
         return orderAcceptedAt;
     }
@@ -75,7 +75,7 @@ public class DBoyOrderHistoryEntity implements Serializable {
         this.orderAcceptedAt = orderAcceptedAt;
     }
 
-    @Column(name="job_started_at")
+    @Column(name="job_started_at", columnDefinition="TIMESTAMP")
     public Timestamp getJobStartedAt() {
         return jobStartedAt;
     }
@@ -84,7 +84,7 @@ public class DBoyOrderHistoryEntity implements Serializable {
         this.jobStartedAt = jobStartedAt;
     }
 
-    @Column(name="reached_stored_at")
+    @Column(name="reached_stored_at", columnDefinition="TIMESTAMP")
     public Timestamp getReachedStoreAt() {
         return reachedStoreAt;
     }
@@ -93,7 +93,7 @@ public class DBoyOrderHistoryEntity implements Serializable {
         this.reachedStoreAt = reachedStoreAt;
     }
 
-    @Column(name="completed_at")
+    @Column(name="completed_at", columnDefinition="TIMESTAMP")
     public Timestamp getOrderCompletedAt() {
         return orderCompletedAt;
     }

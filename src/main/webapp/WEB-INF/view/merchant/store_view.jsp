@@ -78,7 +78,16 @@
                                     </div>
 
                                     <div class="detail_row">
-                                        <label class="detail_label">Store Location</label>
+                                        <div class="clearfix">
+                                            <label class="detail_label pull-left">Store Location</label>
+                                            <div class="detail_options pull-right">
+                                                <button type="button" class="btn btn_green store_status_edit btns_change">Change Store Status</button>
+                                                <div class="hidden store_status_save">
+                                                    <button type="button" class="btn btn_green btns_save">Save</button>
+                                                    <button type="button" class="btn btn_green btns_cancel">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="detail_value">
                                             <div class="store_location clearfix">
                                             </div>
@@ -122,7 +131,13 @@
                 <span class="contact_person"></span>
                 <span class="contact_no"></span>
             </p>
-            <button type="button" class="btn-link btn_view_map">View on Map</button>
+            <div class="clearfix">
+                <button type="button" class="btn-link btn_view_map pull-left">View on Map</button>
+                <button type="button" class="btn-link inactive_store pull-right hidden">Inactive</button>
+            </div>
+            <label class="check_label hidden store_status_save">
+                <span class="glyphicon glyphicon-ok check_span"></span><input type="checkbox" class="checkbox" />
+            </label>
         </div>
     </div>
 </div>

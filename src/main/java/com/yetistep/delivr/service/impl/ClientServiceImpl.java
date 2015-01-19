@@ -626,6 +626,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         }
 
         // Now Update Cart
+        cart.setModifiedDate(DateUtil.getCurrentTimestampSQL());
         cartDaoService.update(cart);
 
     }

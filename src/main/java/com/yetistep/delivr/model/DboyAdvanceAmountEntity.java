@@ -37,7 +37,7 @@ public class DboyAdvanceAmountEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "advance_date")
+    @Column(name = "advance_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getAdvanceDate() {
         return advanceDate;
     }
@@ -66,13 +66,4 @@ public class DboyAdvanceAmountEntity implements Serializable {
         this.amountAdvance = amountAdvance;
     }
 
-    @PrePersist
-    public void onCreate(){
-        advanceDate = new Timestamp(System.currentTimeMillis());
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        advanceDate = new Timestamp(System.currentTimeMillis());
-    }
 }

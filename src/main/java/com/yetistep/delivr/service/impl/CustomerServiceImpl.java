@@ -8,6 +8,7 @@ import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
@@ -59,6 +60,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     UserDeviceDaoService userDeviceDaoService;
+
+    @Autowired
+    AddressDaoService addressDaoService;
+
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
         log.info("++++++++++++++ Logging Customer ++++++++++++++++");
@@ -177,22 +182,26 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void verifyMobile(String mobile, Long facebookId) throws Exception {
+    public AddressDto verifyMobile(String mobile, Long facebookId) throws Exception {
         log.info("++++++++ Verifying mobile " + mobile + " +++++++++++");
         CustomerEntity customerEntity  = customerDaoService.findUser(facebookId);
         if(customerEntity == null)
             throw new Exception("VLD011");
 
+        Boolean isValid = addressDaoService.findValidMobile(customerEntity.getUser().getId(), mobile);
+        String verificationCode = null;
+        if(!isValid) {
+            log.debug("++++++ Updating Mobile No and Validation Code");
+            verificationCode = GeneralUtil.generateMobileCode();
+            userDaoService.updateDeliveryContact(customerEntity.getUser().getId(), mobile, verificationCode);
+        }
 
-//        UserEntity userEntity = userDaoService.findByUserName(headerDto.getUsername());
-//        if (userEntity == null)
-//            throw new YSException("VLD011");
-//        if(!headerDto.getVerificationCode().equals(userEntity.getVerificationCode())){
-//            throw new YSException("SEC008");
-//        }
-//        userEntity.setVerifiedStatus(true);
-//        userEntity.setMobileVerificationStatus(true);
-        //userDaoService.update(userEntity);
+        AddressDto address = new AddressDto();
+        address.setVerificationCode(verificationCode);
+        address.setMobileValidate(isValid);
+
+        return address;
+
     }
 
     @Override

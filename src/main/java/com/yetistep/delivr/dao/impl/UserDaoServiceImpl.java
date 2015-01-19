@@ -5,6 +5,7 @@ import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -132,6 +133,19 @@ public class UserDaoServiceImpl implements UserDaoService {
         List<UserEntity> userEntityList = criteria.list();
 
         return userEntityList.size() > 0 ? userEntityList.get(0) : null;
+    }
+
+    @Override
+    public Boolean updateDeliveryContact(Integer userId, String mobileNo, String verificationCode) throws Exception {
+        String sql = "UPDATE users SET last_address_mobile = :mobileNo, verification_code =:verificationCode WHERE id =:userId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("mobileNo", mobileNo);
+        sqlQuery.setParameter("verificationCode", verificationCode);
+        sqlQuery.setParameter("userId", userId);
+
+        sqlQuery.executeUpdate();
+        return true;
+
     }
 
 }

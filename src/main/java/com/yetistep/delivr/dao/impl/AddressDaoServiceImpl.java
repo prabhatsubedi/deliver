@@ -51,18 +51,16 @@ public class AddressDaoServiceImpl implements AddressDaoService{
     }
 
     @Override
-    public Boolean findValidMobile(Integer userId, String mobileNo) throws Exception {
-        String sql = "SELECT COUNT(*) FROM address " +
+    public String getMobileCode(Integer userId, String mobileNo) throws Exception {
+        String code = null;
+        String sql = "SELECT verification_code FROM address " +
                 "WHERE user_id = :userId AND mobile_no = :mobileNo AND verified = :verified";
 
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("userId", userId);
         sqlQuery.setParameter("mobileNo", mobileNo);
         sqlQuery.setParameter("verified", true);
-        Integer count = ((Number) sqlQuery.uniqueResult()).intValue();
-        if(count > 0)
-            return true;
-        else
-            return false;
+        code = sqlQuery.uniqueResult() == null ? null : sqlQuery.uniqueResult().toString();
+       return code;
     }
 }

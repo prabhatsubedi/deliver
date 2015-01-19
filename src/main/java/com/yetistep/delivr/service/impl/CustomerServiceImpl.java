@@ -188,12 +188,16 @@ public class CustomerServiceImpl implements CustomerService {
         if(customerEntity == null)
             throw new Exception("VLD011");
 
-        Boolean isValid = addressDaoService.findValidMobile(customerEntity.getUser().getId(), mobile);
+        String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), mobile);
         String verificationCode = null;
-        if(!isValid) {
+        Boolean isValid = false;
+        if(mobCode == null) {
             log.debug("++++++ Updating Mobile No and Validation Code");
             verificationCode = GeneralUtil.generateMobileCode();
             userDaoService.updateDeliveryContact(customerEntity.getUser().getId(), mobile, verificationCode);
+        } else {
+            verificationCode = String.valueOf(mobCode);
+            isValid = true;
         }
 
         AddressDto address = new AddressDto();

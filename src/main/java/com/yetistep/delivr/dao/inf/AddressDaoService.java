@@ -11,5 +11,5 @@ import com.yetistep.delivr.model.AddressEntity;
  * To change this template use File | Settings | File Templates.
  */
 public interface AddressDaoService extends GenericDaoService<Integer, AddressEntity> {
-    public Boolean findValidMobile(Integer userId, String mobileNo) throws Exception;
+    public String getMobileCode(Integer userId, String mobileNo) throws Exception;
 }

@@ -445,9 +445,7 @@ if(typeof(Store) == "undefined") var Store = {};
         }
         $('.btns_change').click(showEdit);
 
-        $('.btns_cancel').click(function(){
-            hideEdit();
-        });
+        $('.btns_cancel').click(hideEdit);
         $('.btns_save').click(function(){
             hideEdit();
         });

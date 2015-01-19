@@ -186,7 +186,7 @@ if(typeof(Main) == "undefined") var Main = {};
     };
 
     Main.modifyURL = function(url) {
-        if(Main.subFolder != "" || Main.subFolder != undefined)
+        if(Main.subFolder != "" && Main.subFolder != undefined)
             return '/' + Main.subFolder + url;
         return url;
     }

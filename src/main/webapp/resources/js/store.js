@@ -309,6 +309,7 @@ if(typeof(Store) == "undefined") var Store = {};
                             var store = stores[i];
                             var location = latLngToLocation(store.latitude, store.longitude);;
                             var geoPointData = {};
+                            geoPointData.id = store.id;
                             geoPointData.name = store.name;
                             geoPointData.street = store.street;
                             geoPointData.city = store.city;

@@ -2,6 +2,7 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -29,6 +30,7 @@ public class AddressEntity implements Serializable {
     private String mobileNumber;
     private String verificationCode;
     private Boolean verified;
+    private String notes;
     private UserEntity user;
     private List<OrderEntity> order;
 
@@ -163,5 +165,13 @@ public class AddressEntity implements Serializable {
         this.order = order;
     }
 
+    @Type(type = "text")
+    @Column(name = "notes")
+    public String getNotes() {
+        return notes;
+    }
 
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 }

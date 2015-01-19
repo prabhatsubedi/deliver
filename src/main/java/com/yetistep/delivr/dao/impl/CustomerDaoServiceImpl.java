@@ -5,8 +5,11 @@ import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.OrderEntity;
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -77,6 +80,18 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         customerEntities = criteria.list();
         return customerEntities.size() > 0 ? customerEntities.get(0) : null;
 
+    }
+
+    @Override
+    public CustomerEntity findUser(Long facebookId) throws Exception {
+       String sql = "SELECT c.id, u.id  FROM customers c " +
+               "INNER JOIN users u ON (u.id = c.user_id) " +
+               "WHERE c.facebook_id = :facebookId";
+       SQLQuery query = getCurrentSession().createSQLQuery(sql);
+       query.setParameter("facebookId", facebookId);
+       //List<Object> obj = query.list().get(0);
+
+       return new CustomerEntity();
     }
 }
 

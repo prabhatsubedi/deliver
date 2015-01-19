@@ -21,4 +21,6 @@ public interface CustomerDaoService extends GenericDaoService<Integer, CustomerE
     public void saveOrder(OrderEntity order) throws Exception;
 
     public CustomerEntity find(Long facebookId) throws Exception;
+
+    public CustomerEntity findUser(Long facebookId) throws Exception;
 }

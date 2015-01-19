@@ -44,8 +44,8 @@ public class DeliveryBoyEntity implements Serializable {
     private String vehicleNumber;
     private List<DBoyOrderHistoryEntity> dBoyOrderHistories;
     private List<DeliveryBoySelectionEntity> deliveryBoySelections;
-    private List<DBoyAdvanceAmountEntity> dBoyAdvanceAmounts;
-    private List<DBoySubmittedAmountEntity> dBoySubmittedAmount;
+    private List<DboyAdvanceAmountEntity> dBoyAdvanceAmounts;
+    private List<DboySubmittedAmountEntity> dBoySubmittedAmount;
     private String latitude;
     private String longitude;
 
@@ -240,21 +240,21 @@ public class DeliveryBoyEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "deliveryBoy", cascade = CascadeType.ALL)
-    public List<DBoyAdvanceAmountEntity> getdBoyAdvanceAmounts() {
+    public List<DboyAdvanceAmountEntity> getdBoyAdvanceAmounts() {
         return dBoyAdvanceAmounts;
     }
 
-    public void setdBoyAdvanceAmounts(List<DBoyAdvanceAmountEntity> dBoyAdvanceAmounts) {
+    public void setdBoyAdvanceAmounts(List<DboyAdvanceAmountEntity> dBoyAdvanceAmounts) {
         this.dBoyAdvanceAmounts = dBoyAdvanceAmounts;
     }
 
     @JsonIgnore
     @OneToMany(mappedBy = "deliveryBoy", cascade = CascadeType.ALL)
-    public List<DBoySubmittedAmountEntity> getdBoySubmittedAmount() {
+    public List<DboySubmittedAmountEntity> getdBoySubmittedAmount() {
         return dBoySubmittedAmount;
     }
 
-    public void setdBoySubmittedAmount(List<DBoySubmittedAmountEntity> dBoySubmittedAmount) {
+    public void setdBoySubmittedAmount(List<DboySubmittedAmountEntity> dBoySubmittedAmount) {
         this.dBoySubmittedAmount = dBoySubmittedAmount;
     }
 

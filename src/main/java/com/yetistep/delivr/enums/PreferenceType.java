@@ -25,5 +25,5 @@ public enum PreferenceType {
     ANDROID_APP_VER_NO, WEB_APP_VER_NO,
 
     //Customer Preferences
-    CUSTOMER_REWARD_AMOUNT;
+    CUSTOMER_REWARD_AMOUNT, MAX_REFERRED_FRIENDS_COUNT;
 }

@@ -1328,3 +1328,7 @@ label.check_label .checkbox {
 .fb_signup {
     cursor: pointer;
 }
+.invite_logo_container {
+    margin: 20px auto;
+    width: 20%;
+}

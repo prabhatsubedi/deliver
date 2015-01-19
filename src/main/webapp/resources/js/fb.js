@@ -26,29 +26,27 @@ window.fbAsyncInit = function() {
         oauth: true// Look for social plugins on the page
     });
 
-    /*if(typeof(logginCheck) != 'undefined' && logginCheck){
-        FB.getLoginStatus(function(response) {
-            if (response.status === 'connected') {
-                // the user is logged in and has authenticated your
-                // app, and response.authResponse supplies
-                // the user's ID, a valid access token, a signed
-                // request, and the time the access token
-                // and signed request each expire
-                clientId = response.authResponse.userID;
-                accessToken = response.authResponse.accessToken;
-                if(getBasicInfo == false || typeof requestCouponId == 'undefined' )
-                    return false;
-                    FB.api('/me', Fb.signUpUser(accessToken, false));
-                    $(".fb-button").addClass('hidden');
+    /*FB.getLoginStatus(function(response) {
+        if (response.status === 'connected') {
+            // the user is logged in and has authenticated your
+            // app, and response.authResponse supplies
+            // the user's ID, a valid access token, a signed
+            // request, and the time the access token
+            // and signed request each expire
+            clientId = response.authResponse.userID;
+            accessToken = response.authResponse.accessToken;
+            if(getBasicInfo == false || typeof requestCouponId == 'undefined' )
+                return false;
+                FB.api('/me', Fb.signUpUser(accessToken, false));
+                $(".fb-button").addClass('hidden');
 
-            } else if (response.status === 'not_authorized') {
-                // the user is logged in to Facebook,
-                // but has not authenticated your app
-            } else {
-                // the user isn't logged in to Facebook.
-            }
-        });
-    }*/
+        } else if (response.status === 'not_authorized') {
+            // the user is logged in to Facebook,
+            // but has not authenticated your app
+        } else {
+            // the user isn't logged in to Facebook.
+        }
+    });*/
 };
 
 // Load the SDK asynchronously
@@ -115,16 +113,24 @@ if( typeof (Fb) == "undefined"){
 
 
                 var callback = function (status, data) {
+                    console.log(status);
                     if (data.success == true) {
-                        alert(data.message);
+                        $('#fbLoginBtn').css({'display':'none'});
+                        $('#new_account_msg').css({'display':'block'});
                     } else {
-                        alert(data.message);
+                        if(data.code == 'VLD010'){
+                            $('#fbLoginBtn').css({'display':'none'});
+                            $('#old_account_msg').css({'display':'block'});
+                        } else{
+                            alert(data.message);
+                        }
                     }
                 };
 
                 var headers = {};
                 headers.id = referred_by;
                 headers.accessToken = accessToken;
+                callback.loaderDiv = '.well';
                 Main.request("/anon/register_customer", user_info, callback, headers);
         };
         signUpCallback.loaderDiv = 'body';

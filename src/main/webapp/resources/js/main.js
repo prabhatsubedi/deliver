@@ -60,7 +60,7 @@ if(typeof(Main) == "undefined") var Main = {};
                 if (callback != undefined) return callback("success", data);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                if (callback != undefined && errorThrown != "abort") return callback("error", {success: false, message: XMLHttpRequest.getResponseHeader("errorMessage")});
+                if (callback != undefined && errorThrown != "abort") return callback("error", {success: false, message: XMLHttpRequest.getResponseHeader("errorMessage"), code: XMLHttpRequest.getResponseHeader("errorCode")});
             },
             complete: function() {
                 setTimeout(hideLoader, 1000)

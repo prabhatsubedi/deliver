@@ -5,8 +5,8 @@
 <head>
     <title>Delivr</title>
     <%@include file="includes/head.jsp" %>
-    <script type="text/javascript" src="/resources/js/fb.js"></script>
-    <script type="text/javascript" src="/resources/js/date.format.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/fb.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/date.format.js"></script>
 
     <style>
         body{
@@ -71,25 +71,45 @@
 </head>
 <body>
 
-<div class="logo_container">
-    <img src="/resources/images/login-logo.png" class="img-responsive">
-</div>
-
-<div class="delivr_info container">
-      <div class="fb_signup">Sign Up with Facebook</div>
-      <div id="fb-login-error"></div>
-</div>
-
-
-
-<div class="login_foot">
-    <div class="foot_links">
-        <ul class="nav nav-pills text-center">
-            <li><a href="#">Delivr</a></li>
-            <li><a href="#">Terms of use</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-        </ul>
+<div class="container">
+    <div class=row>
+        <div class="col-md-2 col-sm-1"></div>
+        <div class="span12">
+            <center><img src="${pageContext.request.contextPath}/resources/images/login-logo.png" width="20%"/></center>
+        </div>
     </div>
+    <div class="hero-unit">
+        <h2>Welcome to Delivr!</h2>
+        <blockquote>
+            <p class="info">
+                A quick and better way to get anything delivered at your doorstep.
+            </p>
+        </blockquote>
+    </div>
+    <div class="well">
+        <center>
+            <h3>Your friend thinks that you are missing out.</h3>
+            <button onClick="Fb.fbLogin()" id="fbLoginBtn" class="btn btn-default btn-lg">Sign Up with Facebook</button>
+
+            <div id="new_account_msg">
+                <h4>Thank you for signing up to Delivr.</h4>
+                <h4> Do download Delivr from Google Play Store</h4>
+                <a href="https://play.google.com/store/apps/details?id=com.yetistep.swipr"><img src="${pageContext.request.contextPath}/resources/images/play_store_black.png" class="play_store"/></a>
+            </div>
+            <div id="old_account_msg">
+                <h4>Your account has already been created. </h4 >
+                <h4>If you have not downloaded Delivr yet, feel free to download Delivr from Google Play Store.</h4>
+                <a href="https://play.google.com/store/apps/details?id=com.yetistep.swipr"><img src="${pageContext.request.contextPath}/resources/images/play_store_black.png" class="play_store"/></a>
+            </div>
+            <h4 id="unknown_msg">
+                Sorry! Facebook says, you are not authorized to use this app.
+            </h4>
+        </center>
+    </div>
+
+
+
+
 </div>
 
 </body>

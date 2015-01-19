@@ -73,6 +73,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             merchant.setBusinessLogo(s3Path);
 
              /* Update S3 Location to the Database */
+            merchant.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
             merchantDaoService.update(merchant);
         }
 
@@ -425,6 +426,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             merchant.getUser().setProfileImage(s3Path);
         }*/
 
+        merchant.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
         merchantDaoService.update(merchant);
 
 
@@ -440,6 +442,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             merchant.setBusinessLogo(s3Path);
 
              /* Update S3 Location to the Database */
+            merchant.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
             merchantDaoService.update(merchant);
         }
         return true;
@@ -708,7 +711,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
 
-
+        dbItem.setModifiedDate(DateUtil.getCurrentTimestampSQL());
         merchantDaoService.updateItem(dbItem);
 
         //add new images

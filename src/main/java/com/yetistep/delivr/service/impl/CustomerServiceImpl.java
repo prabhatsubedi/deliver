@@ -484,6 +484,7 @@ public class CustomerServiceImpl implements CustomerService {
             referred_friends_count++;
         }
         referrer.setReferredFriendsCount(referred_friends_count);
+        referrer.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
         customerDaoService.update(referrer);
 
         CustomerEntity cUser = getCustomerByFbId(user.getCustomer().getFacebookId());

@@ -58,18 +58,13 @@ public class RoleEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "created_date")
+    @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getCreatedDate() {
         return createdDate;
     }
 
     public void setCreatedDate(Timestamp createdDate) {
         this.createdDate = createdDate;
-    }
-
-    @PrePersist
-    public void onCreate(){
-        createdDate = new Timestamp(System.currentTimeMillis());
     }
 
 }

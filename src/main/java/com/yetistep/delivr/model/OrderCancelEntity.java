@@ -56,7 +56,7 @@ public class OrderCancelEntity {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "cancelled_date")
+    @Column(name = "cancelled_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getCancelledDate() {
         return cancelledDate;
     }
@@ -92,11 +92,6 @@ public class OrderCancelEntity {
 
     public void setCancelReason(CancelReason cancelReason) {
         this.cancelReason = cancelReason;
-    }
-
-    @PrePersist
-    public void onCreate(){
-        cancelledDate = new Timestamp(System.currentTimeMillis());
     }
 
 }

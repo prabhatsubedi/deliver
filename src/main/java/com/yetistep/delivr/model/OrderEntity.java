@@ -269,7 +269,7 @@ public class OrderEntity implements Serializable {
 
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "order_date")
+    @Column(name = "order_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getOrderDate() {
         return orderDate;
     }
@@ -382,11 +382,6 @@ public class OrderEntity implements Serializable {
 
     public void setItemServiceAndVatCharge(BigDecimal itemServiceAndVatCharge) {
         this.itemServiceAndVatCharge = itemServiceAndVatCharge;
-    }
-
-    @PrePersist
-    public void onCreate(){
-        orderDate = new Timestamp(System.currentTimeMillis());
     }
 
 }

@@ -100,22 +100,12 @@ public class ActionLogEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "date_time")
+    @Column(name = "date_time", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getDateTime() {
         return dateTime;
     }
 
     public void setDateTime(Timestamp dateTime) {
         this.dateTime = dateTime;
-    }
-
-    @PrePersist
-    public void onCreate(){
-        this.dateTime = new Timestamp(System.currentTimeMillis());
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        dateTime = new Timestamp(System.currentTimeMillis());
     }
 }

@@ -50,11 +50,11 @@ public class UserEntity implements Serializable {
     private String verificationCode;
     private Boolean subscribeNewsletter;
     private String lastAddressMobile;
-    private List<ActionLogEntity> actionLogEntities;
-    private List<AddressEntity> addresses;
     private UserDeviceEntity userDevice;
     private Status status;
     private List<OrderCancelEntity> orderCancelEntities;
+    private List<AddressEntity> addresses;
+    private List<ActionLogEntity> actionLogEntities;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -182,7 +182,7 @@ public class UserEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "last_activity_date")
+    @Column(name = "last_activity_date", columnDefinition="TIMESTAMP")
     public Timestamp getLastActivityDate() {
         return lastActivityDate;
     }
@@ -192,7 +192,7 @@ public class UserEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "created_date")
+    @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getCreatedDate() {
         return createdDate;
     }
@@ -307,13 +307,4 @@ public class UserEntity implements Serializable {
         this.orderCancelEntities = orderCancelEntities;
     }
 
-    @PrePersist
-    protected void onCreate() {
-        lastActivityDate = createdDate = new Timestamp(System.currentTimeMillis());
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        lastActivityDate = new Timestamp(System.currentTimeMillis());
-    }
 }

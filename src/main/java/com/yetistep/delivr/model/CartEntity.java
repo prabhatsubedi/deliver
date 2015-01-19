@@ -74,7 +74,7 @@ public class CartEntity {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "modified_date")
+    @Column(name = "modified_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getModifiedDate() {
         return modifiedDate;
     }
@@ -112,15 +112,5 @@ public class CartEntity {
 
     public void setCartAttributes(List<CartAttributesEntity> cartAttributes) {
         this.cartAttributes = cartAttributes;
-    }
-
-    @PrePersist
-    public void onCreate(){
-        modifiedDate  = new Timestamp(System.currentTimeMillis());
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        modifiedDate = new Timestamp(System.currentTimeMillis());
     }
 }

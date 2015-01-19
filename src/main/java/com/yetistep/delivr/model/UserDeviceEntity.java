@@ -52,7 +52,7 @@ public class UserDeviceEntity {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "last_login")
+    @Column(name = "last_login", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getLastLogin() {
         return lastLogin;
     }
@@ -152,15 +152,5 @@ public class UserDeviceEntity {
 
     public void setUser(UserEntity user) {
         this.user = user;
-    }
-
-    @PrePersist
-    public void onCreate(){
-        lastLogin = new Timestamp(System.currentTimeMillis());
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        lastLogin = new Timestamp(System.currentTimeMillis());
     }
 }

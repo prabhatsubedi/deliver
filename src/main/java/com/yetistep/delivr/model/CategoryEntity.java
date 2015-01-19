@@ -131,7 +131,7 @@ public class CategoryEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "created_date")
+    @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getCreatedDate() {
         return createdDate;
     }
@@ -147,11 +147,6 @@ public class CategoryEntity implements Serializable {
 
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
-    }
-
-    @PrePersist
-    public void onCreate(){
-        createdDate  = new Timestamp(System.currentTimeMillis());
     }
 
 }

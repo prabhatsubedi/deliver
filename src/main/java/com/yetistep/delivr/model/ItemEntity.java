@@ -229,7 +229,7 @@ public class ItemEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "created_date")
+    @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Timestamp getCreatedDate() {
         return createdDate;
     }
@@ -239,7 +239,7 @@ public class ItemEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "modified_date")
+    @Column(name = "modified_date", columnDefinition="TIMESTAMP")
     public Timestamp getModifiedDate() {
         return modifiedDate;
     }
@@ -393,15 +393,5 @@ public class ItemEntity implements Serializable {
 
     public void setBrandName(String brandName) {
         this.brandName = brandName;
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        modifiedDate = createdDate = new Timestamp(System.currentTimeMillis());
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        modifiedDate = new Timestamp(System.currentTimeMillis());
     }
 }

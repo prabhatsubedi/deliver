@@ -9,6 +9,7 @@ if(typeof(Main) == "undefined") var Main = {};
     Main.country = "Nepal";
     Main.docHeight = window.innerHeight;
     Main.ajax = undefined;
+    Main.subFolder = "";
 
     Main.saveInSessionStorage = function (key, value){
         sessionStorage.setItem(key, value);
@@ -179,9 +180,16 @@ if(typeof(Main) == "undefined") var Main = {};
         var pathname = window.location.pathname;
         var path_arr = pathname.split('/');
         path_arr = Main.remove_value(path_arr, "");
+        if(path_arr[0] == Main.subFolder) path_arr.splice(0, 1);
         return path_arr[index];
 
     };
+
+    Main.modifyURL = function(url) {
+        if(Main.subFolder != "" && Main.subFolder != undefined)
+            return '/' + Main.subFolder + url;
+        return url;
+    }
 
 /*    Main.getURLParameter = function(key, keyvalue) {
         if(key == undefined) return false;

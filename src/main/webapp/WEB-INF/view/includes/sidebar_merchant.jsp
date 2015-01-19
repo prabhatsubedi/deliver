@@ -1,6 +1,6 @@
 <div class="sidebar">
     <div class="sidebar_logo">
-        <a href="/merchant/dashboard"><img src="/resources/images/delivr-logo.png" class="img-responsive" /></a>
+        <a href="/merchant/dashboard"><img src="${pageContext.request.contextPath}/resources/images/delivr-logo.png" class="img-responsive" /></a>
     </div>
     <div class="sidebar_menu">
         <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">

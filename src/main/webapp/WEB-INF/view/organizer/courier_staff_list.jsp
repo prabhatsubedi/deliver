@@ -7,11 +7,11 @@
 
     <%@include file="../includes/head.jsp" %>
 
-    <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
-    <link href="/resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" media="screen"/>
-    <link href="/resources/css/maps.css" rel="stylesheet" type="text/css" media="screen"/>
-    <script type="text/javascript" src="/resources/js/manager.js"></script>
-    <script type="text/javascript" src="/resources/js/map.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.dataTables.min.js"></script>
+    <link href="${pageContext.request.contextPath}/resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="${pageContext.request.contextPath}/resources/css/maps.css" rel="stylesheet" type="text/css" media="screen"/>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/manager.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 
     <script type="text/javascript">

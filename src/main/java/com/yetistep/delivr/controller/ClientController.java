@@ -114,14 +114,14 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/set_mobile_code", method = RequestMethod.PUT)
+    @RequestMapping(value = "/verify_mobile", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> setMobileCode(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> setMobileCode(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
         try {
-            HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.ACCESS_TOKEN, GeneralUtil.VERIFICATION_CODE);
-            validateMobileClient(headerDto.getAccessToken());
-            customerService.setMobileCode(headerDto);
+//            HeaderDto headerDto = new HeaderDto();
+//            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.ACCESS_TOKEN, GeneralUtil.VERIFICATION_CODE);
+//            validateMobileClient(headerDto.getAccessToken());
+            customerService.verifyMobile(user.getMobileNumber(), user.getCustomer().getFacebookId());
 
             ServiceResponse serviceResponse = new ServiceResponse("Customer has been verified");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

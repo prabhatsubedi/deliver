@@ -3,7 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <head>
     <title>Hello World!</title>
-    <script src="<c:url value="/resources/js/jquery-2.1.1.min.js" />"></script>
+    <script src="<c:url value="${pageContext.request.contextPath}/resources/js/jquery-2.1.1.min.js" />"></script>
 
     <meta name="_csrf" content="${_csrf.token}"/>
     <!-- default header name is X-CSRF-TOKEN -->

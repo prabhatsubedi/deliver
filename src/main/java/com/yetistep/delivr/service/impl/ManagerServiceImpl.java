@@ -65,8 +65,8 @@ public class ManagerServiceImpl implements ManagerService {
         dBoy.setBankAmount(dBoy.getBankAmount().add(requestJsonDto.getAdvanceAmount()));
         dBoy.setAvailableAmount(dBoy.getAvailableAmount().add(requestJsonDto.getAdvanceAmount()));
 
-        List<DBoyAdvanceAmountEntity> dBoyAdvanceAmounts = new ArrayList<DBoyAdvanceAmountEntity>();
-        DBoyAdvanceAmountEntity dBoyAdvanceAmount = new DBoyAdvanceAmountEntity();
+        List<DboyAdvanceAmountEntity> dBoyAdvanceAmounts = new ArrayList<DboyAdvanceAmountEntity>();
+        DboyAdvanceAmountEntity dBoyAdvanceAmount = new DboyAdvanceAmountEntity();
         dBoyAdvanceAmount.setAmountAdvance(requestJsonDto.getAdvanceAmount());
         dBoyAdvanceAmount.setDeliveryBoy(dBoy);
         dBoyAdvanceAmounts.add(dBoyAdvanceAmount);
@@ -84,8 +84,8 @@ public class ManagerServiceImpl implements ManagerService {
 
         dBoy.setPreviousDue(BigDecimal.ZERO);
 
-        List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
-        DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();
+        List<DboySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DboySubmittedAmountEntity>();
+        DboySubmittedAmountEntity dBoySubmittedAmount = new DboySubmittedAmountEntity();
         dBoySubmittedAmount.setAmountReceived(requestJsonDto.getSubmittedAmount());
         dBoySubmittedAmount.setDeliveryBoy(dBoy);
         dBoySubmittedAmounts.add(dBoySubmittedAmount);
@@ -102,8 +102,8 @@ public class ManagerServiceImpl implements ManagerService {
 
         dBoy.setWalletAmount(BigDecimal.ZERO);
 
-        List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
-        DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();
+        List<DboySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DboySubmittedAmountEntity>();
+        DboySubmittedAmountEntity dBoySubmittedAmount = new DboySubmittedAmountEntity();
 
         dBoySubmittedAmount.setAmountReceived(requestJsonDto.getSubmittedAmount());
         dBoySubmittedAmount.setDeliveryBoy(dBoy);

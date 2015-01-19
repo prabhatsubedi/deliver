@@ -49,6 +49,7 @@ public class UserEntity implements Serializable {
     private String token;
     private String verificationCode;
     private Boolean subscribeNewsletter;
+    private String lastAddressMobile;
     private List<ActionLogEntity> actionLogEntities;
     private List<AddressEntity> addresses;
     private UserDeviceEntity userDevice;
@@ -245,6 +246,15 @@ public class UserEntity implements Serializable {
 
     public void setSubscribeNewsletter(Boolean subscribeNewsletter) {
         this.subscribeNewsletter = subscribeNewsletter;
+    }
+
+    @Column(name = "last_address_mobile")
+    public String getLastAddressMobile() {
+        return lastAddressMobile;
+    }
+
+    public void setLastAddressMobile(String lastAddressMobile) {
+        this.lastAddressMobile = lastAddressMobile;
     }
 
     @JsonIgnore

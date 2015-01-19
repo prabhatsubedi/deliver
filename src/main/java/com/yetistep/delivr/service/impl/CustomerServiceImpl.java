@@ -177,16 +177,18 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void setMobileCode(HeaderDto headerDto) throws Exception {
-        UserEntity userEntity = userDaoService.findByUserName(headerDto.getUsername());
-        if (userEntity == null)
-            throw new YSException("VLD011");
-        if(!headerDto.getVerificationCode().equals(userEntity.getVerificationCode())){
-            throw new YSException("SEC008");
-        }
-        userEntity.setVerifiedStatus(true);
-        userEntity.setMobileVerificationStatus(true);
-        userDaoService.update(userEntity);
+    public void verifyMobile(String mobile, Long facebookId) throws Exception {
+        log.info("++++++++ Verifying mobile " + mobile + " +++++++++++");
+
+//        UserEntity userEntity = userDaoService.findByUserName(headerDto.getUsername());
+//        if (userEntity == null)
+//            throw new YSException("VLD011");
+//        if(!headerDto.getVerificationCode().equals(userEntity.getVerificationCode())){
+//            throw new YSException("SEC008");
+//        }
+//        userEntity.setVerifiedStatus(true);
+//        userEntity.setMobileVerificationStatus(true);
+        //userDaoService.update(userEntity);
     }
 
     @Override

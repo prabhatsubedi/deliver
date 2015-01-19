@@ -148,7 +148,7 @@ public class GeneralUtil {
 
     /*   Generates 4 digit code   */
     public static String generateMobileCode(){
-        int code = (int) (Math.random()*9000+1000);
+        int code = (int) (Math.random()*9000);
         return String.valueOf(code);
     }
 

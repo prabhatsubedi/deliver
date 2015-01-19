@@ -380,9 +380,9 @@ if(typeof(Store) == "undefined") var Store = {};
 
                         var storeBrand = storeBrands[i];
                         $('.item_image img', elem).attr('src', storeBrand.brandImage);
-                        $('.item_name', elem).html('<a href="/merchant/item/list/' + storeBrand.id + '">' + storeBrand.brandName + '</a>');
-                        $('.add_items', elem).attr('href', '/merchant/item/form/create/' + storeBrand.id);
-                        $('.view_store', elem).attr('href', '/merchant/store/view/' + storeBrand.id);
+                        $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
+                        $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
+                        $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
 
                         if(storeBrand.featured == true) $('.item_image', elem).append('<div class="special_item">Featured</div>');
                         if(storeBrand.priority != undefined) $('.item_image', elem).append('<div class="special_item">Priority : ' + storeBrand.priority + '</div>');
@@ -416,8 +416,8 @@ if(typeof(Store) == "undefined") var Store = {};
 
     Store.loadStore = function(storeId){
 
-        $('.btn_edit').attr('href', '/merchant/store/form/edit/' + storeId);
-        $('.add_items').attr('href', '/merchant/item/form/create/' + storeId);
+        $('.btn_edit').attr('href', Main.modifyURL('/merchant/store/form/edit/' + storeId));
+        $('.add_items').attr('href', Main.modifyURL('/merchant/item/form/create/' + storeId));
         if(!initialized) initialize('readonly', true); else google.maps.event.trigger(map, 'resize');
 
         var dragged = false;
@@ -531,9 +531,9 @@ if(typeof(Store) == "undefined") var Store = {};
                                 var elem = $('.block_store_template').clone();
 
                                 $('.item_image img', elem).attr('src', storeBrand.brandImage);
-                                $('.item_name', elem).html('<a href="/merchant/item/list/' + storeBrand.id + '">' + storeBrand.brandName + '</a>');
-                                $('.add_items', elem).attr('href', '/merchant/item/form/create/' + storeBrand.id);
-                                $('.view_store', elem).attr('href', '/merchant/store/view/' + storeBrand.id);
+                                $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
+                                $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
+                                $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
 
                                 if(storeBrand.featured == true) $('.item_image', elem).append('<div class="special_item">Featured</div>');
                                 if(storeBrand.priority != undefined) $('.item_image', elem).append('<div class="special_item">Priority : ' + storeBrand.priority + '</div>');

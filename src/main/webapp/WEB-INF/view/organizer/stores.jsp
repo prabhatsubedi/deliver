@@ -7,8 +7,8 @@
 
     <%@include file="../includes/head.jsp" %>
 
-    <script type="text/javascript" src="/resources/js/manager.js"></script>
-    <script type="text/javascript" src="/resources/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/manager.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
 
 
 </head>

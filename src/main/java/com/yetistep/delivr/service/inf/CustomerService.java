@@ -22,7 +22,7 @@ public interface CustomerService {
 
     public void addCustomerAddress(HeaderDto headerDto, List<AddressEntity> addresses) throws Exception;
 
-    public void setMobileCode(HeaderDto headerDto) throws Exception;
+    public void verifyMobile(String mobile, Long facebookId) throws Exception;
 
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception;
 

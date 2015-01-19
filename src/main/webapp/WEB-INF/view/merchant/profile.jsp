@@ -22,17 +22,17 @@
 
 <%@include file="../includes/sidebar_merchant.jsp" %>
 
-<script type="text/javascript" src="/resources/js/html2canvas.js"></script>
-<script type="text/javascript" src="/resources/js/jquery.Jcrop.js"></script>
-<script type="text/javascript" src="/resources/js/image.js"></script>
-<script type="text/javascript" src="/resources/js/map.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/html2canvas.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.Jcrop.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/image.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/map.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false&libraries=places" type="text/javascript"></script>
 
-<link rel="stylesheet" href="/resources/css/maps.css" type="text/css" />
-<link rel="stylesheet" href="/resources/css/jquery.Jcrop.css" type="text/css" />
-<link rel="stylesheet" href="/resources/css/jcrop.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/maps.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jquery.Jcrop.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jcrop.css" type="text/css" />
 
-<script type="text/javascript" src="/resources/js/merchant.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/merchant.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function(){

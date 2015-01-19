@@ -35,9 +35,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 } else if (status == "INACTIVE") {
                     link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '" data-status="' + status + '" >Activate</a>';
                 }
-                link_profile = '<a href="/merchant/profile/' + merchantId + '">Profile</a>';
+                link_profile = '<a href="' + Main.modifyURL('/merchant/profile/' + merchantId) + '">Profile</a>';
                 var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
-                var link_merchant = '<a href="/merchant/store/list/' + merchantId + '">' + merchant.businessTitle + '</a>';
+                var link_merchant = '<a href="' + Main.modifyURL('/merchant/store/list/' + merchantId) + '">' + merchant.businessTitle + '</a>';
 
                 sess_merchants[merchantId] = merchant.businessTitle;
                 var row = [merchantId, link_merchant, merchant.partnershipStatus ? 'Partner' : 'Non Partner', merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
@@ -197,8 +197,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         var storeBrand = stores[i];
                         $('.item_container', elem).attr('data-id', storeBrand.id);
                         $('.item_image img', elem).attr('src', storeBrand.brandImage);
-                        $('.item_infos .item_name', elem).html('<a href="/merchant/store/view/' + storeBrand.id + '">' + storeBrand.brandName + '</a>');
-                        $('.add_items', elem).attr('href', '/merchant/item/form/create/' + storeBrand.id);
+                        $('.item_infos .item_name', elem).html('<a href="' + Main.modifyURL('/merchant/store/view/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
+                        $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
                         $('#other_stores').append(elem.html());
                     }
 
@@ -211,8 +211,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         var elem = $('.block_store_template').clone();
                         $('.item_container', elem).attr('data-id', storeBrand.id);
                         $('.item_image img', elem).attr('src', storeBrand.brandImage);
-                        $('.item_infos .item_name', elem).html('<a href="/merchant/store/view/' + storeBrand.id + '">' + storeBrand.brandName + '</a>');
-                        $('.add_items', elem).attr('href', '/merchant/item/form/create/' + storeBrand.id);
+                        $('.item_infos .item_name', elem).html('<a href="' + Main.modifyURL('/merchant/store/view/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
+                        $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
                         $(storeBrand.featured ? '#featured_stores' : '#prioritized_stores').append(elem.html());
                     }
 
@@ -250,7 +250,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var courierStaff = courierStaffs[i];
 
                 var id = courierStaff.id;
-                var link_courier_staff = '<a href="/organizer/courier_staff/order_history/' + id + '">' + courierStaff.user.fullName + '</a>';
+                var link_courier_staff = '<a href="' + Main.modifyURL('/organizer/courier_staff/order_history/' + id) + '">' + courierStaff.user.fullName + '</a>';
                 var number = courierStaff.user.mobileNumber;
                 var order_no = 0;
                 var order_name = 0;
@@ -259,7 +259,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var action = '<div class="action_links">' +
                     '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' + id + '">View on Map</a>' +
                     '<a href="#" data-toggle="modal" class="update_courier_boy_account"  data-cbid = "' + id + '" data-target="#modal_account">Update Accounts</a>' +
-                    '<a href="/organizer/courier_staff/profile/' + id + '">View Profile</a>' +
+                    '<a href="' + Main.modifyURL('/organizer/courier_staff/profile/' + id) + '">View Profile</a>' +
                     '</div>';
 
                 var row = [id, link_courier_staff, number, order_no, order_name, job_status, balance, action];

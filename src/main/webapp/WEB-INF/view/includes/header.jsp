@@ -30,7 +30,7 @@
     <div class="user_menu col-lg-4 no_pad_right">
         <div class="pull-right user-nav">
             <div class="dropdown">
-                <a href="#" class="user_image" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="false"><img src="/resources/images/user-icon.png" class="img-responsive" /> </a>
+                <a href="#" class="user_image" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="false"><img src="${pageContext.request.contextPath}/resources/images/user-icon.png" class="img-responsive" /> </a>
                 <ul class="dropdown-menu pull-right">
                     <sec:authorize access="hasRole('ROLE_ADMIN')">
                         <li><a href="#">Settings</a></li>

@@ -53,6 +53,10 @@
         var sess_merchants = JSON.parse(Main.getFromLocalStorage('merchants'));
         $('.sidebar .merchant_name').html(sess_merchants[Main.getFromLocalStorage('mid')]);
 
+        $('.sidebar_menu a[href]').not('[href="#"]').each(function(){
+            $(this).attr('href', Main.modifyURL($(this).attr('href')));
+        });
+
     });
 
 </script>

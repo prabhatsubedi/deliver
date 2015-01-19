@@ -1,6 +1,6 @@
 /**
- * Created by Lunek on 11/25/2014.
- */
+* Created by Lunek on 11/25/2014.
+*/
 
 if(typeof(Main) == "undefined") var Main = {};
 
@@ -9,14 +9,13 @@ if(typeof(Main) == "undefined") var Main = {};
     Main.country = "Nepal";
     Main.docHeight = window.innerHeight;
     Main.ajax = undefined;
-    Main.subFolder = "";
-//    Main.subFolder = "delivr";
+    Main.pageContext = document.getElementById('pageContext').getAttribute('data-context');
 
     Main.modifyURL = function(url) {
-        if(Main.subFolder != "" && Main.subFolder != undefined)
-            return '/' + Main.subFolder + url;
+        if(Main.pageContext != "" && Main.pageContext != undefined)
+            return Main.pageContext + url;
         return url;
-    }
+    };
 
     Main.saveInSessionStorage = function (key, value){
         sessionStorage.setItem(key, value);
@@ -187,7 +186,7 @@ if(typeof(Main) == "undefined") var Main = {};
         var pathname = window.location.pathname;
         var path_arr = pathname.split('/');
         path_arr = Main.remove_value(path_arr, "");
-        if(path_arr[0] == Main.subFolder) path_arr.splice(0, 1);
+        if(Main.pageContext != "" && Main.pageContext !=  undefined) path_arr.splice(0, 1);
         return path_arr[index];
 
     };

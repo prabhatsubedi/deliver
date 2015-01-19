@@ -12,9 +12,21 @@ if(typeof(Main) == "undefined") var Main = {};
     Main.pageContext = document.getElementById('pageContext').getAttribute('data-context');
 
     Main.modifyURL = function(url) {
-        if(Main.pageContext != "" && Main.pageContext != undefined)
-            return Main.pageContext + url;
+        if(url.indexOf("/") != 0) url = "/" + url;
+        if(Main.pageContext != "" && Main.pageContext != undefined) {
+            if(url.indexOf(Main.pageContext) > -1)
+                return url;
+            else
+                return Main.pageContext + url;
+        }
         return url;
+    };
+
+    Main.checkURL = function() {
+        $('a[href]').not('[href="#"], [href="javascript:;"]').each(function(){
+            if($(this).attr('href').indexOf(Main.pageContext) < 0)
+                $(this).attr('href', Main.modifyURL($(this).attr('href')));
+        });
     };
 
     Main.saveInSessionStorage = function (key, value){
@@ -249,6 +261,7 @@ if(typeof(Main) == "undefined") var Main = {};
 })(jQuery);
 
 $(document).ready(function(){
+    Main.checkURL();
     Main.elemRatio();
     Main.fullHeight();
 });

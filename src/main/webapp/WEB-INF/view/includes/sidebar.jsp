@@ -31,7 +31,7 @@
             $(this).addClass('active');
         });
 
-        $('.sidebar_menu a[href]').not('[href="#"]').each(function(){
+        $('.sidebar_menu a[href]').not('[href="#"], [href="javascript:;"]').each(function(){
             $(this).attr('href', Main.modifyURL($(this).attr('href')));
         });
 

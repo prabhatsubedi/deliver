@@ -118,27 +118,24 @@
                                 </div>
                                 <div class="form_head">Category</div>
                                 <div class="form_content">
-                                    <input type="text" id="validate_categories" name="validate_categories" class="hidden" />
-                                    <div id="category_container">
-                                        <div class="form-group">
-                                            <select class="category_options col-xs-12 no_pad no_margin" data-style="form-control">
-                                                <option value="none">Select Category</option>
-                                            </select>
+                                    <div class="category_list_container">
+                                        <input type="text" id="validate_categories" name="validate_categories" class="hidden" />
+                                        <div id="category_container">
+                                            <div class="form-group">
+                                                <select class="category_options col-xs-12 no_pad no_margin" data-style="form-control">
+                                                    <option value="none">Select Category</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group add_categories hidden">
-                                        <div class="new_category_fields">
-                                            <input type="text" class="form-control hidden" id="new_category" name="new_category" placeholder="Category Name">
-                                            <input type="text" class="form-control hidden" id="new_subcategory" name="new_subcategory" placeholder="Subcategory Name">
+                                        <div class="form-group add_categories hidden">
+                                            <div class="new_category_fields">
+                                                <input type="text" class="form-control" id="new_category" name="new_category" placeholder="Category Name">
+                                            </div>
+                                            <div class="action_buttons">
+                                                <button type="button" id="save_category" class="btn btn_green glyphicon glyphicon-ok"></button>
+                                                <button type="button" id="cancel_category" class="btn btn_green btn_red glyphicon glyphicon-remove"></button>
+                                            </div>
                                         </div>
-                                        <div class="action_buttons">
-                                            <button type="button" id="save_category" class="btn btn_green glyphicon glyphicon-ok"></button>
-                                            <button type="button" id="cancel_category" class="btn btn_green btn_red glyphicon glyphicon-remove"></button>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn_green" id="add_category" type="button">Add Category</button>
-                                        <button class="btn btn_green" id="add_subcategory" type="button">Add Subcategory</button>
                                     </div>
                                 </div>
 
@@ -246,6 +243,7 @@
     <div class="form-group">
         <select class="col-xs-12 no_pad no_margin" data-style="form-control">
             <option value="none">Select Category</option>
+            <option value="add_cat_option">Add Category</option>
         </select>
     </div>
 </div>

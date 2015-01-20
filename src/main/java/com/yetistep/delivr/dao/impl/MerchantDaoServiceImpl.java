@@ -1,14 +1,17 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,7 +38,10 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public List<MerchantEntity> findAll() throws Exception {
-        return (List<MerchantEntity>) getCurrentSession().createCriteria(MerchantEntity.class).list();
+        List<MerchantEntity> merchants  = new ArrayList<MerchantEntity>();
+        Criteria criteria  = getCurrentSession().createCriteria(MerchantEntity.class, "merchant");
+        merchants = criteria.list();
+        return merchants;
     }
 
     @Override
@@ -149,8 +155,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public BrandsCategoryEntity getBrandsCategory(Integer brandId, Integer categoryId) throws Exception {
         List<BrandsCategoryEntity> brandsCategories = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BrandsCategoryEntity.class);
-        criteria.add(Restrictions.eq("storesBrand.id", brandId));
-        criteria.add(Restrictions.eq("category.id", categoryId));
+        criteria.add(Restrictions.and(Restrictions.eq("storesBrand.id", brandId), Restrictions.eq("category.id", categoryId)));
         brandsCategories = criteria.list();
 
         return brandsCategories.size() > 0 ? brandsCategories.get(0) : null;
@@ -203,7 +208,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public List<StoreEntity> findStoreByBrand(Integer brandId) throws Exception {
         List<StoreEntity> stores = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoreEntity.class);
-        criteria.add(Restrictions.eq("storesBrand.id", brandId));
+        criteria.add(Restrictions.and(Restrictions.eq("storesBrand.id", brandId)));
         criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("street"), "street")
                 .add(Projections.property("city"), "city")
@@ -222,7 +227,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Override
     public List<StoresBrandEntity> findBrandListByMerchant(Integer merchantId) throws Exception {
         List<StoresBrandEntity> stores = new ArrayList<>();
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class, "brand");
+        //criteria.createCriteria("store").add(Restrictions.eq("status", Status.ACTIVE));
        /* criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("brandName"), "brandName")
@@ -234,7 +240,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
                 .add(Projections.property("closingTime"), "closingTime")
                 .add(Projections.property("merchant"), "merchant")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));*/
-        criteria.add(Restrictions.eq("merchant.id", merchantId)) ;
+        //criteria.createAlias("brand.store", "stores", Criteria.LEFT_JOIN);
+        criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId)/*, Restrictions.eq("stores.status", Status.ACTIVE)*/)) ;
         stores = criteria.list();
         return stores;
     }
@@ -243,6 +250,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public List<StoresBrandEntity> findBrandList() throws Exception {
         List<StoresBrandEntity> stores = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        criteria.createCriteria("store").add(Restrictions.eq("status", Status.ACTIVE));
         criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("brandName"), "brandName")
@@ -327,10 +335,10 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public List<ItemEntity> findItemByCategory(List<Integer> categoryId) throws Exception {
+    public List<ItemEntity> findItemByCategory(List<Integer> categoryId, Integer brandId) throws Exception {
         List<ItemEntity> items = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
-        criteria.add(Restrictions.in("category.id", categoryId));
+        criteria.add(Restrictions.and(Restrictions.in("category.id", categoryId), Restrictions.eq("storesBrand.id", brandId)));
         criteria.add(Restrictions.sqlRestriction("1=1 order by rand()"));
         criteria.setMaxResults(2);
         items = criteria.list();

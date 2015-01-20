@@ -151,7 +151,7 @@ public class UserServiceImpl extends AbstractManager implements UserService{
             String hostName = getServerUrl();
             String url = hostName + "/assistance/create_password/" + verificationCode;
             log.debug("Re-sending mail to " + userName + " with verify_url: " + url);
-            String body = EmailMsg.createPasswordForNewUser(url, userEntity.getFullName(), userEntity.getUsername(), " You have been added as Merchant");
+            String body = EmailMsg.createPasswordForNewUser(url, userEntity.getFullName(), userEntity.getUsername(), " You have been added as Merchant", getServerUrl());
             String subject = "Delivr: You have been added as Merchant ";
             sendMail(userEntity.getUsername(), body, subject);
         }
@@ -173,7 +173,7 @@ public class UserServiceImpl extends AbstractManager implements UserService{
         log.info("Sending mail to " + userName + " with password reset url: " + url);
 
         String subject = "Dealify: Forgot your Password!";
-        String body = EmailMsg.resetForgotPassword(url, user.getFullName(), "Forgot your Password!");
+        String body = EmailMsg.resetForgotPassword(url, user.getFullName(), "Forgot your Password!", getServerUrl());
 
         sendMail(userName, body, subject);
 

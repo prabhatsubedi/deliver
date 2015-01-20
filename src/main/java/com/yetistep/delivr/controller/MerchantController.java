@@ -338,7 +338,21 @@ public class MerchantController {
         }
     }
 
-
+    @RequestMapping(value = "/change_status", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> changeStatus(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            merchantService.changeStatus(requestJsonDto ,headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Status has been changed successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
 
 }

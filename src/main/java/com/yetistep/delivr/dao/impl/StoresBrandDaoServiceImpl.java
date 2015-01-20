@@ -73,7 +73,6 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("priority"), "priority")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.isNotNull("featured")) ;
-        criteria.add(Restrictions.eq("status", Status.ACTIVE));
         storesBrandEntities = criteria.list();
         return storesBrandEntities;
 
@@ -94,7 +93,6 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("priority"), "priority")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.isNull("featured"));
-        criteria.add(Restrictions.eq("status", Status.ACTIVE));
 
         if(priority == null){
             //All Brands Null at bottom

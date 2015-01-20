@@ -25,24 +25,59 @@ public class EmailMsg {
         style.append("body{font-size: 16px; font-family: Roboto;}");
     }
 
+    /*
+    * From: <Admin Email Address>
+To: <Merchant Email Address>
 
-    public static String createPasswordForNewUser(String url, String userName,String userEmail, String subject) {
+Subject: Welcome to iDelivr
+
+Dear <Merchant Contact Person Name>,
+
+
+Welcome & thank you for joining iDelivr.
+
+Your account details are as follows:
+Your username: <Merchant Email Address>
+
+Please click on the link to verify your account and create your own password: [Verify My Account]
+
+If the above link does not work, please copy & paste the following URL in your web browser:
+http://54.254.205.135/verify_account.jsp?code=ff119733-a429-443c-86c8-29f7e2606a63_1399083532794
+
+Your account will be activated after verification.
+
+
+Sincerely,
+
+iDelivr Team
+<Tagline>
+    * */
+
+    public static String createPasswordForNewUser(String url, String userName, String userEmail, String subject, String serverUrl) {
         StringBuilder body = new StringBuilder();
 
-        body.append("Dear " + userName + ",<br/><br/>");
+        body.append(getHtmlHeader(serverUrl));
+        body.append("<div style='padding: 20px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='153' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 32px;color: #AAAAAA;'>iDelivr</div></div>");
+        body.append("<div style='height: 180px;line-height: 80px;background-color: #F58220;color: #ffffff;font-size: 24px;'>Welcome & thank you for joining iDelivr.</div>");
 
-        body.append("Your user name : " + userEmail + "<br/><br/>");
+        body.append("Your account details are as follows:<br/>");
+        body.append("Your username: "+userEmail+"<br/><br/>");
 
-        body.append("Click on the link below to set your password. <br/>");
+        body.append("Please click on the link to verify your account and create your own password: <br/>");
         body.append("<a href='" + url + "'  style='background:#52B4F3; padding: 10px 20px; color: #FFFFFF; text-decoration: none; display: inline-block;; border-radius: 3px; margin: 10px 0px;'>" + url + "</a>");
-        body.append("If the link does not work,please copy & paste the following URL in your browser:<br/>");
+        body.append("If the above link does not work, please copy & paste the following URL in your web browser: <br/>");
         body.append(url);
         body.append("<br/><br/>");
 
-        return prepareEmail(subject, body.toString(), null);
+        body.append("Your account will be activated after verification.<br/><br/><br/><br/>");
+
+        body.append("Sincerely,<br/><br/><br/>");
+        body.append("iDelivr Team");
+
+        return prepareEmail(subject, body.toString(), null, serverUrl );
     }
 
-    public static String resetForgotPassword(String url, String userName, String subject) {
+    public static String resetForgotPassword(String url, String userName, String subject, String serverUrl) {
         StringBuilder body = new StringBuilder();
 
         body.append("Dear " + userName + ",<br/><br/>");
@@ -55,18 +90,18 @@ public class EmailMsg {
 
         body.append("<br/><br/>");
 
-        return prepareEmail(subject, body.toString(), null);
+        return prepareEmail(subject, body.toString(), null, serverUrl);
     }
 
-    public static String activateMerchant(String url, String contactPerson, String subject) {
+    public static String activateMerchant(String url, String contactPerson, String subject, String serverUrl) {
         StringBuilder body = new StringBuilder();
-        body.append(getHtmlHeader());
+        body.append(getHtmlHeader(serverUrl));
         body.append("Dear  " + contactPerson + ",<br/><br/>");
         body.append("Your account has been approved & activated. You can access your dashboard." + "<br/><br/>");
 
         body.append(getEmailBodyButton("Login to Delivr", url));
         body.append("<br/>");
-        return prepareEmail(subject, body.toString(), null);
+        return prepareEmail(subject, body.toString(), null, serverUrl);
     }
 
 
@@ -79,37 +114,18 @@ public class EmailMsg {
 
     private static String getEmailFooter() {
         StringBuilder builder = new StringBuilder();
-        builder.append("<table align='center' border='0' cellspacing='0' cellpadding='20' width='700px;'" +
-                " style='background:#F5F5F5;border-radius:15px;color:#878787;width:700'>");
-        builder.append("<tr align='center' style='background: #FFFFFF;'>");
-        builder.append("<td colspan='3' style='padding:20px;'><strong>DEALIFY IS AVAILABLE FOR</strong></td>");
-        builder.append("</tr>");
-        builder.append("<tr align='center'>");
-        builder.append("<td>");
-        builder.append("<table cellpadding='5px'>");
-        builder.append("<tr style='text-align:center;'>");
-//        builder.append("<td><a href=''><img src='" + CLOUD_FRONT + "/email_icons/iphone_final.png' style='padding: 0px 20px;display:block;'>i-phone</a></td>");
-//        builder.append("<td><a href='https://play.google.com/store/apps/details?id=com.yetistep.dealify'><img src='" + CLOUD_FRONT + "/email_icons/android_final.png' style='padding: 0px 20px;display:block;'>Android</a></td>");
-//        builder.append("<td><a href=''><img src='" + CLOUD_FRONT + "/email_icons/desktop_final.png' style='padding: 0px 20px;display:block;'>Desktop</a></td>");
-        builder.append("</tr></table");
-        builder.append("</td>");
-        builder.append("</tr>");
-
-        builder.append("<tr align='center' style='background:#F5F5F5'>");
-        builder.append("<td colspan='3' style='padding-bottom:20px'>");
-//        builder.append("<a href=''><img src='" + CLOUD_FRONT + "/email_icons/facebook_color.png' style='padding: 0px 10px;'></a>");
-//        builder.append("<a href=''><img src='" + CLOUD_FRONT + "/email_icons/twitter_color.png' style='padding: 0px 10px;'></a>");
-//        builder.append("<a href=''><img src='" + CLOUD_FRONT + "/email_icons/google_plus_color.png' style='padding: 0px 10px;'></a>");
-        builder.append("</td>");
-        builder.append("</tr>");
-        builder.append("</table>");
+        builder.append("Delivr is available for");
+        builder.append("<div style='width:47%; margin:0 auto; align:center;'><a href='#' style='text-decoration: none; float: left; color: #999999;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/iphone_final.png' style='padding: 10px 20px;display:block;'>i-phone</a>\n" +
+               "<a href='https://play.google.com/store/apps/details?id=com.yetistep.dealify' style='text-decoration: none; float: left; color: #999999;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/android_final.png' style='padding: 10px 20px;display:block;'>Android</a>\n"+
+               "<a href='#' style='text-decoration: none;  float: left; color: #999999;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/desktop_final.png' style='padding: 10px 20px;display:block;'>Desktop</a></div>");
         return builder.toString();
     }
 
-    private static String getHtmlHeader() {
+    private static String getHtmlHeader(String serverUrl) {
         String htmlHead = "<html><head><title>Welcome to " + COMPANY_NAME + "</title>" +
+                "<style>" + style.toString() + "</style>" + "<link rel='stylesheet' " + "href='" + serverUrl + "/resources/css/fonts/font.css'>" +
+                "<link rel='stylesheet' " + "href='" + serverUrl + "/resources/css/email.css'>" +
                 "</head><body>";
-        //"<style>" + style.toString() + "</style>" + "<link rel='stylesheet' " + "href='" + MainServlet.serverUrl + "/deal/fonts/font.css'>" +
         return htmlHead;
     }
 
@@ -168,9 +184,9 @@ public class EmailMsg {
         return builder.toString();
     }
 
-    public static String prepareEmail(String subjectContent, String bodyContent, String userHeadContent) {
+    public static String prepareEmail(String subjectContent, String bodyContent, String userHeadContent, String serverUrl) {
         StringBuilder builder = new StringBuilder();
-        builder.append(getHtmlHeader());
+        builder.append(getHtmlHeader(serverUrl));
         builder.append("<table width='900px;' align='center' border='0' style='background:#DCDCDC' cellspacing='20px' cellpadding='10px'><tr><td>");
         builder.append("<table width='700' border='0' cellspacing='0px' cellpadding='30' align='center' style='background:white;border-radius:15px;color:#626262'>");
         builder.append(getEmailHead(userHeadContent));

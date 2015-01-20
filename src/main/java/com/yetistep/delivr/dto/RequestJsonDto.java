@@ -63,7 +63,8 @@ public class RequestJsonDto {
     private CustomerEntity customer;
     /*For accepting delivery order*/
     private Integer orderId;
-
+    private String className;
+    private Integer statusId;
 
 
 
@@ -300,5 +301,21 @@ public class RequestJsonDto {
 
     public void setPageInfo(PageInfo pageInfo) {
         this.pageInfo = pageInfo;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public Integer getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Integer statusId) {
+        this.statusId = statusId;
     }
 }

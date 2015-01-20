@@ -57,4 +57,5 @@ public interface MerchantService {
 
     public void updateItem(RequestJsonDto requestJson) throws Exception;
 
+    public boolean changeStatus(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception;
 }

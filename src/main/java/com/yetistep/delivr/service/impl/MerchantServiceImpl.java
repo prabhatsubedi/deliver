@@ -84,7 +84,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         log.info("Sending mail to " + user.getUsername() + " with new registration: " + url);
 
         //send email
-        String body = EmailMsg.createPasswordForNewUser(url, user.getFullName(), user.getUsername(), " You have been added as Merchant");
+        String body = EmailMsg.createPasswordForNewUser(url, user.getFullName(), user.getUsername(), " You have been added as Merchant", getServerUrl());
         String subject = "Delivr: You have been added as Merchant ";
         sendMail(user.getUsername(), body, subject);
 
@@ -115,7 +115,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         //Sending Email For Merchant
         String url = getServerUrl();
-        String body = EmailMsg.activateMerchant(url, user.getFullName(), " Your account has been activated");
+        String body = EmailMsg.activateMerchant(url, user.getFullName(), " Your account has been activated", getServerUrl());
         String subject = "Delivr: Your account has been activated ";
         sendMail(user.getUsername(), body, subject);
     }
@@ -491,19 +491,19 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         CategoryEntity category = new CategoryEntity();
         //save items category
         if(itemCategories.size()>1){
-            //CategoryEntity parentCategory = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
-            //itemCategories.set(0, parentCategory);
-           int i;
-           for(i = 1; i<itemCategories.size(); i++){
-               itemCategories.get(i).setParent(itemCategories.get(i-1));
-               itemCategories.get(i).setFeatured(false);
-               itemCategories.get(i).setStoresBrand(storesBrand);
-           }
+            CategoryEntity parentCategory = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
+            itemCategories.set(0, parentCategory);
+            int i;
+               for(i = 1; i<itemCategories.size(); i++){
+                   itemCategories.get(i).setParent(itemCategories.get(i-1));
+                   itemCategories.get(i).setFeatured(false);
+                   itemCategories.get(i).setStoresBrand(storesBrand);
+               }
             merchantDaoService.saveCategories(itemCategories);
             //get items category
             category = itemCategories.get(itemCategories.size()-1);
         }else{
-            category = itemCategories.get(0);
+            category = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
         }
 
         item.setCategory(category);
@@ -530,8 +530,10 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         item.setAttributesTypes(itemsAttributesTypes);
 
         List<String> images = new ArrayList<>();
-        for (String image: itemsImages){
-            images.add(image);
+        if(itemsImages != null){
+            for (String image: itemsImages){
+                images.add(image);
+            }
         }
 
         merchantDaoService.saveItem(item);
@@ -951,7 +953,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
               else get the items of child category itself as the final category
              */
             if(childsChildId.size() > 0){
-                List<ItemEntity> categoriesItems = merchantDaoService.findItemByCategory(childsChildId);
+                List<ItemEntity> categoriesItems = merchantDaoService.findItemByCategory(childsChildId, storeId);
                 if(categoriesItems.size() > 0){
                     for(ItemEntity item: categoriesItems){
                         item.setCategory(null);
@@ -989,5 +991,50 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         return categories;
+    }
+
+
+    @Override
+    public boolean changeStatus(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception{
+        String type = requestJsonDto.getClassName();
+        Integer statusId = requestJsonDto.getStatusId();
+        if(type.equals("User")){
+            UserEntity user =   userDaoService.find(Integer.parseInt(headerDto.getId()));
+            if(statusId==2){
+                user.setStatus(Status.ACTIVE);
+            }else if(statusId==3){
+                user.setStatus(Status.INACTIVE);
+            }
+            user.setLastActivityDate(DateUtil.getCurrentTimestampSQL());
+            userDaoService.update(user);
+        }else if(type.equals("Brand")) {
+            StoresBrandEntity storesBrand =   merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
+            if(statusId==2){
+                storesBrand.setStatus(Status.ACTIVE);
+            }else if(statusId==3){
+                storesBrand.setStatus(Status.INACTIVE);
+            }
+            merchantDaoService.updateStoresBrand(storesBrand);
+        }  else if(type.equals("Store")){
+            StoreEntity store = merchantDaoService.getStoreById(Integer.parseInt(headerDto.getId()));
+            List<StoreEntity> stores = new ArrayList<StoreEntity>();
+            if(statusId==2){
+                store.setStatus(Status.ACTIVE);
+            }else if(statusId==3){
+                store.setStatus(Status.INACTIVE);
+            }
+            stores.add(store);
+            merchantDaoService.updateStores(stores);
+        }  else if(type.equals("Item")){
+            ItemEntity item = merchantDaoService.getItemDetail(Integer.parseInt(headerDto.getId()));
+            if(statusId==2){
+                item.setStatus(Status.ACTIVE);
+            }else if(statusId==3){
+                item.setStatus(Status.INACTIVE);
+            }
+            item.setModifiedDate(DateUtil.getCurrentTimestampSQL());
+            merchantDaoService.updateItem(item);
+        }
+        return  true;
     }
 }

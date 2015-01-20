@@ -97,6 +97,8 @@ if(typeof(Store) == "undefined") var Store = {};
             timeSelect += '<option value="' + time + '">' + time + '</option>';
         }
         $('#open_time, #close_time').append(timeSelect);
+        $('#open_time').val("07:00:00");
+        $('#close_time').val("22:00:00");
 
         $('#open_time').selectpicker({size: 5});
         $('#close_time').selectpicker({size: 5});
@@ -153,10 +155,14 @@ if(typeof(Store) == "undefined") var Store = {};
 
         };
 
+        $('#form_store input').change(function(){
+            $('#form_store').submit();
+        });
+
         $('#form_store').validate({
             submitHandler: function() {
-                var loaderDiv = "#store_section .form_content";
-                $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
+//                var loaderDiv = "#store_section .form_content";
+//                $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
 
                 var geoKeyObject = arrGeoPoints[$(".save_marker").eq(0).attr('data-id')];
                 var geoParent = '#form_store';
@@ -177,10 +183,10 @@ if(typeof(Store) == "undefined") var Store = {};
                 geoKeyObject.contactNo = address_contact_number;
                 geoKeyObject.contactPerson = address_contact_person;
 
-                setTimeout(function(){
-                    $(loaderDiv).removeClass('loader_div').children('.loader').hide();
+//                setTimeout(function(){
+//                    $(loaderDiv).removeClass('loader_div').children('.loader').hide();
                     updateGeoPoints(false);
-                }, 500);
+//                }, 500);
 
                 return false;
             }
@@ -349,7 +355,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
             if (data.success == true) {
                 alert(data.message);
-                window.location = "/merchant/store/list";
+                window.location = Main.modifyURL("/merchant/store/list");
             } else {
                 alert(data.message);
             }
@@ -445,9 +451,7 @@ if(typeof(Store) == "undefined") var Store = {};
         }
         $('.btns_change').click(showEdit);
 
-        $('.btns_cancel').click(function(){
-            hideEdit();
-        });
+        $('.btns_cancel').click(hideEdit);
         $('.btns_save').click(function(){
             hideEdit();
         });

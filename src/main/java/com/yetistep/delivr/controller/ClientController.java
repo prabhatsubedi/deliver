@@ -4,6 +4,7 @@ import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
@@ -114,16 +115,18 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/verify_mobile", method = RequestMethod.POST)
+    @RequestMapping(value = "/reg_mobile_code", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> setMobileCode(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
         try {
-//            HeaderDto headerDto = new HeaderDto();
-//            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.ACCESS_TOKEN, GeneralUtil.VERIFICATION_CODE);
-//            validateMobileClient(headerDto.getAccessToken());
-            customerService.verifyMobile(user.getMobileNumber(), user.getCustomer().getFacebookId());
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
 
-            ServiceResponse serviceResponse = new ServiceResponse("Customer has been verified");
+            AddressDto address = customerService.verifyMobile(user.getMobileNumber(), user.getCustomer().getFacebookId());
+
+            ServiceResponse serviceResponse = new ServiceResponse("Mobile has been registered");
+            serviceResponse.addParam("verifyDetail", address);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while verifying mobile code", e);

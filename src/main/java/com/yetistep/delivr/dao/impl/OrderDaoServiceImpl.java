@@ -4,6 +4,7 @@ import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -101,4 +102,13 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         return orderEntities.size() == 1 ? orderEntities.get(0) : null;
     }
 
+    @Override
+    public JobOrderStatus getJobOrderStatus(Integer orderId) throws Exception {
+        String sqlQuery = "SELECT o.order_status FROM orders o where o.id =:orderId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("orderId", orderId);
+        Integer orderStatus = (Integer) query.uniqueResult();
+        JobOrderStatus jobOrderStatus = JobOrderStatus.fromInt(orderStatus);
+        return jobOrderStatus;
+    }
 }

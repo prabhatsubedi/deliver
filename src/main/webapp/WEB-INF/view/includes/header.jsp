@@ -123,5 +123,10 @@
 
         });
 
+        $('.sidebar_menu a[href]').not('[href="javascript:;"]').each(function(){
+            $(this).attr('href', Main.modifyURL($(this).attr('href')));
+        });
+
+
     });
 </script>

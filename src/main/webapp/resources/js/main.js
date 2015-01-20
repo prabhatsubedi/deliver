@@ -1,6 +1,6 @@
 /**
- * Created by Lunek on 11/25/2014.
- */
+* Created by Lunek on 11/25/2014.
+*/
 
 if(typeof(Main) == "undefined") var Main = {};
 
@@ -9,8 +9,27 @@ if(typeof(Main) == "undefined") var Main = {};
     Main.country = "Nepal";
     Main.docHeight = window.innerHeight;
     Main.ajax = undefined;
-    Main.subFolder = "";
-//    Main.subFolder = "delivr";
+    Main.pageContext = document.getElementById('pageContext').getAttribute('data-context');
+
+    Main.modifyURL = function(url) {
+        if(url.indexOf("#") != 0) {
+            if(url.indexOf("/") != 0) url = "/" + url;
+            if(Main.pageContext != "" && Main.pageContext != undefined) {
+                if(url.indexOf(Main.pageContext) > -1)
+                    return url;
+                else
+                    return Main.pageContext + url;
+            }
+            return url;
+        }
+    };
+
+    Main.checkURL = function() {
+        $('a[href]').not('[href="#"], [href="javascript:;"]').each(function(){
+            if($(this).attr('href').indexOf(Main.pageContext) < 0)
+                $(this).attr('href', Main.modifyURL($(this).attr('href')));
+        });
+    };
 
     Main.saveInSessionStorage = function (key, value){
         sessionStorage.setItem(key, value);
@@ -51,7 +70,7 @@ if(typeof(Main) == "undefined") var Main = {};
         }
 
         Main.ajax = $.ajax({
-            url: url,
+            url: Main.modifyURL(url),
             type: requestType != undefined ? requestType : "POST",
             data: parameter.stringify == false ? parameter : JSON.stringify(parameter),
             headers: headers,
@@ -77,7 +96,7 @@ if(typeof(Main) == "undefined") var Main = {};
             $("button[type='submit']","#login_form").removeAttr("disabled");
 
             if (data.success == true) {
-                window.location.replace(data.params.url);
+                window.location = Main.modifyURL(data.params.url);
             } else {
                 alert(data.message);
             }
@@ -90,7 +109,7 @@ if(typeof(Main) == "undefined") var Main = {};
 
     Main.doLogout = function (data) {
         var callback = function (status, data) {
-            window.location = "/";
+            window.location = Main.modifyURL("/");
         };
         callback.loaderDiv = "body";
         Main.request('/j_spring_security_logout', {}, callback);
@@ -105,7 +124,7 @@ if(typeof(Main) == "undefined") var Main = {};
 
             if (data.success == true) {
                 alert(data.message);
-                window.location = "/";
+                window.location = Main.modifyURL("/");
             } else {
                 alert(data.message);
             }
@@ -181,16 +200,10 @@ if(typeof(Main) == "undefined") var Main = {};
         var pathname = window.location.pathname;
         var path_arr = pathname.split('/');
         path_arr = Main.remove_value(path_arr, "");
-        if(path_arr[0] == Main.subFolder) path_arr.splice(0, 1);
+        if(Main.pageContext != "" && Main.pageContext !=  undefined) path_arr.splice(0, 1);
         return path_arr[index];
 
     };
-
-    Main.modifyURL = function(url) {
-        if(Main.subFolder != "" && Main.subFolder != undefined)
-            return '/' + Main.subFolder + url;
-        return url;
-    }
 
 /*    Main.getURLParameter = function(key, keyvalue) {
         if(key == undefined) return false;
@@ -250,6 +263,7 @@ if(typeof(Main) == "undefined") var Main = {};
 })(jQuery);
 
 $(document).ready(function(){
+    Main.checkURL();
     Main.elemRatio();
     Main.fullHeight();
 });

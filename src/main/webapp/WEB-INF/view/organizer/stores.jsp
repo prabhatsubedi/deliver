@@ -42,6 +42,7 @@
         <div class="block_item">
             <div class="item_image maintain_ratio" mr-height="400" mr-width="720">
                 <img class="img-responsive no_image">
+                <a class="btn btn-default btn_logins view_store">View Store</a>
                 <a class="btn btn-default btn_logins add_items">Add Item</a>
             </div>
             <div class="item_infos">
@@ -64,12 +65,18 @@
                 re_calculate_width = false;
             }
         });
+
+        $('.item_container a').live('click', function(e) {
+            e.preventDefault();
+            var elem_parent = $(this).parents('.item_container');
+            Main.saveInLocalStorage('mid', elem_parent.attr('data-mid'));
+            window.location = $(this).attr('href');
+        });
+
         var sortableParam = {
             revert: true,
             tolerance: 'pointer',
             containment: '.body',
-            create: function() {
-            },
             stop: function( event, ui ) {
                 var arrdata = [];
                 $('#featured_stores .item_container').each(function(){

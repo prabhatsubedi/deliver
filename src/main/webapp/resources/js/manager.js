@@ -196,9 +196,11 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         var elem = $('.block_store_template').clone();
                         var storeBrand = stores[i];
                         $('.item_container', elem).attr('data-id', storeBrand.id);
+                        $('.item_container', elem).attr('data-mid', storeBrand.merchantId);
                         $('.item_image img', elem).attr('src', storeBrand.brandImage);
-                        $('.item_infos .item_name', elem).html('<a href="' + Main.modifyURL('/merchant/store/view/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
+                        $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
                         $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
+                        $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
                         $('#other_stores').append(elem.html());
                     }
 
@@ -210,9 +212,11 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         storeBrand.featured ? featured_count++ : prioritized_count++;
                         var elem = $('.block_store_template').clone();
                         $('.item_container', elem).attr('data-id', storeBrand.id);
+                        $('.item_container', elem).attr('data-mid', storeBrand.merchantId);
                         $('.item_image img', elem).attr('src', storeBrand.brandImage);
-                        $('.item_infos .item_name', elem).html('<a href="' + Main.modifyURL('/merchant/store/view/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
+                        $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
                         $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
+                        $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
                         $(storeBrand.featured ? '#featured_stores' : '#prioritized_stores').append(elem.html());
                     }
 

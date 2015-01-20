@@ -21,7 +21,7 @@ body {
     position: relative;
 }
 .no_image {
-    background-image: url("/resources/images/no_image.jpg") !important;
+    background-image: url("../images/no_image.jpg") !important;
     background-position: left top !important;
     background-repeat: repeat !important;
 }
@@ -33,7 +33,7 @@ img.no_image {
     position: relative;
 }
 .loader {
-    background-image : url('/resources/images/loader.gif');
+    background-image : url('../images/loader.gif');
     background-position: center center;
     background-repeat: no-repeat;
     background-color: rgba(0,0,0,0.5);
@@ -285,7 +285,7 @@ body.loader_div > .loader {
     padding-right: 15px;
 }
 .modal_form .modal-body ul.nav li.active + li a {
-    background-image: url("/resources/images/signup-nav.png");
+    background-image: url("../images/signup-nav.png");
     background-repeat: no-repeat;
     background-position: center left;
     padding-left: 52px;
@@ -328,7 +328,7 @@ body.loader_div > .loader {
     font-size: 25px;
     background-color: #e0e0e0;
     margin-bottom: 30px;
-    background-image: url("/resources/images/upload-thumb.png");
+    background-image: url("../images/upload-thumb.png");
     background-repeat: no-repeat;
     background-position: center center;
     position: relative;
@@ -663,6 +663,7 @@ body.assistance_page {
     background-color: #f6f6f6;
     border: 1px solid #d6d5d5;
     border-top: none;
+    position: relative;
 }
 .form_section .form_content:last-child {
     margin-bottom: 0px;
@@ -685,7 +686,7 @@ body.assistance_page {
     left: 5px;
     right: 5px;
     top: 5px;
-    background-image: url("/resources/images/no_image.jpg") !important;
+    background-image: url("../images/no_image.jpg") !important;
     background-position: left top !important;
     background-repeat: repeat !important;
     content: "";
@@ -904,8 +905,15 @@ label.check_label .checkbox {
     top: 0;
     width: 50px;
 }
-.add_categories {
+.category_list_container {
     position: relative;
+}
+.add_categories {
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 20;
 }
 .add_categories .new_category_fields {
     margin-right: 100px;

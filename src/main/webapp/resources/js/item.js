@@ -180,6 +180,7 @@ var data_categories_names = [];
                     add_categories(category_options, change_callback)
 
                 };
+                callback.loaderDiv = '.category_loader';
                 callback.requestType = "GET";
                 Main.request('/merchant/get_brands_categories', {}, callback, {id: brandId});
             } else {
@@ -297,6 +298,8 @@ var data_categories_names = [];
                             $('select', subCategory).addClass('category_options').append(cat_list);
                             $('#category_container').append(subCategory.html());
                             $('#category_container .category_options').selectpicker('refresh');
+                        } else {
+                            showSubCatButton();
                         }
 
                     } else {
@@ -304,12 +307,15 @@ var data_categories_names = [];
                     }
 
                 };
+                callback.loaderDiv = '.category_loader';
 
                 if(currentCatId != undefined) callback.async = false;
                 Main.request('/merchant/get_child_categories', {parentCategoryId: catId, categoryStoreId: brandId}, callback);
 
-            } else {
+            }
 
+            if($('option:selected', elem).attr('data-new') == "true") {
+                showSubCatButton();
             }
 
         }
@@ -322,9 +328,17 @@ var data_categories_names = [];
         })
 
         $('#category_container .category_options').live('change', function(){
+            showSubCatButton(false);
             var brandId = $('#item_brand').val();
             var catId = $(this).val();
 
+            if(catId == "add_cat_option") {
+                var elem_parent = $(this).parents('.form-group');
+                elem_parent.addClass('add_cat_open');
+                var top = elem_parent[0].offsetTop;
+                $('.form-group.add_categories').css({top: top}).removeClass('hidden');
+                catId = 'none';
+            }
             var fnParams = {};
             fnParams.elem = $(this);
             fnParams.brandId = brandId;
@@ -333,7 +347,48 @@ var data_categories_names = [];
             getChildCats(fnParams);
         });
 
-        $('#add_category').click(function(){
+        function showSubCatButton(show) {
+            if(show == false)
+                $('.btn_sub_cat').addClass('hidden');
+            else
+                $('.btn_sub_cat').removeClass('hidden');
+        }
+
+        function hideAddCat(val, new_val) {
+            $('.add_categories').addClass('hidden');
+            $('#new_category').removeClass('error').val('');
+            if(val != undefined) {
+                var elem_select = $('select.category_options', '#category_container .add_cat_open');
+                if(new_val == true) {
+                    elem_select.append('<option value="' + val + '" data-new="true">' + val + '</option>');
+                    showSubCatButton();
+                };
+                elem_select.val(val);
+                elem_select.selectpicker('refresh');
+            }
+            if($('.add_cat_open select option').length < 3) {
+                $('.add_cat_open').remove();
+                showSubCatButton();
+            } else {
+                $('.add_cat_open').removeClass('add_cat_open');
+            }
+        }
+        $('#save_category').click(function(){
+            if(!$('#new_category').valid()) return false;
+            hideAddCat($('#new_category').val(), true);
+        });
+        $('#cancel_category').click(function() {
+            hideAddCat('none');
+        });
+        $('.add_sub_category').click(function(){
+            var subCategory = $('.select_category_template').clone();
+            $('select', subCategory).addClass('category_options');
+            $('#category_container').append(subCategory.html());
+            $('#category_container .category_options').selectpicker('refresh');
+            $('#category_container select.category_options').last().val('add_cat_option').trigger('change');
+        });
+
+/*        $('#add_category').click(function(){
             if($('#category_container select.category_options').length > 1) {
                 $('.add_categories, #new_category, #new_subcategory').addClass('hidden');
                 $('.add_categories, #new_category').removeClass('hidden');
@@ -370,7 +425,7 @@ var data_categories_names = [];
         $('#cancel_category').click(function(){
             $('.add_categories, #new_category, #new_subcategory').addClass('hidden');
             $('#new_category, #new_subcategory').removeClass('error');
-        });
+        });*/
 
         $('label.check_label .checkbox').removeAttr("checked");
 
@@ -646,7 +701,6 @@ var data_categories_names = [];
         $('#service_charge').rules('add', {required: true, number: true, min: 0, max: 100});
         $('#price').rules('add', {required: true, number: true, min: 0});
         $('#new_category').rules('add', {required: true});
-        $('#new_subcategory').rules('add', {required: true});
 
         $('select').live('change', function(){
             $(this).siblings('.bootstrap-select').children('.form-control').removeClass('error');
@@ -1030,8 +1084,8 @@ var data_categories_names = [];
 
                 $('.item_info .available_time').html(item.availableStartTime + " - " + item.availableEndTime);
                 $('.item_info .order_quantity').html("Min " + item.minOrderQuantity + " - Max " + item.maxOrderQuantity);
-                $('.item_info .vat').html(item.vat + " %");
-                $('.item_info .service_charge').html(item.serviceCharge + " %");
+                $('.item_info .vat').html((item.vat == undefined ? 0 : item.vat) + " %");
+                $('.item_info .service_charge').html((item.serviceCharge == undefined ? 0 : item.serviceCharge) + " %");
 
                 var attributes_types = "";
                 if(attributesTypes.length > 0) {

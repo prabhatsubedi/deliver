@@ -64,12 +64,10 @@
                                     <div class="form-group clearfix store_open_close">
                                         <div class="col-lg-6">
                                             <select id="open_time" name="open_time" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                                <option value="none">Select Opening Time</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-6">
                                             <select id="close_time" name="close_time" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                                <option value="none">Select Closing Time</option>
                                             </select>
                                         </div>
                                     </div>
@@ -136,7 +134,7 @@
                                         <button type="button" class="btn btn_green marker_nav marker_prev" disabled="disabled">Prev</button>
                                         <button type="button" class="btn btn_green marker_nav marker_next" disabled="disabled">Next</button>
                                         <button type="button" class="btn btn_green cancel_marker" disabled="disabled">Remove Marker</button>
-                                        <button type="submit" class="btn btn_green save_marker" disabled="disabled">Save Address</button>
+                                        <button type="submit" class="btn btn_green save_marker hidden" disabled="disabled">Save Address</button>
                                     </div>
                                 </form>
                             </div>

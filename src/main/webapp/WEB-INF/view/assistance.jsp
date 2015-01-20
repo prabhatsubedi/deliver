@@ -11,7 +11,6 @@
     <script type="text/javascript">
 
         var action = "";
-        var path_arr = [];
         $(document).ready(function(){
 
             $('.btn_cancel').click(function(){
@@ -31,19 +30,17 @@
                 }
                 return value;
             }
-            var pathname = window.location.pathname.split('/');
-            path_arr = remove_value(pathname, "");
-            if(path_arr[1] == "forgot_password") {
+            if(Main.getURLvalue(1) == "forgot_password") {
                 $('#container_email').removeClass('hidden');
                 action = "FORGOT";
-            } else if(path_arr[1] == "resend_confirmation") {
+            } else if(Main.getURLvalue(1) == "resend_confirmation") {
                 $('#container_email').removeClass('hidden');
                 $('#container_email .modal-header').html('Resend Confirmation Mail');
                 action = "RESEND";
-            } else if(path_arr[1] == "create_password") {
+            } else if(Main.getURLvalue(1) == "create_password") {
                 $('#container_password').removeClass('hidden');
                 action = "NEW";
-            } else if(path_arr[1] == "reset_password") {
+            } else if(Main.getURLvalue(1) == "reset_password") {
                 $('#container_password').removeClass('hidden');
                 $('#container_password .modal-header').html('Reset Password');
                 action = "RESET";
@@ -52,7 +49,7 @@
             }
 
             if(action == "NEW" || action == "RESET") {
-                if(path_arr[2] == undefined) {
+                if(Main.getURLvalue(2) == undefined) {
                     window.location = Main.modifyURL("/");
                     return false;
                 }
@@ -70,7 +67,7 @@
                     },
                     submitHandler: function() {
                         var data = {actionType: action};
-                        var headers = {verificationCode: path_arr[2], password: $('#password').val()};
+                        var headers = {verificationCode: Main.getURLvalue(2), password: $('#password').val()};
                         Main.assistance(data, headers);
                         return false;
                     }

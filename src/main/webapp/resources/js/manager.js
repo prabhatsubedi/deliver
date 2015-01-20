@@ -236,12 +236,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         Main.request(url, data, callback);
 
-        $('.item_container a').live('click', function(e) {
-            e.preventDefault();
-            var elem_parent = $(this).parents('.item_container');
-            console.log(elem_parent);
-        });
-
     };
 
     Manager.getCourierStaffs = function () {

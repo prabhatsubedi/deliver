@@ -65,6 +65,14 @@
                 re_calculate_width = false;
             }
         });
+
+        $('.item_container a').live('click', function(e) {
+            e.preventDefault();
+            var elem_parent = $(this).parents('.item_container');
+            Main.saveInLocalStorage('mid', elem_parent.attr('data-mid'));
+            window.location = $(this).attr('href');
+        });
+
         var sortableParam = {
             revert: true,
             tolerance: 'pointer',

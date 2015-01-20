@@ -159,8 +159,8 @@ if(typeof(Store) == "undefined") var Store = {};
 
         $('#form_store').validate({
             submitHandler: function() {
-                var loaderDiv = "#store_section .form_content";
-                $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
+//                var loaderDiv = "#store_section .form_content";
+//                $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
 
                 var geoKeyObject = arrGeoPoints[$(".save_marker").eq(0).attr('data-id')];
                 var geoParent = '#form_store';
@@ -181,10 +181,10 @@ if(typeof(Store) == "undefined") var Store = {};
                 geoKeyObject.contactNo = address_contact_number;
                 geoKeyObject.contactPerson = address_contact_person;
 
-                setTimeout(function(){
-                    $(loaderDiv).removeClass('loader_div').children('.loader').hide();
+//                setTimeout(function(){
+//                    $(loaderDiv).removeClass('loader_div').children('.loader').hide();
                     updateGeoPoints(false);
-                }, 500);
+//                }, 500);
 
                 return false;
             }

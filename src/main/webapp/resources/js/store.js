@@ -153,6 +153,10 @@ if(typeof(Store) == "undefined") var Store = {};
 
         };
 
+        $('#form_store input').change(function(){
+            $('#form_store').submit();
+        });
+
         $('#form_store').validate({
             submitHandler: function() {
                 var loaderDiv = "#store_section .form_content";

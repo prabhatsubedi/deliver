@@ -97,6 +97,8 @@ if(typeof(Store) == "undefined") var Store = {};
             timeSelect += '<option value="' + time + '">' + time + '</option>';
         }
         $('#open_time, #close_time').append(timeSelect);
+        $('#open_time').val("07:00:00");
+        $('#close_time').val("22:00:00");
 
         $('#open_time').selectpicker({size: 5});
         $('#close_time').selectpicker({size: 5});

@@ -64,12 +64,10 @@
                                     <div class="form-group clearfix store_open_close">
                                         <div class="col-lg-6">
                                             <select id="open_time" name="open_time" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                                <option value="none">Select Opening Time</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-6">
                                             <select id="close_time" name="close_time" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                                <option value="none">Select Closing Time</option>
                                             </select>
                                         </div>
                                     </div>

@@ -366,10 +366,12 @@ var data_categories_names = [];
                 elem_select.val(val);
                 elem_select.selectpicker('refresh');
             }
-            if($('.add_cat_open select option').length < 3)
+            if($('.add_cat_open select option').length < 3) {
                 $('.add_cat_open').remove();
-            else
+                showSubCatButton();
+            } else {
                 $('.add_cat_open').removeClass('add_cat_open');
+            }
         }
         $('#save_category').click(function(){
             if(!$('#new_category').valid()) return false;

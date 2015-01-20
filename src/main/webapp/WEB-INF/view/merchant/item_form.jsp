@@ -117,7 +117,7 @@
                                     </div>
                                 </div>
                                 <div class="form_head">Category</div>
-                                <div class="form_content">
+                                <div class="form_content category_loader">
                                     <div class="category_list_container">
                                         <input type="text" id="validate_categories" name="validate_categories" class="hidden" />
                                         <div id="category_container">
@@ -126,6 +126,9 @@
                                                     <option value="none">Select Category</option>
                                                 </select>
                                             </div>
+                                        </div>
+                                        <div class="btn_sub_cat form-group clearfix hidden">
+                                            <button type="button" class="btn btn_green add_sub_category pull-right">Add Another Level</button>
                                         </div>
                                         <div class="form-group add_categories hidden">
                                             <div class="new_category_fields">

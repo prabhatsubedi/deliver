@@ -401,7 +401,7 @@ if(typeof(Store) == "undefined") var Store = {};
                     store_list += "No stores are available.";
                 }
 
-                $('.items_container').append(store_list);
+                $('.items_container').html(store_list);
 
                 Main.elemRatio(function() {
                     $('.items_container .item_container').removeClass('invisible');

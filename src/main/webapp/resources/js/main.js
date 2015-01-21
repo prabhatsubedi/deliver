@@ -247,9 +247,6 @@ if(typeof(Main) == "undefined") var Main = {};
             });
             if(callback != undefined) callback();
         }
-        $(window).resize(function(){
-            elem_ratio();
-        });
         setTimeout(elem_ratio, 500);
     };
 
@@ -266,4 +263,7 @@ $(document).ready(function(){
     Main.checkURL();
     Main.elemRatio();
     Main.fullHeight();
+});
+$(window).resize(function(){
+    Main.elemRatio();
 });

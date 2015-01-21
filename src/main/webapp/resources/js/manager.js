@@ -28,7 +28,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var status = merchant.status;
                 var link_activation = "", link_profile = "";
 
-                if (status == "VERIFIED") {
+                if (status == "VERIFIED" || status == "UNVERIFIED") {
                     link_activation = '<a href="#" data-id="' + merchantId + '"  data-status="' + status + '"  data-toggle="modal" data-target="#modal_activation">Activate</a>';
                 } else if (status == "ACTIVE") {
                     link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '"  data-status="' + status + '" >Deactivate</a>';

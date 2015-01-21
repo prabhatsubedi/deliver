@@ -32,4 +32,5 @@ public interface UserDaoService extends GenericDaoService<Integer, UserEntity>{
     public UserEntity find(String userName, String password) throws Exception;
 
     public Boolean updateDeliveryContact(Integer userId, String mobileNo, String verificationCode) throws Exception;
+
 }

@@ -21,7 +21,7 @@ public interface CustomerService {
 
     public void saveCustomer(CustomerEntity customer, HeaderDto headerDto) throws Exception;
 
-    public void addCustomerAddress(HeaderDto headerDto, List<AddressEntity> addresses) throws Exception;
+    public Integer addCustomerAddress(AddressDto address) throws Exception;
 
     public AddressDto verifyMobile(String mobile, Long facebookId) throws Exception;
 
@@ -30,4 +30,6 @@ public interface CustomerService {
     public CustomerEntity getCustomerByFbId(Long facebook_id) throws Exception;
 
     public void registerCustomer(UserEntity user, HeaderDto headerDto) throws Exception;
+
+    public UserEntity getDeliveredAddress(Long facebookId) throws Exception;
 }

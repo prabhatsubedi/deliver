@@ -2,9 +2,11 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.AddressDaoService;
 import com.yetistep.delivr.model.AddressEntity;
+import com.yetistep.delivr.model.CategoryEntity;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -60,7 +62,21 @@ public class AddressDaoServiceImpl implements AddressDaoService{
         sqlQuery.setParameter("userId", userId);
         sqlQuery.setParameter("mobileNo", mobileNo);
         sqlQuery.setParameter("verified", true);
-        code = sqlQuery.uniqueResult() == null ? null : sqlQuery.uniqueResult().toString();
+        code =  sqlQuery.list().size() > 0 ? (String)sqlQuery.list().get(0) : null;
        return code;
+    }
+
+    @Override
+    public List<AddressEntity> getDeliveredAddress(Integer userId) throws Exception {
+        String sql = "SELECT " +
+                "id,city,country,country_code AS countryCode,latitude,longitude,state,street,full_name AS fullName,mobile_no AS mobileNumber,notes" +
+                " FROM address WHERE user_id = :userId AND verified = :verified";
+
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("userId", userId);
+        sqlQuery.setParameter("verified", true);
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(AddressEntity.class));
+        List<AddressEntity> addressEntities = sqlQuery.list();
+        return addressEntities;
     }
 }

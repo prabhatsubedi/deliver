@@ -117,7 +117,7 @@ public class AddressEntity implements Serializable {
         this.fullName = fullName;
     }
 
-    @Column(name = "mobile_no", unique = true)
+    @Column(name = "mobile_no")
     public String getMobileNumber() {
         return mobileNumber;
     }

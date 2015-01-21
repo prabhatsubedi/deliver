@@ -1,5 +1,8 @@
 package com.yetistep.delivr.model.mobile;
 
+import com.yetistep.delivr.model.AddressEntity;
+import com.yetistep.delivr.model.UserEntity;
+
 /**
  * Created with IntelliJ IDEA.
  * User: surendraJ
@@ -10,6 +13,8 @@ package com.yetistep.delivr.model.mobile;
 public class AddressDto {
     private Boolean mobileValidate;
     private String verificationCode;
+    private AddressEntity address;
+    private UserEntity user;
 
     public Boolean getMobileValidate() {
         return mobileValidate;
@@ -25,5 +30,21 @@ public class AddressDto {
 
     public void setVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
+    }
+
+    public AddressEntity getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressEntity address) {
+        this.address = address;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 }

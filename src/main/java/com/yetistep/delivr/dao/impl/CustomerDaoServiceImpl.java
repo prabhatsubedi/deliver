@@ -85,7 +85,7 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
 
     @Override
     public CustomerEntity findUser(Long facebookId) throws Exception {
-       String sql = "SELECT c.id, u.id AS userId FROM customers c " +
+       String sql = "SELECT c.id, u.id AS userId, u.last_address_mobile, u.verification_code, u.full_name FROM customers c " +
                "INNER JOIN users u ON (u.id = c.user_id) " +
                "WHERE c.facebook_id = :facebookId";
        SQLQuery query = getCurrentSession().createSQLQuery(sql);
@@ -98,6 +98,9 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
             customerEntity.setId(Integer.parseInt(row[0].toString()));
             UserEntity userEntity = new UserEntity();
             userEntity.setId(Integer.parseInt(row[1].toString()));
+            userEntity.setLastAddressMobile(row[2]!=null ?row[2].toString(): null);
+            userEntity.setVerificationCode(row[3]!=null ? row[3].toString() : null);
+            userEntity.setFullName(row[4]!=null ? row[4].toString(): null);
             customerEntity.setUser(userEntity);
         }
 

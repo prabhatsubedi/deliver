@@ -1,21 +1,19 @@
 <div class="header clearfix">
     <div class="item_search col-lg-8">
-        <form role="form" id="item_search" class="form-inline" method="POST" action="">
-            <div class="form-group col-lg-5 no_pad">
+        <form role="form" id="item_search" method="POST" action="">
+            <div class="col-lg-4 no_pad">
                 <input type="text" class="form-control" id="item_name" name="item_name" placeholder="Search Items">
             </div>
-            <div class="col-lg-7 no_pad">
-                <div class="form-group">
-                    <select id="item_categories" name="item_categories" class="item_categories" data-style="form-control">
+            <div class="col-lg-8 no_pad">
+                <div class="col-lg-9 no_pad">
+                    <select id="item_categories" name="item_categories" class="item_categories col-lg-6 col-xs-12 no_pad" data-style="form-control">
                         <option>All Categories</option>
                         <option>2</option>
                         <option>3</option>
                         <option>4</option>
                         <option>5</option>
                     </select>
-                </div>
-                <div class="form-group">
-                    <select id="item_stores" name="item_stores" class="item_stores" data-style="form-control">
+                    <select id="item_stores" name="item_stores" class="item_stores col-lg-6 col-xs-12 no_pad" data-style="form-control">
                         <option>All Stores</option>
                         <option>2</option>
                         <option>3</option>
@@ -23,7 +21,9 @@
                         <option>5</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-default">SEARCH</button>
+                <div class="col-lg-3 no_pad_right search_button">
+                    <button type="submit" class="btn btn-default">SEARCH</button>
+                </div>
             </div>
         </form>
     </div>

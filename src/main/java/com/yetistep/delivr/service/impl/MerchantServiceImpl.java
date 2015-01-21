@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -136,7 +135,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             * user status is updated based on verified status(true ==> ACTIVE, false ==> INACTIVE).
             */
             if(merchantEntity.getUser().getPassword().isEmpty()){
-                merchantEntity.setStatus(Status.UNVERIFIED);
+                if (merchantEntity.getCommissionPercentage() != null && merchantEntity.getUser().getStatus() == null) {
+                    merchantEntity.setStatus(Status.ACTIVE);
+                }else{
+                    merchantEntity.setStatus(Status.UNVERIFIED);
+                }
             }else if(merchantEntity.getCommissionPercentage() == null){
                 merchantEntity.setStatus(Status.VERIFIED);
             }else{
@@ -361,7 +364,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             * user status is updated based on verified status(true ==> ACTIVE, false ==> INACTIVE).
             */
         if(merchantEntity.getUser().getPassword().isEmpty()){
-            merchantEntity.setStatus(Status.UNVERIFIED);
+            if (merchantEntity.getCommissionPercentage() != null && merchantEntity.getUser().getStatus() == null) {
+                merchantEntity.setStatus(Status.ACTIVE);
+            }else{
+                merchantEntity.setStatus(Status.UNVERIFIED);
+            }
         }else if(merchantEntity.getCommissionPercentage() == null){
             merchantEntity.setStatus(Status.VERIFIED);
         }else{

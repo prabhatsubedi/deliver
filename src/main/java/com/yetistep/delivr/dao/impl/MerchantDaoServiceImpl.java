@@ -7,11 +7,9 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.sql.JoinType;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -209,6 +207,27 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<StoreEntity> stores = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoreEntity.class);
         criteria.add(Restrictions.and(Restrictions.eq("storesBrand.id", brandId)));
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("street"), "street")
+                .add(Projections.property("city"), "city")
+                .add(Projections.property("state"), "state")
+                .add(Projections.property("country"), "country")
+                .add(Projections.property("latitude"), "latitude")
+                .add(Projections.property("longitude"), "longitude")
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("name"), "name")
+        ).setResultTransformer(Transformers.aliasToBean(StoreEntity.class));
+        stores = criteria.list();
+
+        return stores;
+    }
+
+    @Override
+    public List<StoreEntity> findActiveStoresByBrand(Integer brandId) throws Exception {
+        List<StoreEntity> stores = new ArrayList<StoreEntity>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoreEntity.class);
+        criteria.add(Restrictions.and(Restrictions.eq("storesBrand.id", brandId)));
+        criteria.add(Restrictions.and(Restrictions.eq("status", Status.ACTIVE)));
         criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("street"), "street")
                 .add(Projections.property("city"), "city")

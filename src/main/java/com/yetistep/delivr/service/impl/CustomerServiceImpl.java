@@ -265,7 +265,7 @@ public class CustomerServiceImpl implements CustomerService {
         order.setTotalCost(itemTotalCost);
         order.setSurgeFactor(getSurgeFactor());
         order.setItemServiceAndVatCharge(itemServiceAndVatCharge);
-        List<StoreEntity> stores = merchantDaoService.findStoreByBrand(brandId);
+        List<StoreEntity> stores = merchantDaoService.findActiveStoresByBrand(brandId);
         StoreEntity store = findNearestStoreFromCustomer(order, stores);
 
         order.setStore(store);

@@ -4,6 +4,7 @@ import com.google.maps.DistanceMatrixApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixElement;
+import com.google.maps.model.DistanceMatrixElementStatus;
 import com.google.maps.model.DistanceMatrixRow;
 
 import java.math.BigDecimal;
@@ -78,7 +79,10 @@ public class GeoCodingUtil {
         DistanceMatrix distanceMatrix = DistanceMatrixApi.getDistanceMatrix(context, origin, destination).await();
         for(DistanceMatrixRow distanceMatrixRow: distanceMatrix.rows){
             for(DistanceMatrixElement element: distanceMatrixRow.elements){
-                distance.add(new BigDecimal(element.distance.inMeters));
+                if(element.status.equals(DistanceMatrixElementStatus.OK))
+                    distance.add(new BigDecimal(element.distance.inMeters));
+                else
+                    throw new YSException("GEO001");
             }
         }
         return distance;

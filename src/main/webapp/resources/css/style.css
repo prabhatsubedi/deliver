@@ -511,7 +511,7 @@ body.assistance_page {
     padding: 20px 30px;
 }
 .main_container .header .item_search {
-    line-height: 60px;
+    line-height: 100%;
     font-size: 0px;
 }
 .main_container .header .item_search .form-control {
@@ -529,6 +529,9 @@ body.assistance_page {
     border-radius: 3px 0px 0px 3px;
     width: 100%;
 }
+.main_container .header .item_search .bootstrap-select {
+    margin: 0px;
+}
 .main_container .header .item_search .item_categories .form-control {
     border-left: 1px solid #CCCCCC !important;
     border-right: 1px solid #CCCCCC !important;
@@ -541,7 +544,6 @@ body.assistance_page {
     background-color: #9c5209;
     border: none;
     color: #FFFFFF;
-    margin-left: 10px;
 }
 .main_container .header .user_name {
     color: #ffffff;
@@ -1349,4 +1351,27 @@ label.check_label .checkbox {
 .invite_logo_container {
     margin: 20px auto;
     width: 20%;
+}
+
+
+/* css media queries */
+@media (max-width: 1199px) {
+
+    .main_container .header .item_search {
+        padding: 0px;
+    }
+    .main_container .header .item_search #item_name {
+        border: none !important;
+        border-radius: 3px !important;
+        margin-bottom: 1px;
+    }
+    .main_container .header .item_search .item_categories .form-control, .main_container .header .item_search .item_stores .form-control {
+        border: none !important;
+        border-radius: 3px !important;
+        margin-bottom: 1px;
+    }
+    .main_container .header .item_search .search_button {
+        padding: 0px !important;
+    }
+
 }

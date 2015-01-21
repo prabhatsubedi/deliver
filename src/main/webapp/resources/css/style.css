@@ -1057,6 +1057,8 @@ label.check_label .checkbox {
 }
 .items_container .block_item .item_infos .item_name {
     font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
 }
 .items_container .block_item .item_infos .item_name a {
     color: #333333;
@@ -1351,6 +1353,30 @@ label.check_label .checkbox {
 .invite_logo_container {
     margin: 20px auto;
     width: 20%;
+}
+
+/* pagination */
+.pagination_list {
+    margin: 15px 0px 15px 0px;
+}
+.pagination_list .pagination, .pagination_list .bootstrap-select {
+    margin: 0px;
+}
+.pagination_list .pagination li a {
+    border-radius: 0px;
+    color: #626262;
+    background-color: #FFFFFF;
+    border: 1px solid #f7941d;
+}
+.pagination_list .pagination li.active a {
+    background-color: #FAC08F;
+    color: #626262;
+    border: 1px solid #f58220;
+}
+.pagination_list .pagination li.disabled a {
+    border-color: #dddddd;
+    color: #cccccc;
+    cursor: not-allowed;
 }
 
 

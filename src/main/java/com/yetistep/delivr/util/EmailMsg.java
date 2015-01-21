@@ -57,22 +57,27 @@ iDelivr Team
         StringBuilder body = new StringBuilder();
 
         body.append(getHtmlHeader(serverUrl));
-        body.append("<div style='padding: 20px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='153' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 32px;color: #AAAAAA;'>iDelivr</div></div>");
-        body.append("<div style='height: 180px;line-height: 80px;background-color: #F58220;color: #ffffff;font-size: 24px;'>Welcome & thank you for joining iDelivr.</div>");
 
-        body.append("Your account details are as follows:<br/>");
-        body.append("Your username: "+userEmail+"<br/><br/>");
+        body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
+        body.append("<div style='padding: 20px; width:100%; height:90px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='90' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 40px;color: #AAAAAA;font-weight:bold;margin-left:20px;'>iDelivr</div></div>");
+        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px;'>Please click on the link to verify your account and create your own password.</div>");
 
-        body.append("Please click on the link to verify your account and create your own password: <br/>");
-        body.append("<a href='" + url + "'  style='background:#52B4F3; padding: 10px 20px; color: #FFFFFF; text-decoration: none; display: inline-block;; border-radius: 3px; margin: 10px 0px;'>" + url + "</a>");
-        body.append("If the above link does not work, please copy & paste the following URL in your web browser: <br/>");
-        body.append(url);
-        body.append("<br/><br/>");
+        body.append("<div style='font-size: 16px; padding: 30px;'>");
+        body.append("<p>Dear <b>"+userName+", </b></p>");
+        body.append("<p>Your account details are as follows:</p>");
+        body.append("<p><b>Your username: </b>"+userEmail+"</p>");
 
-        body.append("Your account will be activated after verification.<br/><br/><br/><br/>");
+        body.append("<p>Please click on the link to verify your account and create your own password: <a href='" + url + "'  style='padding: 10px 20px; color: #52B4F3; text-decoration: none; display: inline-block; margin: 10px 0px;font-size: 22px;'>Verify Your Account.</a></p>");
+        body.append("<p>If the above link does not work, please copy & paste the following URL in your web browser: </p>");
+        body.append("<p>"+url+"</p>");
 
-        body.append("Sincerely,<br/><br/><br/>");
-        body.append("iDelivr Team");
+        body.append("<p>Your account will be activated after verification.</p>");
+
+        body.append("<div style='width=100%; float: left; margin-top: 30px;'>");
+        body.append("<p>Sincerely,</p>");
+        body.append("<p>iDelivr Team</p>");
+        body.append("</div>");
+        body.append("</div>");
 
         return prepareEmail(subject, body.toString(), null, serverUrl );
     }
@@ -80,44 +85,98 @@ iDelivr Team
     public static String resetForgotPassword(String url, String userName, String subject, String serverUrl) {
         StringBuilder body = new StringBuilder();
 
-        body.append("Dear " + userName + ",<br/><br/>");
-        body.append("We're sorry you are having difficulty logging in.Click on the link below to reset your password.<br/><br/>");
+        body.append(getHtmlHeader(serverUrl));
 
-        body.append("Please click on the link below and navigate to reset your new password. <br/>");
+        body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
+        body.append("<div style='padding: 20px; width:100%; height:90px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='90' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 40px;color: #AAAAAA;font-weight:bold;margin-left:20px;'>iDelivr</div></div>");
+        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px;'>We're sorry you are having difficulty logging in.</div>");
+
+        body.append("<div style='font-size: 16px; padding: 30px;'>");
+        body.append("<p>Dear <b>"+userName+", </b></p>");
+        body.append("<p>Please click on the link below and navigate to reset your new password. </p>");
         body.append(getEmailBodyButton("Reset Password", url));
-        body.append("If the link does not work,please copy & paste the following URL in your web browser:<br/>");
-        body.append(url);
+        body.append("<p>If the link does not work,please copy & paste the following URL in your web browser:</p>");
+        body.append("<p>"+url+"</p>");
 
-        body.append("<br/><br/>");
+        body.append("<div style='width=100%; float: left; margin-top: 30px;'>");
+        body.append("<p>Sincerely,</p>");
+        body.append("<p>iDelivr Team</p>");
+        body.append("</div>");
+        body.append("</div>");
 
         return prepareEmail(subject, body.toString(), null, serverUrl);
     }
+
+    /*
+    * Dear <Merchant Contact Person Name>,
+
+
+
+Your account has been approved & activated.
+You can now start uploading your stores, product and services.
+
+[Login to iDelivr]
+
+
+
+Sincerely,
+
+iDelivr Team
+    * */
 
     public static String activateMerchant(String url, String contactPerson, String subject, String serverUrl) {
         StringBuilder body = new StringBuilder();
         body.append(getHtmlHeader(serverUrl));
-        body.append("Dear  " + contactPerson + ",<br/><br/>");
-        body.append("Your account has been approved & activated. You can access your dashboard." + "<br/><br/>");
+        body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
+        body.append("<div style='padding: 20px; width:100%; height:90px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='90' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 40px;color: #AAAAAA;font-weight:bold;margin-left:20px;'>iDelivr</div></div>");
+        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px;'>Your account has been approved & activated.</div>");
+
+        body.append("<div style='font-size: 16px; padding: 30px;'>");
+        body.append("<p>Dear <b>"+contactPerson+"</b></p>");
+        body.append("<p>You can now start uploading your stores, product and services.</p>");
 
         body.append(getEmailBodyButton("Login to Delivr", url));
-        body.append("<br/>");
+
+        body.append("<div style='width=100%; float: left; margin-top: 30px;'>");
+        body.append("<p>Sincerely,</p>");
+        body.append("<p>iDelivr Team</p>");
+        body.append("</div>");
+        body.append("</div>");
         return prepareEmail(subject, body.toString(), null, serverUrl);
     }
 
 
+    public static String deactivateMerchant(String url, String contactPerson, String subject, String serverUrl) {
+        StringBuilder body = new StringBuilder();
+        body.append(getHtmlHeader(serverUrl));
+        body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
+        body.append("<div style='padding: 20px; width:100%; height:90px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='90' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 40px;color: #AAAAAA;font-weight:bold;margin-left:20px;'>iDelivr</div></div>");
+        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px;'>We have deactivated your account as requested.</div>");
+
+        body.append("<div style='font-size: 16px; padding: 30px;'>");
+        body.append("<p>Dear <b>"+contactPerson+"</b></p>");
+        body.append("<p style='font-weight:bold'>We look forward to seeing you back on iDelivr soon.</p>");
+
+        body.append("<div style='width=100%; float: left; margin-top: 30px;'>");
+        body.append("<p>Sincerely,</p>");
+        body.append("<p>iDelivr Team</p>");
+        body.append("</div>");
+        body.append("</div>");
+        return prepareEmail(subject, body.toString(), null, serverUrl);
+    }
+
     private static String getEmailBodyButton(String viewLink, String url) {
         StringBuilder builder = new StringBuilder();
-        builder.append("<a href='" + url + "'  style='background:#52B4F3; padding: 10px 20px; color: #FFFFFF; text-decoration: none; display: inline-block;; border-radius: 3px; margin: 10px 0px;'>" + viewLink + "</a>");
-        builder.append("<br clear='all'/>");
+        builder.append("<p><a href='" + url + "'  style='padding: 10px 20px; color: #52B4F3; text-decoration: none; display: inline-block; margin: 10px 0px;'>" + viewLink + "</a></p>");
         return builder.toString();
     }
 
     private static String getEmailFooter() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Delivr is available for");
-        builder.append("<div style='width:47%; margin:0 auto; align:center;'><a href='#' style='text-decoration: none; float: left; color: #999999;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/iphone_final.png' style='padding: 10px 20px;display:block;'>i-phone</a>\n" +
-               "<a href='https://play.google.com/store/apps/details?id=com.yetistep.dealify' style='text-decoration: none; float: left; color: #999999;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/android_final.png' style='padding: 10px 20px;display:block;'>Android</a>\n"+
-               "<a href='#' style='text-decoration: none;  float: left; color: #999999;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/desktop_final.png' style='padding: 10px 20px;display:block;'>Desktop</a></div>");
+        builder.append("<p style='font-weight:bold; font-size:22px; text-align: center;'>Delivr is available for</p>");
+        builder.append("<div style='width:47%; margin:0 auto; align:center; padding: 30px 0;'><a href='#' style='text-decoration: none; float: left; color: #999999; font-weight:bold; text-align:center;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/iphone_final.png' style='padding: 10px 20px;display:block;'>i-phone</a>\n" +
+               "<a href='https://play.google.com/store/apps/details?id=com.yetistep.dealify' style='text-decoration: none; float: left; color: #999999; font-weight:bold; text-align:center;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/android_final.png' style='padding: 10px 20px;display:block;'>Android</a>\n"+
+               "<a href='#' style='text-decoration: none;  float: left; color: #999999; font-weight:bold; text-align:center;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/desktop_final.png' style='padding: 10px 20px;display:block;'>Desktop</a></div>");
         return builder.toString();
     }
 
@@ -153,9 +212,9 @@ iDelivr Team
     private static String getEmailTableFooter() {
         StringBuilder footer = new StringBuilder();
 
-        footer.append("<tr style='background:#F5F5F5'>");
-        footer.append("<td>");
-        footer.append("Sincerely,<br />");
+        //footer.append("<tr style='background:#F5F5F5'>");
+        //footer.append("<td>");
+        //footer.append("Sincerely,<br />");
 
 //        String compName = SystemPropertyManager.readPrefValue(PreferenceType.COMPANY_NAME);
 //        String address = SystemPropertyManager.readPrefValue(PreferenceType.COMPANY_ADDRESS);
@@ -163,17 +222,17 @@ iDelivr Team
 //        String website = SystemPropertyManager.readPrefValue(PreferenceType.COMPANY_WEBSITE);
 //        String vatNo = SystemPropertyManager.readPrefValue(PreferenceType.COMPANY_VAT_NO);
 
-        footer.append(COMPANY_NAME + " Team " + "<br/><br />");
-        footer.append("</td>");
-        footer.append("</tr>");
+        //footer.append(COMPANY_NAME + " Team " + "<br/><br />");
+        //footer.append("</td>");
+        //footer.append("</tr>");
         return footer.toString();
     }
 
     private static String getLinkFooter() {
         StringBuilder builder = new StringBuilder();
-        builder.append("<tr align='center'>");
-        builder.append("<td><a href='#'>Privacy Policy</a></td>");
-        builder.append("</tr>");
+        builder.append("<div style='margin: 0 auto; width: 100%; text-align: center;'>");
+        builder.append("<a href='#'>Privacy Policy</a>");
+        builder.append("</div>");
         return builder.toString();
     }
 
@@ -187,18 +246,18 @@ iDelivr Team
     public static String prepareEmail(String subjectContent, String bodyContent, String userHeadContent, String serverUrl) {
         StringBuilder builder = new StringBuilder();
         builder.append(getHtmlHeader(serverUrl));
-        builder.append("<table width='900px;' align='center' border='0' style='background:#DCDCDC' cellspacing='20px' cellpadding='10px'><tr><td>");
-        builder.append("<table width='700' border='0' cellspacing='0px' cellpadding='30' align='center' style='background:white;border-radius:15px;color:#626262'>");
+        builder.append("<div style='background:#EFEFEF;width:900px;padding:40px;'>");
+        builder.append("<div style='color:#626262;margin:0 auto;width:700px;'>");
         builder.append(getEmailHead(userHeadContent));
         // builder.append(getEmailSubject(subjectContent));
         builder.append(getEmailBody(bodyContent));
         builder.append(getEmailTableFooter());
-        builder.append("</table></td></tr>");
-        builder.append("<tr><td>");
+        builder.append("</div>");
+        builder.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color:white;border-radius: 15px;padding:20px 0px;width:700px;border:1px solid #E0E0E0;'>");
         builder.append(getEmailFooter());
-        builder.append("</td></tr>");
+        builder.append("</div>");
         builder.append(getLinkFooter());
-        builder.append("</table>");
+        builder.append("</div>");
         builder.append(getHtmlClosing());
         return builder.toString();
     }

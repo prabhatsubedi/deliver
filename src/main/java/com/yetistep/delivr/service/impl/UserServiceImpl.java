@@ -193,7 +193,26 @@ public class UserServiceImpl extends AbstractManager implements UserService{
             throw new YSException("VLD011");
         }
         user.setVerifiedStatus(userEntity.getVerifiedStatus());
-        return userDaoService.update(user);
+
+
+        userDaoService.update(user);
+
+        if(user.getRole().getRole().toString().equals("ROLE_MERCHANT") && user.getVerifiedStatus() == false) {
+            //Sending Email For Merchant
+            String url = getServerUrl();
+            String body = EmailMsg.deactivateMerchant(url, user.getFullName(), " Your account has been deactivated", getServerUrl());
+            String subject = "Delivr: Your account has been deactivated ";
+            sendMail(user.getUsername(), body, subject);
+        } else if (user.getRole().getRole().equals("ROLE_MERCHANT") && user.getVerifiedStatus() == true){
+            //Sending Email For Merchant
+            String url = getServerUrl();
+            String body = EmailMsg.activateMerchant(url, user.getFullName(), " Your account has been activated", getServerUrl());
+            String subject = "Delivr: Your account has been activated ";
+            sendMail(user.getUsername(), body, subject);
+        }
+
+
+        return true;
     }
 
 

@@ -31,14 +31,24 @@
                 <div class="form_head">Prioritized Stores</div>
                 <div id="prioritized_stores" class="form_content clearfix"></div>
                 <div class="form_head">Other Stores</div>
-                <div class="form_content clearfix" id="other_stores"></div>
+                <div class="form_content clearfix">
+                    <div class="clearfix" id="other_stores"></div>
+                    <div class="pagination_list col-lg-12">
+                        <ul class="pagination pull-left"></ul>
+                        <div class="num_items pull-right">
+                            Show per Page
+                            <select data-width="auto" name="select_num_items" class="select_num_items"></select>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <div class="block_store_template hidden">
-    <div class="item_container unselectable col-lg-2 invisible">
+    <div class="item_container unselectable col-lg-2 col-md-3 col-xs-4 invisible">
         <div class="block_item">
             <div class="item_image maintain_ratio" mr-height="400" mr-width="720">
                 <img class="img-responsive no_image">
@@ -54,16 +64,22 @@
 
 <script type="text/javascript">
 
+    var pageSize = 12;
     $(document).ready(function(){
+
+        $('.select_num_items').selectpicker();
 
         var re_calculate_width = true;
         $('.item_container').live('mouseover', function(){
             if(re_calculate_width == true) {
-                $('.item_container').width($('.item_container').eq(0).width() - 1);
-                $('.item_container').height($('.item_container').eq(0).height());
-                console.log($('.item_container').eq(0).width());
+                $('.items_container .item_container').width($('.item_container').eq(0).width() - 1);
+                $('.items_container .item_container').height($('.item_container').eq(0).height());
                 re_calculate_width = false;
             }
+        });
+        $(window).resize(function() {
+            $('.items_container .item_container').removeAttr('style');
+            re_calculate_width = true;
         });
 
         $('.item_container a').live('click', function(e) {
@@ -97,7 +113,23 @@
         $('#prioritized_stores').sortable(sortableParam);
 
         Manager.stores({}, true);
-        Manager.stores({pageNumber: 1, pageSize: 12});
+        Manager.stores({pageNumber: 1, pageSize: pageSize});
+
+        $('.pagination a').live('click', function(e){
+            e.preventDefault();
+        });
+
+        $('.pagination li:not(".disabled") a').live('click', function(){
+            $('.items_container .item_container').removeAttr('style');
+            re_calculate_width = true;
+            Manager.stores({pageNumber: $(this).attr('pageno'), pageSize: $('.select_num_items').val()});
+        });
+
+        $('.select_num_items').live('change', function(){
+            $('.items_container .item_container').removeAttr('style');
+            re_calculate_width = true;
+            Manager.stores({pageNumber: 1, pageSize: $('.select_num_items').val()});
+        });
 
     });
 

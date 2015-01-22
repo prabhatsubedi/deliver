@@ -28,7 +28,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var status = merchant.status;
                 var link_activation = "", link_profile = "";
 
-                if (status == "VERIFIED") {
+                if (status == "VERIFIED" || status == "UNVERIFIED") {
                     link_activation = '<a href="#" data-id="' + merchantId + '"  data-status="' + status + '"  data-toggle="modal" data-target="#modal_activation">Activate</a>';
                 } else if (status == "ACTIVE") {
                     link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '"  data-status="' + status + '" >Deactivate</a>';
@@ -176,7 +176,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     };
 
-    Manager.stores = function (data, prioritized) {
+    Manager.stores = function (params, prioritized) {
+
+        if(params.pageSize == 0) delete params.pageSize;
 
         var url = "/organizer/";
         if (prioritized) {
@@ -190,8 +192,51 @@ if (typeof(Manager) == "undefined") var Manager = {};
             if (data.success == true) {
                 var stores = data.params.storeBrands;
                 if ('data' in stores) {
+
                     var total_stores = stores.numberOfRows;
+                    var listed_stores = stores.data.length;
+                    var page_number = parseInt(params.pageNumber);
+                    var page_size = params.pageSize;
+                    if(page_size == undefined) page_size = listed_stores;
+                    var total_pages = Math.ceil(total_stores/page_size);
+                    var page_list = '<li class="prev_page"><a href="#" pageno="' + (page_number - 1) + '">&laquo;</a></li>';
+                    for(var i = 1; i <= total_pages; i++) {
+                        page_list += '<li ' + (i == page_number ? 'class="active"' : '') + '><a href="#" pageno="' + i + '">' + i + '</a></li>';
+                    }
+                    page_list += '<li class="next_page"><a href="#" pageno="' + (page_number + 1) + '">&raquo;</a></li>';
+                    $('.pagination').html(page_list);
+                    if(page_number == 1) {
+                        $('.pagination .prev_page').addClass('disabled');
+                    }
+                    if(page_number == total_pages) {
+                        $('.pagination .next_page').addClass('disabled');
+                    }
+
+                    var page_size_list = '';
+                    var ts_ceil = Math.ceil(total_stores/5);
+                    var ts_mod = ts_ceil % 5;
+                    var page_num_multiplier = ts_ceil;
+                    if(ts_mod > 0) page_num_multiplier = ts_ceil + (5 - ts_mod);
+                    if(total_stores > pageSize) {
+                        var i = pageSize;
+                        page_size_list += '<option value="' + i + '" ' + (page_size == i ? "selected=\"selected\"" : "") + '>' + i + '</option>';
+                        i = page_num_multiplier * 1;
+                        if(i < total_stores && i > pageSize)
+                            page_size_list += '<option value="' + i + '" ' + (page_size == i ? "selected=\"selected\"" : "") + '>' + i + '</option>';
+                        i = page_num_multiplier * 2;
+                        if(i < total_stores && i > pageSize)
+                            page_size_list += '<option value="' + i + '" ' + (page_size == i ? "selected=\"selected\"" : "") + '>' + i + '</option>';
+                        i = page_num_multiplier * 3;
+                        if(i < total_stores && i > pageSize)
+                            page_size_list += '<option value="' + i + '" ' + (page_size == i ? "selected=\"selected\"" : "") + '>' + i + '</option>';
+                    }
+                    i = 0;
+                    page_size_list += '<option value="' + i + '" ' + (page_size == total_stores ? "selected=\"selected\"" : "") + '>All</option>';
+                    $('select.select_num_items').html(page_size_list);
+                    $('select.select_num_items').selectpicker('refresh');
+
                     stores = stores.data;
+                    var store_list = '';
                     for (var i = 0; i < stores.length; i++) {
                         var elem = $('.block_store_template').clone();
                         var storeBrand = stores[i];
@@ -201,12 +246,14 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
                         $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
                         $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
-                        $('#other_stores').append(elem.html());
+                        store_list += elem.html();
                     }
-
+                    $('#other_stores').html(store_list);
 
                 } else {
 
+                    var store_list_featured = '';
+                    var store_list_prirotized = '';
                     for (var i = 0; i < stores.length; i++) {
                         var storeBrand = stores[i];
                         storeBrand.featured ? featured_count++ : prioritized_count++;
@@ -217,8 +264,13 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
                         $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
                         $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
-                        $(storeBrand.featured ? '#featured_stores' : '#prioritized_stores').append(elem.html());
+                        if(storeBrand.featured)
+                            store_list_featured += elem.html();
+                        else
+                            store_list_prirotized += elem.html();
                     }
+                    $('#featured_stores').html(store_list_featured);
+                    $('#prioritized_stores').html(store_list_prirotized);
 
                 }
 
@@ -234,7 +286,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         callback.loaderDiv = "body";
 
-        Main.request(url, data, callback);
+        Main.request(url, params, callback);
 
     };
 

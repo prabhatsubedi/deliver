@@ -4,6 +4,7 @@ package com.yetistep.delivr.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.Gender;
 import com.yetistep.delivr.enums.Status;
@@ -235,6 +236,7 @@ public class UserEntity implements Serializable {
         return verificationCode;
     }
 
+    @JsonProperty
     public void setVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
     }

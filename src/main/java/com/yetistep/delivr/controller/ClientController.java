@@ -99,17 +99,37 @@ public class ClientController extends AbstractManager{
 
     @RequestMapping(value = "/add_address", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> addAddresses(@RequestHeader HttpHeaders headers, @RequestBody List<AddressEntity> addresses) {
+    public ResponseEntity<ServiceResponse> addAddresses(@RequestHeader HttpHeaders headers, @RequestBody AddressDto address) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID, GeneralUtil.ACCESS_TOKEN);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
             validateMobileClient(headerDto.getAccessToken());
-            customerService.addCustomerAddress(headerDto, addresses);
+            Integer addressId  = customerService.addCustomerAddress(address);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Customer address has been added successfully");
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
+            ServiceResponse serviceResponse = new ServiceResponse("Address has been added successfully");
+            serviceResponse.addParam("addressId", addressId);
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while adding customer address", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "get_delivered_address/fbId/{facebookId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getDeliveredAddress(@PathVariable("facebookId") Long facebookId) {
+        try {
+
+            UserEntity user  = customerService.getDeliveredAddress(facebookId);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Delivered address retrieved successfully");
+            serviceResponse.addParam("user", user);
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while getting customer address", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
@@ -119,9 +139,9 @@ public class ClientController extends AbstractManager{
     @ResponseBody
     public ResponseEntity<ServiceResponse> setMobileCode(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
         try {
-            HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-            validateMobileClient(headerDto.getAccessToken());
+//            HeaderDto headerDto = new HeaderDto();
+//            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+//            validateMobileClient(headerDto.getAccessToken());
 
             AddressDto address = customerService.verifyMobile(user.getMobileNumber(), user.getCustomer().getFacebookId());
 

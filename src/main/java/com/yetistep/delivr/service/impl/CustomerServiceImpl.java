@@ -168,17 +168,57 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void addCustomerAddress(HeaderDto headerDto, List<AddressEntity> addresses) throws Exception {
-        int customerId = Integer.parseInt(headerDto.getId());
-        CustomerEntity customerEntity = customerDaoService.find(customerId);
-        if(customerEntity == null){
+    public Integer addCustomerAddress(AddressDto addressDto) throws Exception {
+        log.info("+++++++++++++++ Adding Customer Address +++++++++++++++");
+        UserEntity user = addressDto.getUser();
+        AddressEntity address = addressDto.getAddress();
+
+        /* Check Customer JSON */
+        if (user.getCustomer() == null || user.getCustomer().getFacebookId() == null)
+            throw new YSException("JSN001");
+
+        /* Check Mobile and Address */
+        if (user.getLastAddressMobile() == null)
+            throw new YSException("JSN001");
+
+        /* Check Customer Existence */
+        CustomerEntity customerEntity = customerDaoService.findUser(user.getCustomer().getFacebookId());
+        if (customerEntity == null)
             throw new YSException("VLD011");
+
+        /* Check Valid Mobile and Mobile Code */
+        if (user.getLastAddressMobile().equals(customerEntity.getUser().getLastAddressMobile())) {
+            if (user.getVerificationCode() != null) {
+                if (!user.getVerificationCode().equals(customerEntity.getUser().getVerificationCode()))
+                    throw new YSException("SEC011");
+            } else {
+                String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), user.getLastAddressMobile());
+                if (mobCode == null)
+                    throw new YSException("SEC010");
+                else
+                    user.setVerificationCode(mobCode);
+            }
+
+        } else {
+            String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), user.getLastAddressMobile());
+            if (mobCode == null)
+                throw new YSException("SEC010");
+            else
+                user.setVerificationCode(mobCode);
         }
-        for(AddressEntity address: addresses){
-            address.setUser(customerEntity.getUser());
-        }
-        customerEntity.getUser().setAddresses(addresses);
+
+
+        address.setUser(customerEntity.getUser());
+        address.setMobileNumber(user.getLastAddressMobile());
+        address.setVerificationCode(user.getVerificationCode());
+        address.setVerified(true);
+
+        List<AddressEntity> addressEntities = new ArrayList<>();
+        addressEntities.add(address);
+
+        customerEntity.getUser().setAddresses(addressEntities);
         customerDaoService.save(customerEntity);
+        return customerEntity.getUser().getAddresses().get(0).getId();
     }
 
     @Override
@@ -206,6 +246,24 @@ public class CustomerServiceImpl implements CustomerService {
 
         return address;
 
+    }
+
+    @Override
+    public UserEntity getDeliveredAddress(Long facebookId) throws Exception {
+        log.info("++++++++++++++ Getting my delivered address ++++++++++++++");
+
+        CustomerEntity customerEntity  = customerDaoService.findUser(facebookId);
+        if(customerEntity == null)
+            throw new Exception("VLD011");
+
+        UserEntity user = customerEntity.getUser();
+
+        List<AddressEntity> address = addressDaoService.getDeliveredAddress(user.getId());
+        if(address.size() == 0)
+            address = null;
+
+        user.setAddresses(address);
+        return user;
     }
 
     @Override
@@ -521,4 +579,6 @@ public class CustomerServiceImpl implements CustomerService {
         user.getCustomer().setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_REWARD_AMOUNT)));
         userDaoService.save(user);
     }
+
+
 }

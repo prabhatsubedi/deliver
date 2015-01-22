@@ -135,9 +135,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             * user status is updated based on verified status(true ==> ACTIVE, false ==> INACTIVE).
             */
             if(merchantEntity.getUser().getPassword().isEmpty()){
-                if (merchantEntity.getCommissionPercentage() != null && merchantEntity.getUser().getStatus() == null) {
-                    merchantEntity.setStatus(Status.ACTIVE);
-                }else{
+                if(merchantEntity.getUser().getVerifiedStatus() != null && merchantEntity.getCommissionPercentage()!=null){
+                    if (merchantEntity.getUser().getVerifiedStatus()) {
+                        merchantEntity.setStatus(Status.ACTIVE);
+                    }else{
+                        merchantEntity.setStatus(Status.INACTIVE);
+                    }
+                }else {
                     merchantEntity.setStatus(Status.UNVERIFIED);
                 }
             }else if(merchantEntity.getCommissionPercentage() == null){
@@ -364,9 +368,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             * user status is updated based on verified status(true ==> ACTIVE, false ==> INACTIVE).
             */
         if(merchantEntity.getUser().getPassword().isEmpty()){
-            if (merchantEntity.getCommissionPercentage() != null && merchantEntity.getUser().getStatus() == null) {
-                merchantEntity.setStatus(Status.ACTIVE);
-            }else{
+            if(merchantEntity.getUser().getVerifiedStatus() != null  && merchantEntity.getCommissionPercentage()!=null){
+                if (merchantEntity.getUser().getVerifiedStatus()) {
+                    merchantEntity.setStatus(Status.ACTIVE);
+                }else{
+                    merchantEntity.setStatus(Status.INACTIVE);
+                }
+            }else {
                 merchantEntity.setStatus(Status.UNVERIFIED);
             }
         }else if(merchantEntity.getCommissionPercentage() == null){

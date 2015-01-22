@@ -2,10 +2,13 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,6 +29,7 @@ public class ItemsOrderEntity implements Serializable {
     private Boolean availabilityStatus;
     private String note;
     private String customItem;
+    private List<ItemsOrderAttributeEntity> itemOrderAttributes;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,8 +42,9 @@ public class ItemsOrderEntity implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "item_id")
+    @LazyCollection(LazyCollectionOption.FALSE)
     public ItemEntity getItem() {
         return item;
     }
@@ -103,5 +108,15 @@ public class ItemsOrderEntity implements Serializable {
 
     public void setCustomItem(String customItem) {
         this.customItem = customItem;
+    }
+
+    @OneToMany(mappedBy = "itemOrder", cascade = CascadeType.ALL, orphanRemoval=true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    public List<ItemsOrderAttributeEntity> getItemOrderAttributes() {
+        return itemOrderAttributes;
+    }
+
+    public void setItemOrderAttributes(List<ItemsOrderAttributeEntity> itemOrderAttributes) {
+        this.itemOrderAttributes = itemOrderAttributes;
     }
 }

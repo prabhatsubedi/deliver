@@ -64,6 +64,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     AddressDaoService addressDaoService;
 
+    @Autowired
+    ItemsAttributeDaoService itemsAttributeDaoService;
+
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
         log.info("++++++++++++++ Logging Customer ++++++++++++++++");
@@ -311,7 +314,14 @@ public class CustomerServiceImpl implements CustomerService {
             iOrder.setItem(item);
             iOrder.setOrder(order);
             iOrder.setAvailabilityStatus(true);
-            BigDecimal itemTotal = BigDecimalUtil.calculateCost(iOrder.getQuantity(), item.getUnitPrice());
+            BigDecimal attributePrice = BigDecimal.ZERO;
+            for(ItemsOrderAttributeEntity itemsOrderAttribute : iOrder.getItemOrderAttributes()){
+                ItemsAttributeEntity itemsAttribute = itemsAttributeDaoService.find(itemsOrderAttribute.getItemsAttribute().getId());
+                if(itemsAttribute == null)
+                    throw new YSException("ITM003");
+                attributePrice.add(itemsAttribute.getUnitPrice());
+            }
+            BigDecimal itemTotal = BigDecimalUtil.calculateCost(iOrder.getQuantity(), item.getUnitPrice(), attributePrice);
             iOrder.setItemTotal(itemTotal);
             itemTotalCost = itemTotalCost.add(itemTotal);
 

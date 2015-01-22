@@ -62,3 +62,6 @@ ALTER TABLE `items_orders` DROP `item_total` ;
 ############ 2015.01.21 ###################
 ALTER TABLE address DROP INDEX UK_4t7y1821minhabn2kbl990ith;
 
+########### 2015.01.22 #####################
+ALTER TABLE items_attributes MODIFY COLUMN unit_price decimal(19,2) NULL;
+

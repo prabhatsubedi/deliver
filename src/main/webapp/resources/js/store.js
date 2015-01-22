@@ -329,6 +329,7 @@ if(typeof(Store) == "undefined") var Store = {};
                             geoPointData.latitude = store.latitude;
                             geoPointData.longitude = store.longitude;
                             location.geoPointData = geoPointData;
+                            location.readOnly = true;
                             addStoreMarker(location);
                         }
 
@@ -524,6 +525,7 @@ if(typeof(Store) == "undefined") var Store = {};
                     $('.contact_no', elem).html(store.contactNo);
                     var location = latLngToLocation(store.latitude, store.longitude);
                     $('.btn_view_map', elem).attr('data-id', locationToKey(location));
+                    location.readOnly = true;
                     addStoreMarker(location);
                     store_location += elem.html();
                 }

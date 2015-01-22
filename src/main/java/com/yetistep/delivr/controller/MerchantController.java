@@ -348,11 +348,30 @@ public class MerchantController {
             ServiceResponse serviceResponse = new ServiceResponse("Status has been changed successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            GeneralUtil.logError(log, "Error Occurred while changing status", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/search_item", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> webSearchItem(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            List<ItemEntity> items = merchantService.webItemSearch(requestJsonDto ,headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Items has been retrieved successfully");
+            serviceResponse.addParam("items", items);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching items", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
 
 
 }

@@ -11,6 +11,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +46,9 @@ public class StoresBrandEntity implements Serializable {
     //Transient Variable
    private Boolean openStatus;
    private List<CartEntity> carts;
-    private Integer merchantId; //Transient Variable
+   private Integer merchantId; //Transient Variable
+   private BigDecimal minOrderAmount;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -226,6 +229,15 @@ public class StoresBrandEntity implements Serializable {
 
     public void setCarts(List<CartEntity> carts) {
         this.carts = carts;
+    }
+
+    @Column(name = "min_order_amount", nullable = false)
+    public BigDecimal getMinOrderAmount() {
+        return minOrderAmount;
+    }
+
+    public void setMinOrderAmount(BigDecimal minOrderAmount) {
+        this.minOrderAmount = minOrderAmount;
     }
 
     @Transient

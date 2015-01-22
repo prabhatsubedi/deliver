@@ -8,6 +8,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
@@ -433,4 +434,16 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         MerchantEntity merchantEntity = (MerchantEntity) query.uniqueResult();
         return merchantEntity;
     }
+
+    @Override
+    public List<ItemEntity> webSearchItem(String searchString, List<Integer> categoryId, Integer storeId) throws Exception{
+        List<ItemEntity> items = new ArrayList<>();
+
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
+        criteria.add(Restrictions.and(/*Restrictions.like("name", searchString, MatchMode.ANYWHERE), */Restrictions.in("category.id", categoryId), Restrictions.eq("storesBrand.id", storeId)));
+        items = criteria.list();
+
+        return items;
+    }
+
 }

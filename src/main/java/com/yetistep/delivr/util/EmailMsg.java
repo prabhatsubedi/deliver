@@ -25,34 +25,6 @@ public class EmailMsg {
         style.append("body{font-size: 16px; font-family: Roboto;}");
     }
 
-    /*
-    * From: <Admin Email Address>
-To: <Merchant Email Address>
-
-Subject: Welcome to iDelivr
-
-Dear <Merchant Contact Person Name>,
-
-
-Welcome & thank you for joining iDelivr.
-
-Your account details are as follows:
-Your username: <Merchant Email Address>
-
-Please click on the link to verify your account and create your own password: [Verify My Account]
-
-If the above link does not work, please copy & paste the following URL in your web browser:
-http://54.254.205.135/verify_account.jsp?code=ff119733-a429-443c-86c8-29f7e2606a63_1399083532794
-
-Your account will be activated after verification.
-
-
-Sincerely,
-
-iDelivr Team
-<Tagline>
-    * */
-
     public static String createPasswordForNewUser(String url, String userName, String userEmail, String subject, String serverUrl) {
         StringBuilder body = new StringBuilder();
 
@@ -106,23 +78,6 @@ iDelivr Team
 
         return prepareEmail(subject, body.toString(), null, serverUrl);
     }
-
-    /*
-    * Dear <Merchant Contact Person Name>,
-
-
-
-Your account has been approved & activated.
-You can now start uploading your stores, product and services.
-
-[Login to iDelivr]
-
-
-
-Sincerely,
-
-iDelivr Team
-    * */
 
     public static String activateMerchant(String url, String contactPerson, String subject, String serverUrl) {
         StringBuilder body = new StringBuilder();

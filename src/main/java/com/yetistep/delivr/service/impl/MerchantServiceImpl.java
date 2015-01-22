@@ -232,8 +232,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         //dbStoresBrand.setBrandName(storesBrand.getBrandName());
         dbStoresBrand.setBrandUrl(storesBrand.getBrandUrl());
+        dbStoresBrand.setMinOrderAmount(storesBrand.getMinOrderAmount());
         dbStoresBrand.setOpeningTime(storesBrand.getOpeningTime());
-        dbStoresBrand.setClosingTime(storesBrand.getClosingTime());
         dbStoresBrand.setClosingTime(storesBrand.getClosingTime());
         dbStoresBrand.setOpenStatus(storesBrand.getOpenStatus());
 
@@ -1044,4 +1044,51 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
         return  true;
     }
+
+    @Override
+    public List<ItemEntity> webItemSearch(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception{
+
+        List<Integer> parentCategoryId = requestJsonDto.getCategories();
+        Integer storeId = Integer.parseInt(headerDto.getId());
+        String searchString = requestJsonDto.getSearchString();
+
+        List<CategoryEntity> finalCategories = merchantDaoService.findFinalCategoryList(storeId);
+        List<Integer> categoryId = new ArrayList<>();
+
+        for (CategoryEntity finalCategory: finalCategories){
+
+                 CategoryEntity finalCat = finalCategory;
+
+                 if(finalCategory.getParent() == null && !parentCategoryId.contains(finalCategory.getId())){
+                     continue;
+                 }
+
+                  if(parentCategoryId.contains(finalCategory.getId())){
+                      categoryId.add(finalCategory.getId());
+                  }else{
+                    //check if the final category is child category itself
+                        while (finalCategory.getParent() != null && !parentCategoryId.contains(finalCategory.getId())){
+                            finalCategory = finalCategory.getParent();
+                        }
+
+                        if(parentCategoryId.contains(finalCategory.getId())) {
+                            //get all the childs of the child category
+                            categoryId.add(finalCat.getId());
+                        }
+                  }
+
+        }
+
+
+        List<ItemEntity> items = merchantDaoService.webSearchItem(searchString, categoryId, storeId);
+             for (ItemEntity item: items){
+                 item.setCategory(null);
+                 item.setItemsStores(null);
+                 item.setStoresBrand(null);
+             }
+        return items;
+
+    }
+
 }
+

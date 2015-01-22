@@ -67,6 +67,10 @@ public class RequestJsonDto {
     private Integer statusId;
 
 
+    /*web search properties
+    * */
+    private String searchString;
+
 
 
 
@@ -317,5 +321,13 @@ public class RequestJsonDto {
 
     public void setStatusId(Integer statusId) {
         this.statusId = statusId;
+    }
+
+    public String getSearchString() {
+        return searchString;
+    }
+
+    public void setSearchString(String searchString) {
+        this.searchString = searchString;
     }
 }

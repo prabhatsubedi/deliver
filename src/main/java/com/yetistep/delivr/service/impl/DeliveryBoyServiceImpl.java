@@ -12,6 +12,7 @@ import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -195,6 +196,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         return deliveryBoyDaoService.update(dBoyEntity);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public DeliveryBoyEntity dboyLogin(HeaderDto headerDto) throws Exception {
         log.info("+++++++++++++++ Checking DBOY Credential +++++++++++++++");
@@ -636,7 +638,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public OrderSummaryDto viewShoppingList(Integer orderId) throws Exception {
+    public OrderSummaryDto getShoppingList(Integer orderId) throws Exception {
         OrderEntity order = orderDaoService.find(orderId);
         if (order == null) {
             throw new YSException("VLD017");

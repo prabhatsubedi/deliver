@@ -269,7 +269,7 @@ public class DeliveryBoyController extends AbstractManager{
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
             //validateMobileClient(headerDto.getAccessToken());
 
-            OrderSummaryDto orderSummary = deliveryBoyService.viewShoppingList(Integer.parseInt(headerDto.getId()));
+            OrderSummaryDto orderSummary = deliveryBoyService.getShoppingList(Integer.parseInt(headerDto.getId()));
             ServiceResponse serviceResponse = new ServiceResponse("Shopping List retrieved successfully");
             serviceResponse.addParam("order",orderSummary);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

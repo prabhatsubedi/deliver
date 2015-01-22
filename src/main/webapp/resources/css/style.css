@@ -627,7 +627,7 @@ body.assistance_page {
 .courier_staff_profile_pic .profile_pic_left {
     margin-right: 195px;
 }
-#drop_zone.profile_image {
+.courier_staff_profile_pic .drop_zone#profile_image {
     width: 180px;
     height: 180px;
     position: absolute;
@@ -637,15 +637,15 @@ body.assistance_page {
     padding: 5px;
     background-color: #FFFFFF;
 }
-#drop_zone.profile_image.error {
+.courier_staff_profile_pic .drop_zone#profile_image.error {
     border: 1px solid #ff9235;
 }
-#drop_zone.profile_image .drop_info {
+.courier_staff_profile_pic .drop_zone#profile_image.drop_info {
     font-size: 14px;
     padding-top: 6px;
     line-height: 18px;
 }
-#drop_zone.profile_image .drop_title {
+.courier_staff_profile_pic .drop_zone#profile_image .drop_title {
     left: 0px;
     width: 100%;
     bottom: 10px;

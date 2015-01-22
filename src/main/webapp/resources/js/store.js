@@ -405,6 +405,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                 Main.elemRatio(function() {
                     $('.items_container .item_container').removeClass('invisible');
+                    $(window).trigger('resize');
                 });
 
 
@@ -596,6 +597,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                         Main.elemRatio(function() {
                             $('.items_container .item_container').removeClass('invisible');
+                            $(window).trigger('resize');
                         });
 
                     }

@@ -279,6 +279,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
             Main.elemRatio(function() {
                 $('.items_container .item_container').removeClass('invisible');
+                $(window).trigger('resize');
             });
 
         };

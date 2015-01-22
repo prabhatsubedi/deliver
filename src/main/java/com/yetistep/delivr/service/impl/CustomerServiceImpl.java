@@ -521,7 +521,7 @@ public class CustomerServiceImpl implements CustomerService {
             deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
         /* 14. ======= Customer available balance after discount ======== */
         BigDecimal customerBalanceAfterDiscount = ZERO;
-        if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
+        if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
             customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
 
         /* 15. ====== Customer Pays ========*/

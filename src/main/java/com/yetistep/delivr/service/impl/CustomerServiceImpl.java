@@ -211,17 +211,21 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
 
-        address.setUser(customerEntity.getUser());
+        UserEntity usr  = new UserEntity();
+        usr.setId(customerEntity.getUser().getId());
+
+        address.setUser(usr);
         address.setMobileNumber(user.getLastAddressMobile());
         address.setVerificationCode(user.getVerificationCode());
         address.setVerified(true);
 
-        List<AddressEntity> addressEntities = new ArrayList<>();
-        addressEntities.add(address);
+       // List<AddressEntity> addressEntities = new ArrayList<>();
+        //addressEntities.add(address);
 
-        customerEntity.getUser().setAddresses(addressEntities);
-        customerDaoService.save(customerEntity);
-        return customerEntity.getUser().getAddresses().get(0).getId();
+        //customerEntity.getUser().setAddresses(addressEntities);
+        //customerDaoService.save(customerEntity);
+        addressDaoService.save(address);
+        return address.getId();
     }
 
     @Override

@@ -86,6 +86,7 @@ public class ItemsAttributeEntity implements Serializable {
         this.cartAttributes = cartAttributes;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "itemsAttribute")
     public List<ItemsOrderAttributeEntity> getItemOrderAttributes() {
         return itemOrderAttributes;

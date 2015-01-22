@@ -286,17 +286,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
-       // OrderEntity order = requestJson.getOrdersOrder();
         List<ItemsOrderEntity> itemsOrder = requestJson.getOrdersItemsOrder();
         Integer brandId = requestJson.getOrdersBrandId();
-        Integer customerId = requestJson.getOrdersCustomerId();
+        Long customerId = requestJson.getOrdersCustomerId();
         Integer addressId = requestJson.getOrdersAddressId();
 
         StoresBrandEntity brand = merchantDaoService.findBrandDetail(brandId);
-        //FIXME Dummy Value =
-        //Long id = 5435435435435435L;
         CustomerEntity customer = customerDaoService.find(customerId);
-//        CustomerEntity customer = customerDaoService.find(customerId);
         AddressEntity address = customerDaoService.findAddressById(addressId);
 
         if(address == null)
@@ -307,11 +303,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         if (brand == null)
             throw new YSException("VLD012");
-
-//        Integer storeId = requestJson.getOrdersStoreId();
-//        StoreEntity storeEntity = merchantDaoService.getStoreById(storeId);
-//        if(storeEntity == null)
-//            throw new YSException("VLD016");
 
         OrderEntity order = new OrderEntity();
         order.setAddress(address);

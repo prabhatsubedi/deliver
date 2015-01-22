@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.inf;
 import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.model.*;
 
+import java.math.BigInteger;
 import java.util.List;
 
 
@@ -79,5 +80,7 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public MerchantEntity getMerchantByOrderId(Integer orderId) throws Exception;
 
-    public List<ItemEntity> webSearchItem(String searchString, List<Integer> categoryId, Integer storeId) throws Exception;
+    public List<ItemEntity> getWebSearchItem(String searchString, List<Integer> categoryId, Integer storeId, Page page) throws Exception;
+
+    public Integer getTotalNumberOfItems(String searchString, List<Integer> categoryId, Integer storeId) throws Exception;
 }

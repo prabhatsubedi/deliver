@@ -1,6 +1,7 @@
 package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.*;
 
@@ -59,5 +60,5 @@ public interface MerchantService {
 
     public boolean changeStatus(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception;
 
-    public List<ItemEntity> webItemSearch(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception;
+    public PaginationDto getWebItemSearch(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception;
 }

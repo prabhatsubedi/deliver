@@ -1,6 +1,7 @@
 package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.MerchantService;
@@ -356,13 +357,13 @@ public class MerchantController {
 
     @RequestMapping(value = "/search_item", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> webSearchItem(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+    public ResponseEntity<ServiceResponse> getWebSearchItem(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            List<ItemEntity> items = merchantService.webItemSearch(requestJsonDto ,headerDto);
+            PaginationDto paginationDto = merchantService.getWebItemSearch(requestJsonDto ,headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Items has been retrieved successfully");
-            serviceResponse.addParam("items", items);
+            serviceResponse.addParam("items", paginationDto);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while fetching items", e);

@@ -4,6 +4,7 @@ import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
@@ -12,6 +13,7 @@ import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -1006,6 +1008,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         return categories;
+
     }
 
 
@@ -1054,49 +1057,65 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<ItemEntity> webItemSearch(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception{
+    public PaginationDto getWebItemSearch(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception{
 
         List<Integer> parentCategoryId = requestJsonDto.getCategories();
         Integer storeId = Integer.parseInt(headerDto.getId());
         String searchString = requestJsonDto.getSearchString();
+        Page page = requestJsonDto.getPage();
+
+        if(parentCategoryId == null){
+            List<CategoryEntity> categories = new ArrayList<>();
+            categories =  merchantDaoService.findParentCategories();
+            for (CategoryEntity category: categories){
+                parentCategoryId.add(category.getId());
+            }
+        }
 
         List<CategoryEntity> finalCategories = merchantDaoService.findFinalCategoryList(storeId);
         List<Integer> categoryId = new ArrayList<>();
 
         for (CategoryEntity finalCategory: finalCategories){
-
-                 CategoryEntity finalCat = finalCategory;
-
-                 if(finalCategory.getParent() == null && !parentCategoryId.contains(finalCategory.getId())){
-                     continue;
-                 }
-
-                  if(parentCategoryId.contains(finalCategory.getId())){
-                      categoryId.add(finalCategory.getId());
-                  }else{
-                    //check if the final category is child category itself
-                        while (finalCategory.getParent() != null && !parentCategoryId.contains(finalCategory.getId())){
-                            finalCategory = finalCategory.getParent();
-                        }
-
-                        if(parentCategoryId.contains(finalCategory.getId())) {
-                            //get all the childs of the child category
-                            categoryId.add(finalCat.getId());
-                        }
-                  }
-
+             CategoryEntity finalCat = finalCategory;
+             if(finalCategory.getParent() == null && !parentCategoryId.contains(finalCategory.getId())){
+                 continue;
+             }
+              if(parentCategoryId.contains(finalCategory.getId())){
+                  categoryId.add(finalCategory.getId());
+              }else{
+                    while (finalCategory.getParent() != null && !parentCategoryId.contains(finalCategory.getId())){
+                        finalCategory = finalCategory.getParent();
+                    }
+                    if(parentCategoryId.contains(finalCategory.getId())) {
+                        categoryId.add(finalCat.getId());
+                    }
+              }
         }
 
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  merchantDaoService.getTotalNumberOfItems(searchString, categoryId, storeId);
+        paginationDto.setNumberOfRows(totalRows);
 
-        List<ItemEntity> items = merchantDaoService.webSearchItem(searchString, categoryId, storeId);
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+        List<ItemEntity> items = merchantDaoService.getWebSearchItem(searchString, categoryId, storeId, page);
+        if(items.size()>0){
              for (ItemEntity item: items){
                  item.setCategory(null);
                  item.setItemsStores(null);
                  item.setStoresBrand(null);
+                 item.setAttributesTypes(null);
+                 item.setCarts(null);
+                 item.setItemsOrder(null);
              }
-        return items;
+        }
 
+        paginationDto.setData(items);
+        return paginationDto;
     }
+
 
 }
 

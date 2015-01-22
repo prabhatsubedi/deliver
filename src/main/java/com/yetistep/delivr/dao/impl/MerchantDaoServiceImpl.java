@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.util.HibernateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -14,6 +15,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -435,16 +437,32 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public List<ItemEntity> webSearchItem(String searchString, List<Integer> categoryId, Integer storeId) throws Exception{
+    public List<ItemEntity> getWebSearchItem(String searchString, List<Integer> categoryId, Integer storeId, Page page) throws Exception{
         List<ItemEntity> items = new ArrayList<>();
 
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
-        criteria.add(Restrictions.eq("storesBrand.id", storeId));
-        //criteria.add(Restrictions.and(Restrictions.in("category.id", categoryId), Restrictions.eq("storesBrand.id", storeId)));
-        //criteria.add(Restrictions.and(/*Restrictions.like("name", searchString, MatchMode.ANYWHERE), Restrictions.in("category.id", categoryId),  */Restrictions.eq("storesBrand.id", storeId)));
+        criteria.add(Restrictions.and(Restrictions.like("name", searchString, MatchMode.ANYWHERE), Restrictions.in("category.id", categoryId),  Restrictions.eq("storesBrand.id", storeId)));
+        HibernateUtil.fillPaginationCriteria(criteria, page, ItemEntity.class);
         items = criteria.list();
 
         return items;
     }
+
+
+    @Override
+    public Integer getTotalNumberOfItems(String searchString, List<Integer> categoryId, Integer storeId) throws Exception {
+        /*Criteria criteriaCount = getCurrentSession().createCriteria(ItemEntity.class);
+        criteriaCount.setProjection(Projections.rowCount()).add(Restrictions.and(Restrictions.like("name", searchString), Restrictions.in("category.id", categoryId), Restrictions.eq("storesBrand.id", storeId)));
+        Long count = (Long) criteriaCount.uniqueResult();
+        return (count != null) ? count.intValue() : null;*/
+        String sqQuery =    "SELECT COUNT(i.id) FROM Items i WHERE i.name LIKE '%"+searchString+"%' AND i.category_id IN "+categoryId.toString().replace("[", "(").replace("]", ")")+" AND i.brand_id =:storeId";
+
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("storeId", storeId);
+
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
+    }
+
 
 }

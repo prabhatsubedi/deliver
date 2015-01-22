@@ -70,6 +70,7 @@ public class RequestJsonDto {
     /*web search properties
     * */
     private String searchString;
+    private Page page;
 
 
 
@@ -329,5 +330,13 @@ public class RequestJsonDto {
 
     public void setSearchString(String searchString) {
         this.searchString = searchString;
+    }
+
+    public Page getPage() {
+        return page;
+    }
+
+    public void setPage(Page page) {
+        this.page = page;
     }
 }

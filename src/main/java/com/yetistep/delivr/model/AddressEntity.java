@@ -31,6 +31,7 @@ public class AddressEntity implements Serializable {
     private String verificationCode;
     private Boolean verified;
     private String notes;
+    private String dFlag;
     private UserEntity user;
     private List<OrderEntity> order;
 
@@ -142,6 +143,15 @@ public class AddressEntity implements Serializable {
 
     public void setVerified(Boolean verified) {
         this.verified = verified;
+    }
+
+    @Column(name = "d_flag")
+    public String getdFlag() {
+        return dFlag;
+    }
+
+    public void setdFlag(String dFlag) {
+        this.dFlag = dFlag;
     }
 
     @JsonBackReference

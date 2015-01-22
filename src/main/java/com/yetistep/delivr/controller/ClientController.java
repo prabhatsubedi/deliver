@@ -117,7 +117,7 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "get_delivered_address/fbId/{facebookId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_delivered_address/fbId/{facebookId}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> getDeliveredAddress(@PathVariable("facebookId") Long facebookId) {
         try {
@@ -135,13 +135,33 @@ public class ClientController extends AbstractManager{
         }
     }
 
+    @RequestMapping(value = "/delete_delivered_address/addId/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> deleteDeliveredAddress(@RequestHeader HttpHeaders headers,@PathVariable("id") Integer addressId) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
+
+            customerService.deleteDeliveredAddress(addressId);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Address deleted successfully.");
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while deleting delivered address", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     @RequestMapping(value = "/reg_mobile_code", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> setMobileCode(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
         try {
-//            HeaderDto headerDto = new HeaderDto();
-//            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-//            validateMobileClient(headerDto.getAccessToken());
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
 
             AddressDto address = customerService.verifyMobile(user.getMobileNumber(), user.getCustomer().getFacebookId());
 

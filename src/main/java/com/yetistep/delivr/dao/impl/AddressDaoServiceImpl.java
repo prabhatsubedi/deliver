@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.AddressDaoService;
 import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CategoryEntity;
+import com.yetistep.delivr.util.CommonConstants;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -43,7 +44,12 @@ public class AddressDaoServiceImpl implements AddressDaoService{
 
     @Override
     public Boolean delete(AddressEntity value) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        String sql  = "UPDATE address SET d_flag = :flag where id = :id";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("flag", CommonConstants.DELETE_FLAG);
+        sqlQuery.setParameter("id", value.getId());
+        sqlQuery.executeUpdate();
+        return true;
     }
 
     @Override
@@ -70,11 +76,13 @@ public class AddressDaoServiceImpl implements AddressDaoService{
     public List<AddressEntity> getDeliveredAddress(Integer userId) throws Exception {
         String sql = "SELECT " +
                 "id,city,country,country_code AS countryCode,latitude,longitude,state,street,full_name AS fullName,mobile_no AS mobileNumber,notes" +
-                " FROM address WHERE user_id = :userId AND verified = :verified";
+                " FROM address WHERE user_id = :userId AND verified = :verified AND (d_flag != :flag || d_flag IS NULL)";
 
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("userId", userId);
         sqlQuery.setParameter("verified", true);
+        sqlQuery.setParameter("flag", CommonConstants.DELETE_FLAG);
+
         sqlQuery.setResultTransformer(Transformers.aliasToBean(AddressEntity.class));
         List<AddressEntity> addressEntities = sqlQuery.list();
         return addressEntities;

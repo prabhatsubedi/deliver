@@ -85,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (registeredCustomer != null) {
             //If Client Permission granted after denied first time then email & DOB should updated
             if ((customerEntity.getUser().getEmailAddress() != null && !customerEntity.getUser().getEmailAddress().isEmpty()) &&
-                    (!registeredCustomer.getUser().getEmailAddress().equals(customerEntity.getUser().getEmailAddress())))
+                    (registeredCustomer.getUser().getEmailAddress() == null || !registeredCustomer.getUser().getEmailAddress().equals(customerEntity.getUser().getEmailAddress())))
                 registeredCustomer.getUser().setEmailAddress(customerEntity.getUser().getEmailAddress());
 
             if(customerEntity.getFbToken()!=null && !customerEntity.getFbToken().isEmpty())
@@ -267,6 +267,17 @@ public class CustomerServiceImpl implements CustomerService {
 
         user.setAddresses(address);
         return user;
+    }
+
+    @Override
+    public void deleteDeliveredAddress(Integer addressId) throws Exception {
+        log.info("+++++++++++ Deleting address of id " + addressId + " +++++++++++++");
+
+        AddressEntity address = new AddressEntity();
+        address.setId(addressId);
+
+        addressDaoService.delete(address);
+
     }
 
     @Override

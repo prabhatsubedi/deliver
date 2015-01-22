@@ -72,6 +72,18 @@ public class StoreDaoServiceImpl implements StoreDaoService{
         return storeEntities;
     }
 
+    @Override
+    public Integer getActiveStores(Integer brandId) throws Exception {
+        String sql = "SELECT COUNT(*) FROM stores WHERE stores_brand_id = :brandId AND STATUS = :status";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("brandId", brandId);
+        query.setParameter("status", Status.ACTIVE.ordinal());
+
+        Integer activeStore = ((Number) query.uniqueResult()).intValue();
+
+        return activeStore;
+    }
+
 //    @Override
 //    public List<CategoryEntity> findItemCategory(Integer brandId) throws Exception {
 //        List<CategoryEntity> categoryEntities = new ArrayList<>();

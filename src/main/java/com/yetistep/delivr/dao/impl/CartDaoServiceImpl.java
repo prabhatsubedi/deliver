@@ -171,5 +171,16 @@ public class CartDaoServiceImpl implements CartDaoService{
         return cart;
     }
 
+    @Override
+    public Integer getAvailableOrderItem(Integer cartId) throws Exception {
+        String sql = "SELECT i.max_order_quantity-c.order_quantity AS qty FROM cart c " +
+                "INNER JOIN items i ON(c.item_id = i.id) " +
+                "WHERE c.id = :cartId";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("cartId", cartId);
+        Integer availableQty = ((Number) query.uniqueResult()).intValue();
+        return availableQty;
+    }
+
 
 }

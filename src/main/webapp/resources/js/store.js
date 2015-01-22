@@ -329,7 +329,6 @@ if(typeof(Store) == "undefined") var Store = {};
                             geoPointData.latitude = store.latitude;
                             geoPointData.longitude = store.longitude;
                             location.geoPointData = geoPointData;
-                            location.readOnly = true;
                             addStoreMarker(location);
                         }
 

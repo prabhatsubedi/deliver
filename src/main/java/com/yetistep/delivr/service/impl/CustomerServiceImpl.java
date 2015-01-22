@@ -330,7 +330,8 @@ public class CustomerServiceImpl implements CustomerService {
                 ItemsAttributeEntity itemsAttribute = itemsAttributeDaoService.find(itemsOrderAttribute.getItemsAttribute().getId());
                 if(itemsAttribute == null)
                     throw new YSException("ITM003");
-                attributePrice.add(itemsAttribute.getUnitPrice());
+                itemsOrderAttribute.setItemOrder(iOrder);
+                attributePrice = attributePrice.add(itemsAttribute.getUnitPrice());
             }
             BigDecimal itemTotal = BigDecimalUtil.calculateCost(iOrder.getQuantity(), item.getUnitPrice(), attributePrice);
             iOrder.setItemTotal(itemTotal);

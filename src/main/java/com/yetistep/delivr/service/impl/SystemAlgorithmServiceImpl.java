@@ -38,8 +38,8 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         /* Preferences Values */
         BigDecimal DBOY_ADDITIONAL_PER_KM_CHARGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_ADDITIONAL_PER_KM_CHARGE));
         BigDecimal RESERVED_COMM_PER_BY_SYSTEM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.RESERVED_COMM_PER_BY_SYSTEM));
-        BigDecimal DBOY_PER_KM_CHARGE_UPTO_2KM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_2KM));
-        BigDecimal DBOY_PER_KM_CHARGE_ABOVE_2KM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_2KM));
+        BigDecimal DBOY_PER_KM_CHARGE_UPTO_2KM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_NKM));
+        BigDecimal DBOY_PER_KM_CHARGE_ABOVE_2KM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_NKM));
         BigDecimal DBOY_COMMISSION = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_COMMISSION));
         BigDecimal DBOY_MIN_AMOUNT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_MIN_AMOUNT));
         BigDecimal deliveryVat = new BigDecimal(13);//FIXME Get from preferences

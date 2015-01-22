@@ -6,37 +6,8 @@ var courierProfile;
 
     CourierStaff.loadAddCourierStaff = function () {
 
-        Image.dropZone('#image_input');
+        Image.dropZone('#profile_image_input', '#profile_image');
         $('#country').val(Main.country);
-
-        $('#ar_lock').change(function (e) {
-            jcrop_api.setOptions(this.checked ? { aspectRatio: chk_w / chk_h } : { aspectRatio: 0 });
-            jcrop_api.focus();
-        });
-
-        $('#apply_preview').click(function (e) {
-            alert('test');
-            html2canvas($('.preview-container'), {
-                onrendered: function (canvas) {
-                    var strImage = canvas.toDataURL('image/jpeg');
-                    console.log(strImage);
-                    $('#drop_zone').addClass('image_selected').removeClass('error').html('<img src="' + strImage + '" style="height: 100%;" />');
-                    $('#crop_img_modal').modal('hide');
-                }
-            });
-        });
-
-        $('#cancel_preview').click(function (e) {
-            $('#crop_img_modal').modal('hide');
-        });
-
-        $('#crop_img_modal').on('show.bs.modal', function (e) {
-            $('#ar_lock').prop('checked', true);
-        });
-
-        $('#crop_img_modal').on('hidden.bs.modal', function (e) {
-            $('#crop_img_modal img').attr('src', '');
-        });
 
         $.validator.addMethod("mobileNumber", function (value, element, arg) {
             return this.optional(element) || /[0-9]+$/.test(value);
@@ -54,13 +25,14 @@ var courierProfile;
             return result;
         }, "Please select any option.");
 
-        $.validator.addMethod("imageRequired", function (value, element, arg) {
+        $.validator.addMethod("imageRequired", function(value, element, arg){
             var result = true;
-            if ($('#drop_zone img').attr('src') == undefined || $('#drop_zone img').attr('src') == "") {
+            var container = $(element).prev('.drop_zone');
+            if($('img', container).attr('src') == undefined || $('img', container).attr('src') == "") {
                 result = false;
-                $('#drop_zone').addClass('error');
+                container.addClass('error');
             } else {
-                $('#drop_zone').removeClass('error');
+                container.removeClass('error');
             }
             return result;
         }, "Only numbers are allowed.");
@@ -99,7 +71,7 @@ var courierProfile;
                 user.emailAddress = $('#email').val();
                 user.mobileNumber = $('#mobile').val();
                 user.gender = $('#gender').val();
-                user.profileImage = $('#drop_zone img').attr('src');
+                user.profileImage = $('#profile_image img').attr('src');
                 user.addresses = [address];
 
                 data.vehicleType = $('#vehicle_type').val();
@@ -117,7 +89,7 @@ var courierProfile;
 
             }
         });
-        $('#image_input').rules('add', {imageRequired: true});
+        $('#profile_image_input').rules('add', {imageRequired: true});
         $('#full_name').rules('add', {required: true});
         $('#email').rules('add', {email: true});
         $('#mobile').rules('add', {required: true, mobileNumber: true, minlength: 10, maxlength: 10});

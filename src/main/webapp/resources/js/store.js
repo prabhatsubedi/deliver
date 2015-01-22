@@ -211,6 +211,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                     stores_brand.id = $('#form_brand button[type="submit"]').attr('data-id');
                     stores_brand.brandName = $('#brand_name').val();
+                    stores_brand.minOrderAmount = $('#min_amount').val();
                     stores_brand.openingTime = $('#open_time').val();
                     stores_brand.closingTime = $('#close_time').val();
                     stores_brand.brandLogo = $('#brand_logo img').attr('data-new') ? $('#brand_logo img').attr('src') : undefined;
@@ -241,6 +242,7 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#brand_name').rules('add', {required: true});
         $('#brand_image_input').rules('add', {imageRequired: true});
         $('#brand_logo_input').rules('add', {imageRequired: true});
+        $('#min_amount').rules('add', {required: true, number: true, min: 0});
         $('#open_time').rules('add', {notEqual: "none"});
         $('#close_time').rules('add', {notEqual: "none"});
         $('#brand_url').rules('add', {url: true});
@@ -281,6 +283,7 @@ if(typeof(Store) == "undefined") var Store = {};
                         $('#brand_logo').html('<img src="' + storeBrand.brandLogo + '" style="height: 100%;" class="img-responsive" />');
                         $('#form_brand button[type="submit"]').attr({'data-id': storeBrand.id});
                         $('#brand_name').val(storeBrand.brandName);
+                        $('#min_amount').val(storeBrand.minOrderAmount == undefined ? 0 : storeBrand.minOrderAmount);
                         $('#open_time').val(storeBrand.openingTime);
                         $('#open_time').selectpicker('refresh');
                         $('#close_time').val(storeBrand.closingTime);
@@ -326,6 +329,7 @@ if(typeof(Store) == "undefined") var Store = {};
                             geoPointData.latitude = store.latitude;
                             geoPointData.longitude = store.longitude;
                             location.geoPointData = geoPointData;
+                            location.readOnly = true;
                             addStoreMarker(location);
                         }
 
@@ -405,6 +409,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                 Main.elemRatio(function() {
                     $('.items_container .item_container').removeClass('invisible');
+                    $(window).trigger('resize');
                 });
 
 
@@ -499,6 +504,7 @@ if(typeof(Store) == "undefined") var Store = {};
                 $('.store_name').html(storeBrand.brandName);
                 document.title = storeBrand.brandName;
                 $('.open_time').html(storeBrand.openingTime + ' - ' + storeBrand.closingTime);
+                $('.min_amount').html(storeBrand.minOrderAmount == undefined ? 0 : storeBrand.minOrderAmount);
 
                 var store_location = '';
                 var stores = storeBrand.store;
@@ -519,6 +525,7 @@ if(typeof(Store) == "undefined") var Store = {};
                     $('.contact_no', elem).html(store.contactNo);
                     var location = latLngToLocation(store.latitude, store.longitude);
                     $('.btn_view_map', elem).attr('data-id', locationToKey(location));
+                    location.readOnly = true;
                     addStoreMarker(location);
                     store_location += elem.html();
                 }
@@ -596,6 +603,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                         Main.elemRatio(function() {
                             $('.items_container .item_container').removeClass('invisible');
+                            $(window).trigger('resize');
                         });
 
                     }

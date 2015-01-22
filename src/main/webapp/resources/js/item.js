@@ -864,6 +864,7 @@ var data_categories_names = [];
 
                             Main.elemRatio(function() {
                                 $('.items_container .item_container').removeClass('invisible');
+                                $(window).trigger('resize');
                             });
 
                         } else {
@@ -904,6 +905,7 @@ var data_categories_names = [];
 
                             Main.elemRatio(function() {
                                 $('.items_container .item_container').removeClass('invisible');
+                                $(window).trigger('resize');
                             });
 
                         } else {
@@ -1138,6 +1140,7 @@ var data_categories_names = [];
 
                             Main.elemRatio(function() {
                                 $('.items_container .item_container').removeClass('invisible');
+                                $(window).trigger('resize');
                             });
                         }
 

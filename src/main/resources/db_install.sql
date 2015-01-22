@@ -9,8 +9,8 @@ TRUNCATE TABLE preferences;
 INSERT INTO preferences (pref_key,VALUE) VALUES
 ('CURRENCY','$'),
 ('DBOY_ADDITIONAL_PER_KM_CHARGE','5'),
-('DBOY_PER_KM_CHARGE_UPTO_2KM','50'),
-('DBOY_PER_KM_CHARGE_ABOVE_2KM','30'),
+('DBOY_PER_KM_CHARGE_UPTO_NKM','50'),
+('DBOY_PER_KM_CHARGE_ABOVE_NKM','30'),
 ('RESERVED_COMM_PER_BY_SYSTEM','50'),
 ('SURGE_FACTOR_7AM_9PM','1'),
 ('SURGE_FACTOR_9_10PM','2'),
@@ -62,3 +62,12 @@ ALTER TABLE `items_orders` DROP `item_total` ;
 ############ 2015.01.21 ###################
 ALTER TABLE address DROP INDEX UK_4t7y1821minhabn2kbl990ith;
 
+########### 2015.01.22 #####################
+ALTER TABLE items_attributes MODIFY COLUMN unit_price decimal(19,2) NULL;
+UPDATE `preferences` SET `pref_key`='DBOY_PER_KM_CHARGE_UPTO_NKM' WHERE `id`='3';
+UPDATE `preferences` SET `pref_key`='DBOY_PER_KM_CHARGE_ABOVE_NKM' WHERE `id`='4';
+INSERT INTO preferences (pref_key,VALUE) VALUES
+('DELIVERY_FEE_VAT','0'),
+('MINIMUM_PROFIT_PERCENTAGE','10'),
+('ADDITIONAL_KM_FREE_LIMIT','1'),
+('DEFAULT_NKM_DISTANCE', 4);

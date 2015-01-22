@@ -53,7 +53,7 @@ public interface DeliveryBoyService {
 
     public Boolean cancelOrder(OrderEntity order) throws Exception;
 
-    public OrderSummaryDto viewShoppingList(Integer orderId) throws Exception;
+    public OrderSummaryDto getShoppingList(Integer orderId) throws Exception;
 
     public JobOrderStatus getJobOrderStatusFromOrderId(Integer orderId) throws Exception;
 }

@@ -542,22 +542,24 @@ $(document).ready(function(){
                                 markerPrevNext(this);
                                 $('#form_store').valid();
                             });
-                            google.maps.event.addListener(marker, 'rightclick', function () {
-                                this.setMap(null);
-                                var current_index = markers.indexOf(this);
-                                markers.splice(current_index, 1);
-                                delete arrGeoPoints[locationToKey(this.getPosition())];
-                                var markers_length = markers.length;
-                                if(markers_length > 0){
-                                    current_index = current_index == 0 ? 0 : current_index - 1;
-                                    google.maps.event.trigger(markers[current_index], 'click');
-                                    map.panTo(markers[current_index].position);
-                                } else {
-                                    $('#store_name, #street, #city, #state, #country, #contact_no, #contact_person').val('');
-                                    $('.save_marker', marker_address).attr('disabled', 'disabled').removeAttr('data-id');
-                                    $('.cancel_marker', marker_address).attr('disabled', 'disabled');
-                                }
-                            });
+                            if(location.readOnly != true) {
+                                google.maps.event.addListener(marker, 'rightclick', function () {
+                                    this.setMap(null);
+                                    var current_index = markers.indexOf(this);
+                                    markers.splice(current_index, 1);
+                                    delete arrGeoPoints[locationToKey(this.getPosition())];
+                                    var markers_length = markers.length;
+                                    if(markers_length > 0){
+                                        current_index = current_index == 0 ? 0 : current_index - 1;
+                                        google.maps.event.trigger(markers[current_index], 'click');
+                                        map.panTo(markers[current_index].position);
+                                    } else {
+                                        $('#store_name, #street, #city, #state, #country, #contact_no, #contact_person').val('');
+                                        $('.save_marker', marker_address).attr('disabled', 'disabled').removeAttr('data-id');
+                                        $('.cancel_marker', marker_address).attr('disabled', 'disabled');
+                                    }
+                                });
+                            }
 
                         }
                         else

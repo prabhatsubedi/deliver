@@ -73,6 +73,11 @@
                                     </div>
 
                                     <div class="detail_row">
+                                        <label class="detail_label">Minimum Order Amount</label>
+                                        <div class="detail_value min_amount"></div>
+                                    </div>
+
+                                    <div class="detail_row">
                                         <label class="detail_label">Categories</label>
                                         <div class="detail_value categories"><ul class="detail_list"></ul></div>
                                     </div>

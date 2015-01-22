@@ -64,6 +64,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     AddressDaoService addressDaoService;
 
+    @Autowired
+    ItemsAttributeDaoService itemsAttributeDaoService;
+
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
         log.info("++++++++++++++ Logging Customer ++++++++++++++++");
@@ -82,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (registeredCustomer != null) {
             //If Client Permission granted after denied first time then email & DOB should updated
             if ((customerEntity.getUser().getEmailAddress() != null && !customerEntity.getUser().getEmailAddress().isEmpty()) &&
-                    (!registeredCustomer.getUser().getEmailAddress().equals(customerEntity.getUser().getEmailAddress())))
+                    (registeredCustomer.getUser().getEmailAddress() == null || !registeredCustomer.getUser().getEmailAddress().equals(customerEntity.getUser().getEmailAddress())))
                 registeredCustomer.getUser().setEmailAddress(customerEntity.getUser().getEmailAddress());
 
             if(customerEntity.getFbToken()!=null && !customerEntity.getFbToken().isEmpty())
@@ -208,17 +211,21 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
 
-        address.setUser(customerEntity.getUser());
+        UserEntity usr  = new UserEntity();
+        usr.setId(customerEntity.getUser().getId());
+
+        address.setUser(usr);
         address.setMobileNumber(user.getLastAddressMobile());
         address.setVerificationCode(user.getVerificationCode());
         address.setVerified(true);
 
-        List<AddressEntity> addressEntities = new ArrayList<>();
-        addressEntities.add(address);
+       // List<AddressEntity> addressEntities = new ArrayList<>();
+        //addressEntities.add(address);
 
-        customerEntity.getUser().setAddresses(addressEntities);
-        customerDaoService.save(customerEntity);
-        return customerEntity.getUser().getAddresses().get(0).getId();
+        //customerEntity.getUser().setAddresses(addressEntities);
+        //customerDaoService.save(customerEntity);
+        addressDaoService.save(address);
+        return address.getId();
     }
 
     @Override
@@ -267,6 +274,17 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public void deleteDeliveredAddress(Integer addressId) throws Exception {
+        log.info("+++++++++++ Deleting address of id " + addressId + " +++++++++++++");
+
+        AddressEntity address = new AddressEntity();
+        address.setId(addressId);
+
+        addressDaoService.delete(address);
+
+    }
+
+    @Override
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
        // OrderEntity order = requestJson.getOrdersOrder();
         List<ItemsOrderEntity> itemsOrder = requestJson.getOrdersItemsOrder();
@@ -311,7 +329,15 @@ public class CustomerServiceImpl implements CustomerService {
             iOrder.setItem(item);
             iOrder.setOrder(order);
             iOrder.setAvailabilityStatus(true);
-            BigDecimal itemTotal = BigDecimalUtil.calculateCost(iOrder.getQuantity(), item.getUnitPrice());
+            BigDecimal attributePrice = BigDecimal.ZERO;
+            for(ItemsOrderAttributeEntity itemsOrderAttribute : iOrder.getItemOrderAttributes()){
+                ItemsAttributeEntity itemsAttribute = itemsAttributeDaoService.find(itemsOrderAttribute.getItemsAttribute().getId());
+                if(itemsAttribute == null)
+                    throw new YSException("ITM003");
+                itemsOrderAttribute.setItemOrder(iOrder);
+                attributePrice = attributePrice.add(itemsAttribute.getUnitPrice());
+            }
+            BigDecimal itemTotal = BigDecimalUtil.calculateCost(iOrder.getQuantity(), item.getUnitPrice(), attributePrice);
             iOrder.setItemTotal(itemTotal);
             itemTotalCost = itemTotalCost.add(itemTotal);
 
@@ -440,15 +466,15 @@ public class CustomerServiceImpl implements CustomerService {
     private Boolean checkProfitCriteria(OrderEntity order, DeliveryBoySelectionEntity dBoySelection, MerchantEntity merchant)throws Exception {
         BigDecimal DBOY_ADDITIONAL_PER_KM_CHARGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_ADDITIONAL_PER_KM_CHARGE));
         BigDecimal RESERVED_COMM_PER_BY_SYSTEM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.RESERVED_COMM_PER_BY_SYSTEM));
-        BigDecimal DBOY_PER_KM_CHARGE_UPTO_2KM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_2KM));
-        BigDecimal DBOY_PER_KM_CHARGE_ABOVE_2KM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_2KM));
+        BigDecimal DBOY_PER_KM_CHARGE_UPTO_NKM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_NKM));
+        BigDecimal DBOY_PER_KM_CHARGE_ABOVE_NKM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_NKM));
         BigDecimal DBOY_COMMISSION = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_COMMISSION));
         BigDecimal DBOY_MIN_AMOUNT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_MIN_AMOUNT));
         BigDecimal DELIVERY_FEE_VAT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
         BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
         BigDecimal ADDITIONAL_KM_FREE_LIMIT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ADDITIONAL_KM_FREE_LIMIT));
+        BigDecimal DEFAULT_NKM_DISTANCE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_NKM_DISTANCE));
         BigDecimal ZERO = BigDecimal.ZERO;
-        BigDecimal TWO = new BigDecimal(2);
          /* 1. ===== Order Total ======= */
         BigDecimal totalOrder = order.getTotalCost();
         /* 2. ======= Commission Percent ====== */
@@ -475,10 +501,10 @@ public class CustomerServiceImpl implements CustomerService {
         Integer surgeFactor = order.getSurgeFactor();
         /* 9. ====== Delivery cost (Does not include additional delivery amt) ============== */
         BigDecimal deliveryCostWithoutAdditionalDvAmt = ZERO;
-        if(BigDecimalUtil.isLessThen(storeToCustomerDistance, TWO))
-            deliveryCostWithoutAdditionalDvAmt = DBOY_PER_KM_CHARGE_UPTO_2KM.multiply(new BigDecimal(surgeFactor));
+        if(BigDecimalUtil.isLessThen(storeToCustomerDistance, DEFAULT_NKM_DISTANCE))
+            deliveryCostWithoutAdditionalDvAmt = DBOY_PER_KM_CHARGE_UPTO_NKM.multiply(new BigDecimal(surgeFactor));
         else
-            deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply(DBOY_PER_KM_CHARGE_ABOVE_2KM).multiply(new BigDecimal(surgeFactor));
+            deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply(DBOY_PER_KM_CHARGE_ABOVE_NKM).multiply(new BigDecimal(surgeFactor));
         /* 10. ======= Service Fee Amount =========== */
         BigDecimal serviceFeeAmt = BigDecimalUtil.percentageOf(totalOrder, serviceFeePct);
         /* 11. ====== Delivery charged to customer before Discount ======== */
@@ -495,7 +521,7 @@ public class CustomerServiceImpl implements CustomerService {
             deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
         /* 14. ======= Customer available balance after discount ======== */
         BigDecimal customerBalanceAfterDiscount = ZERO;
-        if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
+        if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
             customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
 
         /* 15. ====== Customer Pays ========*/

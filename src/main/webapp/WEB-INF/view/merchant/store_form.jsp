@@ -72,6 +72,9 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
+                                        <input type="text" class="form-control" id="min_amount" name="min_amount" placeholder="Minimum Order Amount" value="0">
+                                    </div>
+                                    <div class="form-group">
                                         <input type="text" class="form-control" id="brand_url" name="brand_url" placeholder="Store URL">
                                     </div>
                                     <div class="form-group">

@@ -6,6 +6,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -21,10 +22,11 @@ public class ItemsAttributeEntity implements Serializable {
 
     private Integer id;
     private String attribute;
-    private Integer unitPrice;
+    private BigDecimal unitPrice;
     private Boolean selected; //Transient Variable
     private ItemsAttributesTypeEntity type;
     private List<CartAttributesEntity> cartAttributes;
+    private List<ItemsOrderAttributeEntity> itemOrderAttributes;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -58,11 +60,11 @@ public class ItemsAttributeEntity implements Serializable {
     }
 
     @Column(name = "unit_price")
-    public Integer getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(Integer unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 
@@ -82,5 +84,15 @@ public class ItemsAttributeEntity implements Serializable {
 
     public void setCartAttributes(List<CartAttributesEntity> cartAttributes) {
         this.cartAttributes = cartAttributes;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "itemsAttribute")
+    public List<ItemsOrderAttributeEntity> getItemOrderAttributes() {
+        return itemOrderAttributes;
+    }
+
+    public void setItemOrderAttributes(List<ItemsOrderAttributeEntity> itemOrderAttributes) {
+        this.itemOrderAttributes = itemOrderAttributes;
     }
 }

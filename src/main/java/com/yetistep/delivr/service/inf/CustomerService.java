@@ -32,4 +32,6 @@ public interface CustomerService {
     public void registerCustomer(UserEntity user, HeaderDto headerDto) throws Exception;
 
     public UserEntity getDeliveredAddress(Long facebookId) throws Exception;
+
+    public void deleteDeliveredAddress(Integer addressId) throws Exception;
 }

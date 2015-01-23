@@ -33,12 +33,14 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
 
     @Override
     public Boolean save(CategoryEntity value) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        getCurrentSession().save(value);
+        return true;
     }
 
     @Override
     public Boolean update(CategoryEntity value) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        getCurrentSession().update(value);
+        return true;
     }
 
     @Override
@@ -61,4 +63,7 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
         categoryEntity = (CategoryEntity) query.list().get(0);
         return categoryEntity;
     }
+
+
+
 }

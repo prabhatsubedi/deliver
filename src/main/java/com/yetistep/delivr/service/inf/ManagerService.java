@@ -3,6 +3,7 @@ package com.yetistep.delivr.service.inf;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.StoresBrandEntity;
@@ -30,4 +31,8 @@ public interface ManagerService {
     public PaginationDto findNonFeaturedAndPrioritizedStoreBrands(Page page) throws Exception;
 
     public Boolean updateFeatureAndPriorityOfStoreBrands(List<StoresBrandEntity> storesBrands) throws Exception;
+
+    public boolean saveCategory(CategoryEntity category, HeaderDto headerDto) throws Exception;
+
+    public boolean updateCategory(CategoryEntity category, HeaderDto headerDto) throws Exception;
 }

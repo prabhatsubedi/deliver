@@ -34,6 +34,7 @@ public class CategoryEntity implements Serializable {
    private Boolean featured;
    private Integer priority;
    private Timestamp createdDate;
+   private String imageUrl;
     //Transient
    private Integer parentId;
     @Id
@@ -140,6 +141,15 @@ public class CategoryEntity implements Serializable {
         this.createdDate = createdDate;
     }
 
+    @Column(name = "image_url")
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @Transient
     public Integer getParentId() {
         return parentId;
@@ -148,5 +158,7 @@ public class CategoryEntity implements Serializable {
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
     }
+
+
 
 }

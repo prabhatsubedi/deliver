@@ -1,6 +1,7 @@
 package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.ActionLogDaoService;
+import com.yetistep.delivr.dao.inf.CategoryDaoService;
 import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
 import com.yetistep.delivr.dao.inf.StoresBrandDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
@@ -8,6 +9,9 @@ import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.ManagerService;
+import com.yetistep.delivr.util.AmazonUtil;
+import com.yetistep.delivr.util.GeneralUtil;
+import com.yetistep.delivr.util.MessageBundle;
 import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,9 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Autowired
     StoresBrandDaoService storesBrandDaoService;
+
+    @Autowired
+    CategoryDaoService categoryDaoService;
 
     @Override
     public PaginationDto getActionLog(Page page) throws Exception {
@@ -154,6 +161,77 @@ public class ManagerServiceImpl implements ManagerService {
                     throw new YSException("VLD018");
             }
         }
+        return true;
+    }
+
+
+    @Override
+    public boolean saveCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
+
+        if (headerDto.getId() != null){
+            CategoryEntity parentCategory = new CategoryEntity();
+            parentCategory.setId(Integer.parseInt(headerDto.getId()));
+            category.setParent(parentCategory);
+        }
+
+        String categoryImage = category.getImageUrl();
+        category.setImageUrl(null);
+        if (category.getFeatured() == null) {
+            category.setFeatured(false);
+        }
+
+        categoryDaoService.save(category);
+
+        if(categoryImage != null){
+            log.info("Uploading category image to S3 Bucket ");
+            String dir = MessageBundle.separateString("/", "category" + category.getId());
+            boolean isLocal = MessageBundle.isLocalHost();
+            String categoryImageUrl = "categoryImage"+(isLocal ? "_tmp_" : "_") + category.getId()+System.currentTimeMillis();
+            String s3PathImage = GeneralUtil.saveImageToBucket(categoryImage, categoryImageUrl, dir, true);
+            category.setImageUrl(s3PathImage);
+            categoryDaoService.update(category);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean updateCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
+
+        CategoryEntity dbCategory = categoryDaoService.find(Integer.parseInt(headerDto.getId()));
+
+        String categoryImage = category.getImageUrl();
+        String dbImageUrl = dbCategory.getImageUrl();
+
+        if(categoryImage != null){
+            dbCategory.setImageUrl(null);
+        }
+
+        dbCategory.setName(category.getName());
+        if(category.getParent() != null){
+            CategoryEntity parentCategory = new CategoryEntity();
+            parentCategory.setId(category.getParent().getId());
+            dbCategory.setParent(parentCategory);
+        }
+
+        categoryDaoService.update(dbCategory);
+
+        if(categoryImage != null){
+            log.info("Uploading category image to S3 Bucket ");
+            String dir = MessageBundle.separateString("/", "category" + category.getId());
+            boolean isLocal = MessageBundle.isLocalHost();
+
+            if(dbImageUrl != null){
+                log.info("deleting category image from S3 Bucket ");
+                AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(dbImageUrl));
+            }
+
+            String categoryImageUrl = "categoryImage"+(isLocal ? "_tmp_" : "_") + category.getId()+System.currentTimeMillis();
+            String s3PathImage = GeneralUtil.saveImageToBucket(categoryImage, categoryImageUrl, dir, true);
+            category.setImageUrl(s3PathImage);
+            categoryDaoService.update(category);
+        }
+
         return true;
     }
 }

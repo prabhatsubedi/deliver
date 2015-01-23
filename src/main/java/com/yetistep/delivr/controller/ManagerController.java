@@ -241,4 +241,49 @@ public class ManagerController {
         }
     }
 
+
+    @RequestMapping(value = "/save_category", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> saveCategory(@RequestHeader HttpHeaders headers, @RequestBody CategoryEntity category) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            List<String> hd = headers.get("parentId");
+            if (hd != null && hd.size() > 0)
+                headerDto.setId(hd.get(0));
+            else
+                headerDto.setId(null);
+
+            managerService.saveCategory(category, headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Category has been saved successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while creating category", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
+    @RequestMapping(value = "/update_category", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateCategory(@RequestHeader HttpHeaders headers, @RequestBody CategoryEntity category) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+
+            managerService.updateCategory(category, headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Category has been updated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while updating category", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
+
+
 }

@@ -13,7 +13,7 @@ window.fbAsyncInit = function() {
     }else if(hostName=="delivr.com" || hostName=="www.delivr.com")
         apId = "910783542265968";
     else
-         apId = "938896656121323";//764634910220474
+         apId = "942608175750171";//764634910220474
 
 
     // init the FB JS SDK                                                            n

@@ -970,6 +970,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
               else get the items of child category itself as the final category
              */
             if(childsChildId.size() > 0){
+                //fixme : get the dao contact out out the loop
                 List<ItemEntity> categoriesItems = merchantDaoService.findItemByCategory(childsChildId, storeId);
                 if(categoriesItems.size() > 0){
                     for(ItemEntity item: categoriesItems){
@@ -990,6 +991,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 }
                 childCategory.setItem(categoriesItems);
             }
+
+
+
             childCategory.setChild(null);
             childCategory.setParent(null);
         }

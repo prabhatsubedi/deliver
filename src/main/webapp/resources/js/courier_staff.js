@@ -176,7 +176,8 @@ var courierProfile;
 
             if(courier_profile == undefined) {
 
-                var srclatlng = new google.maps.LatLng(courierStaff.latitude, courierStaff.longitude);
+//                var srclatlng = new google.maps.LatLng(courierStaff.latitude, courierStaff.longitude);
+                var srclatlng = new google.maps.LatLng("27.689", "85.324");
                 var destlatlang = new google.maps.LatLng("27.6891424", "85.324561");
                 map.setZoom(12);
                 map.setCenter(srclatlng);

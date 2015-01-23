@@ -67,7 +67,6 @@ var merchantProfile;
                 $('#partnership').val("" + merchant.partnershipStatus);
                 $('#commission').val(merchant.commissionPercentage);
                 $('#service_fee').val(merchant.serviceFee);
-                $('#status').val(merchant.status);
 
                 $('#partnership').selectpicker();
 

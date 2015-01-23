@@ -13,7 +13,6 @@ import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -478,17 +477,59 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         if(dbMerchant == null)
             throw new YSException("VLD011");
         List<StoresBrandEntity> storesBrands = merchantDaoService.findBrandListByMerchant(dbMerchant.getId());
+        List<StoresBrandEntity> storesBrandEntities = new ArrayList<StoresBrandEntity>();
         for(StoresBrandEntity storesBrand: storesBrands){
-           for (StoreEntity store: storesBrand.getStore()){
-               store.setItemsStore(null);
-           }
+           storesBrandEntities.add(getStoreBrandForJson(storesBrand));
         }
-        return storesBrands;
+        return storesBrandEntities;
     }
 
     @Override
     public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception {
-        return merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
+        StoresBrandEntity storesBrandEntity =  merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
+        return getStoreBrandForJson(storesBrandEntity);
+    }
+
+    private StoresBrandEntity getStoreBrandForJson(StoresBrandEntity storesBrandEntity){
+        StoresBrandEntity storesBrand = new StoresBrandEntity();
+        storesBrand.setId(storesBrandEntity.getId());
+        storesBrand.setBrandName(storesBrandEntity.getBrandName());
+        storesBrand.setOpeningTime(storesBrandEntity.getOpeningTime());
+        storesBrand.setClosingTime(storesBrandEntity.getClosingTime());
+        storesBrand.setBrandLogo(storesBrandEntity.getBrandLogo());
+        storesBrand.setBrandImage(storesBrandEntity.getBrandImage());
+        storesBrand.setBrandUrl(storesBrandEntity.getBrandUrl());
+        storesBrand.setStatus(storesBrandEntity.getStatus());
+        storesBrand.setMinOrderAmount(storesBrandEntity.getMinOrderAmount());
+        storesBrand.setCreatedDate(storesBrandEntity.getCreatedDate());
+
+        List<BrandsCategoryEntity> brandCategories = new ArrayList<BrandsCategoryEntity>();
+        for(BrandsCategoryEntity brandsCategoryEntity : storesBrandEntity.getBrandsCategory()){
+            BrandsCategoryEntity brandsCategory = new BrandsCategoryEntity();
+            brandsCategory.setId(brandsCategoryEntity.getId());
+            brandCategories.add(brandsCategory);
+        }
+        storesBrand.setBrandsCategory(brandCategories);
+
+        List<StoreEntity> stores = new ArrayList<StoreEntity>();
+        for(StoreEntity storeEntity: storesBrandEntity.getStore()){
+            StoreEntity store = new StoreEntity();
+            store.setId(storeEntity.getId());
+            store.setName(storeEntity.getName());
+            store.setStreet(storeEntity.getStreet());
+            store.setCity(storeEntity.getCity());
+            store.setState(storeEntity.getState());
+            store.setCountry(storeEntity.getCountry());
+            store.setContactNo(storeEntity.getContactNo());
+            store.setContactPerson(storeEntity.getContactPerson());
+            store.setLatitude(storeEntity.getLatitude());
+            store.setLongitude(storeEntity.getLongitude());
+            store.setStatus(storeEntity.getStatus());
+            store.setCreatedDate(storeEntity.getCreatedDate());
+            stores.add(store);
+        }
+        storesBrand.setStore(stores);
+        return storesBrand;
     }
 
     @Override

@@ -217,7 +217,7 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
                     document.getElementById('jcrop_target').removeAttribute('src');
                     document.getElementById('jcrop_preview').removeAttribute('src');
                     document.getElementById('jcrop_preview_dup').removeAttribute('src');
-                    $('#' + img_container).addClass('image_selected').html('<img src="' + src_url + '" style="height: 100%;" class="img-responsive" />');
+                    $('#' + img_container).addClass('image_selected').html('<img src="' + src_url + '" style="height: 100%;" class="img-responsive" data-new="true" />');
                 }
             }
         };

@@ -234,7 +234,7 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
         $('#apply_preview').click(function(e){
             html2canvas($('.preview-container'), {
                 onrendered: function(canvas) {
-                    var strImage = canvas.toDataURL('image/jpeg');
+                    var strImage = canvas.toDataURL('image/jpeg', 1);
                     $('#' + img_container).addClass('image_selected').removeClass('error').html('<img src="' + strImage + '" style="height: 100%;" class="img-responsive" data-new="true" />');
                     $('#crop_img_modal').modal('hide');
                 }

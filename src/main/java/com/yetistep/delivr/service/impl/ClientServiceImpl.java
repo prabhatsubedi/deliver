@@ -361,6 +361,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                 item.setName(itemOrder.getItem().getName());
                 item.setUnitPrice(itemOrder.getItem().getUnitPrice());
                 itemOrder.setItem(item);
+                itemOrder.setItemOrderAttributes(null);
             }
         }
         order.setRating(null);

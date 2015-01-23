@@ -166,7 +166,7 @@ var merchantProfile;
                     objAddress.latitude = address.latitude;
                     objAddress.longitude = address.longitude;
 
-                    data.id = Main.getURLvalue(2);
+                    data.merchantId = Main.getURLvalue(2);
                     data.website = $('#url').val();
                     data.companyRegistrationNo = $('#registration_no').val();
                     data.vatNo = $('#vat').val();

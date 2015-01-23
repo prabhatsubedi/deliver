@@ -1007,13 +1007,40 @@ var data_categories_names = [];
         $('.btn_edit').attr('href', Main.modifyURL('/merchant/item/form/edit/' + itemId));
 
         var dragged = false;
+        var cancel_drag = false;
         function toggleSwitch(value, elem) {
+
+            var chk_confirm = false;
+            if(!cancel_drag) {
+                var chk_confirm = confirm('Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' item?');
+
+                if (!chk_confirm) {
+                    value = value == 'on' ? 'off' : 'on';
+                } else {
+
+                    var callback = function (status, data) {
+                        alert(data.message);
+                        if (data.success != true) {
+                            toggleSwitch(value == 'on' ? 'off' : 'on', elem);
+                        }
+                    };
+
+                    callback.loaderDiv = "body";
+                    callback.requestType = "POST";
+
+                    Main.request('/merchant/change_status', {className:"Item", statusId: value == 'on' ? 2 : 3}, callback, {id: Main.getURLvalue(3)});
+
+                }
+            }
+
             if(value == 'on') {
                 elem.css({left: 0}).removeClass('off').addClass('on');
             } else {
                 elem.css({left: 30}).removeClass('on').addClass('off');
             }
             dragged = false;
+            cancel_drag = false;
+
         }
         $('.switch_activation .btn_switch').bind('contextmenu', function(e) {
             return false;
@@ -1027,6 +1054,9 @@ var data_categories_names = [];
                 dragged = true;
             },
             stop: function( event, ui) {
+                if(Math.abs(ui.originalPosition.left - ui.position.left) < 15) {
+                    cancel_drag = true;
+                }
                 toggleSwitch(ui.position.left > 15 ? 'off' : 'on', ui.helper);
             }
         });
@@ -1051,6 +1081,11 @@ var data_categories_names = [];
                 for(var i = 0; i < itemImages.length; i++) {
                     $('.product_image .drop_zone').eq(i).html('<img src="' + itemImages[i].url + '" style="height: 100%;" class="img-responsive" />');
                 }
+
+                if(item.status == 'ACTIVE')
+                    $('.btn_switch').removeClass('off').addClass('on');
+                else
+                    $('.btn_switch').removeClass('on').addClass('off');
 
                 $('.item_info .description').html(item.description);
                 $('.item_info .additional_offer').html(item.additionalOffer);

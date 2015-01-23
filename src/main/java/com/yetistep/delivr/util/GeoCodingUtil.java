@@ -6,6 +6,10 @@ import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixElement;
 import com.google.maps.model.DistanceMatrixElementStatus;
 import com.google.maps.model.DistanceMatrixRow;
+import com.yetistep.delivr.enums.PreferenceType;
+import com.yetistep.delivr.service.impl.SystemPropertyServiceImpl;
+import com.yetistep.delivr.service.inf.SystemPropertyService;
+import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,8 +24,9 @@ import java.util.List;
  */
 public class GeoCodingUtil {
 
-   // private static final String GOOGLE_MAP_API_KEY = "AIzaSyAnm8zVlUj2KSh5nZA_MD72xZuSBPlmjEg";
-   private static final String GOOGLE_MAP_API_KEY = "AIzaSyCdr9eotT5ocnlRRhQoDxmZqYlN-Bbk5aE";
+    // private static final String GOOGLE_MAP_API_KEY = "AIzaSyAnm8zVlUj2KSh5nZA_MD72xZuSBPlmjEg";
+    private static final String GOOGLE_MAP_API_KEY = "AIzaSyCdr9eotT5ocnlRRhQoDxmZqYlN-Bbk5aE";
+    private static final Logger log = Logger.getLogger(GeoCodingUtil.class);
 
     //Return In Miter
     public static Float getDistance(double lat1, double lng1, double lat2, double lng2) {
@@ -77,13 +82,19 @@ public class GeoCodingUtil {
         List<BigDecimal> distance = new ArrayList<BigDecimal>();
         GeoApiContext context = GeoCodingUtil.getGeoApiContext();
         DistanceMatrix distanceMatrix = DistanceMatrixApi.getDistanceMatrix(context, origin, destination).await();
+        int oTracker = 0, dTracker = 0;
         for(DistanceMatrixRow distanceMatrixRow: distanceMatrix.rows){
+            dTracker = 0;
             for(DistanceMatrixElement element: distanceMatrixRow.elements){
                 if(element.status.equals(DistanceMatrixElementStatus.OK))
                     distance.add(new BigDecimal(element.distance.inMeters));
-                else
-                    throw new YSException("GEO001");
+                else {
+                    log.info("Error in Latitude-Longitude on Origin:"+origin[oTracker]+" Destination:"+destination[dTracker]);
+                    distance.add(getAssumedDistance(origin[oTracker], destination[dTracker]));
+                }
+                dTracker++;
             }
+            oTracker++;
         }
         return distance;
     }
@@ -93,5 +104,16 @@ public class GeoCodingUtil {
             throw new YSException("VLD015");
         }
         return latitude+","+longitude;
+    }
+
+    private static BigDecimal getAssumedDistance(String origin, String destination) throws Exception{
+        SystemPropertyService systemPropertyService = new SystemPropertyServiceImpl();
+        BigDecimal distanceFactor = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.AIR_TO_ROUTE_DISTANCE_FACTOR));
+        double lat1 = Double.parseDouble(origin.split(",")[0]);
+        double lng1 = Double.parseDouble(origin.split(",")[1]);
+        double lat2 = Double.parseDouble(destination.split(",")[0]);
+        double lng2 = Double.parseDouble(destination.split(",")[1]);
+        BigDecimal distanceInMeters = new BigDecimal(getDistance(lat1, lng1, lat2, lng2));
+        return distanceFactor.multiply(distanceInMeters);
     }
 }

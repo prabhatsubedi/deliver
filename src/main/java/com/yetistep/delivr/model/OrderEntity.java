@@ -27,7 +27,7 @@ public class OrderEntity implements Serializable {
 
     private Integer id;
     private String orderName;
-    private Integer orderVerificationCode;
+    private String orderVerificationCode;
     private Boolean orderVerificationStatus;
     private DeliveryStatus deliveryStatus;
     private JobOrderStatus orderStatus;
@@ -82,12 +82,12 @@ public class OrderEntity implements Serializable {
 
     @JsonIgnore
     @Column(name = "order_verification_code")
-    public Integer getOrderVerificationCode() {
+    public String getOrderVerificationCode() {
         return orderVerificationCode;
     }
 
     @JsonProperty
-    public void setOrderVerificationCode(Integer orderVerificationCode) {
+    public void setOrderVerificationCode(String orderVerificationCode) {
         this.orderVerificationCode = orderVerificationCode;
     }
 

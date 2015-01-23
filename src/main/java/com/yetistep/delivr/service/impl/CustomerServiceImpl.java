@@ -286,17 +286,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
-       // OrderEntity order = requestJson.getOrdersOrder();
         List<ItemsOrderEntity> itemsOrder = requestJson.getOrdersItemsOrder();
         Integer brandId = requestJson.getOrdersBrandId();
-        Integer customerId = requestJson.getOrdersCustomerId();
+        Long customerId = requestJson.getOrdersCustomerId();
         Integer addressId = requestJson.getOrdersAddressId();
 
         StoresBrandEntity brand = merchantDaoService.findBrandDetail(brandId);
-        //FIXME Dummy Value =
-        //Long id = 5435435435435435L;
         CustomerEntity customer = customerDaoService.find(customerId);
-//        CustomerEntity customer = customerDaoService.find(customerId);
         AddressEntity address = customerDaoService.findAddressById(addressId);
 
         if(address == null)
@@ -307,11 +303,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         if (brand == null)
             throw new YSException("VLD012");
-
-//        Integer storeId = requestJson.getOrdersStoreId();
-//        StoreEntity storeEntity = merchantDaoService.getStoreById(storeId);
-//        if(storeEntity == null)
-//            throw new YSException("VLD016");
 
         OrderEntity order = new OrderEntity();
         order.setAddress(address);
@@ -325,10 +316,13 @@ public class CustomerServiceImpl implements CustomerService {
         BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
         for (ItemsOrderEntity iOrder: itemsOrder){
             ItemEntity item = merchantDaoService.getItemDetail(iOrder.getItem().getId());
-
+            if(item == null)
+                throw new YSException("ITM001");
             iOrder.setItem(item);
             iOrder.setOrder(order);
             iOrder.setAvailabilityStatus(true);
+            /* Attribute price is added to individual itemTotal. Then, service and VAT charge added to ItemTotal
+            which is then added to itemTotalCost i.e. OrderTotal */
             BigDecimal attributePrice = BigDecimal.ZERO;
             for(ItemsOrderAttributeEntity itemsOrderAttribute : iOrder.getItemOrderAttributes()){
                 ItemsAttributeEntity itemsAttribute = itemsAttributeDaoService.find(itemsOrderAttribute.getItemsAttribute().getId());
@@ -349,14 +343,20 @@ public class CustomerServiceImpl implements CustomerService {
         order.setTotalCost(itemTotalCost);
         order.setSurgeFactor(getSurgeFactor());
         order.setItemServiceAndVatCharge(itemServiceAndVatCharge);
+
+        /* Listing Active stores of a store brand and finding shortest store */
         List<StoreEntity> stores = merchantDaoService.findActiveStoresByBrand(brandId);
         StoreEntity store = findNearestStoreFromCustomer(order, stores);
-
         order.setStore(store);
         order.setOrderName(store.getName()+" to "+ order.getAddress().getStreet());
-        order.setOrderVerificationCode(Integer.parseInt(GeneralUtil.generateMobileCode()));
+        order.setOrderVerificationCode(GeneralUtil.generateMobileCode());
         //TODO Send code message to customer
-        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, deliveryBoyDaoService.findAllCapableDeliveryBoys(), order);
+
+        /* Finding delivery boys based on active status. */
+        List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys();
+        /* Selects nearest delivery boys based on timing. */
+        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, availableAndActiveDBoys, order);
+        /* Selects delivery boys based on profit criteria. */
         List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, brand.getMerchant());
         order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
         customerDaoService.saveOrder(order);
@@ -520,9 +520,10 @@ public class CustomerServiceImpl implements CustomerService {
         if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
             deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
         /* 14. ======= Customer available balance after discount ======== */
-        BigDecimal customerBalanceAfterDiscount = ZERO;
-        if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
-            customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
+        /* Below commented code seems unused during order creation */
+//        BigDecimal customerBalanceAfterDiscount = ZERO;
+//        if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
+//            customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
 
         /* 15. ====== Customer Pays ========*/
         BigDecimal customerPays = order.getTotalCost().add(deliveryChargedAfterDiscount).add(serviceFeeAmt).add(order.getItemServiceAndVatCharge());
@@ -544,7 +545,7 @@ public class CustomerServiceImpl implements CustomerService {
         profit = BigDecimalUtil.percentageOf(totalOrder, commissionPct).add(deliveryChargedBeforeDiscount).add(serviceFeeAmt).subtract(paidToCourier);
 
         if(BigDecimalUtil.isLessThen(profit, BigDecimalUtil.percentageOf(totalOrder, MINIMUM_PROFIT_PERCENTAGE))){
-            System.err.println("No Profit");
+            log.info("No Profit");
             return false;
         }
         return true;

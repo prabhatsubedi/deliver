@@ -250,8 +250,13 @@ if(typeof(Store) == "undefined") var Store = {};
 
         $('.cancel_marker').live('click', function(){
 
-            var current_index = Object.keys(arrGeoPoints).indexOf($(".save_marker").eq(0).attr('data-id'));
-            google.maps.event.trigger(markers[current_index], 'rightclick');
+            var geoKey = $(".save_marker").eq(0).attr('data-id');
+            for(var i in markers) {
+                if('geoKey' in markers[i] && markers[i].geoKey == geoKey) {
+                    google.maps.event.trigger(markers[i], 'rightclick');
+                    break;
+                }
+            }
 
         });
 
@@ -329,7 +334,6 @@ if(typeof(Store) == "undefined") var Store = {};
                             geoPointData.latitude = store.latitude;
                             geoPointData.longitude = store.longitude;
                             location.geoPointData = geoPointData;
-                            location.readOnly = true;
                             addStoreMarker(location);
                         }
 

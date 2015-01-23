@@ -146,9 +146,9 @@ public class GeneralUtil {
         return tokenstr;
     }
 
-    /*   Generates 4 digit code   */
+    /*   Generates 4 digit code from 1000 to 9999  */
     public static String generateMobileCode(){
-        int code = (int) (Math.random()*9000);
+        int code = (int) (Math.random()*9000+1000);
         return String.valueOf(code);
     }
 

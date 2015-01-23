@@ -47,8 +47,8 @@ public class RequestJsonDto {
     private OrderEntity ordersOrder;
     private List<ItemsOrderEntity> ordersItemsOrder;
     private Integer ordersBrandId;
-    private Integer ordersStoreId;
-    private Integer ordersCustomerId;
+    //private Integer ordersStoreId;
+    private Long ordersCustomerId;
     private Integer ordersAddressId;
 
     /*update account properties*/
@@ -212,19 +212,19 @@ public class RequestJsonDto {
         this.ordersBrandId = ordersBrandId;
     }
 
-    public Integer getOrdersStoreId() {
-        return ordersStoreId;
-    }
+//    public Integer getOrdersStoreId() {
+//        return ordersStoreId;
+//    }
+//
+//    public void setOrdersStoreId(Integer ordersStoreId) {
+//        this.ordersStoreId = ordersStoreId;
+//    }
 
-    public void setOrdersStoreId(Integer ordersStoreId) {
-        this.ordersStoreId = ordersStoreId;
-    }
-
-    public Integer getOrdersCustomerId() {
+    public Long getOrdersCustomerId() {
         return ordersCustomerId;
     }
 
-    public void setOrdersCustomerId(Integer ordersCustomerId) {
+    public void setOrdersCustomerId(Long ordersCustomerId) {
         this.ordersCustomerId = ordersCustomerId;
     }
 

@@ -141,6 +141,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             }
         }
 
+
+
         // Perform sorted store pagination
         PageInfo pageInfo = null;
         List<StoresBrandEntity> sortedList = new ArrayList<>();
@@ -494,10 +496,18 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                }
            }
 
-          if(isUpdated)
+          if(isUpdated){
+              Integer availableQty = cartDaoService.getAvailableOrderItem(updatedCartId);
+              if(availableQty == 0)
+                  throw new YSException("CRT002");
+
+              if(cart.getOrderQuantity() > availableQty)
+                  throw new YSException("CRT002", "Only " + availableQty + " qty can be added");
+
               cartDaoService.updateOrderQuantity(updatedCartId, cart.getOrderQuantity());
-          else
+          } else {
               cartDaoService.save(cart);
+          }
 
       } else {
           //Such Cart is not available

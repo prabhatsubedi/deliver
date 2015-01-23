@@ -494,9 +494,10 @@ $(document).ready(function(){
                             marker = new google.maps.Marker({
                                 position: location,
                                 map: map,
-                                draggable: location.readOnly != true
+                                draggable: location.readOnly != true,
                             });
-                            marker.geoObj = geoObj;
+                            marker.geoKey = locationToKey(location);
+
                             var jsonObj = geoObj;
                             markers.push(marker);
                             arrGeoPoints[locationToKey(location)] = jsonObj;
@@ -557,6 +558,7 @@ $(document).ready(function(){
                                 infoWindowData.latitude = objNewPosition.lat();
                                 infoWindowData.longitude = objNewPosition.lng();
                                 arrGeoPoints[newPosition] = infoWindowData;
+                                marker.geoKey = newPosition;
                                 delete arrGeoPoints[locationToKey(lastPosition)];
 
                                 geocoder.geocode({'latLng': objNewPosition}, function(results, status) {

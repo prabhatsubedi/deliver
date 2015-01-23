@@ -3,10 +3,7 @@ package com.yetistep.delivr.service.impl;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.enums.DBoyStatus;
-import com.yetistep.delivr.enums.DeliveryStatus;
-import com.yetistep.delivr.enums.JobOrderStatus;
-import com.yetistep.delivr.enums.PreferenceType;
+import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.service.inf.CustomerService;
@@ -363,20 +360,32 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-
+    /*
+    * This method returns nearest store from customer, i.e Order Address Among list of stores.
+    * */
     private StoreEntity findNearestStoreFromCustomer(OrderEntity order, List<StoreEntity> stores) throws Exception {
+        DistanceType distanceType = DistanceType.fromInt(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.AIR_OR_ACTUAL_DISTANCE_SWITCH)));
         String orderAddress[] = {GeoCodingUtil.getLatLong(order.getAddress().getLatitude(), order.getAddress().getLongitude())};
         String storeAddress[] = new String[stores.size()];
         for (int i = 0; i < stores.size(); i++) {
             storeAddress[i] = GeoCodingUtil.getLatLong(stores.get(i).getLatitude(), stores.get(i).getLongitude());
         }
-        List<BigDecimal> distanceList =  GeoCodingUtil.getListOfAirDistances(orderAddress, storeAddress);
-        int minimumIndex = distanceList.indexOf(Collections.min(distanceList));
-
-        StoreEntity nearestStore = stores.get(minimumIndex);
-        String finalStore[] = new String[1];
-        finalStore[0] = GeoCodingUtil.getLatLong(nearestStore.getLatitude(), nearestStore.getLongitude());
-        order.setCustomerChargeableDistance(BigDecimalUtil.getDistanceInKiloMeters( GeoCodingUtil.getListOfDistances(orderAddress, finalStore).get(0)));
+        StoreEntity nearestStore = null;
+        BigDecimal actualDistance = BigDecimal.ZERO;
+        List<BigDecimal> distanceList = new ArrayList<BigDecimal>();
+        if(distanceType.equals(DistanceType.AIR_DISTANCE)){
+            distanceList =  GeoCodingUtil.getListOfAssumedDistance(orderAddress[0], storeAddress);
+            int minimumIndex = distanceList.indexOf(Collections.min(distanceList));
+            nearestStore = stores.get(minimumIndex);
+            actualDistance = Collections.min(distanceList);
+        }else{
+            distanceList = GeoCodingUtil.getListOfAirDistances(orderAddress, storeAddress);
+            int minimumIndex = distanceList.indexOf(Collections.min(distanceList));
+            nearestStore = stores.get(minimumIndex);
+            String finalStore[] = {GeoCodingUtil.getLatLong(nearestStore.getLatitude(), nearestStore.getLongitude())};
+            actualDistance =  GeoCodingUtil.getListOfDistances(orderAddress, finalStore).get(0);
+        }
+        order.setCustomerChargeableDistance(BigDecimalUtil.getDistanceInKiloMeters(actualDistance));
         return nearestStore;
     }
 
@@ -396,8 +405,14 @@ public class CustomerServiceImpl implements CustomerService {
             }
         }
 
+        DistanceType distanceType = DistanceType.fromInt(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.AIR_OR_ACTUAL_DISTANCE_SWITCH)));
+        List<BigDecimal> distanceList = new ArrayList<BigDecimal>();
+        if(distanceType.equals(DistanceType.AIR_DISTANCE)){
+            distanceList = GeoCodingUtil.getListOfAssumedDistance(storeAddress[0], deliveryBoyAddress);
+        }else{
+            distanceList = GeoCodingUtil.getListOfDistances(storeAddress, deliveryBoyAddress);
+        }
 
-        List<BigDecimal> distanceList = GeoCodingUtil.getListOfDistances(storeAddress, deliveryBoyAddress);
         List<DeliveryBoySelectionEntity> selectionDetails = new ArrayList<DeliveryBoySelectionEntity>();
         List<Integer> timeDetails = new ArrayList<Integer>();
         int timeAtStore = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.TIME_AT_STORE));

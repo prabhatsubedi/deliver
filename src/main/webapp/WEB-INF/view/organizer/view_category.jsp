@@ -11,7 +11,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-
+              Manager.getCategories();
         });
     </script>
 
@@ -30,7 +30,14 @@
             <h1 class="pull-left">Category View</h1>
         </div>
         <div class="main_content">
-
+            <div class="item_listing">
+                <div class="table_div">
+                    <div class="categories_container td_div full_height">
+                        <div class="cateogry_list"></div>
+                    </div>
+                    <div class="items_container td_div"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

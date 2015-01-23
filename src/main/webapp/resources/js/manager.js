@@ -547,5 +547,77 @@ if (typeof(Manager) == "undefined") var Manager = {};
         });
     }
 
+    Manager.getCategories = function(){
+        var callback = function (status, data) {
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+            var categories = data.params.categories;
+            var category_list = '';
+            var padding = 40;
+            function categoryList(categories, padding, load) {
+                category_list += '<ul class="nav nav-stacked ' + (load ? "" : "hidden") + '">';
+                for(var i = 0; i < categories.length; i++) {
+                    category_list += '<li><a href="#" data-id="' + categories[i].id + '" style="padding-left: ' + padding + 'px"><span class="glyphicon ' + (categories[i].child.length > 0 ? 'glyphicon-plus' : '') + '"></span>' + categories[i].name + '</a>';
+                    if(categories[i].child.length > 0) categoryList(categories[i].child, padding + 20);
+                    category_list += '</li>';
+                }
+                category_list += '</ul>';
+            }
+            categoryList(categories, padding, true);
+            $('.cateogry_list').html(category_list);
+
+            function treeAction(elem, action) {
+                var elem_parent = elem.parent('a');
+                if(elem_parent.siblings('ul').length > 0) {
+                    if(action == 'open') {
+                        elem_parent.siblings('ul').removeClass('hidden');
+                        elem.removeClass('glyphicon-plus').addClass('glyphicon-minus');
+                        $('.glyphicon-minus',elem_parent.parent('li').siblings('li')).removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                        $('ul', elem_parent.parent('li').siblings('li')).addClass('hidden');
+                    } else {
+                        elem_parent.siblings('ul').addClass('hidden');
+                        elem.removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                        $('.glyphicon-minus', elem_parent.parent('li')).removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                        $('ul', elem_parent.parent('li')).addClass('hidden');
+                    }
+                }
+
+            }
+
+            $('.cateogry_list a').live('click', function(e){
+                e.preventDefault();
+                if(e.target == this) {
+
+                    var cat_name = $(this).text();
+
+                    treeAction($('.glyphicon', this), 'open');
+                     var callback = function(success, data){
+                         $(".category_detail .name").html(data.name);
+                         $(".category_detail .category_image img").src(data.imageUrl);
+                     }
+                    var headers = {};
+                    headers.id = $(this).data("id");
+                    callback.loaderDiv = "body";
+                    callback.requestType = "GET";
+                    Main.request('/organizer/get_category', {}, callback, header);
+                }
+            });
+
+            $('.cateogry_list .glyphicon').live('click', function(){
+                var elem = $(this);
+                if(elem.hasClass('glyphicon-plus')) {
+                    treeAction(elem, 'open')
+                } else if (elem.hasClass('glyphicon-minus')) {
+                    treeAction(elem, 'close')
+                }
+            });
+
+        }
+        callback.loaderDiv = "body";
+        callback.requestType = "GET";
+        Main.request('/organizer/get_default_categories', {}, callback);
+    }
 
 })(jQuery);

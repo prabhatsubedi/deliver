@@ -35,4 +35,8 @@ public interface ManagerService {
     public boolean saveCategory(CategoryEntity category, HeaderDto headerDto) throws Exception;
 
     public boolean updateCategory(CategoryEntity category, HeaderDto headerDto) throws Exception;
+
+    public List<CategoryEntity> getDefaultCategories() throws Exception;
+
+    public CategoryEntity getCategory(HeaderDto headerDto) throws Exception;
 }

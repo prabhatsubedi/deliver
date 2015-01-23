@@ -83,4 +83,6 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public List<ItemEntity> getWebSearchItem(String searchString, List<Integer> categoryId, Integer storeId, Page page) throws Exception;
 
     public Integer getTotalNumberOfItems(String searchString, List<Integer> categoryId, Integer storeId) throws Exception;
+
+    public  List<CategoryEntity> getDefaultCategories() throws Exception;
 }

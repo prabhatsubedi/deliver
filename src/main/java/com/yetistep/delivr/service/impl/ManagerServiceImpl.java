@@ -1,14 +1,12 @@
 package com.yetistep.delivr.service.impl;
 
-import com.yetistep.delivr.dao.inf.ActionLogDaoService;
-import com.yetistep.delivr.dao.inf.CategoryDaoService;
-import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
-import com.yetistep.delivr.dao.inf.StoresBrandDaoService;
+import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.ManagerService;
+import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.AmazonUtil;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.MessageBundle;
@@ -42,6 +40,12 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Autowired
     CategoryDaoService categoryDaoService;
+
+    @Autowired
+    MerchantService merchantService;
+
+    @Autowired
+    MerchantDaoService merchantDaoService;
 
     @Override
     public PaginationDto getActionLog(Page page) throws Exception {
@@ -233,5 +237,57 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         return true;
+    }
+
+
+    public List<CategoryEntity> getCategoryTree(List<CategoryEntity> categories, Integer parent_id){
+        List<CategoryEntity> newCategories = new ArrayList<CategoryEntity>();
+        for(CategoryEntity newCategory:  categories)
+        {
+            if(newCategory.getParent().getId()==parent_id && (newCategory.getStoresBrand()== null))
+            {
+                newCategory.setChild(getCategoryTree(categories, newCategory.getId()));
+                List<ItemEntity> items = newCategory.getItem();
+                if(items.size() > 0){
+                    newCategory.setItem(new ArrayList<ItemEntity>());
+                } else {
+                    newCategory.setItem(null);
+                }
+                newCategories.add(newCategory);
+            }
+        }
+        return newCategories;
+    }
+
+
+    public List<CategoryEntity> findChildCategories(List<CategoryEntity> parentCategories) throws Exception {
+        List<CategoryEntity> defaultCategories = merchantDaoService.getDefaultCategories();
+
+        if(defaultCategories.size() > 0){
+            for (CategoryEntity category: parentCategories){
+               List<CategoryEntity> newCategories = new ArrayList<>();
+               newCategories =  getCategoryTree(defaultCategories, category.getId());
+               category.setChild(newCategories);
+            }
+        }
+
+        return  parentCategories;
+    }
+
+    @Override
+    public List<CategoryEntity> getDefaultCategories() throws Exception {
+        List<CategoryEntity> parentCategories = merchantService.getParentCategories();
+        return  findChildCategories(parentCategories);
+    }
+
+    @Override
+    public CategoryEntity getCategory(HeaderDto headerDto) throws Exception{
+        CategoryEntity category = categoryDaoService.findCategory(Integer.parseInt(headerDto.getId()));
+        if(category != null){
+            category.setChild(null);
+            category.setItem(null);
+            category.setStoresBrand(null);
+        }
+        return category;
     }
 }

@@ -923,7 +923,6 @@ var data_categories_names = [];
         });
 
         $('a.view_more').live('click', function(){
-
             var elem = $('.cateogry_list a[data-id="' + $(this).attr('data-id') + '"]');
             elem.parents('ul.hidden').removeClass('hidden');
             elem.parents('ul.nav').siblings('a').children('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');

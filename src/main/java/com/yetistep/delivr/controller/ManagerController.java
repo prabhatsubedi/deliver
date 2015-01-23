@@ -283,7 +283,40 @@ public class ManagerController {
         }
     }
 
+    @RequestMapping(value = "/get_default_categories", method = RequestMethod.GET)
+    @ResponseBody
+    public  ResponseEntity<ServiceResponse> getDefaultCategories() {
+        try {
 
+            List<CategoryEntity> categories = managerService.getDefaultCategories();
+
+            ServiceResponse serviceResponse = new ServiceResponse("Category has been retrieved successfully");
+            serviceResponse.addParam("categories", categories);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving category", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_category", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateCategory(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            CategoryEntity category = managerService.getCategory(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Category has been retrived successfully");
+            serviceResponse.addParam("category", category);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving category", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
 
 }

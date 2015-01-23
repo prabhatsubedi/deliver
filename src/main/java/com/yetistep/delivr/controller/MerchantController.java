@@ -84,11 +84,11 @@ public class MerchantController {
 
     @RequestMapping(value = "/update_merchant", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> updateMerchant(/*@RequestHeader HttpHeaders headers, */@RequestBody MerchantEntity merchantEntity) {
+    public ResponseEntity<ServiceResponse> updateMerchant(@RequestHeader HttpHeaders headers, @RequestBody MerchantEntity merchantEntity) {
         try {
-//            HeaderDto headerDto = new HeaderDto();
-//            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.NEW_PASSWORD);
-            merchantService.updateMerchant(merchantEntity/*, headerDto*/);
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
+            merchantService.updateMerchant(merchantEntity, headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Merchant has been updated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {

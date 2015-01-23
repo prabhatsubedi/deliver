@@ -143,6 +143,16 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
+    public  List<CategoryEntity> getDefaultCategories() throws Exception {
+        List<CategoryEntity> categories = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
+        criteria.add(Restrictions.and(Restrictions.isNotNull("parent.id"), Restrictions.isNull("storesBrand.id")));
+        categories = criteria.list();
+
+        return categories;
+    }
+
+    @Override
     public StoreEntity getStoreById(Integer id) throws Exception {
         return (StoreEntity) getCurrentSession().get(StoreEntity.class, id);
     }

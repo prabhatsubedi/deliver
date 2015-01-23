@@ -393,8 +393,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public Boolean updateMerchant(MerchantEntity merchantEntity/*, HeaderDto headerDto*/) throws Exception {
+    public Boolean updateMerchant(MerchantEntity merchantEntity, HeaderDto headerDto) throws Exception {
         log.info("Updating merchant with ID:"+merchantEntity.getId());
+        Integer merchant_id;
+        if(merchantEntity.getId() == null){
+            merchant_id = headerDto.getMerchantId();
+        }
+
         MerchantEntity merchant = merchantDaoService.find(merchantEntity.getId());
         if(merchant == null)
             throw new YSException("VLD011");
@@ -407,6 +412,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         merchant.getUser().setFullName(merchantEntity.getUser().getFullName());
         merchant.getUser().setMobileNumber(merchantEntity.getUser().getMobileNumber());
         merchant.getUser().setStatus(merchantEntity.getUser().getStatus());
+
         //merchant.getUser().setEmailAddress(merchantEntity.getUser().getEmailAddress());
         //merchant.getUser().setGender(merchantEntity.getUser().getGender());
         //set address value
@@ -421,9 +427,16 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         merchant.setWebsite(merchantEntity.getWebsite());
         //merchant.setBusinessTitle(merchantEntity.getBusinessTitle());
         merchant.setVatNo(merchantEntity.getVatNo());
-        merchant.setCommissionPercentage(merchantEntity.getCommissionPercentage());
         merchant.setCompanyRegistrationNo(merchantEntity.getCompanyRegistrationNo());
-        merchant.setServiceFee(merchantEntity.getServiceFee());
+        if(merchantEntity.getCommissionPercentage() != null){
+            merchant.setCommissionPercentage(merchantEntity.getCommissionPercentage());
+        }
+        if(merchantEntity.getServiceFee() != null){
+            merchant.setServiceFee(merchantEntity.getServiceFee());
+        }
+        if(merchantEntity.getPartnershipStatus() != null){
+            merchant.setPartnershipStatus(merchantEntity.getPartnershipStatus());
+        }
 
 
         String businessLogo =  merchantEntity.getBusinessLogo();

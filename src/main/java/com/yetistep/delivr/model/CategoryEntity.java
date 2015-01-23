@@ -22,8 +22,6 @@ import java.util.List;
 @Table(name="categories")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class CategoryEntity implements Serializable {
-
-
    private Integer id;
    private CategoryEntity parent;
    private List<ItemEntity> item;

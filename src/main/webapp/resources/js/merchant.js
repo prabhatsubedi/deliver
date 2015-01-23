@@ -71,7 +71,6 @@ var disableMapEdit = false;
                 $('#status').val(merchant.status);
 
                 $('#partnership').selectpicker();
-                $('#status').selectpicker();
 
                 var address = merchant.user.addresses[0];
 
@@ -122,10 +121,8 @@ var disableMapEdit = false;
             });
 
             $('#merchant_form').validate();
-            $('#business_name').rules('add', {required: true, messages : {required: "Business name is required."}});
             $('#url').rules('add', {required: true, url: true, messages : {required: "URL is required."}});
             $('#contact_person').rules('add', {required: true, messages : {required: "Contact person is required."}});
-            $('#contact_email').rules('add', {required: true, email: true, messages : {required: "Contact email is required."}});
             $('#contact_no').rules('add', {required: true, contactNumber: true, messages : {required: "Contact number is required."}});
             $('#commission').rules('add', {required: true, digits: true, min: 0, max: 100});
             $('#service_fee').rules('add', {required: true, digits: true, min: 0});

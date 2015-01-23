@@ -176,19 +176,6 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group clearfix">
-                                    <label for="status" class="col-lg-4 floated_label no_pad">Status</label>
-                                    <div class="col-lg-8">
-                                        <div class="form-control info_display val_status none_editable"></div>
-                                        <div class="info_edit editable hidden">
-                                            <select id="status" name="status" class="status col-xs-12 no_pad no_margin" data-style="form-control">
-                                                <option value="ACTIVE">Active</option>
-                                                <option value="INACTIVE">Inactive</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
                             </div>
 
                             <div class="profile_map form-group col-lg-7">

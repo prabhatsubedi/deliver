@@ -206,6 +206,9 @@ if(typeof(Store) == "undefined") var Store = {};
                 console.log(geoPoints);
                 if(geoPoints.valid) {
 
+                    var chk_confirm = confirm('Are you sure you want to ' + (action == 'edit' ? 'update' : 'add') + ' store?');
+                    if (!chk_confirm) return false;
+
                     var data = {};
                     var stores_brand = {};
 

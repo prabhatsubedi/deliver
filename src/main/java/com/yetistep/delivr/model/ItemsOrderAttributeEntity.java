@@ -30,7 +30,6 @@ public class ItemsOrderAttributeEntity {
         this.id = id;
     }
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="items_attribute_id")
     public ItemsAttributeEntity getItemsAttribute() {

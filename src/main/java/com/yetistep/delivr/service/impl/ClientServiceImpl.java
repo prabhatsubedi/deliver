@@ -141,7 +141,16 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             }
         }
 
+        /* If all stores are not activate then  brand should escaped to display */
+        for(StoresBrandEntity featureBrand : featuredBrands){
+             if(storeDaoService.getActiveStores(featureBrand.getId()) == 0)
+                 featuredBrands.remove(featureBrand);
+        }
 
+        for(StoresBrandEntity otherBrand : storeBrandResult) {
+            if(storeDaoService.getActiveStores(otherBrand.getId()) == 0)
+                storeBrandResult.remove(otherBrand);
+        }
 
         // Perform sorted store pagination
         PageInfo pageInfo = null;
@@ -352,6 +361,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                 item.setName(itemOrder.getItem().getName());
                 item.setUnitPrice(itemOrder.getItem().getUnitPrice());
                 itemOrder.setItem(item);
+                itemOrder.setItemOrderAttributes(null);
             }
         }
         order.setRating(null);

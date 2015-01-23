@@ -206,6 +206,9 @@ if(typeof(Store) == "undefined") var Store = {};
                 console.log(geoPoints);
                 if(geoPoints.valid) {
 
+                    var chk_confirm = confirm('Are you sure you want to ' + (action == 'edit' ? 'update' : 'add') + ' store?');
+                    if (!chk_confirm) return false;
+
                     var data = {};
                     var stores_brand = {};
 
@@ -467,6 +470,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
         $('.btn_edit').attr('href', Main.modifyURL('/merchant/store/form/edit/' + storeId));
         $('.add_items').attr('href', Main.modifyURL('/merchant/item/form/create/' + storeId));
+        $('.view_items').attr('href', Main.modifyURL('/merchant/item/list/' + storeId));
         if(!initialized) initialize('readonly', true); else google.maps.event.trigger(map, 'resize');
 
         var dragged = false;

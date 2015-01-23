@@ -35,11 +35,17 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/merchant.js"></script>
 
 <script type="text/javascript">
+    var merchantRole = false;
     $(document).ready(function(){
         Merchant.loadMerchant();
         Merchant.loadEditMerchant();
     });
 </script>
+<sec:authorize access="hasRole('ROLE_MERCHANT')">
+    <script type="text/javascript">
+        merchantRole = true;
+    </script>
+</sec:authorize>
 
 
 <div class="main_container">
@@ -177,15 +183,9 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="status" class="col-lg-4 floated_label no_pad">Status</label>
+                                    <label class="col-lg-4 floated_label no_pad">Status</label>
                                     <div class="col-lg-8">
-                                        <div class="form-control info_display val_status none_editable"></div>
-                                        <div class="info_edit editable hidden">
-                                            <select id="status" name="status" class="status col-xs-12 no_pad no_margin" data-style="form-control">
-                                                <option value="ACTIVE">Active</option>
-                                                <option value="INACTIVE">Inactive</option>
-                                            </select>
-                                        </div>
+                                        <div class="form-control info_display val_status"></div>
                                     </div>
                                 </div>
 

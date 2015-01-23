@@ -58,6 +58,7 @@
                                 <div class="detail_options clearfix">
                                     <a class="btn btn_green pull-right btn_edit glyphicon glyphicon-edit" href="/merchant/store/form/edit/"></a>
                                     <a href="/merchant/item/form/create" class="btn btn_green pull-right add_items">Add Item</a>
+                                    <a href="/merchant/item/list" class="btn btn_green pull-right view_items">View Items</a>
                                     <div class="switch_container pull-right">
                                         <div class="switch switch_activation">
                                             <div class="btn_switch on"></div>

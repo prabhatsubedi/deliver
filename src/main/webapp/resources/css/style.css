@@ -1291,7 +1291,7 @@ label.check_label .checkbox {
     padding: 5px;
 }
 .switch_container .switch {
-    background-color: #d27b12;
+    background-color: #666666;
     border-radius: 3px;
     width: 130px;
     position: relative;
@@ -1304,7 +1304,7 @@ label.check_label .checkbox {
     user-select: none;
 }
 .switch_container .switch .btn_switch {
-    background-color: #f7941d;
+    background-color: #19BC15;
     color: #ffffff;
     font-size: 10px;
     padding: 0px 5px;
@@ -1320,6 +1320,7 @@ label.check_label .checkbox {
     margin: 0px;
 }
 .switch_container .switch .btn_switch.off {
+    background-color: #f7941d;
     left: auto;
     right: 0px;
 }

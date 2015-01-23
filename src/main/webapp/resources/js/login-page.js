@@ -58,6 +58,7 @@ $(document).ready(function(){
                 data.companyRegistrationNo = $('#registration_no').val();
                 data.vatNo = $('#vat').val();
 
+                user.status = 'ACTIVE';
                 user.fullName = $('#contact_person').val();
                 user.mobileNumber = $('#contact_no').val();
                 user.emailAddress = $('#contact_email').val();

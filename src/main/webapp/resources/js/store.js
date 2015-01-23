@@ -470,6 +470,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
         $('.btn_edit').attr('href', Main.modifyURL('/merchant/store/form/edit/' + storeId));
         $('.add_items').attr('href', Main.modifyURL('/merchant/item/form/create/' + storeId));
+        $('.view_items').attr('href', Main.modifyURL('/merchant/item/list/' + storeId));
         if(!initialized) initialize('readonly', true); else google.maps.event.trigger(map, 'resize');
 
         var dragged = false;

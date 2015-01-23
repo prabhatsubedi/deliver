@@ -45,6 +45,11 @@ var merchantProfile;
                 $('.business_name').html(merchant.businessTitle);
                 $('.partner_status').html(merchant.partnershipStatus ? 'PARTNER' : 'NON-PARTNER');
 
+                if(merchantRole == true) {
+                    $('.val_partnership, .val_commission, .val_service_fee').removeClass('none_editable');
+                    $('#partnership, #commission, #service_fee').parent().removeClass('editable');
+                }
+
                 $('.val_business_name').html(merchant.businessTitle);
                 $('.val_url').html(merchant.website);
                 $('.val_contact_person').html(merchant.user.fullName);
@@ -165,9 +170,11 @@ var merchantProfile;
                     data.website = $('#url').val();
                     data.companyRegistrationNo = $('#registration_no').val();
                     data.vatNo = $('#vat').val();
-                    data.partnershipStatus = $('#partnership').val();
-                    data.commissionPercentage = $('#commission').val();
-                    data.serviceFee = $('#service_fee').val();
+                    if(merchantRole != true) {
+                        data.partnershipStatus = $('#partnership').val();
+                        data.commissionPercentage = $('#commission').val();
+                        data.serviceFee = $('#service_fee').val();
+                    }
 
                     user.fullName = $('#contact_person').val();
                     user.mobileNumber = $('#contact_no').val();

@@ -35,11 +35,17 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/merchant.js"></script>
 
 <script type="text/javascript">
+    var merchantRole = false;
     $(document).ready(function(){
         Merchant.loadMerchant();
         Merchant.loadEditMerchant();
     });
 </script>
+<sec:authorize access="hasRole('ROLE_MERCHANT')">
+    <script type="text/javascript">
+        merchantRole = true;
+    </script>
+</sec:authorize>
 
 
 <div class="main_container">

@@ -64,11 +64,18 @@ ALTER TABLE address DROP INDEX UK_4t7y1821minhabn2kbl990ith;
 
 ########### 2015.01.22 #####################
 ALTER TABLE items_attributes MODIFY COLUMN unit_price decimal(19,2) NULL;
+
 UPDATE `preferences` SET `pref_key`='DBOY_PER_KM_CHARGE_UPTO_NKM' WHERE `id`='3';
+
 UPDATE `preferences` SET `pref_key`='DBOY_PER_KM_CHARGE_ABOVE_NKM' WHERE `id`='4';
+
 INSERT INTO preferences (pref_key,VALUE) VALUES
 ('DELIVERY_FEE_VAT','0'),
 ('MINIMUM_PROFIT_PERCENTAGE','10'),
 ('ADDITIONAL_KM_FREE_LIMIT','1'),
 ('DEFAULT_NKM_DISTANCE', 4);
+
 ALTER TABLE orders MODIFY COLUMN order_verification_code VARCHAR(255) NULL DEFAULT NULL ;
+
+/*###############2015.01.23########################*/
+INSERT INTO preferences (pref_key,VALUE) VALUES ('AIR_TO_ROUTE_DISTANCE_FACTOR','1.5');

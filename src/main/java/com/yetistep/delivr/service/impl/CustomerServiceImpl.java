@@ -389,6 +389,7 @@ public class CustomerServiceImpl implements CustomerService {
         return nearestStore;
     }
 
+    /*Calculate distance of delivery boy to store and select only delivery boys satisfying timing condition*/
     private List<DeliveryBoySelectionEntity> calculateStoreToDeliveryBoyDistance(StoreEntity store, List<DeliveryBoyEntity> capableDeliveryBoys, OrderEntity order) throws Exception {
         String storeAddress[] = {GeoCodingUtil.getLatLong(store.getLatitude(), store.getLongitude())};
         String deliveryBoyAddress[] = new String[capableDeliveryBoys.size()];
@@ -435,12 +436,13 @@ public class CustomerServiceImpl implements CustomerService {
 
             deliveryBoySelectionEntity.setAccepted(false);
             selectionDetails.add(deliveryBoySelectionEntity);
-            log.info(selectionDetails.toString());
+            log.info("Delivery boys selected from distance calculation:"+selectionDetails.toString());
         }
         return filterDeliveryBoySelection(selectionDetails, timeDetails);
         //TODO Filter delivery boys by profit criteria - Push Notifications
     }
 
+    /* Select only delivery boys satisfying timing condition from list of selected delivery boys from distance criteria*/
     private List<DeliveryBoySelectionEntity> filterDeliveryBoySelection(List<DeliveryBoySelectionEntity> selectionEntities, List<Integer> timeDetails) throws Exception {
         List<DeliveryBoySelectionEntity> filteredDBoys = new ArrayList<DeliveryBoySelectionEntity>();
         int minimumTime = Collections.min(timeDetails);

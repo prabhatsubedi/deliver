@@ -9,6 +9,7 @@ var marker;
 var arrGeoPoints = {};
 var redeem_location = [];
 var input;
+var disableMapEdit = false;
 
 // functions
 var initialize;
@@ -326,9 +327,11 @@ $(document).ready(function(){
                                 infowindow.open(map, this);
                             });
                             google.maps.event.addListener(marker, 'rightclick', function () {
-                                this.setMap(null);
-                                markers.splice(markers.indexOf(this), 1);
-                                delete arrGeoPoints[locationToKey(this.getPosition())];
+                                if(disableMapEdit != true) {
+                                    this.setMap(null);
+                                    markers.splice(markers.indexOf(this), 1);
+                                    delete arrGeoPoints[locationToKey(this.getPosition())];
+                                }
                             });
 
                         }

@@ -1,7 +1,6 @@
 if(typeof(Merchant) == "undefined") var Merchant = {};
 
 var merchantProfile;
-var disableMapEdit = false;
 
 (function ($){
 

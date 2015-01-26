@@ -186,4 +186,14 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
         query.executeUpdate();
         return true;
     }
+
+    @Override
+    public Integer getMerchantId(Integer brandsId) throws Exception {
+        String sql = "SELECT merchant_id FROM stores_brands WHERE id = :brandsId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("brandsId", brandsId);
+
+        Integer merchantId = ((Number)sqlQuery.uniqueResult()).intValue();
+        return merchantId;
+    }
 }

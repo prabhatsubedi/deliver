@@ -14,6 +14,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -106,6 +107,18 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         }
 
        return customerEntity;
+    }
+
+    @Override
+    public BigDecimal getRewardsPoint(Long facebookId) throws Exception {
+        String sql = "SELECT rewards_earned FROM customers WHERE facebook_id = :facebookId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("facebookId", facebookId);
+        String res = sqlQuery.uniqueResult()!=null ?sqlQuery.uniqueResult().toString() : "";
+        BigDecimal rewardsEarned = BigDecimal.ZERO;
+        if(!res.isEmpty())
+            rewardsEarned = new BigDecimal(res);
+        return rewardsEarned;
     }
 }
 

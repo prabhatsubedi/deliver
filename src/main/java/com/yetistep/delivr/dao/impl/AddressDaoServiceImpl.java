@@ -92,7 +92,7 @@ public class AddressDaoServiceImpl implements AddressDaoService{
     @Override
     public AddressEntity getMyAddress(Integer addressId) throws Exception {
         String sql = "SELECT id, city, country, full_name AS fullName,  latitude, longitude, " +
-                "mobile_no AS mobileNo, notes, state, street FROM address WHERE id = :addressId";
+                "mobile_no AS mobileNumber, notes, state, street FROM address WHERE id = :addressId";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("addressId", addressId);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(AddressEntity.class));

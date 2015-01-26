@@ -7,6 +7,7 @@ import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
+import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
@@ -442,8 +443,10 @@ public class ClientController extends AbstractManager{
 //            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
 //            validateMobileClient(headerDto.getAccessToken());
 
-            //clientService.updateCart(cart);
+            CheckOutDto checkOutDto = customerService.getCheckOutInfo(facebookId, addressId);
             ServiceResponse serviceResponse = new ServiceResponse("Checkout Info Retrieved Successfully");
+            serviceResponse.addParam("info", checkOutDto);
+
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
         } catch (Exception e) {

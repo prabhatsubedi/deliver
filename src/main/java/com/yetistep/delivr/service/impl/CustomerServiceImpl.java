@@ -75,6 +75,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     SystemAlgorithmService systemAlgorithmService;
 
+    @Autowired
+    StoresBrandDaoService storesBrandDaoService;
+
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
         log.info("++++++++++++++ Logging Customer ++++++++++++++++");
@@ -294,6 +297,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CheckOutDto getCheckOutInfo(Long facebookId, Integer addressId) throws Exception {
+        log.info("+++++++++++++++ Getting Check Out Info of client fb id : " + facebookId + " +++++++++++++++++");
         CheckOutDto checkOutDto = new CheckOutDto();
 
         List<CartEntity> carts = cartDaoService.getMyCarts(facebookId);
@@ -331,23 +335,66 @@ public class CustomerServiceImpl implements CustomerService {
         StoreEntity store = findNearestStoreFromCustomer(order, stores);
         BigDecimal storeToCustomerDistance = order.getCustomerChargeableDistance();
 
+
+        /* Get Merchant */
+        Integer merchantId = storesBrandDaoService.getMerchantId(brandId);
+
+        /* Now Get Merchant's Commission and Percentage */
+        MerchantEntity merchant = merchantDaoService.getCommissionAndVat(merchantId);
+        BigDecimal commissionPct = merchant.getCommissionPercentage() != null ? merchant.getCommissionPercentage() : BigDecimal.ZERO;
+        BigDecimal serviceFeePct = merchant.getServiceFee() != null ? merchant.getServiceFee() : BigDecimal.ZERO;
+
+        /* Customer Reward Money */
+
+        BigDecimal customerBalanceBeforeDiscount = customerDaoService.getRewardsPoint(facebookId);
+
         /* Now Algorithm */
+        // ==== Discount on delivery to customer =======
         BigDecimal customerDiscount = BigDecimal.ZERO;
         BigDecimal systemReservedCommissionAmt = BigDecimal.ZERO;
-        BigDecimal commissionPct = BigDecimal.ZERO; //from Merchant
+
         if(BigDecimalUtil.isGreaterThenZero(commissionPct)){
             BigDecimal totalCommission = BigDecimalUtil.percentageOf(subTotal, commissionPct);
             systemReservedCommissionAmt = BigDecimalUtil.percentageOf(totalCommission, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.RESERVED_COMM_PER_BY_SYSTEM)));
             customerDiscount = totalCommission.subtract(systemReservedCommissionAmt);
         }
 
-//        BigDecimal deliveryCostWithoutAdditionalDvAmt = BigDecimal.ZERO;
-//        if(BigDecimalUtil.isLessThen(storeToCustomerDistance, TWO))
-//            deliveryCostWithoutAdditionalDvAmt = DBOY_PER_KM_CHARGE_UPTO_2KM.multiply(new BigDecimal(surgeFactor));
-//        else
-//            deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply(DBOY_PER_KM_CHARGE_ABOVE_2KM).multiply(new BigDecimal(surgeFactor));
+         /* 8. ==== Surge Factor ======= */
+        Integer surgeFactor = getSurgeFactor();
 
 
+        /* 9. ====== Delivery cost (Does not include additional delivery amt) ============== */
+        BigDecimal deliveryCostWithoutAdditionalDvAmt = BigDecimal.ZERO;
+        if(BigDecimalUtil.isLessThen(storeToCustomerDistance, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_NKM_DISTANCE))))
+            deliveryCostWithoutAdditionalDvAmt = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_NKM)).multiply(new BigDecimal(surgeFactor));
+        else
+            deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply( new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_NKM))).multiply(new BigDecimal(surgeFactor));
+
+        /* 10. ======= Service fee Amount with VAT =========== */
+        BigDecimal serviceFeeAmt = BigDecimalUtil.percentageOf(subTotal, serviceFeePct);
+        serviceFeeAmt = serviceFeeAmt.add(BigDecimalUtil.percentageOf(serviceFeeAmt, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
+
+         /* 11. ====== Delivery charged to customer before Discount ======== */
+        BigDecimal deliveryChargedBeforeDiscount = BigDecimal.ZERO;
+        if(BigDecimalUtil.isGreaterThenOrEqualTo(deliveryCostWithoutAdditionalDvAmt, customerDiscount)){
+            deliveryChargedBeforeDiscount = deliveryCostWithoutAdditionalDvAmt.subtract(customerDiscount);
+            deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
+        }
+
+        /* 13. ======== Delivery charged to customer After Discount ====== */
+        BigDecimal deliveryChargedAfterDiscount = BigDecimal.ZERO;
+        if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
+            deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
+
+
+        checkOutDto.setBrandId(brandId);
+        checkOutDto.setSubTotal(subTotal);
+        checkOutDto.setTax(merchantTax);
+        checkOutDto.setServiceFee(BigDecimalUtil.percentageOf(subTotal, serviceFeePct));
+        checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount);
+        checkOutDto.setDiscount(customerBalanceBeforeDiscount);
+        BigDecimal estimatedAmt = subTotal.add(merchantTax).add(BigDecimalUtil.percentageOf(subTotal, serviceFeePct)).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
+        checkOutDto.setEstimatedAmount(estimatedAmt);
         return checkOutDto;
     }
 

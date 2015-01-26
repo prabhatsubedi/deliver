@@ -88,5 +88,7 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public  List<CategoryEntity> getDefaultCategories() throws Exception;
 
+    public MerchantEntity getCommissionAndVat(Integer merchantId) throws Exception;
+
 
 }

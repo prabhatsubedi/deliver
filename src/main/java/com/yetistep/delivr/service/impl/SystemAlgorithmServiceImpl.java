@@ -314,18 +314,24 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
 
          /* 1. ===== Order Total ======= */
         BigDecimal totalOrder = order.getTotalCost();
+
         /* 2. ======= Commission Percent ====== */
         BigDecimal commissionPct = merchantCommission;
+
         /* 3. ===== Distance Store to Customer(KM) ======== */
         BigDecimal storeToCustomerDistance =  dBoySelection.getStoreToCustomerDistance();
+
         /* 4. ====== Distance Courier to Store (KM) ======== */
         BigDecimal courierToStoreDistance = dBoySelection.getDistanceToStore();
+
         /* 5. ==== Service Fee % ======= */
         BigDecimal serviceFeePct = merchantServiceFee;
+
         /* 6. ====== Additional delivery amt ======= */
         BigDecimal additionalDeliveryAmt = ZERO;
         if(BigDecimalUtil.isGreaterThen(courierToStoreDistance, ADDITIONAL_KM_FREE_LIMIT))
             additionalDeliveryAmt = courierToStoreDistance.subtract(ADDITIONAL_KM_FREE_LIMIT).multiply(DBOY_ADDITIONAL_PER_KM_CHARGE);
+
        /* 7. ==== Discount on delivery to customer ======= */
         BigDecimal customerDiscount = ZERO;
         BigDecimal systemReservedCommissionAmt = ZERO;
@@ -334,32 +340,41 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
             systemReservedCommissionAmt = BigDecimalUtil.percentageOf(totalCommission, RESERVED_COMM_PER_BY_SYSTEM);
             customerDiscount = totalCommission.subtract(systemReservedCommissionAmt);
         }
+
         /* 8. ==== Surge Factor ======= */
         Integer surgeFactor = order.getSurgeFactor();
+
         /* 9. ====== Delivery cost (Does not include additional delivery amt) ============== */
         BigDecimal deliveryCostWithoutAdditionalDvAmt = ZERO;
-        if(BigDecimalUtil.isLessThen(storeToCustomerDistance, DEFAULT_NKM_DISTANCE))
+        if(BigDecimalUtil.isLessThenOrEqualTo(storeToCustomerDistance, DEFAULT_NKM_DISTANCE))
             deliveryCostWithoutAdditionalDvAmt = DBOY_PER_KM_CHARGE_UPTO_NKM.multiply(new BigDecimal(surgeFactor));
         else
             deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply(DBOY_PER_KM_CHARGE_ABOVE_NKM).multiply(new BigDecimal(surgeFactor));
-        /* 10. ======= Service Fee Amount =========== */
+
+        /* 10. ======= Service fee Amount with VAT =========== */
         BigDecimal serviceFeeAmt = BigDecimalUtil.percentageOf(totalOrder, serviceFeePct);
+        serviceFeeAmt = serviceFeeAmt.add(BigDecimalUtil.percentageOf(serviceFeeAmt, DELIVERY_FEE_VAT));
+
         /* 11. ====== Delivery charged to customer before Discount ======== */
         BigDecimal deliveryChargedBeforeDiscount = ZERO;
         if(BigDecimalUtil.isGreaterThenOrEqualTo(deliveryCostWithoutAdditionalDvAmt, customerDiscount)){
             deliveryChargedBeforeDiscount = deliveryCostWithoutAdditionalDvAmt.subtract(customerDiscount);
             deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, DELIVERY_FEE_VAT));
         }
+
         /* 12. ======= Customer Available balance before discount ====== */
         BigDecimal customerBalanceBeforeDiscount = order.getCustomer().getRewardsEarned();
+
         /* 13. ======== Delivery charged to customer After Discount ====== */
         BigDecimal deliveryChargedAfterDiscount = ZERO;
         if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
             deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
+
         /* 14. ======= Customer available balance after discount ======== */
         BigDecimal customerBalanceAfterDiscount = ZERO;
         if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
             customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
+
         /* 14. ====== Customer Pays ========*/
         BigDecimal customerPays = order.getTotalCost().add(deliveryChargedAfterDiscount).add(serviceFeeAmt).add(order.getItemServiceAndVatCharge());
         order.setGrandTotal(customerPays);

@@ -434,6 +434,25 @@ public class ClientController extends AbstractManager{
         }
     }
 
+    @RequestMapping(value = "/checkout_info/fbId/{facebookId}/addressId/{addressId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getCheckOutInfo(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId, @PathVariable("addressId") Integer addressId) {
+        try{
+//            HeaderDto headerDto = new HeaderDto();
+//            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+//            validateMobileClient(headerDto.getAccessToken());
+
+            //clientService.updateCart(cart);
+            ServiceResponse serviceResponse = new ServiceResponse("Checkout Info Retrieved Successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while getting checkout info", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
     @RequestMapping(value= "/invite_friend", method = RequestMethod.POST)
     @ResponseBody

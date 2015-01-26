@@ -397,9 +397,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Integer merchant_id;
         if(merchantEntity.getId() == null){
             merchant_id = headerDto.getMerchantId();
+        }else{
+            merchant_id  = merchantEntity.getId();
         }
 
-        MerchantEntity merchant = merchantDaoService.find(merchantEntity.getId());
+        MerchantEntity merchant = merchantDaoService.find(merchant_id);
         if(merchant == null)
             throw new YSException("VLD011");
         //set user values

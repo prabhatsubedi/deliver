@@ -8,6 +8,7 @@ import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
+import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
@@ -51,6 +52,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
     @Autowired
     SystemPropertyService systemPropertyService;
+
+    @Autowired
+    SystemAlgorithmService systemAlgorithmService;
 
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
@@ -304,7 +308,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             if(merchant == null){
                  throw new YSException("MRC003");
             }
-            CourierTransactionEntity courierTransaction =  setCourierTransaction(orderEntity, deliveryBoySelectionEntity, merchant);
+            CourierTransactionEntity courierTransaction =  systemAlgorithmService.getCourierTransaction(orderEntity, deliveryBoySelectionEntity, merchant.getCommissionPercentage(), merchant.getServiceFee());
             orderEntity.setCourierTransaction(courierTransaction);
 
             List<DBoyOrderHistoryEntity> dBoyOrderHistoryEntities = new ArrayList<DBoyOrderHistoryEntity>();
@@ -678,103 +682,6 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         orderSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
         orderSummary.setPartnerShipStatus(merchant.getPartnershipStatus());
         return orderSummary;
-    }
-
-    private CourierTransactionEntity setCourierTransaction(OrderEntity order, DeliveryBoySelectionEntity dBoySelection, MerchantEntity merchant)throws Exception {
-        BigDecimal DBOY_ADDITIONAL_PER_KM_CHARGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_ADDITIONAL_PER_KM_CHARGE));
-        BigDecimal RESERVED_COMM_PER_BY_SYSTEM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.RESERVED_COMM_PER_BY_SYSTEM));
-        BigDecimal DBOY_PER_KM_CHARGE_UPTO_NKM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_NKM));
-        BigDecimal DBOY_PER_KM_CHARGE_ABOVE_NKM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_NKM));
-        BigDecimal DBOY_COMMISSION = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_COMMISSION));
-        BigDecimal DBOY_MIN_AMOUNT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_MIN_AMOUNT));
-        BigDecimal DELIVERY_FEE_VAT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
-        BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
-        BigDecimal ADDITIONAL_KM_FREE_LIMIT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ADDITIONAL_KM_FREE_LIMIT));
-        BigDecimal DEFAULT_NKM_DISTANCE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_NKM_DISTANCE));
-        BigDecimal ZERO = BigDecimal.ZERO;
-
-         /* 1. ===== Order Total ======= */
-        BigDecimal totalOrder = order.getTotalCost();
-        /* 2. ======= Commission Percent ====== */
-        BigDecimal commissionPct = merchant.getCommissionPercentage();
-        /* 3. ===== Distance Store to Customer(KM) ======== */
-        BigDecimal storeToCustomerDistance =  dBoySelection.getStoreToCustomerDistance();
-        /* 4. ====== Distance Courier to Store (KM) ======== */
-        BigDecimal courierToStoreDistance = dBoySelection.getDistanceToStore();
-        /* 5. ==== Service Fee % ======= */
-        BigDecimal serviceFeePct = merchant.getServiceFee();
-        /* 6. ====== Additional delivery amt ======= */
-        BigDecimal additionalDeliveryAmt = ZERO;
-        if(BigDecimalUtil.isGreaterThen(courierToStoreDistance, ADDITIONAL_KM_FREE_LIMIT))
-            additionalDeliveryAmt = courierToStoreDistance.subtract(ADDITIONAL_KM_FREE_LIMIT).multiply(DBOY_ADDITIONAL_PER_KM_CHARGE);
-       /* 7. ==== Discount on delivery to customer ======= */
-        BigDecimal customerDiscount = ZERO;
-        BigDecimal systemReservedCommissionAmt = ZERO;
-        if(BigDecimalUtil.isGreaterThenZero(commissionPct)){
-            BigDecimal totalCommission = BigDecimalUtil.percentageOf(totalOrder, commissionPct);
-            systemReservedCommissionAmt = BigDecimalUtil.percentageOf(totalCommission, RESERVED_COMM_PER_BY_SYSTEM);
-            customerDiscount = totalCommission.subtract(systemReservedCommissionAmt);
-        }
-        /* 8. ==== Surge Factor ======= */
-        Integer surgeFactor = order.getSurgeFactor();
-        /* 9. ====== Delivery cost (Does not include additional delivery amt) ============== */
-        BigDecimal deliveryCostWithoutAdditionalDvAmt = ZERO;
-        if(BigDecimalUtil.isLessThen(storeToCustomerDistance, DEFAULT_NKM_DISTANCE))
-            deliveryCostWithoutAdditionalDvAmt = DBOY_PER_KM_CHARGE_UPTO_NKM.multiply(new BigDecimal(surgeFactor));
-        else
-            deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply(DBOY_PER_KM_CHARGE_ABOVE_NKM).multiply(new BigDecimal(surgeFactor));
-        /* 10. ======= Service Fee Amount =========== */
-        BigDecimal serviceFeeAmt = BigDecimalUtil.percentageOf(totalOrder, serviceFeePct);
-        /* 11. ====== Delivery charged to customer before Discount ======== */
-        BigDecimal deliveryChargedBeforeDiscount = ZERO;
-        if(BigDecimalUtil.isGreaterThenOrEqualTo(deliveryCostWithoutAdditionalDvAmt, customerDiscount)){
-            deliveryChargedBeforeDiscount = deliveryCostWithoutAdditionalDvAmt.subtract(customerDiscount);
-            deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, DELIVERY_FEE_VAT));
-        }
-        /* 12. ======= Customer Available balance before discount ====== */
-        BigDecimal customerBalanceBeforeDiscount = order.getCustomer().getRewardsEarned();
-        /* 13. ======== Delivery charged to customer After Discount ====== */
-        BigDecimal deliveryChargedAfterDiscount = ZERO;
-        if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
-            deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
-        /* 14. ======= Customer available balance after discount ======== */
-        BigDecimal customerBalanceAfterDiscount = ZERO;
-        if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
-            customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
-
-        /* 15. ======= Paid to Courier ====== */
-        BigDecimal paidToCourier = ZERO;
-        if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.percentageOf(deliveryCostWithoutAdditionalDvAmt, DBOY_COMMISSION), DBOY_MIN_AMOUNT))
-            paidToCourier = BigDecimalUtil.percentageOf(deliveryCostWithoutAdditionalDvAmt, DBOY_COMMISSION).add(additionalDeliveryAmt);
-        else
-            paidToCourier = DBOY_MIN_AMOUNT.add(additionalDeliveryAmt);
-        dBoySelection.setPaidToCourier(paidToCourier);
-
-        /* 16 ===== Profit ====== */
-        // total order * profit% = >  actual profit
-        BigDecimal profit = ZERO;
-        profit = BigDecimalUtil.percentageOf(totalOrder, commissionPct).add(deliveryChargedBeforeDiscount).add(serviceFeeAmt).subtract(paidToCourier);
-
-        CourierTransactionEntity courierTransactionEntity = new CourierTransactionEntity();
-        courierTransactionEntity.setOrder(order);
-        courierTransactionEntity.setOrderTotal(totalOrder);
-        courierTransactionEntity.setCommissionPct(commissionPct);
-        courierTransactionEntity.setStoreToCustomerDistance(storeToCustomerDistance);
-        courierTransactionEntity.setCourierToStoreDistance(courierToStoreDistance);
-        courierTransactionEntity.setServiceFeePct(serviceFeePct);
-        courierTransactionEntity.setAdditionalDeliveryAmt(additionalDeliveryAmt);
-        courierTransactionEntity.setCustomerDiscount(customerDiscount);
-        courierTransactionEntity.setSurgeFactor(surgeFactor);
-        courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(deliveryCostWithoutAdditionalDvAmt);
-        courierTransactionEntity.setServiceFeeAmt(serviceFeeAmt);
-        courierTransactionEntity.setDeliveryChargedBeforeDiscount(deliveryChargedBeforeDiscount);
-        courierTransactionEntity.setCustomerBalanceBeforeDiscount(customerBalanceBeforeDiscount);
-        courierTransactionEntity.setDeliveryChargedAfterDiscount(deliveryChargedAfterDiscount);
-        courierTransactionEntity.setCustomerBalanceAfterDiscount(customerBalanceAfterDiscount.setScale(2, BigDecimal.ROUND_UP));
-        courierTransactionEntity.setCustomerPays(order.getGrandTotal());
-        courierTransactionEntity.setPaidToCourier(paidToCourier);
-        courierTransactionEntity.setProfit(profit);
-        return courierTransactionEntity;
     }
 
     @Override

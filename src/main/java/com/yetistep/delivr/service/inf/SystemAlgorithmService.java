@@ -1,8 +1,8 @@
 package com.yetistep.delivr.service.inf;
 
-import com.yetistep.delivr.model.CourierTransactionEntity;
-import com.yetistep.delivr.model.DeliveryBoyEntity;
-import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.*;
+
+import java.math.BigDecimal;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,4 +15,6 @@ public interface SystemAlgorithmService {
     public CourierTransactionEntity calculateCourierEarning() throws Exception;
 
     public void courierBoyAccounting(DeliveryBoyEntity deliveryBoy, OrderEntity order) throws Exception;
+
+    public CourierTransactionEntity getCourierTransaction(OrderEntity order, DeliveryBoySelectionEntity dBoySelection, BigDecimal merchantCommission, BigDecimal merchantServiceFee)throws Exception;
 }

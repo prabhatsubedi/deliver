@@ -6,6 +6,7 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
+import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
@@ -64,6 +65,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     ItemsAttributeDaoService itemsAttributeDaoService;
+
+    @Autowired
+    CartDaoService cartDaoService;
+
+    @Autowired
+    CartAttributesDaoService cartAttributesDaoService;
 
     @Autowired
     SystemAlgorithmService systemAlgorithmService;
@@ -283,6 +290,65 @@ public class CustomerServiceImpl implements CustomerService {
 
         addressDaoService.delete(address);
 
+    }
+
+    @Override
+    public CheckOutDto getCheckOutInfo(Long facebookId, Integer addressId) throws Exception {
+        CheckOutDto checkOutDto = new CheckOutDto();
+
+        List<CartEntity> carts = cartDaoService.getMyCarts(facebookId);
+        AddressEntity address = addressDaoService.getMyAddress(addressId);
+        Integer brandId = carts.get(0).getStoresBrand().getId();
+        BigDecimal subTotal = BigDecimal.ZERO;
+        BigDecimal merchantTax = BigDecimal.ZERO;
+        for(CartEntity cart : carts){
+            ItemEntity item = merchantDaoService.getItemDetail(cart.getId());
+
+            //Calculating Sub Total
+            BigDecimal attributePrice = cartAttributesDaoService.findAttributesPrice(cart.getId());
+
+            BigDecimal total = BigDecimalUtil.calculateCost(cart.getOrderQuantity(), item.getUnitPrice(), attributePrice);
+
+            BigDecimal itemTax = BigDecimal.ZERO;
+
+            if(item.getServiceCharge()!=null && BigDecimalUtil.isGreaterThenZero(item.getServiceCharge()))
+                itemTax =  BigDecimalUtil.percentageOf(total, item.getServiceCharge());
+
+            if(item.getVat()!=null && BigDecimalUtil.isGreaterThenZero(item.getVat()))
+                itemTax = itemTax.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
+
+            merchantTax = merchantTax.add(itemTax);
+            subTotal = subTotal.add(total);
+
+        }
+        OrderEntity order = new OrderEntity();
+        order.setAddress(address);
+
+        /* Get All Active Active Stores */
+        List<StoreEntity> stores = merchantDaoService.findActiveStoresByBrand(brandId);
+
+        /* Get Nearest Store From Customer */
+        StoreEntity store = findNearestStoreFromCustomer(order, stores);
+        BigDecimal storeToCustomerDistance = order.getCustomerChargeableDistance();
+
+        /* Now Algorithm */
+        BigDecimal customerDiscount = BigDecimal.ZERO;
+        BigDecimal systemReservedCommissionAmt = BigDecimal.ZERO;
+        BigDecimal commissionPct = BigDecimal.ZERO; //from Merchant
+        if(BigDecimalUtil.isGreaterThenZero(commissionPct)){
+            BigDecimal totalCommission = BigDecimalUtil.percentageOf(subTotal, commissionPct);
+            systemReservedCommissionAmt = BigDecimalUtil.percentageOf(totalCommission, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.RESERVED_COMM_PER_BY_SYSTEM)));
+            customerDiscount = totalCommission.subtract(systemReservedCommissionAmt);
+        }
+
+//        BigDecimal deliveryCostWithoutAdditionalDvAmt = BigDecimal.ZERO;
+//        if(BigDecimalUtil.isLessThen(storeToCustomerDistance, TWO))
+//            deliveryCostWithoutAdditionalDvAmt = DBOY_PER_KM_CHARGE_UPTO_2KM.multiply(new BigDecimal(surgeFactor));
+//        else
+//            deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply(DBOY_PER_KM_CHARGE_ABOVE_2KM).multiply(new BigDecimal(surgeFactor));
+
+
+        return checkOutDto;
     }
 
     @Override

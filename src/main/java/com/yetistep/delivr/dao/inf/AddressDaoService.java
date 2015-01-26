@@ -16,4 +16,6 @@ public interface AddressDaoService extends GenericDaoService<Integer, AddressEnt
     public String getMobileCode(Integer userId, String mobileNo) throws Exception;
 
     public List<AddressEntity> getDeliveredAddress(Integer userId) throws Exception;
+
+    public AddressEntity getMyAddress(Integer addressId) throws Exception;
 }

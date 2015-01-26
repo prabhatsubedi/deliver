@@ -502,8 +502,29 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         OrderEntity order = orderDaoService.find(itemsOrderEntity.getOrder().getId());
         if(order == null)
             throw new YSException("VLD017");
-        //TODO add price in totalCost of item, grandTotal and service fee
-        return itemsOrderDaoService.save(itemsOrderEntity);
+        order.setTotalCost(order.getTotalCost().add(itemsOrderEntity.getItemTotal()));
+        List<ItemsOrderEntity> itemsOrderEntities = order.getItemsOrder();
+        itemsOrderEntities.add(itemsOrderEntity);
+        order.setItemsOrder(itemsOrderEntities);
+
+        CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
+        DeliveryBoySelectionEntity dBoySelection = deliveryBoySelectionDaoService.getSelectionDetails(order.getId(), order.getDeliveryBoy().getId());
+        if(dBoySelection == null){
+            throw new YSException("ORD003");
+        }
+        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, dBoySelection, courierTransactionEntity.getCommissionPct(), courierTransactionEntity.getServiceFeePct());
+        courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
+        courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
+        courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
+        courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
+        courierTransactionEntity.setDeliveryChargedBeforeDiscount(courierTransaction.getDeliveryChargedBeforeDiscount());
+        courierTransactionEntity.setServiceFeeAmt(courierTransaction.getServiceFeeAmt());
+        courierTransactionEntity.setDeliveryChargedAfterDiscount(courierTransaction.getDeliveryChargedAfterDiscount());
+        courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
+        courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
+        courierTransactionEntity.setProfit(courierTransaction.getProfit());
+
+        return orderDaoService.save(order);
     }
 
     @Override
@@ -653,9 +674,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
         List<ItemsOrderEntity> itemsOrderEntities = new ArrayList<ItemsOrderEntity>();
-        ItemsOrderEntity itemsOrderEntity;
+        ItemsOrderEntity itemsOrderEntity = null;
         for (ItemsOrderEntity itemOrder : itemsOrder) {
-            itemsOrderEntity = new ItemsOrderEntity();
+            itemsOrderEntity = itemOrder;
             if (itemOrder.getItem() != null) {
                 ItemEntity item = new ItemEntity();
                 item.setId(itemOrder.getItem().getId());
@@ -663,7 +684,6 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 item.setUnitPrice(itemOrder.getItem().getUnitPrice());
                 item.setVat(itemOrder.getItem().getVat());
                 item.setServiceCharge(itemOrder.getItem().getServiceCharge());
-                itemsOrderEntity = itemOrder;
                 itemsOrderEntity.setItem(item);
             }
             itemsOrderEntities.add(itemsOrderEntity);

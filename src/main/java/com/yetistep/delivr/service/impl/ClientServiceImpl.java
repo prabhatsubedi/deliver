@@ -381,14 +381,14 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         for (ItemDto itemDto : items) {
             BigDecimal price = itemDto.getPrice();
             //Service Charge
-            if (itemDto.getServiceCharge() != null && BigDecimalUtil.isNotZero(itemDto.getServiceCharge())) {
-                price = price.add(BigDecimalUtil.percentageOf(price, itemDto.getServiceCharge()));
-            }
+//            if (itemDto.getServiceCharge() != null && BigDecimalUtil.isNotZero(itemDto.getServiceCharge())) {
+//                price = price.add(BigDecimalUtil.percentageOf(price, itemDto.getServiceCharge()));
+//            }
 
             //Vat
-            if (itemDto.getVat() != null && BigDecimalUtil.isNotZero(itemDto.getVat())) {
-                price = price.add(BigDecimalUtil.percentageOf(price, itemDto.getVat()));
-            }
+//            if (itemDto.getVat() != null && BigDecimalUtil.isNotZero(itemDto.getVat())) {
+//                price = price.add(BigDecimalUtil.percentageOf(price, itemDto.getVat()));
+//            }
 
             itemDto.setPrice(price.setScale(2, BigDecimal.ROUND_UP));
             itemDto.setVat(null);

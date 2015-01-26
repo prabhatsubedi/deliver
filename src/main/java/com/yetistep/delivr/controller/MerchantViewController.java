@@ -42,6 +42,14 @@ public class MerchantViewController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/search/{page}/**", method = { RequestMethod.GET, RequestMethod.POST })
+    @ResponseBody
+    public ModelAndView merchantItemSearch(@PathVariable String page){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("merchant/search_" + page);
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/{page}/**", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView merchant(@PathVariable String page){

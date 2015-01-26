@@ -6,6 +6,7 @@ import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.model.mobile.AddressDto;
+import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
 
 import java.util.List;
 
@@ -34,4 +35,6 @@ public interface CustomerService {
     public UserEntity getDeliveredAddress(Long facebookId) throws Exception;
 
     public void deleteDeliveredAddress(Integer addressId) throws Exception;
+
+    public CheckOutDto getCheckOutInfo(Long facebookId, Integer addressId) throws Exception;
 }

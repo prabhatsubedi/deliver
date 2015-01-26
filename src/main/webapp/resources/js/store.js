@@ -474,13 +474,39 @@ if(typeof(Store) == "undefined") var Store = {};
         if(!initialized) initialize('readonly', true); else google.maps.event.trigger(map, 'resize');
 
         var dragged = false;
+        var cancel_drag = false;
         function toggleSwitch(value, elem) {
+
+            var chk_confirm = false;
+            if(!cancel_drag) {
+                var chk_confirm = confirm('Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' store?');
+
+                if (!chk_confirm) {
+                    value = value == 'on' ? 'off' : 'on';
+                } else {
+
+                    var callback = function (status, data) {
+                        alert(data.message);
+                        if (data.success != true) {
+                            toggleSwitch(value == 'on' ? 'off' : 'on', elem);
+                        }
+                    };
+
+                    callback.loaderDiv = "body";
+                    callback.requestType = "POST";
+
+                    Main.request('/merchant/change_status', {className:"Brand", statusId: value == 'on' ? 2 : 3}, callback, {id: Main.getURLvalue(3)});
+
+                }
+            }
+
             if(value == 'on') {
                 elem.css({left: 0}).removeClass('off').addClass('on');
             } else {
                 elem.css({left: 30}).removeClass('on').addClass('off');
             }
             dragged = false;
+            cancel_drag = false;
         }
         $('.switch_activation .btn_switch').bind('contextmenu', function(e) {
             return false;
@@ -494,6 +520,9 @@ if(typeof(Store) == "undefined") var Store = {};
                 dragged = true;
             },
             stop: function( event, ui) {
+                if(Math.abs(ui.originalPosition.left - ui.position.left) < 15) {
+                    cancel_drag = true;
+                }
                 toggleSwitch(ui.position.left > 15 ? 'off' : 'on', ui.helper);
             }
         });
@@ -510,6 +539,10 @@ if(typeof(Store) == "undefined") var Store = {};
                 if(storeBrand.brandLogo != undefined)
                     $('#brand_logo').html('<img src="' + storeBrand.brandLogo + '" style="height: 100%;" class="img-responsive" />');
                 $('.store_name').html(storeBrand.brandName);
+                if(storeBrand.status == 'ACTIVE')
+                    $('.btn_switch').removeClass('off').addClass('on');
+                else
+                    $('.btn_switch').removeClass('on').addClass('off');
                 document.title = storeBrand.brandName;
                 $('.open_time').html(storeBrand.openingTime + ' - ' + storeBrand.closingTime);
                 $('.min_amount').html(storeBrand.minOrderAmount == undefined ? 0 : storeBrand.minOrderAmount);

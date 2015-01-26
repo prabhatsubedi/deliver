@@ -89,6 +89,8 @@ var merchantProfile;
                 geoPointData.latitude = address.latitude;
                 geoPointData.longitude = address.longitude;
                 location.geoPointData = geoPointData;
+                geoMerchantId = address.id;
+                geoMerchantName = merchant.businessTitle;
                 addMarker(location);
                 disableMapEdit = true;
 
@@ -130,6 +132,9 @@ var merchantProfile;
             $('#commission').rules('add', {required: true, digits: true, min: 0, max: 100});
             $('#service_fee').rules('add', {required: true, digits: true, min: 0});
             disableMapEdit = false;
+            for(var i in markers) {
+                markers[i].setDraggable(true);
+            }
 
         });
 
@@ -138,6 +143,9 @@ var merchantProfile;
             $(".editable").addClass('hidden');
             Merchant.loadMerchant(merchantProfile);
             disableMapEdit = true;
+            for(var i in markers) {
+                markers[i].setDraggable(false);
+            }
         });
 
         $('.save_btn').click(function () {
@@ -166,7 +174,7 @@ var merchantProfile;
                     objAddress.latitude = address.latitude;
                     objAddress.longitude = address.longitude;
 
-                    data.id = Main.getURLvalue(2);
+                    data.merchantId = Main.getURLvalue(2);
                     data.website = $('#url').val();
                     data.companyRegistrationNo = $('#registration_no').val();
                     data.vatNo = $('#vat').val();
@@ -199,6 +207,9 @@ var merchantProfile;
                     $(".none_editable").removeClass('hidden');
                     $(".editable").addClass('hidden');
                     Merchant.loadMerchant();
+                    for(var i in markers) {
+                        markers[i].setDraggable(false);
+                    }
                 }
             };
             callback.loaderDiv = "body";

@@ -3,13 +3,11 @@ package com.yetistep.delivr.service.impl;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.enums.DBoyStatus;
-import com.yetistep.delivr.enums.DeliveryStatus;
-import com.yetistep.delivr.enums.JobOrderStatus;
-import com.yetistep.delivr.enums.PreferenceType;
+import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.service.inf.CustomerService;
+import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
 import net.sf.uadetector.ReadableUserAgent;
@@ -66,6 +64,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     ItemsAttributeDaoService itemsAttributeDaoService;
+
+    @Autowired
+    SystemAlgorithmService systemAlgorithmService;
 
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
@@ -363,23 +364,36 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-
+    /*
+    * This method returns nearest store from customer, i.e Order Address Among list of stores.
+    * */
     private StoreEntity findNearestStoreFromCustomer(OrderEntity order, List<StoreEntity> stores) throws Exception {
+        DistanceType distanceType = DistanceType.fromInt(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.AIR_OR_ACTUAL_DISTANCE_SWITCH)));
         String orderAddress[] = {GeoCodingUtil.getLatLong(order.getAddress().getLatitude(), order.getAddress().getLongitude())};
         String storeAddress[] = new String[stores.size()];
         for (int i = 0; i < stores.size(); i++) {
             storeAddress[i] = GeoCodingUtil.getLatLong(stores.get(i).getLatitude(), stores.get(i).getLongitude());
         }
-        List<BigDecimal> distanceList =  GeoCodingUtil.getListOfAirDistances(orderAddress, storeAddress);
-        int minimumIndex = distanceList.indexOf(Collections.min(distanceList));
-
-        StoreEntity nearestStore = stores.get(minimumIndex);
-        String finalStore[] = new String[1];
-        finalStore[0] = GeoCodingUtil.getLatLong(nearestStore.getLatitude(), nearestStore.getLongitude());
-        order.setCustomerChargeableDistance(BigDecimalUtil.getDistanceInKiloMeters( GeoCodingUtil.getListOfDistances(orderAddress, finalStore).get(0)));
+        StoreEntity nearestStore = null;
+        BigDecimal actualDistance = BigDecimal.ZERO;
+        List<BigDecimal> distanceList = new ArrayList<BigDecimal>();
+        if(distanceType.equals(DistanceType.AIR_DISTANCE)){
+            distanceList =  GeoCodingUtil.getListOfAssumedDistance(orderAddress[0], storeAddress);
+            int minimumIndex = distanceList.indexOf(Collections.min(distanceList));
+            nearestStore = stores.get(minimumIndex);
+            actualDistance = Collections.min(distanceList);
+        }else{
+            distanceList = GeoCodingUtil.getListOfAirDistances(orderAddress, storeAddress);
+            int minimumIndex = distanceList.indexOf(Collections.min(distanceList));
+            nearestStore = stores.get(minimumIndex);
+            String finalStore[] = {GeoCodingUtil.getLatLong(nearestStore.getLatitude(), nearestStore.getLongitude())};
+            actualDistance =  GeoCodingUtil.getListOfDistances(orderAddress, finalStore).get(0);
+        }
+        order.setCustomerChargeableDistance(BigDecimalUtil.getDistanceInKiloMeters(actualDistance));
         return nearestStore;
     }
 
+    /*Calculate distance of delivery boy to store and select only delivery boys satisfying timing condition*/
     private List<DeliveryBoySelectionEntity> calculateStoreToDeliveryBoyDistance(StoreEntity store, List<DeliveryBoyEntity> capableDeliveryBoys, OrderEntity order) throws Exception {
         String storeAddress[] = {GeoCodingUtil.getLatLong(store.getLatitude(), store.getLongitude())};
         String deliveryBoyAddress[] = new String[capableDeliveryBoys.size()];
@@ -396,8 +410,14 @@ public class CustomerServiceImpl implements CustomerService {
             }
         }
 
+        DistanceType distanceType = DistanceType.fromInt(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.AIR_OR_ACTUAL_DISTANCE_SWITCH)));
+        List<BigDecimal> distanceList = new ArrayList<BigDecimal>();
+        if(distanceType.equals(DistanceType.AIR_DISTANCE)){
+            distanceList = GeoCodingUtil.getListOfAssumedDistance(storeAddress[0], deliveryBoyAddress);
+        }else{
+            distanceList = GeoCodingUtil.getListOfDistances(storeAddress, deliveryBoyAddress);
+        }
 
-        List<BigDecimal> distanceList = GeoCodingUtil.getListOfDistances(storeAddress, deliveryBoyAddress);
         List<DeliveryBoySelectionEntity> selectionDetails = new ArrayList<DeliveryBoySelectionEntity>();
         List<Integer> timeDetails = new ArrayList<Integer>();
         int timeAtStore = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.TIME_AT_STORE));
@@ -420,12 +440,13 @@ public class CustomerServiceImpl implements CustomerService {
 
             deliveryBoySelectionEntity.setAccepted(false);
             selectionDetails.add(deliveryBoySelectionEntity);
-            log.info(selectionDetails.toString());
+            log.info("Delivery boys selected from distance calculation:"+selectionDetails.toString());
         }
         return filterDeliveryBoySelection(selectionDetails, timeDetails);
         //TODO Filter delivery boys by profit criteria - Push Notifications
     }
 
+    /* Select only delivery boys satisfying timing condition from list of selected delivery boys from distance criteria*/
     private List<DeliveryBoySelectionEntity> filterDeliveryBoySelection(List<DeliveryBoySelectionEntity> selectionEntities, List<Integer> timeDetails) throws Exception {
         List<DeliveryBoySelectionEntity> filteredDBoys = new ArrayList<DeliveryBoySelectionEntity>();
         int minimumTime = Collections.min(timeDetails);
@@ -456,99 +477,12 @@ public class CustomerServiceImpl implements CustomerService {
         log.info("Unfiltered Dboys:"+deliveryBoySelectionEntities.toString());
         List<DeliveryBoySelectionEntity> filteredDeliveryBoys = new ArrayList<DeliveryBoySelectionEntity>();
         for (DeliveryBoySelectionEntity deliveryBoySelectionEntity : deliveryBoySelectionEntities) {
-            if (checkProfitCriteria(order, deliveryBoySelectionEntity, merchant))
+            CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, deliveryBoySelectionEntity, merchant.getCommissionPercentage(), merchant.getServiceFee());
+            if (BigDecimalUtil.isGreaterThen(courierTransaction.getProfit(),BigDecimal.ZERO))
                 filteredDeliveryBoys.add(deliveryBoySelectionEntity);
         }
         log.info("Filtered Dboys:"+filteredDeliveryBoys.toString());
         return filteredDeliveryBoys;
-    }
-
-    private Boolean checkProfitCriteria(OrderEntity order, DeliveryBoySelectionEntity dBoySelection, MerchantEntity merchant)throws Exception {
-        BigDecimal DBOY_ADDITIONAL_PER_KM_CHARGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_ADDITIONAL_PER_KM_CHARGE));
-        BigDecimal RESERVED_COMM_PER_BY_SYSTEM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.RESERVED_COMM_PER_BY_SYSTEM));
-        BigDecimal DBOY_PER_KM_CHARGE_UPTO_NKM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_NKM));
-        BigDecimal DBOY_PER_KM_CHARGE_ABOVE_NKM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_NKM));
-        BigDecimal DBOY_COMMISSION = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_COMMISSION));
-        BigDecimal DBOY_MIN_AMOUNT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_MIN_AMOUNT));
-        BigDecimal DELIVERY_FEE_VAT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
-        BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
-        BigDecimal ADDITIONAL_KM_FREE_LIMIT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ADDITIONAL_KM_FREE_LIMIT));
-        BigDecimal DEFAULT_NKM_DISTANCE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_NKM_DISTANCE));
-        BigDecimal ZERO = BigDecimal.ZERO;
-         /* 1. ===== Order Total ======= */
-        BigDecimal totalOrder = order.getTotalCost();
-        /* 2. ======= Commission Percent ====== */
-        BigDecimal commissionPct = merchant.getCommissionPercentage();
-        /* 3. ===== Distance Store to Customer(KM) ======== */
-        BigDecimal storeToCustomerDistance =  dBoySelection.getStoreToCustomerDistance();
-        /* 4. ====== Distance Courier to Store (KM) ======== */
-        BigDecimal courierToStoreDistance = dBoySelection.getDistanceToStore();
-        /* 5. ==== Service Fee % ======= */
-        BigDecimal serviceFeePct = merchant.getServiceFee();
-        /* 6. ====== Additional delivery amt ======= */
-        BigDecimal additionalDeliveryAmt = ZERO;
-        if(BigDecimalUtil.isGreaterThen(courierToStoreDistance, ADDITIONAL_KM_FREE_LIMIT))
-            additionalDeliveryAmt = courierToStoreDistance.subtract(ADDITIONAL_KM_FREE_LIMIT).multiply(DBOY_ADDITIONAL_PER_KM_CHARGE);
-       /* 7. ==== Discount on delivery to customer ======= */
-        BigDecimal customerDiscount = ZERO;
-        BigDecimal systemReservedCommissionAmt = ZERO;
-        if(BigDecimalUtil.isGreaterThenZero(commissionPct)){
-            BigDecimal totalCommission = BigDecimalUtil.percentageOf(totalOrder, commissionPct);
-            systemReservedCommissionAmt = BigDecimalUtil.percentageOf(totalCommission, RESERVED_COMM_PER_BY_SYSTEM);
-            customerDiscount = totalCommission.subtract(systemReservedCommissionAmt);
-        }
-        /* 8. ==== Surge Factor ======= */
-        Integer surgeFactor = order.getSurgeFactor();
-        /* 9. ====== Delivery cost (Does not include additional delivery amt) ============== */
-        BigDecimal deliveryCostWithoutAdditionalDvAmt = ZERO;
-        if(BigDecimalUtil.isLessThen(storeToCustomerDistance, DEFAULT_NKM_DISTANCE))
-            deliveryCostWithoutAdditionalDvAmt = DBOY_PER_KM_CHARGE_UPTO_NKM.multiply(new BigDecimal(surgeFactor));
-        else
-            deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply(DBOY_PER_KM_CHARGE_ABOVE_NKM).multiply(new BigDecimal(surgeFactor));
-        /* 10. ======= Service Fee Amount =========== */
-        BigDecimal serviceFeeAmt = BigDecimalUtil.percentageOf(totalOrder, serviceFeePct);
-        /* 11. ====== Delivery charged to customer before Discount ======== */
-        BigDecimal deliveryChargedBeforeDiscount = ZERO;
-        if(BigDecimalUtil.isGreaterThenOrEqualTo(deliveryCostWithoutAdditionalDvAmt, customerDiscount)){
-            deliveryChargedBeforeDiscount = deliveryCostWithoutAdditionalDvAmt.subtract(customerDiscount);
-            deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, DELIVERY_FEE_VAT));
-        }
-        /* 12. ======= Customer Available balance before discount ====== */
-        BigDecimal customerBalanceBeforeDiscount = order.getCustomer().getRewardsEarned();
-        /* 13. ======== Delivery charged to customer After Discount ====== */
-        BigDecimal deliveryChargedAfterDiscount = ZERO;
-        if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
-            deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
-        /* 14. ======= Customer available balance after discount ======== */
-        /* Below commented code seems unused during order creation */
-//        BigDecimal customerBalanceAfterDiscount = ZERO;
-//        if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
-//            customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
-
-        /* 15. ====== Customer Pays ========*/
-        BigDecimal customerPays = order.getTotalCost().add(deliveryChargedAfterDiscount).add(serviceFeeAmt).add(order.getItemServiceAndVatCharge());
-        order.setGrandTotal(customerPays);
-        order.setDeliveryCharge(deliveryChargedAfterDiscount);
-        order.setSystemServiceCharge(serviceFeeAmt);
-
-        /* 16. ======= Paid to Courier ====== */
-        BigDecimal paidToCourier = ZERO;
-        if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.percentageOf(deliveryCostWithoutAdditionalDvAmt, DBOY_COMMISSION), DBOY_MIN_AMOUNT))
-            paidToCourier = BigDecimalUtil.percentageOf(deliveryCostWithoutAdditionalDvAmt, DBOY_COMMISSION).add(additionalDeliveryAmt);
-        else
-            paidToCourier = DBOY_MIN_AMOUNT.add(additionalDeliveryAmt);
-        dBoySelection.setPaidToCourier(paidToCourier);
-
-        /* 16 ===== Profit ====== */
-        // total order * profit% = >  actual profit
-        BigDecimal profit = ZERO;
-        profit = BigDecimalUtil.percentageOf(totalOrder, commissionPct).add(deliveryChargedBeforeDiscount).add(serviceFeeAmt).subtract(paidToCourier);
-
-        if(BigDecimalUtil.isLessThen(profit, BigDecimalUtil.percentageOf(totalOrder, MINIMUM_PROFIT_PERCENTAGE))){
-            log.info("No Profit");
-            return false;
-        }
-        return true;
     }
 
     private Integer getSurgeFactor() throws Exception{

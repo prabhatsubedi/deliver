@@ -200,7 +200,7 @@
                                         <div class="form-group clearfix">
                                             <label class="col-lg-4 floated_label" for="vat">VAT</label>
                                             <div class="col-lg-8">
-                                                <input type="text" class="form-control" id="vat" name="vat" value="0">
+                                                <input type="text" class="form-control" id="vat" name="vat" value="13">
                                             </div>
                                         </div>
                                         <div class="form-group clearfix">

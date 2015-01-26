@@ -79,3 +79,5 @@ ALTER TABLE orders MODIFY COLUMN order_verification_code VARCHAR(255) NULL DEFAU
 
 /*###############2015.01.23########################*/
 INSERT INTO preferences (pref_key,VALUE) VALUES ('AIR_TO_ROUTE_DISTANCE_FACTOR','1.5');
+
+INSERT INTO preferences (pref_key,VALUE) VALUES ('AIR_OR_ACTUAL_DISTANCE_SWITCH','1');

@@ -180,10 +180,11 @@ public class ClientController extends AbstractManager{
     public ResponseEntity<ServiceResponse> saveItem(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            //validateMobileClient(headerDto.getAccessToken());
             customerService.saveOrder(requestJson, headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Order has been saved successfully");
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);

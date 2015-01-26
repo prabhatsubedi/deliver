@@ -10,6 +10,8 @@ var arrGeoPoints = {};
 var redeem_location = [];
 var input;
 var disableMapEdit = false;
+var geoMerchantId;
+var geoMerchantName;
 
 // functions
 var initialize;
@@ -192,6 +194,9 @@ $(document).ready(function(){
     }
 
     addMarker = function(location, name) {
+
+        if(name == undefined && geoMerchantName != undefined) name = geoMerchantName;
+
         if(disableMapEdit) return false;
         deleteMarkers();
         var location_check = false;
@@ -267,6 +272,7 @@ $(document).ready(function(){
                                 geoObj.country = geoPointData.country;
                                 geoObj.countryCode = geoPointData.countryCode;
                             } else {
+                                geoObj.id = geoMerchantId;
                                 geoObj.latitude = location.lat();
                                 geoObj.longitude = location.lng();
                                 geoObj.name = name === undefined ? $('#business_name').val() : name;
@@ -279,8 +285,8 @@ $(document).ready(function(){
 
                             marker = new google.maps.Marker({
                                 position: location,
-                                map: map
-                                //draggable: true
+                                map: map,
+                                draggable: disableMapEdit != true
                             });
                             var jsonObj = geoObj;
                             markers.push(marker);
@@ -326,12 +332,104 @@ $(document).ready(function(){
                                 infowindow.setContent(marker_address.html());
                                 infowindow.open(map, this);
                             });
+                            google.maps.event.addListener(marker, 'dragstart', function () {
+                                lastPosition  = this.getPosition();
+                            });
                             google.maps.event.addListener(marker, 'rightclick', function () {
                                 if(disableMapEdit != true) {
                                     this.setMap(null);
                                     markers.splice(markers.indexOf(this), 1);
                                     delete arrGeoPoints[locationToKey(this.getPosition())];
                                 }
+                            });
+                            google.maps.event.addListener(marker, 'dragend', function () {
+                                var currentMarker = this;
+                                var objNewPosition = currentMarker.getPosition();
+                                var newPosition = locationToKey(objNewPosition);
+                                var infoWindowData = arrGeoPoints[locationToKey(lastPosition)];
+                                infoWindowData.latitude = objNewPosition.lat();
+                                infoWindowData.longitude = objNewPosition.lng();
+                                arrGeoPoints[newPosition] = infoWindowData;
+                                delete arrGeoPoints[locationToKey(lastPosition)];
+
+                                geocoder.geocode({'latLng': objNewPosition}, function(results, status) {
+                                    if (status == google.maps.GeocoderStatus.OK) {
+                                        if (results[0]) {
+
+                                            var streetNumber, sublocality, locality, city, postalCode, state, region, country, addressComponents;
+
+                                            var compCountry = results[results.length - 1].address_components;
+                                            for (var i in compCountry) {
+                                                if (compCountry[i].types[0] == 'country') {
+                                                    country = compCountry[i].long_name;
+                                                    break;
+                                                }
+                                            }
+
+                                            if(country == selectedCountry) {
+                                                addressComponents = results[0].address_components;
+                                                for (var i in addressComponents) {
+                                                    for (var j in addressComponents[i].types) {
+                                                        if (addressComponents[i].types[j] == "street_number") {
+                                                            streetNumber = results[0].address_components[i].long_name;
+                                                        }
+                                                        if (addressComponents[i].types[j] == "route") {
+                                                            sublocality = results[0].address_components[i].long_name;
+                                                        }
+                                                        if (addressComponents[i].types[j] == "sublocality") {
+                                                            locality = results[0].address_components[i].long_name;
+                                                        }
+                                                        if (addressComponents[i].types[j] == "locality") {
+                                                            city = results[0].address_components[i].long_name;
+                                                        }
+                                                        if (addressComponents[i].types[j] == "postal_code") {
+                                                            postalCode = results[0].address_components[i].long_name;
+                                                        }
+                                                        if (addressComponents[i].types[j] == "administrative_area_level_2") {
+                                                            state = results[0].address_components[i].long_name;
+                                                        }
+                                                        if (addressComponents[i].types[j] == "administrative_area_level_1") {
+                                                            region = results[0].address_components[i].long_name;
+                                                        }
+                                                    }
+                                                }
+
+                                                var newInfoData = arrGeoPoints[newPosition];
+                                                newInfoData.street = sublocality === undefined ? '' : sublocality;
+                                                newInfoData.city = city === undefined ? '' : city;
+                                                newInfoData.state = state === undefined ? '' : state;
+                                                newInfoData.country = country === undefined ? '' : country;
+
+                                                var address_name = newInfoData.name;
+                                                var address_street_name = newInfoData.street;
+                                                var address_city = newInfoData.city;
+                                                var address_state = newInfoData.state;
+                                                var address_country = newInfoData.country;
+
+                                                $('.address_name .address_value', marker_address).attr('value', address_name);
+                                                $('.address_street_name .address_value', marker_address).attr('value', address_street_name);
+                                                $('.address_city .address_value', marker_address).attr('value', address_city);
+                                                $('.address_state .address_value', marker_address).attr('value', address_state);
+                                                $('.address_name .val_address_value', marker_address).html(address_name);
+                                                $('.address_street_name .val_address_value', marker_address).html(address_street_name);
+                                                $('.address_city .val_address_value', marker_address).html(address_city);
+                                                $('.address_state .val_address_value', marker_address).html(address_state);
+                                                $('.address_lines .save_marker', marker_address).attr('id', newPosition);
+                                                infowindow.setContent(marker_address.html());
+                                                infowindow.open(map, this);
+
+                                            }
+
+                                            if(country != selectedCountry) {
+                                                alert('Deal redeem location doesn\'t lie within selected country boundary.');
+                                                addMarker(lastPosition);
+                                                google.maps.event.trigger(currentMarker, 'rightclick');
+                                            }
+
+                                        }
+                                    }
+                                });
+
                             });
 
                         }
@@ -497,7 +595,7 @@ $(document).ready(function(){
                             marker = new google.maps.Marker({
                                 position: location,
                                 map: map,
-                                draggable: location.readOnly != true,
+                                draggable: location.readOnly != true
                             });
                             marker.geoKey = locationToKey(location);
 
@@ -551,7 +649,7 @@ $(document).ready(function(){
                             });
                             google.maps.event.addListener(marker, 'dragstart', function () {
                                 removeAnimation();
-                                lastPosition = this.getPosition();
+                                lastPosition  = this.getPosition();
                             });
                             google.maps.event.addListener(marker, 'dragend', function () {
                                 var currentMarker = this;

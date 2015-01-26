@@ -106,7 +106,7 @@ public class GeoCodingUtil {
         return latitude+","+longitude;
     }
 
-    private static BigDecimal getAssumedDistance(String origin, String destination) throws Exception{
+    public static BigDecimal getAssumedDistance(String origin, String destination) throws Exception{
         SystemPropertyService systemPropertyService = new SystemPropertyServiceImpl();
         BigDecimal distanceFactor = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.AIR_TO_ROUTE_DISTANCE_FACTOR));
         double lat1 = Double.parseDouble(origin.split(",")[0]);
@@ -115,5 +115,13 @@ public class GeoCodingUtil {
         double lng2 = Double.parseDouble(destination.split(",")[1]);
         BigDecimal distanceInMeters = new BigDecimal(getDistance(lat1, lng1, lat2, lng2));
         return distanceFactor.multiply(distanceInMeters);
+    }
+
+    public static List<BigDecimal> getListOfAssumedDistance(String origin, String destination[]) throws Exception{
+       List<BigDecimal> distanceList = new ArrayList<BigDecimal>();
+        for (int i = 0; i < destination.length; i++) {
+            distanceList.add(getAssumedDistance(origin, destination[i]));
+        }
+        return distanceList;
     }
 }

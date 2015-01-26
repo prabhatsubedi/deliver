@@ -115,6 +115,21 @@ public class MerchantController {
         }
     }
 
+    @RequestMapping(value = "/get_brands", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> findAllBrands() {
+        try {
+            List<StoresBrandEntity> brands = merchantService.findBrands();
+            ServiceResponse serviceResponse = new ServiceResponse("brands has been retrieved successfully");
+            serviceResponse.addParam("brands", brands);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     @RequestMapping(value = "/get_store_detail", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> findStoreDetail(@RequestHeader HttpHeaders headers) {

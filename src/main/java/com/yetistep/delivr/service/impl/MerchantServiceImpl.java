@@ -500,6 +500,16 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
+    public List<StoresBrandEntity> findBrands() throws Exception {
+
+        List<StoresBrandEntity> storesBrands = merchantDaoService.findBrandList();
+
+        return storesBrands;
+    }
+
+
+
+    @Override
     public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception {
         StoresBrandEntity storesBrandEntity =  merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
         return getStoreBrandForJson(storesBrandEntity);

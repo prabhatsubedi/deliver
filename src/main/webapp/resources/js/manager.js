@@ -591,6 +591,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 if(e.target == this) {
                     treeAction($('.glyphicon', this), 'open');
                     Manager.getCategory($(this).data("id"));
+                    $('.cateogry_list a').removeClass('current_category');
                     $(this).addClass('current_category');
                 }
             });

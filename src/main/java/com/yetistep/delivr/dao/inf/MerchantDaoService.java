@@ -58,6 +58,8 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId) throws Exception;
 
+    public List<ItemEntity> getCategoriesItems(Integer categoryId) throws Exception;
+
     public ItemEntity getItemDetail(Integer itemId) throws Exception;
 
     public List<ItemsStoreEntity> findItemsStores(Integer storeId) throws Exception;
@@ -85,4 +87,6 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public Integer getTotalNumberOfItems(String searchString, List<Integer> categoryId, Integer storeId) throws Exception;
 
     public  List<CategoryEntity> getDefaultCategories() throws Exception;
+
+
 }

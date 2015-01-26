@@ -176,7 +176,14 @@ public class ManagerServiceImpl implements ManagerService {
             CategoryEntity parentCategory = new CategoryEntity();
             parentCategory.setId(Integer.parseInt(headerDto.getId()));
             category.setParent(parentCategory);
+
+            List<ItemEntity> items = merchantDaoService.getCategoriesItems(Integer.parseInt(headerDto.getId()));
+
+            if(items.size() > 0){
+                throw new YSException("VLD022");
+            }
         }
+
 
         String categoryImage = category.getImageUrl();
         category.setImageUrl(null);

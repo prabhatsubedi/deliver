@@ -41,6 +41,7 @@ public class RequestJsonDto {
     /*Get child categories properties*/
     private Integer parentCategoryId;
     private Integer categoryStoreId;
+    private Integer parentCategoriesItemsCount;
 
 
     /*save order properties*/
@@ -65,6 +66,8 @@ public class RequestJsonDto {
     private Integer orderId;
     private String className;
     private Integer statusId;
+
+
 
 
     /*web search properties
@@ -186,6 +189,14 @@ public class RequestJsonDto {
 
     public void setCategoryStoreId(Integer categoryStoreId) {
         this.categoryStoreId = categoryStoreId;
+    }
+
+    public Integer getParentCategoriesItemsCount() {
+        return parentCategoriesItemsCount;
+    }
+
+    public void setParentCategoriesItemsCount(Integer parentCategoriesItemsCount) {
+        this.parentCategoriesItemsCount = parentCategoriesItemsCount;
     }
 
     public OrderEntity getOrdersOrder() {

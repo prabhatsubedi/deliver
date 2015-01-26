@@ -221,7 +221,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
         criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
-                .add(Projections.property("name"), "name"))
+                .add(Projections.property("name"), "name")
+                .add(Projections.property("imageUrl"), "imageUrl"))
                 .setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
         criteria.add(Restrictions.isNull("parent")) ;
         categories = criteria.list();
@@ -372,6 +373,16 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
+    public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId, Integer itemCount) throws Exception {
+        List<ItemEntity> items = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
+        criteria.add(Restrictions.and(Restrictions.eq("category.id", categoryId), Restrictions.eq("storesBrand.id", brandId)));
+        criteria.setMaxResults(itemCount);
+        items = criteria.list();
+        return items;
+    }
+
+    @Override
     public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId) throws Exception {
         List<ItemEntity> items = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
@@ -391,12 +402,22 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
+    public List<ItemEntity> findItemByCategory(List<Integer> categoryId, Integer brandId, Integer itemCount) throws Exception {
+        List<ItemEntity> items = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
+        criteria.add(Restrictions.and(Restrictions.in("category.id", categoryId), Restrictions.eq("storesBrand.id", brandId)));
+        criteria.add(Restrictions.sqlRestriction("1=1 order by rand()"));
+        criteria.setMaxResults(itemCount);
+        items = criteria.list();
+        return items;
+    }
+
+    @Override
     public List<ItemEntity> findItemByCategory(List<Integer> categoryId, Integer brandId) throws Exception {
         List<ItemEntity> items = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
         criteria.add(Restrictions.and(Restrictions.in("category.id", categoryId), Restrictions.eq("storesBrand.id", brandId)));
         criteria.add(Restrictions.sqlRestriction("1=1 order by rand()"));
-        criteria.setMaxResults(2);
         items = criteria.list();
         return items;
     }

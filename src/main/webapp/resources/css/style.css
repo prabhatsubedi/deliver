@@ -532,11 +532,11 @@ body.assistance_page {
 .main_container .header .item_search .bootstrap-select {
     margin: 0px;
 }
-.main_container .header .item_search .item_categories .form-control {
+.main_container .header .item_search .item_stores .form-control {
     border-left: 1px solid #CCCCCC !important;
     border-right: 1px solid #CCCCCC !important;
 }
-.main_container .header .item_search .item_stores .form-control {
+.main_container .header .item_search .item_categories .form-control {
     border-radius: 0px 3px 3px 0px;
 }
 .main_container .header .item_search button[type="submit"] {

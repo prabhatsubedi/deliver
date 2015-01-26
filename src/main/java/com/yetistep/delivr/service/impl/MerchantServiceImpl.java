@@ -990,6 +990,10 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public List<CategoryEntity> findParentCategoriesItems(RequestJsonDto requestJson) throws Exception {
         Integer parentId = requestJson.getParentCategoryId();
         Integer storeId = requestJson.getCategoryStoreId();
+        Integer itemCount = requestJson.getParentCategoriesItemsCount();
+        if (itemCount == null){
+            itemCount = 4;
+        }
 
         List<CategoryEntity> childCategories =  merchantDaoService.findChildCategories(parentId, storeId);
         List<CategoryEntity> finalCategories =  merchantDaoService.findFinalCategoryList(storeId);
@@ -1037,7 +1041,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
              */
             if(childsChildId.size() > 0){
                 //fixme : get the dao contact out out the loop
-                List<ItemEntity> categoriesItems = merchantDaoService.findItemByCategory(childsChildId, storeId);
+                List<ItemEntity> categoriesItems = merchantDaoService.findItemByCategory(childsChildId, storeId, itemCount);
                 if(categoriesItems.size() > 0){
                     for(ItemEntity item: categoriesItems){
                         item.setCategory(null);
@@ -1047,7 +1051,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 }
                 childCategory.setItem(categoriesItems);
             }else{
-                List<ItemEntity> categoriesItems = merchantDaoService.getCategoriesItems(childCategory.getId(), storeId);
+                List<ItemEntity> categoriesItems = merchantDaoService.getCategoriesItems(childCategory.getId(), storeId, itemCount);
                 if(categoriesItems.size() > 0){
                     for(ItemEntity item: categoriesItems){
                         item.setCategory(null);

@@ -357,9 +357,14 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
             deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
         /* 14. ======= Customer available balance after discount ======== */
-//        BigDecimal customerBalanceAfterDiscount = ZERO;
-//        if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
-//            customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
+        BigDecimal customerBalanceAfterDiscount = ZERO;
+        if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
+            customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
+        /* 14. ====== Customer Pays ========*/
+        BigDecimal customerPays = order.getTotalCost().add(deliveryChargedAfterDiscount).add(serviceFeeAmt).add(order.getItemServiceAndVatCharge());
+        order.setGrandTotal(customerPays);
+        order.setDeliveryCharge(deliveryChargedAfterDiscount);
+        order.setSystemServiceCharge(serviceFeeAmt);
 
         /* 15. ======= Paid to Courier ====== */
         BigDecimal paidToCourier = ZERO;
@@ -393,8 +398,8 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         courierTransactionEntity.setDeliveryChargedBeforeDiscount(deliveryChargedBeforeDiscount);
         courierTransactionEntity.setCustomerBalanceBeforeDiscount(customerBalanceBeforeDiscount);
         courierTransactionEntity.setDeliveryChargedAfterDiscount(deliveryChargedAfterDiscount);
-        //courierTransactionEntity.setCustomerBalanceAfterDiscount(customerBalanceAfterDiscount.setScale(2, BigDecimal.ROUND_UP));
-        courierTransactionEntity.setCustomerPays(order.getGrandTotal());
+        courierTransactionEntity.setCustomerBalanceAfterDiscount(customerBalanceAfterDiscount);
+        courierTransactionEntity.setCustomerPays(customerPays);
         courierTransactionEntity.setPaidToCourier(paidToCourier);
         courierTransactionEntity.setProfit(profit);
         return courierTransactionEntity;

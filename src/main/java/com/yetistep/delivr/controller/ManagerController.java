@@ -247,15 +247,16 @@ public class ManagerController {
     public ResponseEntity<ServiceResponse> saveCategory(@RequestHeader HttpHeaders headers, @RequestBody CategoryEntity category) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            List<String> hd = headers.get("parentId");
+            List<String> hd = headers.get("id");
             if (hd != null && hd.size() > 0)
                 headerDto.setId(hd.get(0));
             else
                 headerDto.setId(null);
 
-            managerService.saveCategory(category, headerDto);
+            CategoryEntity newCategory = managerService.saveCategory(category, headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Category has been saved successfully");
+            serviceResponse.addParam("category", newCategory);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while creating category", e);
@@ -272,9 +273,10 @@ public class ManagerController {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
 
-            managerService.updateCategory(category, headerDto);
+            CategoryEntity newCategory = managerService.updateCategory(category, headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Category has been updated successfully");
+            serviceResponse.addParam("category", newCategory);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while updating category", e);

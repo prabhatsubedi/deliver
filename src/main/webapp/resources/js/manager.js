@@ -589,19 +589,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
             $('.cateogry_list a').live('click', function(e){
                 e.preventDefault();
                 if(e.target == this) {
-
-                    var cat_name = $(this).text();
-
                     treeAction($('.glyphicon', this), 'open');
-                     var callback = function(success, data){
-                         $(".category_detail .name").html(data.name);
-                         $(".category_detail .category_image img").src(data.imageUrl);
-                     }
-                    var headers = {};
-                    headers.id = $(this).data("id");
-                    callback.loaderDiv = "body";
-                    callback.requestType = "GET";
-                    Main.request('/organizer/get_category', {}, callback, header);
+                    Manager.getCategory($(this).data("id"));
+                    $(this).addClass('current_category');
                 }
             });
 
@@ -613,11 +603,167 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     treeAction(elem, 'close')
                 }
             });
-
         }
         callback.loaderDiv = "body";
         callback.requestType = "GET";
         Main.request('/organizer/get_default_categories', {}, callback);
+    }
+
+
+    Manager.getCategory = function(id){
+        var callback = function(success, data){
+            if(!data.success) {
+                alert(data.message);
+                return;
+            }
+            $('.add_child_btn').removeClass('hidden');
+            var category = data.params.category;
+            $(".category_detail").removeClass("hidden");
+            $('.category_detail #category_id').val(category.id);
+            $('.category_detail #category_parent_id').val(category.id);
+            $(".category_detail .name").html(category.name);
+            $(".category_detail #name").val(category.name);
+            if(category.imageUrl != null)
+                $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
+
+        }
+        var headers = {};
+        headers.id = id;
+        callback.loaderDiv = "body";
+        callback.requestType = "GET";
+        Main.request('/organizer/get_category', {}, callback, headers);
+    }
+
+
+    Manager.loadEditCategory = function(){
+        $('.edit_btn').click(function () {
+            Image.dropZone('#category_image_input', '#category_image');
+
+            $(".editable").removeClass('hidden');
+            $(".none_editable").addClass('hidden');
+            $.validator.setDefaults({
+                errorPlacement : function(error, element){
+                    $('#error_container').html(error);
+                }
+            });
+
+            $('#category_form').validate();
+            $('#name').rules('add', {required: true, messages : {required: "name is required."}});
+        });
+
+        $('.save_btn').removeClass('add').addClass('edit');
+
+
+        $('.cancel_btn').click(function () {
+            $(".none_editable").removeClass('hidden');
+            $(".editable").addClass('hidden');
+        });
+    }
+
+    Manager.saveCategory = function(){
+        $('.save_btn').click(function () {
+            if ($('#category_form').valid()) {
+               if($(this).hasClass('edit')){
+                    var id = $('#category_id').val();
+                    var chk_confirm = confirm('Are you sure you want to update Category?');
+                    if (!chk_confirm) return false;
+
+                    var data = {};
+                    var callback = function(success, data){
+                        if (!data.success) {
+                            alert(data.message);
+                            return;
+                        }
+                        var category = data.params.category;
+                        $('.cateogry_list a').removeClass("current_category");
+                        $('.cateogry_list a[data-id='+category.id+']').addClass('current_category');
+                        $('.category_detail #category_id').val(category.id);
+                        $('.category_detail #category_parent_id').val(category.id);
+                        $(".category_detail .name").html(category.name);
+                        $(".category_detail #name").val(category.name);
+                        if(category.imageUrl != null)
+                            $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
+
+                        $(".none_editable").removeClass('hidden');
+                        $(".editable").addClass('hidden');
+                    }
+                    var headers = {};
+                    headers.id = id;
+                    data.name = $('#name').val();
+                    if($('#category_image').find('img').attr('src').indexOf('https://') == -1)
+                        data.imageUrl = $('#category_image').find('img').attr('src');
+                    callback.loaderDiv = "body";
+                    callback.requestType = "PUT";
+                    console.log(data);
+                    Main.request('/organizer/update_category', data, callback, headers);
+                }else if($(this).hasClass('add')){
+                    var parent_id = $('#category_parent_id').val();
+                   console.log(parent_id);
+                    var chk_confirm = confirm('Are you sure you want to Add New Category?');
+                    if (!chk_confirm) return false;
+
+                    var data = {};
+                    var callback = function(success, data){
+                        if (!data.success) {
+                            alert(data.message);
+                            return;
+                        }
+                        var category = data.params.category;
+                        $('.cateogry_list a').removeClass("current_category");
+                        $('.cateogry_list a[data-id='+category.id+']').addClass('current_category');
+                        $('.category_detail #category_id').val(category.id);
+                        $('.category_detail #category_parent_id').val(category.id);
+                        $(".category_detail .name").html(category.name);
+                        $(".category_detail #name").val(category.name);
+                        if(category.imageUrl != null)
+                            $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
+
+                        $(".none_editable").removeClass('hidden');
+                        $(".editable").addClass('hidden');
+                    }
+                    var headers = {};
+                    headers.id = parent_id;
+                    data.name = $('#name').val();
+                    data.imageUrl = $('#category_image').find('img').attr('src');
+                    callback.loaderDiv = "body";
+                    Main.request('/organizer/save_category', data, callback, headers);
+                }
+            }
+        });
+    }
+
+    Manager.loadAddSubCategory = function(){
+
+        $('body').delegate('a.add_child_btn, a.add_root_btn', 'click', function(){
+            $(".category_detail").removeClass('hidden');
+            if($(this).hasClass('add_root_btn')){
+                $('.add_child_btn').addClass('hidden');
+            }
+            var prevHtml =  $('#category_image').html();
+            var prevId = $('.category_detail #category_id').val();
+            $(".editable").removeClass('hidden');
+            $(".none_editable").addClass('hidden');
+
+            $('#category_image').html('<div class="drop_info">Drop image file <br/> (or click to browse)</div><div class="drop_title">Category Image</div>');
+            $('.category_detail #category_id').val('');
+            if($(this).hasClass('add_root_btn')){
+                $('.category_detail #category_parent_id').val('');
+            }
+            $(".category_detail #name").val('');
+            $('.save_btn').removeClass('edit').addClass('add');
+            $('.cancel_btn').removeClass('edit').addClass('add');
+            Image.dropZone('#category_image_input', '#category_image');
+
+            $('.cancel_btn').click(function () {
+                $(".none_editable").removeClass('hidden');
+                $(".editable").addClass('hidden');
+                 if($(this).hasClass('add')){
+                     $('#category_image').html(prevHtml);
+                     $('.category_detail #category_id').val(prevId);
+                 }
+
+            });
+        });
     }
 
 })(jQuery);

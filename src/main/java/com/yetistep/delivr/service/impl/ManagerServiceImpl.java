@@ -170,7 +170,7 @@ public class ManagerServiceImpl implements ManagerService {
 
 
     @Override
-    public boolean saveCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
+    public CategoryEntity saveCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
 
         if (headerDto.getId() != null){
             CategoryEntity parentCategory = new CategoryEntity();
@@ -196,11 +196,11 @@ public class ManagerServiceImpl implements ManagerService {
             categoryDaoService.update(category);
         }
 
-        return true;
+        return category;
     }
 
     @Override
-    public boolean updateCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
+    public CategoryEntity updateCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
 
         CategoryEntity dbCategory = categoryDaoService.find(Integer.parseInt(headerDto.getId()));
 
@@ -222,7 +222,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         if(categoryImage != null){
             log.info("Uploading category image to S3 Bucket ");
-            String dir = MessageBundle.separateString("/", "category" + category.getId());
+            String dir = MessageBundle.separateString("/", "category" + dbCategory.getId());
             boolean isLocal = MessageBundle.isLocalHost();
 
             if(dbImageUrl != null){
@@ -230,13 +230,13 @@ public class ManagerServiceImpl implements ManagerService {
                 AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(dbImageUrl));
             }
 
-            String categoryImageUrl = "categoryImage"+(isLocal ? "_tmp_" : "_") + category.getId()+System.currentTimeMillis();
+            String categoryImageUrl = "categoryImage"+(isLocal ? "_tmp_" : "_") + dbCategory.getId()+System.currentTimeMillis();
             String s3PathImage = GeneralUtil.saveImageToBucket(categoryImage, categoryImageUrl, dir, true);
-            category.setImageUrl(s3PathImage);
-            categoryDaoService.update(category);
+            dbCategory.setImageUrl(s3PathImage);
+            categoryDaoService.update(dbCategory);
         }
 
-        return true;
+        return dbCategory;
     }
 
 
@@ -282,7 +282,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public CategoryEntity getCategory(HeaderDto headerDto) throws Exception{
-        CategoryEntity category = categoryDaoService.findCategory(Integer.parseInt(headerDto.getId()));
+        CategoryEntity category = categoryDaoService.find(Integer.parseInt(headerDto.getId()));
         if(category != null){
             category.setChild(null);
             category.setItem(null);

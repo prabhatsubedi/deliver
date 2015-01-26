@@ -42,22 +42,6 @@ public class ManagerViewController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "category/create", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView createCategory(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("organizer/category_create");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "category/update", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView updateCategory(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("organizer/category_update");
-        return modelAndView;
-    }
-
     @RequestMapping(value = "category/view", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView viewCategory(){

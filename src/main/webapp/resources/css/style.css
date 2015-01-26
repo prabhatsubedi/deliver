@@ -1223,6 +1223,7 @@ label.check_label .checkbox {
 .profile_header_image .user_image {
     width: 150px;
     height: 150px;
+    margin: 0 auto;
 }
 .profile_body {
     padding: 15px;
@@ -1378,6 +1379,15 @@ label.check_label .checkbox {
     border-color: #dddddd;
     color: #cccccc;
     cursor: not-allowed;
+}
+
+/* category */
+.category_detail {
+    margin-top: 30px;
+}
+
+.btn_green{
+    word-spacing: -10px;
 }
 
 

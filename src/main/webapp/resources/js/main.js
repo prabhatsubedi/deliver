@@ -205,6 +205,29 @@ if(typeof(Main) == "undefined") var Main = {};
 
     };
 
+    Main.getAllStores = function() {
+
+        var callback = function (status, data) {
+
+            if (data.success == true) {
+                var brands = data.params.brands;
+                if(brands.length > 0) {
+                    var store_options = '';
+                    for(var i = 0; i < brands.length; i++) {
+                        store_options += '<option value="' + brands[i].id + '">' + brands[i].brandName + '</option>';
+                    }
+                    $('#item_stores').append(store_options);
+                    $('#item_stores').selectpicker('refresh');
+                }
+            } else {
+            }
+        };
+        callback.requestType = "GET";
+
+        Main.request('/merchant/get_brands', {}, callback);
+
+    };
+
 /*    Main.getURLParameter = function(key, keyvalue) {
         if(key == undefined) return false;
         key = key + "_";

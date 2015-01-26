@@ -626,6 +626,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
             $(".category_detail #name").val(category.name);
             if(category.imageUrl != null)
                 $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
+            else
+                $('#category_image').html('<div class="drop_info">Drop image file <br/> (or click to browse)</div><div class="drop_title">Category Image</div>');
 
         }
         var headers = {};

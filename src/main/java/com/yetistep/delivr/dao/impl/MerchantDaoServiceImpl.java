@@ -206,7 +206,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
         criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
-                .add(Projections.property("name"), "name"))
+                .add(Projections.property("name"), "name")
+                .add(Projections.property("imageUrl"), "imageUrl"))
                 .setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
         criteria.add(Restrictions.isNull("parent")) ;
         categories = criteria.list();

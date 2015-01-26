@@ -68,6 +68,10 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public List<ItemEntity> findItemByCategory(List<Integer> categoryId, Integer brandId) throws Exception;
 
+    public List<ItemEntity> findItemByCategory(List<Integer> categoryId, Integer brandId, Integer itemCount) throws Exception;
+
+    public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId, Integer itemCount) throws Exception;
+
     public Boolean findPartnerShipStatusFromOrderId(Integer orderId) throws Exception;
 
     public  void deleteBrandsCategory(BrandsCategoryEntity value) throws  Exception;

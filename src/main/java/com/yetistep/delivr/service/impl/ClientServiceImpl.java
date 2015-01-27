@@ -55,6 +55,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     @Autowired
     ItemsImageDaoService itemsImageDaoService;
 
+    @Autowired
+    DeliveryBoySelectionDaoService deliveryBoySelectionDaoService;
+
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++ Getting all brands +++++++++++++++");
@@ -316,11 +319,18 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     }
 
     @Override
-    public OrderEntity getOrderById(Integer orderId) throws Exception {
+    public OrderEntity getOrderById(Integer orderId, Integer deliveryBoyId) throws Exception {
         OrderEntity order = orderDaoService.find(orderId);
         if (order == null) {
             throw new YSException("VLD017");
         }
+        DeliveryBoySelectionEntity deliveryBoySelection = deliveryBoySelectionDaoService.getSelectionDetails(orderId, deliveryBoyId);
+        if(deliveryBoySelection == null){
+            throw new YSException("ORD003");
+        }
+        order.setAssignedTime(deliveryBoySelection.getTotalTimeRequired());
+        order.setDeliveryBoyShare(deliveryBoySelection.getPaidToCourier());
+        order.setSystemChargeableDistance(deliveryBoySelection.getDistanceToStore());
 
         AddressEntity address = new AddressEntity();
         address.setId(order.getAddress().getId());
@@ -364,6 +374,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                 itemOrder.setItemOrderAttributes(null);
             }
         }
+
         order.setRating(null);
         order.setDeliveryBoy(null);
         order.setAttachments(null);

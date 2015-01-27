@@ -502,7 +502,15 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         OrderEntity order = orderDaoService.find(itemsOrderEntity.getOrder().getId());
         if(order == null)
             throw new YSException("VLD017");
+        /*Adding item total*/
         order.setTotalCost(order.getTotalCost().add(itemsOrderEntity.getItemTotal()));
+
+        /*Calculating service and vat charge for new item and adding it to ItemServiceAndVatCharge*/
+        BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal(), itemsOrderEntity.getCustomItem().getServiceCharge());
+        BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal().add(serviceCharge), itemsOrderEntity.getCustomItem().getVat()));
+        order.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge().add(serviceAndVatCharge));
+        itemsOrderEntity.getCustomItem().setItemsOrder(itemsOrderEntity);
+
         List<ItemsOrderEntity> itemsOrderEntities = order.getItemsOrder();
         itemsOrderEntities.add(itemsOrderEntity);
         order.setItemsOrder(itemsOrderEntities);
@@ -512,6 +520,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(dBoySelection == null){
             throw new YSException("ORD003");
         }
+
         CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, dBoySelection, courierTransactionEntity.getCommissionPct(), courierTransactionEntity.getServiceFeePct());
         courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
         courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());

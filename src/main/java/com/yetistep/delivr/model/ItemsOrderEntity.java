@@ -28,7 +28,7 @@ public class ItemsOrderEntity implements Serializable {
     private BigDecimal itemTotal;
     private Boolean availabilityStatus;
     private String note;
-    private String customItem;
+    private CustomItemEntity customItem;
     private List<ItemsOrderAttributeEntity> itemOrderAttributes;
 
     @Id
@@ -101,12 +101,13 @@ public class ItemsOrderEntity implements Serializable {
         this.note = note;
     }
 
-    @Column(name = "custom_item")
-    public String getCustomItem() {
+    @OneToOne(mappedBy = "itemsOrder", cascade = CascadeType.ALL, orphanRemoval=true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    public CustomItemEntity getCustomItem() {
         return customItem;
     }
 
-    public void setCustomItem(String customItem) {
+    public void setCustomItem(CustomItemEntity customItem) {
         this.customItem = customItem;
     }
 

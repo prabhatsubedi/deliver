@@ -81,3 +81,6 @@ ALTER TABLE orders MODIFY COLUMN order_verification_code VARCHAR(255) NULL DEFAU
 INSERT INTO preferences (pref_key,VALUE) VALUES ('AIR_TO_ROUTE_DISTANCE_FACTOR','1.5');
 
 INSERT INTO preferences (pref_key,VALUE) VALUES ('AIR_OR_ACTUAL_DISTANCE_SWITCH','1');
+
+/*####################2015.01.27########################*/
+ALTER TABLE `items_orders` DROP COLUMN `custom_item`;

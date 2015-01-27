@@ -53,6 +53,7 @@
        <mapping class="com.yetistep.delivr.model.CartAttributesEntity"/>
        <mapping class="com.yetistep.delivr.model.CourierTransactionEntity" />
        <mapping class="com.yetistep.delivr.model.ItemsOrderAttributeEntity" />
+       <mapping class="com.yetistep.delivr.model.CustomItemEntity" />
 
 
     </session-factory>

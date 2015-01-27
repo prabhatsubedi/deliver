@@ -298,15 +298,21 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CheckOutDto getCheckOutInfo(Long facebookId, Integer addressId) throws Exception {
         log.info("+++++++++++++++ Getting Check Out Info of client fb id : " + facebookId + " +++++++++++++++++");
+
         CheckOutDto checkOutDto = new CheckOutDto();
+        List<ItemEntity> items = new ArrayList<>();
 
         List<CartEntity> carts = cartDaoService.getMyCarts(facebookId);
+        if(carts==null || carts.size() == 0)
+            throw new YSException("CRT001");
+
         AddressEntity address = addressDaoService.getMyAddress(addressId);
+
         Integer brandId = carts.get(0).getStoresBrand().getId();
         BigDecimal subTotal = BigDecimal.ZERO;
         BigDecimal merchantTax = BigDecimal.ZERO;
         for(CartEntity cart : carts){
-            ItemEntity item = merchantDaoService.getItemDetail(cart.getId());
+            ItemEntity item = merchantDaoService.getItemDetail(cart.getItem().getId());
 
             //Calculating Sub Total
             BigDecimal attributePrice = cartAttributesDaoService.findAttributesPrice(cart.getId());
@@ -323,7 +329,16 @@ public class CustomerServiceImpl implements CustomerService {
 
             merchantTax = merchantTax.add(itemTax);
             subTotal = subTotal.add(total);
+            //Set Item
+            ItemEntity tempItem = new ItemEntity();
+            tempItem.setId(item.getId());
+            tempItem.setUnitPrice(total);
+            tempItem.setOrderQuantity(cart.getOrderQuantity());
+            tempItem.setName(item.getName());
+            if(item.getItemsImage()!=null && item.getItemsImage().size() > 0)
+                tempItem.setImageUrl(item.getItemsImage().get(0).getUrl());
 
+            items.add(tempItem);
         }
         OrderEntity order = new OrderEntity();
         order.setAddress(address);
@@ -332,7 +347,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<StoreEntity> stores = merchantDaoService.findActiveStoresByBrand(brandId);
 
         /* Get Nearest Store From Customer */
-        StoreEntity store = findNearestStoreFromCustomer(order, stores);
+        findNearestStoreFromCustomer(order, stores);
         BigDecimal storeToCustomerDistance = order.getCustomerChargeableDistance();
 
 
@@ -381,13 +396,15 @@ public class CustomerServiceImpl implements CustomerService {
             deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
         }
 
-        /* 13. ======== Delivery charged to customer After Discount ====== */
-        BigDecimal deliveryChargedAfterDiscount = BigDecimal.ZERO;
-        if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
-            deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
+        /* Item Detail and Others */
+        StoresBrandEntity storeBrand = new StoresBrandEntity();
+        storeBrand.setId(brandId);
+        storeBrand.setBrandName(carts.get(0).getStoresBrand().getBrandName());
+        storeBrand.setBrandLogo(carts.get(0).getStoresBrand().getBrandLogo());
 
 
-        checkOutDto.setBrandId(brandId);
+        checkOutDto.setStoresBrand(storeBrand);
+        checkOutDto.setItems(items);
         checkOutDto.setSubTotal(subTotal);
         checkOutDto.setTax(merchantTax);
         checkOutDto.setServiceFee(BigDecimalUtil.percentageOf(subTotal, serviceFeePct));

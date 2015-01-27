@@ -74,7 +74,7 @@ public class StoreDaoServiceImpl implements StoreDaoService{
 
     @Override
     public Integer getActiveStores(Integer brandId) throws Exception {
-        String sql = "SELECT COUNT(*) FROM stores WHERE stores_brand_id = :brandId AND STATUS = :status";
+        String sql = "SELECT COUNT(*) FROM stores WHERE stores_brand_id = :brandId AND status = :status";
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
         query.setParameter("brandId", brandId);
         query.setParameter("status", Status.ACTIVE.ordinal());

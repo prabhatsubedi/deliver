@@ -161,8 +161,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<Object[]> rows = sqlQuery.list();
         for(Object[] row : rows){
             merchantEntity = new MerchantEntity();
-            merchantEntity.setCommissionPercentage(new BigDecimal(row[0].toString()));
-            merchantEntity.setServiceFee(new BigDecimal(row[1].toString()));
+            merchantEntity.setCommissionPercentage(row[0] == null ? BigDecimal.ZERO : new BigDecimal(row[0].toString()));
+            merchantEntity.setServiceFee(row[1] == null ? BigDecimal.ZERO : new BigDecimal(row[1].toString()));
         }
         return merchantEntity;
     }

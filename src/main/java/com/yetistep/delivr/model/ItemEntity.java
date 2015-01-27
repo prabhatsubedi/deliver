@@ -59,6 +59,7 @@ public class ItemEntity implements Serializable {
     //Transient Value
     private String imageUrl;
     private String brandName;
+    private Integer orderQuantity;
 
     private CategoryEntity category;
     private StoresBrandEntity storesBrand;
@@ -246,6 +247,15 @@ public class ItemEntity implements Serializable {
 
     public void setModifiedDate(Timestamp modifiedDate) {
         this.modifiedDate = modifiedDate;
+    }
+
+    @Transient
+    public Integer getOrderQuantity() {
+        return orderQuantity;
+    }
+
+    public void setOrderQuantity(Integer orderQuantity) {
+        this.orderQuantity = orderQuantity;
     }
 
     /*@Column(name = "valid_till")

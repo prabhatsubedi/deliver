@@ -127,6 +127,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             //Now Combine all brand in one list
             for (StoreEntity storeEntity : storeEntities) {
                 if (!containsBrandId(storeBrandResult, storeEntity.getStoresBrand().getId()) && !containsBrandId(featuredBrands, storeEntity.getStoresBrand().getId())) {
+                    if(storeEntity.getStoresBrand().getStatus().ordinal() != Status.ACTIVE.ordinal())
+                        continue;
+
                     StoresBrandEntity tempBrand = new StoresBrandEntity();
                     tempBrand.setId(storeEntity.getStoresBrand().getId());
                     tempBrand.setOpeningTime(storeEntity.getStoresBrand().getOpeningTime());

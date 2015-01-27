@@ -1,47 +1,43 @@
+<%@ page import="com.google.gson.Gson" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page session="true"%>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Items</title>
+    <title>Item Search</title>
 
     <%@include file="../includes/head.jsp" %>
 
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/item.js"></script>
     <script type="text/javascript">
+        <%
+            Gson gson = new Gson();
+            String postParams = gson.toJson(request.getParameterMap());
+        %>
+        var postParams = <%=postParams %>;
         $(document).ready(function(){
-            Item.loadListItems();
+            Item.searchItems();
         });
     </script>
 
 </head>
 <body>
 
-<%@include file="../includes/sidebar_merchant.jsp" %>
+<%@include file="../includes/sidebar.jsp" %>
 
 <div class="main_container">
 
     <%@include file="../includes/header.jsp" %>
 
-    <div class="body loader_div">
+    <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left brand_container">
-                <select id="item_brand" name="item_brand" class="col-xs-12 no_pad no_margin hidden" data-style="form-control">
-                </select>
-            </h1>
-            <a class="btn btn_green pull-right" href="/merchant/item/form/create/">Add Item</a>
+            <h1 class="pull-left">Item Search</h1>
         </div>
         <div class="main_content">
-            <div class="item_listing">
-                <div class="table_div">
-                    <div class="categories_container td_div full_height">
-                        <div class="cateogry_list"></div>
-                    </div>
-                    <div class="items_container td_div"></div>
-                </div>
+            <div class="items_container row">
+
             </div>
         </div>
-        <div class="loader"></div>
     </div>
 </div>
 

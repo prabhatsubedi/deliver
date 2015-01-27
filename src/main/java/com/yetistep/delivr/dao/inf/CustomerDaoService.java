@@ -5,6 +5,7 @@ import com.yetistep.delivr.model.AddressEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.OrderEntity;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
@@ -23,4 +24,6 @@ public interface CustomerDaoService extends GenericDaoService<Integer, CustomerE
     public CustomerEntity find(Long facebookId) throws Exception;
 
     public CustomerEntity findUser(Long facebookId) throws Exception;
+
+    public BigDecimal getRewardsPoint(Long facebookId) throws Exception;
 }

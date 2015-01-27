@@ -1,24 +1,19 @@
 <div class="header clearfix">
     <div class="item_search col-lg-8">
-        <form role="form" id="item_search" method="POST" action="">
+        <form role="form" id="item_search" method="POST" action="${pageContext.request.contextPath}/merchant/search/item">
             <div class="col-lg-4 no_pad">
                 <input type="text" class="form-control" id="item_name" name="item_name" placeholder="Search Items">
             </div>
             <div class="col-lg-8 no_pad">
                 <div class="col-lg-9 no_pad">
-                    <select id="item_categories" name="item_categories" class="item_categories col-lg-6 col-xs-12 no_pad" data-style="form-control">
-                        <option>All Categories</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
                     <select id="item_stores" name="item_stores" class="item_stores col-lg-6 col-xs-12 no_pad" data-style="form-control">
-                        <option>All Stores</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
+                        <option value="none">Select Store</option>
+                    </select>
+                    <select id="item_categories" name="item_categories" class="item_categories haveall compelselection col-lg-6 col-xs-12 no_pad" data-style="form-control" multiple="multiple">
+                        <option value="All" selected="selected">All Categories</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
                     </select>
                 </div>
                 <div class="col-lg-3 no_pad_right search_button">
@@ -127,6 +122,19 @@
             $(this).attr('href', Main.modifyURL($(this).attr('href')));
         });
 
+        $('#item_categories').selectpicker({size: 5, noneSelectedText: 'Select Categories'});
+        $('#item_stores').selectpicker({size: 5});
+
+        $('select.haveall').live('change', function(){
+            if($(this).val() != null && $('option', this).length == $(this).val().length + 1)
+                $(this).selectpicker('selectAll');
+        });
+
+        $('select.compelselection').live('change', function(){
+            if($(this).val() == null) $(this).selectpicker('selectAll');
+        });
+
+        Main.getAllStores();
 
     });
 </script>

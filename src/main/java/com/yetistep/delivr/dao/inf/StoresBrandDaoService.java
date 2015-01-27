@@ -22,4 +22,6 @@ public interface StoresBrandDaoService extends GenericDaoService<Integer, Stores
     public List<StoresBrandEntity> findExceptFeaturedAndPriorityBrands(Page page) throws Exception;
 
     public Boolean updateFeatureAndPriorityOfStoreBrands(List<StoresBrandEntity> storeBrands) throws Exception;
+
+    public Integer getMerchantId(Integer brandsId) throws Exception;
 }

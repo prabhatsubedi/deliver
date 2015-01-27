@@ -4,10 +4,7 @@ import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.util.HibernateUtil;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
@@ -15,6 +12,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,6 +148,23 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         categories = criteria.list();
 
         return categories;
+    }
+
+    @Override
+    public MerchantEntity getCommissionAndVat(Integer merchantId) throws Exception {
+        String sql = "SELECT commission_percentage AS commissionPercentage, service_fee AS serviceFee FROM merchants WHERE id = :merchantId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("merchantId", merchantId);
+//        sqlQuery.addScalar("commissionPercentage");
+//        sqlQuery.addScalar("serviceFee");
+        MerchantEntity merchantEntity = null;
+        List<Object[]> rows = sqlQuery.list();
+        for(Object[] row : rows){
+            merchantEntity = new MerchantEntity();
+            merchantEntity.setCommissionPercentage(new BigDecimal(row[0].toString()));
+            merchantEntity.setServiceFee(new BigDecimal(row[1].toString()));
+        }
+        return merchantEntity;
     }
 
     @Override

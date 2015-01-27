@@ -121,6 +121,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         } else {
             validateUserDevice(customerEntity.getUser().getUserDevice());
+            customerEntity.setRewardsEarned(BigDecimal.ZERO);
 //            if (customerEntity.getLatitude() != null) {
 //                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
 //                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());
@@ -417,24 +418,14 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
-        List<ItemsOrderEntity> itemsOrder = requestJson.getOrdersItemsOrder();
-        Integer brandId = requestJson.getOrdersBrandId();
         Long customerId = requestJson.getOrdersCustomerId();
         Integer addressId = requestJson.getOrdersAddressId();
-
-        StoresBrandEntity brand = merchantDaoService.findBrandDetail(brandId);
-        CustomerEntity customer = customerDaoService.find(customerId);
-        AddressEntity address = customerDaoService.findAddressById(addressId);
-
+        CustomerEntity customer = customerDaoService.getCustomerIdAndRewardFromFacebookId(customerId);
+        AddressEntity address = addressDaoService.getMyAddress(addressId);
         if(address == null)
             throw new YSException("VLD014");
-
         if (customer == null)
             throw new YSException("VLD011");
-
-        if (brand == null)
-            throw new YSException("VLD012");
-
         OrderEntity order = new OrderEntity();
         order.setAddress(address);
         order.setCustomer(customer);
@@ -443,33 +434,51 @@ public class CustomerServiceImpl implements CustomerService {
         order.setDeliveryStatus(DeliveryStatus.PENDING);
         order.setOrderStatus(JobOrderStatus.ORDER_PLACED);
 
+        /* Transferring data of cart to order and calculating price */
         BigDecimal itemTotalCost = BigDecimal.ZERO;
         BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
-        for (ItemsOrderEntity iOrder: itemsOrder){
-            ItemEntity item = merchantDaoService.getItemDetail(iOrder.getItem().getId());
-            if(item == null)
-                throw new YSException("ITM001");
-            iOrder.setItem(item);
-            iOrder.setOrder(order);
-            iOrder.setAvailabilityStatus(true);
-            /* Attribute price is added to individual itemTotal. Then, service and VAT charge added to ItemTotal
-            which is then added to itemTotalCost i.e. OrderTotal */
-            BigDecimal attributePrice = BigDecimal.ZERO;
-            for(ItemsOrderAttributeEntity itemsOrderAttribute : iOrder.getItemOrderAttributes()){
-                ItemsAttributeEntity itemsAttribute = itemsAttributeDaoService.find(itemsOrderAttribute.getItemsAttribute().getId());
-                if(itemsAttribute == null)
-                    throw new YSException("ITM003");
-                itemsOrderAttribute.setItemOrder(iOrder);
-                attributePrice = attributePrice.add(itemsAttribute.getUnitPrice());
+        List<CartEntity> cartEntities = cartDaoService.getMyCarts(customerId);
+        List<ItemsOrderEntity> itemsOrder = new ArrayList<ItemsOrderEntity>();
+        Integer brandId = null;
+        for (CartEntity cart : cartEntities) {
+            ItemsOrderEntity itemsOrderEntity = new ItemsOrderEntity();
+            itemsOrderEntity.setOrder(order);
+            itemsOrderEntity.setAvailabilityStatus(true);
+            itemsOrderEntity.setQuantity(cart.getOrderQuantity());
+            itemsOrderEntity.setCustomerNote(cart.getNote());
+            itemsOrderEntity.setItem(cart.getItem());
+            List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cart.getId());
+            List<ItemsOrderAttributeEntity> itemsOrderAttributeEntities = new ArrayList<ItemsOrderAttributeEntity>();
+            for(Integer attribute: cartAttributes){
+                ItemsOrderAttributeEntity itemsOrderAttribute = new ItemsOrderAttributeEntity();
+                itemsOrderAttribute.setItemOrder(itemsOrderEntity);
+                ItemsAttributeEntity itemsAttribute = new ItemsAttributeEntity();
+                itemsAttribute.setId(attribute);
+                itemsOrderAttribute.setItemsAttribute(itemsAttribute);
+                itemsOrderAttributeEntities.add(itemsOrderAttribute);
             }
-            BigDecimal itemTotal = BigDecimalUtil.calculateCost(iOrder.getQuantity(), item.getUnitPrice(), attributePrice);
-            iOrder.setItemTotal(itemTotal);
-            itemTotalCost = itemTotalCost.add(itemTotal);
+            itemsOrderEntity.setItemOrderAttributes(itemsOrderAttributeEntities);
+            BigDecimal attributePrice = cartAttributesDaoService.findAttributesPrice(cart.getId());
+            BigDecimal itemPrice = BigDecimalUtil.calculateCost(cart.getOrderQuantity(), cart.getItem().getUnitPrice(), attributePrice);
 
-            BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemTotal, item.getServiceCharge());
-            BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemTotal.add(serviceCharge), item.getVat()));
+            BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemPrice, cart.getItem().getServiceCharge());
+            BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), cart.getItem().getVat()));
+            /*Set for order total and total serviceVat*/
             itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatCharge);
+            itemTotalCost = itemTotalCost.add(itemPrice);
+
+            itemsOrderEntity.setItemTotal(itemPrice);
+            itemsOrderEntity.setServiceAndVatCharge(serviceAndVatCharge);
+            itemsOrder.add(itemsOrderEntity);
+            brandId = cart.getStoresBrand().getId();
         }
+
+
+        MerchantEntity merchant = merchantDaoService.getCommissionVatPartnerShipStatus(brandId);
+        if(merchant == null){
+            throw new YSException("MRC003");
+        }
+
         order.setItemsOrder(itemsOrder);
         order.setTotalCost(itemTotalCost);
         order.setSurgeFactor(getSurgeFactor());
@@ -488,7 +497,7 @@ public class CustomerServiceImpl implements CustomerService {
         /* Selects nearest delivery boys based on timing. */
         List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, availableAndActiveDBoys, order);
         /* Selects delivery boys based on profit criteria. */
-        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, brand.getMerchant());
+        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, merchant);
         order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
         customerDaoService.saveOrder(order);
 

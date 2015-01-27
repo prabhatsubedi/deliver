@@ -1,21 +1,17 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.CustomerDaoService;
-import com.yetistep.delivr.model.AddressEntity;
-import com.yetistep.delivr.model.CustomerEntity;
-import com.yetistep.delivr.model.OrderEntity;
-import com.yetistep.delivr.model.UserEntity;
+import com.yetistep.delivr.model.*;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -62,11 +58,6 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
     @Override
     public Session getCurrentSession() throws Exception {
         return sessionFactory.getCurrentSession();
-    }
-
-    @Override
-    public AddressEntity findAddressById(Integer id) throws Exception {
-        return (AddressEntity) getCurrentSession().get(AddressEntity.class, id);
     }
 
     @Override
@@ -119,6 +110,17 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         if(!res.isEmpty())
             rewardsEarned = new BigDecimal(res);
         return rewardsEarned;
+    }
+
+    @Override
+    public CustomerEntity getCustomerIdAndRewardFromFacebookId(Long facebookId) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(CustomerEntity.class);
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("rewardsEarned"), "rewardsEarned")
+        ).setResultTransformer(Transformers.aliasToBean(CustomerEntity.class));
+        criteria.add(Restrictions.eq("facebookId", facebookId));
+        return (CustomerEntity) criteria.uniqueResult();
     }
 }
 

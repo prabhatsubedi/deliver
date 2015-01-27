@@ -32,7 +32,7 @@ public interface MerchantService {
 
     public List<StoresBrandEntity> findBrandList(HeaderDto headerDto) throws Exception;
 
-    public List<StoresBrandEntity> findBrands() throws Exception;
+    public List<StoresBrandEntity> findBrands(HeaderDto headerDto) throws Exception;
 
     public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception;
 
@@ -41,6 +41,8 @@ public interface MerchantService {
     public List<StoreEntity> findStoresByBrand(HeaderDto headerDto) throws Exception;
 
     public List<CategoryEntity> findCategoriesByBrand(HeaderDto headerDto) throws Exception;
+
+    public List<CategoryEntity> findBrandCategoryList(HeaderDto headerDto) throws Exception;
 
     public List<CategoryEntity> findParentCategoriesByBrand(HeaderDto headerDto) throws Exception;
 
@@ -62,5 +64,5 @@ public interface MerchantService {
 
     public boolean changeStatus(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception;
 
-    public PaginationDto getWebItemSearch(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception;
+    public PaginationDto getWebItemSearch(RequestJsonDto requestJsonDto) throws Exception;
 }

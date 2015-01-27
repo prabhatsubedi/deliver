@@ -72,7 +72,9 @@ public class RequestJsonDto {
 
     /*web search properties
     * */
+
     private String searchString;
+    private List<Integer> brands;
     private Page page;
 
 
@@ -341,6 +343,14 @@ public class RequestJsonDto {
 
     public void setSearchString(String searchString) {
         this.searchString = searchString;
+    }
+
+    public List<Integer> getBrands() {
+        return brands;
+    }
+
+    public void setBrands(List<Integer> brands) {
+        this.brands = brands;
     }
 
     public Page getPage() {

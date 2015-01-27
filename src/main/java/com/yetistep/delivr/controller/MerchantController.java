@@ -3,10 +3,12 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
+import com.yetistep.delivr.util.SessionManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -117,9 +119,20 @@ public class MerchantController {
 
     @RequestMapping(value = "/get_brands", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> findAllBrands() {
+    public ResponseEntity<ServiceResponse> findAllBrands(@RequestHeader HttpHeaders headers) {
         try {
-            List<StoresBrandEntity> brands = merchantService.findBrands();
+            HeaderDto headerDto = new HeaderDto();
+            List<String> hd = headers.get("merchantId");
+            if (hd != null && hd.size() > 0)
+                headerDto.setMerchantId(Integer.parseInt( hd.get(0)));
+            else {
+                if(SessionManager.getRole().toString().equals(Role.ROLE_MERCHANT.toString())){
+                    headerDto.setMerchantId(SessionManager.getMerchantId());
+                } else {
+                    headerDto.setMerchantId(null);
+                }
+            }
+            List<StoresBrandEntity> brands = merchantService.findBrands(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("brands has been retrieved successfully");
             serviceResponse.addParam("brands", brands);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -203,6 +216,29 @@ public class MerchantController {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             List<CategoryEntity> categories = merchantService.findCategoriesByBrand(headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Categories has been retrieved successfully");
+            serviceResponse.addParam("categories", categories);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_search_categories", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> findSearchCategories(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            //GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            List<String> hd = headers.get("id");
+            if (hd != null && hd.size() > 0)
+                headerDto.setId( hd.get(0));
+            else
+                headerDto.setId(null);
+
+            List<CategoryEntity> categories = merchantService.findBrandCategoryList(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Categories has been retrieved successfully");
             serviceResponse.addParam("categories", categories);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -369,11 +405,9 @@ public class MerchantController {
 
     @RequestMapping(value = "/search_item", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getWebSearchItem(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+    public ResponseEntity<ServiceResponse> getWebSearchItem(@RequestBody RequestJsonDto requestJsonDto) {
         try {
-            HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            PaginationDto paginationDto = merchantService.getWebItemSearch(requestJsonDto ,headerDto);
+            PaginationDto paginationDto = merchantService.getWebItemSearch(requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("Items has been retrieved successfully");
             serviceResponse.addParam("items", paginationDto);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

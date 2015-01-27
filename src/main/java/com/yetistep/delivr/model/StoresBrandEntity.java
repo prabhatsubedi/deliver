@@ -13,6 +13,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -247,5 +248,17 @@ public class StoresBrandEntity implements Serializable {
 
     public void setMerchantId(Integer merchantId) {
         this.merchantId = merchantId;
+    }
+
+
+    public StoresBrandEntity getJsonObject(StoresBrandEntity storesBrandEntity, List<Class> assoc) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+        StoresBrandEntity storesBrand = new StoresBrandEntity();
+
+        for (Class association: assoc){
+
+        }
+
+        return storesBrand;
+
     }
 }

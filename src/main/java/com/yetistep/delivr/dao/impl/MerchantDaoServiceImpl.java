@@ -189,13 +189,20 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public List<BrandsCategoryEntity> getBrandsCategory(Integer brandId) throws Exception {
+      public List<BrandsCategoryEntity> getBrandsCategory(Integer brandId) throws Exception {
         List<BrandsCategoryEntity> brandsCategories = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BrandsCategoryEntity.class);
         criteria.add(Restrictions.eq("storesBrand.id", brandId));
-        /*String hqlQuery = "SELECT bc.category FROM BrandsCategoryEntity bc LEFT JOIN bc.category c WHERE (bc.storesBrand.id = :brandId OR bc.storesBrand.id IS NULL) AND (c.storesBrand.id = :brandId OR c.storesBrand.id IS NULL)";
-        Query query = sessionFactory.getCurrentSession().createQuery(hqlQuery);
-        query.setParameter("brandId", brandId);*/
+        brandsCategories = criteria.list();
+
+        return brandsCategories.size() > 0 ? brandsCategories : null;
+    }
+
+    @Override
+    public List<BrandsCategoryEntity> getBrandsCategory(List<Integer> brandId) throws Exception {
+        List<BrandsCategoryEntity> brandsCategories = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BrandsCategoryEntity.class);
+        criteria.add(Restrictions.in("storesBrand.id", brandId));
         brandsCategories = criteria.list();
 
         return brandsCategories.size() > 0 ? brandsCategories : null;
@@ -208,6 +215,17 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
         Query query = sessionFactory.getCurrentSession().createQuery(hqlQuery);
         query.setParameter("brandId", brandId);
+        List<CategoryEntity> categories = query.list();
+        return categories.size() > 0 ? categories : null;
+    }
+
+    @Override
+    public List<CategoryEntity> findFinalCategoryList(List<Integer> brandId) throws Exception {
+        //"SELECT id FROM categories AS Cat WHERE Cat.id NOT IN (SELECT Cat.parent_id FROM categories Cat WHERE Cat.parent_id IS NOT NULL) && (brand_id = 1 OR brand_id IS NULL)";
+        String hqlQuery = "FROM CategoryEntity cat WHERE cat.id NOT IN (SELECT cat.parent.id FROM CategoryEntity cat WHERE cat.parent IS NOT NULL) AND (cat.storesBrand.id IN "+brandId.toString().replace("[", "(").replace("]", ")")+" OR cat.storesBrand IS NULL)";
+
+        Query query = sessionFactory.getCurrentSession().createQuery(hqlQuery);
+        //query.setParameter("brandId", brandId);
         List<CategoryEntity> categories = query.list();
         return categories.size() > 0 ? categories : null;
     }
@@ -276,22 +294,30 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public List<StoresBrandEntity> findBrandListByMerchant(Integer merchantId) throws Exception {
         List<StoresBrandEntity> stores = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class, "brand");
-        //criteria.createCriteria("store").add(Restrictions.eq("status", Status.ACTIVE));
-       /* criteria.setProjection(Projections.projectionList()
+        criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId))) ;
+        stores = criteria.list();
+        return stores;
+    }
+
+    @Override
+    public List<StoresBrandEntity> findBrandList(Integer merchantId) throws Exception {
+        List<StoresBrandEntity> stores = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("brandName"), "brandName")
                 .add(Projections.property("brandLogo"), "brandLogo")
                 .add(Projections.property("brandImage"), "brandImage")
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
+                .add(Projections.property("status"), "status")
                 .add(Projections.property("openingTime"), "openingTime")
                 .add(Projections.property("closingTime"), "closingTime")
                 .add(Projections.property("merchant"), "merchant")
-        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));*/
-        //criteria.createAlias("brand.store", "stores", Criteria.LEFT_JOIN);
-        criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId)/*, Restrictions.eq("stores.status", Status.ACTIVE)*/)) ;
+        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
+        criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId))) ;
         stores = criteria.list();
-        return stores;
+        return stores.size() > 0 ? stores : null;
     }
 
     @Override
@@ -305,6 +331,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
                 .add(Projections.property("brandImage"), "brandImage")
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
+                .add(Projections.property("status"), "status")
                 .add(Projections.property("openingTime"), "openingTime")
                 .add(Projections.property("closingTime"), "closingTime")
                 .add(Projections.property("merchant"), "merchant")
@@ -494,11 +521,11 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public List<ItemEntity> getWebSearchItem(String searchString, List<Integer> categoryId, Integer storeId, Page page) throws Exception{
+    public List<ItemEntity> getWebSearchItem(String searchString, List<Integer> categoryId, List<Integer> storeId, Page page) throws Exception{
         List<ItemEntity> items = new ArrayList<>();
 
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
-        criteria.add(Restrictions.and(Restrictions.like("name", searchString, MatchMode.ANYWHERE), Restrictions.in("category.id", categoryId),  Restrictions.eq("storesBrand.id", storeId)));
+        criteria.add(Restrictions.and(Restrictions.like("name", searchString, MatchMode.ANYWHERE), Restrictions.in("category.id", categoryId),  Restrictions.in("storesBrand.id", storeId)));
         HibernateUtil.fillPaginationCriteria(criteria, page, ItemEntity.class);
         items = criteria.list();
 
@@ -507,15 +534,15 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
 
     @Override
-    public Integer getTotalNumberOfItems(String searchString, List<Integer> categoryId, Integer storeId) throws Exception {
+    public Integer getTotalNumberOfItems(String searchString, List<Integer> categoryId, List<Integer> storeId) throws Exception {
         /*Criteria criteriaCount = getCurrentSession().createCriteria(ItemEntity.class);
         criteriaCount.setProjection(Projections.rowCount()).add(Restrictions.and(Restrictions.like("name", searchString), Restrictions.in("category.id", categoryId), Restrictions.eq("storesBrand.id", storeId)));
         Long count = (Long) criteriaCount.uniqueResult();
         return (count != null) ? count.intValue() : null;*/
-        String sqQuery =    "SELECT COUNT(i.id) FROM Items i WHERE i.name LIKE '%"+searchString+"%' AND i.category_id IN "+categoryId.toString().replace("[", "(").replace("]", ")")+" AND i.brand_id =:storeId";
+        String sqQuery =    "SELECT COUNT(i.id) FROM Items i WHERE i.name LIKE '%"+searchString+"%' AND i.category_id IN "+categoryId.toString().replace("[", "(").replace("]", ")")+" AND i.brand_id IN "+storeId.toString().replace("[", "(").replace("]", ")")+" ";
 
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
-        query.setParameter("storeId", storeId);
+        //query.setParameter("storeId", storeId);
 
         BigInteger cnt = (BigInteger) query.uniqueResult();
         return cnt.intValue();

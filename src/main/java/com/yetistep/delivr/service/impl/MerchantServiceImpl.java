@@ -500,18 +500,30 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<StoresBrandEntity> findBrands() throws Exception {
+    public List<StoresBrandEntity> findBrands(HeaderDto headerDto) throws Exception {
 
-        List<StoresBrandEntity> storesBrands = merchantDaoService.findBrandList();
+        List<StoresBrandEntity> storesBrands;
+
+        if (headerDto.getMerchantId() != null){
+            storesBrands = merchantDaoService.findBrandList(headerDto.getMerchantId());
+        } else {
+            storesBrands = merchantDaoService.findBrandList();
+        }
 
         return storesBrands;
     }
 
-
-
     @Override
     public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception {
         StoresBrandEntity storesBrandEntity =  merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
+       /*List<Class> assoc = new ArrayList<Class>();
+        assoc.add(BrandsCategoryEntity.class);
+        assoc.add(StoreEntity.class);
+        List<String> fields = new ArrayList<String>();
+        fields.add("brandName");
+        fields.add("brandLogo");
+        fields.add("brandImage");
+        fields.add("status");*/
         return getStoreBrandForJson(storesBrandEntity);
     }
 
@@ -881,6 +893,35 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     }
 
+    @Override
+    public List<CategoryEntity> findBrandCategoryList(HeaderDto headerDto) throws Exception {
+        List<Integer> brandId = new ArrayList<Integer>();
+        List<CategoryEntity> categories = new ArrayList<>();
+        if(headerDto.getId() != null){
+                String[] brands = headerDto.getId().split(",");
+                for (String brand: brands){
+                    brandId.add(Integer.parseInt(brand));
+                }
+
+
+            List<BrandsCategoryEntity> brandsCategories =  merchantDaoService.getBrandsCategory(brandId);
+
+            for (BrandsCategoryEntity brandsCategory: brandsCategories){
+                brandsCategory.getCategory().setChild(null);
+                brandsCategory.getCategory().setParent(null);
+                brandsCategory.getCategory().setStoresBrand(null);
+                brandsCategory.getCategory().setItem(null);
+                brandsCategory.getCategory().setBrandsCategory(null);
+                if(!categories.contains(brandsCategory.getCategory())) {
+                    categories.add(brandsCategory.getCategory());
+                }
+            }
+        }else{
+            categories = merchantDaoService.findParentCategories();
+        }
+        return categories;
+    }
+
     public List<CategoryEntity> getCategoryTree(List<CategoryEntity> categories, Integer parent_id, Integer storeId){
           List<CategoryEntity> newCategories = new ArrayList<CategoryEntity>();
           for(CategoryEntity newCategory:  categories)
@@ -1143,18 +1184,24 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public PaginationDto getWebItemSearch(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception{
-
+    public PaginationDto getWebItemSearch(RequestJsonDto requestJsonDto) throws Exception{
         List<Integer> parentCategoryId = requestJsonDto.getCategories();
-        Integer storeId = Integer.parseInt(headerDto.getId());
+        List<Integer> storeId = requestJsonDto.getBrands();
+
         String searchString = requestJsonDto.getSearchString();
         Page page = requestJsonDto.getPage();
 
         if(parentCategoryId == null){
-            List<CategoryEntity> categories = new ArrayList<>();
-            categories =  merchantDaoService.findParentCategories();
+            List<CategoryEntity> categories = merchantDaoService.findParentCategories();
             for (CategoryEntity category: categories){
                 parentCategoryId.add(category.getId());
+            }
+        }
+
+        if (storeId == null){
+            List<StoresBrandEntity> storesBrands = merchantDaoService.findBrandList();
+            for (StoresBrandEntity storesBrand: storesBrands){
+                storeId.add(storesBrand.getId());
             }
         }
 
@@ -1166,16 +1213,16 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
              if(finalCategory.getParent() == null && !parentCategoryId.contains(finalCategory.getId())){
                  continue;
              }
-              if(parentCategoryId.contains(finalCategory.getId())){
+             if(parentCategoryId.contains(finalCategory.getId())){
                   categoryId.add(finalCategory.getId());
-              }else{
+             }else{
                     while (finalCategory.getParent() != null && !parentCategoryId.contains(finalCategory.getId())){
                         finalCategory = finalCategory.getParent();
                     }
                     if(parentCategoryId.contains(finalCategory.getId())) {
                         categoryId.add(finalCat.getId());
                     }
-              }
+             }
         }
 
         PaginationDto paginationDto = new PaginationDto();

@@ -38,6 +38,8 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public List<BrandsCategoryEntity> getBrandsCategory(Integer brandId) throws Exception;
 
+    public List<BrandsCategoryEntity> getBrandsCategory(List<Integer> brandId) throws Exception;
+
     public List<StoreEntity> findStoreByBrand(Integer brandId) throws Exception;
 
     public List<StoreEntity> findActiveStoresByBrand(Integer brandId) throws Exception;
@@ -45,6 +47,8 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public List<StoresBrandEntity> findBrandListByMerchant(Integer merchantId) throws Exception;
 
     public List<StoresBrandEntity> findBrandList() throws Exception;
+
+    public List<StoresBrandEntity> findBrandList(Integer merchantId) throws Exception;
 
     public  StoresBrandEntity findBrandDetail(Integer brandId) throws Exception;
 
@@ -68,6 +72,8 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public List<CategoryEntity> findFinalCategoryList(Integer brandId) throws Exception;
 
+    public List<CategoryEntity> findFinalCategoryList(List<Integer> brandId) throws Exception;
+
     public List<ItemEntity> findItemByCategory(List<Integer> categoryId, Integer brandId) throws Exception;
 
     public List<ItemEntity> findItemByCategory(List<Integer> categoryId, Integer brandId, Integer itemCount) throws Exception;
@@ -86,9 +92,9 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public MerchantEntity getMerchantByOrderId(Integer orderId) throws Exception;
 
-    public List<ItemEntity> getWebSearchItem(String searchString, List<Integer> categoryId, Integer storeId, Page page) throws Exception;
+    public List<ItemEntity> getWebSearchItem(String searchString, List<Integer> categoryId, List<Integer> storeId, Page page) throws Exception;
 
-    public Integer getTotalNumberOfItems(String searchString, List<Integer> categoryId, Integer storeId) throws Exception;
+    public Integer getTotalNumberOfItems(String searchString, List<Integer> categoryId, List<Integer>  storeId) throws Exception;
 
     public Integer getTotalNumberOfItems(Integer categoryId, Integer storeId) throws Exception;
 

@@ -346,7 +346,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
 
         /* 9. ====== Delivery cost (Does not include additional delivery amt) ============== */
         BigDecimal deliveryCostWithoutAdditionalDvAmt = ZERO;
-        if(BigDecimalUtil.isLessThenOrEqualTo(storeToCustomerDistance, DEFAULT_NKM_DISTANCE))
+        if(BigDecimalUtil.isLessThen(storeToCustomerDistance, DEFAULT_NKM_DISTANCE))
             deliveryCostWithoutAdditionalDvAmt = DBOY_PER_KM_CHARGE_UPTO_NKM.multiply(new BigDecimal(surgeFactor));
         else
             deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply(DBOY_PER_KM_CHARGE_ABOVE_NKM).multiply(new BigDecimal(surgeFactor));

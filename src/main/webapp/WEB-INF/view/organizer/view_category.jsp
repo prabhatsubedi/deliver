@@ -27,7 +27,7 @@
     <div class="body">
         <div class="heading clearfix">
             <h1 class="pull-left">Category View</h1>
-            <a class="pull-right btn btn_green add_root_btn glyphicon">Add Root Category</a>
+            <a class="pull-right btn btn_green add_root_btn">Add Root Category</a>
         </div>
         <div class="main_content">
             <div class="item_listing">
@@ -60,7 +60,7 @@
                                             <a class="btn btn_green save_btn glyphicon glyphicon-floppy-disk"></a>
                                             <a class="btn btn_green cancel_btn glyphicon glyphicon-remove"></a>
                                         </div>
-                                        <a class="pull-left btn btn_green add_child_btn glyphicon">Add Sub Category</a>
+                                        <a class="pull-left btn btn_green add_child_btn">Add Sub Category</a>
                                     </div>
                                 </div>
 

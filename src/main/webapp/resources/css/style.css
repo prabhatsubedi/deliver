@@ -1285,6 +1285,11 @@ label.check_label .checkbox {
 .detail_options .btn.glyphicon {
     margin-top: -1px;
 }
+.item_container .switch_container {
+    position: absolute;
+    right: 3px;
+    bottom: 2px;
+}
 .switch_container {
     background-color: #eeeded;
     border: 1px solid #d6d5d5;

@@ -6,6 +6,7 @@
     <title>Items</title>
 
     <%@include file="../includes/head.jsp" %>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
 
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/item.js"></script>
     <script type="text/javascript">
@@ -50,6 +51,11 @@
         <div class="block_item">
             <div class="item_image maintain_ratio" mr-height="400" mr-width="400">
                 <img class="img-responsive no_image">
+                <div class="switch_container hidden">
+                    <div class="switch switch_activation">
+                        <div class="btn_switch on"></div>
+                    </div>
+                </div>
             </div>
             <div class="item_infos">
                 <p class="item_name"><a href="#"></a></p>

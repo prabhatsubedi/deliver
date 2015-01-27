@@ -4,6 +4,61 @@ var storesById = {};
 var data_categories_id = 0;
 var data_categories_names = [];
 
+var dragged = false;
+var cancel_drag = false;
+function toggleSwitch(value, elem) {
+
+    var chk_confirm = false;
+    if(!cancel_drag) {
+        var chk_confirm = confirm('Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' item?');
+
+        if (!chk_confirm) {
+            value = value == 'on' ? 'off' : 'on';
+        } else {
+
+            var callback = function (status, data) {
+                alert(data.message);
+                if (data.success != true) {
+                    toggleSwitch(value == 'on' ? 'off' : 'on', elem);
+                }
+            };
+
+            callback.loaderDiv = "body";
+            callback.requestType = "POST";
+
+            Main.request('/merchant/change_status', {className:"Item", statusId: value == 'on' ? 2 : 3}, callback, {id: elem.attr('data-id')});
+
+        }
+    }
+
+    if(value == 'on') {
+        elem.css({left: 0}).removeClass('off').addClass('on');
+    } else {
+        elem.css({left: 30}).removeClass('on').addClass('off');
+    }
+    dragged = false;
+    cancel_drag = false;
+
+}
+$('.switch_activation .btn_switch').live('mouseup', function(e){
+    if(!dragged && e.which == 1) toggleSwitch($(this).hasClass('on') ? 'off' : 'on', $(this));
+});
+$('.switch_activation .btn_switch').bind('contextmenu', function(e) {
+    return false;
+});
+$( ".btn_switch" ).draggable({
+    containment: "parent",
+    start: function( event, ui) {
+        dragged = true;
+    },
+    stop: function( event, ui) {
+        if(Math.abs(ui.originalPosition.left - ui.position.left) < 15) {
+            cancel_drag = true;
+        }
+        toggleSwitch(ui.position.left > 15 ? 'off' : 'on', ui.helper);
+    }
+});
+
 (function ($){
 
 
@@ -861,6 +916,14 @@ var data_categories_names = [];
             Item.listItems({pageNumber: 1, pageSize: $('.select_num_items').val()});
         });
 
+        $('.item_container').live('mouseover', function(){
+            $('.switch_container', this).removeClass('hidden');
+        });
+
+        $('.item_container').live('mouseout', function(){
+            $('.switch_container', this).addClass('hidden');
+        });
+
     };
 
     Item.listItems = function(params) {
@@ -901,6 +964,11 @@ var data_categories_names = [];
                                 if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
                                 $('.item_name a', elem).attr('href', Main.modifyURL('/merchant/item/view/' + item.id)).html(item.name);
                                 $('.item_price span', elem).html(item.unitPrice);
+                                $('.btn_switch', elem).attr('data-id', item.id);
+                                if(item.status == 'ACTIVE')
+                                    $('.btn_switch', elem).removeClass('off').addClass('on');
+                                else
+                                    $('.btn_switch', elem).removeClass('on').addClass('off');
                                 item_list += elem.html();
                             }
 
@@ -916,6 +984,23 @@ var data_categories_names = [];
                     Main.elemRatio(function() {
                         $('.items_container .item_container').removeClass('invisible');
                         $(window).trigger('resize');
+
+                        $('.switch_activation .btn_switch').bind('contextmenu', function(e) {
+                            return false;
+                        });
+                        $( ".btn_switch" ).draggable({
+                            containment: "parent",
+                            start: function( event, ui) {
+                                dragged = true;
+                            },
+                            stop: function( event, ui) {
+                                if(Math.abs(ui.originalPosition.left - ui.position.left) < 15) {
+                                    cancel_drag = true;
+                                }
+                                toggleSwitch(ui.position.left > 15 ? 'off' : 'on', ui.helper);
+                            }
+                        });
+
                     });
 
                 } else {
@@ -990,6 +1075,11 @@ var data_categories_names = [];
                         if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
                         $('.item_name a', elem).attr('href', Main.modifyURL('/merchant/item/view/' + item.id)).html(item.name);
                         $('.item_price span', elem).html(item.unitPrice);
+                        $('.btn_switch', elem).attr('data-id', item.id);
+                        if(item.status == 'ACTIVE')
+                            $('.btn_switch', elem).removeClass('off').addClass('on');
+                        else
+                            $('.btn_switch', elem).removeClass('on').addClass('off');
                         item_list += elem.html();
                     }
 
@@ -1004,6 +1094,22 @@ var data_categories_names = [];
                     Main.elemRatio(function() {
                         $('.items_container .item_container').removeClass('invisible');
                         $(window).trigger('resize');
+
+                        $('.switch_activation .btn_switch').bind('contextmenu', function(e) {
+                            return false;
+                        });
+                        $( ".btn_switch" ).draggable({
+                            containment: "parent",
+                            start: function( event, ui) {
+                                dragged = true;
+                            },
+                            stop: function( event, ui) {
+                                if(Math.abs(ui.originalPosition.left - ui.position.left) < 15) {
+                                    cancel_drag = true;
+                                }
+                                toggleSwitch(ui.position.left > 15 ? 'off' : 'on', ui.helper);
+                            }
+                        });
                     });
 
                 } else {

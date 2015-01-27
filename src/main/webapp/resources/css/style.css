@@ -71,6 +71,9 @@ body.loader_div > .loader {
 .width_200 {
     min-width: 200px;
 }
+.width_250 {
+    min-width: 250px;
+}
 .modal-body {
     width: 100%;
 }
@@ -566,6 +569,7 @@ body.assistance_page {
     background-color: #FFFFFF;
     padding: 10px 30px 10px 45px;
     border-bottom: 1px solid #dbdada;
+    position: relative;
 }
 .main_container .body .heading h1 {
     font-size: 18px;
@@ -1265,6 +1269,7 @@ label.check_label .checkbox {
     box-shadow: none;
 }
 /*Profile Css End*/
+
 
 /* switch css */
 

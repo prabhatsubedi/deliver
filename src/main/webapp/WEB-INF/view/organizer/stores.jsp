@@ -6,9 +6,11 @@
     <title>Stores</title>
 
     <%@include file="../includes/head.jsp" %>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.dataTables.min.js"></script>
+    <link href="${pageContext.request.contextPath}/resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" media="screen" />
 
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/manager.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
 
 
 </head>
@@ -23,9 +25,41 @@
     <div class="body">
         <div class="heading clearfix">
             <h1 class="pull-left">Stores</h1>
+            <div class="pull-right">
+                <div class="switch_view">
+                    <ul class="nav nav-pills">
+                        <li>
+                            <button id="show_table" class="btn btn-lg glyphicon glyphicon-align-justify selected_view" type="button"></button>
+                        </li>
+                        <li>
+                            <button id="show_block" class="btn btn-lg glyphicon glyphicon-th" type="button"></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
         <div class="main_content">
-            <div class="items_container form_section row">
+
+            <div class="items_container table-view row hidden not_loaded">
+
+                <table id="stores_table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th><div class="width_150"> Store Name </div></th>
+                        <th> Status </th>
+                        <th> Featured </th>
+                        <th> Priority </th>
+                        <th><div class="width_150"> Action </div></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="items_container thumbnail-view form_section row">
                 <div class="form_head">Featured Stores</div>
                 <div id="featured_stores" class="form_content clearfix"></div>
                 <div class="form_head">Prioritized Stores</div>
@@ -43,6 +77,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -129,6 +164,21 @@
             $('.items_container .item_container').removeAttr('style');
             re_calculate_width = true;
             Manager.stores({pageNumber: 1, pageSize: $('.select_num_items').val()});
+        });
+
+
+        $('#show_table').click(function(){
+            if($('.table-view').hasClass('not_loaded')) {
+                Manager.listStores();
+                $('.not_loaded').removeClass('not_loaded');
+            }
+            $('.table-view').removeClass('hidden');
+            $('.thumbnail-view').addClass('hidden');
+        });
+
+        $('#show_block').click(function(){
+            $('.table-view').addClass('hidden');
+            $('.thumbnail-view').removeClass('hidden');
         });
 
     });

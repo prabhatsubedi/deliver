@@ -236,36 +236,24 @@ table.dataTable thead td:active {
 
 /* Custom css start */
 
-
-.switch_view {
-    position: absolute;
-    right: 0;
-    top: -4px;
-    z-index: 1;
-    /*padding: 12px 0px;*/
-}
-.switch_view ul li {
-    float: left;
-}
 .switch_view ul li:first-child {
     margin-right: 2px;
 }
 .switch_view ul li button, .switch_view ul li button:focus {
     background-color: transparent;
     border-radius: 0;
+    box-shadow: none;
+    color: #F7941D;
     font-size: 36px;
     height: 36px !important;
-    padding: 0px 0px 0px 2px;
+    padding: 0 0 0 2px;
     width: 40px !important;
-    color: #009BC2;
-    box-shadow: none;
+    line-height: 0px;
 }
 .switch_view ul li button:hover {
-    border-radius: 0;
-    height: 40px !important;
-    width: 40px !important;
-    color: #FFFFFF;
+    color: #9C5209;
 }
+
 .data-display {
     margin-bottom: 15px;
 }

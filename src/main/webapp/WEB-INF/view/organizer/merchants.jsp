@@ -49,7 +49,7 @@
                         <th><div class="width_150"> Email </div></th>
                         <th><div class="width_100"> Contact No. </div></th>
                         <th> Status </th>
-                        <th><div class="width_150"> Action </div></th>
+                        <%--<th><div class="width_150"> Action </div></th>--%>
                     </tr>
                     </thead>
                     <tbody>

@@ -918,10 +918,21 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<ItemEntity> findCategoriesItems(RequestJsonDto requestJson) throws Exception {
+    public PaginationDto findCategoriesItems(RequestJsonDto requestJson) throws Exception {
         Integer categoryId = requestJson.getParentCategoryId();
         Integer brandId = requestJson.getCategoryStoreId();
-        List<ItemEntity> items = merchantDaoService.getCategoriesItems(categoryId, brandId);
+        Page page = requestJson.getPage();
+
+
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  merchantDaoService.getTotalNumberOfItems(categoryId, brandId);
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+        List<ItemEntity> items = merchantDaoService.getCategoriesItems(categoryId, brandId, page);
            if(items.size()>0){
                for (ItemEntity item: items){
                    item.getCategory().setItem(null);
@@ -931,7 +942,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                    item.setItemsOrder(null);
                }
            }
-        return items;
+        paginationDto.setData(items);
+        return paginationDto;
     }
 
     @Override

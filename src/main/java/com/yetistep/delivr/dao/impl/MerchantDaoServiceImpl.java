@@ -368,10 +368,11 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId) throws Exception {
+    public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId, Page page) throws Exception {
         List<ItemEntity> items = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
         criteria.add(Restrictions.and(Restrictions.eq("category.id", categoryId), Restrictions.eq("storesBrand.id", brandId)));
+        HibernateUtil.fillPaginationCriteria(criteria, page, ItemEntity.class);
         items = criteria.list();
         return items;
     }
@@ -499,6 +500,17 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         String sqQuery =    "SELECT COUNT(i.id) FROM Items i WHERE i.name LIKE '%"+searchString+"%' AND i.category_id IN "+categoryId.toString().replace("[", "(").replace("]", ")")+" AND i.brand_id =:storeId";
 
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("storeId", storeId);
+
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
+    }
+
+    @Override
+    public Integer getTotalNumberOfItems(Integer categoryId, Integer storeId) throws Exception {
+        String sqQuery =    "SELECT COUNT(i.id) FROM Items i WHERE i.category_id =:categoryId AND i.brand_id =:storeId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("categoryId", categoryId);
         query.setParameter("storeId", storeId);
 
         BigInteger cnt = (BigInteger) query.uniqueResult();

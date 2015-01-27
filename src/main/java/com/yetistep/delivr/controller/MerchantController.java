@@ -251,7 +251,7 @@ public class MerchantController {
     @ResponseBody
     public ResponseEntity<ServiceResponse> findCategoriesItems(@RequestBody RequestJsonDto requestJson) {
         try {
-            List<ItemEntity> items = merchantService.findCategoriesItems(requestJson);
+            PaginationDto items = merchantService.findCategoriesItems(requestJson);
             ServiceResponse serviceResponse = new ServiceResponse("Items has been retrieved successfully");
             serviceResponse.addParam("items", items);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

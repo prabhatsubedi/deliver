@@ -56,7 +56,9 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public void saveItemImages(List<ItemsImageEntity> itemsImageEntities) throws Exception;
 
-    public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId) throws Exception;
+    public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId, Integer itemCount) throws Exception;
+
+    public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId, Page page) throws Exception;
 
     public List<ItemEntity> getCategoriesItems(Integer categoryId) throws Exception;
 
@@ -69,8 +71,6 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public List<ItemEntity> findItemByCategory(List<Integer> categoryId, Integer brandId) throws Exception;
 
     public List<ItemEntity> findItemByCategory(List<Integer> categoryId, Integer brandId, Integer itemCount) throws Exception;
-
-    public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId, Integer itemCount) throws Exception;
 
     public Boolean findPartnerShipStatusFromOrderId(Integer orderId) throws Exception;
 
@@ -89,6 +89,8 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public List<ItemEntity> getWebSearchItem(String searchString, List<Integer> categoryId, Integer storeId, Page page) throws Exception;
 
     public Integer getTotalNumberOfItems(String searchString, List<Integer> categoryId, Integer storeId) throws Exception;
+
+    public Integer getTotalNumberOfItems(Integer categoryId, Integer storeId) throws Exception;
 
     public  List<CategoryEntity> getDefaultCategories() throws Exception;
 

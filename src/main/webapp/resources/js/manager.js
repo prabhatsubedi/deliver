@@ -664,7 +664,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
     }
 
     Manager.saveCategory = function(){
-
         function treeAction(elem, action) {
             var elem_parent = elem.parent('a');
             console.log(elem_parent);

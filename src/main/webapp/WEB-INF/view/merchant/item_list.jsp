@@ -58,6 +58,19 @@
         </div>
     </div>
 </div>
+<div class="pagination_template hidden">
+    <div class="pagination_list col-lg-12">
+        <ul class="pagination pull-left">
+        </ul>
+        <div class="num_items pull-right">
+            Show per Page
+            <select class="select_num_items" name="select_num_items" data-width="auto">
+                <option value="0">All</option>
+            </select>
+
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

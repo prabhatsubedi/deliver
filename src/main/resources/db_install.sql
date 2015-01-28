@@ -87,3 +87,5 @@ ALTER TABLE `items_orders` DROP COLUMN `custom_item`;
 
 /*####################2015.01.28#########################*/
 ALTER TABLE `custom_items` DROP COLUMN `vat`, DROP COLUMN `service_charge`;
+
+INSERT INTO preferences (pref_key, value) VALUES (NULL, 'ORDER_REQUEST_TIMEOUT_IN_MIN', '4');

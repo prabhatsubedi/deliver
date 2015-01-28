@@ -695,8 +695,6 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 item.setId(itemOrder.getItem().getId());
                 item.setName(itemOrder.getItem().getName());
                 item.setUnitPrice(itemOrder.getItem().getUnitPrice());
-                item.setVat(itemOrder.getItem().getVat());
-                item.setServiceCharge(itemOrder.getItem().getServiceCharge());
                 itemsOrderEntity.setItem(item);
             }
             itemsOrderEntities.add(itemsOrderEntity);

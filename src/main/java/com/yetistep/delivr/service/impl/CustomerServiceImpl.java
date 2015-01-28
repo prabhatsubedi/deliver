@@ -406,13 +406,13 @@ public class CustomerServiceImpl implements CustomerService {
 
         checkOutDto.setStoresBrand(storeBrand);
         checkOutDto.setItems(items);
-        checkOutDto.setSubTotal(subTotal);
-        checkOutDto.setTax(merchantTax);
-        checkOutDto.setServiceFee(BigDecimalUtil.percentageOf(subTotal, serviceFeePct));
-        checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount);
-        checkOutDto.setDiscount(customerBalanceBeforeDiscount);
+        checkOutDto.setSubTotal(subTotal.setScale(0, BigDecimal.ROUND_DOWN));
+        checkOutDto.setTax(merchantTax.setScale(0, BigDecimal.ROUND_DOWN));
+        checkOutDto.setServiceFee(BigDecimalUtil.percentageOf(subTotal, serviceFeePct).setScale(0, BigDecimal.ROUND_DOWN));
+        checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
+        checkOutDto.setDiscount(customerBalanceBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
         BigDecimal estimatedAmt = subTotal.add(merchantTax).add(BigDecimalUtil.percentageOf(subTotal, serviceFeePct)).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
-        checkOutDto.setEstimatedAmount(estimatedAmt);
+        checkOutDto.setEstimatedAmount(estimatedAmt.setScale(0, BigDecimal.ROUND_DOWN));
         return checkOutDto;
     }
 

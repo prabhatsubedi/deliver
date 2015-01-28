@@ -1276,6 +1276,9 @@ label.check_label .checkbox {
 .detail_options {
     margin-top: -5px;
 }
+.form_head .detail_options {
+    margin-top: -4px;
+}
 .detail_options.action {
     margin-top: 20px;
     margin-right: 20px;
@@ -1394,6 +1397,32 @@ label.check_label .checkbox {
 /* category */
 .category_detail {
     margin-top: 30px;
+}
+
+/* settings */
+.settings_menu ul li {
+    margin: 0px;
+    padding: 0px;
+}
+.settings_menu ul li a, .settings_menu ul li a:focus {
+    background-color: #ffffff;
+    border-bottom: 1px solid #dbdada;
+    border-left: 1px solid #dbdada;
+    border-radius: 0;
+    padding: 10px 30px;
+    color: #282828;
+    font-size: 18px;
+    line-height: 40px;
+}
+.settings_menu ul li:first-child a {
+    border-left: none;
+}
+.settings_menu ul li a:hover {
+    background-color: #F9F9F9;
+}
+.settings_menu ul li.current_page a {
+    background-color: #F5F5F5;
+    cursor: auto;
 }
 
 

@@ -40,24 +40,6 @@ function toggleSwitch(value, elem) {
     cancel_drag = false;
 
 }
-$('.switch_activation .btn_switch').live('mouseup', function(e){
-    if(!dragged && e.which == 1) toggleSwitch($(this).hasClass('on') ? 'off' : 'on', $(this));
-});
-$('.switch_activation .btn_switch').bind('contextmenu', function(e) {
-    return false;
-});
-$( ".btn_switch" ).draggable({
-    containment: "parent",
-    start: function( event, ui) {
-        dragged = true;
-    },
-    stop: function( event, ui) {
-        if(Math.abs(ui.originalPosition.left - ui.position.left) < 15) {
-            cancel_drag = true;
-        }
-        toggleSwitch(ui.position.left > 15 ? 'off' : 'on', ui.helper);
-    }
-});
 
 (function ($){
 
@@ -924,6 +906,25 @@ $( ".btn_switch" ).draggable({
             $('.switch_container', this).addClass('hidden');
         });
 
+        $('.switch_activation .btn_switch').live('mouseup', function(e){
+            if(!dragged && e.which == 1) toggleSwitch($(this).hasClass('on') ? 'off' : 'on', $(this));
+        });
+        $('.switch_activation .btn_switch').bind('contextmenu', function(e) {
+            return false;
+        });
+        $( ".btn_switch" ).draggable({
+            containment: "parent",
+            start: function( event, ui) {
+                dragged = true;
+            },
+            stop: function( event, ui) {
+                if(Math.abs(ui.originalPosition.left - ui.position.left) < 15) {
+                    cancel_drag = true;
+                }
+                toggleSwitch(ui.position.left > 15 ? 'off' : 'on', ui.helper);
+            }
+        });
+
     };
 
     Item.listItems = function(params) {
@@ -1226,6 +1227,7 @@ $( ".btn_switch" ).draggable({
             cancel_drag = false;
 
         }
+
         $('.switch_activation .btn_switch').bind('contextmenu', function(e) {
             return false;
         });

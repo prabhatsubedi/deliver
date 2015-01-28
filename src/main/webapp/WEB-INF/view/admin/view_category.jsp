@@ -25,6 +25,13 @@
 <div class="main_container">
     <%@include file="../includes/header.jsp" %>
     <div class="body">
+        <div class="settings_menu">
+            <ul class="nav nav-pills">
+                <li class="col-xs-4"><a href="/admin/settings">General</a></li>
+                <li class="col-xs-4"><a href="/admin/algorithm">Algorithm</a></li>
+                <li class="col-xs-4 current_page"><a href="/admin/view_category">Categories</a></li>
+            </ul>
+        </div>
         <div class="heading clearfix">
             <h1 class="pull-left">Category View</h1>
             <a class="pull-right btn btn_green add_root_btn">Add Root Category</a>

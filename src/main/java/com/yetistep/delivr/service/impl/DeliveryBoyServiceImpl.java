@@ -508,6 +508,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         /*Calculating service and vat charge for new item and adding it to ItemServiceAndVatCharge*/
         BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal(), itemsOrderEntity.getCustomItem().getServiceCharge());
         BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal().add(serviceCharge), itemsOrderEntity.getCustomItem().getVat()));
+        itemsOrderEntity.setServiceAndVatCharge(serviceAndVatCharge);
         order.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge().add(serviceAndVatCharge));
         itemsOrderEntity.getCustomItem().setItemsOrder(itemsOrderEntity);
 
@@ -516,6 +517,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         order.setItemsOrder(itemsOrderEntities);
 
         CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
+        if(order.getDeliveryBoy() == null){
+            throw new YSException("ORD011");
+        }
         DeliveryBoySelectionEntity dBoySelection = deliveryBoySelectionDaoService.getSelectionDetails(order.getId(), order.getDeliveryBoy().getId());
         if(dBoySelection == null){
             throw new YSException("ORD003");

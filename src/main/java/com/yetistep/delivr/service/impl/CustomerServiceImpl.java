@@ -630,13 +630,14 @@ public class CustomerServiceImpl implements CustomerService {
         Integer surgeFactor = 0;
         String currentTime = DateUtil.getCurrentTime().toString();
         if(DateUtil.isTimeBetweenTwoTime("07:00:00", "21:00:00", currentTime))
-            surgeFactor = 1; // if Time is 7 AM-9 PM
+            surgeFactor = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.SURGE_FACTOR_7AM_9PM)); // if Time is 7 AM-9 PM
         else if(DateUtil.isTimeBetweenTwoTime("21:00:00", "22:00:00", currentTime))
-            surgeFactor = 2; // if Time is 9-10 PM
+            surgeFactor = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.SURGE_FACTOR_9_10PM)); // if Time is 9-10 PM
         else if(DateUtil.isTimeBetweenTwoTime("22:00:00", "23:00:00", currentTime))
-            surgeFactor = 3; // if Time is 10 PM-11 PM
+            surgeFactor = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.SURGE_FACTOR_10_11PM)); // if Time is 10 PM-11 PM
         else
-            surgeFactor = 4; // if Time is 11 PM-7 AM
+            surgeFactor = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.SURGE_FACTOR_11PM_7AM)); // if Time is 11 PM-7 AM
+
         return surgeFactor;
     }
 

@@ -89,3 +89,4 @@ ALTER TABLE `items_orders` DROP COLUMN `custom_item`;
 ALTER TABLE `custom_items` DROP COLUMN `vat`, DROP COLUMN `service_charge`;
 
 INSERT INTO preferences (pref_key, value) VALUES (NULL, 'ORDER_REQUEST_TIMEOUT_IN_MIN', '4');
+DELETE FROM preferences WHERE pref_key IN ('MERCHANT_VAT', 'MERCHANT_SERVICE_CHARGE');

@@ -84,3 +84,6 @@ INSERT INTO preferences (pref_key,VALUE) VALUES ('AIR_OR_ACTUAL_DISTANCE_SWITCH'
 
 /*####################2015.01.27########################*/
 ALTER TABLE `items_orders` DROP COLUMN `custom_item`;
+
+/*####################2015.01.28#########################*/
+ALTER TABLE `custom_items` DROP COLUMN `vat`, DROP COLUMN `service_charge`;

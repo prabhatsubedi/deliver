@@ -30,6 +30,8 @@ public class ItemsOrderEntity implements Serializable {
     private Boolean availabilityStatus;
     private String note;
     private String customerNote;
+    private BigDecimal vat;
+    private BigDecimal serviceCharge;
     private CustomItemEntity customItem;
     private List<ItemsOrderAttributeEntity> itemOrderAttributes;
 
@@ -119,6 +121,24 @@ public class ItemsOrderEntity implements Serializable {
 
     public void setCustomerNote(String customerNote) {
         this.customerNote = customerNote;
+    }
+
+    @Column(name = "vat")
+    public BigDecimal getVat() {
+        return vat;
+    }
+
+    public void setVat(BigDecimal vat) {
+        this.vat = vat;
+    }
+
+    @Column(name = "service_charge")
+    public BigDecimal getServiceCharge() {
+        return serviceCharge;
+    }
+
+    public void setServiceCharge(BigDecimal serviceCharge) {
+        this.serviceCharge = serviceCharge;
     }
 
     @OneToOne(mappedBy = "itemsOrder", cascade = CascadeType.ALL, orphanRemoval=true)

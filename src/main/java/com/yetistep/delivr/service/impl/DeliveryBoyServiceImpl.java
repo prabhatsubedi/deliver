@@ -506,8 +506,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         order.setTotalCost(order.getTotalCost().add(itemsOrderEntity.getItemTotal()));
 
         /*Calculating service and vat charge for new item and adding it to ItemServiceAndVatCharge*/
-        BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal(), itemsOrderEntity.getCustomItem().getServiceCharge());
-        BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal().add(serviceCharge), itemsOrderEntity.getCustomItem().getVat()));
+        BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal(), itemsOrderEntity.getServiceCharge());
+        BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal().add(serviceCharge), itemsOrderEntity.getVat()));
         itemsOrderEntity.setServiceAndVatCharge(serviceAndVatCharge);
         order.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge().add(serviceAndVatCharge));
         itemsOrderEntity.getCustomItem().setItemsOrder(itemsOrderEntity);

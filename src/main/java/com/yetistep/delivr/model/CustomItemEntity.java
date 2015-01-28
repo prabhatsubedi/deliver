@@ -3,7 +3,6 @@ package com.yetistep.delivr.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,8 +16,6 @@ import java.math.BigDecimal;
 public class CustomItemEntity {
     private Integer id;
     private String name;
-    private BigDecimal vat;
-    private BigDecimal serviceCharge;
     private ItemsOrderEntity itemsOrder;
 
     @Id
@@ -39,24 +36,6 @@ public class CustomItemEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Column(name = "vat")
-    public BigDecimal getVat() {
-        return vat;
-    }
-
-    public void setVat(BigDecimal vat) {
-        this.vat = vat;
-    }
-
-    @Column(name = "service_charge")
-    public BigDecimal getServiceCharge() {
-        return serviceCharge;
-    }
-
-    public void setServiceCharge(BigDecimal serviceCharge) {
-        this.serviceCharge = serviceCharge;
     }
 
     @JsonIgnore

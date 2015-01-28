@@ -447,6 +447,8 @@ public class CustomerServiceImpl implements CustomerService {
             itemsOrderEntity.setQuantity(cart.getOrderQuantity());
             itemsOrderEntity.setCustomerNote(cart.getNote());
             itemsOrderEntity.setItem(cart.getItem());
+            itemsOrderEntity.setServiceCharge(cart.getItem().getServiceCharge());
+            itemsOrderEntity.setVat(cart.getItem().getVat());
             List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cart.getId());
             List<ItemsOrderAttributeEntity> itemsOrderAttributeEntities = new ArrayList<ItemsOrderAttributeEntity>();
             for(Integer attribute: cartAttributes){

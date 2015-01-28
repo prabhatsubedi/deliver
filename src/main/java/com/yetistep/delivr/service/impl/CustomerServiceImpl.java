@@ -503,6 +503,8 @@ public class CustomerServiceImpl implements CustomerService {
         order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
         customerDaoService.saveOrder(order);
 
+        //TODO Filter delivery boys by profit criteria - Push Notifications
+
     }
 
     /*
@@ -584,7 +586,6 @@ public class CustomerServiceImpl implements CustomerService {
             log.info("Delivery boys selected from distance calculation:"+selectionDetails.toString());
         }
         return filterDeliveryBoySelection(selectionDetails, timeDetails);
-        //TODO Filter delivery boys by profit criteria - Push Notifications
     }
 
     /* Select only delivery boys satisfying timing condition from list of selected delivery boys from distance criteria*/

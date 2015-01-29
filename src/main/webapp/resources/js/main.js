@@ -4,6 +4,9 @@
 
 if(typeof(Main) == "undefined") var Main = {};
 
+var form_submit = true;
+$(window).bind('beforeunload', function() { if(!form_submit) return 'Your data will not be saved. Are you sure to continue?'; });
+
 (function ($){
 
     Main.country = "Nepal";
@@ -114,6 +117,32 @@ if(typeof(Main) == "undefined") var Main = {};
         callback.loaderDiv = "body";
         Main.request('/j_spring_security_logout', {}, callback);
     };
+
+    Main.saveMerchants = function(sess_merchants) {
+
+        var callback = function (status, data) {
+
+            if (data.success) {
+                var merchants = data.params.merchants;
+
+                var sess_merchants = {};
+                for (i = 0; i < merchants.length; i++) {
+                    sess_merchants[merchants[i].id] = merchants[i].businessTitle;
+                }
+                Main.saveInLocalStorage('merchants', JSON.stringify(sess_merchants));
+            }
+
+        };
+
+        if(sess_merchants == undefined) {
+            callback.requestType = "GET";
+            Main.request('/organizer/get_merchants', {}, callback);
+        } else {
+            callback('', {params: {merchants: sess_merchants}});
+        }
+
+    };
+    if(Main.getFromLocalStorage('merchants') == undefined) Main.saveMerchants();
 
     Main.assistance = function(data, headers) {
 

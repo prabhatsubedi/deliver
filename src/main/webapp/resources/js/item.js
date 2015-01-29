@@ -46,6 +46,8 @@ function toggleSwitch(value, elem) {
 
     Item.loadAddItem = function() {
 
+        form_submit = false;
+
         var action = Main.getURLvalue(3);
         var addBrandId = Main.getURLvalue(4);
         var itemId = Main.getURLvalue(5);
@@ -54,13 +56,24 @@ function toggleSwitch(value, elem) {
             itemId = Main.getURLvalue(4);
             $('.heading h1').html('Item Edit');
             document.title = 'Item Edit';
-            $('#form_item button[type="submit"]').attr({'data-action': 'update'}).html('Update Item');
+            $('.submit_item').attr({'data-action': 'update'}).html('Update Item');
+            $('.cancel_edit').removeClass('hidden');
         }
 
         $('option:selected').removeAttr('selected');
         Image.dropZone('#product_image1_input', '#product_image1');
         Image.dropZone('#product_image2_input', '#product_image2');
         Image.dropZone('#product_image3_input', '#product_image3');
+
+        $('.submit_item').click(function(){
+            $('#form_item').submit();
+        });
+        $('.cancel_edit').click(function(){
+            var chk_confirm = confirm('Are you sure you want to cancel updates?');
+            if (!chk_confirm) return false;
+            form_submit = true;
+            window.location.reload();
+        });
 
         $('.product_image').hover(function(){
             if($('img', this).length == 1)$('.remove_image', this).removeClass('hidden');
@@ -140,7 +153,7 @@ function toggleSwitch(value, elem) {
                             $('.product_image .drop_zone').eq(i).attr('data-id', itemImages[i].id).html('<img src="' + itemImages[i].url + '" style="height: 100%;" class="img-responsive" />');
                         }
 
-                        $('#form_item button[type="submit"]').attr({'data-id': item.id});
+                        $('.submit_item').attr({'data-id': item.id});
                         $('#name_item').val(item.name);
                         $('#description').val(item.description);
                         $('#additional_offer').val(item.additionalOffer);
@@ -619,7 +632,7 @@ function toggleSwitch(value, elem) {
                 var itemAttributesTypes = [];
                 var itemImages = [];
 
-                item.id = $('#form_item button[type="submit"]').attr('data-id');
+                item.id = $('.submit_item').attr('data-id');
                 item.name = $('#name_item').val();
                 if($('#description').val() != "") item.description = $('#description').val();
                 item.availableStartTime = $('#available_start_time').val();
@@ -634,8 +647,8 @@ function toggleSwitch(value, elem) {
                 if($('#return_policy').val() != "N/A" && $('#return_policy').val() != "") item.returnPolicy = $('#return_policy').val();
                 if($('#delivery_fee').val() != "0") item.deliveryFee = $('#delivery_fee').val();
                 //item.promoCode = "";
-                if($('#vat').val() != "0") item.vat = $('#vat').val();
-                if($('#service_charge').val() != "0") item.serviceCharge = $('#service_charge').val();
+                item.vat = $('#vat').val();
+                item.serviceCharge = $('#service_charge').val();
                 item.status = "ACTIVE";
 
 /*                $('#category_container select.category_options').each(function(){
@@ -709,7 +722,7 @@ function toggleSwitch(value, elem) {
                 else
                     data.itemImages = itemImages;
 
-                Item.addItem(data, {id: $('#item_brand').val()}, $('#form_item button[type="submit"]').attr('data-action'));
+                Item.addItem(data, {id: $('#item_brand').val()}, $('.submit_item').attr('data-action'));
 
                 return false;
             }
@@ -752,8 +765,8 @@ function toggleSwitch(value, elem) {
         var callback = function (status, data) {
             $("button[type='submit']").removeAttr("disabled");
 
+            alert(data.message);
             if (data.success == true) {
-                alert(data.message);
 
                 $('#category_container select.category_options').each(function(){
                     if($('option:selected', this).attr('data-new') == "true") {
@@ -801,8 +814,6 @@ function toggleSwitch(value, elem) {
                 $('#delivery_fee, #vat, #service_charge').val('0');
                 $('.item_attributes').html('');
 
-            } else {
-                alert(data.message);
             }
         };
 

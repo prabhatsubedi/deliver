@@ -230,12 +230,14 @@
 
                         </div>
 
-                        <div class="col-lg-12" style="margin-top: 15px;">
-                            <button class="btn btn_green" type="submit">Add Item</button>
-                        </div>
-
                     </form>
                 </div>
+            </div>
+        </div>
+        <div class="heading form_action clearfix">
+            <div class="pull-right">
+                <button type="button" class="btn btn_green submit_item">Add Item</button>
+                <button type="button" class="btn btn_green cancel_edit hidden">Cancel</button>
             </div>
         </div>
     </div>

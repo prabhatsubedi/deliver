@@ -43,7 +43,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var row = [merchantId, link_merchant, merchant.partnershipStatus ? 'Partner' : 'Non Partner', merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
                 tdata.push(row);
             }
-            Main.saveInLocalStorage('merchants', JSON.stringify(sess_merchants));
+
+            Main.saveMerchants(sess_merchants);
 
             Main.createDataTable("#merchants_table", tdata);
 

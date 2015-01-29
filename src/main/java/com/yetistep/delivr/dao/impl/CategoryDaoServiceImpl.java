@@ -33,7 +33,27 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
 
     @Override
     public Boolean save(CategoryEntity value) throws Exception {
-        getCurrentSession().save(value);
+        if(value.getName().contains("#")) {
+            String[] arrCat = value.getName().split("#");
+            Integer i=0;
+            for (String cat: arrCat){
+                CategoryEntity catE = new CategoryEntity();
+                catE.setName(cat);
+                if(value.getParent() != null)
+                    catE.setParent(value.getParent());
+
+                getCurrentSession().save(catE);
+                if ( i % 20 == 0 ) { //20, same as the JDBC batch size
+                    //flush a batch of inserts and release memory:
+                    getCurrentSession().flush();
+                    getCurrentSession().clear();
+                }
+                i++;
+            }
+
+        } else {
+            getCurrentSession().save(value);
+        }
         return true;
     }
 

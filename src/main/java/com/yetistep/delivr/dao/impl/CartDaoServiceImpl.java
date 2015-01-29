@@ -98,6 +98,8 @@ public class CartDaoServiceImpl implements CartDaoService{
                 .add(Projections.property("sb.id"), "storesBrand.id")
                 .add(Projections.property("sb.brandName"), "storesBrand.brandName")
                 .add(Projections.property("sb.brandLogo"), "storesBrand.brandLogo")
+                .add(Projections.property("sb.openingTime"), "storesBrand.openingTime")
+                .add(Projections.property("sb.closingTime"), "storesBrand.closingTime")
                 .add(Projections.property("i.id"), "item.id")
                 .add(Projections.property("i.name"), "item.name")
                 .add(Projections.property("i.unitPrice"), "item.unitPrice")

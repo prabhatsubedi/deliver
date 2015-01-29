@@ -546,7 +546,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
        CartDto cartDto = null;
        List<CartEntity> cartEntities = cartDaoService.getMyCarts(facebookId);
 
-       StoresBrandEntity storesBrandEntity = new StoresBrandEntity();
+       StoresBrandEntity storesBrandEntity;
        if(cartEntities !=null && cartEntities.size() > 0){
            storesBrandEntity = cartEntities.get(0).getStoresBrand();
 
@@ -559,6 +559,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                    //Add Attribute Price and Unit Price
                    BigDecimal attributesPrice = cartAttributesDaoService.findAttributesPrice(cartEntity.getId());
                    cartEntity.getItem().setUnitPrice(cartEntity.getItem().getUnitPrice().add(attributesPrice).multiply(new BigDecimal(cartEntity.getOrderQuantity())));
+                   cartEntity.getItem().setVat(null);
+                   cartEntity.getItem().setServiceCharge(null);
                }
 
                cartEntity.setStoresBrand(null);
@@ -566,6 +568,10 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
            }
 
            cartDto = new CartDto();
+           Boolean isOpen = DateUtil.isTimeBetweenTwoTime(storesBrandEntity.getOpeningTime().toString(), storesBrandEntity.getClosingTime().toString(),DateUtil.getCurrentTime().toString());
+           storesBrandEntity.setOpenStatus(isOpen);
+           storesBrandEntity.setOpeningTime(null);
+           storesBrandEntity.setClosingTime(null);
            cartDto.setStoresBrand(storesBrandEntity);
            cartDto.setCarts(cartEntities);
 

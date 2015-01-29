@@ -161,6 +161,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
 
+    private void checkUniqueBrand(String name) throws Exception{
+        StoresBrandEntity brand = merchantDaoService.getBrandByBrandName(name);
+        if (brand != null)
+            throw new YSException("VLD023");
+    }
+
+
     @Override
     public void saveStore(RequestJsonDto requestJson, HeaderDto headerDto ) throws Exception {
         log.info("++++++++++++ Saving Store " + requestJson.getStores().size() + " +++++++++++++++");
@@ -172,6 +179,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
         if(dbMerchant == null)
             throw new YSException("VLD011");
+
+        checkUniqueBrand( storesBrand.getBrandName().trim());
 
         String brandLogo = storesBrand.getBrandLogo();
         String brandImage = storesBrand.getBrandImage();

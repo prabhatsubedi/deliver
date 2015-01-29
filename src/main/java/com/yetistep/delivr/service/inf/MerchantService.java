@@ -65,4 +65,5 @@ public interface MerchantService {
     public boolean changeStatus(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception;
 
     public PaginationDto getWebItemSearch(RequestJsonDto requestJsonDto) throws Exception;
+
 }

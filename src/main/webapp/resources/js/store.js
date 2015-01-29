@@ -20,7 +20,7 @@ if(typeof(Store) == "undefined") var Store = {};
             var chk_confirm = confirm('Are you sure you want to cancel updates?');
             if (!chk_confirm) return false;
             form_submit = true;
-            window.location.reload();
+            window.location = Main.modifyURL('/merchant/store/view/' + Main.getURLvalue(4));
         });
 
         var cat_callback = function (status, data) {
@@ -224,7 +224,7 @@ if(typeof(Store) == "undefined") var Store = {};
                     var data = {};
                     var stores_brand = {};
 
-                    stores_brand.id = $('#form_brand button[type="submit"]').attr('data-id');
+                    stores_brand.id = $('.submit_store').attr('data-id');
                     stores_brand.brandName = $('#brand_name').val();
                     stores_brand.minOrderAmount = $('#min_amount').val();
                     stores_brand.openingTime = $('#open_time').val();
@@ -302,7 +302,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                         $('#brand_image').html('<img src="' + storeBrand.brandImage + '" style="height: 100%;" class="img-responsive" />');
                         $('#brand_logo').html('<img src="' + storeBrand.brandLogo + '" style="height: 100%;" class="img-responsive" />');
-                        $('#form_brand button[type="submit"]').attr({'data-id': storeBrand.id});
+                        $('.submit_store').attr({'data-id': storeBrand.id});
                         $('#brand_name').val(storeBrand.brandName);
                         $('#min_amount').val(storeBrand.minOrderAmount == undefined ? 0 : storeBrand.minOrderAmount);
                         $('#open_time').val(storeBrand.openingTime);
@@ -379,7 +379,11 @@ if(typeof(Store) == "undefined") var Store = {};
 
             if (data.success == true) {
                 alert(data.message);
-                window.location = Main.modifyURL("/merchant/store/list");
+                form_submit = true;
+                if(data_action == 'update')
+                    window.location = Main.modifyURL('/merchant/item/view/' + Main.getURLvalue(4));
+                else
+                    window.location = Main.modifyURL("/merchant/store/list");
             } else {
                 alert(data.message);
             }
@@ -402,7 +406,8 @@ if(typeof(Store) == "undefined") var Store = {};
             if (data.success == true) {
 
                 var storeBrands = data.params.storesBrand;
-                var store_list = "";
+                var active_store_list = "";
+                var inactive_store_list = "";
 
                 if(storeBrands.length > 0) {
 
@@ -418,14 +423,26 @@ if(typeof(Store) == "undefined") var Store = {};
                         if(storeBrand.featured == true) $('.item_image', elem).append('<div class="special_item">Featured</div>');
                         if(storeBrand.priority != undefined) $('.item_image', elem).append('<div class="special_item">Priority : ' + storeBrand.priority + '</div>');
 
-                        store_list += elem.html();
-
+                        if(storeBrand.status == "ACTIVE")
+                            active_store_list += elem.html();
+                        else
+                            inactive_store_list += elem.html();
                     }
-                } else {
-                    store_list += "No stores are available.";
+
                 }
 
-                $('.items_container').html(store_list);
+                if(active_store_list == "" && inactive_store_list == "") {
+                    $('.items_container').html("No stores are available.");
+                } else {
+                    if(active_store_list != "") {
+                        $('.active_stores.form_content').html(active_store_list);
+                        $('.active_stores').removeClass('hidden');
+                    }
+                    if(inactive_store_list != "") {
+                        $('.inactive_stores.form_content').html(inactive_store_list);
+                        $('.inactive_stores').removeClass('hidden');
+                    }
+                }
 
                 Main.elemRatio(function() {
                     $('.items_container .item_container').removeClass('invisible');

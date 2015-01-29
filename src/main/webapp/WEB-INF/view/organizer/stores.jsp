@@ -76,6 +76,8 @@
                         </div>
                     </div>
                 </div>
+                <div class="form_head inactive_stores hidden">Inactive Stores</div>
+                <div class="form_content inactive_stores hidden clearfix"></div>
             </div>
 
         </div>

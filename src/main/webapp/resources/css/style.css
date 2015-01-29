@@ -1008,9 +1008,6 @@ label.check_label .checkbox {
 .items_container .ui-sortable .item_container {
     cursor: move;
 }
-.merchant_stores .items_container {
-    padding-left: 0px;
-}
 .items_container .view_more {
     bottom: 5px;
     font-size: 12px;

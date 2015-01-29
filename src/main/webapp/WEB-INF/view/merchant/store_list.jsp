@@ -25,8 +25,13 @@
             <a class="btn btn_green pull-right" href="/merchant/store/form/create">Add Store</a>
         </div>
         <div class="main_content merchant_stores">
-            <div class="items_container row">
-
+            <div class="items_container row form_section">
+                <div class="form_head active_stores hidden">Active Stores</div>
+                <div class="form_content active_stores hidden clearfix">
+                </div>
+                <div class="form_head inactive_stores hidden">Inactive Stores</div>
+                <div class="form_content inactive_stores hidden clearfix">
+                </div>
             </div>
         </div>
     </div>

@@ -72,7 +72,7 @@ function toggleSwitch(value, elem) {
             var chk_confirm = confirm('Are you sure you want to cancel updates?');
             if (!chk_confirm) return false;
             form_submit = true;
-            window.location.reload();
+            window.location = Main.modifyURL('/merchant/item/view/' + Main.getURLvalue(4));
         });
 
         $('.product_image').hover(function(){
@@ -825,6 +825,8 @@ function toggleSwitch(value, elem) {
             alert(data.message);
             if (data.success == true) {
                 $('.product_images img[data-new="true"]').removeAttr('data-new');
+                form_submit = true;
+                window.location = Main.modifyURL('/merchant/item/view/' + Main.getURLvalue(4));
             }
         };
 

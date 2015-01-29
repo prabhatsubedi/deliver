@@ -39,7 +39,7 @@
                         <div class="form_container">
                             <form role="form" id="category_form" method="POST" action="">
                                 <div class="profile_header clearfix">
-                                    <div class="profile_header_image col-lg-6 pull-left">
+                                    <div class="profile_header_image col-lg-5 pull-left">
                                         <div id="category_image"
                                              class="drop_zone user_image disabled unselectable text-center maintain_ratio"
                                              mr-width="200" mr-height="200">

@@ -149,7 +149,7 @@ public class MerchantController {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            StoresBrandEntity storesBrand = merchantService.findBrandDetail(headerDto);
+            Object storesBrand = merchantService.findBrandDetail(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Stores detail has been retrieved successfully");
             serviceResponse.addParam("storesBrand", storesBrand);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

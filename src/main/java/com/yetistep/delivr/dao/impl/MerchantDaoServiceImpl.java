@@ -302,7 +302,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Override
     public List<StoresBrandEntity> findBrandList(Integer merchantId) throws Exception {
         List<StoresBrandEntity> stores = new ArrayList<>();
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class, "brand");
+        criteria.createAlias("brand.merchant", "merchant");
         criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("brandName"), "brandName")
@@ -323,7 +324,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Override
     public List<StoresBrandEntity> findBrandList() throws Exception {
         List<StoresBrandEntity> stores = new ArrayList<>();
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class, "brand");
+        criteria.createAlias("brand.merchant", "merchant");
         criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("brandName"), "brandName")

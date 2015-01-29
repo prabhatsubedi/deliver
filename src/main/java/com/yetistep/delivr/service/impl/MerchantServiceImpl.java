@@ -514,16 +514,27 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception {
+    public Object findBrandDetail(HeaderDto headerDto) throws Exception {
         StoresBrandEntity storesBrandEntity =  merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
-       /*List<Class> assoc = new ArrayList<Class>();
-        assoc.add(BrandsCategoryEntity.class);
-        assoc.add(StoreEntity.class);
-        List<String> fields = new ArrayList<String>();
-        fields.add("brandName");
-        fields.add("brandLogo");
-        fields.add("brandImage");
-        fields.add("status");*/
+
+        /*String fields = "id,brandName,brandLogo,brandImage,status";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+
+        String categoriesFields = "id,name,featured";
+        String itemsStoreFields = "id,item";
+        String itemsFields = "id,name";
+
+        assoc.put("store", "id,street,city,state,itemsStore");
+        assoc.put("brandsCategory", "id,category");
+        assoc.put("merchant", "businessLogo");
+
+        subAssoc.put("category", categoriesFields);
+        subAssoc.put("itemsStore", itemsStoreFields);
+        subAssoc.put("item", itemsFields);
+        return ReturnJsonUtil.getJsonObject(storesBrandEntity, fields, assoc, subAssoc); */
         return getStoreBrandForJson(storesBrandEntity);
     }
 
@@ -779,34 +790,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 dbItemsImagesUrlMap.put(itemsImage.getId(), itemsImage.getUrl());
             }
         }
-
-
-        /*//add new images
-        List<Integer> itemsImagesIdList = new ArrayList<Integer>();
-        Map<Integer, ItemsImageEntity> itemsImagesIdMap = new HashMap<>();
-        if(itemsImages != null){
-            for (ItemsImageEntity image: itemsImages){
-                if(image.getId() == null){
-                    dbImages.add(image);
-                }   else {
-                    itemsImagesIdMap.put(image.getId(), image);
-                }
-                itemsImagesIdList.add(image.getId());
-            }
-
-            //remove old images
-            Iterator it = dbItemsImagesIdMap.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pairs = (Map.Entry)it.next();
-                if(!itemsImagesIdList.contains(pairs.getKey())){
-                    dbImages.remove(dbItemsImagesIdMap.get(pairs.getValue()));
-                }
-            }
-        }*/
-
-
-
-
 
         dbItem.setModifiedDate(DateUtil.getCurrentTimestampSQL());
         merchantDaoService.updateItem(dbItem);

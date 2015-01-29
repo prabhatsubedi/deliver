@@ -17,7 +17,7 @@
 
     <%@include file="../includes/header.jsp" %>
 
-    <div class="body">
+    <div class="body menu_toggle" data-menu="#sidebar_menu" data-body=".main_container">
         God's View
     </div>
 </div>

@@ -1,4 +1,4 @@
-<div class="sidebar">
+<div class="sidebar menu_opened" id="sidebar_menu">
     <div class="sidebar_logo">
         <a href="/organizer/dashboard"><img src="${pageContext.request.contextPath}/resources/images/delivr-logo.png" class="img-responsive" /></a>
     </div>

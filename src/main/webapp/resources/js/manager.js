@@ -43,7 +43,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var row = [merchantId, link_merchant, merchant.partnershipStatus ? 'Partner' : 'Non Partner', merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
                 tdata.push(row);
             }
-            Main.saveInLocalStorage('merchants', JSON.stringify(sess_merchants));
+
+            Main.saveMerchants(sess_merchants);
 
             Main.createDataTable("#merchants_table", tdata);
 
@@ -288,6 +289,43 @@ if (typeof(Manager) == "undefined") var Manager = {};
         callback.loaderDiv = "body";
 
         Main.request(url, params, callback);
+
+    };
+
+    Manager.listStores = function() {
+
+        var callback = function (status, data) {
+
+            console.log(data);
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+            var brands = data.params.brands;
+            var tdata = [];
+
+            for (var i = 0; i < brands.length; i++) {
+                var brand = brands[i];
+
+                var brandId = brand.id;
+                var brandName = '<a href="' + Main.modifyURL('/merchant/item/list/' + brandId) + '">' + brand.brandName + '</a>';
+                var viewStore = '<a href="' + Main.modifyURL('/merchant/store/view/' + brandId) + '">View Store</a>';
+                var viewItem = '<a href="' + Main.modifyURL('/merchant/item/form/create/' + brandId) + '">Add Item</a>';
+                var actions = '<div class="action_links">' + viewStore + viewItem + '</div>';
+
+                var row = [brandId, brandName, Main.ucfirst(brand.status), brand.featured ? "Featured" : "None", !brand.priority ? "None" : brand.priority, actions];
+                tdata.push(row);
+            }
+
+            Main.createDataTable("#stores_table", tdata);
+
+            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+
+        };
+        callback.requestType = "GET";
+        callback.loaderDiv = 'body';
+
+        Main.request('/merchant/get_brands', {}, callback);
 
     };
 

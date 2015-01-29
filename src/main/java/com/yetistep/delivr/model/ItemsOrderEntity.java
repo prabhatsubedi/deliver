@@ -26,8 +26,12 @@ public class ItemsOrderEntity implements Serializable {
     private OrderEntity order;
     private Integer quantity;
     private BigDecimal itemTotal;
+    private BigDecimal serviceAndVatCharge;
     private Boolean availabilityStatus;
     private String note;
+    private String customerNote;
+    private BigDecimal vat;
+    private BigDecimal serviceCharge;
     private CustomItemEntity customItem;
     private List<ItemsOrderAttributeEntity> itemOrderAttributes;
 
@@ -83,6 +87,15 @@ public class ItemsOrderEntity implements Serializable {
         this.itemTotal = itemTotal;
     }
 
+    @Column(name = "service_and_vat_charge", precision = 19, scale = 2)
+    public BigDecimal getServiceAndVatCharge() {
+        return serviceAndVatCharge;
+    }
+
+    public void setServiceAndVatCharge(BigDecimal serviceAndVatCharge) {
+        this.serviceAndVatCharge = serviceAndVatCharge;
+    }
+
     @Column(name="availability_status", columnDefinition = "TINYINT(1) default true")
     public Boolean getAvailabilityStatus() {
         return availabilityStatus;
@@ -99,6 +112,33 @@ public class ItemsOrderEntity implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    @Column(name="customer_note")
+    public String getCustomerNote() {
+        return customerNote;
+    }
+
+    public void setCustomerNote(String customerNote) {
+        this.customerNote = customerNote;
+    }
+
+    @Column(name = "vat")
+    public BigDecimal getVat() {
+        return vat;
+    }
+
+    public void setVat(BigDecimal vat) {
+        this.vat = vat;
+    }
+
+    @Column(name = "service_charge")
+    public BigDecimal getServiceCharge() {
+        return serviceCharge;
+    }
+
+    public void setServiceCharge(BigDecimal serviceCharge) {
+        this.serviceCharge = serviceCharge;
     }
 
     @OneToOne(mappedBy = "itemsOrder", cascade = CascadeType.ALL, orphanRemoval=true)

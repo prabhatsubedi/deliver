@@ -124,7 +124,7 @@
                             <div class="width_100"> Current Balance</div>
                         </th>
                         <th rowspan="2">
-                            <div class="width_200"> Action</div>
+                            <div class="width_250"> Action</div>
                         </th>
                     </tr>
                     <tr>

@@ -1,6 +1,10 @@
 package com.yetistep.delivr.model.mobile.dto;
 
+import com.yetistep.delivr.model.ItemEntity;
+import com.yetistep.delivr.model.StoresBrandEntity;
+
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,7 +14,8 @@ import java.math.BigDecimal;
  * To change this template use File | Settings | File Templates.
  */
 public class CheckOutDto {
-    private Integer brandId;
+    private StoresBrandEntity storesBrand;
+    private List<ItemEntity> items;
     private BigDecimal subTotal;
     private BigDecimal tax;
     private BigDecimal serviceFee;
@@ -18,12 +23,20 @@ public class CheckOutDto {
     private BigDecimal discount;
     private BigDecimal estimatedAmount;
 
-    public Integer getBrandId() {
-        return brandId;
+    public StoresBrandEntity getStoresBrand() {
+        return storesBrand;
     }
 
-    public void setBrandId(Integer brandId) {
-        this.brandId = brandId;
+    public void setStoresBrand(StoresBrandEntity storesBrand) {
+        this.storesBrand = storesBrand;
+    }
+
+    public List<ItemEntity> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemEntity> items) {
+        this.items = items;
     }
 
     public BigDecimal getSubTotal() {

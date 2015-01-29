@@ -30,6 +30,7 @@ public class CourierTransactionEntity {
     private BigDecimal customerBalanceBeforeDiscount;
     private BigDecimal deliveryChargedAfterDiscount;
     private BigDecimal customerBalanceAfterDiscount;
+    private BigDecimal actualDeliveryChargedWithVat;
     private BigDecimal customerPays;
     private BigDecimal paidToCourier;
     private BigDecimal profit;
@@ -170,6 +171,15 @@ public class CourierTransactionEntity {
 
     public void setCustomerBalanceAfterDiscount(BigDecimal customerBalanceAfterDiscount) {
         this.customerBalanceAfterDiscount = customerBalanceAfterDiscount;
+    }
+
+    @Column(name = "actual_delivery_charge_with_vat", precision = 16, scale = 2)
+    public BigDecimal getActualDeliveryChargedWithVat() {
+        return actualDeliveryChargedWithVat;
+    }
+
+    public void setActualDeliveryChargedWithVat(BigDecimal actualDeliveryChargedWithVat) {
+        this.actualDeliveryChargedWithVat = actualDeliveryChargedWithVat;
     }
 
     @Column(name ="customer_pays", precision = 16, scale = 2)

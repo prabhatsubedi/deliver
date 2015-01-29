@@ -439,13 +439,13 @@ public class ClientController extends AbstractManager{
     @ResponseBody
     public ResponseEntity<ServiceResponse> getCheckOutInfo(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId, @PathVariable("addressId") Integer addressId) {
         try{
-//            HeaderDto headerDto = new HeaderDto();
-//            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-//            validateMobileClient(headerDto.getAccessToken());
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
 
             CheckOutDto checkOutDto = customerService.getCheckOutInfo(facebookId, addressId);
             ServiceResponse serviceResponse = new ServiceResponse("Checkout Info Retrieved Successfully");
-            serviceResponse.addParam("info", checkOutDto);
+            serviceResponse.addParam("checkOutInfo", checkOutDto);
 
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 

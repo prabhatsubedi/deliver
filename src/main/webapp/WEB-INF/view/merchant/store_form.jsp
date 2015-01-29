@@ -82,9 +82,6 @@
                                             <option value="All">All</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn_green">Add Store</button>
-                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -144,6 +141,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="heading form_action clearfix">
+            <div class="pull-right">
+                <button type="button" class="btn btn_green submit_store">Add Store</button>
+                <button type="button" class="btn btn_green cancel_edit hidden">Cancel</button>
             </div>
         </div>
     </div>

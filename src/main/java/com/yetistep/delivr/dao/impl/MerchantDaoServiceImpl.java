@@ -161,8 +161,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<Object[]> rows = sqlQuery.list();
         for(Object[] row : rows){
             merchantEntity = new MerchantEntity();
-            merchantEntity.setCommissionPercentage(new BigDecimal(row[0].toString()));
-            merchantEntity.setServiceFee(new BigDecimal(row[1].toString()));
+            merchantEntity.setCommissionPercentage(row[0] == null ? BigDecimal.ZERO : new BigDecimal(row[0].toString()));
+            merchantEntity.setServiceFee(row[1] == null ? BigDecimal.ZERO : new BigDecimal(row[1].toString()));
         }
         return merchantEntity;
     }
@@ -561,5 +561,15 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         return cnt.intValue();
     }
 
-
+    @Override
+    public MerchantEntity getCommissionVatPartnerShipStatus(Integer storeBrandId) throws Exception {
+        String sqlQuery = "SELECT m.id as id, m.partnership_status as partnershipStatus, " +
+                "m.service_fee as serviceFee, m.commission_percentage as commissionPercentage " +
+                "FROM merchants m INNER JOIN stores_brands sb on sb.merchant_id = m.id WHERE sb.id =:storeBrandId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
+                .setResultTransformer( Transformers.aliasToBean(MerchantEntity.class));
+        query.setParameter("storeBrandId", storeBrandId);
+        MerchantEntity merchantEntity = (MerchantEntity) query.uniqueResult();
+        return merchantEntity;
+    }
 }

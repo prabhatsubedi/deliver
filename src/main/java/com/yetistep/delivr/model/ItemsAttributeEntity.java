@@ -76,6 +76,7 @@ public class ItemsAttributeEntity implements Serializable {
         this.selected = selected;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "itemsAttribute", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<CartAttributesEntity> getCartAttributes() {

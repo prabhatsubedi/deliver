@@ -121,6 +121,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         } else {
             validateUserDevice(customerEntity.getUser().getUserDevice());
+            customerEntity.setRewardsEarned(BigDecimal.ZERO);
 //            if (customerEntity.getLatitude() != null) {
 //                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
 //                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());
@@ -298,15 +299,21 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CheckOutDto getCheckOutInfo(Long facebookId, Integer addressId) throws Exception {
         log.info("+++++++++++++++ Getting Check Out Info of client fb id : " + facebookId + " +++++++++++++++++");
+
         CheckOutDto checkOutDto = new CheckOutDto();
+        List<ItemEntity> items = new ArrayList<>();
 
         List<CartEntity> carts = cartDaoService.getMyCarts(facebookId);
+        if(carts==null || carts.size() == 0)
+            throw new YSException("CRT001");
+
         AddressEntity address = addressDaoService.getMyAddress(addressId);
+
         Integer brandId = carts.get(0).getStoresBrand().getId();
         BigDecimal subTotal = BigDecimal.ZERO;
         BigDecimal merchantTax = BigDecimal.ZERO;
         for(CartEntity cart : carts){
-            ItemEntity item = merchantDaoService.getItemDetail(cart.getId());
+            ItemEntity item = merchantDaoService.getItemDetail(cart.getItem().getId());
 
             //Calculating Sub Total
             BigDecimal attributePrice = cartAttributesDaoService.findAttributesPrice(cart.getId());
@@ -323,7 +330,16 @@ public class CustomerServiceImpl implements CustomerService {
 
             merchantTax = merchantTax.add(itemTax);
             subTotal = subTotal.add(total);
+            //Set Item
+            ItemEntity tempItem = new ItemEntity();
+            tempItem.setId(item.getId());
+            tempItem.setUnitPrice(total);
+            tempItem.setOrderQuantity(cart.getOrderQuantity());
+            tempItem.setName(item.getName());
+            if(item.getItemsImage()!=null && item.getItemsImage().size() > 0)
+                tempItem.setImageUrl(item.getItemsImage().get(0).getUrl());
 
+            items.add(tempItem);
         }
         OrderEntity order = new OrderEntity();
         order.setAddress(address);
@@ -332,7 +348,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<StoreEntity> stores = merchantDaoService.findActiveStoresByBrand(brandId);
 
         /* Get Nearest Store From Customer */
-        StoreEntity store = findNearestStoreFromCustomer(order, stores);
+        findNearestStoreFromCustomer(order, stores);
         BigDecimal storeToCustomerDistance = order.getCustomerChargeableDistance();
 
 
@@ -381,43 +397,35 @@ public class CustomerServiceImpl implements CustomerService {
             deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
         }
 
-        /* 13. ======== Delivery charged to customer After Discount ====== */
-        BigDecimal deliveryChargedAfterDiscount = BigDecimal.ZERO;
-        if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
-            deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
+        /* Item Detail and Others */
+        StoresBrandEntity storeBrand = new StoresBrandEntity();
+        storeBrand.setId(brandId);
+        storeBrand.setBrandName(carts.get(0).getStoresBrand().getBrandName());
+        storeBrand.setBrandLogo(carts.get(0).getStoresBrand().getBrandLogo());
 
 
-        checkOutDto.setBrandId(brandId);
-        checkOutDto.setSubTotal(subTotal);
-        checkOutDto.setTax(merchantTax);
-        checkOutDto.setServiceFee(BigDecimalUtil.percentageOf(subTotal, serviceFeePct));
-        checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount);
-        checkOutDto.setDiscount(customerBalanceBeforeDiscount);
+        checkOutDto.setStoresBrand(storeBrand);
+        checkOutDto.setItems(items);
+        checkOutDto.setSubTotal(subTotal.setScale(0, BigDecimal.ROUND_DOWN));
+        checkOutDto.setTax(merchantTax.setScale(0, BigDecimal.ROUND_DOWN));
+        checkOutDto.setServiceFee(BigDecimalUtil.percentageOf(subTotal, serviceFeePct).setScale(0, BigDecimal.ROUND_DOWN));
+        checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
+        checkOutDto.setDiscount(customerBalanceBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
         BigDecimal estimatedAmt = subTotal.add(merchantTax).add(BigDecimalUtil.percentageOf(subTotal, serviceFeePct)).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
-        checkOutDto.setEstimatedAmount(estimatedAmt);
+        checkOutDto.setEstimatedAmount(estimatedAmt.setScale(0, BigDecimal.ROUND_DOWN));
         return checkOutDto;
     }
 
     @Override
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
-        List<ItemsOrderEntity> itemsOrder = requestJson.getOrdersItemsOrder();
-        Integer brandId = requestJson.getOrdersBrandId();
         Long customerId = requestJson.getOrdersCustomerId();
         Integer addressId = requestJson.getOrdersAddressId();
-
-        StoresBrandEntity brand = merchantDaoService.findBrandDetail(brandId);
-        CustomerEntity customer = customerDaoService.find(customerId);
-        AddressEntity address = customerDaoService.findAddressById(addressId);
-
+        CustomerEntity customer = customerDaoService.getCustomerIdAndRewardFromFacebookId(customerId);
+        AddressEntity address = addressDaoService.getMyAddress(addressId);
         if(address == null)
             throw new YSException("VLD014");
-
         if (customer == null)
             throw new YSException("VLD011");
-
-        if (brand == null)
-            throw new YSException("VLD012");
-
         OrderEntity order = new OrderEntity();
         order.setAddress(address);
         order.setCustomer(customer);
@@ -426,33 +434,53 @@ public class CustomerServiceImpl implements CustomerService {
         order.setDeliveryStatus(DeliveryStatus.PENDING);
         order.setOrderStatus(JobOrderStatus.ORDER_PLACED);
 
+        /* Transferring data of cart to order and calculating price */
         BigDecimal itemTotalCost = BigDecimal.ZERO;
         BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
-        for (ItemsOrderEntity iOrder: itemsOrder){
-            ItemEntity item = merchantDaoService.getItemDetail(iOrder.getItem().getId());
-            if(item == null)
-                throw new YSException("ITM001");
-            iOrder.setItem(item);
-            iOrder.setOrder(order);
-            iOrder.setAvailabilityStatus(true);
-            /* Attribute price is added to individual itemTotal. Then, service and VAT charge added to ItemTotal
-            which is then added to itemTotalCost i.e. OrderTotal */
-            BigDecimal attributePrice = BigDecimal.ZERO;
-            for(ItemsOrderAttributeEntity itemsOrderAttribute : iOrder.getItemOrderAttributes()){
-                ItemsAttributeEntity itemsAttribute = itemsAttributeDaoService.find(itemsOrderAttribute.getItemsAttribute().getId());
-                if(itemsAttribute == null)
-                    throw new YSException("ITM003");
-                itemsOrderAttribute.setItemOrder(iOrder);
-                attributePrice = attributePrice.add(itemsAttribute.getUnitPrice());
+        List<CartEntity> cartEntities = cartDaoService.getMyCarts(customerId);
+        List<ItemsOrderEntity> itemsOrder = new ArrayList<ItemsOrderEntity>();
+        Integer brandId = null;
+        for (CartEntity cart : cartEntities) {
+            ItemsOrderEntity itemsOrderEntity = new ItemsOrderEntity();
+            itemsOrderEntity.setOrder(order);
+            itemsOrderEntity.setAvailabilityStatus(true);
+            itemsOrderEntity.setQuantity(cart.getOrderQuantity());
+            itemsOrderEntity.setCustomerNote(cart.getNote());
+            itemsOrderEntity.setItem(cart.getItem());
+            itemsOrderEntity.setServiceCharge(cart.getItem().getServiceCharge());
+            itemsOrderEntity.setVat(cart.getItem().getVat());
+            List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cart.getId());
+            List<ItemsOrderAttributeEntity> itemsOrderAttributeEntities = new ArrayList<ItemsOrderAttributeEntity>();
+            for(Integer attribute: cartAttributes){
+                ItemsOrderAttributeEntity itemsOrderAttribute = new ItemsOrderAttributeEntity();
+                itemsOrderAttribute.setItemOrder(itemsOrderEntity);
+                ItemsAttributeEntity itemsAttribute = new ItemsAttributeEntity();
+                itemsAttribute.setId(attribute);
+                itemsOrderAttribute.setItemsAttribute(itemsAttribute);
+                itemsOrderAttributeEntities.add(itemsOrderAttribute);
             }
-            BigDecimal itemTotal = BigDecimalUtil.calculateCost(iOrder.getQuantity(), item.getUnitPrice(), attributePrice);
-            iOrder.setItemTotal(itemTotal);
-            itemTotalCost = itemTotalCost.add(itemTotal);
+            itemsOrderEntity.setItemOrderAttributes(itemsOrderAttributeEntities);
+            BigDecimal attributePrice = cartAttributesDaoService.findAttributesPrice(cart.getId());
+            BigDecimal itemPrice = BigDecimalUtil.calculateCost(cart.getOrderQuantity(), cart.getItem().getUnitPrice(), attributePrice);
 
-            BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemTotal, item.getServiceCharge());
-            BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemTotal.add(serviceCharge), item.getVat()));
+            BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemPrice, cart.getItem().getServiceCharge());
+            BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), cart.getItem().getVat()));
+            /*Set for order total and total serviceVat*/
             itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatCharge);
+            itemTotalCost = itemTotalCost.add(itemPrice);
+
+            itemsOrderEntity.setItemTotal(itemPrice);
+            itemsOrderEntity.setServiceAndVatCharge(serviceAndVatCharge);
+            itemsOrder.add(itemsOrderEntity);
+            brandId = cart.getStoresBrand().getId();
         }
+
+
+        MerchantEntity merchant = merchantDaoService.getCommissionVatPartnerShipStatus(brandId);
+        if(merchant == null){
+            throw new YSException("MRC003");
+        }
+
         order.setItemsOrder(itemsOrder);
         order.setTotalCost(itemTotalCost);
         order.setSurgeFactor(getSurgeFactor());
@@ -471,9 +499,11 @@ public class CustomerServiceImpl implements CustomerService {
         /* Selects nearest delivery boys based on timing. */
         List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, availableAndActiveDBoys, order);
         /* Selects delivery boys based on profit criteria. */
-        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, brand.getMerchant());
+        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, merchant);
         order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
         customerDaoService.saveOrder(order);
+
+        //TODO Filter delivery boys by profit criteria - Push Notifications
 
     }
 
@@ -556,7 +586,6 @@ public class CustomerServiceImpl implements CustomerService {
             log.info("Delivery boys selected from distance calculation:"+selectionDetails.toString());
         }
         return filterDeliveryBoySelection(selectionDetails, timeDetails);
-        //TODO Filter delivery boys by profit criteria - Push Notifications
     }
 
     /* Select only delivery boys satisfying timing condition from list of selected delivery boys from distance criteria*/
@@ -602,13 +631,14 @@ public class CustomerServiceImpl implements CustomerService {
         Integer surgeFactor = 0;
         String currentTime = DateUtil.getCurrentTime().toString();
         if(DateUtil.isTimeBetweenTwoTime("07:00:00", "21:00:00", currentTime))
-            surgeFactor = 1; // if Time is 7 AM-9 PM
+            surgeFactor = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.SURGE_FACTOR_7AM_9PM)); // if Time is 7 AM-9 PM
         else if(DateUtil.isTimeBetweenTwoTime("21:00:00", "22:00:00", currentTime))
-            surgeFactor = 2; // if Time is 9-10 PM
+            surgeFactor = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.SURGE_FACTOR_9_10PM)); // if Time is 9-10 PM
         else if(DateUtil.isTimeBetweenTwoTime("22:00:00", "23:00:00", currentTime))
-            surgeFactor = 3; // if Time is 10 PM-11 PM
+            surgeFactor = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.SURGE_FACTOR_10_11PM)); // if Time is 10 PM-11 PM
         else
-            surgeFactor = 4; // if Time is 11 PM-7 AM
+            surgeFactor = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.SURGE_FACTOR_11PM_7AM)); // if Time is 11 PM-7 AM
+
         return surgeFactor;
     }
 

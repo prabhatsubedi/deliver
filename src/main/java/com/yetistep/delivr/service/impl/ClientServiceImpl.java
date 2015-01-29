@@ -127,6 +127,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             //Now Combine all brand in one list
             for (StoreEntity storeEntity : storeEntities) {
                 if (!containsBrandId(storeBrandResult, storeEntity.getStoresBrand().getId()) && !containsBrandId(featuredBrands, storeEntity.getStoresBrand().getId())) {
+                    if(storeEntity.getStoresBrand().getStatus().ordinal() != Status.ACTIVE.ordinal())
+                        continue;
+
                     StoresBrandEntity tempBrand = new StoresBrandEntity();
                     tempBrand.setId(storeEntity.getStoresBrand().getId());
                     tempBrand.setOpeningTime(storeEntity.getStoresBrand().getOpeningTime());
@@ -543,7 +546,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
        CartDto cartDto = null;
        List<CartEntity> cartEntities = cartDaoService.getMyCarts(facebookId);
 
-       StoresBrandEntity storesBrandEntity = new StoresBrandEntity();
+       StoresBrandEntity storesBrandEntity;
        if(cartEntities !=null && cartEntities.size() > 0){
            storesBrandEntity = cartEntities.get(0).getStoresBrand();
 
@@ -556,6 +559,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                    //Add Attribute Price and Unit Price
                    BigDecimal attributesPrice = cartAttributesDaoService.findAttributesPrice(cartEntity.getId());
                    cartEntity.getItem().setUnitPrice(cartEntity.getItem().getUnitPrice().add(attributesPrice).multiply(new BigDecimal(cartEntity.getOrderQuantity())));
+                   cartEntity.getItem().setVat(null);
+                   cartEntity.getItem().setServiceCharge(null);
                }
 
                cartEntity.setStoresBrand(null);
@@ -563,6 +568,10 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
            }
 
            cartDto = new CartDto();
+           Boolean isOpen = DateUtil.isTimeBetweenTwoTime(storesBrandEntity.getOpeningTime().toString(), storesBrandEntity.getClosingTime().toString(),DateUtil.getCurrentTime().toString());
+           storesBrandEntity.setOpenStatus(isOpen);
+           storesBrandEntity.setOpeningTime(null);
+           storesBrandEntity.setClosingTime(null);
            cartDto.setStoresBrand(storesBrandEntity);
            cartDto.setCarts(cartEntities);
 

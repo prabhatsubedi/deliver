@@ -2,20 +2,18 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.CartDaoService;
 import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
-import com.yetistep.delivr.model.CartAttributesEntity;
 import com.yetistep.delivr.model.CartEntity;
-import org.hibernate.*;
+import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.AliasToBeanConstructorResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -100,9 +98,13 @@ public class CartDaoServiceImpl implements CartDaoService{
                 .add(Projections.property("sb.id"), "storesBrand.id")
                 .add(Projections.property("sb.brandName"), "storesBrand.brandName")
                 .add(Projections.property("sb.brandLogo"), "storesBrand.brandLogo")
+                .add(Projections.property("sb.openingTime"), "storesBrand.openingTime")
+                .add(Projections.property("sb.closingTime"), "storesBrand.closingTime")
                 .add(Projections.property("i.id"), "item.id")
                 .add(Projections.property("i.name"), "item.name")
-                .add(Projections.property("i.unitPrice"), "item.unitPrice");
+                .add(Projections.property("i.unitPrice"), "item.unitPrice")
+                .add(Projections.property("i.serviceCharge"), "item.serviceCharge")
+                .add(Projections.property("i.vat"), "item.vat");
 
 
         Criteria criteria = getCurrentSession().createCriteria(CartEntity.class)

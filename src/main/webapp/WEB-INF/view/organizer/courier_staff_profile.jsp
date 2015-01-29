@@ -7,7 +7,6 @@
     <title>Courier Staff Profile</title>
 
     <%@include file="../includes/head.jsp" %>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/bootstrap-select.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 
@@ -75,7 +74,7 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Email Address (Optional)</label>
+                                    <label for="email" class="col-lg-4 floated_label no_pad">Email Address (Optional)</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_email none_editable"></div>
                                         <div class="info_edit editable hidden">
@@ -85,7 +84,7 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Mobile No.</label>
+                                    <label for="mobile" class="col-lg-4 floated_label no_pad">Mobile No.</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_mobile none_editable"></div>
                                         <div class="info_edit editable hidden">
@@ -95,7 +94,7 @@
                                 </div>
 
                                 <div class="form-group clearfix editable hidden">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Password</label>
+                                    <label for="password" class="col-lg-4 floated_label no_pad">Password</label>
                                     <div class="col-lg-8">
                                         <div class="info_edit">
                                             <input type="password" name="password" id="password" class="form-control">
@@ -104,7 +103,7 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Gender</label>
+                                    <label for="gender" class="col-lg-4 floated_label no_pad">Gender</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_gender none_editable"></div>
                                         <div class="info_edit editable hidden">
@@ -118,7 +117,7 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Street</label>
+                                    <label for="street" class="col-lg-4 floated_label no_pad">Street</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_street none_editable"></div>
                                         <div class="info_edit editable hidden">
@@ -128,7 +127,7 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">City</label>
+                                    <label for="city" class="col-lg-4 floated_label no_pad">City</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_city none_editable"></div>
                                         <div class="info_edit editable hidden">
@@ -138,7 +137,7 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">State</label>
+                                    <label for="state" class="col-lg-4 floated_label no_pad">State</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_state none_editable"></div>
                                         <div class="info_edit editable hidden">
@@ -148,7 +147,7 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Country</label>
+                                    <label for="country" class="col-lg-4 floated_label no_pad">Country</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_country none_editable"></div>
                                         <div class="info_edit editable hidden">
@@ -158,7 +157,7 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Vehicle Type</label>
+                                    <label for="vehicle_type" class="col-lg-4 floated_label no_pad">Vehicle Type</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_vehicle_type none_editable"></div>
                                         <div class="info_edit editable hidden">
@@ -176,7 +175,7 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Vehicle No.</label>
+                                    <label for="vehicle_no" class="col-lg-4 floated_label no_pad">Vehicle No.</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_vehicle_no none_editable"></div>
                                         <div class="info_edit editable hidden">
@@ -186,7 +185,7 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">License No.</label>
+                                    <label for="license_no" class="col-lg-4 floated_label no_pad">License No.</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_license_no none_editable"></div>
                                         <div class="info_edit editable hidden">

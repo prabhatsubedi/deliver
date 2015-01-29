@@ -40,29 +40,13 @@ function toggleSwitch(value, elem) {
     cancel_drag = false;
 
 }
-$('.switch_activation .btn_switch').live('mouseup', function(e){
-    if(!dragged && e.which == 1) toggleSwitch($(this).hasClass('on') ? 'off' : 'on', $(this));
-});
-$('.switch_activation .btn_switch').bind('contextmenu', function(e) {
-    return false;
-});
-$( ".btn_switch" ).draggable({
-    containment: "parent",
-    start: function( event, ui) {
-        dragged = true;
-    },
-    stop: function( event, ui) {
-        if(Math.abs(ui.originalPosition.left - ui.position.left) < 15) {
-            cancel_drag = true;
-        }
-        toggleSwitch(ui.position.left > 15 ? 'off' : 'on', ui.helper);
-    }
-});
 
 (function ($){
 
 
     Item.loadAddItem = function() {
+
+        form_submit = false;
 
         var action = Main.getURLvalue(3);
         var addBrandId = Main.getURLvalue(4);
@@ -72,13 +56,24 @@ $( ".btn_switch" ).draggable({
             itemId = Main.getURLvalue(4);
             $('.heading h1').html('Item Edit');
             document.title = 'Item Edit';
-            $('#form_item button[type="submit"]').attr({'data-action': 'update'}).html('Update Item');
+            $('.submit_item').attr({'data-action': 'update'}).html('Update Item');
+            $('.cancel_edit').removeClass('hidden');
         }
 
         $('option:selected').removeAttr('selected');
         Image.dropZone('#product_image1_input', '#product_image1');
         Image.dropZone('#product_image2_input', '#product_image2');
         Image.dropZone('#product_image3_input', '#product_image3');
+
+        $('.submit_item').click(function(){
+            $('#form_item').submit();
+        });
+        $('.cancel_edit').click(function(){
+            var chk_confirm = confirm('Are you sure you want to cancel updates?');
+            if (!chk_confirm) return false;
+            form_submit = true;
+            window.location.reload();
+        });
 
         $('.product_image').hover(function(){
             if($('img', this).length == 1)$('.remove_image', this).removeClass('hidden');
@@ -158,7 +153,7 @@ $( ".btn_switch" ).draggable({
                             $('.product_image .drop_zone').eq(i).attr('data-id', itemImages[i].id).html('<img src="' + itemImages[i].url + '" style="height: 100%;" class="img-responsive" />');
                         }
 
-                        $('#form_item button[type="submit"]').attr({'data-id': item.id});
+                        $('.submit_item').attr({'data-id': item.id});
                         $('#name_item').val(item.name);
                         $('#description').val(item.description);
                         $('#additional_offer').val(item.additionalOffer);
@@ -637,7 +632,7 @@ $( ".btn_switch" ).draggable({
                 var itemAttributesTypes = [];
                 var itemImages = [];
 
-                item.id = $('#form_item button[type="submit"]').attr('data-id');
+                item.id = $('.submit_item').attr('data-id');
                 item.name = $('#name_item').val();
                 if($('#description').val() != "") item.description = $('#description').val();
                 item.availableStartTime = $('#available_start_time').val();
@@ -652,8 +647,8 @@ $( ".btn_switch" ).draggable({
                 if($('#return_policy').val() != "N/A" && $('#return_policy').val() != "") item.returnPolicy = $('#return_policy').val();
                 if($('#delivery_fee').val() != "0") item.deliveryFee = $('#delivery_fee').val();
                 //item.promoCode = "";
-                if($('#vat').val() != "0") item.vat = $('#vat').val();
-                if($('#service_charge').val() != "0") item.serviceCharge = $('#service_charge').val();
+                item.vat = $('#vat').val();
+                item.serviceCharge = $('#service_charge').val();
                 item.status = "ACTIVE";
 
 /*                $('#category_container select.category_options').each(function(){
@@ -727,7 +722,7 @@ $( ".btn_switch" ).draggable({
                 else
                     data.itemImages = itemImages;
 
-                Item.addItem(data, {id: $('#item_brand').val()}, $('#form_item button[type="submit"]').attr('data-action'));
+                Item.addItem(data, {id: $('#item_brand').val()}, $('.submit_item').attr('data-action'));
 
                 return false;
             }
@@ -770,8 +765,8 @@ $( ".btn_switch" ).draggable({
         var callback = function (status, data) {
             $("button[type='submit']").removeAttr("disabled");
 
+            alert(data.message);
             if (data.success == true) {
-                alert(data.message);
 
                 $('#category_container select.category_options').each(function(){
                     if($('option:selected', this).attr('data-new') == "true") {
@@ -819,8 +814,6 @@ $( ".btn_switch" ).draggable({
                 $('#delivery_fee, #vat, #service_charge').val('0');
                 $('.item_attributes').html('');
 
-            } else {
-                alert(data.message);
             }
         };
 
@@ -922,6 +915,25 @@ $( ".btn_switch" ).draggable({
 
         $('.item_container').live('mouseout', function(){
             $('.switch_container', this).addClass('hidden');
+        });
+
+        $('.switch_activation .btn_switch').live('mouseup', function(e){
+            if(!dragged && e.which == 1) toggleSwitch($(this).hasClass('on') ? 'off' : 'on', $(this));
+        });
+        $('.switch_activation .btn_switch').bind('contextmenu', function(e) {
+            return false;
+        });
+        $( ".btn_switch" ).draggable({
+            containment: "parent",
+            start: function( event, ui) {
+                dragged = true;
+            },
+            stop: function( event, ui) {
+                if(Math.abs(ui.originalPosition.left - ui.position.left) < 15) {
+                    cancel_drag = true;
+                }
+                toggleSwitch(ui.position.left > 15 ? 'off' : 'on', ui.helper);
+            }
         });
 
     };
@@ -1226,6 +1238,7 @@ $( ".btn_switch" ).draggable({
             cancel_drag = false;
 
         }
+
         $('.switch_activation .btn_switch').bind('contextmenu', function(e) {
             return false;
         });

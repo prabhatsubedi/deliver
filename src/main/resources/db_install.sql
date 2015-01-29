@@ -84,3 +84,9 @@ INSERT INTO preferences (pref_key,VALUE) VALUES ('AIR_OR_ACTUAL_DISTANCE_SWITCH'
 
 /*####################2015.01.27########################*/
 ALTER TABLE `items_orders` DROP COLUMN `custom_item`;
+
+/*####################2015.01.28#########################*/
+ALTER TABLE `custom_items` DROP COLUMN `vat`, DROP COLUMN `service_charge`;
+
+INSERT INTO preferences (pref_key, value) VALUES (NULL, 'ORDER_REQUEST_TIMEOUT_IN_MIN', '4');
+DELETE FROM preferences WHERE pref_key IN ('MERCHANT_VAT', 'MERCHANT_SERVICE_CHARGE');

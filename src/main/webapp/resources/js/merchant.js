@@ -197,25 +197,25 @@ var merchantProfile;
             }
         });
 
-        Merchant.updateMerchant = function (data) {
-            $("a.save_btn").attr("disabled", true);
-            var callback = function (status, data) {
-                $("a.save_btn").removeAttr("disabled");
-
-                alert(data.message);
-                if (data.success == true) {
-                    $(".none_editable").removeClass('hidden');
-                    $(".editable").addClass('hidden');
-                    Merchant.loadMerchant();
-                    for(var i in markers) {
-                        markers[i].setDraggable(false);
-                    }
-                }
-            };
-            callback.loaderDiv = "body";
-            Main.request('/merchant/update_merchant', data, callback);
-        };
-
     }
+
+    Merchant.updateMerchant = function (data) {
+        $("a.save_btn").attr("disabled", true);
+        var callback = function (status, data) {
+            $("a.save_btn").removeAttr("disabled");
+
+            alert(data.message);
+            if (data.success == true) {
+                $(".none_editable").removeClass('hidden');
+                $(".editable").addClass('hidden');
+                Merchant.loadMerchant();
+                for(var i in markers) {
+                    markers[i].setDraggable(false);
+                }
+            }
+        };
+        callback.loaderDiv = "body";
+        Main.request('/merchant/update_merchant', data, callback);
+    };
 
 })(jQuery);

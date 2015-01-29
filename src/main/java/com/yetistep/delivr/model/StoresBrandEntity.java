@@ -260,7 +260,7 @@ public class StoresBrandEntity implements Serializable {
     * @param2: @params - @type- Map(associated model - string, List(fields required of related model - string)) - @description: Map of associated model and  related fields
     *  @param3: @subAssoc - @type- Map(2nd level associated model - string, List(fields required of related model - string)) - @description: Map of 2nd level associated model and  related fields
     * */
-    public Object getJsonObject(Object defaultObject, List<String> fields, Map<String, List<String>> params, Map<String, List<String>> subAssoc) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException{
+   /* public Object getJsonObject(Object defaultObject, List<String> fields, Map<String, List<String>> params, Map<String, List<String>> subAssoc) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException{
         Object rtnObject = BeanUtils.instantiate(defaultObject.getClass());
 
         for (String field: fields){
@@ -320,5 +320,5 @@ public class StoresBrandEntity implements Serializable {
         }
 
         return rtnObject;
-    }
+    }*/
 }

@@ -106,7 +106,7 @@ public class MerchantController {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
-            List<StoresBrandEntity> storesBrand = merchantService.findBrandList(headerDto);
+            List<Object> storesBrand = merchantService.findBrandList(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Stores has been retrieved successfully");
             serviceResponse.addParam("storesBrand", storesBrand);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

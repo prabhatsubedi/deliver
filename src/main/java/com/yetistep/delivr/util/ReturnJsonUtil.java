@@ -91,16 +91,31 @@ public class ReturnJsonUtil {
                 }
                 PropertyUtils.setProperty(rtnObject, param.getKey(), assocRtnList);
             } else {
-                Object assocDB = BeanUtils.instantiate(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass());
-                Object assocRtn = PropertyUtils.getProperty(defaultObject, param.getKey());
+                Object assocDB = PropertyUtils.getProperty(defaultObject, param.getKey());
+                Object assocRtnObj = BeanUtils.instantiate(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass());
                 if(param.getValue() != null) {
                     String assocFields = param.getValue();
                     String[] arrAssocFields = assocFields.split(",");
                     for (String assocF:arrAssocFields){
-                        PropertyUtils.setProperty(assocDB, assocF,  PropertyUtils.getProperty(assocRtn, assocF));
+                        if(PropertyUtils.getProperty(assocDB, assocF).getClass().toString().contains("com.yetistep.delivr.model")){
+                              //PropertyUtils.setProperty(assocRtn, assocF,  PropertyUtils.getProperty(assocDB, assocF));
+                             Object assoc2ndDB = PropertyUtils.getProperty(assocDB, assocF);
+                             Object assoc2ndRtnObj = BeanUtils.instantiate(assoc2ndDB.getClass());
+                             String accoc2ndFs = subAssoc.get(assocF);
+                             if(accoc2ndFs != null){
+                                    String[] arrAssoc2ndFields = accoc2ndFs.split(",");
+                                    for (String accoc2ndF: arrAssoc2ndFields){
+                                        //PropertyUtils.setProperty(assoc2ndRtnObj, accoc2ndF,  PropertyUtils.getProperty(assoc2ndDB, accoc2ndF));
+                                        setValues(assoc2ndDB, assoc2ndRtnObj,  accoc2ndF, subAssoc);
+                                    }
+                              }
+                               PropertyUtils.setProperty(assocRtnObj, assocF,  assoc2ndRtnObj);
+                        } else {
+                              PropertyUtils.setProperty(assocRtnObj, assocF,  PropertyUtils.getProperty(assocDB, assocF));
+                        }
                     }
                 }
-                PropertyUtils.setProperty(rtnObject, param.getKey(), assocDB);
+                PropertyUtils.setProperty(rtnObject, param.getKey(), assocRtnObj);
             }
         }
 
@@ -125,7 +140,7 @@ public class ReturnJsonUtil {
             }
             PropertyUtils.setProperty(assocRtnObj, assocF,  assoc2ndRtn);
         } else {
-            if(PropertyUtils.getProperty(assocDB, assocF).getClass().toString().contains("com.yetistep.delivr")){
+            if(PropertyUtils.getProperty(assocDB, assocF).getClass().toString().contains("com.yetistep.delivr.model")){
                 Object assoc2ndRtnObj = BeanUtils.instantiate(PropertyUtils.getProperty(assocDB, assocF).getClass());
                 String accoc2ndFs = subAssoc.get(assocF);
                 if(accoc2ndFs != null){

@@ -487,14 +487,23 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
     @Override
-    public List<StoresBrandEntity> findBrandList(HeaderDto headerDto) throws Exception {
+    public List<Object> findBrandList(HeaderDto headerDto) throws Exception {
         MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
         if(dbMerchant == null)
             throw new YSException("VLD011");
         List<StoresBrandEntity> storesBrands = merchantDaoService.findBrandListByMerchant(dbMerchant.getId());
-        List<StoresBrandEntity> storesBrandEntities = new ArrayList<StoresBrandEntity>();
+        List<Object> storesBrandEntities = new ArrayList<Object>();
+
+        /*String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,featured,priority";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("merchant", "id,businessTitle");*/
+
         for(StoresBrandEntity storesBrand: storesBrands){
-           storesBrandEntities.add(getStoreBrandForJson(storesBrand));
+           //storesBrandEntities.add(ReturnJsonUtil.getJsonObject(storesBrand, fields, assoc, subAssoc));
+            storesBrandEntities.add(getStoreBrandForJson(storesBrand));
         }
         return storesBrandEntities;
     }
@@ -517,28 +526,21 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public Object findBrandDetail(HeaderDto headerDto) throws Exception {
         StoresBrandEntity storesBrandEntity =  merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
 
-        /*String fields = "id,brandName,brandLogo,brandImage,status";
+        /*String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-
-        String categoriesFields = "id,name,featured";
-        String itemsStoreFields = "id,item";
-        String itemsFields = "id,name";
-
-        assoc.put("store", "id,street,city,state,itemsStore");
+        assoc.put("store", "id,street,city,state,latitude,longitude,status");
         assoc.put("brandsCategory", "id,category");
         assoc.put("merchant", "businessLogo");
 
-        subAssoc.put("category", categoriesFields);
-        subAssoc.put("itemsStore", itemsStoreFields);
-        subAssoc.put("item", itemsFields);
-        return ReturnJsonUtil.getJsonObject(storesBrandEntity, fields, assoc, subAssoc); */
+        subAssoc.put("category", "id,name,featured");
+        return ReturnJsonUtil.getJsonObject(storesBrandEntity, fields, assoc, subAssoc);*/
         return getStoreBrandForJson(storesBrandEntity);
     }
 
-    private StoresBrandEntity getStoreBrandForJson(StoresBrandEntity storesBrandEntity){
+    private Object getStoreBrandForJson(StoresBrandEntity storesBrandEntity){
         StoresBrandEntity storesBrand = new StoresBrandEntity();
         storesBrand.setId(storesBrandEntity.getId());
         storesBrand.setBrandName(storesBrandEntity.getBrandName());

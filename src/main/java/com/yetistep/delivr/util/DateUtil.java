@@ -74,6 +74,21 @@ public class DateUtil {
         return newTimeStamp;
     }
 
+    public static Timestamp addSeconds(Timestamp timestamp, int seconds) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp.getTime());
+        calendar.add(Calendar.SECOND, seconds);
+        Timestamp newTimeStamp = new Timestamp(calendar.getTimeInMillis());
+        return newTimeStamp;
+    }
+
+    public static Timestamp subtractSeconds(Timestamp timestamp, int seconds) {
+        Long givenTimeStamp = timestamp.getTime();
+        givenTimeStamp = givenTimeStamp - seconds * 1000;
+        Timestamp newTimeStamp = new Timestamp(givenTimeStamp);
+        return newTimeStamp;
+    }
+
     public  static Timestamp getCurrentTimestampSQL(){
         return new Timestamp(System.currentTimeMillis());
     }
@@ -170,5 +185,10 @@ public class DateUtil {
     public static String formatDate(Date date, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         return sdf.format(date);
+    }
+
+    public static Integer findDelayDifference(Timestamp time, int delayInSeconds){
+        Long delay = addSeconds(time, delayInSeconds).getTime() - System.currentTimeMillis();
+        return delay.intValue();
     }
 }

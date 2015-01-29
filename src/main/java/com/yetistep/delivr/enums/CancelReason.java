@@ -33,6 +33,12 @@ public enum CancelReason {
             return "Customer Location Unidentified";
         }
     },
+    SYSTEM_CANCELLED_TIME_OUT {
+        @Override
+        public String toString() {
+            return "Order not accepted in given time";
+        }
+    },
     OTHERS {
         @Override
         public String toString() {

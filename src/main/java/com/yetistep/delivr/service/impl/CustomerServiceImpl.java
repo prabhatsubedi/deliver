@@ -7,6 +7,7 @@ import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
+import com.yetistep.delivr.schedular.ScheduleChanger;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
@@ -77,6 +78,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     StoresBrandDaoService storesBrandDaoService;
+
+    @Autowired
+    private ScheduleChanger scheduleChanger;
 
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
@@ -504,7 +508,9 @@ public class CustomerServiceImpl implements CustomerService {
         customerDaoService.saveOrder(order);
 
         //TODO Filter delivery boys by profit criteria - Push Notifications
-
+        Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
+        Integer timeOut = timeInSeconds.intValue();
+        scheduleChanger.scheduleTask(DateUtil.findDelayDifference(DateUtil.getCurrentTimestampSQL(), timeOut));
     }
 
     /*

@@ -19,4 +19,9 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
     public OrderEntity getLastActiveOrder(Integer deliverBoyId) throws Exception;
 
     public JobOrderStatus getJobOrderStatus(Integer orderId) throws Exception;
+
+    public List<OrderEntity> getElapsedOrders(Integer timeDuration) throws Exception;
+
+    public OrderEntity getNextPendingOrder() throws Exception;
+
 }

@@ -24,9 +24,19 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <task:annotation-driven executor="executorWithPoolSizeRange" />
-    <task:executor id="executorWithPoolSizeRange" pool-size="5-25"
-                   queue-capacity="150" />
+    <task:annotation-driven />
+    <task:scheduler id="scheduler" />
+
+    <bean id="dynamicSchedule" class="com.yetistep.delivr.schedular.DynamicSchedule">
+        <constructor-arg ref="scheduler" />
+        <constructor-arg>
+            <bean class="org.springframework.scheduling.support.MethodInvokingRunnable">
+                <property name="targetObject" ref="scheduledProcessor" />
+                <property name="targetMethod" value="process" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="30000" />
+    </bean>
 
     <context:component-scan base-package="com.yetistep.delivr.*" />
 

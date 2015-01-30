@@ -174,7 +174,6 @@ var merchantProfile;
                     objAddress.latitude = address.latitude;
                     objAddress.longitude = address.longitude;
 
-                    data.merchantId = Main.getURLvalue(2);
                     data.website = $('#url').val();
                     data.companyRegistrationNo = $('#registration_no').val();
                     data.vatNo = $('#vat').val();
@@ -190,7 +189,7 @@ var merchantProfile;
 
                     data.user = user;
 
-                    Merchant.updateMerchant(data);
+                    Merchant.updateMerchant(data, {merchantId: Main.getURLvalue(2)});
 
                 }
 
@@ -199,7 +198,7 @@ var merchantProfile;
 
     }
 
-    Merchant.updateMerchant = function (data) {
+    Merchant.updateMerchant = function (data, headers) {
         $("a.save_btn").attr("disabled", true);
         var callback = function (status, data) {
             $("a.save_btn").removeAttr("disabled");
@@ -215,7 +214,7 @@ var merchantProfile;
             }
         };
         callback.loaderDiv = "body";
-        Main.request('/merchant/update_merchant', data, callback);
+        Main.request('/merchant/update_merchant', data, callback, headers);
     };
 
 })(jQuery);

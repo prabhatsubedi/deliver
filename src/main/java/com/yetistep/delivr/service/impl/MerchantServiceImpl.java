@@ -1131,42 +1131,52 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public boolean changeStatus(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception{
         String type = requestJsonDto.getClassName();
         Integer statusId = requestJsonDto.getStatusId();
+        String[] ids =  headerDto.getId().split(",");
+
         if(type.equals("User")){
-            UserEntity user =   userDaoService.find(Integer.parseInt(headerDto.getId()));
-            if(statusId==2){
-                user.setStatus(Status.ACTIVE);
-            }else if(statusId==3){
-                user.setStatus(Status.INACTIVE);
+            for(String id: ids) {
+                UserEntity user =   userDaoService.find(Integer.parseInt(id));
+                if(statusId==2){
+                    user.setStatus(Status.ACTIVE);
+                }else if(statusId==3){
+                    user.setStatus(Status.INACTIVE);
+                }
+                user.setLastActivityDate(DateUtil.getCurrentTimestampSQL());
+                userDaoService.update(user);
             }
-            user.setLastActivityDate(DateUtil.getCurrentTimestampSQL());
-            userDaoService.update(user);
         }else if(type.equals("Brand")) {
-            StoresBrandEntity storesBrand =   merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
-            if(statusId==2){
-                storesBrand.setStatus(Status.ACTIVE);
-            }else if(statusId==3){
-                storesBrand.setStatus(Status.INACTIVE);
+            for(String id: ids) {
+                StoresBrandEntity storesBrand =   merchantDaoService.findBrandDetail(Integer.parseInt(id));
+                if(statusId==2){
+                    storesBrand.setStatus(Status.ACTIVE);
+                }else if(statusId==3){
+                    storesBrand.setStatus(Status.INACTIVE);
+                }
+                merchantDaoService.updateStoresBrand(storesBrand);
             }
-            merchantDaoService.updateStoresBrand(storesBrand);
         }  else if(type.equals("Store")){
-            StoreEntity store = merchantDaoService.getStoreById(Integer.parseInt(headerDto.getId()));
-            List<StoreEntity> stores = new ArrayList<StoreEntity>();
-            if(statusId==2){
-                store.setStatus(Status.ACTIVE);
-            }else if(statusId==3){
-                store.setStatus(Status.INACTIVE);
+            for(String id: ids) {
+                StoreEntity store = merchantDaoService.getStoreById(Integer.parseInt(id));
+                List<StoreEntity> stores = new ArrayList<StoreEntity>();
+                if(statusId==2){
+                    store.setStatus(Status.ACTIVE);
+                }else if(statusId==3){
+                    store.setStatus(Status.INACTIVE);
+                }
+                stores.add(store);
+                merchantDaoService.updateStores(stores);
             }
-            stores.add(store);
-            merchantDaoService.updateStores(stores);
         }  else if(type.equals("Item")){
-            ItemEntity item = merchantDaoService.getItemDetail(Integer.parseInt(headerDto.getId()));
-            if(statusId==2){
-                item.setStatus(Status.ACTIVE);
-            }else if(statusId==3){
-                item.setStatus(Status.INACTIVE);
+            for(String id: ids) {
+                ItemEntity item = merchantDaoService.getItemDetail(Integer.parseInt(id));
+                if(statusId==2){
+                    item.setStatus(Status.ACTIVE);
+                }else if(statusId==3){
+                    item.setStatus(Status.INACTIVE);
+                }
+                item.setModifiedDate(DateUtil.getCurrentTimestampSQL());
+                merchantDaoService.updateItem(item);
             }
-            item.setModifiedDate(DateUtil.getCurrentTimestampSQL());
-            merchantDaoService.updateItem(item);
         }
         return  true;
     }

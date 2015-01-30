@@ -19,6 +19,8 @@ public class CartDto {
     private Integer totalCart;
     private CartEntity cart;
     private ItemEntity item;
+    private String message;
+    private Boolean valid;
 
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
@@ -58,5 +60,21 @@ public class CartDto {
 
     public void setItem(ItemEntity item) {
         this.item = item;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Boolean getValid() {
+        return valid;
+    }
+
+    public void setValid(Boolean valid) {
+        this.valid = valid;
     }
 }

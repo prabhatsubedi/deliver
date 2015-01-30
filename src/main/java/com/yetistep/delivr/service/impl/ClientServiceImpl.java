@@ -4,6 +4,7 @@ import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.CategoryDto;
@@ -12,10 +13,13 @@ import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.ClientService;
+import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transaction;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -57,6 +61,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
     @Autowired
     DeliveryBoySelectionDaoService deliveryBoySelectionDaoService;
+
+    @Autowired
+    SystemPropertyService systemPropertyService;
 
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
@@ -227,7 +234,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
             Boolean isAlreadyContain = false;
             for (CategoryDto temp : categoryDtoList) {
-                if (temp.getId() == categoryDto.getId())
+                if (temp.getId().equals(categoryDto.getId()))
                     isAlreadyContain = true;
             }
 
@@ -244,6 +251,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         List<CategoryDto> list = new ArrayList<>();
         Integer brandId = categoryDto.getBrandId();
         Integer nextId = categoryDto.getId();
+
         List<CategoryEntity> categoryEntities = itemDaoService.findItemCategory(brandId);
 
         if (categoryEntities == null || categoryEntities.size() == 0)
@@ -256,7 +264,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             Integer hasNext = 0;
             while (hasNext != null) {
 
-                if (resultCat.getParent().getId() == nextId) {
+                if (resultCat.getParent().getId().equals(nextId)) {
                     resultDto.setValues(resultCat);
                     resultDto.setHasNext(false);
                     hasNext = null;
@@ -271,7 +279,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                 if (cat == null || cat.getParent() == null)
                     break;
 
-                if (cat.getParent().getId() == nextId) {
+                if (cat.getParent().getId().equals(nextId)) {
                     resultDto.setValues(cat);
                     resultDto.setHasNext(true);
                     hasNext = null;
@@ -284,7 +292,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             if (hasNext == null) {
                 Boolean isAlreadyContain = false;
                 for (CategoryDto temp : list) {
-                    if (temp.getId() == resultDto.getId())
+                    if (temp.getId().equals(resultDto.getId()))
                         isAlreadyContain = true;
                 }
 
@@ -561,6 +569,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                    cartEntity.getItem().setUnitPrice(cartEntity.getItem().getUnitPrice().add(attributesPrice).multiply(new BigDecimal(cartEntity.getOrderQuantity())));
                    cartEntity.getItem().setVat(null);
                    cartEntity.getItem().setServiceCharge(null);
+                   cartEntity.getItem().setStatus(null);
                }
 
                cartEntity.setStoresBrand(null);
@@ -569,10 +578,16 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
            cartDto = new CartDto();
            Boolean isOpen = DateUtil.isTimeBetweenTwoTime(storesBrandEntity.getOpeningTime().toString(), storesBrandEntity.getClosingTime().toString(),DateUtil.getCurrentTime().toString());
-           storesBrandEntity.setOpenStatus(isOpen);
-           storesBrandEntity.setOpeningTime(null);
-           storesBrandEntity.setClosingTime(null);
-           cartDto.setStoresBrand(storesBrandEntity);
+           //Set Store Brand
+           StoresBrandEntity store = new StoresBrandEntity();
+           store.setId(storesBrandEntity.getId());
+           store.setBrandName(storesBrandEntity.getBrandName());
+           store.setOpeningTime(storesBrandEntity.getOpeningTime());
+           store.setClosingTime(storesBrandEntity.getClosingTime());
+           store.setBrandLogo(storesBrandEntity.getBrandLogo());
+           store.setOpenStatus(isOpen);
+
+           cartDto.setStoresBrand(store);
            cartDto.setCarts(cartEntities);
 
        }
@@ -580,6 +595,117 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
        return cartDto;
 
+    }
+
+    @Override
+    public CartDto validateCart(Long facebookId) throws Exception {
+        log.info("+++++++++++++ Validating Cart of Client Facebook Id : " + facebookId  +" +++++++++++++");
+        CartDto cartDto = new CartDto();
+
+        List<CartEntity> cartEntities = cartDaoService.getMyCarts(facebookId);
+        if(cartEntities==null || cartEntities.size() == 0) {
+            cartDto.setMessage("CRT001");
+            cartDto.setValid(false);
+            return cartDto;
+        }
+
+
+        Boolean isOpen = DateUtil.isTimeBetweenTwoTime(cartEntities.get(0).getStoresBrand().getOpeningTime().toString(), cartEntities.get(0).getStoresBrand().getClosingTime().toString(),DateUtil.getCurrentTime().toString());
+        if(!isOpen){
+            cartDto.setMessage("CRT003");
+            cartDto.setValid(false);
+            return cartDto;
+        }
+
+        Boolean isBrandNotActive = false;
+        List<Integer> inactiveItems = new ArrayList<>();
+        List<CartEntity> inActiveCarts = new ArrayList<>();
+
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for(CartEntity cartEntity : cartEntities){
+            //Check Whether Brand Active Or Not
+            if(cartEntities.get(0).getStoresBrand().getStatus().ordinal()!=Status.ACTIVE.ordinal()) {
+                isBrandNotActive = true;
+                break;
+            }
+
+            if(cartEntity.getItem().getStatus().ordinal() != Status.ACTIVE.ordinal()){
+                if(!inactiveItems.contains(cartEntity.getItem().getId())){
+                    inactiveItems.add(cartEntity.getItem().getId());
+                    inActiveCarts.add(cartEntity);
+                }
+
+            } else {
+                BigDecimal attributesPrice = cartAttributesDaoService.findAttributesPrice(cartEntity.getId());
+                totalPrice = totalPrice.add(cartEntity.getItem().getUnitPrice().add(attributesPrice).multiply(new BigDecimal(cartEntity.getOrderQuantity())));
+            }
+
+        }
+
+        //If Brand is Inactive
+        if(isBrandNotActive) {
+            List<Integer> carts = new ArrayList<>();
+            for(CartEntity cartEntity : cartEntities){
+                carts.add(cartEntity.getId());
+            }
+
+
+            List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(carts);
+            if (cartAttributes.size() > 0)
+                cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+
+            cartDaoService.deleteCarts(carts);
+
+            cartDto.setMessage("CRT004");
+            cartDto.setValid(false);
+            return cartDto;
+
+        }
+
+        //If Items are inactive
+        if(inActiveCarts.size() > 0) {
+
+            List<Integer> carts = new ArrayList<>();
+            for(CartEntity cartEntity : inActiveCarts){
+                carts.add(cartEntity.getId());
+            }
+
+            List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(carts);
+            if (cartAttributes.size() > 0)
+                cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+
+            cartDaoService.deleteCarts(carts);
+
+            if(cartEntities.size() == inActiveCarts.size())    {
+                cartDto.setMessage("CRT005");
+                cartDto.setValid(false);
+                return cartDto;
+            } else {
+                cartDto.setMessage("CRT006");
+                cartDto.setValid(false);
+                return cartDto;
+            }
+
+
+        }
+
+       if(BigDecimalUtil.isLessThen(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)), totalPrice)) {
+           cartDto.setMessage("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
+           cartDto.setValid(false);
+           return cartDto;
+       }
+
+
+       if(BigDecimalUtil.isLessThen(totalPrice, cartEntities.get(0).getStoresBrand().getMinOrderAmount())) {
+           cartDto.setMessage("CRT008:"+" "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+ cartEntities.get(0).getStoresBrand().getMinOrderAmount());
+           cartDto.setValid(false);
+           return cartDto;
+       }
+
+
+        cartDto.setMessage("");
+        cartDto.setValid(true);
+        return cartDto;
     }
 
     @Override

@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Scanner;
 
 /**
@@ -355,19 +356,19 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         BigDecimal serviceFeeAmt = BigDecimalUtil.percentageOf(totalOrder, serviceFeePct);
         serviceFeeAmt = serviceFeeAmt.add(BigDecimalUtil.percentageOf(serviceFeeAmt, DELIVERY_FEE_VAT));
 
-        /* 11. ====== Delivery cost  without VAT and with Discount from system ======== */
+        /* 11. ====== Delivery cost  with VAT and with Discount from system ======== */
         BigDecimal deliveryChargedBeforeDiscount = ZERO;
         if(BigDecimalUtil.isGreaterThenOrEqualTo(deliveryCostWithoutAdditionalDvAmt, customerDiscount)){
             deliveryChargedBeforeDiscount = deliveryCostWithoutAdditionalDvAmt.subtract(customerDiscount);
-            //deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, DELIVERY_FEE_VAT));
+            deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, DELIVERY_FEE_VAT));
         }
 
         /* 12. ======= Customer Available balance before discount ====== */
         BigDecimal customerBalanceBeforeDiscount = order.getCustomer().getRewardsEarned();
 
-        /* 13. ======== Delivery charged to customer After Discount without VAT ====== */
+        /* 13. ======== Delivery charged to customer After Discount with VAT ====== */
         BigDecimal deliveryChargedAfterDiscount = ZERO;
-        if(BigDecimalUtil.isGreaterThen(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
+        if(BigDecimalUtil.isGreaterThenOrEqualTo(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
             deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
 
 
@@ -376,11 +377,8 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         if(BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
             customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
 
-        /* Add: ============= Actual Delivery charged to customer after balance discount and with VAT =========== */
-        BigDecimal actualDeliveryChargedWithVat = deliveryChargedAfterDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedAfterDiscount, DELIVERY_FEE_VAT));
-
         /* 14. ====== Customer Pays ========*/
-        BigDecimal customerPays = order.getTotalCost().add(deliveryChargedAfterDiscount).add(serviceFeeAmt).add(order.getItemServiceAndVatCharge());
+        BigDecimal customerPays = order.getTotalCost().add(serviceFeeAmt).add(deliveryChargedAfterDiscount).add(order.getItemServiceAndVatCharge());
         order.setGrandTotal(customerPays);
         order.setDeliveryCharge(deliveryChargedAfterDiscount);
         order.setSystemServiceCharge(serviceFeeAmt);
@@ -396,8 +394,8 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         /* 16 ===== Profit ====== */
         // total order * profit% = >  actual profit
         BigDecimal profit = ZERO;
-        profit =   BigDecimalUtil.percentageOf(totalOrder, commissionPct).add(BigDecimalUtil.percentageOf(totalOrder, serviceFeePct)).add(deliveryChargedAfterDiscount).subtract(paidToCourier);
-        //profit = BigDecimalUtil.percentageOf(totalOrder, commissionPct).add(deliveryChargedBeforeDiscount).add(serviceFeeAmt).subtract(paidToCourier);
+        profit =   BigDecimalUtil.percentageOf(totalOrder, commissionPct).add(BigDecimalUtil.percentageOf(totalOrder, serviceFeePct));
+        profit =  profit.add(deliveryChargedAfterDiscount.divide(BigDecimal.ONE.add(DELIVERY_FEE_VAT.divide(new BigDecimal(100))), MathContext.DECIMAL128)).subtract(paidToCourier);
         if(BigDecimalUtil.isLessThen(profit, BigDecimalUtil.percentageOf(totalOrder, MINIMUM_PROFIT_PERCENTAGE))){
             log.info("No Profit");
             profit = ZERO;
@@ -419,7 +417,6 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         courierTransactionEntity.setCustomerBalanceBeforeDiscount(customerBalanceBeforeDiscount);
         courierTransactionEntity.setDeliveryChargedAfterDiscount(deliveryChargedAfterDiscount);
         courierTransactionEntity.setCustomerBalanceAfterDiscount(customerBalanceAfterDiscount);
-        courierTransactionEntity.setActualDeliveryChargedWithVat(actualDeliveryChargedWithVat);
         courierTransactionEntity.setCustomerPays(customerPays);
         courierTransactionEntity.setPaidToCourier(paidToCourier);
         courierTransactionEntity.setProfit(profit);

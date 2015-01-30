@@ -1110,6 +1110,9 @@ label.check_label .checkbox {
     min-height: 150px;
     position: relative;
 }
+.items_container .form_content #other_stores {
+    min-height: 120px;
+}
 
 
 /* item view */

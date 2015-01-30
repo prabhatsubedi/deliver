@@ -253,7 +253,7 @@ public class ManagerController {
             else
                 headerDto.setId(null);
 
-            CategoryEntity newCategory = managerService.saveCategory(category, headerDto);
+            Object newCategory = managerService.saveCategory(category, headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Category has been saved successfully");
             serviceResponse.addParam("category", newCategory);
@@ -273,7 +273,7 @@ public class ManagerController {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
 
-            CategoryEntity newCategory = managerService.updateCategory(category, headerDto);
+            Object newCategory = managerService.updateCategory(category, headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Category has been updated successfully");
             serviceResponse.addParam("category", newCategory);
@@ -304,7 +304,7 @@ public class ManagerController {
 
     @RequestMapping(value = "/get_category", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> updateCategory(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> getCategory(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);

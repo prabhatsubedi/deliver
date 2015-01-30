@@ -402,15 +402,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public Boolean updateMerchant(MerchantEntity merchantEntity, HeaderDto headerDto) throws Exception {
-        log.info("Updating merchant with ID:"+merchantEntity.getId());
-        Integer merchant_id;
-        if(merchantEntity.getId() == null){
-            merchant_id = headerDto.getMerchantId();
-        }else{
-            merchant_id  = merchantEntity.getId();
-        }
+        log.info("Updating merchant with ID:"+headerDto.getId());
 
-        MerchantEntity merchant = merchantDaoService.find(merchant_id);
+        MerchantEntity merchant = merchantDaoService.find(Integer.parseInt(headerDto.getId()));
         if(merchant == null)
             throw new YSException("VLD011");
         //set user values
@@ -1088,7 +1082,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
               else get the items of child category itself as the final category
              */
             if(childsChildId.size() > 0){
-                //fixme : get the dao contact out out the loop
                 List<ItemEntity> categoriesItems = merchantDaoService.findItemByCategory(childsChildId, storeId, itemCount);
                 if(categoriesItems.size() > 0){
                     for(ItemEntity item: categoriesItems){

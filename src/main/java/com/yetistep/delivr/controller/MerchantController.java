@@ -89,7 +89,16 @@ public class MerchantController {
     public ResponseEntity<ServiceResponse> updateMerchant(@RequestHeader HttpHeaders headers, @RequestBody MerchantEntity merchantEntity) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
+            List<String> hd = headers.get("merchantId");
+            if (hd != null && hd.size() > 0)
+                headerDto.setMerchantId(Integer.parseInt( hd.get(0)));
+            else {
+                if(SessionManager.getRole().toString().equals(Role.ROLE_MERCHANT.toString())){
+                    headerDto.setMerchantId(SessionManager.getMerchantId());
+                } else {
+                    headerDto.setMerchantId(null);
+                }
+            }
             merchantService.updateMerchant(merchantEntity, headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Merchant has been updated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

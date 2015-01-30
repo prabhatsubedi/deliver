@@ -7,18 +7,12 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.ManagerService;
 import com.yetistep.delivr.service.inf.MerchantService;
-import com.yetistep.delivr.util.AmazonUtil;
-import com.yetistep.delivr.util.GeneralUtil;
-import com.yetistep.delivr.util.MessageBundle;
-import com.yetistep.delivr.util.YSException;
+import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -170,8 +164,8 @@ public class ManagerServiceImpl implements ManagerService {
 
 
     @Override
-    public CategoryEntity saveCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
-
+    public Object saveCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
+        log.info("****************************saving category **************************");
         if (headerDto.getId() != null){
             CategoryEntity parentCategory = new CategoryEntity();
             parentCategory.setId(Integer.parseInt(headerDto.getId()));
@@ -203,12 +197,20 @@ public class ManagerServiceImpl implements ManagerService {
             categoryDaoService.update(category);
         }
 
-        return category;
+        String fields = "id,name,imageUrl";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+
+        return ReturnJsonUtil.getJsonObject(category, fields, assoc, subAssoc);
+
+        //return category;
     }
 
     @Override
-    public CategoryEntity updateCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
-
+    public Object updateCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
+        log.info("****************************updating category "+headerDto.getId()+"**************************");
         CategoryEntity dbCategory = categoryDaoService.find(Integer.parseInt(headerDto.getId()));
 
         String categoryImage = category.getImageUrl();
@@ -243,7 +245,14 @@ public class ManagerServiceImpl implements ManagerService {
             categoryDaoService.update(dbCategory);
         }
 
-        return dbCategory;
+        String fields = "id,parent,name,imageUrl";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+
+        return ReturnJsonUtil.getJsonObject(dbCategory, fields, assoc, subAssoc);
+        //return dbCategory;
     }
 
 

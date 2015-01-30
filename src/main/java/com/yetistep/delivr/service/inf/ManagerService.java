@@ -32,9 +32,9 @@ public interface ManagerService {
 
     public Boolean updateFeatureAndPriorityOfStoreBrands(List<StoresBrandEntity> storesBrands) throws Exception;
 
-    public CategoryEntity saveCategory(CategoryEntity category, HeaderDto headerDto) throws Exception;
+    public Object saveCategory(CategoryEntity category, HeaderDto headerDto) throws Exception;
 
-    public CategoryEntity updateCategory(CategoryEntity category, HeaderDto headerDto) throws Exception;
+    public Object updateCategory(CategoryEntity category, HeaderDto headerDto) throws Exception;
 
     public List<CategoryEntity> getDefaultCategories() throws Exception;
 

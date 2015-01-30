@@ -730,6 +730,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
                     var data = {};
                     var callback = function(success, data){
+                        console.log(data);
                         if (!data.success) {
                             alert(data.message);
                             return;
@@ -737,7 +738,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         var category = data.params.category;
 
                         $('.category_detail #category_id').val(category.id);
-                        $('.category_detail #category_parent_id').val(category.id);
+                        //$('.category_detail #category_parent_id').val(category.id);
                         $(".category_detail .name").html(category.name);
                         $(".category_detail #name").val(category.name);
                         if(category.imageUrl != null)

@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.util.DateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -110,5 +111,30 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         Integer orderStatus = (Integer) query.uniqueResult();
         JobOrderStatus jobOrderStatus = JobOrderStatus.fromInt(orderStatus);
         return jobOrderStatus;
+    }
+
+    @Override
+    public List<OrderEntity> getElapsedOrders(Integer timeDuration) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.add(Restrictions.eq("orderStatus", JobOrderStatus.ORDER_PLACED))
+        .add(Restrictions.le("orderDate", DateUtil.subtractSeconds(DateUtil.getCurrentTimestampSQL(), timeDuration)));
+        List<OrderEntity>  orderEntities = criteria.list();
+        return orderEntities;
+    }
+
+    @Override
+    public OrderEntity getNextPendingOrder() throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("orderDate"), "orderDate")
+        ).setResultTransformer(Transformers.aliasToBean(OrderEntity.class));
+        criteria.add(Restrictions.eq("orderStatus", JobOrderStatus.ORDER_PLACED))
+                .addOrder(Order.asc("orderDate"));
+        List<OrderEntity>  orderEntities = criteria.list();
+        if(orderEntities.size() > 0){
+            return orderEntities.get(0);
+        }
+        return null;
     }
 }

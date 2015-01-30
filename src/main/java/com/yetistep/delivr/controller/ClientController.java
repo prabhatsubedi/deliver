@@ -13,6 +13,7 @@ import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
+import com.yetistep.delivr.util.YSException;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.service.UADetectorServiceFactory;
@@ -117,6 +118,7 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
 
     @RequestMapping(value = "/get_delivered_address/fbId/{facebookId}", method = RequestMethod.GET)
     @ResponseBody
@@ -358,6 +360,44 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while getting cart", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/validate_cart/fbId/{facebookId}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> addAddresses(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId) {
+
+        try {
+//            HeaderDto headerDto = new HeaderDto();
+//            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+//            validateMobileClient(headerDto.getAccessToken());
+
+            ServiceResponse serviceResponse;
+            CartDto cartDto = clientService.validateCart(facebookId);
+            if(!cartDto.getValid()){
+                String[] msg = null;
+                if(cartDto.getMessage().contains(":"))
+                    msg = cartDto.getMessage().split(":");
+                if(msg!=null){
+                    throw new YSException(msg[0], msg[1]);
+                } else {
+                    throw new YSException(cartDto.getMessage());
+                }
+
+            } else {
+                //Validation Success and Get my Delivered Address
+                UserEntity user  = customerService.getDeliveredAddress(facebookId);
+
+                serviceResponse = new ServiceResponse("Delivered address retrieved successfully");
+                serviceResponse.addParam("user", user);
+
+            }
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while validating cart", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

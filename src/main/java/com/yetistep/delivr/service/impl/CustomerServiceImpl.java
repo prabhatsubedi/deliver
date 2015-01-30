@@ -7,6 +7,7 @@ import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
+import com.yetistep.delivr.schedular.ScheduleChanger;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
@@ -77,6 +78,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     StoresBrandDaoService storesBrandDaoService;
+
+    @Autowired
+    private ScheduleChanger scheduleChanger;
 
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
@@ -368,9 +372,8 @@ public class CustomerServiceImpl implements CustomerService {
         // ==== Discount on delivery to customer =======
         BigDecimal customerDiscount = BigDecimal.ZERO;
         BigDecimal systemReservedCommissionAmt = BigDecimal.ZERO;
-
         if(BigDecimalUtil.isGreaterThenZero(commissionPct)){
-            BigDecimal totalCommission = BigDecimalUtil.percentageOf(subTotal, commissionPct);
+            BigDecimal totalCommission = BigDecimalUtil.percentageOf(subTotal,commissionPct);
             systemReservedCommissionAmt = BigDecimalUtil.percentageOf(totalCommission, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.RESERVED_COMM_PER_BY_SYSTEM)));
             customerDiscount = totalCommission.subtract(systemReservedCommissionAmt);
         }
@@ -379,23 +382,24 @@ public class CustomerServiceImpl implements CustomerService {
         Integer surgeFactor = getSurgeFactor();
 
 
-        /* 9. ====== Delivery cost (Does not include additional delivery amt) ============== */
+         /* 9. ====== Delivery cost (Does not include additional delivery amt) ============== */
         BigDecimal deliveryCostWithoutAdditionalDvAmt = BigDecimal.ZERO;
         if(BigDecimalUtil.isLessThen(storeToCustomerDistance, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_NKM_DISTANCE))))
             deliveryCostWithoutAdditionalDvAmt = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_NKM)).multiply(new BigDecimal(surgeFactor));
         else
-            deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply( new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_NKM))).multiply(new BigDecimal(surgeFactor));
+            deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_NKM))).multiply(new BigDecimal(surgeFactor));
 
         /* 10. ======= Service fee Amount with VAT =========== */
         BigDecimal serviceFeeAmt = BigDecimalUtil.percentageOf(subTotal, serviceFeePct);
         serviceFeeAmt = serviceFeeAmt.add(BigDecimalUtil.percentageOf(serviceFeeAmt, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
 
-         /* 11. ====== Delivery charged to customer before Discount ======== */
+        /* 11. ====== Delivery cost  with VAT and with Discount from system ======== */
         BigDecimal deliveryChargedBeforeDiscount = BigDecimal.ZERO;
         if(BigDecimalUtil.isGreaterThenOrEqualTo(deliveryCostWithoutAdditionalDvAmt, customerDiscount)){
             deliveryChargedBeforeDiscount = deliveryCostWithoutAdditionalDvAmt.subtract(customerDiscount);
             deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
         }
+
 
         /* Item Detail and Others */
         StoresBrandEntity storeBrand = new StoresBrandEntity();
@@ -408,10 +412,19 @@ public class CustomerServiceImpl implements CustomerService {
         checkOutDto.setItems(items);
         checkOutDto.setSubTotal(subTotal.setScale(0, BigDecimal.ROUND_DOWN));
         checkOutDto.setTax(merchantTax.setScale(0, BigDecimal.ROUND_DOWN));
-        checkOutDto.setServiceFee(BigDecimalUtil.percentageOf(subTotal, serviceFeePct).setScale(0, BigDecimal.ROUND_DOWN));
+        checkOutDto.setServiceFee(serviceFeeAmt.setScale(0, BigDecimal.ROUND_DOWN));
         checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
+
+        if(BigDecimalUtil.isZero(checkOutDto.getDeliveryFee())) {
+            customerBalanceBeforeDiscount = BigDecimal.ZERO;
+        }
+
+        if(BigDecimalUtil.isLessThenOrEqualTo(checkOutDto.getDeliveryFee(), customerBalanceBeforeDiscount)){
+            customerBalanceBeforeDiscount =  checkOutDto.getDeliveryFee();
+        }
+
         checkOutDto.setDiscount(customerBalanceBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
-        BigDecimal estimatedAmt = subTotal.add(merchantTax).add(BigDecimalUtil.percentageOf(subTotal, serviceFeePct)).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
+        BigDecimal estimatedAmt = subTotal.add(merchantTax).add(serviceFeeAmt).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
         checkOutDto.setEstimatedAmount(estimatedAmt.setScale(0, BigDecimal.ROUND_DOWN));
         return checkOutDto;
     }
@@ -504,7 +517,9 @@ public class CustomerServiceImpl implements CustomerService {
         customerDaoService.saveOrder(order);
 
         //TODO Filter delivery boys by profit criteria - Push Notifications
-
+        Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
+        Integer timeOut = timeInSeconds.intValue();
+        scheduleChanger.scheduleTask(DateUtil.findDelayDifference(DateUtil.getCurrentTimestampSQL(), timeOut));
     }
 
     /*

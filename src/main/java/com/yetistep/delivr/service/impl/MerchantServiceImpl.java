@@ -532,14 +532,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         /*String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount";
 
         Map<String, String> assoc = new HashMap<>();
-        Map<String, String> subAssoc = new HashMap<>();
+        //Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("store", "id,street,city,state,latitude,longitude,status");
         assoc.put("brandsCategory", "id,category");
         assoc.put("merchant", "businessLogo");
 
-        subAssoc.put("category", "id,name,featured");
-        return ReturnJsonUtil.getJsonObject(storesBrandEntity, fields, assoc, subAssoc);*/
+        //subAssoc.put("category", "id,name,featured");
+        return ReturnJsonUtil.getJsonObject(storesBrandEntity, fields, assoc);*/
+
         return getStoreBrandForJson(storesBrandEntity);
     }
 

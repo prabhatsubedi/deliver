@@ -215,11 +215,8 @@ public class ManagerServiceImpl implements ManagerService {
 
         String fields = "id,name,imageUrl";
 
-        Map<String, String> assoc = new HashMap<>();
-        Map<String, String> subAssoc = new HashMap<>();
 
-
-        return ReturnJsonUtil.getJsonObject(category, fields, assoc, subAssoc);
+        return ReturnJsonUtil.getJsonObject(category, fields);
 
         //return category;
     }
@@ -261,13 +258,9 @@ public class ManagerServiceImpl implements ManagerService {
             categoryDaoService.update(dbCategory);
         }
 
-        String fields = "id,parent,name,imageUrl";
+        String fields = "id,name,imageUrl";
 
-        Map<String, String> assoc = new HashMap<>();
-        Map<String, String> subAssoc = new HashMap<>();
-
-
-        return ReturnJsonUtil.getJsonObject(dbCategory, fields, assoc, subAssoc);
+        return ReturnJsonUtil.getJsonObject(dbCategory, fields);
         //return dbCategory;
     }
 

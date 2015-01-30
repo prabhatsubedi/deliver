@@ -332,6 +332,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 $(target_body).animate({marginLeft: close_width});
                 $('.sidebar_logo', target_menu).animate({paddingTop: close_logo_pad, paddingBottom: close_logo_pad});
                 $('.sidebar_menu a', target_menu).animate({paddingLeft: close_menu_link_pad_left});
+                $('.sidebar_menu li li', target_menu).animate({paddingLeft: 0});
                 $(target_menu).animate({width: close_width, padding: close_menu_pad}, function(){
                     $(this).removeClass('menu_opened').addClass('menu_closed');
                     Main.saveInLocalStorage('menu', 'closed');
@@ -341,6 +342,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 $(target_body).animate({marginLeft: open_width});
                 $('.sidebar_logo', target_menu).animate({paddingTop: open_logo_pad, paddingBottom: open_logo_pad});
                 $('.sidebar_menu a', target_menu).animate({paddingLeft: open_menu_link_pad_left});
+                $('.sidebar_menu li li', target_menu).animate({paddingLeft: open_menu_link_pad_left});
                 $(target_menu).animate({width: open_width, padding: open_menu_pad}, function(){
                     $(this).removeClass('menu_closed').addClass('menu_opened');
                     Main.saveInLocalStorage('menu', 'opened');
@@ -356,6 +358,7 @@ $(document).ready(function(){
     Main.elemRatio();
     Main.fullHeight();
     Main.toggleMainMenu();
+    $('.elem_tooltip').tooltip();
 });
 $(window).resize(function(){
     Main.elemRatio();

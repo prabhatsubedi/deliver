@@ -419,6 +419,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             itemDto.setVat(null);
             itemDto.setServiceCharge(null);
             itemDto.setBrandId(brandId);
+            itemDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         }
 
         return items;
@@ -476,6 +477,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         itemEntity.setModifiedDate(null);
         itemEntity.setVat(null);
         itemEntity.setServiceCharge(null);
+        itemEntity.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
 
 
         return itemEntity;
@@ -604,6 +606,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
            cartDto.setStoresBrand(store);
            cartDto.setCarts(cartEntities);
+           cartDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
 
        }
 
@@ -759,7 +762,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         //Cart Detail
         CartEntity cartEntity = cartDaoService.findCart(cartId);
         if(cartEntity == null)
-            throw new Exception("CRT001");
+            throw new YSException("CRT001");
 
         //Getting Cart Attributes
         List<Integer> selectedAttributes = cartAttributesDaoService.findCartAttributes(cartEntity.getId());
@@ -782,10 +785,11 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             }
         }
 
-        //itemEntity.setBrandName(null);
+        itemEntity.setCurrency(null);
         cartEntity.setItem(null);
         cartDto.setCart(cartEntity);
         cartDto.setItem(itemEntity);
+        cartDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
 
         return cartDto;
     }

@@ -205,9 +205,9 @@ public class ManagerServiceImpl implements ManagerService {
 
         if(categoryImage != null){
             log.info("Uploading category image to S3 Bucket ");
-            String dir = MessageBundle.separateString("/", "category" + category.getId());
+            String dir = MessageBundle.separateString("/", "categories");
             boolean isLocal = MessageBundle.isLocalHost();
-            String categoryImageUrl = "categoryImage"+(isLocal ? "_tmp_" : "_") + category.getId()+System.currentTimeMillis();
+            String categoryImageUrl = "category"+(isLocal ? "_tmp_" : "_") + category.getId()+System.currentTimeMillis();
             String s3PathImage = GeneralUtil.saveImageToBucket(categoryImage, categoryImageUrl, dir, true);
             category.setImageUrl(s3PathImage);
             categoryDaoService.update(category);
@@ -247,7 +247,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         if(categoryImage != null){
             log.info("Uploading category image to S3 Bucket ");
-            String dir = MessageBundle.separateString("/", "category" + dbCategory.getId());
+            String dir = MessageBundle.separateString("/", "categories");
             boolean isLocal = MessageBundle.isLocalHost();
 
             if(dbImageUrl != null){
@@ -255,7 +255,7 @@ public class ManagerServiceImpl implements ManagerService {
                 AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(dbImageUrl));
             }
 
-            String categoryImageUrl = "categoryImage"+(isLocal ? "_tmp_" : "_") + dbCategory.getId()+System.currentTimeMillis();
+            String categoryImageUrl = "category"+(isLocal ? "_tmp_" : "_") + dbCategory.getId()+System.currentTimeMillis();
             String s3PathImage = GeneralUtil.saveImageToBucket(categoryImage, categoryImageUrl, dir, true);
             dbCategory.setImageUrl(s3PathImage);
             categoryDaoService.update(dbCategory);

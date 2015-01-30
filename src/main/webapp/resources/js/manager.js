@@ -751,7 +751,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     var headers = {};
                     headers.id = id;
                     data.name = $('#name').val();
-                    if($('#category_image').find('img').attr('src').indexOf('https://') == -1)
+                    if(typeof $('#category_image').find('img').attr('src') != "undefined" &&  $('#category_image').find('img').attr('src').indexOf('https://') == -1)
                         data.imageUrl = $('#category_image').find('img').attr('src');
                     callback.loaderDiv = "body";
                     callback.requestType = "PUT";
@@ -800,7 +800,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     var headers = {};
                     headers.id = parent_id;
                     data.name = $('#name').val();
+                    if(typeof $('#category_image').find('img').attr('src') != "undefined")
                     data.imageUrl = $('#category_image').find('img').attr('src');
+
                     callback.loaderDiv = "body";
                     Main.request('/organizer/save_category', data, callback, headers);
                 }

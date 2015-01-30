@@ -404,7 +404,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public Boolean updateMerchant(MerchantEntity merchantEntity, HeaderDto headerDto) throws Exception {
         log.info("Updating merchant with ID:"+headerDto.getId());
 
-        MerchantEntity merchant = merchantDaoService.find(Integer.parseInt(headerDto.getId()));
+        MerchantEntity merchant = merchantDaoService.find(headerDto.getMerchantId());
         if(merchant == null)
             throw new YSException("VLD011");
         //set user values

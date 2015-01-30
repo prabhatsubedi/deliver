@@ -3,10 +3,7 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.CartDaoService;
 import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
 import com.yetistep.delivr.model.CartEntity;
-import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -187,5 +184,18 @@ public class CartDaoServiceImpl implements CartDaoService{
         return availableQty;
     }
 
+    @Override
+    public Boolean updateCartWithOrder(List<Integer> cartIds, Integer orderId) throws Exception {
+        String idList = "(";
+        for(Integer cartId: cartIds){
+            idList += cartId + ",";
+        }
+        idList = idList.substring(0, idList.length()-1) +")";
+        String sqlQuery = "UPDATE cart SET order_id = :orderId WHERE id in "+idList;
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("orderId", orderId);
+        query.executeUpdate();
+        return true;
+    }
 
 }

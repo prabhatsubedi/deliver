@@ -455,6 +455,7 @@ public class CustomerServiceImpl implements CustomerService {
         BigDecimal itemTotalCost = BigDecimal.ZERO;
         BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
         List<CartEntity> cartEntities = cartDaoService.getMyCarts(customerId);
+        List<Integer> cartIds = new ArrayList<Integer>();
         List<ItemsOrderEntity> itemsOrder = new ArrayList<ItemsOrderEntity>();
         Integer brandId = null;
         for (CartEntity cart : cartEntities) {
@@ -490,6 +491,7 @@ public class CustomerServiceImpl implements CustomerService {
             itemsOrderEntity.setServiceAndVatCharge(serviceAndVatCharge);
             itemsOrder.add(itemsOrderEntity);
             brandId = cart.getStoresBrand().getId();
+            cartIds.add(cart.getId());
         }
 
 
@@ -520,6 +522,7 @@ public class CustomerServiceImpl implements CustomerService {
         order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
         customerDaoService.saveOrder(order);
 
+        cartDaoService.updateCartWithOrder(cartIds, order.getId());
         //TODO Filter delivery boys by profit criteria - Push Notifications
         Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
         Integer timeOut = timeInSeconds.intValue();

@@ -1,5 +1,6 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
 import org.hibernate.annotations.DynamicUpdate;
@@ -30,6 +31,7 @@ public class CartEntity {
     private StoresBrandEntity storesBrand;
     private CustomerEntity customer;
     private List<CartAttributesEntity> cartAttributes;
+    private Integer orderId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -112,5 +114,15 @@ public class CartEntity {
 
     public void setCartAttributes(List<CartAttributesEntity> cartAttributes) {
         this.cartAttributes = cartAttributes;
+    }
+
+    @JsonIgnore
+    @Column(name="order_id")
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 }

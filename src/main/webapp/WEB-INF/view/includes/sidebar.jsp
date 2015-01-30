@@ -1,15 +1,22 @@
 <div class="sidebar menu_opened" id="sidebar_menu">
+    <div class="clearfix">
+        <button type="button" class="navbar-toggle collapsed menu_toggle" data-menu="#sidebar_menu" data-body=".main_container">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
     <div class="sidebar_logo">
         <a href="/organizer/dashboard"><img src="${pageContext.request.contextPath}/resources/images/delivr-logo.png" class="img-responsive" /></a>
     </div>
     <div class="sidebar_menu">
         <ul class="nav nav-stacked">
-            <li><a href="/organizer/dashboard">Dashboard</a></li>
-            <li><a href="/organizer/merchants">Merchants</a></li>
-            <li><a href="/organizer/stores">Stores</a></li>
-            <li><a href="/organizer/courier_staff/list">Courier Staff</a></li>
-            <li><a href="#">Invoices</a></li>
-            <li><a href="#">Purchase History</a></li>
+            <li><a href="/organizer/dashboard"><span class="glyphicon glyphicon-home"></span><span class="menu_text">Dashboard</span></a></li>
+            <li><a href="/organizer/merchants"><span class="glyphicon glyphicon-credit-card"></span><span class="menu_text">Merchants</span></a></li>
+            <li><a href="/organizer/stores"><span class="glyphicon glyphicon-log-in"></span><span class="menu_text">Stores</span></a></li>
+            <li><a href="/organizer/courier_staff/list"><span class="glyphicon glyphicon-user"></span><span class="menu_text">Courier Staff</span></a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-list-alt"></span><span class="menu_text">Invoices</span></a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-globe"></span><span class="menu_text">Purchase History</span></a></li>
         </ul>
     </div>
 </div>

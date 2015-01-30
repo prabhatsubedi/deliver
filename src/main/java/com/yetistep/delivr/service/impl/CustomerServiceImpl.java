@@ -340,8 +340,11 @@ public class CustomerServiceImpl implements CustomerService {
             tempItem.setUnitPrice(total);
             tempItem.setOrderQuantity(cart.getOrderQuantity());
             tempItem.setName(item.getName());
+
             if(item.getItemsImage()!=null && item.getItemsImage().size() > 0)
                 tempItem.setImageUrl(item.getItemsImage().get(0).getUrl());
+            else
+                tempItem.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
 
             items.add(tempItem);
         }

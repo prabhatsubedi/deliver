@@ -412,6 +412,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 //                price = price.add(BigDecimalUtil.percentageOf(price, itemDto.getVat()));
 //            }
 
+            if(itemDto.getImageUrl()==null || itemDto.getImageUrl().isEmpty())
+                 itemDto.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+
             itemDto.setPrice(price.setScale(2, BigDecimal.ROUND_UP));
             itemDto.setVat(null);
             itemDto.setServiceCharge(null);
@@ -449,9 +452,19 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             }
         }
 
-        for (ItemsImageEntity itemsImageEntity : itemEntity.getItemsImage()) {
-            itemsImageEntity.setId(null);
+        if(itemEntity.getItemsImage()==null || itemEntity.getItemsImage().size() == 0) {
+            //If Item has not any image then set default image
+            List<ItemsImageEntity> itemImages = new ArrayList<>();
+            ItemsImageEntity itemsImage = new ItemsImageEntity();
+            itemsImage.setUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+            itemImages.add(itemsImage);
+            itemEntity.setItemsImage(itemImages);
+        } else {
+            for (ItemsImageEntity itemsImageEntity : itemEntity.getItemsImage()) {
+                itemsImageEntity.setId(null);
+            }
         }
+
 
         itemEntity.setBrandName(itemEntity.getStoresBrand().getBrandName());
         itemEntity.setItemsStores(null);
@@ -563,6 +576,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                    ItemsImageEntity itemsImageEntity = itemsImageDaoService.findImage(cartEntity.getItem().getId());
                    if(itemsImageEntity !=null)
                         cartEntity.getItem().setImageUrl(itemsImageEntity.getUrl());
+                   else
+                        cartEntity.getItem().setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
 
                    //Add Attribute Price and Unit Price
                    BigDecimal attributesPrice = cartAttributesDaoService.findAttributesPrice(cartEntity.getId());

@@ -95,3 +95,6 @@ DELETE FROM preferences WHERE pref_key IN ('MERCHANT_VAT', 'MERCHANT_SERVICE_CHA
 ALTER TABLE courier_transaction DROP COLUMN actual_delivery_charge_with_vat;
 INSERT INTO preferences (pref_key, value) VALUES ('ORDER_MAX_AMOUNT', '10000');
 
+/* ############### 2015.01.30 ####################### */
+ INSERT INTO preferences (pref_key, value) VALUES ('DEFAULT_IMG_ITEM', 'https://delivrtest.s3.amazonaws.com/default/item/def_item.png');
+

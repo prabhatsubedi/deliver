@@ -28,5 +28,8 @@ public enum PreferenceType {
     //Customer Preferences
     CUSTOMER_REWARD_AMOUNT, MAX_REFERRED_FRIENDS_COUNT,
 
+    //Default Images
+    DEFAULT_IMG_ITEM,
+
     ANDROID_APP_VER_NO, WEB_APP_VER_NO;
 }

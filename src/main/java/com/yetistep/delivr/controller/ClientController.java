@@ -370,9 +370,9 @@ public class ClientController extends AbstractManager{
     public ResponseEntity<ServiceResponse> addAddresses(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId) {
 
         try {
-//            HeaderDto headerDto = new HeaderDto();
-//            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-//            validateMobileClient(headerDto.getAccessToken());
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
 
             ServiceResponse serviceResponse;
             CartDto cartDto = clientService.validateCart(facebookId);
@@ -387,12 +387,8 @@ public class ClientController extends AbstractManager{
                 }
 
             } else {
-                //Validation Success and Get my Delivered Address
-                UserEntity user  = customerService.getDeliveredAddress(facebookId);
-
-                serviceResponse = new ServiceResponse("Delivered address retrieved successfully");
-                serviceResponse.addParam("user", user);
-
+                serviceResponse = new ServiceResponse("Cart validated successfully");
+                serviceResponse.addParam("valid", true);
             }
 
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

@@ -586,6 +586,10 @@ if (typeof(Manager) == "undefined") var Manager = {};
     }
 
     Manager.getCategories = function(){
+        $("a.view_home").click(function(){
+            $(".parent_category_list").removeClass("hidden");
+            $(".category_detail").addClass("hidden");
+        });
         var callback = function (status, data) {
             if (!data.success) {
                 alert(data.message);
@@ -643,9 +647,27 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 }
             });
         }
-        callback.loaderDiv = "body";
+        callback.loaderDiv = ".categories_container";
         callback.requestType = "GET";
         Main.request('/organizer/get_default_categories', {}, callback);
+
+        var item_list = '';
+        var callback1 = function(success, data){
+            var categories = data.params.categories;
+            for(var j = 0; j < categories.length; j++) {
+                var category = categories[j];
+                var elem = $('.item_container_template').clone();
+                $('.item_image img', elem).attr('src', category.imageUrl);
+                $('.item_name a', elem).html(category.name);
+                item_list += elem.html();
+            }
+            $('.parent_category_list').html(item_list);
+            $('.parent_category_list .item_container').removeClass('invisible');
+        }
+
+        callback1.loaderDiv = ".parent_category_list";
+        callback1.requestType = "GET";
+        Main.request('/merchant/get_parent_categories', {}, callback1);
     }
 
 
@@ -658,6 +680,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             $('.add_child_btn').removeClass('hidden');
             var category = data.params.category;
             $(".category_detail").removeClass("hidden");
+            $(".parent_category_list").addClass("hidden");
             $('.category_detail #category_id').val(category.id);
             $('.category_detail #category_parent_id').val(category.id);
             $(".category_detail .name").html(category.name);

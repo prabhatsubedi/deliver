@@ -40,6 +40,7 @@
             <div class="item_listing">
                 <div class="table_div">
                     <div class="categories_container td_div full_height">
+                        <a class="btn btn_green view_home">Category Home</a>
                         <div class="cateogry_list"></div>
                     </div>
                     <div class="category_detail col-lg-12 td_div hidden">
@@ -88,7 +89,23 @@
                             </form>
                         </div>
                     </div>
+                    <div class="parent_category_list items_container col-lg-12 td_div full_height">
+
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="item_container_template hidden">
+    <div class="item_container col-lg-3 invisible">
+        <div class="block_item">
+            <div class="item_image maintain_ratio" mr-height="400" mr-width="400">
+                <img class="img-responsive no_image">
+            </div>
+            <div class="item_infos">
+                <p class="item_name"><a href="#"></a></p>
             </div>
         </div>
     </div>

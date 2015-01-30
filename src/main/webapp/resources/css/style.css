@@ -1400,6 +1400,11 @@ label.check_label .checkbox {
     margin-top: 30px;
 }
 
+.view_home {
+    float: none;
+    margin: 10px 0 10px 100px;
+}
+
 /* settings */
 .settings_menu ul li {
     margin: 0px;

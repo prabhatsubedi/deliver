@@ -14,6 +14,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class CheckOutDto {
+    private String currency;
     private StoresBrandEntity storesBrand;
     private List<ItemEntity> items;
     private BigDecimal subTotal;
@@ -85,5 +86,13 @@ public class CheckOutDto {
 
     public void setEstimatedAmount(BigDecimal estimatedAmount) {
         this.estimatedAmount = estimatedAmount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

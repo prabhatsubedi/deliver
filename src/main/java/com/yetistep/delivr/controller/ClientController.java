@@ -367,7 +367,7 @@ public class ClientController extends AbstractManager{
 
     @RequestMapping(value = "/validate_cart/fbId/{facebookId}", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> addAddresses(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId) {
+    public ResponseEntity<ServiceResponse> validateCart(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId) {
 
         try {
             HeaderDto headerDto = new HeaderDto();

@@ -14,6 +14,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class CartDto {
+    private String currency;
     private StoresBrandEntity storesBrand;
     private List<CartEntity> carts;
     private Integer totalCart;
@@ -76,5 +77,13 @@ public class CartDto {
 
     public void setValid(Boolean valid) {
         this.valid = valid;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

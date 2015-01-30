@@ -10,6 +10,7 @@ import java.math.BigDecimal;
  * To change this template use File | Settings | File Templates.
  */
 public class ItemDto {
+    private String currency;
     private Integer id;
     private String name;
     private String description;
@@ -81,5 +82,13 @@ public class ItemDto {
 
     public void setVat(BigDecimal vat) {
         this.vat = vat;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

@@ -128,6 +128,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("merchant.id"),"merchantId")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.or(Restrictions.eq("featured", true), Restrictions.gt("priority", 0)))
+                .add(Restrictions.eq("status", Status.ACTIVE))
                     .addOrder(Order.asc("priority"));
         List<StoresBrandEntity> storesBrandEntities = criteria.list();
         return storesBrandEntities;
@@ -138,7 +139,8 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
         Criteria criteriaCount = getCurrentSession().createCriteria(StoresBrandEntity.class);
         criteriaCount.setProjection(Projections.rowCount())
                 .add(Restrictions.and(Restrictions.isNull("priority"),
-                        Restrictions.or(Restrictions.eq("featured", false), Restrictions.isNull("featured"))));
+                        Restrictions.or(Restrictions.eq("featured", false), Restrictions.isNull("featured"))))
+                .add(Restrictions.eq("status", Status.ACTIVE));
         Long count = (Long) criteriaCount.uniqueResult();
         return (count != null) ? count.intValue() : null;
     }
@@ -157,7 +159,37 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("merchant.id"),"merchantId")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.and(Restrictions.isNull("priority"),
-                Restrictions.or(Restrictions.eq("featured", false), Restrictions.isNull("featured"))));
+                Restrictions.or(Restrictions.eq("featured", false), Restrictions.isNull("featured"))))
+                .add(Restrictions.eq("status", Status.ACTIVE));
+        HibernateUtil.fillPaginationCriteria(criteria, page, StoresBrandEntity.class);
+
+        List<StoresBrandEntity> storesBrandEntities = criteria.list();
+        return storesBrandEntities;
+    }
+
+    @Override
+    public Integer getTotalNumberOfInactiveStoreBrands() throws Exception {
+        Criteria criteriaCount = getCurrentSession().createCriteria(StoresBrandEntity.class);
+        criteriaCount.setProjection(Projections.rowCount())
+                .add(Restrictions.eq("status", Status.INACTIVE));
+        Long count = (Long) criteriaCount.uniqueResult();
+        return (count != null) ? count.intValue() : null;
+    }
+
+    @Override
+    public List<StoresBrandEntity> findInactiveStoreBrands(Page page) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(StoresBrandEntity.class);
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("brandName"), "brandName")
+                .add(Projections.property("brandLogo"), "brandLogo")
+                .add(Projections.property("brandImage"), "brandImage")
+                .add(Projections.property("brandUrl"), "brandUrl")
+                .add(Projections.property("featured"), "featured")
+                .add(Projections.property("priority"), "priority")
+                .add(Projections.property("merchant.id"),"merchantId")
+        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
+        criteria.add(Restrictions.eq("status", Status.INACTIVE));
         HibernateUtil.fillPaginationCriteria(criteria, page, StoresBrandEntity.class);
 
         List<StoresBrandEntity> storesBrandEntities = criteria.list();

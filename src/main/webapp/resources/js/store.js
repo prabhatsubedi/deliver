@@ -381,7 +381,7 @@ if(typeof(Store) == "undefined") var Store = {};
                 alert(data.message);
                 form_submit = true;
                 if(data_action == 'update')
-                    window.location = Main.modifyURL('/merchant/item/view/' + Main.getURLvalue(4));
+                    window.location = Main.modifyURL('/merchant/store/view/' + Main.getURLvalue(4));
                 else
                     window.location = Main.modifyURL("/merchant/store/list");
             } else {

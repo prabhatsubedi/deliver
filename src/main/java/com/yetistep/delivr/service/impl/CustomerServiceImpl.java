@@ -429,6 +429,7 @@ public class CustomerServiceImpl implements CustomerService {
         checkOutDto.setDiscount(customerBalanceBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
         BigDecimal estimatedAmt = subTotal.add(merchantTax).add(serviceFeeAmt).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
         checkOutDto.setEstimatedAmount(estimatedAmt.setScale(0, BigDecimal.ROUND_DOWN));
+        checkOutDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         return checkOutDto;
     }
 

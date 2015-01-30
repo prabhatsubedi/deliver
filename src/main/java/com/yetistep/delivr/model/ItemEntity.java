@@ -56,10 +56,11 @@ public class ItemEntity implements Serializable {
     private BigDecimal serviceCharge;
     private Status status;
 
-    //Transient Value
-    private String imageUrl;
-    private String brandName;
-    private Integer orderQuantity;
+
+    private String imageUrl; //Transient Value
+    private String brandName; //Transient Value
+    private Integer orderQuantity; //Transient Value
+    private String currency; //Transient Value
 
     private CategoryEntity category;
     private StoresBrandEntity storesBrand;
@@ -256,6 +257,15 @@ public class ItemEntity implements Serializable {
 
     public void setOrderQuantity(Integer orderQuantity) {
         this.orderQuantity = orderQuantity;
+    }
+
+    @Transient
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     /*@Column(name = "valid_till")

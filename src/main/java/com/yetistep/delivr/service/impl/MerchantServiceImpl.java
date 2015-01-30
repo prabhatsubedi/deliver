@@ -1145,6 +1145,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             if(statusId==2){
                 storesBrand.setStatus(Status.ACTIVE);
             }else if(statusId==3){
+                storesBrand.setFeatured(null);
+                storesBrand.setPriority(null);
                 storesBrand.setStatus(Status.INACTIVE);
             }
             merchantDaoService.updateStoresBrand(storesBrand);

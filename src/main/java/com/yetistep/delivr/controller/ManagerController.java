@@ -227,6 +227,22 @@ public class ManagerController {
         }
     }
 
+    @RequestMapping(value = "/get_inactive_brands", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getInactiveStoreBrands(@RequestBody(required = false) Page page) {
+        try{
+            PaginationDto paginationDto = managerService.findInactiveStoreBrands(page);
+
+            ServiceResponse serviceResponse = new ServiceResponse("List of inactive store brands");
+            serviceResponse.addParam("storeBrands", paginationDto);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving list of inactive store brands:", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     @RequestMapping(value = "/update_special_brands", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> updateFeatureAndPriorityOfStoreBrands(@RequestBody List<StoresBrandEntity> storeBrands) {

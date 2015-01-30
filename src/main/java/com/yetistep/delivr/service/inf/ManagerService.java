@@ -39,4 +39,6 @@ public interface ManagerService {
     public List<CategoryEntity> getDefaultCategories() throws Exception;
 
     public CategoryEntity getCategory(HeaderDto headerDto) throws Exception;
+
+    public PaginationDto findInactiveStoreBrands(Page page) throws Exception;
 }

@@ -141,6 +141,22 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
+    public PaginationDto findInactiveStoreBrands(Page page) throws Exception {
+        log.info("Retrieving list of Inactive store brands");
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows = storesBrandDaoService.getTotalNumberOfInactiveStoreBrands();
+        paginationDto.setNumberOfRows(totalRows);
+        List<StoresBrandEntity> storesBrandEntities;
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+        storesBrandEntities = storesBrandDaoService.findInactiveStoreBrands(page);
+        paginationDto.setData(storesBrandEntities);
+        return paginationDto;
+    }
+
+
+    @Override
     public Boolean updateFeatureAndPriorityOfStoreBrands(List<StoresBrandEntity> storesBrands) throws Exception {
         checkDuplicatePriorities(storesBrands);
         return storesBrandDaoService.updateFeatureAndPriorityOfStoreBrands(storesBrands);

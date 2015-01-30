@@ -276,7 +276,7 @@ public class ManagerServiceImpl implements ManagerService {
         List<CategoryEntity> newCategories = new ArrayList<CategoryEntity>();
         for(CategoryEntity newCategory:  categories)
         {
-            if(newCategory.getParent().getId()==parent_id && (newCategory.getStoresBrand()== null))
+            if(newCategory.getParent().getId().equals(parent_id) && (newCategory.getStoresBrand()== null))
             {
                 newCategory.setChild(getCategoryTree(categories, newCategory.getId()));
                 List<ItemEntity> items = newCategory.getItem();

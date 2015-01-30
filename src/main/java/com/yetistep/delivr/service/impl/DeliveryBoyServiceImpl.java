@@ -703,15 +703,18 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         orderSummary.setId(order.getId());
         orderSummary.setItemOrders(itemsOrderEntities);
         OrderSummaryDto.AccountSummary accountSummary = orderSummary.new AccountSummary();
-        if(order.getCourierTransaction() != null){
-            CourierTransactionEntity courierTransaction = order.getCourierTransaction();
-            accountSummary.setDeliveryFee(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
-            accountSummary.setTotalDiscount(courierTransaction.getCustomerBalanceBeforeDiscount().subtract(courierTransaction.getCustomerBalanceAfterDiscount()));
+        BigDecimal totalDiscount = BigDecimal.ZERO;
+        if(order.getCustomer() != null){
+            if(BigDecimalUtil.isGreaterThenOrEqualTo(order.getDeliveryCharge(), order.getCustomer().getRewardsEarned())){
+                totalDiscount = order.getCustomer().getRewardsEarned();
+            }
         }
 
         accountSummary.setSubTotal(order.getTotalCost());
         accountSummary.setServiceFee(order.getSystemServiceCharge());
         accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
+        accountSummary.setDeliveryFee(order.getDeliveryCharge().add(totalDiscount));
+        accountSummary.setTotalDiscount(totalDiscount);
         accountSummary.setPartnerShipStatus(merchant.getPartnershipStatus());
         accountSummary.setEstimatedTotal(order.getGrandTotal());
         orderSummary.setAccountSummary(accountSummary);

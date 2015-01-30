@@ -492,6 +492,9 @@ public class ClientController extends AbstractManager{
         }
     }
 
+//    @RequestMapping(value = "/get_parent_categories", method = RequestMethod.GET)
+//    @ResponseBody
+
 
     @RequestMapping(value= "/invite_friend", method = RequestMethod.POST)
     @ResponseBody

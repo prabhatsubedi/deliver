@@ -702,16 +702,19 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         orderSummary.setId(order.getId());
         orderSummary.setItemOrders(itemsOrderEntities);
+        OrderSummaryDto.AccountSummary accountSummary = orderSummary.new AccountSummary();
         if(order.getCourierTransaction() != null){
             CourierTransactionEntity courierTransaction = order.getCourierTransaction();
-            orderSummary.setSubTotal(courierTransaction.getOrderTotal());
-            orderSummary.setServiceFee(courierTransaction.getServiceFeeAmt());
-            orderSummary.setDeliveryFee(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
-            orderSummary.setTotalDiscount(courierTransaction.getCustomerBalanceBeforeDiscount().subtract(courierTransaction.getCustomerBalanceAfterDiscount()));
-            orderSummary.setEstimatedTotal(courierTransaction.getCustomerPays());
+            accountSummary.setDeliveryFee(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
+            accountSummary.setTotalDiscount(courierTransaction.getCustomerBalanceBeforeDiscount().subtract(courierTransaction.getCustomerBalanceAfterDiscount()));
         }
-        orderSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
-        orderSummary.setPartnerShipStatus(merchant.getPartnershipStatus());
+
+        accountSummary.setSubTotal(order.getTotalCost());
+        accountSummary.setServiceFee(order.getSystemServiceCharge());
+        accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
+        accountSummary.setPartnerShipStatus(merchant.getPartnershipStatus());
+        accountSummary.setEstimatedTotal(order.getGrandTotal());
+        orderSummary.setAccountSummary(accountSummary);
         return orderSummary;
     }
 

@@ -3,6 +3,7 @@ package com.yetistep.delivr.service.inf;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.AddressEntity;
+import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.model.mobile.AddressDto;
@@ -37,4 +38,6 @@ public interface CustomerService {
     public void deleteDeliveredAddress(Integer addressId) throws Exception;
 
     public CheckOutDto getCheckOutInfo(Long facebookId, Integer addressId) throws Exception;
+
+    public List<CategoryEntity> getDefaultCategories() throws Exception;
 }

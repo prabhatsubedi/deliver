@@ -59,6 +59,8 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
                 .createAlias("user", "u")
                 .add(Restrictions.or(Restrictions.eq("availabilityStatus", DBoyStatus.FREE), Restrictions.eq("availabilityStatus", DBoyStatus.BUSY)))
                 .add(Restrictions.lt("activeOrderNo", 3))
+                .add(Restrictions.isNotNull("latitude"))
+                .add(Restrictions.isNotNull("longitude"))
                 .add(Restrictions.and(Restrictions.eq("u.verifiedStatus", true), Restrictions.eq("u.mobileVerificationStatus", true))).list();
         return deliveryBoys;
     }

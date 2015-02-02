@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -724,5 +725,12 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Override
     public JobOrderStatus getJobOrderStatusFromOrderId(Integer orderId) throws Exception {
         return orderDaoService.getJobOrderStatus(orderId);
+    }
+
+    @Override
+    public List<RatingReason> getRatingReasons() throws Exception {
+        List<RatingReason> reasonList =
+                new ArrayList<RatingReason>(EnumSet.allOf(RatingReason.class));
+        return reasonList;
     }
 }

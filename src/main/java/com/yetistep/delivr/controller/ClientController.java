@@ -492,8 +492,22 @@ public class ClientController extends AbstractManager{
         }
     }
 
-//    @RequestMapping(value = "/get_parent_categories", method = RequestMethod.GET)
-//    @ResponseBody
+    @RequestMapping(value = "/get_default_categories", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getDefaultCategories() {
+        try{
+            List<CategoryEntity> categories = new ArrayList<>();
+
+            ServiceResponse serviceResponse = new ServiceResponse("Parent categories retrieved successfully");
+            serviceResponse.addParam("categories", categories);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.EXPECTATION_FAILED);
+
+        }catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving parent categories", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
 
     @RequestMapping(value= "/invite_friend", method = RequestMethod.POST)

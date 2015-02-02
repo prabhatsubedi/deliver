@@ -317,7 +317,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         BigDecimal totalOrder = order.getTotalCost();
 
         /* 2. ======= Commission Percent ====== */
-        BigDecimal commissionPct = merchantCommission;
+        BigDecimal commissionPct = BigDecimalUtil.checkNull(merchantCommission);
 
         /* 3. ===== Distance Store to Customer(KM) ======== */
         BigDecimal storeToCustomerDistance =  dBoySelection.getStoreToCustomerDistance();
@@ -326,7 +326,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         BigDecimal courierToStoreDistance = dBoySelection.getDistanceToStore();
 
         /* 5. ==== Service Fee % ======= */
-        BigDecimal serviceFeePct = merchantServiceFee;
+        BigDecimal serviceFeePct = BigDecimalUtil.checkNull(merchantServiceFee);
 
         /* 6. ====== Additional delivery amt ======= */
         BigDecimal additionalDeliveryAmt = ZERO;

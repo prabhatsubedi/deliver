@@ -82,6 +82,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private ScheduleChanger scheduleChanger;
 
+    @Autowired
+    private CategoryDaoService categoryDaoService;
+
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
         log.info("++++++++++++++ Logging Customer ++++++++++++++++");
@@ -434,6 +437,16 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public List<CategoryEntity> getDefaultCategories() throws Exception {
+        log.info("+++++++++++++++ Getting Default Categories ++++++++++++");
+
+        List<CategoryEntity> categories = new ArrayList<>();
+        categories = categoryDaoService.findDefaultCategories();
+        //TODO: FIX default categories
+       return categories;
+    }
+
+    @Override
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
         Long customerId = requestJson.getOrdersCustomerId();
         Integer addressId = requestJson.getOrdersAddressId();
@@ -509,7 +522,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<StoreEntity> stores = merchantDaoService.findActiveStoresByBrand(brandId);
         StoreEntity store = findNearestStoreFromCustomer(order, stores);
         order.setStore(store);
-        order.setOrderName(store.getName()+" to "+ order.getAddress().getStreet());
+        order.setOrderName(store.getName() + " to " + order.getAddress().getStreet());
         order.setOrderVerificationCode(GeneralUtil.generateMobileCode());
         //TODO Send code message to customer
 

@@ -112,4 +112,10 @@ public class BigDecimalUtil {
         return itemPrice.multiply(new BigDecimal(itemQuantity));
     }
 
+    public static BigDecimal checkNull(BigDecimal input){
+        if(input == null)
+            return BigDecimal.ZERO;
+        return input;
+    }
+
 }

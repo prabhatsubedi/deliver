@@ -478,8 +478,8 @@ public class CustomerServiceImpl implements CustomerService {
             itemsOrderEntity.setQuantity(cart.getOrderQuantity());
             itemsOrderEntity.setCustomerNote(cart.getNote());
             itemsOrderEntity.setItem(cart.getItem());
-            itemsOrderEntity.setServiceCharge(cart.getItem().getServiceCharge());
-            itemsOrderEntity.setVat(cart.getItem().getVat());
+            itemsOrderEntity.setServiceCharge(BigDecimalUtil.checkNull(cart.getItem().getServiceCharge()));
+            itemsOrderEntity.setVat(BigDecimalUtil.checkNull(cart.getItem().getVat()));
             List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cart.getId());
             List<ItemsOrderAttributeEntity> itemsOrderAttributeEntities = new ArrayList<ItemsOrderAttributeEntity>();
             for(Integer attribute: cartAttributes){
@@ -494,8 +494,8 @@ public class CustomerServiceImpl implements CustomerService {
             BigDecimal attributePrice = cartAttributesDaoService.findAttributesPrice(cart.getId());
             BigDecimal itemPrice = BigDecimalUtil.calculateCost(cart.getOrderQuantity(), cart.getItem().getUnitPrice(), attributePrice);
 
-            BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemPrice, cart.getItem().getServiceCharge());
-            BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), cart.getItem().getVat()));
+            BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemPrice, BigDecimalUtil.checkNull(cart.getItem().getServiceCharge()));
+            BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), BigDecimalUtil.checkNull(cart.getItem().getVat())));
             /*Set for order total and total serviceVat*/
             itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatCharge);
             itemTotalCost = itemTotalCost.add(itemPrice);
@@ -520,7 +520,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         /* Listing Active stores of a store brand and finding shortest store */
         List<StoreEntity> stores = merchantDaoService.findActiveStoresByBrand(brandId);
-        if(stores.size() < 0){
+        if(stores.size() == 0){
             throw new YSException("VLD024");
         }
         StoreEntity store = findNearestStoreFromCustomer(order, stores);
@@ -531,10 +531,16 @@ public class CustomerServiceImpl implements CustomerService {
 
         /* Finding delivery boys based on active status. */
         List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys();
+        if(availableAndActiveDBoys.size() == 0){
+           throw new YSException("ORD012");
+        }
         /* Selects nearest delivery boys based on timing. */
         List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, availableAndActiveDBoys, order);
         /* Selects delivery boys based on profit criteria. */
         List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, merchant);
+        if(deliveryBoySelectionEntitiesWithProfit.size() == 0){
+            throw new YSException("ORD012");
+        }
         order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
         customerDaoService.saveOrder(order);
 

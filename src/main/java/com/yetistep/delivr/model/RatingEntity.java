@@ -1,10 +1,12 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.yetistep.delivr.enums.RatingReason;
 import com.yetistep.delivr.enums.RatingType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,6 +28,7 @@ public class RatingEntity {
     /* Comment of delivery boy for customer */
     private String deliveryBoyComment;
     private OrderEntity order;
+    private List<RatingReason> ratingIssues;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -85,5 +88,16 @@ public class RatingEntity {
 
     public void setOrder(OrderEntity order) {
         this.order = order;
+    }
+
+    @ElementCollection
+    @CollectionTable(name = "rating_issues", joinColumns = @JoinColumn(name = "rating_id"))
+    @Column(name = "issues")
+    public List<RatingReason> getRatingIssues() {
+        return ratingIssues;
+    }
+
+    public void setRatingIssues(List<RatingReason> ratingIssues) {
+        this.ratingIssues = ratingIssues;
     }
 }

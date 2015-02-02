@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.RatingReason;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
@@ -40,4 +41,6 @@ public interface CustomerService {
     public List<CategoryEntity> getDefaultCategories() throws Exception;
 
     public Map<String, Object> getCategoryBrands(Integer categoryId) throws Exception;
+
+    public List<RatingReason> getRatingReasons() throws Exception;
 }

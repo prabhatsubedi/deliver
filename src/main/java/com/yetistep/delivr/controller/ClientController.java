@@ -3,6 +3,7 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.RatingReason;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.CategoryDto;
@@ -547,6 +548,26 @@ public class ClientController extends AbstractManager{
 
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while inviting friend(s)", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value="/rating_issues", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getAllRatingReason(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
+
+            List<RatingReason> ratingReasons = customerService.getRatingReasons();
+            ServiceResponse serviceResponse = new ServiceResponse("Rating reason retrieved successfully");
+            serviceResponse.addParam("ratingList",ratingReasons);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving rating reason list", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

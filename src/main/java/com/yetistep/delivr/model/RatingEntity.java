@@ -2,8 +2,6 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yetistep.delivr.enums.RatingReason;
-import com.yetistep.delivr.enums.RatingType;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,9 +18,9 @@ import java.util.List;
 public class RatingEntity {
     private Integer id;
     /* Rating of customer */
-    private RatingType customerRating;
+    private Integer customerRating;
     /* Rating of delivery boy */
-    private RatingType deliveryBoyRating;
+    private Integer deliveryBoyRating;
     /* Comment of customer for delivery boy */
     private String customerComment;
     /* Comment of delivery boy for customer */
@@ -42,22 +40,20 @@ public class RatingEntity {
     }
 
     @Column(name = "customer_rating")
-    @Type(type = "com.yetistep.delivr.enums.RatingTypeCustom")
-    public RatingType getCustomerRating() {
+    public Integer getCustomerRating() {
         return customerRating;
     }
 
-    public void setCustomerRating(RatingType customerRating) {
+    public void setCustomerRating(Integer customerRating) {
         this.customerRating = customerRating;
     }
 
     @Column(name = "dboy_rating")
-    @Type(type = "com.yetistep.delivr.enums.RatingTypeCustom")
-    public RatingType getDeliveryBoyRating() {
+    public Integer getDeliveryBoyRating() {
         return deliveryBoyRating;
     }
 
-    public void setDeliveryBoyRating(RatingType deliveryBoyRating) {
+    public void setDeliveryBoyRating(Integer deliveryBoyRating) {
         this.deliveryBoyRating = deliveryBoyRating;
     }
 

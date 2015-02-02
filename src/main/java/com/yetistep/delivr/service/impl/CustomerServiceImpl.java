@@ -783,5 +783,10 @@ public class CustomerServiceImpl implements CustomerService {
         userDaoService.save(user);
     }
 
-
+    @Override
+    public List<RatingReason> getRatingReasons() throws Exception {
+        List<RatingReason> reasonList =
+                new ArrayList<RatingReason>(EnumSet.allOf(RatingReason.class));
+        return reasonList;
+    }
 }

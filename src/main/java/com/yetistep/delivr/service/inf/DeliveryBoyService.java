@@ -4,6 +4,7 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.enums.RatingReason;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.ItemsOrderEntity;
 import com.yetistep.delivr.model.OrderEntity;
@@ -56,4 +57,6 @@ public interface DeliveryBoyService {
     public OrderSummaryDto getShoppingList(Integer orderId) throws Exception;
 
     public JobOrderStatus getJobOrderStatusFromOrderId(Integer orderId) throws Exception;
+
+    public List<RatingReason> getRatingReasons() throws Exception;
 }

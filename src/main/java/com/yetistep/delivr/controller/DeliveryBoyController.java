@@ -5,6 +5,7 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.enums.RatingReason;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.ItemsOrderEntity;
 import com.yetistep.delivr.model.OrderEntity;
@@ -296,6 +297,26 @@ public class DeliveryBoyController extends AbstractManager{
 
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while retrieving job order list", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value="/rating_reason", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getAllRatingReason(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
+
+            List<RatingReason> ratingReasons = deliveryBoyService.getRatingReasons();
+            ServiceResponse serviceResponse = new ServiceResponse("Rating reason retrieved successfully");
+            serviceResponse.addParam("orderStatus",ratingReasons);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving rating reason list", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

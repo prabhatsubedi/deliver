@@ -22,9 +22,7 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -84,6 +82,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private CategoryDaoService categoryDaoService;
+
+    @Autowired
+    BrandsCategoryDaoService brandsCategoryDaoService;
 
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
@@ -442,8 +443,62 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<CategoryEntity> categories = new ArrayList<>();
         categories = categoryDaoService.findDefaultCategories();
-        //TODO: FIX default categories
-       return categories;
+        for(CategoryEntity categoryEntity : categories){
+            if(categoryEntity.getImageUrl()==null)
+                categoryEntity.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_CATEGORY));
+        }
+        return categories;
+    }
+
+    @Override
+    public Map<String, Object> getCategoryBrands(Integer categoryId) throws Exception {
+        log.info("++++++++++++++++++ Getting Category's Brands of Id: " + categoryId + " ++++++++++++++");
+        List<StoresBrandEntity> resultBrands = new ArrayList<>();
+        List<StoresBrandEntity> featuredBrands = new ArrayList<>();
+
+        // Unique Brands from brand category
+        List<StoresBrandEntity> brands = brandsCategoryDaoService.getCategoryBrands(categoryId);
+
+        List<Integer> featuredBrandsId = new ArrayList<>();
+        List<Integer> priorityBrandsId  = new ArrayList<>();
+        List<Integer> otherBrandsId = new ArrayList<>();
+
+        //Now Get Detail of Brand
+        if(brands!=null && brands.size()>0){
+            for(StoresBrandEntity brand : brands){
+                if(brand.getFeatured()!=null && brand.getFeatured())
+                    featuredBrandsId.add(brand.getId());
+                else if(brand.getPriority()!=null && brand.getPriority() > 0)
+                    priorityBrandsId.add(brand.getId());
+                else
+                    otherBrandsId.add(brand.getId());
+            }
+        }
+
+        //Now Get Information of that
+        if(featuredBrandsId.size() > 0) {
+            Integer[] ids = new Integer[featuredBrandsId.size()];
+            ids = featuredBrandsId.toArray(ids);
+            featuredBrands = storesBrandDaoService.findStoresBrand(false, ids);
+        }
+
+        if(priorityBrandsId.size() > 0){
+            Integer[] ids = new Integer[priorityBrandsId.size()];
+            ids = priorityBrandsId.toArray(ids);
+            resultBrands = storesBrandDaoService.findStoresBrand(true, ids);
+        }
+
+        if(otherBrandsId.size() > 0){
+            Integer[] ids = new Integer[otherBrandsId.size()];
+            ids = otherBrandsId.toArray(ids);
+            List<StoresBrandEntity> tempBrands = storesBrandDaoService.findStoresBrand(false, ids);
+            resultBrands.addAll(tempBrands);
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("featured", featuredBrands);
+        map.put("all", resultBrands);
+        return map;
     }
 
     @Override
@@ -728,5 +783,10 @@ public class CustomerServiceImpl implements CustomerService {
         userDaoService.save(user);
     }
 
-
+    @Override
+    public List<RatingReason> getRatingReasons() throws Exception {
+        List<RatingReason> reasonList =
+                new ArrayList<RatingReason>(EnumSet.allOf(RatingReason.class));
+        return reasonList;
+    }
 }

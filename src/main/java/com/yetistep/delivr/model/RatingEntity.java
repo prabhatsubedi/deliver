@@ -1,10 +1,10 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.yetistep.delivr.enums.RatingType;
-import org.hibernate.annotations.Type;
+import com.yetistep.delivr.enums.RatingReason;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,14 +18,15 @@ import javax.persistence.*;
 public class RatingEntity {
     private Integer id;
     /* Rating of customer */
-    private RatingType customerRating;
+    private Integer customerRating;
     /* Rating of delivery boy */
-    private RatingType deliveryBoyRating;
+    private Integer deliveryBoyRating;
     /* Comment of customer for delivery boy */
     private String customerComment;
     /* Comment of delivery boy for customer */
     private String deliveryBoyComment;
     private OrderEntity order;
+    private List<RatingReason> ratingIssues;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,22 +40,20 @@ public class RatingEntity {
     }
 
     @Column(name = "customer_rating")
-    @Type(type = "com.yetistep.delivr.enums.RatingTypeCustom")
-    public RatingType getCustomerRating() {
+    public Integer getCustomerRating() {
         return customerRating;
     }
 
-    public void setCustomerRating(RatingType customerRating) {
+    public void setCustomerRating(Integer customerRating) {
         this.customerRating = customerRating;
     }
 
     @Column(name = "dboy_rating")
-    @Type(type = "com.yetistep.delivr.enums.RatingTypeCustom")
-    public RatingType getDeliveryBoyRating() {
+    public Integer getDeliveryBoyRating() {
         return deliveryBoyRating;
     }
 
-    public void setDeliveryBoyRating(RatingType deliveryBoyRating) {
+    public void setDeliveryBoyRating(Integer deliveryBoyRating) {
         this.deliveryBoyRating = deliveryBoyRating;
     }
 
@@ -85,5 +84,16 @@ public class RatingEntity {
 
     public void setOrder(OrderEntity order) {
         this.order = order;
+    }
+
+    @ElementCollection
+    @CollectionTable(name = "rating_issues", joinColumns = @JoinColumn(name = "rating_id"))
+    @Column(name = "issues")
+    public List<RatingReason> getRatingIssues() {
+        return ratingIssues;
+    }
+
+    public void setRatingIssues(List<RatingReason> ratingIssues) {
+        this.ratingIssues = ratingIssues;
     }
 }

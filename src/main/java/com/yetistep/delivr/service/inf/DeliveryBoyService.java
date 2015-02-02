@@ -4,11 +4,7 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.enums.JobOrderStatus;
-import com.yetistep.delivr.enums.RatingReason;
-import com.yetistep.delivr.model.DeliveryBoyEntity;
-import com.yetistep.delivr.model.ItemsOrderEntity;
-import com.yetistep.delivr.model.OrderEntity;
-import com.yetistep.delivr.model.Page;
+import com.yetistep.delivr.model.*;
 
 import java.util.List;
 
@@ -52,11 +48,11 @@ public interface DeliveryBoyService {
 
     public Boolean updateOrders(List<ItemsOrderEntity> itemOrders) throws Exception;
 
-    public Boolean cancelOrder(OrderEntity order) throws Exception;
+    public Boolean cancelOrder(OrderEntity order, Integer userId) throws Exception;
 
     public OrderSummaryDto getShoppingList(Integer orderId) throws Exception;
 
     public JobOrderStatus getJobOrderStatusFromOrderId(Integer orderId) throws Exception;
 
-    public List<RatingReason> getRatingReasons() throws Exception;
+    public List<ReasonDetails> getCancelReasonList() throws Exception;
 }

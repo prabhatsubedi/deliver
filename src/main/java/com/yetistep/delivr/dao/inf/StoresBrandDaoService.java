@@ -28,4 +28,6 @@ public interface StoresBrandDaoService extends GenericDaoService<Integer, Stores
     public Integer getTotalNumberOfInactiveStoreBrands() throws Exception;
 
     public List<StoresBrandEntity> findInactiveStoreBrands(Page page) throws Exception;
+
+    public List<StoresBrandEntity> findStoresBrand(Boolean isPriority, Integer... brandId) throws Exception;
 }

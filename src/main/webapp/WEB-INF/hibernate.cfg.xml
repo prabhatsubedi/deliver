@@ -54,7 +54,7 @@
        <mapping class="com.yetistep.delivr.model.CourierTransactionEntity" />
        <mapping class="com.yetistep.delivr.model.ItemsOrderAttributeEntity" />
        <mapping class="com.yetistep.delivr.model.CustomItemEntity" />
-
+       <mapping class="com.yetistep.delivr.model.ReasonDetails" />
 
     </session-factory>
 </hibernate-configuration>

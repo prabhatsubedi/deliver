@@ -1,7 +1,6 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.yetistep.delivr.enums.CancelReason;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.util.JsonDateSerializer;
 
@@ -24,7 +23,7 @@ public class OrderCancelEntity {
     private Timestamp cancelledDate;
     private UserEntity user;
     private OrderEntity order;
-    private CancelReason cancelReason;
+    private ReasonDetails reasonDetails;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -85,13 +84,14 @@ public class OrderCancelEntity {
         this.order = order;
     }
 
-    @Transient
-    public CancelReason getCancelReason() {
-        return cancelReason;
+    @ManyToOne
+    @JoinColumn(name = "reason_detail_id")
+    public ReasonDetails getReasonDetails() {
+        return reasonDetails;
     }
 
-    public void setCancelReason(CancelReason cancelReason) {
-        this.cancelReason = cancelReason;
+    public void setReasonDetails(ReasonDetails reasonDetails) {
+        this.reasonDetails = reasonDetails;
     }
 
 }

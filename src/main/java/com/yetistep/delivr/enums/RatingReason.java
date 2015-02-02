@@ -9,4 +9,21 @@ package com.yetistep.delivr.enums;
  */
 public enum RatingReason {
     PAYMENT_ISSUE, DELIVERY_ISSUE, TIMING_ISSUE, ATTITUDE_ISSUE;
+
+    public String toStr(){
+        return this.toString();
+    }
+
+    public Integer toInt() {
+        return this.ordinal();
+    }
+
+    public static RatingReason fromInt(Integer arg){
+        switch (arg){
+            case 0: return PAYMENT_ISSUE;
+            case 1: return DELIVERY_ISSUE;
+            case 2: return TIMING_ISSUE;
+            default: return ATTITUDE_ISSUE;
+        }
+    }
 }

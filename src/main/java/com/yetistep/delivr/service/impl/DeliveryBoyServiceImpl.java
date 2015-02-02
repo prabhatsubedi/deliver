@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -56,6 +55,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
     @Autowired
     SystemAlgorithmService systemAlgorithmService;
+
+    @Autowired
+    ReasonDetailsDaoService reasonDetailsDaoService;
 
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
@@ -559,7 +561,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public Boolean cancelOrder(OrderEntity order) throws Exception {
+    public Boolean cancelOrder(OrderEntity order, Integer userId) throws Exception {
         OrderEntity orderEntity = orderDaoService.find(order.getId());
         if(orderEntity == null){
             throw new YSException("VLD017");
@@ -568,7 +570,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         /*Setting Ratings */
         if (order.getRating() != null){
-            RatingEntity rating = (orderEntity.getRating() == null) ? new RatingEntity() : orderEntity.getRating();
+            RatingEntity rating = null;
+            if(orderEntity.getRating() == null){
+                rating = new RatingEntity();
+                rating.setOrder(orderEntity);
+            }else{
+                rating = orderEntity.getRating();
+            }
             if(order.getRating().getCustomerRating()!=null)
                 rating.setCustomerRating(order.getRating().getCustomerRating());
             if(order.getRating().getDeliveryBoyComment()!=null)
@@ -577,6 +585,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 rating.setDeliveryBoyRating(order.getRating().getDeliveryBoyRating());
             if(order.getRating().getCustomerComment()!=null)
                 rating.setCustomerComment(order.getRating().getCustomerComment());
+            if(order.getRating().getRatingIssues() != null)
+                rating.setRatingIssues(order.getRating().getRatingIssues());
+            orderEntity.setRating(rating);
         }
 
         /*Setting OrderCancelEntity */
@@ -586,13 +597,12 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         else
             orderCancelEntity = new OrderCancelEntity();
         orderCancelEntity.setCancelledDate(DateUtil.getCurrentTimestampSQL());
-        if(!order.getOrderCancel().getCancelReason().equals(CancelReason.OTHERS)){
-            orderCancelEntity.setReason(order.getOrderCancel().getCancelReason().toString());
-        }else{
-            orderCancelEntity.setReason(order.getOrderCancel().getReason());
-        }
+        orderCancelEntity.setReason(order.getOrderCancel().getReason());
+        orderCancelEntity.setReasonDetails(order.getOrderCancel().getReasonDetails());
         orderCancelEntity.setJobOrderStatus(orderEntity.getOrderStatus());
-        orderCancelEntity.setUser(order.getOrderCancel().getUser());
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+        orderCancelEntity.setUser(user);
         orderCancelEntity.setOrder(orderEntity);
 
         orderEntity.setOrderCancel(orderCancelEntity);
@@ -617,7 +627,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             }
         }
 
-        //TODO dboy rating implementation and transaction implementation
+        //TODO dboy transaction implementation
         return orderDaoService.update(orderEntity);
     }
 
@@ -728,9 +738,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public List<RatingReason> getRatingReasons() throws Exception {
-        List<RatingReason> reasonList =
-                new ArrayList<RatingReason>(EnumSet.allOf(RatingReason.class));
-        return reasonList;
+    public List<ReasonDetails> getCancelReasonList() throws Exception {
+        return reasonDetailsDaoService.findAll();
     }
 }

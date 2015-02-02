@@ -41,4 +41,6 @@
     <bean id = "addressDaoService" class="com.yetistep.delivr.dao.impl.AddressDaoServiceImpl" />
     <bean id = "itemsAttributeDaoService" class="com.yetistep.delivr.dao.impl.ItemsAttributeDaoServiceImpl" />
     <bean id = "scheduledProcessor" class="com.yetistep.delivr.schedular.ScheduledProcessor" />
+    <bean id = "brandsCategoryService" class="com.yetistep.delivr.dao.impl.BrandsCategoryDaoServiceImpl" />
+    <bean id = "reasonDetailsDaoService" class="com.yetistep.delivr.dao.impl.ReasonDetailsDaoServiceImpl" />
  </beans>

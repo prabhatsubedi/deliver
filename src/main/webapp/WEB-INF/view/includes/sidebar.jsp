@@ -11,12 +11,12 @@
     </div>
     <div class="sidebar_menu">
         <ul class="nav nav-stacked">
-            <li><a href="/organizer/dashboard"><span class="glyphicon glyphicon-home"></span><span class="menu_text">Dashboard</span></a></li>
-            <li><a href="/organizer/merchants"><span class="glyphicon glyphicon-credit-card"></span><span class="menu_text">Merchants</span></a></li>
-            <li><a href="/organizer/stores"><span class="glyphicon glyphicon-log-in"></span><span class="menu_text">Stores</span></a></li>
-            <li><a href="/organizer/courier_staff/list"><span class="glyphicon glyphicon-user"></span><span class="menu_text">Courier Staff</span></a></li>
-            <li><a href="#"><span class="glyphicon glyphicon-list-alt"></span><span class="menu_text">Invoices</span></a></li>
-            <li><a href="#"><span class="glyphicon glyphicon-globe"></span><span class="menu_text">Purchase History</span></a></li>
+            <li><a href="/organizer/dashboard" class="elem_tooltip" data-placement="right" title="Dashboard"><span class="delivricon delivricon-dashboard"></span><span class="menu_text">Dashboard</span></a></li>
+            <li><a href="/organizer/merchants" class="elem_tooltip" data-placement="right" title="Merchants"><span class="delivricon delivricon-merchant"></span><span class="menu_text">Merchants</span></a></li>
+            <li><a href="/organizer/stores" class="elem_tooltip" data-placement="right" title="Stores"><span class="delivricon delivricon-store"></span><span class="menu_text">Stores</span></a></li>
+            <li><a href="/organizer/courier_staff/list" class="elem_tooltip" data-placement="right" title="Courier Staff"><span class="delivricon delivricon-courier-staff"></span><span class="menu_text">Courier Staff</span></a></li>
+            <li><a href="#" class="elem_tooltip" data-placement="right" title="Invoices"><span class="delivricon delivricon-invoice"></span><span class="menu_text">Invoices</span></a></li>
+            <li><a href="#" class="elem_tooltip" data-placement="right" title="Purchase History"><span class="delivricon delivricon-purchase-history"></span><span class="menu_text">Purchase History</span></a></li>
         </ul>
     </div>
 </div>

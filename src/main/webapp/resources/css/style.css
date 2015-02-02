@@ -1,3 +1,43 @@
+@font-face {
+    font-family: 'Delivricons';
+
+    src: url('../fonts/delivricons.eot');
+    src: url('../fonts/delivricons.eot?#iefix') format('embedded-opentype'), url('../fonts/delivricons.woff') format('woff'), url('../fonts/delivricons.ttf') format('truetype'), url('../fonts/delivricons.svg#glyphicons_halflingsregular') format('svg');
+}
+.delivricon {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Delivricons';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.delivricon-courier-staff:before {
+    content: "\d01";
+}
+.delivricon-dashboard:before {
+    content: "\d02";
+}
+.delivricon-invoice:before {
+    content: "\d03";
+}
+.delivricon-item:before {
+    content: "\d04";
+}
+.delivricon-merchant:before {
+    content: "\d05";
+}
+.delivricon-purchase-history:before {
+    content: "\d06";
+}
+.delivricon-store:before {
+    content: "\d07";
+}
+
 *, *:focus, *:active {
     outline: none !important;
 }
@@ -467,7 +507,7 @@ body.assistance_page {
     padding: 30px;
     background-color: #FFFFFF;
     border-right: 1px solid #dbdada;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 .main_container {
     margin-left: 320px;
@@ -479,7 +519,7 @@ body.assistance_page {
     margin: 0px auto;
 }
 .sidebar_menu {
-    margin: 0px -30px;
+    margin: 0px -10px 0px -30px;
 }
 .sidebar_menu ul li {
     padding: 5px 0px 5px 20px;
@@ -487,7 +527,7 @@ body.assistance_page {
 .sidebar_menu ul li a, .sidebar_menu ul li a:focus {
     background-color: transparent;
     border-left: 5px solid transparent;
-    color: #000000;
+    color: #444444;
     font-size: 18px;
     padding: 10px 0 10px 15px;
 }
@@ -498,8 +538,11 @@ body.assistance_page {
 .sidebar_menu ul li a.active {
     border-color: #f58220;
 }
-.sidebar_menu ul li a span {
-    margin-right: 15px;
+.sidebar_menu ul li a span:first-child {
+    font-size: 20px;
+}
+.sidebar_menu ul li a span.menu_text {
+    margin-left: 15px;
 }
 /*.sidebar_menu ul li.merchant_name {
     margin-left: -30px;
@@ -516,7 +559,8 @@ body.assistance_page {
     background-color: #f9f9f9;
     border: 1px solid #f5f5f5;
     display: block;
-    margin: 0px -12px 0px 0px;
+    margin: 0 -10px 0 0;
+    padding: 8px;
 }
 #sidebar_menu .navbar-toggle .icon-bar {
     background-color: #CCC;
@@ -528,6 +572,9 @@ body.assistance_page {
 #sidebar_menu.menu_closed .sidebar_logo {
     padding-top: 10px;
     padding-bottom: 10px;
+}
+#sidebar_menu.menu_closed .sidebar_menu ul li li {
+    padding-left: 0px;
 }
 #sidebar_menu.menu_closed .sidebar_menu ul li a {
     padding-left: 5px;

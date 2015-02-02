@@ -520,6 +520,9 @@ public class CustomerServiceImpl implements CustomerService {
 
         /* Listing Active stores of a store brand and finding shortest store */
         List<StoreEntity> stores = merchantDaoService.findActiveStoresByBrand(brandId);
+        if(stores.size() < 0){
+            throw new YSException("VLD024");
+        }
         StoreEntity store = findNearestStoreFromCustomer(order, stores);
         order.setStore(store);
         order.setOrderName(store.getName() + " to " + order.getAddress().getStreet());

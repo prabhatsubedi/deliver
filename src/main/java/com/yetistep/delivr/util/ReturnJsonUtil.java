@@ -41,56 +41,60 @@ public class ReturnJsonUtil {
                  if collection iterate and set fields to return object
                  else set values of fields in return object directly
                  */
-                if(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")){
-                    List<Object> assocDBs =  (List<Object>) PropertyUtils.getProperty(defaultObject, param.getKey());
-                    List<Object> assocRtnList = new ArrayList<>();
+                if(PropertyUtils.getProperty(defaultObject, param.getKey()) != null){
+                    if(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")){
+                        List<Object> assocDBs =  (List<Object>) PropertyUtils.getProperty(defaultObject, param.getKey());
+                        List<Object> assocRtnList = new ArrayList<>();
 
-                    for (Object assocDB: assocDBs){
-                        Object assocRtnObj = BeanUtils.instantiate(assocDB.getClass());
-                         if(param.getValue() != null)  {
+                        for (Object assocDB: assocDBs){
+                            Object assocRtnObj = BeanUtils.instantiate(assocDB.getClass());
+                             if(param.getValue() != null)  {
+                                String assocFields = param.getValue();
+                                String[] arrAssocFields = assocFields.split(",");
+                                for (String assocF:arrAssocFields){
+                                    /*if value of field is collection than this is the another model - iterate and set values of the fields of the related  2nd level associated  model
+                                      else check if the value is  another model or not
+                                      if the value is another model than iterate and set the value of the fields of the related  2nd level associated  model
+                                      else set the values of fields of related model directly
+                                     */
+
+                                    setValues(assocDB, assocRtnObj,  assocF.trim(), subAssoc);
+                                }
+                             }
+                            assocRtnList.add(assocRtnObj);
+                        }
+                        PropertyUtils.setProperty(rtnObject, param.getKey(), assocRtnList);
+                    } else {
+                        Object assocDB = PropertyUtils.getProperty(defaultObject, param.getKey());
+                        Object assocRtnObj = BeanUtils.instantiate(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass());
+                        if(param.getValue() != null) {
                             String assocFields = param.getValue();
                             String[] arrAssocFields = assocFields.split(",");
                             for (String assocF:arrAssocFields){
-                                /*if value of field is collection than this is the another model - iterate and set values of the fields of the related  2nd level associated  model
-                                  else check if the value is  another model or not
-                                  if the value is another model than iterate and set the value of the fields of the related  2nd level associated  model
-                                  else set the values of fields of related model directly
-                                 */
-
-                                setValues(assocDB, assocRtnObj,  assocF.trim(), subAssoc);
-                            }
-                         }
-                        assocRtnList.add(assocRtnObj);
-                    }
-                    PropertyUtils.setProperty(rtnObject, param.getKey(), assocRtnList);
-                } else {
-                    Object assocDB = PropertyUtils.getProperty(defaultObject, param.getKey());
-                    Object assocRtnObj = BeanUtils.instantiate(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass());
-                    if(param.getValue() != null) {
-                        String assocFields = param.getValue();
-                        String[] arrAssocFields = assocFields.split(",");
-                        for (String assocF:arrAssocFields){
-                            if(PropertyUtils.getProperty(assocDB, assocF).getClass().toString().contains("com.yetistep.delivr.model")){
-                                  //PropertyUtils.setProperty(assocRtn, assocF,  PropertyUtils.getProperty(assocDB, assocF));
-                                 Object assoc2ndDB = PropertyUtils.getProperty(assocDB, assocF.trim());
-                                 Object assoc2ndRtnObj = BeanUtils.instantiate(assoc2ndDB.getClass());
-                                 if(subAssoc != null){
-                                     String accoc2ndFs = subAssoc.get(assocF.trim());
-                                     if(accoc2ndFs != null){
-                                            String[] arrAssoc2ndFields = accoc2ndFs.split(",");
-                                            for (String accoc2ndF: arrAssoc2ndFields){
-                                                //PropertyUtils.setProperty(assoc2ndRtnObj, accoc2ndF,  PropertyUtils.getProperty(assoc2ndDB, accoc2ndF));
-                                                setValues(assoc2ndDB, assoc2ndRtnObj,  accoc2ndF.trim(), subAssoc);
-                                            }
-                                      }
-                                 }
-                                   PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtnObj);
-                            } else {
-                                  PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  PropertyUtils.getProperty(assocDB, assocF.trim()));
+                                if(PropertyUtils.getProperty(assocDB, assocF) != null){
+                                    if(PropertyUtils.getProperty(assocDB, assocF).getClass().toString().contains("com.yetistep.delivr.model")){
+                                          //PropertyUtils.setProperty(assocRtn, assocF,  PropertyUtils.getProperty(assocDB, assocF));
+                                         Object assoc2ndDB = PropertyUtils.getProperty(assocDB, assocF.trim());
+                                         Object assoc2ndRtnObj = BeanUtils.instantiate(assoc2ndDB.getClass());
+                                         if(subAssoc != null){
+                                             String accoc2ndFs = subAssoc.get(assocF.trim());
+                                             if(accoc2ndFs != null){
+                                                    String[] arrAssoc2ndFields = accoc2ndFs.split(",");
+                                                    for (String accoc2ndF: arrAssoc2ndFields){
+                                                        //PropertyUtils.setProperty(assoc2ndRtnObj, accoc2ndF,  PropertyUtils.getProperty(assoc2ndDB, accoc2ndF));
+                                                        setValues(assoc2ndDB, assoc2ndRtnObj,  accoc2ndF.trim(), subAssoc);
+                                                    }
+                                              }
+                                         }
+                                           PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtnObj);
+                                    } else {
+                                          PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  PropertyUtils.getProperty(assocDB, assocF.trim()));
+                                    }
+                                }
                             }
                         }
+                        PropertyUtils.setProperty(rtnObject, param.getKey(), assocRtnObj);
                     }
-                    PropertyUtils.setProperty(rtnObject, param.getKey(), assocRtnObj);
                 }
             }
         }
@@ -128,51 +132,54 @@ public class ReturnJsonUtil {
         //get the map of associated model and and related fields and set the values to the return object
         if(assoc != null) {
             for (Map.Entry<String, String> param: assoc.entrySet()){
-
                 /*check if the result of the associated model is collection or single
                  if collection iterate and set fields to return object
                  else set values of fields in return object directly
                  */
-                if(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")){
-                    List<Object> assocDBs =  (List<Object>) PropertyUtils.getProperty(defaultObject, param.getKey());
-                    List<Object> assocRtnList = new ArrayList<>();
+                if(PropertyUtils.getProperty(defaultObject, param.getKey()) != null){
+                    if(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")){
+                        List<Object> assocDBs =  (List<Object>) PropertyUtils.getProperty(defaultObject, param.getKey());
+                        List<Object> assocRtnList = new ArrayList<>();
 
-                    for (Object assocDB: assocDBs){
-                        Object assocRtnObj = BeanUtils.instantiate(assocDB.getClass());
-                        if(param.getValue() != null)  {
+                        for (Object assocDB: assocDBs){
+                            Object assocRtnObj = BeanUtils.instantiate(assocDB.getClass());
+                            if(param.getValue() != null)  {
+                                String assocFields = param.getValue();
+                                String[] arrAssocFields = assocFields.split(",");
+                                for (String assocF:arrAssocFields){
+                                    /*if value of field is collection than this is the another model - iterate and set values of the fields of the related  2nd level associated  model
+                                      else check if the value is  another model or not
+                                      if the value is another model than iterate and set the value of the fields of the related  2nd level associated  model
+                                      else set the values of fields of related model directly
+                                     */
+
+                                    setValues(assocDB, assocRtnObj,  assocF.trim());
+                                }
+                            }
+                            assocRtnList.add(assocRtnObj);
+                        }
+                        PropertyUtils.setProperty(rtnObject, param.getKey(), assocRtnList);
+                    } else {
+                        Object assocDB = PropertyUtils.getProperty(defaultObject, param.getKey());
+                        Object assocRtnObj = BeanUtils.instantiate(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass());
+                        if(param.getValue() != null) {
                             String assocFields = param.getValue();
                             String[] arrAssocFields = assocFields.split(",");
                             for (String assocF:arrAssocFields){
-                                /*if value of field is collection than this is the another model - iterate and set values of the fields of the related  2nd level associated  model
-                                  else check if the value is  another model or not
-                                  if the value is another model than iterate and set the value of the fields of the related  2nd level associated  model
-                                  else set the values of fields of related model directly
-                                 */
-
-                                setValues(assocDB, assocRtnObj,  assocF.trim());
+                                if(PropertyUtils.getProperty(assocDB, assocF) != null){
+                                    if(PropertyUtils.getProperty(assocDB, assocF).getClass().toString().contains("com.yetistep.delivr.model")){
+                                        //PropertyUtils.setProperty(assocRtn, assocF,  PropertyUtils.getProperty(assocDB, assocF));
+                                        Object assoc2ndDB = PropertyUtils.getProperty(assocDB, assocF.trim());
+                                        Object assoc2ndRtnObj = BeanUtils.instantiate(assoc2ndDB.getClass());
+                                        PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtnObj);
+                                    } else {
+                                        PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  PropertyUtils.getProperty(assocDB, assocF.trim()));
+                                    }
+                                }
                             }
                         }
-                        assocRtnList.add(assocRtnObj);
+                        PropertyUtils.setProperty(rtnObject, param.getKey(), assocRtnObj);
                     }
-                    PropertyUtils.setProperty(rtnObject, param.getKey(), assocRtnList);
-                } else {
-                    Object assocDB = PropertyUtils.getProperty(defaultObject, param.getKey());
-                    Object assocRtnObj = BeanUtils.instantiate(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass());
-                    if(param.getValue() != null) {
-                        String assocFields = param.getValue();
-                        String[] arrAssocFields = assocFields.split(",");
-                        for (String assocF:arrAssocFields){
-                            if(PropertyUtils.getProperty(assocDB, assocF).getClass().toString().contains("com.yetistep.delivr.model")){
-                                //PropertyUtils.setProperty(assocRtn, assocF,  PropertyUtils.getProperty(assocDB, assocF));
-                                Object assoc2ndDB = PropertyUtils.getProperty(assocDB, assocF.trim());
-                                Object assoc2ndRtnObj = BeanUtils.instantiate(assoc2ndDB.getClass());
-                                PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtnObj);
-                            } else {
-                                PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  PropertyUtils.getProperty(assocDB, assocF.trim()));
-                            }
-                        }
-                    }
-                    PropertyUtils.setProperty(rtnObject, param.getKey(), assocRtnObj);
                 }
             }
         }
@@ -183,60 +190,64 @@ public class ReturnJsonUtil {
 
 
     private static void setValues(Object assocDB, Object assocRtnObj,  String assocF, Map<String, String> subAssoc) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException{
-        if(PropertyUtils.getProperty(assocDB, assocF).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")) {
-            List<Object> assoc2ndDBs = (List<Object>) PropertyUtils.getProperty(assocDB, assocF.trim());
-            List<Object> assoc2ndRtn = new ArrayList<>();
-            for (Object assoc2ndDB: assoc2ndDBs) {
-                Object assoc2ndRtnObj = BeanUtils.instantiate(assoc2ndDB.getClass());
-                if(subAssoc != null){
-                    String accoc2ndFs = subAssoc.get(assocF.trim());
-                    if(accoc2ndFs != null){
-                        String[] arrAssoc2ndFields = accoc2ndFs.split(",");
-                        for (String accoc2ndF: arrAssoc2ndFields){
-                            //PropertyUtils.setProperty(assoc2ndRtnObj, accoc2ndF,  PropertyUtils.getProperty(assoc2ndDB, accoc2ndF));
-                            setValues(assoc2ndDB, assoc2ndRtnObj,  accoc2ndF.trim(), subAssoc);
+        if(PropertyUtils.getProperty(assocDB, assocF) != null){
+            if(PropertyUtils.getProperty(assocDB, assocF).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")) {
+                List<Object> assoc2ndDBs = (List<Object>) PropertyUtils.getProperty(assocDB, assocF.trim());
+                List<Object> assoc2ndRtn = new ArrayList<>();
+                for (Object assoc2ndDB: assoc2ndDBs) {
+                    Object assoc2ndRtnObj = BeanUtils.instantiate(assoc2ndDB.getClass());
+                    if(subAssoc != null){
+                        String accoc2ndFs = subAssoc.get(assocF.trim());
+                        if(accoc2ndFs != null){
+                            String[] arrAssoc2ndFields = accoc2ndFs.split(",");
+                            for (String accoc2ndF: arrAssoc2ndFields){
+                                //PropertyUtils.setProperty(assoc2ndRtnObj, accoc2ndF,  PropertyUtils.getProperty(assoc2ndDB, accoc2ndF));
+                                setValues(assoc2ndDB, assoc2ndRtnObj,  accoc2ndF.trim(), subAssoc);
+                            }
                         }
                     }
+                    assoc2ndRtn.add(assoc2ndRtnObj);
                 }
-                assoc2ndRtn.add(assoc2ndRtnObj);
-            }
-            PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtn);
-        } else {
-            if(PropertyUtils.getProperty(assocDB, assocF.trim()).getClass().toString().contains("com.yetistep.delivr.model")){
-                Object assoc2ndRtnObj = BeanUtils.instantiate(PropertyUtils.getProperty(assocDB, assocF.trim()).getClass());
-                if(subAssoc != null){
-                    String accoc2ndFs = subAssoc.get(assocF.trim());
-                    if(accoc2ndFs != null){
-                        String[] arrAssoc2ndFields = accoc2ndFs.split(",");
-                        for (String accoc2ndF: arrAssoc2ndFields){
-                            //PropertyUtils.setProperty(assoc2ndRtnObj, accoc2ndF,  PropertyUtils.getProperty(PropertyUtils.getProperty(assocDB, assocF), accoc2ndF));
-                            setValues(PropertyUtils.getProperty(assocDB, assocF.trim()), assoc2ndRtnObj,  accoc2ndF.trim(), subAssoc);
+                PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtn);
+            } else {
+                if(PropertyUtils.getProperty(assocDB, assocF.trim()).getClass().toString().contains("com.yetistep.delivr.model")){
+                    Object assoc2ndRtnObj = BeanUtils.instantiate(PropertyUtils.getProperty(assocDB, assocF.trim()).getClass());
+                    if(subAssoc != null){
+                        String accoc2ndFs = subAssoc.get(assocF.trim());
+                        if(accoc2ndFs != null){
+                            String[] arrAssoc2ndFields = accoc2ndFs.split(",");
+                            for (String accoc2ndF: arrAssoc2ndFields){
+                                //PropertyUtils.setProperty(assoc2ndRtnObj, accoc2ndF,  PropertyUtils.getProperty(PropertyUtils.getProperty(assocDB, assocF), accoc2ndF));
+                                setValues(PropertyUtils.getProperty(assocDB, assocF.trim()), assoc2ndRtnObj,  accoc2ndF.trim(), subAssoc);
+                            }
                         }
                     }
+                    PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtnObj);
+                }else{
+                    PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  PropertyUtils.getProperty(assocDB, assocF.trim()));
                 }
-                PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtnObj);
-            }else{
-                PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  PropertyUtils.getProperty(assocDB, assocF.trim()));
             }
         }
     }
 
     private static void setValues(Object assocDB, Object assocRtnObj,  String assocF) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException{
-        if(PropertyUtils.getProperty(assocDB, assocF).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")) {
-            List<Object> assoc2ndDBs = (List<Object>) PropertyUtils.getProperty(assocDB, assocF.trim());
-            List<Object> assoc2ndRtn = new ArrayList<>();
-            for (Object assoc2ndDB: assoc2ndDBs) {
-                Object assoc2ndRtnObj = BeanUtils.instantiate(assoc2ndDB.getClass());
-                assoc2ndRtn.add(assoc2ndRtnObj);
-            }
-            PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtn);
-        } else {
-            if(PropertyUtils.getProperty(assocDB, assocF.trim()).getClass().toString().contains("com.yetistep.delivr.model")){
-                Object assoc2ndRtnObj = BeanUtils.instantiate(PropertyUtils.getProperty(assocDB, assocF.trim()).getClass());
+        if(PropertyUtils.getProperty(assocDB, assocF) != null){
+            if(PropertyUtils.getProperty(assocDB, assocF).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")) {
+                List<Object> assoc2ndDBs = (List<Object>) PropertyUtils.getProperty(assocDB, assocF.trim());
+                List<Object> assoc2ndRtn = new ArrayList<>();
+                for (Object assoc2ndDB: assoc2ndDBs) {
+                    Object assoc2ndRtnObj = BeanUtils.instantiate(assoc2ndDB.getClass());
+                    assoc2ndRtn.add(assoc2ndRtnObj);
+                }
+                PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtn);
+            } else {
+                if(PropertyUtils.getProperty(assocDB, assocF.trim()).getClass().toString().contains("com.yetistep.delivr.model")){
+                    Object assoc2ndRtnObj = BeanUtils.instantiate(PropertyUtils.getProperty(assocDB, assocF.trim()).getClass());
 
-                PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtnObj);
-            }else{
-                PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  PropertyUtils.getProperty(assocDB, assocF.trim()));
+                    PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtnObj);
+                }else{
+                    PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  PropertyUtils.getProperty(assocDB, assocF.trim()));
+                }
             }
         }
     }

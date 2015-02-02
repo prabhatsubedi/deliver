@@ -215,10 +215,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         String fields = "id,name,imageUrl";
 
-
         return ReturnJsonUtil.getJsonObject(category, fields);
-
-        //return category;
     }
 
     @Override
@@ -258,10 +255,12 @@ public class ManagerServiceImpl implements ManagerService {
             categoryDaoService.update(dbCategory);
         }
 
-        String fields = "id,name,imageUrl";
+        String fields = "id,parent,name,imageUrl";
 
-        return ReturnJsonUtil.getJsonObject(dbCategory, fields);
-        //return dbCategory;
+        Map<String, String> assoc = new HashMap<>();
+        assoc.put("parent", "name");
+
+        return ReturnJsonUtil.getJsonObject(dbCategory, fields, assoc);
     }
 
 

@@ -86,8 +86,12 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
 
     @Override
     public List<CategoryEntity> findDefaultCategories() throws Exception {
-        String sql = "SELECT id, name, image_url AS imageUrl FROM categories WHERE parent_id IS NULL";
+        String sql = "SELECT DISTINCT(c.id), c.name, c.image_url AS imageUrl FROM categories c " +
+                "INNER JOIN brands_categories bc ON(bc.category_id = c.id) " +
+                "WHERE c.parent_id IS NULL ";
+
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
         List<CategoryEntity> categories = sqlQuery.list();
         return categories;
     }

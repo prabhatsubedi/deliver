@@ -496,11 +496,12 @@ public class ClientController extends AbstractManager{
     @ResponseBody
     public ResponseEntity<ServiceResponse> getDefaultCategories() {
         try{
-            List<CategoryEntity> categories = new ArrayList<>();
+            List<CategoryEntity> categories = customerService.getDefaultCategories();
 
             ServiceResponse serviceResponse = new ServiceResponse("Parent categories retrieved successfully");
             serviceResponse.addParam("categories", categories);
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.EXPECTATION_FAILED);
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
         }catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while retrieving parent categories", e);
@@ -508,6 +509,28 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/get_category_brands/catId/{catId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getCategoryBrands(@PathVariable("catId") Integer categoryId) {
+        try{
+            Map<String, Object> map = customerService.getCategoryBrands(categoryId);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Brands fetched successfully");
+            serviceResponse.addParam("featuredBrands", map.get("featured"));
+            serviceResponse.addParam("otherBrands", map.get("all"));
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        }catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving category's brands", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+//    @RequestMapping(value = "/test_cat/brandId/{brandId}", method = RequestMethod.GET)
+//    @ResponseBody
+//    public ResponseEntity
 
 
     @RequestMapping(value= "/invite_friend", method = RequestMethod.POST)

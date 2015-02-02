@@ -197,6 +197,29 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
     }
 
     @Override
+    public List<StoresBrandEntity> findStoresBrand(Boolean isPriority, Integer... brandId) throws Exception {
+        List<StoresBrandEntity> storesBrandEntities;
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("openingTime"), "openingTime")
+                .add(Projections.property("closingTime"), "closingTime")
+                .add(Projections.property("brandName"), "brandName")
+                .add(Projections.property("brandLogo"), "brandLogo")
+                .add(Projections.property("brandImage"), "brandImage")
+                .add(Projections.property("brandUrl"), "brandUrl")
+                .add(Projections.property("featured"), "featured")
+                .add(Projections.property("priority"), "priority")
+        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
+        criteria.add(Restrictions.in("id", brandId));
+        if(isPriority)
+            criteria.addOrder(Order.asc("priority"));
+        storesBrandEntities = criteria.list();
+        return storesBrandEntities;
+    }
+
+
+    @Override
     public Boolean updateFeatureAndPriorityOfStoreBrands(List<StoresBrandEntity> storeBrands) throws Exception {
         String updateHQL = "UPDATE StoresBrandEntity SET ";
         if (storeBrands.size() > 0) {

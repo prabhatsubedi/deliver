@@ -1,5 +1,4 @@
 <script src="<c:url value="${pageContext.request.contextPath}/resources/js/header.js" />"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
 <div class="header clearfix">
     <div class="item_search col-lg-8">
         <form role="form" id="item_search" method="POST" action="${pageContext.request.contextPath}/merchant/search/item">

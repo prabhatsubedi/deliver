@@ -1392,11 +1392,4 @@ function toggleSwitch(value, elem) {
         callback.loaderDiv = "body";
         Main.request('/merchant/get_items_detail', {}, callback, {id: itemId});
     }
-
-    Item.searchItems = function() {
-
-
-
-    }
-
 })(jQuery);

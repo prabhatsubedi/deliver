@@ -1193,6 +1193,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Page page = requestJsonDto.getPage();
 
         if(parentCategoryId == null){
+            parentCategoryId = new ArrayList<>();
             List<CategoryEntity> categories = merchantDaoService.findParentCategories();
             for (CategoryEntity category: categories){
                 parentCategoryId.add(category.getId());
@@ -1200,6 +1201,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         if (storeId == null){
+            storeId = new ArrayList<>();
             List<StoresBrandEntity> storesBrands = merchantDaoService.findBrandList();
             for (StoresBrandEntity storesBrand: storesBrands){
                 storeId.add(storesBrand.getId());

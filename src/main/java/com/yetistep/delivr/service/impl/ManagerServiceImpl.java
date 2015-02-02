@@ -96,7 +96,6 @@ public class ManagerServiceImpl implements ManagerService {
         dBoy.setdBoySubmittedAmount(dBoySubmittedAmounts);
 
         deliveryBoyDaoService.update(dBoy);
-
         return dBoy;
     }
 

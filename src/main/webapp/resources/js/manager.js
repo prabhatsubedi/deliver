@@ -837,6 +837,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         $('body').delegate('a.add_child_btn, a.add_root_btn', 'click', function(){
             $(".category_detail").removeClass('hidden');
+            $(".parent_category_list").addClass('hidden');
             if($(this).hasClass('add_root_btn')){
                 $('.add_child_btn').addClass('hidden');
             }

@@ -63,8 +63,8 @@ public class ManagerServiceImpl implements ManagerService {
 
         DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
 
-        if(dBoy.getPreviousDue().compareTo(BigDecimal.ZERO) != 0)
-            throw new YSException("ERR015");
+        /*if(dBoy.getPreviousDue().compareTo(BigDecimal.ZERO) != 0)
+            throw new YSException("ERR015");*/
 
         dBoy.setAdvanceAmount(requestJsonDto.getAdvanceAmount());
         dBoy.setBankAmount(dBoy.getBankAmount().add(requestJsonDto.getAdvanceAmount()));
@@ -87,8 +87,7 @@ public class ManagerServiceImpl implements ManagerService {
     public DeliveryBoyEntity ackSubmittedAmount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
         DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
 
-        dBoy.setPreviousDue(BigDecimal.ZERO);
-
+        dBoy.setPreviousDue(dBoy.getPreviousDue().subtract(requestJsonDto.getSubmittedAmount()));
         List<DboySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DboySubmittedAmountEntity>();
         DboySubmittedAmountEntity dBoySubmittedAmount = new DboySubmittedAmountEntity();
         dBoySubmittedAmount.setAmountReceived(requestJsonDto.getSubmittedAmount());
@@ -105,7 +104,7 @@ public class ManagerServiceImpl implements ManagerService {
     public DeliveryBoyEntity walletSubmittedAmount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
         DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
 
-        dBoy.setWalletAmount(BigDecimal.ZERO);
+        dBoy.setWalletAmount(dBoy.getWalletAmount().subtract(requestJsonDto.getSubmittedAmount()));
 
         List<DboySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DboySubmittedAmountEntity>();
         DboySubmittedAmountEntity dBoySubmittedAmount = new DboySubmittedAmountEntity();

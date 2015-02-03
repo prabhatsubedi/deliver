@@ -49,4 +49,6 @@ public interface ClientService {
 
     public String inviteFriend(HeaderDto headerDto, ArrayList<String> emailList) throws Exception;
 
+    public Boolean updateUserDeviceToken(Long facebookId, String deviceToken) throws Exception;
+
 }

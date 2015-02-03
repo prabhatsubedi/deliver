@@ -17,9 +17,7 @@ import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transaction;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -64,6 +62,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
     @Autowired
     SystemPropertyService systemPropertyService;
+
+    @Autowired
+    UserDeviceDaoService userDeviceDaoService;
 
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
@@ -858,4 +859,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         return "Your "+cnt+" friends has been invited";
     }
 
+    @Override
+    public Boolean updateUserDeviceToken(Long facebookId, String deviceToken) throws Exception {
+        return userDeviceDaoService.updateUserDeviceToken(facebookId, deviceToken);
+    }
 }

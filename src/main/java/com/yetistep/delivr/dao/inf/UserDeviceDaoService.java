@@ -14,4 +14,6 @@ import java.math.BigInteger;
  */
 public interface UserDeviceDaoService extends GenericDaoService<Integer, UserDeviceEntity>{
     public UserDeviceEntity find(BigInteger customerId, String uuid) throws Exception;
+
+    public Boolean updateUserDeviceToken(Long facebookId, String deviceToken) throws Exception;
 }

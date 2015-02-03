@@ -511,14 +511,17 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/get_category_brands/catId/{catId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_category_brands/catId/{catId}/pageNo/{pageNo}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getCategoryBrands(@PathVariable("catId") Integer categoryId) {
+    public ResponseEntity<ServiceResponse> getCategoryBrands(@PathVariable("catId") Integer categoryId, @PathVariable("pageNo") Integer pageNo) {
         try{
-            Map<String, Object> map = customerService.getCategoryBrands(categoryId);
+            Map<String, Object> map = customerService.getCategoryBrands(categoryId, pageNo);
 
             ServiceResponse serviceResponse = new ServiceResponse("Brands fetched successfully");
-            serviceResponse.addParam("featuredBrands", map.get("featured"));
+            if(pageNo!=null && pageNo.equals(1)) {
+                serviceResponse.addParam("pageInfo", map.get("page"));
+                serviceResponse.addParam("featuredBrands", map.get("featured"));
+            }
             serviceResponse.addParam("otherBrands", map.get("all"));
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 

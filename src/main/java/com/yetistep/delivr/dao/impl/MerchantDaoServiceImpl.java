@@ -5,10 +5,7 @@ import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.util.HibernateUtil;
 import org.hibernate.*;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -527,7 +524,12 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<ItemEntity> items = new ArrayList<>();
 
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
-        criteria.add(Restrictions.and(Restrictions.like("name", searchString, MatchMode.ANYWHERE), Restrictions.in("category.id", categoryId),  Restrictions.in("storesBrand.id", storeId)));
+        String[] splitString = searchString.split(",");
+        Disjunction disjunction = Restrictions.disjunction();
+        for (String s: splitString){
+            disjunction.add(Restrictions.like("name", s, MatchMode.ANYWHERE));
+        }
+        criteria.add(Restrictions.and(disjunction, Restrictions.in("category.id", categoryId),  Restrictions.in("storesBrand.id", storeId)));
         HibernateUtil.fillPaginationCriteria(criteria, page, ItemEntity.class);
         items = criteria.list();
 
@@ -541,7 +543,19 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         criteriaCount.setProjection(Projections.rowCount()).add(Restrictions.and(Restrictions.like("name", searchString), Restrictions.in("category.id", categoryId), Restrictions.eq("storesBrand.id", storeId)));
         Long count = (Long) criteriaCount.uniqueResult();
         return (count != null) ? count.intValue() : null;*/
-        String sqQuery =    "SELECT COUNT(i.id) FROM Items i WHERE i.name LIKE '%"+searchString+"%' AND i.category_id IN "+categoryId.toString().replace("[", "(").replace("]", ")")+" AND i.brand_id IN "+storeId.toString().replace("[", "(").replace("]", ")")+" ";
+        String[] splitString = searchString.split(",");
+
+        String queryString = "";
+        Integer i = 0;
+        for (String s: splitString){
+            if(i == 0)
+                queryString =  queryString+ "i.name LIKE '%"+s+"%'";
+            else
+                queryString =  queryString+ "OR i.name LIKE '%"+s+"%'";
+            i++;
+        }
+
+        String sqQuery =    "SELECT COUNT(i.id) FROM Items i WHERE "+queryString+" AND i.category_id IN "+categoryId.toString().replace("[", "(").replace("]", ")")+" AND i.brand_id IN "+storeId.toString().replace("[", "(").replace("]", ")")+" ";
 
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
         //query.setParameter("storeId", storeId);

@@ -224,14 +224,14 @@ public class DeliveryBoyController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/update_item_order", method = RequestMethod.POST)
+    @RequestMapping(value = "/update_item_order/{orderId}", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> updateItemsInOrder(@RequestHeader HttpHeaders headers, @RequestBody List<ItemsOrderEntity> itemsOrders) {
+    public ResponseEntity<ServiceResponse> updateItemsInOrder(@RequestHeader HttpHeaders headers, @RequestBody List<ItemsOrderEntity> itemsOrders, @PathVariable Integer orderId) {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
             //validateMobileClient(headerDto.getAccessToken());
-            deliveryBoyService.updateOrders(itemsOrders);
+            deliveryBoyService.updateOrders(itemsOrders, orderId);
             ServiceResponse serviceResponse = new ServiceResponse("Order item has been updated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {

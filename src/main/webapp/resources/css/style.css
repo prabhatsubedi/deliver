@@ -44,6 +44,7 @@
 
 body {
     background-color: #eeeded;
+    min-width: 360px;
 }
 .no_pad_left {
     padding-left: 0px !important;
@@ -89,6 +90,7 @@ body.loader_div > .loader {
 }
 .modal .modal-content {
     border-radius: 0px;
+    min-width: 360px;
 }
 .unselectable, label {
     -webkit-touch-callout: none;
@@ -177,7 +179,7 @@ body.loader_div > .loader {
     border-top: 1px solid #dbdada;
     border-bottom: 1px solid #dbdada;
     background-color: #FFFFFF;
-    padding: 30px;
+    padding: 30px 0px;
 }
 .login_buttons .btn {
     background-color: #ff9235;
@@ -241,6 +243,8 @@ body.loader_div > .loader {
 }
 #modal_login .modal-dialog, .modal_form .modal-dialog {
     max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
 }
 #modal_login .modal-content, .modal_form .modal-content {
     border-radius: 0px;
@@ -318,27 +322,28 @@ body.loader_div > .loader {
     border-radius: 0px;
     font-size: 20px;
     color: #FFFFFF;
-    padding: 0px 30px;
+    padding: 0px 15px;
     line-height: 58px;
     outline: none;
     background-color: #ff9235;
+    text-align: center;
 }
 .modal_form .modal-body ul.nav li.active a {
     background-color: #d0670e;
-    padding-right: 15px;
+    padding-right: 10px;
 }
 .modal_form .modal-body ul.nav li.active + li a {
     background-image: url("../images/signup-nav.png");
     background-repeat: no-repeat;
     background-position: center left;
-    padding-left: 52px;
+    padding-left: 30px;
 }
 .modal_form .modal-body ul.nav li.passed_tab a {
     background-color: #d0670e;
 }
 .modal_form .modal-body ul.nav li.disabled_tab a {
     background-color: transparent;
-    padding-right: 30px;
+    padding-right: 15px;
 }
 .modal_form .body_padding {
     padding: 30px 30px 0px 30px !important;
@@ -500,13 +505,15 @@ body.assistance_page {
 
 .sidebar {
     width: 320px;
-    height: 100%;
+    /*height: 100%;*/
     position: fixed;
     left: 0px;
     top: 0px;
+    bottom: 0px;
     padding: 30px;
     background-color: #FFFFFF;
     border-right: 1px solid #dbdada;
+    z-index: 10;
     /*overflow: hidden;*/
 }
 .main_container {
@@ -1034,11 +1041,14 @@ label.check_label .checkbox {
 /* Item Listing page */
 .item_listing {
     margin: -20px -15px -20px -45px;
+    position: relative;
 }
 .categories_container {
     width: 360px;
     background-color: #FFFFFF;
     border-right: 1px solid #dbdada;
+    min-width: 180px;
+    max-width: 500px;
 }
 .heading h1.brand_container {
     margin: -10px 0 -10px -45px !important;
@@ -1072,7 +1082,18 @@ label.check_label .checkbox {
 }
 .categories_container li a.current_category {
     background-color: #E0E0E0;
-}/*
+}
+.cat_resize_controller {
+    width: 4px;
+    background-color: #CCC;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    cursor: ew-resize;
+}
+
+/*
 .categories_container li a {
     padding-left: 30px;
 }

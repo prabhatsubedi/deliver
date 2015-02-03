@@ -39,6 +39,7 @@
                         <div class="cateogry_list"></div>
                     </div>
                     <div class="items_container td_div"></div>
+                    <div class="cat_resize_controller hidden"></div>
                 </div>
             </div>
         </div>

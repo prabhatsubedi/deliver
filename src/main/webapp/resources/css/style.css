@@ -585,6 +585,9 @@ body.assistance_page {
 #sidebar_menu.menu_opened .menu_text {
     display: inline;
 }
+#sidebar_menu.menu_opened .tooltip {
+    display: none !important;
+}
 .main_container.menu_closed {
     margin-left: 40px;
 }

@@ -273,10 +273,11 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     $('#featured_stores').html(store_list_featured);
                     $('#prioritized_stores').html(store_list_prirotized);
 
+                    Manager.check_store_type(featured_count, prioritized_count);
+
                 }
 
             }
-            Manager.check_store_type(featured_count, prioritized_count);
 
             Main.elemRatio(function() {
                 $('.items_container .item_container').removeClass('invisible');

@@ -109,8 +109,9 @@
         var re_calculate_width = true;
         $('.item_container').live('mouseover', function(){
             if(re_calculate_width == true) {
-                $('.items_container .item_container').width($('.item_container').eq(0).width() - 1);
-                $('.items_container .item_container').height($('.item_container').eq(0).height());
+                var elem = $('.items_container .item_container');
+                elem.width(elem.eq(0).width() - 1);
+                elem.height(elem.eq(0).height());
                 re_calculate_width = false;
             }
         });

@@ -1137,23 +1137,17 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         if(type.equals("User")){
             for(String id: ids) {
                 UserEntity user =   userDaoService.find(Integer.parseInt(id));
-                if(statusId==2){
-                    user.setStatus(Status.ACTIVE);
-                }else if(statusId==3){
-                    user.setStatus(Status.INACTIVE);
-                }
+                user.setStatus(Status.fromInt(statusId));
                 user.setLastActivityDate(DateUtil.getCurrentTimestampSQL());
                 userDaoService.update(user);
             }
         }else if(type.equals("Brand")) {
             for(String id: ids) {
                 StoresBrandEntity storesBrand =   merchantDaoService.findBrandDetail(Integer.parseInt(id));
-                if(statusId==2){
-                    storesBrand.setStatus(Status.ACTIVE);
-                }else if(statusId==3){
+                storesBrand.setStatus(Status.fromInt(statusId));
+                if(statusId==3){
                     storesBrand.setFeatured(null);
                     storesBrand.setPriority(null);
-                    storesBrand.setStatus(Status.INACTIVE);
                 }
                 merchantDaoService.updateStoresBrand(storesBrand);
             }
@@ -1161,22 +1155,14 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             for(String id: ids) {
                 StoreEntity store = merchantDaoService.getStoreById(Integer.parseInt(id));
                 List<StoreEntity> stores = new ArrayList<StoreEntity>();
-                if(statusId==2){
-                    store.setStatus(Status.ACTIVE);
-                }else if(statusId==3){
-                    store.setStatus(Status.INACTIVE);
-                }
+                store.setStatus(Status.fromInt(statusId));
                 stores.add(store);
                 merchantDaoService.updateStores(stores);
             }
         }  else if(type.equals("Item")){
             for(String id: ids) {
                 ItemEntity item = merchantDaoService.getItemDetail(Integer.parseInt(id));
-                if(statusId==2){
-                    item.setStatus(Status.ACTIVE);
-                }else if(statusId==3){
-                    item.setStatus(Status.INACTIVE);
-                }
+                item.setStatus(Status.fromInt(statusId));
                 item.setModifiedDate(DateUtil.getCurrentTimestampSQL());
                 merchantDaoService.updateItem(item);
             }

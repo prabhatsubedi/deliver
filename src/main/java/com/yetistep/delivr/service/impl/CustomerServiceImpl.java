@@ -6,6 +6,8 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
+import com.yetistep.delivr.model.mobile.PageInfo;
+import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
 import com.yetistep.delivr.schedular.ScheduleChanger;
 import com.yetistep.delivr.service.inf.CustomerService;
@@ -451,7 +453,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Map<String, Object> getCategoryBrands(Integer categoryId) throws Exception {
+    public Map<String, Object> getCategoryBrands(Integer categoryId, Integer pageNo) throws Exception {
         log.info("++++++++++++++++++ Getting Category's Brands of Id: " + categoryId + " ++++++++++++++");
         List<StoresBrandEntity> resultBrands = new ArrayList<>();
         List<StoresBrandEntity> featuredBrands = new ArrayList<>();
@@ -495,9 +497,21 @@ public class CustomerServiceImpl implements CustomerService {
             resultBrands.addAll(tempBrands);
         }
 
+        // Perform sorted store pagination
+        PageInfo pageInfo = null;
+        List<StoresBrandEntity> sortedList = new ArrayList<>();
+        if (resultBrands.size() > 0) {
+            StaticPagination staticPagination = new StaticPagination();
+            staticPagination.paginate(resultBrands, pageNo);
+            sortedList = (List<StoresBrandEntity>) staticPagination.getList();
+            staticPagination.setList(null);
+            pageInfo = staticPagination;
+        }
+
         Map<String, Object> map = new HashMap<>();
         map.put("featured", featuredBrands);
-        map.put("all", resultBrands);
+        map.put("page", pageInfo);
+        map.put("all", sortedList);
         return map;
     }
 

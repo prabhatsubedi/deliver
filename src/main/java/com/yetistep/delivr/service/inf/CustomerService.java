@@ -40,7 +40,7 @@ public interface CustomerService {
 
     public List<CategoryEntity> getDefaultCategories() throws Exception;
 
-    public Map<String, Object> getCategoryBrands(Integer categoryId) throws Exception;
+    public Map<String, Object> getCategoryBrands(Integer categoryId, Integer pageNo) throws Exception;
 
     public List<RatingReason> getRatingReasons() throws Exception;
 }

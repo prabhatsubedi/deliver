@@ -338,7 +338,6 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                     Main.saveInLocalStorage('menu', 'closed');
                 });
             } else {
-                $('.menu_text', target_menu).fadeIn(100);
                 $(target_body).animate({marginLeft: open_width});
                 $('.sidebar_logo', target_menu).animate({paddingTop: open_logo_pad, paddingBottom: open_logo_pad});
                 $('.sidebar_menu a', target_menu).animate({paddingLeft: open_menu_link_pad_left});
@@ -346,6 +345,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 $(target_menu).animate({width: open_width, padding: open_menu_pad}, function(){
                     $(this).removeClass('menu_closed').addClass('menu_opened');
                     Main.saveInLocalStorage('menu', 'opened');
+                    $('.menu_text', target_menu).fadeIn(100);
                 });
             }
         });

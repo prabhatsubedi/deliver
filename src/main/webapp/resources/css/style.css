@@ -588,6 +588,10 @@ body.assistance_page {
 #sidebar_menu.menu_opened .tooltip {
     display: none !important;
 }
+#sidebar_menu .tooltip_conatiner {
+    width: 500px;
+    position: relative;
+}
 .main_container.menu_closed {
     margin-left: 40px;
 }

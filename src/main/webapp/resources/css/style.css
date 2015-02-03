@@ -514,19 +514,29 @@ body.assistance_page {
     background-color: #FFFFFF;
     border-right: 1px solid #dbdada;
     z-index: 10;
-    /*overflow: hidden;*/
+    overflow: hidden;
+}
+.sidebar .sidebar_inner {
+    bottom: -20px;
+    left: 0;
+    overflow: scroll;
+    padding: 0 30px 30px;
+    position: absolute;
+    right: -20px;
+    top: 70px;
 }
 .main_container {
     margin-left: 320px;
 }
 .sidebar_logo {
     padding: 50px 0px;
+    margin-right: -20px;
 }
 .sidebar_logo img {
     margin: 0px auto;
 }
 .sidebar_menu {
-    margin: 0px -10px 0px -30px;
+    margin: 0px -10px 15px -30px;
 }
 .sidebar_menu ul li {
     padding: 5px 0px 5px 20px;
@@ -572,34 +582,40 @@ body.assistance_page {
 #sidebar_menu .navbar-toggle .icon-bar {
     background-color: #CCC;
 }
-#sidebar_menu.menu_closed {
+.menu_closed #sidebar_menu {
     width: 40px;
     padding: 10px;
 }
-#sidebar_menu.menu_closed .sidebar_logo {
+.menu_closed .sidebar .sidebar_inner {
+    padding-left: 10px;
+}
+.menu_closed #sidebar_menu .sidebar_logo {
     padding-top: 10px;
     padding-bottom: 10px;
 }
-#sidebar_menu.menu_closed .sidebar_menu ul li li {
+.menu_closed #sidebar_menu .sidebar_menu ul li li {
     padding-left: 0px;
 }
-#sidebar_menu.menu_closed .sidebar_menu ul li a {
+.menu_closed #sidebar_menu .sidebar_menu ul li a {
     padding-left: 5px;
 }
-#sidebar_menu.menu_closed .menu_text {
+.menu_closed #sidebar_menu .menu_text {
     display: none;
 }
-#sidebar_menu.menu_opened .menu_text {
+.menu_opened #sidebar_menu .menu_text {
     display: inline;
 }
-#sidebar_menu.menu_opened .tooltip {
+.menu_opened .tooltip {
     display: none !important;
 }
-#sidebar_menu .tooltip_conatiner {
+.tooltip_conatiner {
     width: 500px;
-    position: relative;
+    position: fixed;
 }
-.main_container.menu_closed {
+.tooltip_conatiner .tooltip {
+    margin-left: 20px;
+}
+.menu_closed .main_container {
     margin-left: 40px;
 }
 .main_container .header {

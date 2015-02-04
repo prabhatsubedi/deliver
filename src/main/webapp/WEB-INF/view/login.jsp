@@ -84,10 +84,10 @@
                         <div class="form-group">
                             <div class="clearfix">
                                 <div class="col-xs-6 no_pad_left">
-                                    <button type="button" class="btn btn-default btn_logins" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-default btn_logins">Login</button>
                                 </div>
                                 <div class="col-xs-6 no_pad_right">
-                                    <button type="submit" class="btn btn-default btn_logins">Login</button>
+                                    <button type="button" class="btn btn-default btn_logins" data-dismiss="modal">Cancel</button>
                                 </div>
                             </div>
                             <a href="/assistance/">Need Help?</a>

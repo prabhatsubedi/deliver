@@ -842,6 +842,35 @@ function toggleSwitch(value, elem) {
 
     Item.loadListItems = function() {
 
+        var minWidth = parseInt($('.categories_container').css('min-width'));
+        var maxWidth = parseInt($('.categories_container').css('width'));
+        $('.items_container').swipe({
+            swipeLeft: function() {
+                $('.categories_container').animate({width: minWidth});
+                $('.cat_resize_controller').animate({left: minWidth - 5});
+            },
+            swipeRight: function() {
+                $('.categories_container').animate({width: maxWidth});
+                $('.cat_resize_controller').animate({left: maxWidth - 5});
+            }
+        });
+/*        var cat_menu_width = 359;
+        $('.items_container').swipe({
+            swipeStatus : function(event, phase, direction, distance, duration, fingerCount, fingerData) {
+                if(phase == 'start') {
+                    cat_menu_width = $('.categories_container').width();
+                }
+                fingerData = fingerData[0];
+                var posLeft = cat_menu_width + fingerData.end.x - fingerData.start.x;
+                console.log(distance);
+                if(!(minWidth > posLeft || maxWidth < posLeft || distance < 100)) {
+                    $('.cat_resize_controller').css({left: posLeft - 5});
+                    $('.categories_container').css({width: posLeft});
+                }
+            },
+            allowPageScroll: 'vertical'
+        });*/
+
         Main.resizableCatMenu();
         $('#item_brand').selectpicker();
         Item.getBrands();

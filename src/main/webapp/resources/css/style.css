@@ -513,7 +513,6 @@ body.assistance_page {
     padding: 30px;
     background-color: #FFFFFF;
     border-right: 1px solid #dbdada;
-    z-index: 10;
     overflow: hidden;
 }
 .sidebar .sidebar_inner {
@@ -611,6 +610,7 @@ body.assistance_page {
 .tooltip_conatiner {
     width: 500px;
     position: fixed;
+    z-index: 999;
 }
 .tooltip_conatiner .tooltip {
     margin-left: 20px;

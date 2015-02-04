@@ -43,4 +43,5 @@
     <bean id = "scheduledProcessor" class="com.yetistep.delivr.schedular.ScheduledProcessor" />
     <bean id = "brandsCategoryService" class="com.yetistep.delivr.dao.impl.BrandsCategoryDaoServiceImpl" />
     <bean id = "reasonDetailsDaoService" class="com.yetistep.delivr.dao.impl.ReasonDetailsDaoServiceImpl" />
+    <bean id = "adminDaoService" class="com.yetistep.delivr.dao.impl.AdminDaoServiceImpl" />
  </beans>

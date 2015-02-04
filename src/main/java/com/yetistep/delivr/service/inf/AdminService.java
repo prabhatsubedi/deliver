@@ -3,6 +3,7 @@ package com.yetistep.delivr.service.inf;
 import com.yetistep.delivr.model.CountryEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,4 +14,5 @@ import java.util.List;
  */
 public interface AdminService {
     public List<CountryEntity> findAllCountries() throws Exception;
+    public List<Map<String, Map<Integer, Map<String, String>>>> getGodsView() throws Exception;
 }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -41,6 +42,8 @@ public class AdminController {
     CustomerService customerService;
     @Autowired
     SystemPropertyService systemPropertyService;
+    @Autowired
+    AdminService adminService;
 
     private static final Logger log = Logger.getLogger(AdminController.class);
 
@@ -138,6 +141,24 @@ public class AdminController {
 
         }catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while updating system preferences", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
+    @RequestMapping(value="/gods_view", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> godsView(){
+        try{
+
+            List<Map<String, Map<Integer, Map<String, String>>>> godsView = adminService.getGodsView();
+            ServiceResponse serviceResponse = new ServiceResponse("Gods view retrieved successfully successfully");
+            serviceResponse.addParam("godsView", godsView);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        }catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving gods view", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
 

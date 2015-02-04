@@ -104,9 +104,9 @@ public class OrderDaoServiceImpl implements OrderDaoService {
             orderEntity.setId(Integer.parseInt(row[0].toString()));
             orderEntity.setOrderName(row[1].toString());
             orderEntity.setOrderStatus(JobOrderStatus.fromInt(Integer.parseInt(row[2].toString())));
-            orderEntity.setOrderDate(Timestamp.valueOf(row[3].toString()));
-            orderEntity.setCustomerChargeableDistance(new BigDecimal(row[4].toString() == null ? "0" : row[4].toString()));
-            orderEntity.setSystemChargeableDistance(new BigDecimal(row[5].toString() == null ? "0" : row[5].toString()));
+            orderEntity.setOrderDate((row[3] != null) ? Timestamp.valueOf(row[3].toString()) : null);
+            orderEntity.setCustomerChargeableDistance(new BigDecimal(row[4] == null ? "0" : row[4].toString()));
+            orderEntity.setSystemChargeableDistance(new BigDecimal(row[5] == null ? "0" : row[5].toString()));
             orderEntity.setRemainingTime(row[6] != null ? Integer.parseInt(row[6].toString()) : null);
             orderEntity.setAssignedTime(row[6] != null ? Integer.parseInt(row[6].toString()) : null);
             orderEntities.add(orderEntity);

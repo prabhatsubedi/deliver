@@ -6,6 +6,7 @@ import com.yetistep.delivr.enums.RatingReason;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
+import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
 
 import java.util.List;
 import java.util.Map;
@@ -43,4 +44,8 @@ public interface CustomerService {
     public Map<String, Object> getCategoryBrands(Integer categoryId, Integer pageNo) throws Exception;
 
     public List<RatingReason> getRatingReasons() throws Exception;
+
+    public List<MyOrderDto> getMyCurrentOrders(Long facebookId) throws Exception;
+
+    public List<MyOrderDto> getMyPastOrders(Long facebookId) throws Exception;
 }

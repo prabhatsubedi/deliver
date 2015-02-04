@@ -3,8 +3,10 @@ package com.yetistep.delivr.dao.inf;
 import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,4 +26,8 @@ public interface CustomerDaoService extends GenericDaoService<Integer, CustomerE
     public BigDecimal getRewardsPoint(Long facebookId) throws Exception;
 
     public CustomerEntity getCustomerIdAndRewardFromFacebookId(Long facebookId) throws Exception;
+
+    public List<MyOrderDto> getCurrentOrdersByFacebookId(Long facebookId) throws Exception;
+
+    public List<MyOrderDto> getPastOrdersByFacebookId(Long facebookId) throws Exception;
 }

@@ -1,17 +1,19 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.CustomerDaoService;
-import com.yetistep.delivr.model.*;
-import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.model.CustomerEntity;
+import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.UserEntity;
+import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
+import org.hibernate.*;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -121,6 +123,48 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         ).setResultTransformer(Transformers.aliasToBean(CustomerEntity.class));
         criteria.add(Restrictions.eq("facebookId", facebookId));
         return (CustomerEntity) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<MyOrderDto> getCurrentOrdersByFacebookId(Long facebookId) throws Exception {
+        String sqlQuery = "SELECT o.id, o.order_status, sb.brand_logo, sb.brand_name " +
+                "FROM orders o, stores_brands sb, stores s, customers c " +
+                "WHERE o.store_id = s.id AND s.stores_brand_id = sb.id AND o.order_status not in (5,6) AND " +
+                "c.id = o.customer_id AND c.facebook_id =:facebookId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("facebookId", facebookId);
+        List<Object[]> rows = query.list();
+        List<MyOrderDto> currentOrders = new ArrayList<MyOrderDto>();
+        for (Object[] row : rows) {
+            MyOrderDto currentOrder = new MyOrderDto();
+            currentOrder.setOrderId(Integer.parseInt(row[0].toString()));
+            currentOrder.setOrderStatus(JobOrderStatus.fromInt(Integer.parseInt(row[1].toString())));
+            currentOrder.setBrandLogo((row[2] != null) ? row[2].toString() : null);
+            currentOrder.setBrandName((row[3] != null) ? row[3].toString() : null);
+            currentOrders.add(currentOrder);
+        }
+        return currentOrders;
+    }
+
+    @Override
+    public List<MyOrderDto> getPastOrdersByFacebookId(Long facebookId) throws Exception {
+        String sqlQuery = "SELECT o.id, o.order_status, sb.brand_logo, sb.brand_name " +
+                "FROM orders o, stores_brands sb, stores s, customers c " +
+                "WHERE o.store_id = s.id AND s.stores_brand_id = sb.id AND o.order_status in (5,6) AND " +
+                "c.id = o.customer_id AND c.facebook_id =:facebookId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("facebookId", facebookId);
+        List<Object[]> rows = query.list();
+        List<MyOrderDto> pastOrders = new ArrayList<MyOrderDto>();
+        for (Object[] row : rows) {
+            MyOrderDto pastOrder = new MyOrderDto();
+            pastOrder.setOrderId(Integer.parseInt(row[0].toString()));
+            pastOrder.setOrderStatus(JobOrderStatus.fromInt(Integer.parseInt(row[1].toString())));
+            pastOrder.setBrandLogo((row[2] != null) ? row[2].toString() : null);
+            pastOrder.setBrandName((row[3] != null) ? row[3].toString() : null);
+            pastOrders.add(pastOrder);
+        }
+        return pastOrders;
     }
 }
 

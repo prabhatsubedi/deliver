@@ -10,6 +10,7 @@ import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.DeviceInfo;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
+import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
@@ -617,6 +618,44 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while updating device info", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/current_orders/fbId/{facebookId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getMyCurrentOrders(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+//            validateMobileClient(headerDto.getAccessToken());
+
+            List<MyOrderDto> orders = customerService.getMyCurrentOrders(facebookId);
+            ServiceResponse serviceResponse = new ServiceResponse("Current orders retrieved successfully");
+            serviceResponse.addParam("orders",orders);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving current orders", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/past_orders/fbId/{facebookId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getMyPastOrders(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+//            validateMobileClient(headerDto.getAccessToken());
+
+            List<MyOrderDto> orders = customerService.getMyPastOrders(facebookId);
+            ServiceResponse serviceResponse = new ServiceResponse("Past orders retrieved successfully");
+            serviceResponse.addParam("orders",orders);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving past orders", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

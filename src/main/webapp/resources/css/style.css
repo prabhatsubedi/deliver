@@ -1100,8 +1100,8 @@ label.check_label .checkbox {
     background-color: #E0E0E0;
 }
 .cat_resize_controller {
-    width: 4px;
-    background-color: #CCC;
+    width: 10px;
+    /*background-color: #CCC;*/
     position: absolute;
     top: 0px;
     right: 0px;

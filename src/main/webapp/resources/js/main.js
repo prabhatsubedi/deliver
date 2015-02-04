@@ -355,7 +355,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
     Main.resizableCatMenu = function(){
 
-        $('.cat_resize_controller').css({left : $('.categories_container').width() - 2}).removeClass('hidden');
+        $('.cat_resize_controller').css({left : $('.categories_container').width() - 5}).removeClass('hidden');
         var minWidth = parseInt($('.categories_container').css('min-width'));
         var maxWidth = parseInt($('.categories_container').css('max-width'));
         $('.cat_resize_controller').draggable({
@@ -363,7 +363,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             drag: function( event, ui ) {
                 var posLeft = ui.position.left;
                 if(minWidth > posLeft || maxWidth < posLeft ) return false;
-                $('.categories_container').width(posLeft);
+                $('.categories_container').width(posLeft + 5);
             }
         });
 

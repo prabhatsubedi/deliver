@@ -1,5 +1,6 @@
 package com.yetistep.delivr.model.mobile.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yetistep.delivr.enums.JobOrderStatus;
 
 /**
@@ -14,6 +15,7 @@ public class MyOrderDto {
     private String brandLogo;
     private String brandName;
     private JobOrderStatus orderStatus;
+    private Integer jobOrderStatus;
 
     public Integer getOrderId() {
         return orderId;
@@ -45,5 +47,15 @@ public class MyOrderDto {
 
     public void setOrderStatus(JobOrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    @JsonIgnore
+    public Integer getJobOrderStatus() {
+        return jobOrderStatus;
+    }
+
+    public void setJobOrderStatus(Integer jobOrderStatus) {
+        this.jobOrderStatus = jobOrderStatus;
+        this.setOrderStatus(JobOrderStatus.fromInt(jobOrderStatus));
     }
 }

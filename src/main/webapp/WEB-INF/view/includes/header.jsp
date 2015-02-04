@@ -7,9 +7,11 @@
             </div>
             <div class="col-lg-8 no_pad">
                 <div class="col-lg-9 no_pad">
-                    <select id="item_stores" name="item_stores" class="item_stores col-lg-6 col-xs-12 no_pad" data-style="form-control" multiple="multiple">
+                    <select id="item_stores" name="item_stores" class="compelselection haveall item_stores col-lg-6 col-xs-12 no_pad" data-style="form-control" multiple="multiple">
+                        <option value="All" selected="selected">All Stores</option>
                     </select>
-                    <select id="item_categories" name="item_categories" class="item_categories col-lg-6 col-xs-12 no_pad" data-style="form-control" multiple="multiple">
+                    <select id="item_categories" name="item_categories" class="compelselection haveall item_categories col-lg-6 col-xs-12 no_pad" data-style="form-control" multiple="multiple">
+                        <option value="All" selected="selected">All Categories</option>
                     </select>
                 </div>
                 <div class="col-lg-3 no_pad_right search_button">
@@ -152,8 +154,8 @@
             $(this).attr('href', Main.modifyURL($(this).attr('href')));
         });
 
-        $('#item_categories').selectpicker({noneSelectedText: 'Select Categories'});
-        $('#item_stores').selectpicker({noneSelectedText: 'Select Stores'});
+        $('#item_categories').selectpicker({size: 5});
+        $('#item_stores').selectpicker({size: 5});
 
         $('select.haveall').live('change', function(){
             if($(this).val() != null && $('option', this).length == $(this).val().length + 1)

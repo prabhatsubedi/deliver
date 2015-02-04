@@ -10,6 +10,7 @@ if (typeof(Header) == "undefined") var Header = {};
                 return;
             }
             var brands = '';
+            brands += '<option value="All" selected="selected">All Stores</option>';
             for (var i = 0; i < jsondata.params.brands.length; i++) {
                 var store = jsondata.params.brands[i];
                 brands += '<option value="' + store.id + '">' + store.brandName + '</option>';
@@ -31,6 +32,7 @@ if (typeof(Header) == "undefined") var Header = {};
                 return;
             }
             var categories = '';
+            categories += '<option value="All" selected="selected">All Categories</option>';
             for (var i = 0; i < jsondata.params.categories.length; i++) {
                 var category = jsondata.params.categories[i];
                 categories += '<option value="' + category.id + '">' + category.name + '</option>';
@@ -54,6 +56,7 @@ if (typeof(Header) == "undefined") var Header = {};
                     return;
                 }
                 var categories = '';
+                categories += '<option value="All" selected="selected">All Categories</option>';
                 for (var i = 0; i < jsondata.params.categories.length; i++) {
                     var category = jsondata.params.categories[i];
                     categories += '<option value="' + category.id + '">' + category.name + '</option>';
@@ -65,8 +68,10 @@ if (typeof(Header) == "undefined") var Header = {};
 
             callBack.requestType = "GET";
             callBack.loaderDiv = 'body';
+            var params = {};
+            if($(this).val() != "All") params.id = $(this).val();
 
-            Main.request("/merchant/get_search_categories", {}, callBack, {"id": $(this).val()});
+            Main.request("/merchant/get_search_categories", {}, callBack, params);
         });
 
         Header.searchItem = function (pageNumber, pageSize) {

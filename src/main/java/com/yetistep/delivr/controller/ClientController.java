@@ -662,19 +662,19 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/test_json", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<ServiceResponse> testJson(@RequestBody TestEntity test) {
-        try{
-            log.info(test.getId() + " ======== " + test.getName());
-            ServiceResponse serviceResponse = new ServiceResponse("Test Json cast successfully");
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
-        } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while updating device info", e);
-            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
-        }
-    }
+//    @RequestMapping(value = "/test_json", method = RequestMethod.POST)
+//    @ResponseBody
+//    public ResponseEntity<ServiceResponse> testJson(@RequestBody TestEntity test) {
+//        try{
+//            log.info(test.getId() + " ======== " + test.getName());
+//            ServiceResponse serviceResponse = new ServiceResponse("Test Json cast successfully");
+//            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+//        } catch (Exception e) {
+//            GeneralUtil.logError(log, "Error Occurred while updating device info", e);
+//            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+//            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+//        }
+//    }
 
     @RequestMapping(value = "/past_orders/fbId/{facebookId}", method = RequestMethod.GET)
     @ResponseBody

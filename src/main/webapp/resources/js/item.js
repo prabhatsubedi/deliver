@@ -842,7 +842,7 @@ function toggleSwitch(value, elem) {
 
     Item.loadListItems = function() {
 
-        var minWidth = parseInt($('.categories_container').css('min-width'));
+/*        var minWidth = parseInt($('.categories_container').css('min-width'));
         var maxWidth = parseInt($('.categories_container').css('width'));
         $('.items_container').swipe({
             swipeLeft: function() {
@@ -853,7 +853,7 @@ function toggleSwitch(value, elem) {
                 $('.categories_container').animate({width: maxWidth});
                 $('.cat_resize_controller').animate({left: maxWidth - 5});
             }
-        });
+        });*/
 /*        var cat_menu_width = 359;
         $('.items_container').swipe({
             swipeStatus : function(event, phase, direction, distance, duration, fingerCount, fingerData) {

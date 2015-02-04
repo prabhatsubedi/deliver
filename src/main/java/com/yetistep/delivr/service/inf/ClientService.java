@@ -41,6 +41,8 @@ public interface ClientService {
 
     public void deleteCart(Integer cartId) throws Exception;
 
+    public void deleteAllCart(Long facebookI) throws Exception;
+
     public CartDto getCartSize(Long facebookId) throws Exception;
 
     public CartDto getCartDetail(Integer cartId) throws Exception;

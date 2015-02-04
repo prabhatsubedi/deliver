@@ -39,7 +39,8 @@ public class ScheduledProcessor {
     public void process() {
         try {
             log.info("Looking for elapsed orders");
-            Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
+
+            Float timeInSeconds = 180f;
             Integer timeOut = timeInSeconds.intValue();
             List<OrderEntity> elapsedOrders = orderDaoService.getElapsedOrders(timeOut);
             for (OrderEntity order : elapsedOrders) {

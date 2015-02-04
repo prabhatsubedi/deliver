@@ -741,6 +741,20 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     }
 
     @Override
+    public void deleteAllCart(Long facebookId) throws Exception {
+        log.info("++++++ Deleting cart of facebook id : " + facebookId + " +++++++++");
+        List<Integer> cartList = cartDaoService.findCarts(facebookId, null);
+        if(cartList==null || cartList.size() == 0)
+            throw new YSException("CRT001");
+
+        List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cartList);
+        if (cartAttributes.size() > 0)
+            cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+
+        cartDaoService.deleteCarts(cartList);
+    }
+
+    @Override
     public CartDto getCartSize(Long facebookId) throws Exception {
         log.info("++++++ Getting cart info of customer : " + facebookId + " +++++++++");
         List<CartEntity> carts = cartDaoService.getMyCarts(facebookId);

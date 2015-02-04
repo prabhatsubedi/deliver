@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -423,6 +424,25 @@ public class ClientController extends AbstractManager{
         }
     }
 
+    @RequestMapping(value = "/delete_cart/fbId/{facebookId}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> deleteAllCart(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
+
+            clientService.deleteAllCart(facebookId);
+            ServiceResponse serviceResponse = new ServiceResponse("Cart deleted successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while deleting cart", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     @RequestMapping(value= "/get_cart_info/fbId/{facebookId}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> checkCart(@PathVariable("facebookId") Long facebookId) {
@@ -637,6 +657,20 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while retrieving current orders", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/test_json", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> testJson(@RequestBody TestEntity test) {
+        try{
+            log.info(test.getId() + " ======== " + test.getName());
+            ServiceResponse serviceResponse = new ServiceResponse("Test Json cast successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while updating device info", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

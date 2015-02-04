@@ -296,6 +296,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(orderAcceptance){
             deliveryBoySelectionEntity.setAccepted(true);
             DeliveryBoyEntity deliveryBoyEntity = deliveryBoySelectionEntity.getDeliveryBoy();
+            if(deliveryBoyEntity.getActiveOrderNo() >= 3){
+                throw new YSException("DBY003");
+            }
             deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()+1);
             deliveryBoyEntity.setTotalOrderTaken(deliveryBoyEntity.getTotalOrderTaken()+1);
             deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);

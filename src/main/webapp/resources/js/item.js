@@ -842,6 +842,7 @@ function toggleSwitch(value, elem) {
 
     Item.loadListItems = function() {
 
+        Main.resizableCatMenu();
         $('#item_brand').selectpicker();
         Item.getBrands();
 

@@ -46,7 +46,7 @@ public interface DeliveryBoyService {
 
     public Boolean addNewItem(ItemsOrderEntity itemsOrderEntity) throws Exception;
 
-    public Boolean updateOrders(List<ItemsOrderEntity> itemOrders) throws Exception;
+    public Boolean updateOrders(List<ItemsOrderEntity> itemOrders, Integer orderId) throws Exception;
 
     public Boolean cancelOrder(OrderEntity order, Integer userId) throws Exception;
 

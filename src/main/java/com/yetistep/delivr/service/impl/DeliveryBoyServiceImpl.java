@@ -241,6 +241,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Override
     public List<OrderEntity> getActiveOrders(Integer deliveryBoyId) throws Exception{
         List<OrderEntity> orderEntities = orderDaoService.getActiveOrdersList(deliveryBoyId);
+        List<OrderEntity> assignedOrders = orderDaoService.getAssignedOrders(deliveryBoyId);
+        orderEntities.addAll(assignedOrders);
         for(OrderEntity orderEntity: orderEntities){
             updateRemainingAndElapsedTime(orderEntity);
         }
@@ -296,6 +298,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(orderAcceptance){
             deliveryBoySelectionEntity.setAccepted(true);
             DeliveryBoyEntity deliveryBoyEntity = deliveryBoySelectionEntity.getDeliveryBoy();
+            if(deliveryBoyEntity.getActiveOrderNo() >= 3){
+                throw new YSException("DBY003");
+            }
             deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()+1);
             deliveryBoyEntity.setTotalOrderTaken(deliveryBoyEntity.getTotalOrderTaken()+1);
             deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);
@@ -544,20 +549,96 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public Boolean updateOrders(List<ItemsOrderEntity> itemOrders) throws Exception {
-        for(ItemsOrderEntity itemsOrder : itemOrders){
-            ItemsOrderEntity itemsOrderEntity = itemsOrderDaoService.find(itemsOrder.getId());
-            if(itemsOrderEntity == null)
-                throw new YSException("VLD020");
-            itemsOrderEntity.setQuantity(itemsOrder.getQuantity());
-            itemsOrderEntity.setItemTotal(itemsOrder.getItemTotal());
-            itemsOrderEntity.setAvailabilityStatus(itemsOrder.getAvailabilityStatus());
-            itemsOrderEntity.setNote(itemsOrder.getNote());
-            itemsOrderEntity.setCustomItem(itemsOrder.getCustomItem());
-            itemsOrderDaoService.update(itemsOrderEntity);
+    public Boolean updateOrders(List<ItemsOrderEntity> itemOrders, Integer orderId) throws Exception {
+        OrderEntity order = orderDaoService.find(orderId);
+        if (order == null) {
+            throw new YSException("VLD017");
         }
-        //TODO add price in totalCost of item, grandTotal and service fee
-        return true;
+
+        BigDecimal itemTotalCost = BigDecimal.ZERO;
+        BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
+
+        List<ItemsOrderEntity> itemsOrderEntityList = order.getItemsOrder();
+        for (ItemsOrderEntity itemsOrder : itemOrders) {
+            /* Validating itemsOrder Entity */
+            if (itemsOrder.getId() == null) {
+                throw new YSException("VLD025");
+            }
+            ItemsOrderEntity itemsOrderEntity = getItemOrderById(itemsOrderEntityList, itemsOrder.getId());
+            if (itemsOrderEntity == null)
+                throw new YSException("VLD025");
+
+            /* Service Fee and Vat calculation for available items only. */
+            itemsOrderEntity.setAvailabilityStatus(itemsOrder.getAvailabilityStatus());
+            if (itemsOrder.getAvailabilityStatus()) {
+                BigDecimal serviceChargeAmount = BigDecimalUtil.percentageOf(itemsOrder.getItemTotal(), BigDecimalUtil.checkNull(itemsOrder.getServiceCharge()));
+                BigDecimal serviceAndVatChargeAmount = serviceChargeAmount.add(BigDecimalUtil.percentageOf(serviceChargeAmount.add(itemsOrder.getItemTotal()), BigDecimalUtil.checkNull(itemsOrder.getVat())));
+
+                itemTotalCost = itemTotalCost.add(itemsOrder.getItemTotal());
+                itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatChargeAmount);
+                itemsOrderEntity.setServiceAndVatCharge(serviceAndVatChargeAmount);
+                itemsOrderEntity.setQuantity(itemsOrder.getQuantity());
+                itemsOrderEntity.setItemTotal(itemsOrder.getItemTotal());
+                itemsOrderEntity.setNote(itemsOrder.getNote());
+                itemsOrderEntity.setServiceCharge(itemsOrder.getServiceCharge());
+                itemsOrderEntity.setVat(itemsOrder.getVat());
+            }
+
+            /* Updating name of custom item added by delivery boy */
+            if(itemsOrderEntity.getCustomItem() != null && itemsOrder.getCustomItem() != null){
+                itemsOrderEntity.getCustomItem().setName(itemsOrder.getCustomItem().getName());
+            }
+
+            /* Updating attributes of item added by customer */
+            List<ItemsOrderAttributeEntity> itemsOrderAttributeEntityList = itemsOrderEntity.getItemOrderAttributes();
+            itemsOrderAttributeEntityList.clear();
+            for(ItemsOrderAttributeEntity itemsOrderAttributes : itemsOrder.getItemOrderAttributes()){
+                ItemsOrderAttributeEntity itemsOrderAttribute = new ItemsOrderAttributeEntity();
+                ItemsAttributeEntity itemsAttribute = itemsOrderAttributes.getItemsAttribute();
+                itemsOrderAttribute.setItemOrder(itemsOrderEntity);
+                itemsOrderAttribute.setItemsAttribute(itemsAttribute);
+                itemsOrderAttributeEntityList.add(itemsOrderAttribute);
+                itemsAttribute.setItemOrderAttributes(itemsOrderAttributeEntityList);
+            }
+        }
+
+        order.setItemsOrder(itemsOrderEntityList);
+        order.setTotalCost(itemTotalCost);
+        order.setItemServiceAndVatCharge(itemServiceAndVatCharge);
+
+        DeliveryBoySelectionEntity dBoySelection = new DeliveryBoySelectionEntity();
+        dBoySelection.setDistanceToStore(order.getSystemChargeableDistance());
+        dBoySelection.setStoreToCustomerDistance(order.getCustomerChargeableDistance());
+
+        CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
+        MerchantEntity merchant = new MerchantEntity();
+        merchant.setCommissionPercentage(courierTransactionEntity.getCommissionPct());
+        merchant.setServiceFee(courierTransactionEntity.getServiceFeePct());
+
+        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, dBoySelection, merchant.getCommissionPercentage(), merchant.getServiceFee());
+        courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
+        courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
+        courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
+        courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
+        courierTransactionEntity.setServiceFeeAmt(courierTransaction.getServiceFeeAmt());
+        courierTransactionEntity.setDeliveryChargedBeforeDiscount(courierTransaction.getDeliveryChargedBeforeDiscount());
+        courierTransactionEntity.setCustomerBalanceBeforeDiscount(courierTransaction.getCustomerBalanceBeforeDiscount());
+        courierTransactionEntity.setDeliveryChargedAfterDiscount(courierTransaction.getDeliveryChargedAfterDiscount());
+        courierTransactionEntity.setCustomerBalanceAfterDiscount(courierTransaction.getCustomerBalanceAfterDiscount());
+        courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
+        courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
+        courierTransactionEntity.setProfit(courierTransaction.getProfit());
+
+        return orderDaoService.update(order);
+    }
+
+    private ItemsOrderEntity getItemOrderById(List<ItemsOrderEntity> itemsOrderEntities, Integer itemOrderId) {
+        for(ItemsOrderEntity itemOrder: itemsOrderEntities){
+            if(itemOrder.getId().equals(itemOrderId)){
+                return itemOrder;
+            }
+        }
+        return null;
     }
 
     @Override

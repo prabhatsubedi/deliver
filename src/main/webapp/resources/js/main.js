@@ -311,9 +311,9 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
     Main.toggleMainMenu = function(){
         if(Main.getFromLocalStorage('menu') == 'closed') {
-            $('#sidebar_menu, .main_container').removeClass('menu_opened').addClass('menu_closed');
+            $('body').removeClass('menu_opened').addClass('menu_closed');
         } else {
-            $('#sidebar_menu, .main_container').removeClass('menu_closed').addClass('menu_opened');
+            $('body').removeClass('menu_closed').addClass('menu_opened');
         }
         var open_width = 320;
         var close_width = 40;
@@ -327,14 +327,15 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             if($(this).is(':animated')) return false;
             var target_menu = $($(this).attr('data-menu'));
             var target_body = $($(this).attr('data-body'));
-            if(target_menu.hasClass('menu_opened')) {
+            if($('body').hasClass('menu_opened')) {
                 $('.menu_text', target_menu).fadeOut(100);
                 $(target_body).animate({marginLeft: close_width});
                 $('.sidebar_logo', target_menu).animate({paddingTop: close_logo_pad, paddingBottom: close_logo_pad});
                 $('.sidebar_menu a', target_menu).animate({paddingLeft: close_menu_link_pad_left});
                 $('.sidebar_menu li li', target_menu).animate({paddingLeft: 0});
+                $('.sidebar_inner', target_menu).animate({paddingLeft: close_menu_pad});
                 $(target_menu).animate({width: close_width, padding: close_menu_pad}, function(){
-                    $(this).removeClass('menu_opened').addClass('menu_closed');
+                    $('body').removeClass('menu_opened').addClass('menu_closed');
                     Main.saveInLocalStorage('menu', 'closed');
                 });
             } else {
@@ -342,13 +343,30 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 $('.sidebar_logo', target_menu).animate({paddingTop: open_logo_pad, paddingBottom: open_logo_pad});
                 $('.sidebar_menu a', target_menu).animate({paddingLeft: open_menu_link_pad_left});
                 $('.sidebar_menu li li', target_menu).animate({paddingLeft: open_menu_link_pad_left});
+                $('.sidebar_inner', target_menu).animate({paddingLeft: open_menu_pad});
                 $(target_menu).animate({width: open_width, padding: open_menu_pad}, function(){
-                    $(this).removeClass('menu_closed').addClass('menu_opened');
+                    $('body').removeClass('menu_closed').addClass('menu_opened');
                     Main.saveInLocalStorage('menu', 'opened');
                     $('.menu_text', target_menu).fadeIn(100);
                 });
             }
         });
+    };
+
+    Main.resizableCatMenu = function(){
+
+        $('.cat_resize_controller').css({left : $('.categories_container').width() - 5}).removeClass('hidden');
+        var minWidth = parseInt($('.categories_container').css('min-width'));
+        var maxWidth = parseInt($('.categories_container').css('max-width'));
+        $('.cat_resize_controller').draggable({
+            axis: "x",
+            drag: function( event, ui ) {
+                var posLeft = ui.position.left;
+                if(minWidth > posLeft || maxWidth < posLeft ) return false;
+                $('.categories_container').width(posLeft + 5);
+            }
+        });
+
     };
 
 })(jQuery);

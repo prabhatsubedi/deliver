@@ -83,10 +83,10 @@
                         </div>
                         <div class="form-group">
                             <div class="clearfix">
-                                <div class="col-lg-6 no_pad_left">
+                                <div class="col-xs-6 no_pad_left">
                                     <button type="button" class="btn btn-default btn_logins" data-dismiss="modal">Cancel</button>
                                 </div>
-                                <div class="col-lg-6 no_pad_right">
+                                <div class="col-xs-6 no_pad_right">
                                     <button type="submit" class="btn btn-default btn_logins">Login</button>
                                 </div>
                             </div>
@@ -173,10 +173,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <div class="col-lg-6 no_pad">
+                    <div class="col-xs-6 no_pad">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
-                    <div class="col-lg-6 no_pad">
+                    <div class="col-xs-6 no_pad">
                         <button type="submit" class="btn btn-default next">Next</button>
                     </div>
                 </div>

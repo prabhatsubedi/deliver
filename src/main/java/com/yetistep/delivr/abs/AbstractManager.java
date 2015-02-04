@@ -1,9 +1,8 @@
 package com.yetistep.delivr.abs;
 
 import com.yetistep.delivr.util.*;
-import net.sf.uadetector.ReadableUserAgent;
-import net.sf.uadetector.UserAgentStringParser;
-import net.sf.uadetector.service.UADetectorServiceFactory;
+import eu.bitwalker.useragentutils.UserAgent;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -53,14 +52,20 @@ public abstract class AbstractManager {
 
     public void validateMobileClient(String token) throws Exception {
         log.info("++++++++++++++ Validating mobile client +++++++++++++++");
+//
+//        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+//        ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
+//
+//        String timeStr = null;
+//        String family = agent.getOperatingSystem().getFamily().toString();
 
-        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
-        ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
-
+        String userAgent = httpServletRequest.getHeader("User-Agent");
+        UserAgent ua = UserAgent.parseUserAgentString(userAgent);
         String timeStr = null;
-        String family = agent.getOperatingSystem().getFamily().toString();
+        String family = ua.getOperatingSystem().name();
 
-        if (family.toUpperCase().indexOf("IOS")>= 0 || family.toUpperCase().indexOf("MAC")>= 0) {
+
+        if (family.toUpperCase().indexOf("IOS")>= 0 || family.toUpperCase().indexOf("MAC")>= 0 || family.toUpperCase().indexOf("UNKNOWN")>= 0) {
             timeStr = RNCryptoEncDec.decryptAccessToken(token);
         } else if(family.toUpperCase().indexOf("ANDROID")>=0){
             timeStr = EncDecUtil.decryptAccessToken(token, MessageBundle.getSecretKey());

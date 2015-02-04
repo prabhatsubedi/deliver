@@ -44,6 +44,7 @@
 
 body {
     background-color: #eeeded;
+    min-width: 360px;
 }
 .no_pad_left {
     padding-left: 0px !important;
@@ -89,6 +90,7 @@ body.loader_div > .loader {
 }
 .modal .modal-content {
     border-radius: 0px;
+    min-width: 360px;
 }
 .unselectable, label {
     -webkit-touch-callout: none;
@@ -177,7 +179,7 @@ body.loader_div > .loader {
     border-top: 1px solid #dbdada;
     border-bottom: 1px solid #dbdada;
     background-color: #FFFFFF;
-    padding: 30px;
+    padding: 30px 0px;
 }
 .login_buttons .btn {
     background-color: #ff9235;
@@ -241,6 +243,8 @@ body.loader_div > .loader {
 }
 #modal_login .modal-dialog, .modal_form .modal-dialog {
     max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
 }
 #modal_login .modal-content, .modal_form .modal-content {
     border-radius: 0px;
@@ -318,27 +322,28 @@ body.loader_div > .loader {
     border-radius: 0px;
     font-size: 20px;
     color: #FFFFFF;
-    padding: 0px 30px;
+    padding: 0px 15px;
     line-height: 58px;
     outline: none;
     background-color: #ff9235;
+    text-align: center;
 }
 .modal_form .modal-body ul.nav li.active a {
     background-color: #d0670e;
-    padding-right: 15px;
+    padding-right: 10px;
 }
 .modal_form .modal-body ul.nav li.active + li a {
     background-image: url("../images/signup-nav.png");
     background-repeat: no-repeat;
     background-position: center left;
-    padding-left: 52px;
+    padding-left: 30px;
 }
 .modal_form .modal-body ul.nav li.passed_tab a {
     background-color: #d0670e;
 }
 .modal_form .modal-body ul.nav li.disabled_tab a {
     background-color: transparent;
-    padding-right: 30px;
+    padding-right: 15px;
 }
 .modal_form .body_padding {
     padding: 30px 30px 0px 30px !important;
@@ -500,26 +505,37 @@ body.assistance_page {
 
 .sidebar {
     width: 320px;
-    height: 100%;
+    /*height: 100%;*/
     position: fixed;
     left: 0px;
     top: 0px;
+    bottom: 0px;
     padding: 30px;
     background-color: #FFFFFF;
     border-right: 1px solid #dbdada;
-    /*overflow: hidden;*/
+    overflow: hidden;
+}
+.sidebar .sidebar_inner {
+    bottom: -20px;
+    left: 0;
+    overflow: scroll;
+    padding: 0 30px 30px;
+    position: absolute;
+    right: -20px;
+    top: 70px;
 }
 .main_container {
     margin-left: 320px;
 }
 .sidebar_logo {
     padding: 50px 0px;
+    margin-right: -20px;
 }
 .sidebar_logo img {
     margin: 0px auto;
 }
 .sidebar_menu {
-    margin: 0px -10px 0px -30px;
+    margin: 0px -10px 15px -30px;
 }
 .sidebar_menu ul li {
     padding: 5px 0px 5px 20px;
@@ -565,30 +581,41 @@ body.assistance_page {
 #sidebar_menu .navbar-toggle .icon-bar {
     background-color: #CCC;
 }
-#sidebar_menu.menu_closed {
+.menu_closed #sidebar_menu {
     width: 40px;
     padding: 10px;
 }
-#sidebar_menu.menu_closed .sidebar_logo {
+.menu_closed .sidebar .sidebar_inner {
+    padding-left: 10px;
+}
+.menu_closed #sidebar_menu .sidebar_logo {
     padding-top: 10px;
     padding-bottom: 10px;
 }
-#sidebar_menu.menu_closed .sidebar_menu ul li li {
+.menu_closed #sidebar_menu .sidebar_menu ul li li {
     padding-left: 0px;
 }
-#sidebar_menu.menu_closed .sidebar_menu ul li a {
+.menu_closed #sidebar_menu .sidebar_menu ul li a {
     padding-left: 5px;
 }
-#sidebar_menu.menu_closed .menu_text {
+.menu_closed #sidebar_menu .menu_text {
     display: none;
 }
-#sidebar_menu.menu_opened .menu_text {
+.menu_opened #sidebar_menu .menu_text {
     display: inline;
 }
-#sidebar_menu.menu_opened .tooltip {
+.menu_opened .tooltip {
     display: none !important;
 }
-.main_container.menu_closed {
+.tooltip_conatiner {
+    width: 500px;
+    position: fixed;
+    z-index: 999;
+}
+.tooltip_conatiner .tooltip {
+    margin-left: 20px;
+}
+.menu_closed .main_container {
     margin-left: 40px;
 }
 .main_container .header {
@@ -1030,11 +1057,14 @@ label.check_label .checkbox {
 /* Item Listing page */
 .item_listing {
     margin: -20px -15px -20px -45px;
+    position: relative;
 }
 .categories_container {
     width: 360px;
     background-color: #FFFFFF;
     border-right: 1px solid #dbdada;
+    min-width: 180px;
+    max-width: 500px;
 }
 .heading h1.brand_container {
     margin: -10px 0 -10px -45px !important;
@@ -1068,7 +1098,18 @@ label.check_label .checkbox {
 }
 .categories_container li a.current_category {
     background-color: #E0E0E0;
-}/*
+}
+.cat_resize_controller {
+    width: 10px;
+    /*background-color: #CCC;*/
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    cursor: ew-resize;
+}
+
+/*
 .categories_container li a {
     padding-left: 30px;
 }

@@ -14,9 +14,8 @@ import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
-import net.sf.uadetector.ReadableUserAgent;
-import net.sf.uadetector.UserAgentStringParser;
-import net.sf.uadetector.service.UADetectorServiceFactory;
+import eu.bitwalker.useragentutils.UserAgent;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -92,12 +91,16 @@ public class CustomerServiceImpl implements CustomerService {
     public void login(CustomerEntity customerEntity) throws Exception {
         log.info("++++++++++++++ Logging Customer ++++++++++++++++");
 
-        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
-        ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
+//        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+//        ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
+        String userAgent = httpServletRequest.getHeader("User-Agent");
+        UserAgent ua = UserAgent.parseUserAgentString(userAgent);
 
-        customerEntity.getUser().getUserDevice().setFamily(agent.getOperatingSystem().getFamily().toString());
-        customerEntity.getUser().getUserDevice().setFamilyName(agent.getOperatingSystem().getFamilyName());
-        customerEntity.getUser().getUserDevice().setName(agent.getOperatingSystem().getName());
+        String family = ua.getOperatingSystem().name();
+
+        customerEntity.getUser().getUserDevice().setFamily(family);
+        customerEntity.getUser().getUserDevice().setFamilyName(family);
+        customerEntity.getUser().getUserDevice().setName(family);
 
         //Now Signup Process
         CustomerEntity registeredCustomer = customerDaoService.find(customerEntity.getFacebookId());

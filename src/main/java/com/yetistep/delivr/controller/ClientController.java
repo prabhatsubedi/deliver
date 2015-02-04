@@ -13,12 +13,8 @@ import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
-import com.yetistep.delivr.util.GeneralUtil;
-import com.yetistep.delivr.util.ServiceResponse;
-import com.yetistep.delivr.util.YSException;
-import net.sf.uadetector.ReadableUserAgent;
-import net.sf.uadetector.UserAgentStringParser;
-import net.sf.uadetector.service.UADetectorServiceFactory;
+import com.yetistep.delivr.util.*;
+import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -80,10 +76,16 @@ public class ClientController extends AbstractManager{
     ResponseEntity<ServiceResponse> getAccessToken() {
         try {
             log.info("+++++++++++ Getting Access Token ++++++++++++++++++");
-            UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
-            ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
-            String family = agent.getOperatingSystem().getFamily().toString();
+//            UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+//            ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
+//            String family = agent.getOperatingSystem().getFamily().toString();
+//            String token = GeneralUtil.generateAccessToken(family);
+            String userAgent = httpServletRequest.getHeader("User-Agent");
+            UserAgent ua = UserAgent.parseUserAgentString(userAgent);
+
+            String family = ua.getOperatingSystem().name();
             String token = GeneralUtil.generateAccessToken(family);
+
 
             ServiceResponse serviceResponse = new ServiceResponse("Token retrieved successfully");
             /* Setting Http Headers */
@@ -568,6 +570,31 @@ public class ClientController extends AbstractManager{
             List<RatingReason> ratingReasons = customerService.getRatingReasons();
             ServiceResponse serviceResponse = new ServiceResponse("Rating reason retrieved successfully");
             serviceResponse.addParam("ratingList",ratingReasons);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving rating reason list", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/test_device", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getDeviceInfo() {
+        try {
+            //Device device = DeviceUtils.getCurrentDevice(httpServletRequest);
+//            DeviceResolver deviceResolver = new LiteDeviceResolver();
+//            Device device = deviceResolver.resolveDevice(httpServletRequest);
+            String userAgent = httpServletRequest.getHeader("User-Agent");
+            UserAgent ua = UserAgent.parseUserAgentString(userAgent);
+
+            String family = ua.getOperatingSystem().name();
+            String token = GeneralUtil.generateAccessToken(family);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Token retrieved successfully");
+            serviceResponse.addParam("token", token);
+            serviceResponse.addParam("family", family);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
         } catch (Exception e){

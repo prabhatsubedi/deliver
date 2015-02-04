@@ -138,7 +138,7 @@ public class GeneralUtil {
 
     public static String generateAccessToken(String osFamily) throws Exception {
         String tokenstr = null;
-        if (osFamily.toUpperCase().equals("IOS")) {
+        if (osFamily.toUpperCase().indexOf("IOS")>= 0 || osFamily.toUpperCase().indexOf("MAC")>= 0 || osFamily.toUpperCase().indexOf("UNKNOWN")>= 0) {
             tokenstr = RNCryptoEncDec.generateResponseAccessToken();
         } else {
             tokenstr = EncDecUtil.generateResponseAccessToken(MessageBundle.getSecretKey());

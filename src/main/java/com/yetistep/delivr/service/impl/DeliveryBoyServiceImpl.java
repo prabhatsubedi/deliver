@@ -241,6 +241,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Override
     public List<OrderEntity> getActiveOrders(Integer deliveryBoyId) throws Exception{
         List<OrderEntity> orderEntities = orderDaoService.getActiveOrdersList(deliveryBoyId);
+        List<OrderEntity> assignedOrders = orderDaoService.getAssignedOrders(deliveryBoyId);
+        orderEntities.addAll(assignedOrders);
         for(OrderEntity orderEntity: orderEntities){
             updateRemainingAndElapsedTime(orderEntity);
         }

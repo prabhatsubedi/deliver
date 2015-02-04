@@ -14,6 +14,8 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +85,32 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         criteria.add(Restrictions.eq("deliveryBoy.id", deliverBoyId))
                 .add(Restrictions.in("orderStatus", jobOrderStatusList));
         List<OrderEntity> orderEntities = criteria.list();
+        return orderEntities;
+    }
+
+    @Override
+    public List<OrderEntity> getAssignedOrders(Integer deliveryBoyId) throws Exception {
+        String sqlQuery = "SELECT o.id, o.order_name, o.order_status, o.order_date, " +
+                "db.customer_chargeable_distance, db.system_chargeable_distance, db.total_time_required " +
+                "FROM orders o, dboy_selections db WHERE o.id = db.order_id AND " +
+                "o.order_status = :orderStatus and db.dboy_id = :deliveryBoyId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("orderStatus", 0);
+        query.setParameter("deliveryBoyId", deliveryBoyId);
+        List<Object[]> rows = query.list();
+        List<OrderEntity> orderEntities = new ArrayList<OrderEntity>();
+        for (Object[] row : rows) {
+            OrderEntity orderEntity = new OrderEntity();
+            orderEntity.setId(Integer.parseInt(row[0].toString()));
+            orderEntity.setOrderName(row[1].toString());
+            orderEntity.setOrderStatus(JobOrderStatus.fromInt(Integer.parseInt(row[2].toString())));
+            orderEntity.setOrderDate(Timestamp.valueOf(row[3].toString()));
+            orderEntity.setCustomerChargeableDistance(new BigDecimal(row[4].toString() == null ? "0" : row[4].toString()));
+            orderEntity.setSystemChargeableDistance(new BigDecimal(row[5].toString() == null ? "0" : row[5].toString()));
+            orderEntity.setRemainingTime(row[6] != null ? Integer.parseInt(row[6].toString()) : null);
+            orderEntity.setAssignedTime(row[6] != null ? Integer.parseInt(row[6].toString()) : null);
+            orderEntities.add(orderEntity);
+        }
         return orderEntities;
     }
 

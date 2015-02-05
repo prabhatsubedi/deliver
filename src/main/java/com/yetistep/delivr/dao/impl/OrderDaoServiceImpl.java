@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.util.DateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -65,38 +66,15 @@ public class OrderDaoServiceImpl implements OrderDaoService {
     }
 
     @Override
-    public List<OrderEntity> getActiveOrdersList(Integer deliverBoyId) throws Exception {
-        List<JobOrderStatus> jobOrderStatusList = new ArrayList<JobOrderStatus>();
-        jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED);
-        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
-        jobOrderStatusList.add(JobOrderStatus.AT_STORE);
-        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
-
-        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
-        criteria.setProjection(Projections.projectionList()
-                .add(Projections.property("id"), "id")
-                .add(Projections.property("orderName"), "orderName")
-                .add(Projections.property("orderStatus"), "orderStatus")
-                .add(Projections.property("customerChargeableDistance"), "customerChargeableDistance")
-                .add(Projections.property("systemChargeableDistance"), "systemChargeableDistance")
-                .add(Projections.property("orderDate"), "orderDate")
-                .add(Projections.property("assignedTime"), "assignedTime")
-                .add(Projections.property("remainingTime"), "remainingTime")
-        ).setResultTransformer(Transformers.aliasToBean(OrderEntity.class));
-        criteria.add(Restrictions.eq("deliveryBoy.id", deliverBoyId))
-                .add(Restrictions.in("orderStatus", jobOrderStatusList));
-        List<OrderEntity> orderEntities = criteria.list();
-        return orderEntities;
-    }
-
-    @Override
-    public List<OrderEntity> getAssignedOrders(Integer deliveryBoyId) throws Exception {
-        String sqlQuery = "SELECT o.id as id, o.order_name as orderName, o.order_status as orderStatus, " +
-                "o.order_date as orderDate, db.customer_chargeable_distance as customerChargeableDistance, " +
-                "db.system_chargeable_distance as systemChargeableDistance, db.total_time_required as assignedTime, " +
-                "db.total_time_required as remainingTime " +
-                "FROM orders o, dboy_selections db WHERE o.id = db.order_id AND " +
-                "o.order_status = :orderStatus and db.dboy_id = :deliveryBoyId";
+    public List<OrderInfoDto> getActiveOrdersList(Integer deliverBoyId) throws Exception {
+        String sqlQuery = "SELECT o.id as id, o.order_name as orderName, o.order_status as orderStatus, o.order_date as orderDate, " +
+                "dbs.paid_to_courier as paidToCourier, dbs.customer_chargeable_distance as customerChargeableDistance, " +
+                "dbs.system_chargeable_distance as systemChargeableDistance, dbs.time_required as assignedTime, " +
+                "dbs.total_time_required as remainingTime, dbh.order_accepted_at as orderAcceptedAt FROM " +
+                "orders o INNER JOIN delivery_boys db on (db.id = o.delivery_boy_id) INNER JOIN " +
+                "dboy_selections dbs on (dbs.order_id = o.id AND dbs.dboy_id = db.id) INNER JOIN " +
+                "dboy_order_history dbh on(dbh.order_id = o.id) WHERE o.order_status in " +
+                "(:orderAccepted, :inRouteToPickUp, :atStore, :inRouteToDelivery) AND o.delivery_boy_id = :deliveryBoyId";
         Properties params = new Properties();
         params.put("enumClass", "com.yetistep.delivr.enums.JobOrderStatus");
         /*type 12 instructs to use the String representation of enum value*/
@@ -108,25 +86,57 @@ public class OrderDaoServiceImpl implements OrderDaoService {
                 .addScalar("orderName", StringType.INSTANCE)
                 .addScalar("orderStatus", myEnumType)
                 .addScalar("orderDate", TimestampType.INSTANCE)
+                .addScalar("paidToCourier", BigDecimalType.INSTANCE)
+                .addScalar("customerChargeableDistance", BigDecimalType.INSTANCE)
+                .addScalar("systemChargeableDistance", BigDecimalType.INSTANCE)
+                .addScalar("assignedTime", IntegerType.INSTANCE)
+                .addScalar("remainingTime", IntegerType.INSTANCE)
+                .addScalar("orderAcceptedAt", TimestampType.INSTANCE);
+        query.setParameter("orderAccepted", JobOrderStatus.ORDER_ACCEPTED.ordinal());
+        query.setParameter("inRouteToPickUp", JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
+        query.setParameter("atStore", JobOrderStatus.AT_STORE.ordinal());
+        query.setParameter("inRouteToDelivery", JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal());
+        query.setParameter("deliveryBoyId", deliverBoyId);
+        query.setResultTransformer(Transformers.aliasToBean(OrderInfoDto.class));
+        List<OrderInfoDto> orderEntities = query.list();
+        return orderEntities;
+    }
+
+    @Override
+    public List<OrderInfoDto> getAssignedOrders(Integer deliveryBoyId) throws Exception {
+        String sqlQuery = "SELECT o.id as id, o.order_name as orderName, o.order_status as orderStatus, " +
+                "o.order_date as orderDate, dbs.paid_to_courier as paidToCourier, dbs.customer_chargeable_distance " +
+                "as customerChargeableDistance, dbs.system_chargeable_distance as systemChargeableDistance, " +
+                "dbs.time_required as assignedTime, dbs.total_time_required as remainingTime FROM orders o INNER JOIN " +
+                "dboy_selections dbs on (dbs.order_id = o.id) WHERE o.order_status =:orderPlaced " +
+                "AND dbs.dboy_id = :deliveryBoyId";
+        Properties params = new Properties();
+        params.put("enumClass", "com.yetistep.delivr.enums.JobOrderStatus");
+        /*type 12 instructs to use the String representation of enum value*/
+        params.put("type", "12");
+        Type myEnumType = new TypeLocatorImpl(new TypeResolver()).custom(org.hibernate.type.EnumType.class, params);
+
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
+                .addScalar("id", IntegerType.INSTANCE)
+                .addScalar("orderName", StringType.INSTANCE)
+                .addScalar("orderStatus", myEnumType)
+                .addScalar("orderDate", TimestampType.INSTANCE)
+                .addScalar("paidToCourier", BigDecimalType.INSTANCE)
                 .addScalar("customerChargeableDistance", BigDecimalType.INSTANCE)
                 .addScalar("systemChargeableDistance", BigDecimalType.INSTANCE)
                 .addScalar("assignedTime", IntegerType.INSTANCE)
                 .addScalar("remainingTime", IntegerType.INSTANCE);
-
-        query.setParameter("orderStatus", JobOrderStatus.ORDER_PLACED.ordinal());
+        query.setParameter("orderPlaced", JobOrderStatus.ORDER_PLACED.ordinal());
         query.setParameter("deliveryBoyId", deliveryBoyId);
-        query.setResultTransformer(Transformers.aliasToBean(OrderEntity.class));
-        List<OrderEntity> orderEntities = query.list();
+        query.setResultTransformer(Transformers.aliasToBean(OrderInfoDto.class));
+        List<OrderInfoDto> orderEntities = query.list();
         return orderEntities;
     }
 
     @Override
     public OrderEntity getLastActiveOrder(Integer deliverBoyId) throws Exception {
         List<JobOrderStatus> jobOrderStatusList = new ArrayList<JobOrderStatus>();
-        jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED);
-        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
-        jobOrderStatusList.add(JobOrderStatus.AT_STORE);
-        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+        jobOrderStatusList.add(JobOrderStatus.ORDER_PLACED);
 
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class)
                 .add(Restrictions.eq("deliveryBoy.id", deliverBoyId))

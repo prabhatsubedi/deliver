@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.inf;
 import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 
 import java.util.List;
 
@@ -14,9 +15,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity> {
-    public List<OrderEntity> getActiveOrdersList(Integer deliverBoyId) throws Exception;
+    public List<OrderInfoDto> getActiveOrdersList(Integer deliverBoyId) throws Exception;
 
-    public List<OrderEntity> getAssignedOrders(Integer deliveryBoyId) throws Exception;
+    public List<OrderInfoDto> getAssignedOrders(Integer deliveryBoyId) throws Exception;
 
     public OrderEntity getLastActiveOrder(Integer deliverBoyId) throws Exception;
 

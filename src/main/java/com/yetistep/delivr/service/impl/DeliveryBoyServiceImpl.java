@@ -6,6 +6,7 @@ import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
@@ -239,22 +240,22 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public List<OrderEntity> getActiveOrders(Integer deliveryBoyId) throws Exception{
-        List<OrderEntity> orderEntities = orderDaoService.getActiveOrdersList(deliveryBoyId);
-        List<OrderEntity> assignedOrders = orderDaoService.getAssignedOrders(deliveryBoyId);
-        orderEntities.addAll(assignedOrders);
-        for(OrderEntity orderEntity: orderEntities){
-            updateRemainingAndElapsedTime(orderEntity);
+    public List<OrderInfoDto> getActiveOrders(Integer deliveryBoyId) throws Exception{
+        List<OrderInfoDto> orderEntities = orderDaoService.getActiveOrdersList(deliveryBoyId);
+        for(OrderInfoDto orderInfoDto: orderEntities){
+            updateRemainingAndElapsedTime(orderInfoDto);
         }
+        List<OrderInfoDto> assignedOrders = orderDaoService.getAssignedOrders(deliveryBoyId);
+        orderEntities.addAll(assignedOrders);
         return orderEntities;
     }
 
-    private void updateRemainingAndElapsedTime(OrderEntity orderEntity){
-        Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), orderEntity.getOrderDate().getTime());
-        int remainingTime = orderEntity.getRemainingTime() - minuteDiff.intValue();
-        orderEntity.setElapsedTime(minuteDiff.intValue());
+    private void updateRemainingAndElapsedTime(OrderInfoDto orderInfoDto){
+        Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), orderInfoDto.getOrderAcceptedAt().getTime());
+        int remainingTime = orderInfoDto.getRemainingTime() - minuteDiff.intValue();
+        orderInfoDto.setElapsedTime(minuteDiff.intValue());
         remainingTime = (remainingTime < 0) ? 0 : remainingTime;
-        orderEntity.setRemainingTime(remainingTime);
+        orderInfoDto.setRemainingTime(remainingTime);
     }
 
     @Override

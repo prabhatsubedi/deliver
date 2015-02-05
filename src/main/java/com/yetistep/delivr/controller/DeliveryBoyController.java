@@ -6,6 +6,7 @@ import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.UserService;
 import com.yetistep.delivr.util.GeneralUtil;
@@ -88,7 +89,7 @@ public class DeliveryBoyController extends AbstractManager{
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID, GeneralUtil.ACCESS_TOKEN);
 //            validateMobileClient(headerDto.getAccessToken());
 
-            List<OrderEntity> activeOrders = deliveryBoyService.getActiveOrders (Integer.parseInt(headerDto.getId()));
+            List<OrderInfoDto> activeOrders = deliveryBoyService.getActiveOrders (Integer.parseInt(headerDto.getId()));
             ServiceResponse serviceResponse = new ServiceResponse("List of current deliveries retrieved successfully");
             serviceResponse.addParam("orders", activeOrders);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

@@ -5,6 +5,7 @@ import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public interface DeliveryBoyService {
 
     public Boolean updateLocationOfDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
 
-    public List<OrderEntity> getActiveOrders(Integer deliveryBoyId) throws Exception;
+    public List<OrderInfoDto> getActiveOrders(Integer deliveryBoyId) throws Exception;
 
     public Boolean changeOrderStatus(OrderEntity orderEntity, Integer deliveryBoyId) throws Exception;
 

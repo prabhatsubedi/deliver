@@ -182,7 +182,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
         if(params.pageSize == 0) delete params.pageSize;
 
         var url = "/organizer/";
-        if (prioritized) {
+        if (prioritized == 'inactive') {
+            url += 'get_inactive_brands';
+        } else if (prioritized) {
             url += 'get_special_brands';
         } else {
             url += 'get_other_brands';
@@ -193,6 +195,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
             if (data.success == true) {
                 var stores = data.params.storeBrands;
                 if ('data' in stores) {
+
+                    var elem_cont = prioritized == 'inactive' ? '.form_content.inactive_stores' : '.form_content.other_stores';
 
                     var total_stores = stores.numberOfRows;
                     var listed_stores = stores.data.length;
@@ -205,12 +209,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         page_list += '<li ' + (i == page_number ? 'class="active"' : '') + '><a href="#" pageno="' + i + '">' + i + '</a></li>';
                     }
                     page_list += '<li class="next_page"><a href="#" pageno="' + (page_number + 1) + '">&raquo;</a></li>';
-                    $('.pagination').html(page_list);
+                    $('.pagination', elem_cont).html(page_list);
                     if(page_number == 1) {
-                        $('.pagination .prev_page').addClass('disabled');
+                        $('.pagination .prev_page', elem_cont).addClass('disabled');
                     }
                     if(page_number == total_pages) {
-                        $('.pagination .next_page').addClass('disabled');
+                        $('.pagination .next_page', elem_cont).addClass('disabled');
                     }
 
                     var page_size_list = '';
@@ -233,8 +237,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     }
                     i = 0;
                     page_size_list += '<option value="' + i + '" ' + (page_size == total_stores ? "selected=\"selected\"" : "") + '>All</option>';
-                    $('select.select_num_items').html(page_size_list);
-                    $('select.select_num_items').selectpicker('refresh');
+                    $('select.select_num_items', elem_cont).html(page_size_list);
+                    $('select.select_num_items', elem_cont).selectpicker('refresh');
 
                     stores = stores.data;
                     var store_list = '';
@@ -249,7 +253,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
                         store_list += elem.html();
                     }
-                    $('#other_stores').html(store_list);
+                    if(prioritized == 'inactive') {
+                        $('.inactive_stores').removeClass('hidden');
+                        $('#inactive_stores').html(store_list);
+                    } else {
+                        $('#other_stores').html(store_list);
+                    }
 
                 } else {
 

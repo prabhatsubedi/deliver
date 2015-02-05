@@ -16,10 +16,11 @@ var Search = function() {
                     Main.saveInLocalStorage('stores', JSON.stringify(data));
                     if(brands.length > 0) {
                         var store_options = '';
+                        store_options += '<option value="All" selected="selected">All Stores</option>';
                         for(var i = 0; i < brands.length; i++) {
                             store_options += '<option value="' + brands[i].id + '">' + brands[i].brandName + '</option>';
                         }
-                        $('#item_stores').append(store_options);
+                        $('#item_stores').html(store_options);
                         $('#item_stores').selectpicker('refresh');
                     }
                 }
@@ -46,10 +47,11 @@ var Search = function() {
                     Main.saveInLocalStorage('categories', JSON.stringify(data));
                     if(categories.length > 0) {
                         var categories_options = '';
+                        categories_options += '<option value="All" selected="selected">All Categories</option>';
                         for(var i = 0; i < categories.length; i++) {
                             categories_options += '<option value="' + categories[i].id + '">' + categories[i].name + '</option>';
                         }
-                        $('#item_categories').append(categories_options);
+                        $('#item_categories').html(categories_options);
                         $('#item_categories').selectpicker('refresh');
                     }
                 }

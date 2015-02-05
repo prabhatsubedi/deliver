@@ -629,6 +629,11 @@ function toggleSwitch(value, elem) {
                     return false;
                 }
 
+                if(!$('.add_categories').hasClass('hidden')) {
+                    alert('Please finish or discard the new category addition.');
+                    return false;
+                }
+
                 var chk_confirm = confirm('Are you sure you want to ' + (action == 'edit' ? 'update' : 'add') + ' item?');
                 if (!chk_confirm) return false;
 

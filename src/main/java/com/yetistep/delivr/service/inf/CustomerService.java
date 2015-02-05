@@ -1,6 +1,7 @@
 package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.RatingReason;
 import com.yetistep.delivr.model.*;
@@ -47,5 +48,5 @@ public interface CustomerService {
 
     public List<MyOrderDto> getMyCurrentOrders(Long facebookId) throws Exception;
 
-    public List<MyOrderDto> getMyPastOrders(Long facebookId) throws Exception;
+    public PaginationDto getMyPastOrders(Long facebookId, Page page) throws Exception;
 }

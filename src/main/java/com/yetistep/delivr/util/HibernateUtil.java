@@ -2,6 +2,7 @@ package com.yetistep.delivr.util;
 
 import com.yetistep.delivr.model.Page;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 
 /**
@@ -39,6 +40,24 @@ public class HibernateUtil {
                     } else if (page.getSortOrder().equalsIgnoreCase("desc"))  {
                         criteria.addOrder(Order.desc(page.getSortBy()));
                     }
+                }
+            }
+        }
+    }
+
+
+    /**
+     * This method fills query object based on page object data.
+     *
+     * @param query
+     * @param page
+     */
+    public static void fillPaginationCriteria(Query query, Page page) throws Exception{
+        if (page != null) {
+            if(page.getTotalRows() > 0){
+                /* Pagination implementation*/
+                if(page.getPageNumber()!= null && page.getPageSize() != null){
+                    query.setFirstResult(page.getValidRowNumber()).setMaxResults(page.getPageSize());
                 }
             }
         }

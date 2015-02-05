@@ -8,16 +8,16 @@ var dragged = false;
 var cancel_drag = false;
 function toggleSwitch(value, elem) {
 
-    var chk_confirm = false;
+    var chk_confirm = true;
     if(!cancel_drag) {
-        var chk_confirm = confirm('Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' item?');
+//        chk_confirm = confirm('Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' item?');
 
         if (!chk_confirm) {
             value = value == 'on' ? 'off' : 'on';
         } else {
 
             var callback = function (status, data) {
-                alert(data.message);
+//                alert(data.message);
                 if (data.success != true) {
                     toggleSwitch(value == 'on' ? 'off' : 'on', elem);
                 }
@@ -254,6 +254,8 @@ function toggleSwitch(value, elem) {
                 for(var i = 0; i < storeLocations.length; i++) {
                     var storeLocation = storeLocations[i];
                     var ind_store = $('.item_store_template').clone();
+                    if(storeLocation.status == 'INACTIVE')
+                        $('.check_label', ind_store).addClass('disabled');
                     $('.name_store', ind_store).html(storeLocation.street + ', ' + storeLocation.city + ', ' + storeLocation.state + ', ' + storeLocation.country);
                     $('.checkbox', ind_store).attr('data-id', storeLocation.id);
                     stores_html += ind_store.html();
@@ -293,7 +295,8 @@ function toggleSwitch(value, elem) {
                     for(var i = 0; i < storeBrands.length; i++) {
                         var storeBrand = storeBrands[i];
                         storesById[storeBrand.id] = storeBrand.store;
-                        brandList += '<option value="' + storeBrand.id + '" data-open="' + storeBrand.openingTime + '" data-close="' + storeBrand.closingTime + '" >' + storeBrand.brandName + '</option>';
+                        if(storeBrand.status == 'ACTIVE')
+                            brandList += '<option value="' + storeBrand.id + '" data-open="' + storeBrand.openingTime + '" data-close="' + storeBrand.closingTime + '" >' + storeBrand.brandName + '</option>';
                     }
                     $('#item_brand').append(brandList);
 
@@ -479,6 +482,10 @@ function toggleSwitch(value, elem) {
 
         $('label.check_label .checkbox').removeAttr("checked");
 
+        $('label.check_label.disabled').live('click', function(e){
+            e.preventDefault();
+        });
+
         $('label.check_label .checkbox').live('click', function(){
             if($(this).prop('checked')) {
                 $(this).siblings('.check_span').addClass("icon_full");
@@ -619,6 +626,11 @@ function toggleSwitch(value, elem) {
 
                 if($('#category_container select.category_options').length < 2) {
                     alert('Item is not allowed to add to main category.');
+                    return false;
+                }
+
+                if(!$('.add_categories').hasClass('hidden')) {
+                    alert('Please finish or discard the new category addition.');
                     return false;
                 }
 
@@ -1238,16 +1250,16 @@ function toggleSwitch(value, elem) {
         var cancel_drag = false;
         function toggleSwitch(value, elem) {
 
-            var chk_confirm = false;
+            var chk_confirm = true;
             if(!cancel_drag) {
-                var chk_confirm = confirm('Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' item?');
+//                chk_confirm = confirm('Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' item?');
 
                 if (!chk_confirm) {
                     value = value == 'on' ? 'off' : 'on';
                 } else {
 
                     var callback = function (status, data) {
-                        alert(data.message);
+//                        alert(data.message);
                         if (data.success != true) {
                             toggleSwitch(value == 'on' ? 'off' : 'on', elem);
                         }

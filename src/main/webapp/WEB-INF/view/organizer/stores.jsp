@@ -65,7 +65,7 @@
                 <div class="form_head">Prioritized Stores</div>
                 <div id="prioritized_stores" class="form_content clearfix"></div>
                 <div class="form_head">Other Stores</div>
-                <div class="form_content clearfix">
+                <div class="form_content other_stores clearfix">
                     <div class="clearfix" id="other_stores"></div>
                     <div class="pagination_list col-lg-12">
                         <ul class="pagination pull-left"></ul>
@@ -77,7 +77,17 @@
                     </div>
                 </div>
                 <div class="form_head inactive_stores hidden">Inactive Stores</div>
-                <div class="form_content inactive_stores hidden clearfix"></div>
+                <div class="form_content inactive_stores clearfix hidden">
+                    <div class="clearfix" id="inactive_stores"></div>
+                    <div class="pagination_list col-lg-12">
+                        <ul class="pagination pull-left"></ul>
+                        <div class="num_items pull-right">
+                            Show per Page
+                            <select data-width="auto" name="select_num_items" class="select_num_items"></select>
+
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -152,21 +162,24 @@
 
         Manager.stores({}, true);
         Manager.stores({pageNumber: 1, pageSize: pageSize});
+        Manager.stores({pageNumber: 1, pageSize: pageSize}, 'inactive');
 
         $('.pagination a').live('click', function(e){
             e.preventDefault();
         });
 
-        $('.pagination li:not(".disabled") a').live('click', function(){
+        $('.pagination li:not(".disabled, .active") a').live('click', function(){
+            var parent_elem = $(this).parents('.form_content');
             $('.items_container .item_container').removeAttr('style');
             re_calculate_width = true;
-            Manager.stores({pageNumber: $(this).attr('pageno'), pageSize: $('.select_num_items').val()});
+            Manager.stores({pageNumber: $(this).attr('pageno'), pageSize: $('.select_num_items', parent_elem).val()}, parent_elem.hasClass('inactive_stores') ? 'inactive' : false);
         });
 
         $('.select_num_items').live('change', function(){
+            var parent_elem = $(this).parents('.form_content');
             $('.items_container .item_container').removeAttr('style');
             re_calculate_width = true;
-            Manager.stores({pageNumber: 1, pageSize: $('.select_num_items').val()});
+            Manager.stores({pageNumber: 1, pageSize: $(this).val()}, parent_elem.hasClass('inactive_stores') ? 'inactive' : false);
         });
 
 

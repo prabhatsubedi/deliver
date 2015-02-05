@@ -37,6 +37,9 @@
 .delivricon-store:before {
     content: "\d07";
 }
+.delivricon-orders:before {
+    content: "\d08";
+}
 
 *, *:focus, *:active {
     outline: none !important;
@@ -938,6 +941,10 @@ body.assistance_page {
 label.check_label {
     font-weight: normal;
     margin: 0px;
+    cursor: pointer;
+}
+label.check_label.disabled {
+    opacity: 0.5;
 }
 label.check_label span.check_span {
     text-align: center;

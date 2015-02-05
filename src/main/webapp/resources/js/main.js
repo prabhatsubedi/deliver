@@ -42,12 +42,26 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         return sessionStorage.getItem(key);
     }
 
+    Main.clearSessionStorage = function (key){
+        if(key == undefined)
+            sessionStorage.clear();
+        else
+            sessionStorage.removeItem(key);
+    }
+
     Main.saveInLocalStorage = function (key, value){
         localStorage.setItem(key, value);
     }
 
     Main.getFromLocalStorage = function (key){
         return localStorage.getItem(key);
+    }
+
+    Main.clearLocalStorage = function (key){
+        if(key == undefined)
+            localStorage.clear();
+        else
+            localStorage.removeItem(key);
     }
 
     Main.request = function (url, parameter, callback, headers) {
@@ -112,6 +126,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
     Main.doLogout = function (data) {
         var callback = function (status, data) {
+            Main.clearLocalStorage();
             window.location = Main.modifyURL("/");
         };
         callback.loaderDiv = "body";
@@ -231,29 +246,6 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         path_arr = Main.remove_value(path_arr, "");
         if(Main.pageContext != "" && Main.pageContext !=  undefined) path_arr.splice(0, 1);
         return path_arr[index];
-
-    };
-
-    Main.getAllStores = function() {
-
-        var callback = function (status, data) {
-
-            if (data.success == true) {
-                var brands = data.params.brands;
-                if(brands.length > 0) {
-                    var store_options = '';
-                    for(var i = 0; i < brands.length; i++) {
-                        store_options += '<option value="' + brands[i].id + '">' + brands[i].brandName + '</option>';
-                    }
-                    $('#item_stores').append(store_options);
-                    $('#item_stores').selectpicker('refresh');
-                }
-            } else {
-            }
-        };
-        callback.requestType = "GET";
-
-        Main.request('/merchant/get_brands', {}, callback);
 
     };
 

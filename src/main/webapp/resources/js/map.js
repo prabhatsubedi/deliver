@@ -49,6 +49,8 @@ function deleteMarkers() {
 
 $(document).ready(function(){
 
+    var mapBounds = new google.maps.LatLngBounds();
+
     function geo_coding(address, noBounds, noCenter)
     {
         geocoder = new google.maps.Geocoder();
@@ -598,6 +600,9 @@ $(document).ready(function(){
                                 draggable: location.readOnly != true
                             });
                             marker.geoKey = locationToKey(location);
+
+                            mapBounds.extend(location);
+                            map.fitBounds(mapBounds);
 
                             var jsonObj = geoObj;
                             markers.push(marker);

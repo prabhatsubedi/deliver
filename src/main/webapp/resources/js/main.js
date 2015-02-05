@@ -43,7 +43,10 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
     }
 
     Main.clearSessionStorage = function (key){
-        sessionStorage.clear();
+        if(key == undefined)
+            sessionStorage.clear();
+        else
+            sessionStorage.removeItem(key);
     }
 
     Main.saveInLocalStorage = function (key, value){
@@ -55,7 +58,10 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
     }
 
     Main.clearLocalStorage = function (key){
-        localStorage.clear();
+        if(key == undefined)
+            localStorage.clear();
+        else
+            localStorage.removeItem(key);
     }
 
     Main.request = function (url, parameter, callback, headers) {

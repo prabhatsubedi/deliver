@@ -29,7 +29,10 @@ var Search = function() {
             if(params == 'load' && Main.getFromLocalStorage('stores') != undefined) {
                 callback('', JSON.parse(Main.getFromLocalStorage('stores')))
             } else {
-                Main.request('/merchant/get_brands', {}, callback, {merchantId: 11});
+                var header = {};
+                if(Main.getURLvalue(0) == 'merchant' && Main.getFromLocalStorage('mid') != undefined)
+                    header.merchantId = Main.getFromLocalStorage('mid');
+                Main.request('/merchant/get_brands', {}, callback, header);
             }
 
         },
@@ -228,6 +231,12 @@ var Search = function() {
 }();
 
 $(document).ready(function(){
+    var searchRoot = Main.getURLvalue(0);
+    if(Main.getFromLocalStorage('searchRoot') != searchRoot) {
+        Main.clearLocalStorage('stores');
+        Main.clearLocalStorage('categories');
+    }
+    Main.saveInLocalStorage('searchRoot', searchRoot);
     Search.getAllStores('load');
     Search.getAllCategories('load');
 });

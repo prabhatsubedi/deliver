@@ -249,7 +249,10 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         $('.item_container', elem).attr('data-mid', storeBrand.merchantId);
                         $('.item_image img', elem).attr('src', storeBrand.brandImage);
                         $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
-                        $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
+                        if(prioritized == 'inactive')
+                            $('.add_items', elem).remove();
+                        else
+                            $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
                         $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
                         store_list += elem.html();
                     }

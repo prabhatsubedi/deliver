@@ -254,6 +254,8 @@ function toggleSwitch(value, elem) {
                 for(var i = 0; i < storeLocations.length; i++) {
                     var storeLocation = storeLocations[i];
                     var ind_store = $('.item_store_template').clone();
+                    if(storeLocation.status == 'INACTIVE')
+                        $('.check_label', ind_store).addClass('disabled');
                     $('.name_store', ind_store).html(storeLocation.street + ', ' + storeLocation.city + ', ' + storeLocation.state + ', ' + storeLocation.country);
                     $('.checkbox', ind_store).attr('data-id', storeLocation.id);
                     stores_html += ind_store.html();
@@ -293,7 +295,8 @@ function toggleSwitch(value, elem) {
                     for(var i = 0; i < storeBrands.length; i++) {
                         var storeBrand = storeBrands[i];
                         storesById[storeBrand.id] = storeBrand.store;
-                        brandList += '<option value="' + storeBrand.id + '" data-open="' + storeBrand.openingTime + '" data-close="' + storeBrand.closingTime + '" >' + storeBrand.brandName + '</option>';
+                        if(storeBrand.status == 'ACTIVE')
+                            brandList += '<option value="' + storeBrand.id + '" data-open="' + storeBrand.openingTime + '" data-close="' + storeBrand.closingTime + '" >' + storeBrand.brandName + '</option>';
                     }
                     $('#item_brand').append(brandList);
 
@@ -478,6 +481,10 @@ function toggleSwitch(value, elem) {
         });*/
 
         $('label.check_label .checkbox').removeAttr("checked");
+
+        $('label.check_label.disabled').live('click', function(e){
+            e.preventDefault();
+        });
 
         $('label.check_label .checkbox').live('click', function(){
             if($(this).prop('checked')) {

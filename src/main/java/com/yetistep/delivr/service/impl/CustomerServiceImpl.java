@@ -9,6 +9,7 @@ import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
+import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
 import com.yetistep.delivr.schedular.ScheduleChanger;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
@@ -805,5 +806,15 @@ public class CustomerServiceImpl implements CustomerService {
         List<RatingReason> reasonList =
                 new ArrayList<RatingReason>(EnumSet.allOf(RatingReason.class));
         return reasonList;
+    }
+
+    @Override
+    public List<MyOrderDto> getMyCurrentOrders(Long facebookId) throws Exception {
+        return customerDaoService.getCurrentOrdersByFacebookId(facebookId);
+    }
+
+    @Override
+    public List<MyOrderDto> getMyPastOrders(Long facebookId) throws Exception {
+        return customerDaoService.getPastOrdersByFacebookId(facebookId);
     }
 }

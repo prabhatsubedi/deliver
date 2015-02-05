@@ -1,11 +1,11 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.CustomerDaoService;
-import com.yetistep.delivr.model.*;
-import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import com.yetistep.delivr.model.CustomerEntity;
+import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.UserEntity;
+import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
+import org.hibernate.*;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
@@ -121,6 +121,34 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         ).setResultTransformer(Transformers.aliasToBean(CustomerEntity.class));
         criteria.add(Restrictions.eq("facebookId", facebookId));
         return (CustomerEntity) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<MyOrderDto> getCurrentOrdersByFacebookId(Long facebookId) throws Exception {
+        String sqlQuery = "SELECT o.id as orderId, o.order_status as jobOrderStatus, " +
+                "sb.brand_logo as brandLogo, sb.brand_name as brandName " +
+                "FROM orders o, stores_brands sb, stores s, customers c " +
+                "WHERE o.store_id = s.id AND s.stores_brand_id = sb.id AND o.order_status not in (5,6) AND " +
+                "c.id = o.customer_id AND c.facebook_id =:facebookId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("facebookId", facebookId);
+        query.setResultTransformer(Transformers.aliasToBean(MyOrderDto.class));
+        List<MyOrderDto> currentOrders = query.list();
+        return currentOrders;
+    }
+
+    @Override
+    public List<MyOrderDto> getPastOrdersByFacebookId(Long facebookId) throws Exception {
+        String sqlQuery = "SELECT o.id as orderId, o.order_status as jobOrderStatus, " +
+                "sb.brand_logo as brandLogo, sb.brand_name as brandName " +
+                "FROM orders o, stores_brands sb, stores s, customers c " +
+                "WHERE o.store_id = s.id AND s.stores_brand_id = sb.id AND o.order_status in (5,6) AND " +
+                "c.id = o.customer_id AND c.facebook_id =:facebookId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("facebookId", facebookId);
+        query.setResultTransformer(Transformers.aliasToBean(MyOrderDto.class));
+        List<MyOrderDto> pastOrders = query.list();
+        return pastOrders;
     }
 }
 

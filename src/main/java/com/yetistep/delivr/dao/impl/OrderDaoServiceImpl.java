@@ -11,13 +11,14 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.internal.TypeLocatorImpl;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
@@ -90,27 +91,32 @@ public class OrderDaoServiceImpl implements OrderDaoService {
 
     @Override
     public List<OrderEntity> getAssignedOrders(Integer deliveryBoyId) throws Exception {
-        String sqlQuery = "SELECT o.id, o.order_name, o.order_status, o.order_date, " +
-                "db.customer_chargeable_distance, db.system_chargeable_distance, db.total_time_required " +
+        String sqlQuery = "SELECT o.id as id, o.order_name as orderName, o.order_status as orderStatus, " +
+                "o.order_date as orderDate, db.customer_chargeable_distance as customerChargeableDistance, " +
+                "db.system_chargeable_distance as systemChargeableDistance, db.total_time_required as assignedTime, " +
+                "db.total_time_required as remainingTime " +
                 "FROM orders o, dboy_selections db WHERE o.id = db.order_id AND " +
                 "o.order_status = :orderStatus and db.dboy_id = :deliveryBoyId";
-        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
-        query.setParameter("orderStatus", 0);
+        Properties params = new Properties();
+        params.put("enumClass", "com.yetistep.delivr.enums.JobOrderStatus");
+        /*type 12 instructs to use the String representation of enum value*/
+        params.put("type", "12");
+        Type myEnumType = new TypeLocatorImpl(new TypeResolver()).custom(org.hibernate.type.EnumType.class, params);
+
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
+                .addScalar("id", IntegerType.INSTANCE)
+                .addScalar("orderName", StringType.INSTANCE)
+                .addScalar("orderStatus", myEnumType)
+                .addScalar("orderDate", TimestampType.INSTANCE)
+                .addScalar("customerChargeableDistance", BigDecimalType.INSTANCE)
+                .addScalar("systemChargeableDistance", BigDecimalType.INSTANCE)
+                .addScalar("assignedTime", IntegerType.INSTANCE)
+                .addScalar("remainingTime", IntegerType.INSTANCE);
+
+        query.setParameter("orderStatus", JobOrderStatus.ORDER_PLACED.ordinal());
         query.setParameter("deliveryBoyId", deliveryBoyId);
-        List<Object[]> rows = query.list();
-        List<OrderEntity> orderEntities = new ArrayList<OrderEntity>();
-        for (Object[] row : rows) {
-            OrderEntity orderEntity = new OrderEntity();
-            orderEntity.setId(Integer.parseInt(row[0].toString()));
-            orderEntity.setOrderName(row[1].toString());
-            orderEntity.setOrderStatus(JobOrderStatus.fromInt(Integer.parseInt(row[2].toString())));
-            orderEntity.setOrderDate(Timestamp.valueOf(row[3].toString()));
-            orderEntity.setCustomerChargeableDistance(new BigDecimal(row[4].toString() == null ? "0" : row[4].toString()));
-            orderEntity.setSystemChargeableDistance(new BigDecimal(row[5].toString() == null ? "0" : row[5].toString()));
-            orderEntity.setRemainingTime(row[6] != null ? Integer.parseInt(row[6].toString()) : null);
-            orderEntity.setAssignedTime(row[6] != null ? Integer.parseInt(row[6].toString()) : null);
-            orderEntities.add(orderEntity);
-        }
+        query.setResultTransformer(Transformers.aliasToBean(OrderEntity.class));
+        List<OrderEntity> orderEntities = query.list();
         return orderEntities;
     }
 

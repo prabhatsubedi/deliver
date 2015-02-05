@@ -58,11 +58,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public void deleteBrandsCategory(BrandsCategoryEntity value) throws Exception {
-        getCurrentSession().delete(value);
-    }
-
-    @Override
     public Session getCurrentSession() throws Exception {
         Session session = sessionFactory.getCurrentSession();
         return session;
@@ -167,11 +162,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Override
     public StoreEntity getStoreById(Integer id) throws Exception {
         return (StoreEntity) getCurrentSession().get(StoreEntity.class, id);
-    }
-
-    @Override
-    public void deleteStore(StoreEntity value) throws Exception{
-        getCurrentSession().delete(value);
     }
 
     @Override
@@ -585,5 +575,39 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         query.setParameter("storeBrandId", storeBrandId);
         MerchantEntity merchantEntity = (MerchantEntity) query.uniqueResult();
         return merchantEntity;
+    }
+
+    @Override
+    public List<Integer> getBrandIdList(Integer merchantId) throws Exception {
+        String sqQuery = "SELECT sb.id FROM stores_brands sb WHERE merchant_id =:merchantId";
+        Query query = getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("merchantId", merchantId);
+        List<Integer> brandIdList = query.list();
+        return  brandIdList;
+    }
+
+    @Override
+    public List<Integer> getBrandIdList() throws Exception {
+        String sqQuery = "SELECT sb.id FROM stores_brands sb";
+        Query query = getCurrentSession().createSQLQuery(sqQuery);
+        List<Integer> brandIdList = query.list();
+        return  brandIdList;
+    }
+
+    @Override
+    public List<Integer> getStoreIdList(List<Integer> brandId) throws Exception {
+        String sqQuery = "SELECT s.id FROM stores s WHERE stores_brand_id IN "+brandId.toString().replace("[", "(").replace("]", ")");
+        Query query = getCurrentSession().createSQLQuery(sqQuery);
+        List<Integer> storeIdList = query.list();
+        return  storeIdList;
+    }
+
+    @Override
+    public List<OrderEntity> getOrders(List<Integer> storeId) throws Exception {
+        List<OrderEntity> orders = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.add(Restrictions.and(Restrictions.in("store.id", storeId))) ;
+        orders = criteria.list();
+        return orders;
     }
 }

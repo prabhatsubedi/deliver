@@ -1,10 +1,7 @@
 package com.yetistep.delivr.model;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.Gender;
 import com.yetistep.delivr.enums.Status;
@@ -28,6 +25,7 @@ import java.util.List;
 @Entity(name="UserEntity")
 @Table(name = "users")
 @DynamicUpdate
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class UserEntity implements Serializable {
 
     private Integer id;
@@ -60,6 +58,7 @@ public class UserEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
+    @JsonProperty
     public Integer getId() {
         return id;
     }
@@ -69,6 +68,7 @@ public class UserEntity implements Serializable {
     }
 
     @ManyToOne
+    @JsonProperty
     public RoleEntity getRole() {
         return role;
     }
@@ -79,6 +79,7 @@ public class UserEntity implements Serializable {
 
     @JsonBackReference("dboy-user")
     @OneToOne(mappedBy = "user")
+    @JsonProperty
     public DeliveryBoyEntity getDeliveryBoy() {
         return deliveryBoy;
     }
@@ -91,6 +92,7 @@ public class UserEntity implements Serializable {
 
     @JsonBackReference("merchant-user")
     @OneToOne(mappedBy = "user")
+    @JsonProperty
     public MerchantEntity getMerchant() {
         return merchant;
     }
@@ -100,6 +102,7 @@ public class UserEntity implements Serializable {
     }
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonProperty
     public CustomerEntity getCustomer() {
         return customer;
     }
@@ -109,6 +112,7 @@ public class UserEntity implements Serializable {
     }
 
     @Column(name = "username", unique = true)
+    @JsonProperty
     public String getUsername() {
         return username;
     }
@@ -128,6 +132,7 @@ public class UserEntity implements Serializable {
     }
 
     @Column(name = "full_name")
+    @JsonProperty
     public String getFullName() {
         return fullName;
     }
@@ -138,6 +143,7 @@ public class UserEntity implements Serializable {
 
     @Column(name="gender")
     @Type(type="com.yetistep.delivr.enums.GenderCustom")
+    @JsonProperty
     public Gender getGender() {
         return gender;
     }
@@ -147,6 +153,7 @@ public class UserEntity implements Serializable {
     }
 
     @Column(name = "mobile_number")
+    @JsonProperty
     public String getMobileNumber() {
         return mobileNumber;
     }
@@ -156,6 +163,7 @@ public class UserEntity implements Serializable {
     }
 
     @Column(name = "mobile_verification_status", columnDefinition = "TINYINT(1)")
+    @JsonProperty
     public Boolean getMobileVerificationStatus() {
         return mobileVerificationStatus;
     }
@@ -165,6 +173,7 @@ public class UserEntity implements Serializable {
     }
 
     @Column(name = "email", unique = true)
+    @JsonProperty
     public String getEmailAddress() {
         return emailAddress;
     }
@@ -174,6 +183,7 @@ public class UserEntity implements Serializable {
     }
 
     @Column(name = "profile_image")
+    @JsonProperty
     public String getProfileImage() {
         return profileImage;
     }
@@ -184,6 +194,7 @@ public class UserEntity implements Serializable {
 
     @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "last_activity_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
+    @JsonProperty
     public Timestamp getLastActivityDate() {
         return lastActivityDate;
     }
@@ -194,6 +205,7 @@ public class UserEntity implements Serializable {
 
     @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @JsonProperty
     public Timestamp getCreatedDate() {
         return createdDate;
     }
@@ -203,6 +215,7 @@ public class UserEntity implements Serializable {
     }
 
     @Column(name = "black_list_status", columnDefinition = "TINYINT(1)")
+    @JsonProperty
     public Boolean getBlacklistStatus() {
         return blacklistStatus;
     }
@@ -212,6 +225,7 @@ public class UserEntity implements Serializable {
     }
 
     @Column(name = "verification_status", columnDefinition = "TINYINT(1)")
+    @JsonProperty
     public Boolean getVerifiedStatus() {
         return verifiedStatus;
     }
@@ -242,6 +256,7 @@ public class UserEntity implements Serializable {
     }
 
     @Column(name = "subscribe_newsletter", columnDefinition = "TINYINT(1)")
+    @JsonProperty
     public Boolean getSubscribeNewsletter() {
         return subscribeNewsletter;
     }
@@ -251,6 +266,7 @@ public class UserEntity implements Serializable {
     }
 
     @Column(name = "last_address_mobile")
+    @JsonProperty
     public String getLastAddressMobile() {
         return lastAddressMobile;
     }
@@ -271,6 +287,7 @@ public class UserEntity implements Serializable {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonProperty
     public List<AddressEntity> getAddresses() {
         return addresses;
     }
@@ -281,6 +298,7 @@ public class UserEntity implements Serializable {
 
     @JsonManagedReference
     @OneToOne(mappedBy = "user" ,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonProperty
     public UserDeviceEntity getUserDevice() {
         return userDevice;
     }
@@ -291,6 +309,7 @@ public class UserEntity implements Serializable {
 
     @Column(name = "status")
     @Enumerated(EnumType.ORDINAL)
+    @JsonProperty
     public Status getStatus() {
         return status;
     }
@@ -301,6 +320,7 @@ public class UserEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
+    @JsonProperty
     public List<OrderCancelEntity> getOrderCancelEntities() {
         return orderCancelEntities;
     }

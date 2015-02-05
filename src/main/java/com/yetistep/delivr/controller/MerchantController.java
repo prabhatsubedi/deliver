@@ -376,7 +376,6 @@ public class MerchantController {
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
-
     }
 
     @RequestMapping(value = "/get_brands_parent_categories", method = RequestMethod.GET)
@@ -422,6 +421,33 @@ public class MerchantController {
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while fetching items", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_orders", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getOrders(@RequestHeader HttpHeaders headers) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            List<String> hd = headers.get("merchantId");
+            if (hd != null && hd.size() > 0)
+                headerDto.setMerchantId(Integer.parseInt( hd.get(0)));
+            else {
+                if(SessionManager.getRole().toString().equals(Role.ROLE_MERCHANT.toString())){
+                    headerDto.setMerchantId(SessionManager.getMerchantId());
+                } else {
+                    headerDto.setMerchantId(null);
+                }
+            }
+            List<Object> orders = merchantService.getOrders(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Orders retrieved successfully with Merchant ID: "+headerDto.getMerchantId());
+            serviceResponse.addParam("orders", orders);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving orders: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

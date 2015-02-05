@@ -1,6 +1,8 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.util.JsonDateSerializer;
@@ -22,6 +24,7 @@ import java.util.List;
  */
 @Entity(name = "StoreEntity")
 @Table(name="stores")
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class StoreEntity implements Serializable {
 
     private Integer id;
@@ -46,6 +49,7 @@ public class StoreEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
+    @JsonProperty
     public Integer getId() {
         return id;
     }
@@ -67,6 +71,7 @@ public class StoreEntity implements Serializable {
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonProperty
     public List<ItemsStoreEntity> getItemsStore() {
         return itemsStore;
     }
@@ -88,6 +93,7 @@ public class StoreEntity implements Serializable {
 
 
     @Column(name="name")
+    @JsonProperty
     public String getName() {
         return name;
     }
@@ -97,6 +103,7 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name="street")
+    @JsonProperty
     public String getStreet() {
         return street;
     }
@@ -106,6 +113,7 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name="state")
+    @JsonProperty
     public String getState() {
         return state;
     }
@@ -115,6 +123,7 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name="city")
+    @JsonProperty
     public String getCity() {
         return city;
     }
@@ -124,6 +133,7 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name="country")
+    @JsonProperty
     public String getCountry() {
         return country;
     }
@@ -133,6 +143,7 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name="contact_no")
+    @JsonProperty
     public String getContactNo() {
         return contactNo;
     }
@@ -142,6 +153,7 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name = "contact_person")
+    @JsonProperty
     public String getContactPerson() {
         return contactPerson;
     }
@@ -151,6 +163,7 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name="latitude")
+    @JsonProperty
     public String getLatitude() {
         return latitude;
     }
@@ -160,6 +173,7 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name="longitude")
+    @JsonProperty
     public String getLongitude() {
         return longitude;
     }
@@ -170,6 +184,7 @@ public class StoreEntity implements Serializable {
 
     @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @JsonProperty
     public Timestamp getCreatedDate() {
         return createdDate;
     }
@@ -179,6 +194,7 @@ public class StoreEntity implements Serializable {
     }
 
     @Transient
+    @JsonProperty
     public BigDecimal getCustomerToStoreDistance() {
         return customerToStoreDistance;
     }
@@ -188,6 +204,7 @@ public class StoreEntity implements Serializable {
     }
 
     @Transient
+    @JsonProperty
     public String getBrandLogo() {
         return brandLogo;
     }
@@ -198,6 +215,7 @@ public class StoreEntity implements Serializable {
 
     @Column(name = "status")
     @Enumerated(EnumType.ORDINAL)
+    @JsonProperty
     public Status getStatus() {
         return status;
     }

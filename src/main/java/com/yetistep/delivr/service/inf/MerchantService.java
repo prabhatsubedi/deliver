@@ -66,4 +66,6 @@ public interface MerchantService {
 
     public PaginationDto getWebItemSearch(RequestJsonDto requestJsonDto) throws Exception;
 
+    public List<Object> getOrders(HeaderDto headerDto) throws Exception;
+
 }

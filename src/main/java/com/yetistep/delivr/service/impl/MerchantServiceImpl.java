@@ -1239,5 +1239,43 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
 
+    @Override
+    public List<Object> getOrders(HeaderDto headerDto) throws Exception {
+        List<Integer> storeIdList = new ArrayList<>();
+        if(headerDto.getMerchantId() == null){
+            List<Integer> brandIdList = merchantDaoService.getBrandIdList();
+            storeIdList = merchantDaoService.getStoreIdList(brandIdList);
+        }else{
+
+            MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
+            if(dbMerchant == null)
+                throw new YSException("VLD011");
+            List<Integer> brandIdList = merchantDaoService.getBrandIdList(headerDto.getMerchantId());
+            storeIdList = merchantDaoService.getStoreIdList(brandIdList);
+
+        }
+        List<OrderEntity> orders = merchantDaoService.getOrders(storeIdList);
+
+        List<Object> objects = new ArrayList<>();
+
+        String fields = "id,orderName,orderStatus,attachments,customer,store,deliveryBoy,grandTotal";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("customer", "id,user");
+        assoc.put("deliveryBoy", "id,user");
+        assoc.put("store", "id,name,street");
+        assoc.put("attachments", "url");
+
+        subAssoc.put("user", "id,fullName");
+
+        for (OrderEntity order:orders){
+            objects.add(ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
+        }
+        return objects;
+    }
+
+
 }
 

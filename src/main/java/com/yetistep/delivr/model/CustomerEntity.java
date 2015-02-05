@@ -1,5 +1,7 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
 import org.hibernate.annotations.LazyCollection;
@@ -21,6 +23,7 @@ import java.util.List;
  */
 @Entity(name="CustomerEntity")
 @Table(name="customers")
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class CustomerEntity implements Serializable {
 
     private Integer id;
@@ -46,6 +49,7 @@ public class CustomerEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
+    @JsonProperty
     public Integer getId() {
         return id;
     }
@@ -56,6 +60,7 @@ public class CustomerEntity implements Serializable {
 
     @OneToOne(cascade = { CascadeType.ALL})
     @JoinColumn(name = "user_id")
+    @JsonProperty
     public UserEntity getUser() {
         return user;
     }
@@ -65,6 +70,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "customer")
+    @JsonProperty
     public List<OrderEntity> getOrder() {
         return order;
     }
@@ -74,6 +80,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name = "total_order_placed")
+    @JsonProperty
     public Integer getTotalOrderPlaced() {
         return totalOrderPlaced;
     }
@@ -83,6 +90,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name = "total_order_delivered")
+    @JsonProperty
     public Integer getTotalOrderDelivered() {
         return totalOrderDelivered;
     }
@@ -92,6 +100,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name = "average_rating", precision = 4, scale = 2)
+    @JsonProperty
     public BigDecimal getAverageRating() {
         return averageRating;
     }
@@ -101,6 +110,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name = "friends_invitation_count")
+    @JsonProperty
     public Integer getFriendsInvitationCount() {
         return friendsInvitationCount;
     }
@@ -110,6 +120,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name = "reference_url")
+    @JsonProperty
     public String getReferenceUrl() {
         return referenceUrl;
     }
@@ -119,6 +130,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name = "referred_friends_count")
+    @JsonProperty
     public Integer getReferredFriendsCount() {
         return referredFriendsCount;
     }
@@ -128,6 +140,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name = "rewards_earned")
+    @JsonProperty
     public BigDecimal getRewardsEarned() {
         return rewardsEarned;
     }
@@ -138,6 +151,7 @@ public class CustomerEntity implements Serializable {
 
 
     @Column(name = "credit_card_token")
+    @JsonProperty
     public String getCreditCardToken() {
         return creditCardToken;
     }
@@ -147,6 +161,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name = "credit_card_id")
+    @JsonProperty
     public String getCreditCardId() {
         return creditCardId;
     }
@@ -155,6 +170,7 @@ public class CustomerEntity implements Serializable {
         this.creditCardId = creditCardId;
     }
     @Column(name = "latitude")
+    @JsonProperty
     public String getLatitude() {
         return latitude;
     }
@@ -164,6 +180,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name = "longitude")
+    @JsonProperty
     public String getLongitude() {
         return longitude;
     }
@@ -173,6 +190,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column (name = "facebook_id", unique = true)
+    @JsonProperty
     public Long getFacebookId() {
         return facebookId;
     }
@@ -182,6 +200,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column (name = "referred_by")
+    @JsonProperty
     public Long getReferredBy() {
         return referredBy;
     }
@@ -191,6 +210,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name ="fb_token")
+    @JsonProperty
     public String getFbToken() {
         return fbToken;
     }
@@ -200,6 +220,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name = "profile_url")
+    @JsonProperty
     public String getProfileUrl() {
         return profileUrl;
     }
@@ -209,6 +230,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name = "allow_share", columnDefinition = "TINYINT(1)")
+    @JsonProperty
     public Boolean getAllowShare() {
         return allowShare;
     }
@@ -219,6 +241,7 @@ public class CustomerEntity implements Serializable {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonProperty
     public List<CartEntity> getCarts() {
         return carts;
     }

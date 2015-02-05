@@ -79,10 +79,6 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public Boolean findPartnerShipStatusFromOrderId(Integer orderId) throws Exception;
 
-    public  void deleteBrandsCategory(BrandsCategoryEntity value) throws  Exception;
-
-    public  void deleteStore(StoreEntity value) throws Exception;
-
     public void updateStores(List<StoreEntity> values) throws Exception;
 
     public Boolean updateItem(ItemEntity Item) throws Exception;
@@ -102,4 +98,12 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public MerchantEntity getCommissionAndVat(Integer merchantId) throws Exception;
 
     public MerchantEntity getCommissionVatPartnerShipStatus(Integer storeBrandId) throws Exception;
+
+    public List<Integer> getBrandIdList(Integer merchantId) throws Exception;
+
+    public List<Integer> getStoreIdList(List<Integer> brandId) throws Exception;
+
+    public List<OrderEntity> getOrders(List<Integer> storeId) throws Exception;
+
+    public List<Integer> getBrandIdList() throws Exception;
 }

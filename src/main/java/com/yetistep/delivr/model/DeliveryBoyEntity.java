@@ -1,8 +1,10 @@
 package com.yetistep.delivr.model;
 
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.VehicleType;
 import org.hibernate.annotations.Type;
@@ -22,6 +24,7 @@ import java.util.List;
 @Entity(name="DeliveryBoyEntity")
 @Table(name="delivery_boys")
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = DeliveryBoyEntity.class)
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class DeliveryBoyEntity implements Serializable {
 
     private Integer id;
@@ -52,6 +55,7 @@ public class DeliveryBoyEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
+    @JsonProperty
     public Integer getId() {
         return id;
     }
@@ -63,6 +67,7 @@ public class DeliveryBoyEntity implements Serializable {
     @JsonManagedReference("dboy-user")
     @OneToOne(cascade = { CascadeType.ALL })
     @JoinColumn(name = "user_id")
+    @JsonProperty
     public UserEntity getUser() {
         return user;
     }
@@ -83,6 +88,7 @@ public class DeliveryBoyEntity implements Serializable {
 
     @Column(name = "availability_status")
     @Enumerated(EnumType.ORDINAL)
+    @JsonProperty
     public DBoyStatus getAvailabilityStatus() {
         return availabilityStatus;
     }
@@ -92,6 +98,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "average_rating", precision = 4, scale = 2)
+    @JsonProperty
     public BigDecimal getAverageRating() {
         return averageRating;
     }
@@ -101,6 +108,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "total_order_taken")
+    @JsonProperty
     public Integer getTotalOrderTaken() {
         return totalOrderTaken;
     }
@@ -110,6 +118,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "total_order_delivered")
+    @JsonProperty
     public Integer getTotalOrderDelivered() {
         return totalOrderDelivered;
     }
@@ -119,6 +128,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "total_order_undelivered")
+    @JsonProperty
     public Integer getTotalOrderUndelivered() {
         return totalOrderUndelivered;
     }
@@ -128,6 +138,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "total_earnings", precision = 16, scale = 4)
+    @JsonProperty
     public BigDecimal getTotalEarnings() {
         return totalEarnings;
     }
@@ -138,6 +149,7 @@ public class DeliveryBoyEntity implements Serializable {
 
     @Column(name = "vehicle_type")
     @Type(type="com.yetistep.delivr.enums.VehicleTypeCustom")
+    @JsonProperty
     public VehicleType getVehicleType() {
         return vehicleType;
     }
@@ -147,6 +159,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "active_order_no")
+    @JsonProperty
     public Integer getActiveOrderNo() {
         return activeOrderNo;
     }
@@ -156,6 +169,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "available_amount", precision = 16, scale = 4)
+    @JsonProperty
     public BigDecimal getAvailableAmount() {
         return availableAmount;
     }
@@ -165,6 +179,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "advance_amount", precision = 16, scale = 4)
+    @JsonProperty
     public BigDecimal getAdvanceAmount() {
         return advanceAmount;
     }
@@ -174,6 +189,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "bank_amount", precision = 16, scale = 4)
+    @JsonProperty
     public BigDecimal getBankAmount() {
         return bankAmount;
     }
@@ -183,6 +199,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "wallet_amount", precision = 16, scale = 4)
+    @JsonProperty
     public BigDecimal getWalletAmount() {
         return walletAmount;
     }
@@ -192,6 +209,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "previous_due", precision = 16, scale = 4)
+    @JsonProperty
     public BigDecimal getPreviousDue() {
         return previousDue;
     }
@@ -201,6 +219,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name="license_number", unique = true)
+    @JsonProperty
     public String getLicenseNumber() {
         return licenseNumber;
     }
@@ -210,6 +229,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name="vehicle_number")
+    @JsonProperty
     public String getVehicleNumber() {
         return vehicleNumber;
     }
@@ -259,6 +279,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "latitude")
+    @JsonProperty
     public String getLatitude() {
         return latitude;
     }
@@ -268,6 +289,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "longitude")
+    @JsonProperty
     public String getLongitude() {
         return longitude;
     }

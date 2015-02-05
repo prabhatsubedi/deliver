@@ -43,10 +43,10 @@ public class AdminDaoServiceImpl implements AdminDaoService {
     }
 
     @Override
-    public Integer getNewUserCount(Integer day_count) throws Exception {
+    public Integer getNewUserCount(Integer dayCount) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -day_count);
+        cal.add(Calendar.DATE, -dayCount);
         String sqQuery =    "SELECT COUNT(c.id) FROM customers c INNER JOIN users u ON c.user_id = u.id WHERE u.created_date > '"+dateFormat.format(cal.getTime())+"'";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
 
@@ -55,10 +55,10 @@ public class AdminDaoServiceImpl implements AdminDaoService {
     }
 
     @Override
-    public Integer getNewUserByDayCount(Integer day_count, Integer prev) throws Exception {
+    public Integer getNewUserByDayCount(Integer dayCount, Integer prev) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -day_count);
+        cal.add(Calendar.DATE, -dayCount);
         Calendar calPrev = Calendar.getInstance();
         calPrev.add(Calendar.DATE, -prev);
         String sqQuery =    "SELECT COUNT(c.id) FROM customers c INNER JOIN users u ON c.user_id = u.id WHERE u.created_date <= '"+dateFormat.format(cal.getTime())+"' && u.created_date > '"+dateFormat.format(calPrev.getTime())+"'";
@@ -108,10 +108,10 @@ public class AdminDaoServiceImpl implements AdminDaoService {
     }
 
     @Override
-    public Integer getOrderByDayCount(String status, Integer day_count, Integer prev) throws Exception {
+    public Integer getOrderByDayCount(String status, Integer dayCount, Integer prev) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
+        cal.add(Calendar.DATE, -dayCount);
         Calendar calPrev = Calendar.getInstance();
         calPrev.add(Calendar.DATE, -prev);
         String sqQuery = "SELECT COUNT(o.id) FROM orders o INNER JOIN dboy_order_history doh ON o.id = doh.order_id  WHERE doh.completed_at <= '"+cal.getTime()+"' && doh.completed_at > '"+calPrev.getTime()+"' && o.order_status IN "+status;
@@ -167,10 +167,10 @@ public class AdminDaoServiceImpl implements AdminDaoService {
     }
 
     @Override
-    public Integer getOrderByDayCount(Integer day_count, Integer prev) throws Exception {
+    public Integer getOrderByDayCount(Integer dayCount, Integer prev) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -day_count);
+        cal.add(Calendar.DATE, -dayCount);
         Calendar calPrev = Calendar.getInstance();
         calPrev.add(Calendar.DATE, -prev);
         String sqQuery = "SELECT COUNT(o.id) FROM orders o INNER JOIN dboy_order_history doh ON o.delivery_boy_id = doh.dboy_id && o.id = doh.order_id WHERE o.order_status = 5 && doh.completed_at <= '"+dateFormat.format(cal.getTime())+"'  && doh.completed_at > '"+dateFormat.format(calPrev.getTime())+"'";
@@ -196,10 +196,10 @@ public class AdminDaoServiceImpl implements AdminDaoService {
 
 
     @Override
-    public Integer getOrderTotalTimeByDay(Integer day_count, Integer prev) throws Exception {
+    public Integer getOrderTotalTimeByDay(Integer dayCount, Integer prev) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
+        cal.add(Calendar.DATE, -dayCount);
         Calendar calPrev = Calendar.getInstance();
         calPrev.add(Calendar.DATE, -prev);
         String sqQuery = "SELECT SUM(doh.completed_at - doh.job_started_at) FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status = 5 && doh.completed_at <= '"+dateFormat.format(cal.getTime())+"'  && doh.completed_at > '"+dateFormat.format(calPrev.getTime())+"'";

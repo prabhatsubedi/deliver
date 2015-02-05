@@ -4,8 +4,10 @@ import com.yetistep.delivr.dao.inf.CustomerDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
+import com.yetistep.delivr.util.HibernateUtil;
 import org.hibernate.*;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -13,6 +15,7 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -131,7 +134,7 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
                 "FROM orders o, stores_brands sb, stores s, customers c " +
                 "WHERE o.store_id = s.id AND s.stores_brand_id = sb.id AND " +
                 "o.order_status not in (:delivered, :cancelled) AND " +
-                "c.id = o.customer_id AND c.facebook_id =:facebookId";
+                "c.id = o.customer_id AND c.facebook_id =:facebookId  order by o.id desc";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
         query.setParameter("delivered", JobOrderStatus.DELIVERED.ordinal());
         query.setParameter("cancelled", JobOrderStatus.CANCELLED.ordinal());
@@ -142,17 +145,32 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
     }
 
     @Override
-    public List<MyOrderDto> getPastOrdersByFacebookId(Long facebookId) throws Exception {
+    public Integer getNumberOfPastOrdersByFacebookId(Long facebookId) throws Exception {
+        String sqlQuery = "SELECT count(o.id) FROM orders o, customers c WHERE " +
+                "o.order_status in (:delivered, :cancelled) AND c.id = o.customer_id AND " +
+                "c.facebook_id = :facebookId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("delivered", JobOrderStatus.DELIVERED.ordinal());
+        query.setParameter("cancelled", JobOrderStatus.CANCELLED.ordinal());
+        query.setParameter("facebookId", facebookId);
+        BigInteger numberOfPastOrders = (BigInteger) query.uniqueResult();
+        return (numberOfPastOrders != null) ? numberOfPastOrders.intValue() : null ;
+    }
+
+    @Override
+    public List<MyOrderDto> getPastOrdersByFacebookId(Long facebookId, Page page) throws Exception {
         String sqlQuery = "SELECT o.id as orderId, o.order_status as jobOrderStatus, " +
                 "sb.brand_logo as brandLogo, sb.brand_name as brandName " +
                 "FROM orders o, stores_brands sb, stores s, customers c " +
                 "WHERE o.store_id = s.id AND s.stores_brand_id = sb.id AND " +
                 "o.order_status in (:delivered, :cancelled) AND " +
-                "c.id = o.customer_id AND c.facebook_id =:facebookId";
+                "c.id = o.customer_id AND c.facebook_id =:facebookId order by o.id desc";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
         query.setParameter("delivered", JobOrderStatus.DELIVERED.ordinal());
         query.setParameter("cancelled", JobOrderStatus.CANCELLED.ordinal());
         query.setParameter("facebookId", facebookId);
+
+        HibernateUtil.fillPaginationCriteria(query, page);
         query.setResultTransformer(Transformers.aliasToBean(MyOrderDto.class));
         List<MyOrderDto> pastOrders = query.list();
         return pastOrders;

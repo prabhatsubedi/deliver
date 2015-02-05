@@ -2,6 +2,7 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.RatingReason;
 import com.yetistep.delivr.model.*;
@@ -23,7 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -676,17 +676,17 @@ public class ClientController extends AbstractManager{
 //        }
 //    }
 
-    @RequestMapping(value = "/past_orders/fbId/{facebookId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/past_orders/fbId/{facebookId}", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getMyPastOrders(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId) {
+    public ResponseEntity<ServiceResponse> getMyPastOrders(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId, @RequestBody(required = false) Page page) {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
 //            validateMobileClient(headerDto.getAccessToken());
 
-            List<MyOrderDto> orders = customerService.getMyPastOrders(facebookId);
+           PaginationDto paginationDto= customerService.getMyPastOrders(facebookId, page);
             ServiceResponse serviceResponse = new ServiceResponse("Past orders retrieved successfully");
-            serviceResponse.addParam("orders",orders);
+            serviceResponse.addParam("orders",paginationDto);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while retrieving past orders", e);

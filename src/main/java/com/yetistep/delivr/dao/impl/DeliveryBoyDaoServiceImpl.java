@@ -2,8 +2,11 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
 import com.yetistep.delivr.enums.DBoyStatus;
+import com.yetistep.delivr.enums.DeliveryStatus;
+import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
@@ -11,6 +14,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -85,5 +89,25 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         ).setResultTransformer(Transformers.aliasToBean(DeliveryBoyEntity.class));
         criteria.add(Restrictions.eq("id", deliveryBoyId));
         return (DeliveryBoyEntity) criteria.uniqueResult();
+    }
+
+    @Override
+    public Boolean checkForPendingOrders(Integer deliveryBoyId, Integer orderId) throws Exception {
+        String sqlQuery = "SELECT count(db.id) FROM dboy_order_history db INNER JOIN orders o " +
+                "on (o.id = db.order_id) WHERE db.delivery_status = :deliveryStatus AND " +
+                "db.dboy_id = :deliveryBoyId AND o.order_status in " +
+                "(:inRoutePickUp, :atStore, :inRouteToDelivery) AND o.id != :orderId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("deliveryStatus", DeliveryStatus.PENDING.ordinal());
+        query.setParameter("inRoutePickUp", JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
+        query.setParameter("atStore", JobOrderStatus.AT_STORE.ordinal());
+        query.setParameter("inRouteToDelivery", JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal());
+        query.setParameter("deliveryBoyId", deliveryBoyId);
+        query.setParameter("orderId", orderId);
+        BigInteger count = (BigInteger) query.uniqueResult();
+        if(count.intValue() == 0){
+            return true;
+        }
+        return false;
     }
 }

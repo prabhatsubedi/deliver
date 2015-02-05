@@ -16,4 +16,6 @@ public interface DeliveryBoyDaoService extends GenericDaoService<Integer, Delive
     public List<DeliveryBoyEntity> findAllCapableDeliveryBoys() throws Exception;
 
     public DeliveryBoyEntity getProfileInformation(Integer deliveryBoyId) throws Exception;
+
+    public Boolean checkForPendingOrders(Integer deliveryBoyId, Integer orderId) throws Exception;
 }

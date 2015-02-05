@@ -265,6 +265,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             throw new YSException("VLD017");
         }
         JobOrderStatus orderStatus = orderEntity.getOrderStatus();
+        if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP) ||
+                orderStatus.equals(JobOrderStatus.AT_STORE) ||
+                orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)){
+            if(!deliveryBoyDaoService.checkForPendingOrders(deliveryBoyId, orderEntity.getId())){
+                throw new YSException("DBY004");
+            }
+        }
         if(orderStatus.equals(JobOrderStatus.ORDER_ACCEPTED)){
             return acceptDeliveryOrder(orderEntity.getId(), deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)){

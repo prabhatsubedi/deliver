@@ -20,7 +20,7 @@ public interface AdminDaoService {
 
     public Integer getRegisteredUserCount() throws Exception;
 
-    public Integer getNewUserCount() throws Exception;
+    public Integer getNewUserCount(Integer day_count) throws Exception;
 
     public Integer getActiveUserCount() throws Exception;
 
@@ -34,10 +34,18 @@ public interface AdminDaoService {
 
     public Integer getOrderTotalTime() throws Exception;
 
+    public Integer getOrderByDayCount(Integer day_count, Integer prev) throws Exception;
+
     public Integer getTodayOrderCount() throws Exception;
 
     public Integer getTodayOrderTotalTime() throws Exception;
 
     public List<OrderEntity> getOrderRoute(List<JobOrderStatus> status) throws Exception;
+
+    public Integer getOrderTotalTimeByDay(Integer day_count, Integer prev) throws Exception;
+
+    public Integer getNewUserByDayCount(Integer day_count, Integer prev) throws Exception;
+
+    public Integer getOrderByDayCount(String status, Integer day_count, Integer prev) throws Exception;
 
 }

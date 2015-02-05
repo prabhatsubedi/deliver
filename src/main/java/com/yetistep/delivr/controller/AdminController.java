@@ -1,5 +1,6 @@
 package com.yetistep.delivr.controller;
 
+import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Role;
@@ -153,7 +154,7 @@ public class AdminController {
         try{
 
             List<Map<String, Map<Integer, Map<String, String>>>> godsView = adminService.getGodsView();
-            ServiceResponse serviceResponse = new ServiceResponse("Gods view retrieved successfully successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Gods view has been retrieved successfully successfully");
             serviceResponse.addParam("godsView", godsView);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
@@ -164,5 +165,64 @@ public class AdminController {
 
         }
     }
+
+    @RequestMapping(value="/get_delivery_graph", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getDeliveryGraph(@RequestHeader HttpHeaders headers){
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            List<Map<String, Map<Integer, Integer>>> graphData = adminService.getDeliveryGraphByDate(headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Delivery graph view has been retrieved successfully successfully");
+            serviceResponse.addParam("graphData", graphData);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        }catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving delivery graph view", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
+    @RequestMapping(value="/get_new_user_graph", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getNewUserGraph(@RequestHeader HttpHeaders headers){
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            Map<Integer, Integer> graphData = adminService.getNewUserGraph(headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("User graph view has been retrieved successfully successfully");
+            serviceResponse.addParam("graphData", graphData);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        }catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving user graph view", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
+    @RequestMapping(value="/get_delivery_success_graph", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getDeliverySuccessGraph(@RequestHeader HttpHeaders headers){
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            List<Map<String,  Map<Integer, Integer>>> graphData = adminService.getDeliverySuccessGraph(headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Delivery Success graph view has been retrieved successfully successfully");
+            serviceResponse.addParam("graphData", graphData);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        }catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving delivery success graph view", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
+
 
 }

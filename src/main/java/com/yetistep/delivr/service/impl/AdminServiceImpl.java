@@ -2,11 +2,13 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.inf.AdminDaoService;
 import com.yetistep.delivr.dao.inf.CountryDaoService;
+import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.AdminService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +47,7 @@ public class AdminServiceImpl implements AdminService {
         generalData.put("Total User Registered", totalUserCount);
 
         Map<Integer, Map<String, String>> newUserCount =  new HashMap<>();
-        newUserCount.put(adminDaoService.getNewUserCount(), null);
+        newUserCount.put(adminDaoService.getNewUserCount(1), null);
         generalData.put("new User Registered", newUserCount);
 
         Map<Integer, Map<String, String>> userLeftAppCount =  new HashMap<>();
@@ -180,4 +182,201 @@ public class AdminServiceImpl implements AdminService {
         return  godsView;
 
     }
+
+    @Override
+    public List<Map<String, Map<Integer, Integer>>> getDeliveryGraphByDate(HeaderDto headerDto) throws Exception{
+        List<Map<String, Map<Integer, Integer>>> graphData = new ArrayList<>();
+        Map<Integer, Integer> deliveryByDate = new HashMap<>();
+        Map<Integer, Integer> averageTime = new HashMap<>();
+        Integer count;
+        if(headerDto.getId().equals("Day")) {
+            count = 8;
+            Integer i;
+            for ( i=1; i< count; i++){
+                Integer orderCount = adminDaoService.getOrderByDayCount(i, i-1);
+                Integer totalTime = adminDaoService.getOrderTotalTimeByDay(i, i-1);
+                deliveryByDate.put(i, orderCount);
+                if(orderCount > 0)
+                    averageTime.put(i, totalTime/orderCount);
+            }
+        }
+
+        if(headerDto.getId().equals("Week")) {
+            count = 5;
+            Integer i;
+            for ( i=1; i< count; i++){
+                Integer orderCount = adminDaoService.getOrderByDayCount(i*7, 7*(i-1));
+                Integer totalTime = adminDaoService.getOrderTotalTimeByDay(i*7, 7*(i-1));
+                deliveryByDate.put(i, orderCount);
+                if(orderCount > 0)
+                    averageTime.put(i, totalTime/orderCount);
+            }
+        }
+
+        if(headerDto.getId().equals("Month")) {
+            count = 13;
+            Integer i;
+            for ( i=1; i< count; i++){
+                Integer orderCount = adminDaoService.getOrderByDayCount(i*30, 30*(i-1));
+                Integer totalTime = adminDaoService.getOrderTotalTimeByDay(i*30, 30*(i-1));
+                deliveryByDate.put(i, orderCount);
+                if(orderCount > 0)
+                    averageTime.put(i, totalTime/orderCount);
+            }
+        }
+
+        if(headerDto.getId().equals("Year")) {
+            count = 10;
+            Integer i;
+            for ( i=1; i< count; i++){
+                Integer orderCount = adminDaoService.getOrderByDayCount(i*365, 365*(i-1));
+                Integer totalTime = adminDaoService.getOrderTotalTimeByDay(i*365, 365*(i-1));
+                deliveryByDate.put(i, orderCount);
+                if(orderCount > 0)
+                    averageTime.put(i, totalTime/orderCount);
+            }
+        }
+        Map<String, Map<Integer, Integer>> deliveryByDateMap = new HashMap<>();
+        Map<String, Map<Integer, Integer>> averageTimeMap = new HashMap<>();
+        deliveryByDateMap.put("orderCount", deliveryByDate);
+        averageTimeMap.put("averageTime", averageTime);
+        graphData.add(deliveryByDateMap);
+        graphData.add(averageTimeMap);
+
+        return graphData;
+    }
+
+    @Override
+    public Map<Integer, Integer> getNewUserGraph(HeaderDto headerDto) throws Exception{
+        Map<Integer, Integer> graphData = new HashMap<>();
+        Integer count;
+        if(headerDto.getId().equals("Day")) {
+            count = 8;
+            Integer i;
+            for ( i=1; i< count; i++){
+                Integer orderCount = adminDaoService.getNewUserByDayCount(i, i - 1);
+                graphData.put(i, orderCount);
+            }
+        }
+
+        if(headerDto.getId().equals("Week")) {
+            count = 5;
+            Integer i;
+            for ( i=1; i< count; i++){
+                Integer orderCount = adminDaoService.getNewUserByDayCount(i * 7, 7 * (i - 1));
+                graphData.put(i, orderCount);
+            }
+        }
+
+        if(headerDto.getId().equals("Month")) {
+            count = 13;
+            Integer i;
+            for ( i=1; i< count; i++){
+                Integer orderCount = adminDaoService.getNewUserByDayCount(i * 30, 30 * (i - 1));
+                graphData.put(i, orderCount);
+            }
+        }
+
+        if(headerDto.getId().equals("Year")) {
+            count = 10;
+            Integer i;
+            for ( i=1; i< count; i++){
+                Integer orderCount = adminDaoService.getNewUserByDayCount(i * 365, 365 * (i - 1));
+                graphData.put(i, orderCount);
+
+            }
+        }
+
+        return graphData;
+    }
+
+    @Override
+    public List<Map<String, Map<Integer, Integer>>> getDeliverySuccessGraph(HeaderDto headerDto) throws Exception{
+        List<Map<String, Map<Integer, Integer>>> graphData = new ArrayList<>();
+        Map<Integer, Integer> successfulPcn = new HashMap<>();
+        Map<Integer, Integer> failedPcn = new HashMap<>();
+        Integer count;
+        if(headerDto.getId().equals("Day")) {
+            count = 8;
+            Integer i;
+            for ( i=1; i< count; i++){
+                Integer successDvCount = adminDaoService.getOrderByDayCount("(5)", i, i - 1);
+                Integer failedDvCount = adminDaoService.getOrderByDayCount("(5)", i, i-1);
+                Integer totalDvCount = successDvCount+failedDvCount;
+                if(successDvCount > 0)
+                    successfulPcn.put(i, successDvCount*100/totalDvCount);
+                else
+                    successfulPcn.put(i, 0);
+                if(failedDvCount > 0)
+                    failedPcn.put(i, failedDvCount*100/totalDvCount);
+                else
+                    failedPcn.put(i, 0);
+            }
+        }
+
+        if(headerDto.getId().equals("Week")) {
+            count = 5;
+            Integer i;
+            for ( i=1; i< count; i++){
+                Integer successDvCount = adminDaoService.getOrderByDayCount("(5)", i * 7, 7 * (i - 1));
+                Integer failedDvCount = adminDaoService.getOrderByDayCount("(5)", i*7, 7*(i-1));
+                Integer totalDvCount = successDvCount+failedDvCount;
+                if(successDvCount > 0)
+                    successfulPcn.put(i, successDvCount*100/totalDvCount);
+                else
+                    successfulPcn.put(i, 0);
+                if(failedDvCount > 0)
+                    failedPcn.put(i, failedDvCount*100/totalDvCount);
+                else
+                    failedPcn.put(i, 0);
+            }
+        }
+
+        if(headerDto.getId().equals("Month")) {
+            count = 13;
+            Integer i;
+            for ( i=1; i< count; i++){
+                Integer successDvCount = adminDaoService.getOrderByDayCount("(5)", i * 30, 30 * (i - 1));
+                Integer failedDvCount = adminDaoService.getOrderByDayCount("(5)", i*30, 30*(i-1));
+                Integer totalDvCount = successDvCount+failedDvCount;
+                if(successDvCount > 0)
+                    successfulPcn.put(i, successDvCount*100/totalDvCount);
+                else
+                    successfulPcn.put(i, 0);
+                if(failedDvCount > 0)
+                    failedPcn.put(i, failedDvCount*100/totalDvCount);
+                else
+                    failedPcn.put(i, 0);
+            }
+        }
+
+        if(headerDto.getId().equals("Year")) {
+            count = 10;
+            Integer i;
+            for ( i=1; i< count; i++){
+                Integer successDvCount = adminDaoService.getOrderByDayCount("(5)", i * 365, 365 * (i - 1));
+                Integer failedDvCount = adminDaoService.getOrderByDayCount("(5)", i*365, 365*(i-1));
+                Integer totalDvCount = successDvCount+failedDvCount;
+                if(successDvCount > 0)
+                    successfulPcn.put(i, successDvCount*100/totalDvCount);
+                else
+                    successfulPcn.put(i, 0);
+                if(failedDvCount > 0)
+                    failedPcn.put(i, failedDvCount*100/totalDvCount);
+                else
+                    failedPcn.put(i, 0);
+
+            }
+        }
+        Map<String, Map<Integer, Integer>> successfulPcnMap = new HashMap<>();
+        Map<String, Map<Integer, Integer>> failedPcnMap = new HashMap<>();
+        successfulPcnMap.put("Successful", successfulPcn);
+        failedPcnMap.put("Failed", failedPcn);
+        graphData.add(successfulPcnMap);
+        graphData.add(failedPcnMap);
+        return graphData;
+    }
+
+
+
 }

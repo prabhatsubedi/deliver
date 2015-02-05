@@ -43,11 +43,25 @@ public class AdminDaoServiceImpl implements AdminDaoService {
     }
 
     @Override
-    public Integer getNewUserCount() throws Exception {
+    public Integer getNewUserCount(Integer day_count) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
+        cal.add(Calendar.DATE, -day_count);
         String sqQuery =    "SELECT COUNT(c.id) FROM customers c INNER JOIN users u ON c.user_id = u.id WHERE u.created_date > '"+dateFormat.format(cal.getTime())+"'";
+        Query query = getCurrentSession().createSQLQuery(sqQuery);
+
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
+    }
+
+    @Override
+    public Integer getNewUserByDayCount(Integer day_count, Integer prev) throws Exception {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -day_count);
+        Calendar calPrev = Calendar.getInstance();
+        calPrev.add(Calendar.DATE, -prev);
+        String sqQuery =    "SELECT COUNT(c.id) FROM customers c INNER JOIN users u ON c.user_id = u.id WHERE u.created_date <= '"+dateFormat.format(cal.getTime())+"' && u.created_date > '"+dateFormat.format(calPrev.getTime())+"'";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
 
         BigInteger cnt = (BigInteger) query.uniqueResult();
@@ -80,7 +94,6 @@ public class AdminDaoServiceImpl implements AdminDaoService {
     public Integer getDBoyCount(String status) throws Exception {
         String sqQuery = "SELECT COUNT(db.id) FROM delivery_boys db INNER JOIN users u ON db.user_id = u.id WHERE db.availability_status in "+status+" && u.status = 1";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
-
         BigInteger cnt = (BigInteger) query.uniqueResult();
         return cnt.intValue();
     }
@@ -93,6 +106,23 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         BigInteger cnt = (BigInteger) query.uniqueResult();
         return cnt.intValue();
     }
+
+    @Override
+    public Integer getOrderByDayCount(String status, Integer day_count, Integer prev) throws Exception {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        Calendar calPrev = Calendar.getInstance();
+        calPrev.add(Calendar.DATE, -prev);
+        String sqQuery = "SELECT COUNT(o.id) FROM orders o INNER JOIN dboy_order_history doh ON o.id = doh.order_id  WHERE doh.completed_at <= '"+cal.getTime()+"' && doh.completed_at > '"+calPrev.getTime()+"' && o.order_status IN "+status;
+        Query query = getCurrentSession().createSQLQuery(sqQuery);
+
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
+    }
+
+
+
 
     @Override
     public List<OrderEntity> getOrderRoute(List<JobOrderStatus> status) throws Exception {
@@ -137,6 +167,20 @@ public class AdminDaoServiceImpl implements AdminDaoService {
     }
 
     @Override
+    public Integer getOrderByDayCount(Integer day_count, Integer prev) throws Exception {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -day_count);
+        Calendar calPrev = Calendar.getInstance();
+        calPrev.add(Calendar.DATE, -prev);
+        String sqQuery = "SELECT COUNT(o.id) FROM orders o INNER JOIN dboy_order_history doh ON o.delivery_boy_id = doh.dboy_id && o.id = doh.order_id WHERE o.order_status = 5 && doh.completed_at <= '"+dateFormat.format(cal.getTime())+"'  && doh.completed_at > '"+dateFormat.format(calPrev.getTime())+"'";
+        Query query = getCurrentSession().createSQLQuery(sqQuery);
+
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
+    }
+
+    @Override
     public Integer getTodayOrderTotalTime() throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
@@ -149,6 +193,24 @@ public class AdminDaoServiceImpl implements AdminDaoService {
             return cnt.intValue();
         else return 0;
     }
+
+
+    @Override
+    public Integer getOrderTotalTimeByDay(Integer day_count, Integer prev) throws Exception {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        Calendar calPrev = Calendar.getInstance();
+        calPrev.add(Calendar.DATE, -prev);
+        String sqQuery = "SELECT SUM(doh.completed_at - doh.job_started_at) FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status = 5 && doh.completed_at <= '"+dateFormat.format(cal.getTime())+"'  && doh.completed_at > '"+dateFormat.format(calPrev.getTime())+"'";
+        Query query = getCurrentSession().createSQLQuery(sqQuery);
+
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        if(cnt != null)
+            return cnt.intValue();
+        else return 0;
+    }
+
 
 
 

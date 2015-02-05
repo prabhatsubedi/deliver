@@ -1,4 +1,3 @@
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/header.js"></script>
 <div class="header clearfix">
     <div class="item_search col-lg-8">
         <form role="form" id="item_search" method="POST" action="${pageContext.request.contextPath}/merchant/search/item">
@@ -111,7 +110,6 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        Header.loadSearch();
 
         $('#modal_password').on('shown.bs.modal', function (e) {
 
@@ -165,48 +163,6 @@
         $('select.compelselection').live('change', function(){
             if($(this).val() == null) $(this).selectpicker('selectAll');
         });
-
-/*
-        $.validator.addMethod("notEqual", function(value, element, arg){
-            var result = value != arg;
-            if($(element).is('select')) {
-                if(!result) {
-                    $(element).next('.bootstrap-select').children('.form-control').addClass('error');
-                } else {
-                    $(element).next('.bootstrap-select').children('.form-control').removeClass('error');
-                }
-            }
-            return result;
-        }, "Please select any option.");
-
-        $.validator.addMethod("minSelection", function(value, element, arg){
-            var result = value != null && (value.length >= arg || value == 'All');
-            if($(element).is('select')) {
-                if(!result) {
-                    $(element).next('.bootstrap-select').children('.form-control').addClass('error');
-                } else {
-                    $(element).next('.bootstrap-select').children('.form-control').removeClass('error');
-                }
-            }
-            return result;
-        }, $.validator.format("Please select at least {0} options."));
-
-        $.validator.setDefaults({
-            errorPlacement : function(error, element){
-                $('#error_container').html(error);
-            },
-            ignore: []
-        });
-
-        $('#item_search').validate({
-            submitHandler: function(form) {
-            }
-        });
-        $('#item_name').rules('add', {required: true});
-        $('#item_stores').rules('add', {notEqual: "none"});
-        $('#item_categories').rules('add', {minSelection: 1});
-
-        Main.getAllStores();*/
 
     });
 </script>

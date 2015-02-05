@@ -8,16 +8,16 @@ var dragged = false;
 var cancel_drag = false;
 function toggleSwitch(value, elem) {
 
-    var chk_confirm = false;
+    var chk_confirm = true;
     if(!cancel_drag) {
-        var chk_confirm = confirm('Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' item?');
+//        chk_confirm = confirm('Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' item?');
 
         if (!chk_confirm) {
             value = value == 'on' ? 'off' : 'on';
         } else {
 
             var callback = function (status, data) {
-                alert(data.message);
+//                alert(data.message);
                 if (data.success != true) {
                     toggleSwitch(value == 'on' ? 'off' : 'on', elem);
                 }
@@ -1238,16 +1238,16 @@ function toggleSwitch(value, elem) {
         var cancel_drag = false;
         function toggleSwitch(value, elem) {
 
-            var chk_confirm = false;
+            var chk_confirm = true;
             if(!cancel_drag) {
-                var chk_confirm = confirm('Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' item?');
+//                chk_confirm = confirm('Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' item?');
 
                 if (!chk_confirm) {
                     value = value == 'on' ? 'off' : 'on';
                 } else {
 
                     var callback = function (status, data) {
-                        alert(data.message);
+//                        alert(data.message);
                         if (data.success != true) {
                             toggleSwitch(value == 'on' ? 'off' : 'on', elem);
                         }

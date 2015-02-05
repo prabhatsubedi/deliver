@@ -867,7 +867,7 @@
 
     $.fn.selectpicker.defaults = {
         style: 'btn-default',
-        size: 'auto',
+        size: 5, //'auto',
         title: null,
         selectedTextFormat : 'values',
         noneSelectedText : 'Nothing selected',

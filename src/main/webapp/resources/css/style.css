@@ -37,6 +37,9 @@
 .delivricon-store:before {
     content: "\d07";
 }
+.delivricon-orders:before {
+    content: "\d08";
+}
 
 *, *:focus, *:active {
     outline: none !important;

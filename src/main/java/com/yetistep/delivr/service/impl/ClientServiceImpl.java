@@ -193,6 +193,70 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
     @Override
     public List<CategoryDto> getParentCategory(Integer brandId) throws Exception {
+//        log.info("++++++++++ Getting Parent Category and list cat id +++++++++++++");
+//        List<CategoryDto> categoryDtoList = new ArrayList<>();
+//        CategoryDto categoryDto = null;
+//        List<CategoryEntity> categoryEntities = itemDaoService.findItemCategory(brandId);
+//
+//        for (CategoryEntity categoryEntity : categoryEntities) {
+//            categoryDto = new CategoryDto();
+////            if (categoryEntity.getParentId() != null) {
+////                categoryDto.setValues(categoryEntity);
+////                categoryDto.setHasNext(false);
+////            } else {
+//                //Search  Main Parent Category
+//                CategoryEntity resultCat = categoryDaoService.find(categoryEntity.getId());
+//            if (resultCat.getParent().getParent() == null) {
+//                categoryDto.setValues(resultCat);
+//                categoryDto.setHasNext(false);
+//                break;
+//            } else {
+//                Integer hasPrevParent = 0;
+//                CategoryEntity cat = null;
+//                //LOOP for parent (Search Parent and Category)
+//                while (hasPrevParent != null) {
+//                    // 2nd Level Search
+////                    if (resultCat.getParent().getParent() == null) {
+////                        //categoryDto.setValues(resultCat.getParent());
+//////                        break;
+////                        //FIXME: New
+////                        categoryDto.setValues(resultCat);
+////                        categoryDto.setHasNext(false);
+////                        break;
+////                    }
+//
+//                    //Multi Level Search
+//                    if (cat == null)
+//                        cat = resultCat.getParent();
+//                    else
+//                        cat = cat.getParent();
+//
+//                    if (cat == null || cat.getParent() == null)
+//                        break;
+//
+//                    hasPrevParent = cat.getParent().getId();
+//                    categoryDto.setValues(cat.getParent());
+//
+//                }
+//
+//                categoryDto.setHasNext(true);
+//            }
+//
+//            }
+//
+//            Boolean isAlreadyContain = false;
+//            for (CategoryDto temp : categoryDtoList) {
+//                if (temp.getId().equals(categoryDto.getId()))
+//                    isAlreadyContain = true;
+//            }
+//
+//            if (!isAlreadyContain)
+//                categoryDtoList.add(categoryDto);
+//
+////        }
+//        return categoryDtoList;
+
+        //FIXME: Old
         log.info("++++++++++ Getting Parent Category and list cat id +++++++++++++");
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         CategoryDto categoryDto = null;

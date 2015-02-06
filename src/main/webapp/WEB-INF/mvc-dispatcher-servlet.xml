@@ -14,18 +14,24 @@
 
     <mvc:annotation-driven>
         <mvc:message-converters>
-            <bean class="org.springframework.http.converter.StringHttpMessageConverter" />
-            <bean class="org.springframework.http.converter.ResourceHttpMessageConverter" />
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="objectMapper">
                     <bean class="com.fasterxml.jackson.databind.ObjectMapper">
                         <property name="serializationInclusion" value="NON_NULL"/>
+
                     </bean>
+
                 </property>
                 <!--<property name="objectMapper" ref="jacksonObjectMapper" />-->
+                <!--<property name="requireSession" value="false"/>-->
+                <property name="supportedMediaTypes" value="application/json"/>
             </bean>
+
         </mvc:message-converters>
+
     </mvc:annotation-driven>
+
+
 
     <!--<bean id="jacksonObjectMapper" class="com.yetistep.delivr.util.JSONMapper" />-->
     <!--<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">-->
@@ -82,6 +88,11 @@
                 <!--</constructor-arg>-->
             <!--</bean>-->
         <!--</constructor-arg>-->
+        <!--</bean>-->
+    <!--</mvc:interceptors>-->
+
+    <!--<mvc:interceptors>-->
+        <!--<bean class="com.yetistep.delivr.controller.RequestProcessingTimeInterceptor">-->
         <!--</bean>-->
     <!--</mvc:interceptors>-->
 

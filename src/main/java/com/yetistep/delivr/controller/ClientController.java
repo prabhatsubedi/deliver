@@ -98,7 +98,7 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, httpHeaders, HttpStatus.OK);
 
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while creating customer", e);
+            GeneralUtil.logError(log, "Error occurred while getting access token", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
@@ -228,7 +228,7 @@ public class ClientController extends AbstractManager{
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-            validateMobileClient(headerDto.getAccessToken());
+            //validateMobileClient(headerDto.getAccessToken());
 
             customerService.login(customerEntity);
             ServiceResponse serviceResponse = new ServiceResponse("Customer Login Successfully");
@@ -445,7 +445,7 @@ public class ClientController extends AbstractManager{
 
     @RequestMapping(value= "/get_cart_info/fbId/{facebookId}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> checkCart(@PathVariable("facebookId") Long facebookId) {
+    public ResponseEntity<ServiceResponse> getCartInfo(@PathVariable("facebookId") Long facebookId) {
         try {
             CartDto cart = clientService.getCartSize(facebookId);
             ServiceResponse serviceResponse = new ServiceResponse("Cart info retrieved successfully");

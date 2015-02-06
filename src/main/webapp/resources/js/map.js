@@ -290,6 +290,10 @@ $(document).ready(function(){
                                 map: map,
                                 draggable: disableMapEdit != true
                             });
+
+                            mapBounds.extend(location);
+                            map.fitBounds(mapBounds);
+
                             var jsonObj = geoObj;
                             markers.push(marker);
                             arrGeoPoints[locationToKey(location)] = jsonObj;

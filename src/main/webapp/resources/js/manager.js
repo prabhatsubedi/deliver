@@ -363,6 +363,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var order_no = 0;
                 var order_name = 0;
                 var job_status = courierStaff.availabilityStatus;
+                var user_status = courierStaff.user.status;
                 var balance = courierStaff.walletAmount + courierStaff.bankAmount;
                 var action = '<div class="action_links">' +
                     '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' + id + '">View on Map</a>' +
@@ -370,7 +371,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     '<a href="' + Main.modifyURL('/organizer/courier_staff/profile/' + id) + '">View Profile</a>' +
                     '</div>';
 
-                var row = [id, link_courier_staff, number, order_no, order_name, job_status, balance, action];
+                var row = [id, link_courier_staff, number, order_no, order_name, job_status, Main.ucfirst(user_status), balance, action];
                 tdata.push(row);
             }
 

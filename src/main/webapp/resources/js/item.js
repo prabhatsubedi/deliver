@@ -1021,10 +1021,12 @@ function toggleSwitch(value, elem) {
                                 $('.item_name a', elem).attr('href', Main.modifyURL('/merchant/item/view/' + item.id)).html(item.name);
                                 $('.item_price span', elem).html(item.unitPrice);
                                 $('.btn_switch', elem).attr('data-id', item.id);
-                                if(item.status == 'ACTIVE')
+                                if(item.status == 'ACTIVE') {
                                     $('.btn_switch', elem).removeClass('off').addClass('on');
-                                else
+                                } else {
                                     $('.btn_switch', elem).removeClass('on').addClass('off');
+                                    $('.item_container', elem).addClass('inactive_item');
+                                }
                                 item_list += elem.html();
                             }
 
@@ -1132,10 +1134,12 @@ function toggleSwitch(value, elem) {
                         $('.item_name a', elem).attr('href', Main.modifyURL('/merchant/item/view/' + item.id)).html(item.name);
                         $('.item_price span', elem).html(item.unitPrice);
                         $('.btn_switch', elem).attr('data-id', item.id);
-                        if(item.status == 'ACTIVE')
+                        if(item.status == 'ACTIVE') {
                             $('.btn_switch', elem).removeClass('off').addClass('on');
-                        else
+                        } else {
                             $('.btn_switch', elem).removeClass('on').addClass('off');
+                            $('.item_container', elem).addClass('inactive_item');
+                        }
                         item_list += elem.html();
                     }
 
@@ -1397,7 +1401,7 @@ function toggleSwitch(value, elem) {
                     if (data.success == true) {
 
                         var item_list = '';
-                        var items = data.params.items;
+                        var items = data.params.items.data;
                         if(items.length > 0) {
                             for(var j = 0; j < items.length; j++) {
                                 var item = items[j];

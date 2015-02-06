@@ -119,6 +119,9 @@ body.loader_div > .loader {
 .width_250 {
     min-width: 250px;
 }
+.width_300 {
+    min-width: 300px;
+}
 .modal-body {
     width: 100%;
 }
@@ -1186,6 +1189,9 @@ label.check_label .checkbox {
     padding: 15px 20px;
     background-color: #FFFFFF;
     font-size: 16px;
+}
+.items_container .inactive_item .item_infos {
+    opacity: 0.4;
 }
 .items_container .block_item .item_infos p {
     margin: 0px;

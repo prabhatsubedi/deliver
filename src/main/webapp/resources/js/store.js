@@ -492,10 +492,40 @@ if(typeof(Store) == "undefined") var Store = {};
             $('.store_status_save').addClass('hidden');
         }
         $('.btns_change').click(showEdit);
-
         $('.btns_cancel').click(hideEdit);
         $('.btns_save').click(function(){
-            hideEdit();
+
+            var callback = function (status, data) {
+                console.log(data);
+                hideEdit();
+            };
+            callback.loaderDiv = "body";
+            var data = {};
+            data.className= 'Store';
+
+            // active stores
+            if($('.store_location .checkbox:checked').length > 0) {
+                data.statusId= 2;
+                var headers = {};
+                var ids = [];
+                $('.store_location .checkbox:checked').each(function(){
+                    ids.push($(this).attr('data-id'));
+                });
+                headers.id = ids.join(',');
+                Main.request('/merchant/change_status', data, callback, headers);
+            }
+
+            // inactive stores
+            if($('.store_location .checkbox').not(':checked').length > 0) {
+                data.statusId= 3;
+                var headers = {};
+                var ids = [];
+                $('.store_location .checkbox').not(':checked').each(function(){
+                    ids.push($(this).attr('data-id'));
+                });
+                headers.id = ids.join(',');
+                Main.request('/merchant/change_status', data, callback, headers);
+            }
         });
 
         $('.btn_edit').attr('href', Main.modifyURL('/merchant/store/form/edit/' + storeId));
@@ -583,6 +613,7 @@ if(typeof(Store) == "undefined") var Store = {};
                     var store = stores[i];
                     var elem = $('.block_store_container_template').clone();
 
+                    $('.checkbox', elem).attr('data-id', store.id);
                     if(store.status == "ACTIVE") {
                         $('.check_span', elem).addClass('icon_full');
                         $('.checkbox', elem).attr('checked', 'checked');

@@ -119,6 +119,9 @@ body.loader_div > .loader {
 .width_250 {
     min-width: 250px;
 }
+.width_300 {
+    min-width: 300px;
+}
 .modal-body {
     width: 100%;
 }

@@ -426,9 +426,9 @@ public class MerchantController {
         }
     }
 
-    @RequestMapping(value = "/get_orders", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_orders", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getOrders(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> getOrders(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try{
             HeaderDto headerDto = new HeaderDto();
             List<String> hd = headers.get("merchantId");
@@ -441,7 +441,7 @@ public class MerchantController {
                     headerDto.setMerchantId(null);
                 }
             }
-            List<Object> orders = merchantService.getOrders(headerDto);
+            PaginationDto orders = merchantService.getOrders(headerDto, requestJson);
 
             ServiceResponse serviceResponse = new ServiceResponse("Orders retrieved successfully with Merchant ID: "+headerDto.getMerchantId());
             serviceResponse.addParam("orders", orders);

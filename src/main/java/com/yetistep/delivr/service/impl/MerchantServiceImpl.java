@@ -1240,7 +1240,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
     @Override
-    public List<Object> getOrders(HeaderDto headerDto) throws Exception {
+    public PaginationDto getOrders(HeaderDto headerDto, RequestJsonDto requestJson) throws Exception {
+        Page page = requestJson.getPage();
         List<Integer> storeIdList = new ArrayList<>();
         if(headerDto.getMerchantId() == null){
             List<Integer> brandIdList = merchantDaoService.getBrandIdList();
@@ -1254,11 +1255,20 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             storeIdList = merchantDaoService.getStoreIdList(brandIdList);
 
         }
-        List<OrderEntity> orders = merchantDaoService.getOrders(storeIdList);
+
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  merchantDaoService.getTotalNumbersOfOrders(storeIdList);
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+        List<OrderEntity> orders = merchantDaoService.getOrders(storeIdList, page);
 
         List<Object> objects = new ArrayList<>();
 
-        String fields = "id,orderName,orderStatus,attachments,customer,store,deliveryBoy,grandTotal";
+        String fields = "id,orderName,deliveryStatus,attachments,customer,store,deliveryBoy,grandTotal";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -1273,7 +1283,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         for (OrderEntity order:orders){
             objects.add(ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
         }
-        return objects;
+
+        paginationDto.setData(objects);
+        return paginationDto;
     }
 
 

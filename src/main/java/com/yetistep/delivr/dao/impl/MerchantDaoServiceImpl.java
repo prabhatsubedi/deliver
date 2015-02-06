@@ -603,11 +603,21 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public List<OrderEntity> getOrders(List<Integer> storeId) throws Exception {
+    public List<OrderEntity> getOrders(List<Integer> storeId, Page page) throws Exception {
         List<OrderEntity> orders = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
-        criteria.add(Restrictions.and(Restrictions.in("store.id", storeId))) ;
+        criteria.add(Restrictions.and(Restrictions.in("store.id", storeId)));
+        HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
         orders = criteria.list();
         return orders;
+    }
+
+    @Override
+    public Integer getTotalNumbersOfOrders(List<Integer> storeId) throws Exception {
+        String sqQuery =    "SELECT COUNT(o.id) FROM orders o WHERE o.store_id IN"+storeId.toString().replace("[", "(").replace("]", ")");
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
     }
 }

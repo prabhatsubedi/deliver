@@ -22,8 +22,6 @@
                     </bean>
 
                 </property>
-                <!--<property name="objectMapper" ref="jacksonObjectMapper" />-->
-                <!--<property name="requireSession" value="false"/>-->
                 <property name="supportedMediaTypes" value="application/json"/>
             </bean>
 
@@ -32,18 +30,15 @@
     </mvc:annotation-driven>
 
 
-
-    <!--<bean id="jacksonObjectMapper" class="com.yetistep.delivr.util.JSONMapper" />-->
-    <!--<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">-->
-        <!--<property name="messageConverters">-->
-            <!--<list>-->
-                <!--<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>-->
-            <!--</list>-->
-        <!--</property>-->
-    <!--</bean>-->
-
     <task:annotation-driven />
     <task:scheduler id="scheduler" />
+
+    <!-- ========= This Interceptor Will be used to check request =================== -->
+
+    <!--<mvc:interceptors>-->
+    <!--<bean class="com.yetistep.delivr.sys.RequestProcessingInterceptor">-->
+    <!--</bean>-->
+    <!--</mvc:interceptors>-->
 
     <bean id="dynamicSchedule" class="com.yetistep.delivr.schedular.DynamicSchedule">
         <constructor-arg ref="scheduler" />
@@ -91,9 +86,6 @@
         <!--</bean>-->
     <!--</mvc:interceptors>-->
 
-    <!--<mvc:interceptors>-->
-        <!--<bean class="com.yetistep.delivr.controller.RequestProcessingTimeInterceptor">-->
-        <!--</bean>-->
-    <!--</mvc:interceptors>-->
+
 
 </beans>

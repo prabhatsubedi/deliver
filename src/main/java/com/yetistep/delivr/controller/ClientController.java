@@ -228,7 +228,7 @@ public class ClientController extends AbstractManager{
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-            //validateMobileClient(headerDto.getAccessToken());
+            validateMobileClient(headerDto.getAccessToken());
 
             customerService.login(customerEntity);
             ServiceResponse serviceResponse = new ServiceResponse("Customer Login Successfully");
@@ -600,31 +600,6 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/test_device", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<ServiceResponse> getDeviceInfo() {
-        try {
-            //Device device = DeviceUtils.getCurrentDevice(httpServletRequest);
-//            DeviceResolver deviceResolver = new LiteDeviceResolver();
-//            Device device = deviceResolver.resolveDevice(httpServletRequest);
-            String userAgent = httpServletRequest.getHeader("User-Agent");
-            UserAgent ua = UserAgent.parseUserAgentString(userAgent);
-
-            String family = ua.getOperatingSystem().name();
-            String token = GeneralUtil.generateAccessToken(family);
-
-            ServiceResponse serviceResponse = new ServiceResponse("Token retrieved successfully");
-            serviceResponse.addParam("token", token);
-            serviceResponse.addParam("family", family);
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
-
-        } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while retrieving rating reason list", e);
-            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
-        }
-    }
-
     @RequestMapping(value = "/update_device_info/fbId/{facebookId}", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> updateDeviceInfo(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId, @RequestBody DeviceInfo deviceInfo) {
@@ -662,19 +637,6 @@ public class ClientController extends AbstractManager{
         }
     }
 
-//    @RequestMapping(value = "/test_json", method = RequestMethod.POST)
-//    @ResponseBody
-//    public ResponseEntity<ServiceResponse> testJson(@RequestBody TestEntity test) {
-//        try{
-//            log.info(test.getId() + " ======== " + test.getName());
-//            ServiceResponse serviceResponse = new ServiceResponse("Test Json cast successfully");
-//            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
-//        } catch (Exception e) {
-//            GeneralUtil.logError(log, "Error Occurred while updating device info", e);
-//            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-//            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
-//        }
-//    }
 
     @RequestMapping(value = "/past_orders/fbId/{facebookId}", method = RequestMethod.POST)
     @ResponseBody

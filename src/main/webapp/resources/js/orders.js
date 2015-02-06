@@ -39,7 +39,7 @@ Order.getOrders = function(){
             var deliveryBoyName = typeof(order.deliveryBoy) != 'undefined'?order.deliveryBoy.user.fullName:'';
             var action = '';
 
-            var row = [i+1, order.customer.user.fullName, order.store.name+'('+order.store.street+')', id, order.grandTotal != null?order.grandTotal:'', deliveryBoyName, link_attachments, action];
+            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?order.grandTotal:'', deliveryBoyName, link_attachments, action];
             if(order.deliveryStatus == "CANCELLED"){
                 tdataCanceled.push(row);
             } else if(order.deliveryStatus == "SUCCESSFUL") {

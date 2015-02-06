@@ -436,7 +436,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<ItemEntity> items = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
         criteria.add(Restrictions.and(Restrictions.in("category.id", categoryId), Restrictions.eq("storesBrand.id", brandId)));
-        criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("status")));
         criteria.add(Restrictions.sqlRestriction("1=1 order by rand()"));
         items = criteria.list();
         return items;
@@ -452,7 +451,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public List<ItemsStoreEntity> findItemsStores(Integer storeId) throws Exception {
         List<ItemsStoreEntity> itemsStores = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemsStoreEntity.class);
-        criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("status")));
         criteria.add(Restrictions.eq("store.id", storeId));
         criteria.addOrder(Order.asc("status"));
         itemsStores = criteria.list();

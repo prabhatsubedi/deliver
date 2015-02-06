@@ -30,7 +30,7 @@
         </div>
         <div class="settings_menu">
             <ul class="nav nav-pills">
-                <li class="col-xs-4 current_page" data-ref="inroute"><a href="#">In Route</a></li>
+                <li class="col-xs-4 current_page" data-ref="inroute"><a href="#">Live</a></li>
                 <li class="col-xs-4" data-ref="successful"><a href="#">Successful</a></li>
                 <li class="col-xs-4" data-ref="canceled"><a href="#">Cancelled</a></li>
             </ul>

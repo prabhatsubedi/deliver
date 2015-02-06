@@ -1187,6 +1187,9 @@ label.check_label .checkbox {
     background-color: #FFFFFF;
     font-size: 16px;
 }
+.items_container .inactive_item .item_infos {
+    opacity: 0.4;
+}
 .items_container .block_item .item_infos p {
     margin: 0px;
 }

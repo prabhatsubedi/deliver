@@ -279,15 +279,15 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value="/get_order/{orderId}", method = RequestMethod.GET)
+    @RequestMapping(value="/get_order/{orderId}/fbId/{facebookId}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getOrderDetails(@RequestHeader HttpHeaders headers, @PathVariable Integer orderId) {
+    public ResponseEntity<ServiceResponse> getOrderDetails(@RequestHeader HttpHeaders headers, @PathVariable Integer orderId, @PathVariable Long facebookId) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
             //validateMobileClient(headerDto.getAccessToken());
 
-            OrderEntity order = clientService.getOrderById(orderId, Integer.parseInt(headerDto.getId()));
+            OrderEntity order = clientService.getOrderById(orderId, facebookId);
             ServiceResponse serviceResponse = new ServiceResponse("Order retrieved Successfully");
             serviceResponse.addParam("order",order);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

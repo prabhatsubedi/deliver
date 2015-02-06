@@ -395,7 +395,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
         //TODO check order id as well
         if(!orderEntity.getOrderVerificationCode().equals(order.getOrderVerificationCode())){
-            throw new YSException("ORD004");
+            //throw new YSException("ORD004");
         }
         JobOrderStatus.traverseJobStatus(order.getOrderStatus(), JobOrderStatus.DELIVERED);
         order.setDeliveryStatus(DeliveryStatus.SUCCESSFUL);
@@ -878,6 +878,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             }
         }
 
+        order.setOrderVerificationCode(null);
         order.setRating(null);
         order.setDeliveryBoy(null);
         order.setAttachments(null);

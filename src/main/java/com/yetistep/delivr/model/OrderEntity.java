@@ -84,13 +84,12 @@ public class OrderEntity implements Serializable {
         this.orderName = orderName;
     }
 
-    @JsonIgnore
     @Column(name = "order_verification_code")
+    @JsonProperty
     public String getOrderVerificationCode() {
         return orderVerificationCode;
     }
 
-    @JsonProperty
     public void setOrderVerificationCode(String orderVerificationCode) {
         this.orderVerificationCode = orderVerificationCode;
     }

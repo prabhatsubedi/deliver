@@ -27,7 +27,7 @@ public interface ClientService {
 
     public List<CategoryDto> getSubCategory(CategoryDto categoryDto) throws Exception;
 
-    public OrderEntity getOrderById(Integer orderId, Integer deliveryBoyId) throws Exception;
+    public OrderEntity getOrderById(Integer orderId, Long facebookId) throws Exception;
 
     public List<ItemDto> getItems(Integer brandId, Integer categoryId) throws Exception;
 

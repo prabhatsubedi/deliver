@@ -848,6 +848,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         StoreEntity store = new StoreEntity();
         store.setName(order.getStore().getName());
+        store.setStreet(order.getStore().getStreet());
         store.setCity(order.getStore().getCity());
         store.setState(order.getStore().getState());
         store.setCountry(order.getStore().getCountry());

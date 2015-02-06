@@ -1401,7 +1401,7 @@ function toggleSwitch(value, elem) {
                     if (data.success == true) {
 
                         var item_list = '';
-                        var items = data.params.items;
+                        var items = data.params.items.data;
                         if(items.length > 0) {
                             for(var j = 0; j < items.length; j++) {
                                 var item = items[j];

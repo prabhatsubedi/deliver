@@ -29,6 +29,10 @@ function toggleSwitch(value, elem) {
             Main.request('/merchant/change_status', {className:"Item", statusId: value == 'on' ? 2 : 3}, callback, {id: elem.attr('data-id')});
 
         }
+        if(value == 'on')
+            $(elem).parents('.item_container').removeClass('inactive_item');
+        else
+            $(elem).parents('.item_container').addClass('inactive_item');
     }
 
     if(value == 'on') {
@@ -1410,6 +1414,9 @@ function toggleSwitch(value, elem) {
                                     if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
                                     $('.item_name a', elem).attr('href', Main.modifyURL('/merchant/item/view/' + item.id)).html(item.name);
                                     $('.item_price span', elem).html(item.unitPrice);
+                                    if(item.status != 'ACTIVE') {
+                                        $('.item_container', elem).addClass('inactive_item');
+                                    }
                                     item_list += elem.html();
                                 }
                             }

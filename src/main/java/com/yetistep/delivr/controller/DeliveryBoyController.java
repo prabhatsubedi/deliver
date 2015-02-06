@@ -279,6 +279,26 @@ public class DeliveryBoyController extends AbstractManager{
         }
     }
 
+    @RequestMapping(value="/get_order/{orderId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getOrderDetails(@RequestHeader HttpHeaders headers, @PathVariable Integer orderId) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
+
+            OrderEntity order = deliveryBoyService.getOrderById(orderId, Integer.parseInt(headerDto.getId()));
+            ServiceResponse serviceResponse = new ServiceResponse("Order retrieved Successfully");
+            serviceResponse.addParam("order",order);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving order", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     @RequestMapping(value="/job_status", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> getJobOrderStatus(@RequestHeader HttpHeaders headers) {

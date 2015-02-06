@@ -822,6 +822,69 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
+    public OrderEntity getOrderById(Integer orderId, Integer deliveryBoyId) throws Exception {
+        OrderEntity order = orderDaoService.find(orderId);
+        if (order == null) {
+            throw new YSException("VLD017");
+        }
+        DeliveryBoySelectionEntity deliveryBoySelection = deliveryBoySelectionDaoService.getSelectionDetails(orderId, deliveryBoyId);
+        if(deliveryBoySelection == null){
+            throw new YSException("ORD003");
+        }
+        order.setAssignedTime(deliveryBoySelection.getTotalTimeRequired());
+        order.setDeliveryBoyShare(deliveryBoySelection.getPaidToCourier());
+        order.setSystemChargeableDistance(deliveryBoySelection.getDistanceToStore());
+
+        AddressEntity address = new AddressEntity();
+        address.setId(order.getAddress().getId());
+        address.setStreet(order.getAddress().getStreet());
+        address.setCity(order.getAddress().getCity());
+        address.setState(order.getAddress().getState());
+        address.setCountry(order.getAddress().getCountry());
+        address.setCountryCode(order.getAddress().getCountryCode());
+        address.setLatitude(order.getAddress().getLatitude());
+        address.setLongitude(order.getAddress().getLongitude());
+        order.setAddress(address);
+
+        StoreEntity store = new StoreEntity();
+        store.setName(order.getStore().getName());
+        store.setCity(order.getStore().getCity());
+        store.setState(order.getStore().getState());
+        store.setCountry(order.getStore().getCountry());
+        store.setContactNo(order.getStore().getContactNo());
+        store.setLatitude(order.getStore().getLatitude());
+        store.setLongitude(order.getStore().getLongitude());
+        store.setBrandLogo(order.getStore().getStoresBrand().getBrandLogo());
+        order.setStore(store);
+
+        CustomerEntity customer = new CustomerEntity();
+        customer.setId(order.getCustomer().getId());
+        UserEntity user = new UserEntity();
+        user.setId(order.getCustomer().getUser().getId());
+        user.setFullName(order.getCustomer().getUser().getFullName());
+        user.setMobileNumber(order.getCustomer().getUser().getMobileNumber());
+        customer.setUser(user);
+        order.setCustomer(customer);
+
+        List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
+        for (ItemsOrderEntity itemOrder : itemsOrder) {
+            if (itemOrder.getItem() != null) {
+                ItemEntity item = new ItemEntity();
+                item.setId(itemOrder.getItem().getId());
+                item.setName(itemOrder.getItem().getName());
+                item.setUnitPrice(itemOrder.getItem().getUnitPrice());
+                itemOrder.setItem(item);
+                itemOrder.setItemOrderAttributes(null);
+            }
+        }
+
+        order.setRating(null);
+        order.setDeliveryBoy(null);
+        order.setAttachments(null);
+        return order;
+    }
+
+    @Override
     public JobOrderStatus getJobOrderStatusFromOrderId(Integer orderId) throws Exception {
         return orderDaoService.getJobOrderStatus(orderId);
     }

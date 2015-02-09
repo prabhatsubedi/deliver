@@ -210,7 +210,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 //            if (resultCat.getParent().getParent() == null) {
 //                categoryDto.setValues(resultCat);
 //                categoryDto.setHasNext(false);
-//                break;
+//                addToList(categoryDtoList, categoryDto);
+//                continue;
 //            } else {
 //                Integer hasPrevParent = 0;
 //                CategoryEntity cat = null;
@@ -232,29 +233,26 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 //                    else
 //                        cat = cat.getParent();
 //
-//                    if (cat == null || cat.getParent() == null)
+//                    if (cat == null || cat.getParent().getParent() == null) {
+//                        categoryDto.setValues(cat);
 //                        break;
+//                    }
 //
-//                    hasPrevParent = cat.getParent().getId();
-//                    categoryDto.setValues(cat.getParent());
+//
+////                    hasPrevParent = cat.getParent().getId();
+////                    categoryDto.setValues(cat.getParent());
 //
 //                }
 //
 //                categoryDto.setHasNext(true);
+//                addToList(categoryDtoList, categoryDto);
 //            }
 //
-//            }
 //
-//            Boolean isAlreadyContain = false;
-//            for (CategoryDto temp : categoryDtoList) {
-//                if (temp.getId().equals(categoryDto.getId()))
-//                    isAlreadyContain = true;
-//            }
 //
-//            if (!isAlreadyContain)
-//                categoryDtoList.add(categoryDto);
 //
-////        }
+//
+//        }
 //        return categoryDtoList;
 
         //FIXME: Old
@@ -309,6 +307,19 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
         }
         return categoryDtoList;
+
+}
+
+    private void addToList(List<CategoryDto> categoryDtoList, CategoryDto categoryDto){
+        Boolean isAlreadyContain = false;
+        for (CategoryDto temp : categoryDtoList) {
+            if (temp.getId().equals(categoryDto.getId()))
+                isAlreadyContain = true;
+        }
+
+        if (!isAlreadyContain)
+            categoryDtoList.add(categoryDto);
+
     }
 
     @Override

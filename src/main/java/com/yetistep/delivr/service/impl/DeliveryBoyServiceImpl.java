@@ -325,7 +325,22 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                  throw new YSException("MRC003");
             }
             CourierTransactionEntity courierTransaction =  systemAlgorithmService.getCourierTransaction(orderEntity, deliveryBoySelectionEntity, merchant.getCommissionPercentage(), merchant.getServiceFee());
-            orderEntity.setCourierTransaction(courierTransaction);
+            CourierTransactionEntity courierTransactionEntity = orderEntity.getCourierTransaction();
+            courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
+            courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
+            courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
+            courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
+            courierTransactionEntity.setServiceFeeAmt(courierTransaction.getServiceFeeAmt());
+            courierTransactionEntity.setDeliveryChargedBeforeDiscount(courierTransaction.getDeliveryChargedBeforeDiscount());
+            courierTransactionEntity.setCustomerBalanceBeforeDiscount(courierTransaction.getCustomerBalanceBeforeDiscount());
+            courierTransactionEntity.setDeliveryChargedAfterDiscount(courierTransaction.getDeliveryChargedAfterDiscount());
+            courierTransactionEntity.setCustomerBalanceAfterDiscount(courierTransaction.getCustomerBalanceAfterDiscount());
+            courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
+            courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
+            courierTransactionEntity.setProfit(courierTransaction.getProfit());
+            courierTransactionEntity.setCourierToStoreDistance(courierTransaction.getCourierToStoreDistance());
+            courierTransactionEntity.setStoreToCustomerDistance(courierTransaction.getStoreToCustomerDistance());
+            orderEntity.setCourierTransaction(courierTransactionEntity);
 
             List<DBoyOrderHistoryEntity> dBoyOrderHistoryEntities = new ArrayList<DBoyOrderHistoryEntity>();
             DBoyOrderHistoryEntity dBoyOrderHistoryEntity = new DBoyOrderHistoryEntity();

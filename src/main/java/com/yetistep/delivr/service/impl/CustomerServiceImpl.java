@@ -616,6 +616,12 @@ public class CustomerServiceImpl implements CustomerService {
             throw new YSException("ORD012");
         }
         order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
+        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, deliveryBoySelectionEntities.get(0), merchant.getCommissionPercentage(), merchant.getServiceFee());
+        courierTransaction.setCourierToStoreDistance(null);
+        courierTransaction.setAdditionalDeliveryAmt(null);
+        courierTransaction.setPaidToCourier(null);
+        courierTransaction.setProfit(null);
+        order.setCourierTransaction(courierTransaction);
         customerDaoService.saveOrder(order);
 
         cartDaoService.updateCartWithOrder(cartIds, order.getId());

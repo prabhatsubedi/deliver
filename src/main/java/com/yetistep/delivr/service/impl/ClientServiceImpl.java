@@ -3,6 +3,7 @@ package com.yetistep.delivr.service.impl;
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Status;
@@ -395,7 +396,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     }
 
     @Override
-    public OrderEntity getOrderById(Integer orderId, Long facebookId) throws Exception {
+    public OrderSummaryDto getOrderSummaryById(Integer orderId, Long facebookId) throws Exception {
         OrderEntity order = orderDaoService.find(orderId);
         if (order == null) {
             throw new YSException("VLD017");
@@ -405,7 +406,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             throw new YSException("ORD013");
         }
 
-        OrderEntity responseOrder = new OrderEntity();
+        OrderSummaryDto orderSummary = new OrderSummaryDto();
         List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
         for (ItemsOrderEntity itemOrder : itemsOrder) {
             if (itemOrder.getItem() != null) {
@@ -431,18 +432,27 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             orderAttachments.add(attachments);
         }
 
-        responseOrder.setId(order.getId());
-        responseOrder.setStore(store);
-        responseOrder.setOrderStatus(order.getOrderStatus());
-        responseOrder.setOrderVerificationCode(order.getOrderVerificationCode());
-        responseOrder.setItemsOrder(itemsOrder);
-        responseOrder.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge());
+        orderSummary.setId(order.getId());
+        orderSummary.setStore(store);
+        orderSummary.setOrderStatus(order.getOrderStatus());
+        orderSummary.setOrderVerificationCode(order.getOrderVerificationCode());
+        orderSummary.setItemOrders(itemsOrder);
+
+        OrderSummaryDto.AccountSummary accountSummary = orderSummary.new AccountSummary();
+        accountSummary.setServiceFee(order.getSystemServiceCharge());
+        accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
+        accountSummary.setSubTotal(order.getTotalCost());
+        accountSummary.setEstimatedTotal(order.getGrandTotal());
+        accountSummary.setDeliveryFee(order.getCourierTransaction().getDeliveryChargedBeforeDiscount());
+        accountSummary.setTotalDiscount(order.getCourierTransaction().getDeliveryChargedBeforeDiscount().subtract(order.getCourierTransaction().getDeliveryChargedAfterDiscount()));
+        orderSummary.setAccountSummary(accountSummary);
+        /*responseOrder.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge());
         responseOrder.setTotalCost(order.getTotalCost());
         responseOrder.setSystemServiceCharge(order.getSystemServiceCharge());
         responseOrder.setDeliveryCharge(order.getDeliveryCharge());
-        responseOrder.setGrandTotal(order.getGrandTotal());
-        responseOrder.setAttachments(orderAttachments);
-        return responseOrder;
+        responseOrder.setGrandTotal(order.getGrandTotal());*/
+        orderSummary.setAttachments(orderAttachments);
+        return orderSummary;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.RatingReason;
@@ -287,8 +288,8 @@ public class ClientController extends AbstractManager{
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
             //validateMobileClient(headerDto.getAccessToken());
 
-            OrderEntity order = clientService.getOrderById(orderId, facebookId);
-            ServiceResponse serviceResponse = new ServiceResponse("Order retrieved Successfully");
+            OrderSummaryDto order = clientService.getOrderSummaryById(orderId, facebookId);
+            ServiceResponse serviceResponse = new ServiceResponse("Order Summary retrieved Successfully");
             serviceResponse.addParam("order",order);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 

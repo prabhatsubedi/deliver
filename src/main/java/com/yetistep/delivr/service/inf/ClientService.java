@@ -53,4 +53,5 @@ public interface ClientService {
 
     public Boolean updateUserDeviceToken(Long facebookId, String deviceToken) throws Exception;
 
+    public Boolean updateUserDeviceTokenFromUserId(Integer userId, String deviceToken) throws Exception;
 }

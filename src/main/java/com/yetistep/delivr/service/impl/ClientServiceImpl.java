@@ -950,4 +950,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     public Boolean updateUserDeviceToken(Long facebookId, String deviceToken) throws Exception {
         return userDeviceDaoService.updateUserDeviceToken(facebookId, deviceToken);
     }
+
+    @Override
+    public Boolean updateUserDeviceTokenFromUserId(Integer userId, String deviceToken) throws Exception {
+        return userDeviceDaoService.updateUserDeviceTokenFromUserID(userId, deviceToken);
+    }
 }

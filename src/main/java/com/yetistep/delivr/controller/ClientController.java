@@ -658,4 +658,22 @@ public class ClientController extends AbstractManager{
         }
     }
 
+    @RequestMapping(value = "/update_device_info/userId/{userId}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateDeviceInformation(@RequestHeader HttpHeaders headers, @PathVariable("userId") Integer userId, @RequestBody DeviceInfo deviceInfo) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+//            validateMobileClient(headerDto.getAccessToken());
+
+            clientService.updateUserDeviceTokenFromUserId(userId, deviceInfo.getDeviceToken());
+            ServiceResponse serviceResponse = new ServiceResponse("Device Token updated Successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while updating device info", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 }

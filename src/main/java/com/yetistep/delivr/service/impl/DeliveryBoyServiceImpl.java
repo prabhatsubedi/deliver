@@ -60,6 +60,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Autowired
     ReasonDetailsDaoService reasonDetailsDaoService;
 
+    @Autowired
+    ItemDaoService itemDaoService;
+
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Delivery Boy +++++++++++++++++");
@@ -909,5 +912,69 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Override
     public List<ReasonDetails> getCancelReasonList() throws Exception {
         return reasonDetailsDaoService.findAll();
+    }
+
+    @Override
+    public ItemsOrderEntity getItemOrderById(Integer itemOrderId) throws Exception {
+        log.info("++++++++++++ Getting Item Order Detail of id " + itemOrderId + " +++++++++++++");
+        ItemsOrderEntity itemOrder = itemsOrderDaoService.find(itemOrderId);
+        if (itemOrder.getItem() != null) {
+            List<Integer> selectedAttributes = new ArrayList<Integer>();
+            for(ItemsOrderAttributeEntity itemOrderAttribute: itemOrder.getItemOrderAttributes()){
+                selectedAttributes.add(itemOrderAttribute.getItemsAttribute().getId());
+            }
+            ItemEntity itemEntity = itemOrder.getItem();
+            if (itemEntity == null)
+                throw new YSException("ITM001");
+
+            if (!itemEntity.getStatus().toString().equals(Status.ACTIVE.toString()))
+                throw new YSException("ITM002");
+
+
+            if (itemEntity.getAttributesTypes().size() == 0)
+                itemEntity.setAttributesTypes(null);
+
+            if (itemEntity.getAttributesTypes() != null && itemEntity.getAttributesTypes().size() != 0) {
+                for (ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()) {
+                    //itemsAttributesTypeEntity.setId(null);
+                    itemsAttributesTypeEntity.setItem(null);
+                    for (ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
+                        //itemsAttributeEntity.setId(null);
+                        itemsAttributeEntity.setType(null);
+                        itemsAttributeEntity.setCartAttributes(null);
+                        if(selectedAttributes.contains(itemsAttributeEntity.getId()))
+                            itemsAttributeEntity.setSelected(true);
+                    }
+                }
+            }
+
+            if(itemEntity.getItemsImage()==null || itemEntity.getItemsImage().size() == 0) {
+                //If Item has not any image then set default image
+                List<ItemsImageEntity> itemImages = new ArrayList<>();
+                ItemsImageEntity itemsImage = new ItemsImageEntity();
+                itemsImage.setUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+                itemImages.add(itemsImage);
+                itemEntity.setItemsImage(itemImages);
+            } else {
+                for (ItemsImageEntity itemsImageEntity : itemEntity.getItemsImage()) {
+                    itemsImageEntity.setId(null);
+                }
+            }
+
+
+            itemEntity.setBrandName(itemEntity.getStoresBrand().getBrandName());
+            itemEntity.setItemsStores(null);
+            itemEntity.setItemsOrder(null);
+            itemEntity.setCategory(null);
+            itemEntity.setStoresBrand(null);
+            itemEntity.setStatus(null);
+            itemEntity.setCreatedDate(null);
+            itemEntity.setModifiedDate(null);
+            itemEntity.setVat(null);
+            itemEntity.setServiceCharge(null);
+            itemEntity.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+            itemOrder.setItemOrderAttributes(null);
+        }
+        return itemOrder;
     }
 }

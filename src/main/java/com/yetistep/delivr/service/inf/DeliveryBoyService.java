@@ -58,4 +58,6 @@ public interface DeliveryBoyService {
     public JobOrderStatus getJobOrderStatusFromOrderId(Integer orderId) throws Exception;
 
     public List<ReasonDetails> getCancelReasonList() throws Exception;
+
+    public ItemsOrderEntity getItemOrderById(Integer itemOrderId) throws Exception;
 }

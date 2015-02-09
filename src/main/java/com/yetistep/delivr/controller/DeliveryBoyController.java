@@ -242,6 +242,23 @@ public class DeliveryBoyController extends AbstractManager{
         }
     }
 
+    @RequestMapping(value = "/update_order_item/{orderId}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateItemsOrderByItemOrderId(@RequestHeader HttpHeaders headers, @RequestBody ItemsOrderEntity itemsOrder, @PathVariable Integer orderId) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
+            deliveryBoyService.updateItemOrderByItemOrderId(itemsOrder, orderId);
+            ServiceResponse serviceResponse = new ServiceResponse("Order item has been updated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while updating order item", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     @RequestMapping(value = "/cancel_order", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> cancelOrder(@RequestHeader HttpHeaders headers, @RequestBody OrderEntity order) {

@@ -623,7 +623,7 @@ public class CustomerServiceImpl implements CustomerService {
         order.setCourierTransaction(courierTransaction);
         customerDaoService.saveOrder(order);
 
-        cartDaoService.deleteCarts(cartIds);
+        deleteCarts(cartIds);
         //TODO Filter delivery boys by profit criteria - Push Notifications
         Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
         Integer timeOut = timeInSeconds.intValue();

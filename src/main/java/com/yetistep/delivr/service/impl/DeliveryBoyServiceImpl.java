@@ -668,6 +668,82 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
+    public Boolean updateItemOrderByItemOrderId(ItemsOrderEntity itemOrder, Integer orderId) throws Exception {
+        OrderEntity order = orderDaoService.find(orderId);
+        if (order == null) {
+            throw new YSException("VLD017");
+        } else if(order.getDeliveryBoy() == null){
+            throw new YSException("ORD014");
+        }
+
+        BigDecimal itemTotalCost = BigDecimal.ZERO;
+        BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
+
+        List<ItemsOrderEntity> itemsOrderEntityList = order.getItemsOrder();
+        ItemsOrderEntity itemsOrderEntity = getItemOrderById(itemsOrderEntityList, itemOrder.getId());
+        if (itemsOrderEntity == null)
+            throw new YSException("VLD025");
+        itemsOrderEntity.setQuantity(itemOrder.getQuantity());
+        itemsOrderEntity.setItemTotal(itemOrder.getItemTotal());
+        itemsOrderEntity.setAvailabilityStatus(itemOrder.getAvailabilityStatus());
+        itemsOrderEntity.setVat(itemOrder.getVat());
+        itemsOrderEntity.setServiceCharge(itemOrder.getServiceCharge());
+        itemsOrderEntity.setNote(itemOrder.getNote());
+
+         /* Updating name of custom item added by delivery boy */
+        if(itemsOrderEntity.getCustomItem() != null && itemOrder.getCustomItem() != null){
+            itemsOrderEntity.getCustomItem().setName(itemOrder.getCustomItem().getName());
+        }else{
+             /* Updating attributes of item added by customer */
+            List<ItemsOrderAttributeEntity> itemsOrderAttributeEntityList = itemsOrderEntity.getItemOrderAttributes();
+            itemsOrderAttributeEntityList.clear();
+            for(ItemsOrderAttributeEntity itemsOrderAttributes : itemOrder.getItemOrderAttributes()){
+                ItemsOrderAttributeEntity itemsOrderAttribute = new ItemsOrderAttributeEntity();
+                ItemsAttributeEntity itemsAttribute = itemsOrderAttributes.getItemsAttribute();
+                itemsOrderAttribute.setItemOrder(itemsOrderEntity);
+                itemsOrderAttribute.setItemsAttribute(itemsAttribute);
+                itemsOrderAttributeEntityList.add(itemsOrderAttribute);
+                itemsAttribute.setItemOrderAttributes(itemsOrderAttributeEntityList);
+            }
+        }
+
+        for (ItemsOrderEntity itemsOrder : itemsOrderEntityList) {
+            /* Service Fee and Vat calculation for available items only. */
+            if (itemsOrder.getAvailabilityStatus()) {
+                BigDecimal serviceChargeAmount = BigDecimalUtil.percentageOf(itemsOrder.getItemTotal(), BigDecimalUtil.checkNull(itemsOrder.getServiceCharge()));
+                BigDecimal serviceAndVatChargeAmount = serviceChargeAmount.add(BigDecimalUtil.percentageOf(serviceChargeAmount.add(itemsOrder.getItemTotal()), BigDecimalUtil.checkNull(itemsOrder.getVat())));
+                itemTotalCost = itemTotalCost.add(itemsOrder.getItemTotal());
+                itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatChargeAmount);
+                itemsOrder.setServiceAndVatCharge(serviceAndVatChargeAmount);
+            }
+        }
+
+        order.setTotalCost(itemTotalCost);
+        order.setItemServiceAndVatCharge(itemServiceAndVatCharge);
+
+        DeliveryBoySelectionEntity dBoySelection = new DeliveryBoySelectionEntity();
+        dBoySelection.setDistanceToStore(order.getSystemChargeableDistance());
+        dBoySelection.setStoreToCustomerDistance(order.getCustomerChargeableDistance());
+
+        CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
+        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, dBoySelection, courierTransactionEntity.getCommissionPct(), courierTransactionEntity.getServiceFeePct());
+        courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
+        courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
+        courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
+        courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
+        courierTransactionEntity.setServiceFeeAmt(courierTransaction.getServiceFeeAmt());
+        courierTransactionEntity.setDeliveryChargedBeforeDiscount(courierTransaction.getDeliveryChargedBeforeDiscount());
+        courierTransactionEntity.setCustomerBalanceBeforeDiscount(courierTransaction.getCustomerBalanceBeforeDiscount());
+        courierTransactionEntity.setDeliveryChargedAfterDiscount(courierTransaction.getDeliveryChargedAfterDiscount());
+        courierTransactionEntity.setCustomerBalanceAfterDiscount(courierTransaction.getCustomerBalanceAfterDiscount());
+        courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
+        courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
+        courierTransactionEntity.setProfit(courierTransaction.getProfit());
+
+        return orderDaoService.update(order);
+    }
+
+    @Override
     public Boolean cancelOrder(OrderEntity order, Integer userId) throws Exception {
         OrderEntity orderEntity = orderDaoService.find(order.getId());
         if(orderEntity == null){

@@ -119,7 +119,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             }
         };
 
-        callback.loaderDiv = "#modal_login .modal-dialog";
+        callback.loaderDiv = "#modal_login .login_block";
 
         Main.request('/j_spring_security_check', data, callback);
     };

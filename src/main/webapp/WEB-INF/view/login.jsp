@@ -24,7 +24,29 @@
 </head>
 <body>
 
-<div class="logo_container">
+<div class="login_container" id="modal_login">
+    <div class="logo_block"><img src="${pageContext.request.contextPath}/resources/images/delivr-login-logo.png" class="img-responsive center-block"></div>
+    <div class="login_block">
+        <div class="login_head">Login to iDelivr</div>
+        <div class="login_form">
+            <form role="form" id="login_form" method="POST" action="/j_spring_security_check">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                </div>
+                <div class="clearfix">
+                    <button type="submit" class="btn btn-default form-control">SIGN IN</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="foot_block text-center"><a href="/assistance/">Need Help?</a> <a href="javascript:;" data-dismiss="modal" data-target="#modal_signup" data-toggle="modal">Sign Up</a></div>
+
+</div>
+
+<%--<div class="logo_container">
     <img src="${pageContext.request.contextPath}/resources/images/login-logo.png" class="img-responsive">
 </div>
 
@@ -67,8 +89,11 @@
         </ul>
     </div>
 </div>
+--%>
 
-<div class="modal fade" id="modal_login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+
+<%--<div class="modal fade" id="modal_login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
@@ -101,7 +126,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>--%>
 
 <div class="modal fade modal_form" id="modal_signup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">

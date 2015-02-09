@@ -165,6 +165,50 @@ body.loader_div > .loader {
     background-color: #FAC08F;
 }
 
+/* new login start */
+
+.login_container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    max-width: 340px;
+    margin-left: -170px;
+    margin-top: -200px;
+}
+.login_container .logo_block {
+    padding-bottom: 25px;
+}
+.login_container .login_block {
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #d0d0d1;
+    background-color: #FFFFFF;
+    overflow: hidden;
+}
+.login_container .login_block .login_head {
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+.login_container .login_block .form-control {
+    background-color: #e2e2e3;
+    padding: 12px 15px;
+    border: 1px solid #d0d0d1;
+    border-radius: 6px;
+    height: auto;
+}
+.login_container .login_block button[type='submit'] {
+    background-color: #d6511c;
+    border: 1px solid #d6511c;
+    color: #FFF;
+}
+.login_container .foot_block {
+    padding-top: 15px;
+}
+
+/* new login end */
+
 .logo_container {
     padding: 120px 0px 0px 0px;
 }

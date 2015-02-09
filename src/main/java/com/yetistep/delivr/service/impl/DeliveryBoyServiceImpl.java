@@ -718,6 +718,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             }
         }
 
+        if(BigDecimalUtil.isLessThen(itemTotalCost, order.getStore().getStoresBrand().getMinOrderAmount())){
+            throw new YSException("CRT008", " "+order.getStore().getStoresBrand().getMinOrderAmount());
+        }
+
         order.setTotalCost(itemTotalCost);
         order.setItemServiceAndVatCharge(itemServiceAndVatCharge);
 

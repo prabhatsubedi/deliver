@@ -5,9 +5,7 @@ import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,4 +31,7 @@ public interface UserDaoService extends GenericDaoService<Integer, UserEntity>{
 
     public Boolean updateDeliveryContact(Integer userId, String mobileNo, String verificationCode) throws Exception;
 
+    public Boolean checkIfMobileNumberExists(String mobileNumber) throws Exception;
+
+    public Boolean checkIfEmailExists(String emailAddress) throws Exception;
 }

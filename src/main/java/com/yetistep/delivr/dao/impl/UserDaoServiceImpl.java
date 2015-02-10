@@ -11,6 +11,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,4 +149,22 @@ public class UserDaoServiceImpl implements UserDaoService {
 
     }
 
+
+    @Override
+    public Boolean checkIfMobileNumberExists(String mobileNumber) throws Exception {
+        String sql = "SELECT count(id) FROM users WHERE mobile_number = :mobileNumber";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("mobileNumber", mobileNumber);
+        BigInteger count = (BigInteger) sqlQuery.uniqueResult();
+        return (count.intValue() > 0) ? true : false;
+    }
+
+    @Override
+    public Boolean checkIfEmailExists(String emailAddress) throws Exception {
+        String sql = "SELECT count(id) FROM users WHERE email = :email";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("email", emailAddress);
+        BigInteger count = (BigInteger) sqlQuery.uniqueResult();
+        return (count.intValue() > 0) ? true : false;
+    }
 }

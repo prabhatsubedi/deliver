@@ -880,6 +880,17 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
             });
         });
+
     }
+
+    Manager.loadDashboard = function(){
+
+        if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
+
+        $('.count_head').click(function(){
+            $(this).next('.more_data_cont').stop().slideToggle(200);
+        });
+
+    };
 
 })(jQuery);

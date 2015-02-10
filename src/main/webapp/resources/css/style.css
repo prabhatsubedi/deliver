@@ -1722,7 +1722,7 @@ label.check_label .checkbox {
 .god_view .block_counts .count_cont .td_div  {
     vertical-align: middle;
 }
-.god_view .block_counts .count_cont .count_span {
+.god_view .block_counts .count_cont .td_div:first-child {
     color: #f7941d;
     width: 60px;
     font-size: 30px;

@@ -885,11 +885,38 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.loadDashboard = function(){
 
-        if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
-
         $('.count_head').click(function(){
             $(this).next('.more_data_cont').stop().slideToggle(200);
         });
+
+        var callback = function(success, data){
+            console.log(data);
+
+            if(!data.success) {
+                alert(data.message);
+                return;
+            }
+
+            var godView = data.params.godsView[0];
+            var currentDelivery = godView.currentDelivery;
+            currentDelivery = currentDelivery[Object.keys(currentDelivery)[0]];
+
+            $('.count_span').each(function(){
+                $(this).html(Object.keys(godView[$(this).attr('data-get')])[0]);
+            });
+
+            $('.count_inRouteToDelivery').html(currentDelivery.inRouteToDelivery);
+            $('.count_inRouteToPickUp').html(currentDelivery.inRouteToPickUp);
+            $('.count_atStore').html(currentDelivery.atStore);
+            $('.count_orderAccepted').html(currentDelivery.orderAccepted);
+
+
+        }
+        callback.loaderDiv = "body";
+        callback.requestType = "GET";
+        Main.request('/organizer/gods_view', {}, callback);
+
+        if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
 
     };
 

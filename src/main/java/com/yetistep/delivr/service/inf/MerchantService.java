@@ -68,4 +68,8 @@ public interface MerchantService {
 
     public PaginationDto getOrders(HeaderDto headerDto, RequestJsonDto requestJson) throws Exception;
 
+    public PaginationDto getPurchaseHistory(HeaderDto headerDto, RequestJsonDto requestJson) throws Exception;
+
+    public List<Object> getOrderItems(HeaderDto headerDto) throws Exception;
+
 }

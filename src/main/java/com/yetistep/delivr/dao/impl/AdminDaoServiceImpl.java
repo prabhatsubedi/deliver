@@ -121,9 +121,6 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         return cnt.intValue();
     }
 
-
-
-
     @Override
     public List<OrderEntity> getOrderRoute(List<JobOrderStatus> status) throws Exception {
         List<OrderEntity> orders = new ArrayList<>();

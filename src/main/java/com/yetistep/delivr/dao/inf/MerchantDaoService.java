@@ -108,4 +108,10 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public Integer getTotalNumbersOfOrders(List<Integer> storeId) throws Exception;
 
     public List<Integer> getBrandIdList() throws Exception;
+
+    public List<OrderEntity> getPurchaseHistory(List<Integer> storeId, Page page) throws Exception;
+
+    public Integer getTotalNumbersOfPurchases(List<Integer> storeId) throws Exception;
+
+    public List<ItemsOrderEntity> getOrdersItems(Integer orderId) throws Exception;
 }

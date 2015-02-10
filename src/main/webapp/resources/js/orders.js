@@ -26,7 +26,7 @@ Order.getOrders = function(){
         var tdataSuccessful = [];
         var tdataCanceled = [];
 
-        for (i = 0; i < orders.length; i++) {
+        for (var i = 0; i < orders.length; i++) {
             var order = orders[i];
 
             var id = order.id;
@@ -59,4 +59,42 @@ Order.getOrders = function(){
 
 
     Main.request('/merchant/get_orders', postData, callback);
+}
+
+
+Order.getPurchaseHistory = function(){
+    var callback = function(success, data){
+        if (!data.success) {
+            alert(data.message);
+            return;
+        }
+        var orders = data.params.orders.data;
+        var tableData = [];
+
+        for (var i = 0; i < orders.length; i++) {
+            var order = orders[i];
+
+            var id = order.id;
+            var link_attachments = '';
+            if(order.attachments.length > 0){
+                for(var j= 0; j<order.attachments.length; i++){
+                    link_attachments += '<a href="'+order.attachments[j]+'">'+order.attachments[j]+'</a>';
+                }
+            }
+            var deliveryBoyName = typeof(order.deliveryBoy) != 'undefined'?order.deliveryBoy.user.fullName:'';
+            var action = '';
+
+            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?order.grandTotal:'', deliveryBoyName, link_attachments, action];
+            tableData.push(row);
+
+        }
+
+        Main.createDataTable("#purchase_history_table", tableData);
+    }
+
+    var postData = {};
+    //postData.page = {pageNumber: 1, pageSize: 20, sortOrder: 'desc'};
+
+
+    Main.request('/merchant/get_purchase_history', postData, callback);
 }

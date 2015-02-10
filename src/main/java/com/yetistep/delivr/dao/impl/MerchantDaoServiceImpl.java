@@ -1,6 +1,7 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
+import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.util.HibernateUtil;
@@ -616,11 +617,43 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
+    public List<OrderEntity> getPurchaseHistory(List<Integer> storeId, Page page) throws Exception {
+        List<OrderEntity> orders = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class, "order");
+        criteria.createAlias("orderCancel", "orderCancel");
+        List<JobOrderStatus> purchaseOrders = new ArrayList<JobOrderStatus>();
+        purchaseOrders.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+        purchaseOrders.add(JobOrderStatus.DELIVERED);
+        criteria.add(Restrictions.and(Restrictions.in("store.id", storeId), Restrictions.or(Restrictions.in("orderStatus", purchaseOrders) , Restrictions.eq("orderCancel.jobOrderStatus", JobOrderStatus.IN_ROUTE_TO_DELIVERY))));
+        HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
+        orders = criteria.list();
+        return orders;
+    }
+
+    @Override
     public Integer getTotalNumbersOfOrders(List<Integer> storeId) throws Exception {
         String sqQuery =    "SELECT COUNT(o.id) FROM orders o WHERE o.store_id IN"+storeId.toString().replace("[", "(").replace("]", ")");
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
 
         BigInteger cnt = (BigInteger) query.uniqueResult();
         return cnt.intValue();
+    }
+
+    @Override
+    public Integer getTotalNumbersOfPurchases(List<Integer> storeId) throws Exception {
+        String sqQuery =    "SELECT COUNT(o.id) FROM orders o INNER JOIN order_cancel oc WHERE o.store_id IN "+storeId.toString().replace("[", "(").replace("]", ")")+" AND o.order_status in ("+JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal()+","+JobOrderStatus.DELIVERED.ordinal()+" ) OR oc.order_status="+JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal();
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
+    }
+
+    @Override
+    public List<ItemsOrderEntity> getOrdersItems(Integer orderId) throws Exception {
+        List<ItemsOrderEntity> orders = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemsOrderEntity.class);
+        criteria.add(Restrictions.and(Restrictions.eq("order.id", orderId)));
+        orders = criteria.list();
+        return orders;
     }
 }

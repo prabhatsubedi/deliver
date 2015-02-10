@@ -1238,11 +1238,10 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         return paginationDto;
     }
 
-
     @Override
     public PaginationDto getOrders(HeaderDto headerDto, RequestJsonDto requestJson) throws Exception {
         Page page = requestJson.getPage();
-        List<Integer> storeIdList = new ArrayList<>();
+        List<Integer> storeIdList = new ArrayList<Integer>();
         if(headerDto.getMerchantId() == null){
             List<Integer> brandIdList = merchantDaoService.getBrandIdList();
             storeIdList = merchantDaoService.getStoreIdList(brandIdList);
@@ -1252,7 +1251,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             if(dbMerchant == null)
                 throw new YSException("VLD011");
             List<Integer> brandIdList = merchantDaoService.getBrandIdList(headerDto.getMerchantId());
+
+            if(brandIdList.size() == 0)
+                throw new YSException("VLD012");
+
             storeIdList = merchantDaoService.getStoreIdList(brandIdList);
+
+            if(storeIdList.size() == 0)
+                throw new YSException("VLD012");
+
 
         }
 
@@ -1286,6 +1293,82 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         paginationDto.setData(objects);
         return paginationDto;
+    }
+
+    @Override
+    public PaginationDto getPurchaseHistory(HeaderDto headerDto, RequestJsonDto requestJson) throws Exception {
+        Page page = requestJson.getPage();
+        List<Integer> storeIdList = new ArrayList<Integer>();
+        if(headerDto.getMerchantId() == null){
+            List<Integer> brandIdList = merchantDaoService.getBrandIdList();
+            storeIdList = merchantDaoService.getStoreIdList(brandIdList);
+        }else{
+
+            MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
+            if(dbMerchant == null)
+                throw new YSException("VLD011");
+            List<Integer> brandIdList = merchantDaoService.getBrandIdList(headerDto.getMerchantId());
+
+            if(brandIdList.size() == 0)
+                throw new YSException("VLD012");
+
+            storeIdList = merchantDaoService.getStoreIdList(brandIdList);
+
+            if(storeIdList.size() == 0)
+                throw new YSException("VLD012");
+        }
+
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  merchantDaoService.getTotalNumbersOfPurchases(storeIdList);
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+        List<OrderEntity> orders = merchantDaoService.getPurchaseHistory(storeIdList, page);
+
+        List<Object> objects = new ArrayList<>();
+
+        String fields = "id,orderName,deliveryStatus,attachments,customer,store,deliveryBoy,grandTotal";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("customer", "id,user");
+        assoc.put("deliveryBoy", "id,user");
+        assoc.put("store", "id,name,street");
+        assoc.put("attachments", "url");
+
+        subAssoc.put("user", "id,fullName");
+
+        for (OrderEntity order:orders){
+            objects.add(ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
+        }
+
+        paginationDto.setData(objects);
+        return paginationDto;
+    }
+
+    @Override
+    public List<Object> getOrderItems(HeaderDto headerDto) throws Exception {
+           List<ItemsOrderEntity> items = merchantDaoService.getOrdersItems(Integer.parseInt(headerDto.getId()));
+
+        List<Object> objects = new ArrayList<>();
+
+        String fields = "id,quantity,itemTotal,availabilityStatus,serviceCharge,vat,item,order";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("item", "id,name");
+        assoc.put("order", "id");
+
+        for (ItemsOrderEntity item:items){
+            objects.add(ReturnJsonUtil.getJsonObject(item, fields, assoc));
+        }
+
+        return objects;
     }
 
 

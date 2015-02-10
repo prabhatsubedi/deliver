@@ -453,6 +453,52 @@ public class MerchantController {
         }
     }
 
+    @RequestMapping(value = "/get_purchase_history", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getPurchaseHistory(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            List<String> hd = headers.get("merchantId");
+            if (hd != null && hd.size() > 0)
+                headerDto.setMerchantId(Integer.parseInt( hd.get(0)));
+            else {
+                if(SessionManager.getRole().toString().equals(Role.ROLE_MERCHANT.toString())){
+                    headerDto.setMerchantId(SessionManager.getMerchantId());
+                } else {
+                    headerDto.setMerchantId(null);
+                }
+            }
+            PaginationDto orders = merchantService.getPurchaseHistory(headerDto, requestJson);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Purchase History retrieved successfully with Merchant ID: "+headerDto.getMerchantId());
+            serviceResponse.addParam("orders", orders);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving purchase history: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_orders_items", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getOrdersItems(@RequestHeader HttpHeaders headers) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+
+             List<Object> items = merchantService.getOrderItems(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Purchase History retrieved successfully with Merchant ID: "+headerDto.getMerchantId());
+            serviceResponse.addParam("items", items);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving purchase history: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
 
 

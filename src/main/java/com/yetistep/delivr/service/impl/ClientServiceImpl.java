@@ -416,6 +416,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                     item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
                 itemOrder.setItem(item);
                 itemOrder.setItemOrderAttributes(null);
+            }else if(itemOrder.getCustomItem() != null){
+                itemOrder.getCustomItem().setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
             }
         }
 

@@ -16,6 +16,8 @@ import javax.persistence.*;
 public class CustomItemEntity {
     private Integer id;
     private String name;
+    /*Transient Variable*/
+    private String imageUrl;
     private ItemsOrderEntity itemsOrder;
 
     @Id
@@ -36,6 +38,15 @@ public class CustomItemEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Transient
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @JsonIgnore

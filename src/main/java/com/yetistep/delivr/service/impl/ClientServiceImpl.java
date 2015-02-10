@@ -194,90 +194,28 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
     @Override
     public List<CategoryDto> getParentCategory(Integer brandId) throws Exception {
-//        log.info("++++++++++ Getting Parent Category and list cat id +++++++++++++");
-//        List<CategoryDto> categoryDtoList = new ArrayList<>();
-//        CategoryDto categoryDto = null;
-//        List<CategoryEntity> categoryEntities = itemDaoService.findItemCategory(brandId);
-//
-//        for (CategoryEntity categoryEntity : categoryEntities) {
-//            categoryDto = new CategoryDto();
-////            if (categoryEntity.getParentId() != null) {
-////                categoryDto.setValues(categoryEntity);
-////                categoryDto.setHasNext(false);
-////            } else {
-//                //Search  Main Parent Category
-//                CategoryEntity resultCat = categoryDaoService.find(categoryEntity.getId());
-//            if (resultCat.getParent().getParent() == null) {
-//                categoryDto.setValues(resultCat);
-//                categoryDto.setHasNext(false);
-//                addToList(categoryDtoList, categoryDto);
-//                continue;
-//            } else {
-//                Integer hasPrevParent = 0;
-//                CategoryEntity cat = null;
-//                //LOOP for parent (Search Parent and Category)
-//                while (hasPrevParent != null) {
-//                    // 2nd Level Search
-////                    if (resultCat.getParent().getParent() == null) {
-////                        //categoryDto.setValues(resultCat.getParent());
-//////                        break;
-////                        //FIXME: New
-////                        categoryDto.setValues(resultCat);
-////                        categoryDto.setHasNext(false);
-////                        break;
-////                    }
-//
-//                    //Multi Level Search
-//                    if (cat == null)
-//                        cat = resultCat.getParent();
-//                    else
-//                        cat = cat.getParent();
-//
-//                    if (cat == null || cat.getParent().getParent() == null) {
-//                        categoryDto.setValues(cat);
-//                        break;
-//                    }
-//
-//
-////                    hasPrevParent = cat.getParent().getId();
-////                    categoryDto.setValues(cat.getParent());
-//
-//                }
-//
-//                categoryDto.setHasNext(true);
-//                addToList(categoryDtoList, categoryDto);
-//            }
-//
-//
-//
-//
-//
-//        }
-//        return categoryDtoList;
-
-        //FIXME: Old
         log.info("++++++++++ Getting Parent Category and list cat id +++++++++++++");
+        /* Code to display category by skipping main parent code */
+
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         CategoryDto categoryDto = null;
         List<CategoryEntity> categoryEntities = itemDaoService.findItemCategory(brandId);
 
         for (CategoryEntity categoryEntity : categoryEntities) {
             categoryDto = new CategoryDto();
-            if (categoryEntity.getParentId() == null) {
-                categoryDto.setValues(categoryEntity);
+
+            CategoryEntity resultCat = categoryDaoService.find(categoryEntity.getId());
+            if (resultCat.getParent().getParent() == null) {
+                /* Item has only one category to display (After Skipping Parent Category) */
+                categoryDto.setValues(resultCat);
                 categoryDto.setHasNext(false);
+                addToList(categoryDtoList, categoryDto);
+                continue;
             } else {
-                //Search  Main Parent Category
-                CategoryEntity resultCat = categoryDaoService.find(categoryEntity.getId());
+                /* Item has many categories */
                 Integer hasPrevParent = 0;
                 CategoryEntity cat = null;
-                //LOOP for parent (Search Parent and Category)
-                while (hasPrevParent != null) {
-                    // 2nd Level Search
-                    if (resultCat.getParent().getParent() == null) {
-                        categoryDto.setValues(resultCat.getParent());
-                        break;
-                    }
+                while (hasPrevParent != null) { //Just for maintaining loop
 
                     //Multi Level Search
                     if (cat == null)
@@ -285,28 +223,75 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                     else
                         cat = cat.getParent();
 
-                    if (cat == null || cat.getParent() == null)
+                    if (cat == null || cat.getParent().getParent() == null) {
+                        categoryDto.setValues(cat);
                         break;
-
-                    hasPrevParent = cat.getParent().getId();
-                    categoryDto.setValues(cat.getParent());
+                    }
 
                 }
 
                 categoryDto.setHasNext(true);
+                addToList(categoryDtoList, categoryDto);
             }
-
-            Boolean isAlreadyContain = false;
-            for (CategoryDto temp : categoryDtoList) {
-                if (temp.getId().equals(categoryDto.getId()))
-                    isAlreadyContain = true;
-            }
-
-            if (!isAlreadyContain)
-                categoryDtoList.add(categoryDto);
 
         }
         return categoryDtoList;
+
+        //TODO: Below Logic Removed temporary (It will be revoked later) [Show with main parent category]
+
+        /* Below Commented Code Used to showing with main parent category */
+
+//        log.info("++++++++++ Getting Parent Category and list cat id +++++++++++++");
+//        List<CategoryDto> categoryDtoList = new ArrayList<>();
+//        CategoryDto categoryDto = null;
+//        List<CategoryEntity> categoryEntities = itemDaoService.findItemCategory(brandId);
+//
+//        for (CategoryEntity categoryEntity : categoryEntities) {
+//            categoryDto = new CategoryDto();
+//            if (categoryEntity.getParentId() == null) {
+//                categoryDto.setValues(categoryEntity);
+//                categoryDto.setHasNext(false);
+//            } else {
+//                //Search  Main Parent Category
+//                CategoryEntity resultCat = categoryDaoService.find(categoryEntity.getId());
+//                Integer hasPrevParent = 0;
+//                CategoryEntity cat = null;
+//                //LOOP for parent (Search Parent and Category)
+//                while (hasPrevParent != null) {
+//                    // 2nd Level Search
+//                    if (resultCat.getParent().getParent() == null) {
+//                        categoryDto.setValues(resultCat.getParent());
+//                        break;
+//                    }
+//
+//                    //Multi Level Search
+//                    if (cat == null)
+//                        cat = resultCat.getParent();
+//                    else
+//                        cat = cat.getParent();
+//
+//                    if (cat == null || cat.getParent() == null)
+//                        break;
+//
+//                    hasPrevParent = cat.getParent().getId();
+//                    categoryDto.setValues(cat.getParent());
+//
+//                }
+//
+//                categoryDto.setHasNext(true);
+//            }
+//
+//            Boolean isAlreadyContain = false;
+//            for (CategoryDto temp : categoryDtoList) {
+//                if (temp.getId().equals(categoryDto.getId()))
+//                    isAlreadyContain = true;
+//            }
+//
+//            if (!isAlreadyContain)
+//                categoryDtoList.add(categoryDto);
+//
+//        }
+//        return categoryDtoList;
 
 }
 

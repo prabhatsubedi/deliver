@@ -86,12 +86,12 @@
                     <div class="form-group">
                         <select id="vehicle_type" name="vehicle_type" class="vehicle_type col-xs-12 no_pad no_margin" data-style="form-control">
                             <option value="0">Select Vehicle Type</option>
-                            <option value="ON_FOOT">On Foot</option>
-                            <option value="BICYCLE">Bicycle</option>
+                            <%--<option value="ON_FOOT">On Foot</option>--%>
+                            <%--<option value="BICYCLE">Bicycle</option>--%>
                             <option value="MOTORBIKE">Motorbike</option>
-                            <option value="CAR">Car</option>
-                            <option value="TRUCK">Truck</option>
-                            <option value="OTHERS">Others</option>
+                            <%--<option value="CAR">Car</option>--%>
+                            <%--<option value="TRUCK">Truck</option>--%>
+                            <%--<option value="OTHERS">Others</option>--%>
                         </select>
                     </div>
                     <div class="form-group">

@@ -14,6 +14,7 @@
 <script>
     $(document).ready(function () {
         Order.getOrders();
+        Order.getOrdersItems();
     });
 </script>
 <body>
@@ -91,6 +92,34 @@
                 </table>
             </div>
 
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="order_items_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">x</a>
+                <h3>Orders Items</h3>
+            </div>
+            <div class="modal-body">
+                <table id="orders_items_table">
+                    <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Service Charge</th>
+                        <th>Vat</th>
+                        <th>Grand Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

@@ -62,4 +62,6 @@ public interface DeliveryBoyService {
     public List<ReasonDetails> getCancelReasonList() throws Exception;
 
     public ItemsOrderEntity getItemOrderById(Integer itemOrderId) throws Exception;
+
+    public List<Object> get_order_history(Integer dBoyId) throws Exception;
 }

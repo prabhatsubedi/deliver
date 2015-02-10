@@ -181,4 +181,20 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         }
         return null;
     }
+
+
+    /*
+    Created by Sagar Sapkota
+    * */
+    @Override
+    public List<Object> get_dBoy_order_history(Integer dBoyId) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class, "order");
+        List<JobOrderStatus> orderStatuses = new ArrayList<>();
+        orderStatuses.add(JobOrderStatus.DELIVERED);
+        orderStatuses.add(JobOrderStatus.CANCELLED);
+        criteria.add(Restrictions.and(Restrictions.in("orderStatus", orderStatuses), Restrictions.eq("deliveryBoy.id", dBoyId)));
+
+        List<Object>  orderEntities = criteria.list();
+        return orderEntities;
+    }
 }

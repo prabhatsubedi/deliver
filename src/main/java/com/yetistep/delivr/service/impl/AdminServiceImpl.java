@@ -44,19 +44,19 @@ public class AdminServiceImpl implements AdminService {
 
         Map<Integer, Map<String, String>> totalUserCount =  new HashMap<>();
         totalUserCount.put(adminDaoService.getRegisteredUserCount(), null);
-        generalData.put("Total User Registered", totalUserCount);
+        generalData.put("totalUserRegistered", totalUserCount);
 
         Map<Integer, Map<String, String>> newUserCount =  new HashMap<>();
         newUserCount.put(adminDaoService.getNewUserCount(1), null);
-        generalData.put("new User Registered", newUserCount);
+        generalData.put("newUserRegistered", newUserCount);
 
         Map<Integer, Map<String, String>> userLeftAppCount =  new HashMap<>();
         userLeftAppCount.put(adminDaoService.getActiveUserCount(), null);
-        generalData.put("Total Active User", userLeftAppCount);
+        generalData.put("totalActiveUser", userLeftAppCount);
 
         Map<Integer, Map<String, String>> partnerStoresCount =  new HashMap<>();
         partnerStoresCount.put(adminDaoService.getPartnerStoreCount(), null);
-        generalData.put("Partner Stores", partnerStoresCount);
+        generalData.put("partnerStores", partnerStoresCount);
 
         Integer succeedOrderCount = adminDaoService.getOrderCount("(5)");
         Integer failedOrderCount = adminDaoService.getOrderCount("(6)");
@@ -68,7 +68,7 @@ public class AdminServiceImpl implements AdminService {
         }else{
             successfulDeliveryPcn.put(0, null);
         }
-        generalData.put("Successful Delivery", successfulDeliveryPcn);
+        generalData.put("successfulDelivery", successfulDeliveryPcn);
 
         Map<Integer, Map<String, String>> deliveryFailedPcn =  new HashMap<>();
         if(failedOrderCount != 0){
@@ -76,7 +76,7 @@ public class AdminServiceImpl implements AdminService {
         }else{
             deliveryFailedPcn.put(0, null);
         }
-        generalData.put("Delivery Failed", deliveryFailedPcn);
+        generalData.put("deliveryFailed", deliveryFailedPcn);
 
         Integer onTimeDeliveryCount = adminDaoService.getOnTimeCount("<=");
         Integer exceedTimeDeliveryCount = adminDaoService.getOnTimeCount(">");
@@ -88,7 +88,7 @@ public class AdminServiceImpl implements AdminService {
         } else {
             onTimeDeliveryPcn.put(0, null);
         }
-        generalData.put("On time Delivery", onTimeDeliveryPcn);
+        generalData.put("onTimeDelivery", onTimeDeliveryPcn);
 
         Map<Integer, Map<String, String>> exceedTimePcn =  new HashMap<>();
         if(exceedTimeDeliveryCount != 0){
@@ -96,22 +96,22 @@ public class AdminServiceImpl implements AdminService {
         } else {
             exceedTimePcn.put(0, null);
         }
-        generalData.put("Time Exceeded Delivery", exceedTimePcn);
+        generalData.put("timeExceededDelivery", exceedTimePcn);
 
         Map<Integer, Map<String, String>> onDutyDBCount =  new HashMap<>();
         onDutyDBCount.put(adminDaoService.getDBoyCount("(1,2)"), null);
-        generalData.put("On Duty Delivery Boy", onDutyDBCount);
+        generalData.put("onDutyDeliveryBoy", onDutyDBCount);
 
         Map<Integer, Map<String, String>> offDutyDBCount =  new HashMap<>();
         offDutyDBCount.put(adminDaoService.getDBoyCount("(0)"), null);
-        generalData.put("Off Duty Delivery Boy", offDutyDBCount);
+        generalData.put("offDutyDeliveryBoy", offDutyDBCount);
 
         Map<Integer, Map<String, String>> servedTillDateCount =  new HashMap<>();
         Map<String, String> avgDVTime = new HashMap<>();
         if(succeedOrderCount > 0)
-            avgDVTime.put("Average Delivery Time", String.valueOf(adminDaoService.getOrderTotalTime()/succeedOrderCount));
+            avgDVTime.put("averageDeliveryTime", String.valueOf(adminDaoService.getOrderTotalTime()/succeedOrderCount));
         servedTillDateCount.put(succeedOrderCount, avgDVTime);
-        generalData.put("Served Till Date", servedTillDateCount);
+        generalData.put("servedTillDate", servedTillDateCount);
 
         Integer todayOrderCount = adminDaoService.getTodayOrderCount();
         Integer todayOrderTotalTime = adminDaoService.getTodayOrderTotalTime();
@@ -119,21 +119,21 @@ public class AdminServiceImpl implements AdminService {
         Map<Integer, Map<String, String>> completedTodayCount =  new HashMap<>();
         Map<String, String> avgDVTimeToday = new HashMap<>();
         if(todayOrderCount > 0)
-            avgDVTimeToday.put("Average Delivery Time", String.valueOf(adminDaoService.getTodayOrderTotalTime()/todayOrderCount));
+            avgDVTimeToday.put("averageDeliveryTime", String.valueOf(adminDaoService.getTodayOrderTotalTime()/todayOrderCount));
         completedTodayCount.put(todayOrderCount, avgDVTimeToday);
-        generalData.put("Completed Today", completedTodayCount);
+        generalData.put("completedToday", completedTodayCount);
 
 
         Integer orderInProcess = adminDaoService.getOrderCount("(1,2,3,4)");
 
         Map<Integer, Map<String, String>> currentDeliveryCount =  new HashMap<>();
         Map<String, String> currentDeliveryTypesCount = new HashMap<>();
-        currentDeliveryTypesCount.put("Order Accepted", String.valueOf(adminDaoService.getOrderCount("(1)")));
-        currentDeliveryTypesCount.put("In Route To Pick Up", String.valueOf(adminDaoService.getOrderCount("(2)")));
-        currentDeliveryTypesCount.put("At Store", String.valueOf(adminDaoService.getOrderCount("(3)")));
-        currentDeliveryTypesCount.put("In Route To Delivery", String.valueOf(adminDaoService.getOrderCount("(4)")));
+        currentDeliveryTypesCount.put("orderAccepted", String.valueOf(adminDaoService.getOrderCount("(1)")));
+        currentDeliveryTypesCount.put("inRouteToPickUp", String.valueOf(adminDaoService.getOrderCount("(2)")));
+        currentDeliveryTypesCount.put("atStore", String.valueOf(adminDaoService.getOrderCount("(3)")));
+        currentDeliveryTypesCount.put("inRouteToDelivery", String.valueOf(adminDaoService.getOrderCount("(4)")));
         currentDeliveryCount.put(orderInProcess, currentDeliveryTypesCount);
-        generalData.put("Current Delivery", currentDeliveryCount);
+        generalData.put("currentDelivery", currentDeliveryCount);
 
 
         List<JobOrderStatus> status = new ArrayList<>();
@@ -167,16 +167,16 @@ public class AdminServiceImpl implements AdminService {
 
         }
         newOrdersCount.put(orderInProcess, routes);
-        generalData.put("New Orders", newOrdersCount);
+        generalData.put("newOrders", newOrdersCount);
 
         storeLocations.put(storeLatLang.size(), storeLatLang);
-        generalData.put("Store Locations", storeLocations);
+        generalData.put("storeLocations", storeLocations);
 
         customerLocations.put(customerLatLang.size(), customerLatLang);
-        generalData.put("Customer Locations", storeLocations);
+        generalData.put("customerLocations", storeLocations);
 
         dbLocations.put(dbLatLang.size(), dbLatLang);
-        generalData.put("DB Locations", dbLocations);
+        generalData.put("deliveryBoyLocations", dbLocations);
 
         godsView.add(generalData);
         return  godsView;

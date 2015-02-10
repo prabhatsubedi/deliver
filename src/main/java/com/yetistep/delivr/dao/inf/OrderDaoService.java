@@ -27,4 +27,6 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
 
     public OrderEntity getNextPendingOrder() throws Exception;
 
+    public List<Object> get_dBoy_order_history(Integer dBoyId) throws Exception;
+
 }

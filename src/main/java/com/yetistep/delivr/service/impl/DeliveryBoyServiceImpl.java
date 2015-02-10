@@ -18,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -1056,5 +1058,31 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             itemOrder.setItemOrderAttributes(null);
         }
         return itemOrder;
+    }
+
+    @Override
+    public List<Object> get_order_history(Integer dBoyId) throws Exception {
+        List<Object> orders = orderDaoService.get_dBoy_order_history(dBoyId);
+
+        List<Object> objects = new ArrayList<>();
+
+        String fields = "id,orderName,deliveryStatus,attachments,customer,store,deliveryBoy,grandTotal";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("customer", "id,user");
+        assoc.put("deliveryBoy", "id,user");
+        assoc.put("store", "id,name,street");
+        assoc.put("attachments", "url");
+
+        subAssoc.put("user", "id,fullName");
+
+        for (Object order:orders){
+            objects.add(ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
+        }
+
+
+        return objects;
     }
 }

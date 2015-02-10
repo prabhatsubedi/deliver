@@ -119,6 +119,25 @@ public class DeliveryBoyController extends AbstractManager{
         }
     }
 
+
+    @RequestMapping(value = "/get_dBoy_order_history", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> dBoyOrderHistory(@RequestHeader HttpHeaders headers) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+
+            List <Object> orders = deliveryBoyService.get_order_history(Integer.parseInt(headerDto.getId()));
+            ServiceResponse serviceResponse = new ServiceResponse("List of past deliveries retrieved successfully");
+            serviceResponse.addParam("orders", orders);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving list of past deliveries", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     @RequestMapping(value = "/update_job_status", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> updateJobOrderStatus(@RequestHeader HttpHeaders headers, @RequestBody OrderEntity order) {

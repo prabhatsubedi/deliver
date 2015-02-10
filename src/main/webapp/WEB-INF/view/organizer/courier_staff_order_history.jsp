@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Purchase History</title>
+    <title>Courier Boy Order History</title>
 
     <%@include file="../includes/head.jsp" %>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.dataTables.min.js"></script>
@@ -13,7 +13,7 @@
 </head>
 <script>
     $(document).ready(function () {
-        Order.getPurchaseHistory();
+        Order.courierBoyOrderHistory();
     });
 </script>
 <body>
@@ -24,27 +24,27 @@
     <%@include file="../includes/header.jsp" %>
     <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left">Purchase History</h1>
+            <h1 class="pull-left">Order History</h1>
         </div>
         <div class="main_content">
             <div class="table-view order_table inroute">
-                <table id="purchase_history_table">
+                <table id="courier_history_table">
                     <thead>
-                        <tr>
-                            <th>SN</th>
-                            <th>Customer Name</th>
-                            <th>Store Name & Address</th>
-                            <th>Order No</th>
-                            <th>Total Bill Amount</th>
-                            <th>Courier Boy</th>
-                            <th>Bill</th>
-                            <th>Action</th>
-                        </tr>
+                    <tr>
+                        <th>SN</th>
+                        <th>Customer Name</th>
+                        <th>Store Name & Address</th>
+                        <th>Order No</th>
+                        <th>Total Bill Amount</th>
+                        <th>Courier Boy</th>
+                        <th>Bill</th>
+                        <th>Action</th>
+                    </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
-              </div>
+            </div>
         </div>
     </div>
 </div>

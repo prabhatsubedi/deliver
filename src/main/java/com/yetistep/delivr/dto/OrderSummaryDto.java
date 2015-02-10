@@ -1,6 +1,8 @@
 package com.yetistep.delivr.dto;
 
+import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.ItemsOrderEntity;
+import com.yetistep.delivr.model.StoreEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,8 +16,12 @@ import java.util.List;
  */
 public class OrderSummaryDto {
     private Integer id;
+    private JobOrderStatus orderStatus;
+    private String orderVerificationCode;
+    private List<String> attachments;
     private AccountSummary accountSummary;
     private List<ItemsOrderEntity> itemOrders;
+    private StoreEntity store;
 
     public Integer getId() {
         return id;
@@ -23,6 +29,30 @@ public class OrderSummaryDto {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public JobOrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(JobOrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public String getOrderVerificationCode() {
+        return orderVerificationCode;
+    }
+
+    public void setOrderVerificationCode(String orderVerificationCode) {
+        this.orderVerificationCode = orderVerificationCode;
+    }
+
+    public List<String> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<String> attachments) {
+        this.attachments = attachments;
     }
 
     public AccountSummary getAccountSummary() {
@@ -39,6 +69,14 @@ public class OrderSummaryDto {
 
     public void setItemOrders(List<ItemsOrderEntity> itemOrders) {
         this.itemOrders = itemOrders;
+    }
+
+    public StoreEntity getStore() {
+        return store;
+    }
+
+    public void setStore(StoreEntity store) {
+        this.store = store;
     }
 
     public class AccountSummary{

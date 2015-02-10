@@ -74,4 +74,14 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
         query.executeUpdate();
         return true;
     }
+
+    @Override
+    public Boolean updateUserDeviceTokenFromUserID(Integer userId, String deviceToken) throws Exception {
+        String sql = "UPDATE user_device SET device_token = :deviceToken WHERE user_id = :userId";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("deviceToken", deviceToken);
+        query.setParameter("userId", userId);
+        query.executeUpdate();
+        return true;
+    }
 }

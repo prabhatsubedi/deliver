@@ -3,6 +3,7 @@ package com.yetistep.delivr.service.impl;
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Status;
@@ -193,6 +194,53 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
     @Override
     public List<CategoryDto> getParentCategory(Integer brandId) throws Exception {
+        log.info("++++++++++ Getting Parent Category and list cat id +++++++++++++");
+        /* Code to display category by skipping main parent code */
+
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        CategoryDto categoryDto = null;
+        List<CategoryEntity> categoryEntities = itemDaoService.findItemCategory(brandId);
+
+        for (CategoryEntity categoryEntity : categoryEntities) {
+            categoryDto = new CategoryDto();
+
+            CategoryEntity resultCat = categoryDaoService.find(categoryEntity.getId());
+            if (resultCat.getParent().getParent() == null) {
+                /* Item has only one category to display (After Skipping Parent Category) */
+                categoryDto.setValues(resultCat);
+                categoryDto.setHasNext(false);
+                addToList(categoryDtoList, categoryDto);
+                continue;
+            } else {
+                /* Item has many categories */
+                Integer hasPrevParent = 0;
+                CategoryEntity cat = null;
+                while (hasPrevParent != null) { //Just for maintaining loop
+
+                    //Multi Level Search
+                    if (cat == null)
+                        cat = resultCat.getParent();
+                    else
+                        cat = cat.getParent();
+
+                    if (cat == null || cat.getParent().getParent() == null) {
+                        categoryDto.setValues(cat);
+                        break;
+                    }
+
+                }
+
+                categoryDto.setHasNext(true);
+                addToList(categoryDtoList, categoryDto);
+            }
+
+        }
+        return categoryDtoList;
+
+        //TODO: Below Logic Removed temporary (It will revoked later) [Show with main parent category]
+
+        /* Below Commented Code Used to showing with main parent category */
+
 //        log.info("++++++++++ Getting Parent Category and list cat id +++++++++++++");
 //        List<CategoryDto> categoryDtoList = new ArrayList<>();
 //        CategoryDto categoryDto = null;
@@ -200,30 +248,21 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 //
 //        for (CategoryEntity categoryEntity : categoryEntities) {
 //            categoryDto = new CategoryDto();
-////            if (categoryEntity.getParentId() != null) {
-////                categoryDto.setValues(categoryEntity);
-////                categoryDto.setHasNext(false);
-////            } else {
+//            if (categoryEntity.getParentId() == null) {
+//                categoryDto.setValues(categoryEntity);
+//                categoryDto.setHasNext(false);
+//            } else {
 //                //Search  Main Parent Category
 //                CategoryEntity resultCat = categoryDaoService.find(categoryEntity.getId());
-//            if (resultCat.getParent().getParent() == null) {
-//                categoryDto.setValues(resultCat);
-//                categoryDto.setHasNext(false);
-//                break;
-//            } else {
 //                Integer hasPrevParent = 0;
 //                CategoryEntity cat = null;
 //                //LOOP for parent (Search Parent and Category)
 //                while (hasPrevParent != null) {
 //                    // 2nd Level Search
-////                    if (resultCat.getParent().getParent() == null) {
-////                        //categoryDto.setValues(resultCat.getParent());
-//////                        break;
-////                        //FIXME: New
-////                        categoryDto.setValues(resultCat);
-////                        categoryDto.setHasNext(false);
-////                        break;
-////                    }
+//                    if (resultCat.getParent().getParent() == null) {
+//                        categoryDto.setValues(resultCat.getParent());
+//                        break;
+//                    }
 //
 //                    //Multi Level Search
 //                    if (cat == null)
@@ -242,8 +281,6 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 //                categoryDto.setHasNext(true);
 //            }
 //
-//            }
-//
 //            Boolean isAlreadyContain = false;
 //            for (CategoryDto temp : categoryDtoList) {
 //                if (temp.getId().equals(categoryDto.getId()))
@@ -253,61 +290,21 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 //            if (!isAlreadyContain)
 //                categoryDtoList.add(categoryDto);
 //
-////        }
+//        }
 //        return categoryDtoList;
 
-        //FIXME: Old
-        log.info("++++++++++ Getting Parent Category and list cat id +++++++++++++");
-        List<CategoryDto> categoryDtoList = new ArrayList<>();
-        CategoryDto categoryDto = null;
-        List<CategoryEntity> categoryEntities = itemDaoService.findItemCategory(brandId);
+}
 
-        for (CategoryEntity categoryEntity : categoryEntities) {
-            categoryDto = new CategoryDto();
-            if (categoryEntity.getParentId() == null) {
-                categoryDto.setValues(categoryEntity);
-                categoryDto.setHasNext(false);
-            } else {
-                //Search  Main Parent Category
-                CategoryEntity resultCat = categoryDaoService.find(categoryEntity.getId());
-                Integer hasPrevParent = 0;
-                CategoryEntity cat = null;
-                //LOOP for parent (Search Parent and Category)
-                while (hasPrevParent != null) {
-                    // 2nd Level Search
-                    if (resultCat.getParent().getParent() == null) {
-                        categoryDto.setValues(resultCat.getParent());
-                        break;
-                    }
-
-                    //Multi Level Search
-                    if (cat == null)
-                        cat = resultCat.getParent();
-                    else
-                        cat = cat.getParent();
-
-                    if (cat == null || cat.getParent() == null)
-                        break;
-
-                    hasPrevParent = cat.getParent().getId();
-                    categoryDto.setValues(cat.getParent());
-
-                }
-
-                categoryDto.setHasNext(true);
-            }
-
-            Boolean isAlreadyContain = false;
-            for (CategoryDto temp : categoryDtoList) {
-                if (temp.getId().equals(categoryDto.getId()))
-                    isAlreadyContain = true;
-            }
-
-            if (!isAlreadyContain)
-                categoryDtoList.add(categoryDto);
-
+    private void addToList(List<CategoryDto> categoryDtoList, CategoryDto categoryDto){
+        Boolean isAlreadyContain = false;
+        for (CategoryDto temp : categoryDtoList) {
+            if (temp.getId().equals(categoryDto.getId()))
+                isAlreadyContain = true;
         }
-        return categoryDtoList;
+
+        if (!isAlreadyContain)
+            categoryDtoList.add(categoryDto);
+
     }
 
     @Override
@@ -395,7 +392,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     }
 
     @Override
-    public OrderEntity getOrderById(Integer orderId, Long facebookId) throws Exception {
+    public OrderSummaryDto getOrderSummaryById(Integer orderId, Long facebookId) throws Exception {
         OrderEntity order = orderDaoService.find(orderId);
         if (order == null) {
             throw new YSException("VLD017");
@@ -405,7 +402,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             throw new YSException("ORD013");
         }
 
-        OrderEntity responseOrder = new OrderEntity();
+        OrderSummaryDto orderSummary = new OrderSummaryDto();
         List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
         for (ItemsOrderEntity itemOrder : itemsOrder) {
             if (itemOrder.getItem() != null) {
@@ -419,6 +416,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                     item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
                 itemOrder.setItem(item);
                 itemOrder.setItemOrderAttributes(null);
+            }else if(itemOrder.getCustomItem() != null){
+                itemOrder.getCustomItem().setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
             }
         }
 
@@ -431,18 +430,27 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             orderAttachments.add(attachments);
         }
 
-        responseOrder.setId(order.getId());
-        responseOrder.setStore(store);
-        responseOrder.setOrderStatus(order.getOrderStatus());
-        responseOrder.setOrderVerificationCode(order.getOrderVerificationCode());
-        responseOrder.setItemsOrder(itemsOrder);
-        responseOrder.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge());
+        orderSummary.setId(order.getId());
+        orderSummary.setStore(store);
+        orderSummary.setOrderStatus(order.getOrderStatus());
+        orderSummary.setOrderVerificationCode(order.getOrderVerificationCode());
+        orderSummary.setItemOrders(itemsOrder);
+
+        OrderSummaryDto.AccountSummary accountSummary = orderSummary.new AccountSummary();
+        accountSummary.setServiceFee(order.getSystemServiceCharge());
+        accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
+        accountSummary.setSubTotal(order.getTotalCost());
+        accountSummary.setEstimatedTotal(order.getGrandTotal());
+        accountSummary.setDeliveryFee(order.getCourierTransaction().getDeliveryChargedBeforeDiscount());
+        accountSummary.setTotalDiscount(order.getCourierTransaction().getDeliveryChargedBeforeDiscount().subtract(order.getCourierTransaction().getDeliveryChargedAfterDiscount()));
+        orderSummary.setAccountSummary(accountSummary);
+        /*responseOrder.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge());
         responseOrder.setTotalCost(order.getTotalCost());
         responseOrder.setSystemServiceCharge(order.getSystemServiceCharge());
         responseOrder.setDeliveryCharge(order.getDeliveryCharge());
-        responseOrder.setGrandTotal(order.getGrandTotal());
-        responseOrder.setAttachments(orderAttachments);
-        return responseOrder;
+        responseOrder.setGrandTotal(order.getGrandTotal());*/
+        orderSummary.setAttachments(orderAttachments);
+        return orderSummary;
     }
 
     @Override
@@ -928,5 +936,10 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     @Override
     public Boolean updateUserDeviceToken(Long facebookId, String deviceToken) throws Exception {
         return userDeviceDaoService.updateUserDeviceToken(facebookId, deviceToken);
+    }
+
+    @Override
+    public Boolean updateUserDeviceTokenFromUserId(Integer userId, String deviceToken) throws Exception {
+        return userDeviceDaoService.updateUserDeviceTokenFromUserID(userId, deviceToken);
     }
 }

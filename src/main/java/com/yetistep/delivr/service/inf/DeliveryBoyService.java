@@ -49,6 +49,8 @@ public interface DeliveryBoyService {
 
     public Boolean updateOrders(List<ItemsOrderEntity> itemOrders, Integer orderId) throws Exception;
 
+    public Boolean updateItemOrderByItemOrderId(ItemsOrderEntity itemOrder, Integer orderId) throws Exception;
+
     public Boolean cancelOrder(OrderEntity order, Integer userId) throws Exception;
 
     public OrderSummaryDto getShoppingList(Integer orderId) throws Exception;
@@ -58,4 +60,6 @@ public interface DeliveryBoyService {
     public JobOrderStatus getJobOrderStatusFromOrderId(Integer orderId) throws Exception;
 
     public List<ReasonDetails> getCancelReasonList() throws Exception;
+
+    public ItemsOrderEntity getItemOrderById(Integer itemOrderId) throws Exception;
 }

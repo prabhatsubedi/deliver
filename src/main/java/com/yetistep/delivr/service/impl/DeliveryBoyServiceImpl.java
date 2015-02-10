@@ -60,6 +60,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Autowired
     ReasonDetailsDaoService reasonDetailsDaoService;
 
+    @Autowired
+    ItemDaoService itemDaoService;
+
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Delivery Boy +++++++++++++++++");
@@ -325,7 +328,22 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                  throw new YSException("MRC003");
             }
             CourierTransactionEntity courierTransaction =  systemAlgorithmService.getCourierTransaction(orderEntity, deliveryBoySelectionEntity, merchant.getCommissionPercentage(), merchant.getServiceFee());
-            orderEntity.setCourierTransaction(courierTransaction);
+            CourierTransactionEntity courierTransactionEntity = orderEntity.getCourierTransaction();
+            courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
+            courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
+            courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
+            courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
+            courierTransactionEntity.setServiceFeeAmt(courierTransaction.getServiceFeeAmt());
+            courierTransactionEntity.setDeliveryChargedBeforeDiscount(courierTransaction.getDeliveryChargedBeforeDiscount());
+            courierTransactionEntity.setCustomerBalanceBeforeDiscount(courierTransaction.getCustomerBalanceBeforeDiscount());
+            courierTransactionEntity.setDeliveryChargedAfterDiscount(courierTransaction.getDeliveryChargedAfterDiscount());
+            courierTransactionEntity.setCustomerBalanceAfterDiscount(courierTransaction.getCustomerBalanceAfterDiscount());
+            courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
+            courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
+            courierTransactionEntity.setProfit(courierTransaction.getProfit());
+            courierTransactionEntity.setCourierToStoreDistance(courierTransaction.getCourierToStoreDistance());
+            courierTransactionEntity.setStoreToCustomerDistance(courierTransaction.getStoreToCustomerDistance());
+            orderEntity.setCourierTransaction(courierTransactionEntity);
 
             List<DBoyOrderHistoryEntity> dBoyOrderHistoryEntities = new ArrayList<DBoyOrderHistoryEntity>();
             DBoyOrderHistoryEntity dBoyOrderHistoryEntity = new DBoyOrderHistoryEntity();
@@ -650,6 +668,86 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
+    public Boolean updateItemOrderByItemOrderId(ItemsOrderEntity itemOrder, Integer orderId) throws Exception {
+        OrderEntity order = orderDaoService.find(orderId);
+        if (order == null) {
+            throw new YSException("VLD017");
+        } else if(order.getDeliveryBoy() == null){
+            throw new YSException("ORD014");
+        }
+
+        BigDecimal itemTotalCost = BigDecimal.ZERO;
+        BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
+
+        List<ItemsOrderEntity> itemsOrderEntityList = order.getItemsOrder();
+        ItemsOrderEntity itemsOrderEntity = getItemOrderById(itemsOrderEntityList, itemOrder.getId());
+        if (itemsOrderEntity == null)
+            throw new YSException("VLD025");
+        itemsOrderEntity.setQuantity(itemOrder.getQuantity());
+        itemsOrderEntity.setItemTotal(itemOrder.getItemTotal());
+        itemsOrderEntity.setAvailabilityStatus(itemOrder.getAvailabilityStatus());
+        itemsOrderEntity.setVat(itemOrder.getVat());
+        itemsOrderEntity.setServiceCharge(itemOrder.getServiceCharge());
+        itemsOrderEntity.setNote(itemOrder.getNote());
+
+         /* Updating name of custom item added by delivery boy */
+        if(itemsOrderEntity.getCustomItem() != null && itemOrder.getCustomItem() != null){
+            itemsOrderEntity.getCustomItem().setName(itemOrder.getCustomItem().getName());
+        }else{
+             /* Updating attributes of item added by customer */
+            List<ItemsOrderAttributeEntity> itemsOrderAttributeEntityList = itemsOrderEntity.getItemOrderAttributes();
+            itemsOrderAttributeEntityList.clear();
+            for(ItemsOrderAttributeEntity itemsOrderAttributes : itemOrder.getItemOrderAttributes()){
+                ItemsOrderAttributeEntity itemsOrderAttribute = new ItemsOrderAttributeEntity();
+                ItemsAttributeEntity itemsAttribute = itemsOrderAttributes.getItemsAttribute();
+                itemsOrderAttribute.setItemOrder(itemsOrderEntity);
+                itemsOrderAttribute.setItemsAttribute(itemsAttribute);
+                itemsOrderAttributeEntityList.add(itemsOrderAttribute);
+                itemsAttribute.setItemOrderAttributes(itemsOrderAttributeEntityList);
+            }
+        }
+
+        for (ItemsOrderEntity itemsOrder : itemsOrderEntityList) {
+            /* Service Fee and Vat calculation for available items only. */
+            if (itemsOrder.getAvailabilityStatus()) {
+                BigDecimal serviceChargeAmount = BigDecimalUtil.percentageOf(itemsOrder.getItemTotal(), BigDecimalUtil.checkNull(itemsOrder.getServiceCharge()));
+                BigDecimal serviceAndVatChargeAmount = serviceChargeAmount.add(BigDecimalUtil.percentageOf(serviceChargeAmount.add(itemsOrder.getItemTotal()), BigDecimalUtil.checkNull(itemsOrder.getVat())));
+                itemTotalCost = itemTotalCost.add(itemsOrder.getItemTotal());
+                itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatChargeAmount);
+                itemsOrder.setServiceAndVatCharge(serviceAndVatChargeAmount);
+            }
+        }
+
+        if(BigDecimalUtil.isLessThen(itemTotalCost, order.getStore().getStoresBrand().getMinOrderAmount())){
+            throw new YSException("CRT008", " "+order.getStore().getStoresBrand().getMinOrderAmount());
+        }
+
+        order.setTotalCost(itemTotalCost);
+        order.setItemServiceAndVatCharge(itemServiceAndVatCharge);
+
+        DeliveryBoySelectionEntity dBoySelection = new DeliveryBoySelectionEntity();
+        dBoySelection.setDistanceToStore(order.getSystemChargeableDistance());
+        dBoySelection.setStoreToCustomerDistance(order.getCustomerChargeableDistance());
+
+        CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
+        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, dBoySelection, courierTransactionEntity.getCommissionPct(), courierTransactionEntity.getServiceFeePct());
+        courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
+        courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
+        courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
+        courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
+        courierTransactionEntity.setServiceFeeAmt(courierTransaction.getServiceFeeAmt());
+        courierTransactionEntity.setDeliveryChargedBeforeDiscount(courierTransaction.getDeliveryChargedBeforeDiscount());
+        courierTransactionEntity.setCustomerBalanceBeforeDiscount(courierTransaction.getCustomerBalanceBeforeDiscount());
+        courierTransactionEntity.setDeliveryChargedAfterDiscount(courierTransaction.getDeliveryChargedAfterDiscount());
+        courierTransactionEntity.setCustomerBalanceAfterDiscount(courierTransaction.getCustomerBalanceAfterDiscount());
+        courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
+        courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
+        courierTransactionEntity.setProfit(courierTransaction.getProfit());
+
+        return orderDaoService.update(order);
+    }
+
+    @Override
     public Boolean cancelOrder(OrderEntity order, Integer userId) throws Exception {
         OrderEntity orderEntity = orderDaoService.find(order.getId());
         if(orderEntity == null){
@@ -894,5 +992,69 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Override
     public List<ReasonDetails> getCancelReasonList() throws Exception {
         return reasonDetailsDaoService.findAll();
+    }
+
+    @Override
+    public ItemsOrderEntity getItemOrderById(Integer itemOrderId) throws Exception {
+        log.info("++++++++++++ Getting Item Order Detail of id " + itemOrderId + " +++++++++++++");
+        ItemsOrderEntity itemOrder = itemsOrderDaoService.find(itemOrderId);
+        if (itemOrder.getItem() != null) {
+            List<Integer> selectedAttributes = new ArrayList<Integer>();
+            for(ItemsOrderAttributeEntity itemOrderAttribute: itemOrder.getItemOrderAttributes()){
+                selectedAttributes.add(itemOrderAttribute.getItemsAttribute().getId());
+            }
+            ItemEntity itemEntity = itemOrder.getItem();
+            if (itemEntity == null)
+                throw new YSException("ITM001");
+
+            if (!itemEntity.getStatus().toString().equals(Status.ACTIVE.toString()))
+                throw new YSException("ITM002");
+
+
+            if (itemEntity.getAttributesTypes().size() == 0)
+                itemEntity.setAttributesTypes(null);
+
+            if (itemEntity.getAttributesTypes() != null && itemEntity.getAttributesTypes().size() != 0) {
+                for (ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()) {
+                    //itemsAttributesTypeEntity.setId(null);
+                    itemsAttributesTypeEntity.setItem(null);
+                    for (ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
+                        //itemsAttributeEntity.setId(null);
+                        itemsAttributeEntity.setType(null);
+                        itemsAttributeEntity.setCartAttributes(null);
+                        if(selectedAttributes.contains(itemsAttributeEntity.getId()))
+                            itemsAttributeEntity.setSelected(true);
+                    }
+                }
+            }
+
+            if(itemEntity.getItemsImage()==null || itemEntity.getItemsImage().size() == 0) {
+                //If Item has not any image then set default image
+                List<ItemsImageEntity> itemImages = new ArrayList<>();
+                ItemsImageEntity itemsImage = new ItemsImageEntity();
+                itemsImage.setUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+                itemImages.add(itemsImage);
+                itemEntity.setItemsImage(itemImages);
+            } else {
+                for (ItemsImageEntity itemsImageEntity : itemEntity.getItemsImage()) {
+                    itemsImageEntity.setId(null);
+                }
+            }
+
+
+            itemEntity.setBrandName(itemEntity.getStoresBrand().getBrandName());
+            itemEntity.setItemsStores(null);
+            itemEntity.setItemsOrder(null);
+            itemEntity.setCategory(null);
+            itemEntity.setStoresBrand(null);
+            itemEntity.setStatus(null);
+            itemEntity.setCreatedDate(null);
+            itemEntity.setModifiedDate(null);
+            itemEntity.setVat(null);
+            itemEntity.setServiceCharge(null);
+            itemEntity.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+            itemOrder.setItemOrderAttributes(null);
+        }
+        return itemOrder;
     }
 }

@@ -601,7 +601,6 @@ public class CustomerServiceImpl implements CustomerService {
         order.setStore(store);
         order.setOrderName(store.getName() + " to " + order.getAddress().getStreet());
         order.setOrderVerificationCode(GeneralUtil.generateMobileCode());
-        //TODO Send code message to customer
 
         /* Finding delivery boys based on active status. */
         List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys();
@@ -616,13 +615,33 @@ public class CustomerServiceImpl implements CustomerService {
             throw new YSException("ORD012");
         }
         order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
+        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, deliveryBoySelectionEntities.get(0), merchant.getCommissionPercentage(), merchant.getServiceFee());
+        courierTransaction.setCourierToStoreDistance(null);
+        courierTransaction.setAdditionalDeliveryAmt(null);
+        courierTransaction.setPaidToCourier(null);
+        courierTransaction.setProfit(null);
+        order.setCourierTransaction(courierTransaction);
         customerDaoService.saveOrder(order);
 
-        cartDaoService.updateCartWithOrder(cartIds, order.getId());
+        deleteCarts(cartIds);
         //TODO Filter delivery boys by profit criteria - Push Notifications
         Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
         Integer timeOut = timeInSeconds.intValue();
         scheduleChanger.scheduleTask(DateUtil.findDelayDifference(DateUtil.getCurrentTimestampSQL(), timeOut));
+    }
+
+    private Boolean deleteCarts(List<Integer> cartList) throws Exception{
+        if (cartList.size() > 0) {
+            log.info("++++++++ Deleting previous cart and and its attributes ++++++++");
+            List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cartList);
+            // Delete Cart Attributes
+            if (cartAttributes.size() > 0)
+                cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+
+            //Delete Carts
+            cartDaoService.deleteCarts(cartList);
+        }
+        return true;
     }
 
     /*

@@ -1,10 +1,10 @@
 package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.CartEntity;
 import com.yetistep.delivr.model.ItemEntity;
-import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
@@ -27,7 +27,7 @@ public interface ClientService {
 
     public List<CategoryDto> getSubCategory(CategoryDto categoryDto) throws Exception;
 
-    public OrderEntity getOrderById(Integer orderId, Long facebookId) throws Exception;
+    public OrderSummaryDto getOrderSummaryById(Integer orderId, Long facebookId) throws Exception;
 
     public List<ItemDto> getItems(Integer brandId, Integer categoryId) throws Exception;
 
@@ -53,4 +53,5 @@ public interface ClientService {
 
     public Boolean updateUserDeviceToken(Long facebookId, String deviceToken) throws Exception;
 
+    public Boolean updateUserDeviceTokenFromUserId(Integer userId, String deviceToken) throws Exception;
 }

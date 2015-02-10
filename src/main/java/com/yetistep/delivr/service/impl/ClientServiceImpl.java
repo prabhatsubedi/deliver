@@ -237,7 +237,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         }
         return categoryDtoList;
 
-        //TODO: Below Logic Removed temporary (It will be revoked later) [Show with main parent category]
+        //TODO: Below Logic Removed temporary (It will revoked later) [Show with main parent category]
 
         /* Below Commented Code Used to showing with main parent category */
 

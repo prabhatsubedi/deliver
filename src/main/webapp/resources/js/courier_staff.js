@@ -184,15 +184,15 @@ var courierProfile;
 
                 new google.maps.Marker({
                     position: srclatlng,
-                    map: map
-                    //draggable: true
+                    map: map,
+                    icon: Main.modifyURL("/resources/images/marker_delivery_boy.png")
                 });
 
                 if (typeof destlatlang != 'undefined') {
                     new google.maps.Marker({
                         position: destlatlang,
-                        map: map
-                        //draggable: true
+                        map: map,
+                        icon: Main.modifyURL("/resources/images/marker_store.png")
                     });
 
                     var request = {

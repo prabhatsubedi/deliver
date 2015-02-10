@@ -942,4 +942,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     public Boolean updateUserDeviceTokenFromUserId(Integer userId, String deviceToken) throws Exception {
         return userDeviceDaoService.updateUserDeviceTokenFromUserID(userId, deviceToken);
     }
+
+    @Override
+    public String getCurrencyType() throws Exception {
+        return systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+    }
 }

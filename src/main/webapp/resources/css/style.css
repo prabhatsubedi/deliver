@@ -553,6 +553,10 @@ body.assistance_page {
 
 /* INNER PAGES */
 
+.body {
+    position: relative;
+}
+
 .sidebar {
     width: 320px;
     /*height: 100%;*/
@@ -1611,6 +1615,118 @@ label.check_label .checkbox {
 .settings_menu ul li.current_page a {
     background-color: #F5F5F5;
     cursor: auto;
+}
+
+/* Organizer Dashboard */
+.count_section {
+    padding-top: 30px;
+    position: absolute;
+    z-index: 10;
+}
+.count_section .count_block {
+    background-color: #FAFAFA;
+}
+.count_section .count_block .count_number {
+    color: #f7941d;
+    font-size: 60px;
+    position: relative;
+    height: 60px;
+    line-height: 100%;
+    margin-bottom: 10px;
+}
+.count_section .count_block .show_more {
+    background-image: url("../images/show_more.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 100%;
+    position: absolute;
+    right: -45px;
+    top: 0;
+    width: 60px;
+}
+.count_section .count_block .count_head {
+    padding: 15px 50px 10px 25px;
+    border-bottom: 1px solid #C0C0C0;
+    background-color: #FFFFFF;
+    cursor: pointer;
+}
+.count_section .count_block .count_title {
+    font-size: 24px;
+    color: #7e7e7e;
+}
+.count_section .count_block .more_data_cont {
+    display: none;
+}
+.count_section .count_block .more_data {
+    padding: 5px 25px;
+}
+.count_section .count_block .data_row {
+    color: #282828;
+    font-size: 16px;
+    padding: 12px 0px;
+}
+.count_section .count_block .data_row .badge {
+    border-radius: 60px;
+    font-size: 16px;
+    margin-right: 15px;
+    padding: 8px 10px;
+    width: 60px;
+    float: left;
+    margin-top: -5px;
+    background-color: #C8C8C8;
+}
+.count_section .count_block .count_head .data_row .badge {
+    background-color: #f7941d;
+}
+.god_view .map-container {
+    background: rgb(184,184,184); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(184,184,184,1) 0%, rgba(214,214,214,1) 30%, rgba(214,214,214,1) 70%, rgba(184,184,184,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(184,184,184,1)), color-stop(30%,rgba(214,214,214,1)), color-stop(70%,rgba(214,214,214,1)), color-stop(100%,rgba(184,184,184,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(184,184,184,1) 0%,rgba(214,214,214,1) 30%,rgba(214,214,214,1) 70%,rgba(184,184,184,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(184,184,184,1) 0%,rgba(214,214,214,1) 30%,rgba(214,214,214,1) 70%,rgba(184,184,184,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(184,184,184,1) 0%,rgba(214,214,214,1) 30%,rgba(214,214,214,1) 70%,rgba(184,184,184,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(184,184,184,1) 0%,rgba(214,214,214,1) 30%,rgba(214,214,214,1) 70%,rgba(184,184,184,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8b8b8', endColorstr='#b8b8b8',GradientType=0 ); /* IE6-9 */
+    border: 0 none;
+    height: 1000px;
+    margin-top: 145px;
+    margin-bottom: 30px;
+    position: relative;
+}
+.god_view .map-container #custom_map_controls {
+    top: 20px !important;
+}
+.god_view .map-container .gmnoprint .gm-style-mtc {
+    margin-top: 15px;
+}
+.god_view .map-container .block_counts {
+    position: absolute;
+    bottom: 0px;
+}
+.god_view .block_counts {
+    text-align: center;
+    padding-bottom: 30px;
+}
+.god_view .map-container .block_counts .count_block_cont  {
+    display: inline-block;
+    float: none;
+}
+.god_view .block_counts .count_cont  {
+    background-color: #ffffff;
+    color: #969696;
+    font-size: 20px;
+    padding: 15px 25px;
+    text-align: left;
+    height: 90px;
+}
+.god_view .block_counts .count_cont .td_div  {
+    vertical-align: middle;
+}
+.god_view .block_counts .count_cont .count_span {
+    color: #f7941d;
+    width: 60px;
+    font-size: 30px;
+    padding-right: 20px;
 }
 
 

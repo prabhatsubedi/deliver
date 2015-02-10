@@ -41,7 +41,7 @@ public class DeliveryBoyController extends AbstractManager{
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> login(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> login(@RequestHeader HttpHeaders headers, @RequestBody UserDeviceEntity userDevice) {
         try{
 
             HeaderDto headerDto = new HeaderDto();
@@ -49,8 +49,8 @@ public class DeliveryBoyController extends AbstractManager{
 
             validateMobileClient(headerDto.getAccessToken());
 
-            DeliveryBoyEntity deliveryBoyEntity =  deliveryBoyService.dboyLogin(headerDto);
-
+            DeliveryBoyEntity deliveryBoyEntity =  deliveryBoyService.dboyLogin(headerDto, userDevice);
+            deliveryBoyEntity.getUser().setRole(null);
             ServiceResponse serviceResponse = new ServiceResponse("Delivery boy logged in successfully");
             serviceResponse.addParam("userDetail", deliveryBoyEntity);
 

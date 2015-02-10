@@ -27,7 +27,7 @@ public interface DeliveryBoyService {
 
     public Boolean updateDeliveryBoyStatus(DeliveryBoyEntity deliveryBoyEntity) throws Exception;
 
-    public DeliveryBoyEntity dboyLogin(HeaderDto headerDto) throws Exception;
+    public DeliveryBoyEntity dboyLogin(HeaderDto headerDto, UserDeviceEntity userDevice) throws Exception;
 
     public List<DeliveryBoyEntity> getAllCapableDeliveryBoys() throws Exception;
 

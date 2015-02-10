@@ -12,10 +12,11 @@ import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
+import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
     @Autowired
     ItemDaoService itemDaoService;
+
+    @Autowired
+    HttpServletRequest httpServletRequest;
 
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
@@ -207,20 +211,41 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         return deliveryBoyDaoService.update(dBoyEntity);
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public DeliveryBoyEntity dboyLogin(HeaderDto headerDto) throws Exception {
+    public DeliveryBoyEntity dboyLogin(HeaderDto headerDto, UserDeviceEntity userDevice) throws Exception {
         log.info("+++++++++++++++ Checking DBOY Credential +++++++++++++++");
         UserEntity userEntity = userDaoService.findByUserName(headerDto.getUsername());
-
         if(userEntity == null)
             throw new YSException("VLD011");
-
         GeneralUtil.matchDBPassword(headerDto.getPassword(), userEntity.getPassword());
 
-        userEntity.setRole(null);
+        /* Updating User Device Information */
+        if(userDevice != null){
+            String userAgent = httpServletRequest.getHeader("User-Agent");
+            UserAgent ua = UserAgent.parseUserAgentString(userAgent);
+            String family = ua.getOperatingSystem().name();
+            UserDeviceEntity userDeviceEntity = null;
+            if(userEntity.getUserDevice() != null){
+                userDeviceEntity = userEntity.getUserDevice();
+            }else{
+                userDeviceEntity = new UserDeviceEntity();
+                userDeviceEntity.setUser(userEntity);
+                userEntity.setUserDevice(userDeviceEntity);
+            }
+            userDeviceEntity.setUuid(userDevice.getUuid());
+            userDeviceEntity.setDeviceToken(userDevice.getDeviceToken());
+            /* TODO Family for family, familyName, name */
+            userDeviceEntity.setFamily(family);
+            userDeviceEntity.setFamilyName(family);
+            userDeviceEntity.setName(family);
+            userDeviceEntity.setBrand(userDevice.getBrand());
+            userDeviceEntity.setModel(userDevice.getModel());
+            userDeviceEntity.setDpi(userDevice.getDpi());
+            userDeviceEntity.setHeight(userDevice.getHeight());
+            userDeviceEntity.setWidth(userDevice.getWidth());
+            userDaoService.update(userEntity);
+        }
         DeliveryBoyEntity deliveryBoyEntity = userEntity.getDeliveryBoy();
-        //DeliveryBoyEntity deliveryBoyEntity = deliveryBoyDaoService.find(userEntity.getDeliveryBoy().getId());
         return deliveryBoyEntity;
     }
 

@@ -967,6 +967,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         address.setCountryCode(order.getAddress().getCountryCode());
         address.setLatitude(order.getAddress().getLatitude());
         address.setLongitude(order.getAddress().getLongitude());
+        address.setMobileNumber(order.getAddress().getMobileNumber());
         order.setAddress(address);
 
         StoreEntity store = new StoreEntity();

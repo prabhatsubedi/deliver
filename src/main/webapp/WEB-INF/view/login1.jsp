@@ -125,7 +125,7 @@
                                 <input type="text" class="form-control" id="business_name" name="business_name" placeholder="Business Name">
                             </div>
                             <div id="drop_zone" class="form-group business_logo unselectable text-center">
-                                <div class="drop_info">Drop image file (or click to browse)</div>
+                                <div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 200x200</div>
                                 <div class="drop_title">Business Logo</div>
                             </div>
                             <input type="file" onchange="Image.readURL(this)" id="logo_input" class="hidden" />

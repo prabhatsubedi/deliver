@@ -1728,6 +1728,9 @@ label.check_label .checkbox {
     font-size: 30px;
     padding-right: 20px;
 }
+.god_view .block_counts .count_cont .td_div.count_red {
+    color: #f71d1d;
+}
 
 
 /* css media queries */

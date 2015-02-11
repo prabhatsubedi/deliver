@@ -860,7 +860,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             $(".editable").removeClass('hidden');
             $(".none_editable").addClass('hidden');
 
-            $('#category_image').html('<div class="drop_info">Drop image file <br/> (or click to browse)</div><div class="drop_title">Category Image</div>');
+            $('#category_image').html('<div class="drop_info">Drop image file <br/> (or click to browse) <br /> Min Size: 200x200</div><div class="drop_title">Category Image</div>');
             $('.category_detail #category_id').val('');
             if($(this).hasClass('add_root_btn')){
                 $('.category_detail #category_parent_id').val('');

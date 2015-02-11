@@ -85,7 +85,7 @@ function toggleSwitch(value, elem) {
             $('.remove_image', this).addClass('hidden');
         });
         $('.product_image .remove_image').click(function(){
-            $(this).addClass('hidden').siblings('.drop_zone').html('<div class="drop_info">Drop image file <br> (or click to browse)</div>');
+            $(this).addClass('hidden').siblings('.drop_zone').html('<div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 400x400</div>');
         });
 
         $('select.haveall').live('change', function(){
@@ -824,7 +824,7 @@ function toggleSwitch(value, elem) {
                 }
                 update_subcat(data_categories_id);
 
-                $('.product_image .drop_zone').html('<div class="drop_info">Drop image file <br> (or click to browse)</div>');
+                $('.product_image .drop_zone').html('<div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 400x400</div>');
                 $('#name_item, #description, #min_order, #max_order, #price').val('');
                 $('#additional_offer, #return_policy').val('N/A');
                 $('#delivery_fee, #vat, #service_charge').val('0');

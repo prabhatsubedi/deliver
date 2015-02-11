@@ -4,6 +4,7 @@ import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.model.UserDeviceEntity;
 
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,4 +19,6 @@ public interface UserDeviceDaoService extends GenericDaoService<Integer, UserDev
     public Boolean updateUserDeviceToken(Long facebookId, String deviceToken) throws Exception;
 
     public Boolean updateUserDeviceTokenFromUserID(Integer userId, String deviceToken) throws Exception;
+
+    public List<String> getDeviceTokenFromDeliveryBoyId(List<Integer> deliveryBoysId) throws Exception;
 }

@@ -625,9 +625,25 @@ public class CustomerServiceImpl implements CustomerService {
 
         deleteCarts(cartIds);
         //TODO Filter delivery boys by profit criteria - Push Notifications
+        List<Integer> idList = getIdOfDeliveryBoys(deliveryBoySelectionEntitiesWithProfit);
+        List<String> deviceTokens = userDeviceDaoService.getDeviceTokenFromDeliveryBoyId(idList);
+        PushNotification pushNotification = new PushNotification();
+        pushNotification.setTokens(deviceTokens);
+        pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN001", "order/"+order.getId()));
+        pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
+        PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
+
         Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
         Integer timeOut = timeInSeconds.intValue();
         scheduleChanger.scheduleTask(DateUtil.findDelayDifference(DateUtil.getCurrentTimestampSQL(), timeOut));
+    }
+
+    private  List<Integer> getIdOfDeliveryBoys(List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities){
+        List<Integer> idList = new ArrayList<Integer>();
+        for(DeliveryBoySelectionEntity deliveryBoySelectionEntity: deliveryBoySelectionEntities){
+            idList.add(deliveryBoySelectionEntity.getDeliveryBoy().getId());
+        }
+        return idList;
     }
 
     private Boolean deleteCarts(List<Integer> cartList) throws Exception{

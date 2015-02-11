@@ -1,6 +1,5 @@
 package com.yetistep.delivr.util;
 
-import com.yetistep.delivr.enums.PreferenceType;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -21,6 +20,16 @@ import java.util.UUID;
 public class MessageBundle {
     private static final Logger log = Logger.getLogger(MessageBundle.class);
     private static String SYSTEM_PREF_FILE = "system_pref.properties";
+
+    public static String getPushNotificationMsg(String key) {
+        return getMessage(key, "push_notification.properties");
+    }
+
+    public static String getPushNotificationMsg(String key, String value) {
+        String msg = getMessage(key, "push_notification.properties");
+        msg = msg +":"+value;
+        return msg;
+    }
 
     public static String getMessage(String key, String file) {
         try {

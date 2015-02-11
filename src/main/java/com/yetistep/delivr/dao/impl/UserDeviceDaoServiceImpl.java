@@ -84,4 +84,13 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
         query.executeUpdate();
         return true;
     }
+
+    @Override
+    public List<String> getDeviceTokenFromDeliveryBoyId(List<Integer> deliveryBoysId) throws Exception {
+        String sql = "SELECT ud.device_token FROM user_device ud INNER JOIN users u ON (u.id = ud.user_id) INNER JOIN delivery_boys db ON (db.user_id = u.id) WHERE db.id IN (:deliveryBoyId)";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameterList("deliveryBoyId", deliveryBoysId);
+        List<String> deviceTokens = query.list();
+        return deviceTokens;
+    }
 }

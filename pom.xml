@@ -209,6 +209,7 @@
             <version>1.2.0</version>
         </dependency>
 
+        <!-- Google map dependency -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -238,6 +239,19 @@
                     <groupId>com.google.code.gson</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!-- IOS Push notification -->
+        <dependency>
+            <groupId>com.notnoop.apns</groupId>
+            <artifactId>apns</artifactId>
+            <version>0.2.3</version>
+        </dependency>
+        <!-- Android push notification -->
+        <dependency>
+            <groupId>com.ganyo</groupId>
+            <artifactId>gcm-server</artifactId>
+            <version>1.0.2</version>
         </dependency>
 
     </dependencies>

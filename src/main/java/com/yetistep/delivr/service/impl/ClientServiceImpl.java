@@ -533,7 +533,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
 
         itemEntity.setBrandName(itemEntity.getStoresBrand().getBrandName());
-        itemEntity.setItemsStores(null);
+       /* itemEntity.setItemsStores(null);
         itemEntity.setItemsOrder(null);
         itemEntity.setCategory(null);
         itemEntity.setStoresBrand(null);
@@ -541,11 +541,23 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         itemEntity.setCreatedDate(null);
         itemEntity.setModifiedDate(null);
         itemEntity.setVat(null);
-        itemEntity.setServiceCharge(null);
+        itemEntity.setServiceCharge(null);*/
         itemEntity.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
 
+        String fields = "id,name,description,availableStartTime,availableEndTime,maxOrderQuantity,minOrderQuantity,unitPrice,additionalOffer,brandName,currency,itemsImage,attributesTypes";
 
-        return itemEntity;
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+//        assoc.put("itemsImage", "url");
+        assoc.put("attributesTypes", "id,type,multiSelect,itemsAttribute");
+        subAssoc.put("itemsAttribute", "id,attribute,unitPrice");
+
+        ItemEntity item = (ItemEntity) ReturnJsonUtil.getJsonObject(itemEntity, fields, assoc , subAssoc);
+
+
+        return item;
+//        return itemEntity;
     }
 
     @Override

@@ -130,6 +130,7 @@ var courierProfile;
 
     CourierStaff.getCourierStaffProfile = function (courier_profile) {
         var id = Main.getURLvalue(3);
+        var mapBounds = new google.maps.LatLngBounds();
         if(!noEditInitialised) noEditInitialise(); else google.maps.event.trigger(map, 'resize');
         var callback = function (status, data) {
             courierProfile = data;
@@ -179,20 +180,22 @@ var courierProfile;
 //                var srclatlng = new google.maps.LatLng(courierStaff.latitude, courierStaff.longitude);
                 var srclatlng = new google.maps.LatLng("27.689", "85.324");
                 var destlatlang = new google.maps.LatLng("27.6891424", "85.324561");
-                map.setZoom(12);
-                map.setCenter(srclatlng);
+
+                mapBounds.extend(srclatlng);
+                mapBounds.extend(destlatlang);
+                map.fitBounds(mapBounds);
 
                 new google.maps.Marker({
                     position: srclatlng,
-                    map: map
-                    //draggable: true
+                    map: map,
+                    icon: Main.modifyURL("/resources/images/marker_delivery_boy.png")
                 });
 
                 if (typeof destlatlang != 'undefined') {
                     new google.maps.Marker({
                         position: destlatlang,
-                        map: map
-                        //draggable: true
+                        map: map,
+                        icon: Main.modifyURL("/resources/images/marker_store.png")
                     });
 
                     var request = {
@@ -202,7 +205,9 @@ var courierProfile;
                     };
 
                     var directionsService = new google.maps.DirectionsService();
-                    var directionsDisplay = new google.maps.DirectionsRenderer();
+                    var directionsDisplay = new google.maps.DirectionsRenderer({
+                        preserveViewport: true
+                    });
 
                     directionsService.route(request, function (result, status) {
                         if (status == google.maps.DirectionsStatus.OK) {

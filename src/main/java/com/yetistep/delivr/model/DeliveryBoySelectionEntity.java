@@ -20,6 +20,7 @@ public class DeliveryBoySelectionEntity {
     private Integer timeRequired;
     private Integer totalTimeRequired;
     private Boolean accepted;
+    private Boolean rejected;
     private BigDecimal paidToCourier;
     private DeliveryBoyEntity deliveryBoy;
     private OrderEntity order;
@@ -81,6 +82,15 @@ public class DeliveryBoySelectionEntity {
         this.accepted = accepted;
     }
 
+    @Column(name = "rejected", columnDefinition = "TINYINT(1)")
+    public Boolean getRejected() {
+        return rejected;
+    }
+
+    public void setRejected(Boolean rejected) {
+        this.rejected = rejected;
+    }
+
     @Column(name="paid_to_courier")
     public BigDecimal getPaidToCourier() {
         return paidToCourier;
@@ -108,18 +118,5 @@ public class DeliveryBoySelectionEntity {
 
     public void setOrder(OrderEntity order) {
         this.order = order;
-    }
-
-    @Override
-    public String toString() {
-        return "DeliveryBoySelectionEntity{" +
-                "id=" + id +
-                ", storeToCustomerDistance=" + storeToCustomerDistance +
-                ", distanceToStore=" + distanceToStore +
-                ", timeRequired=" + timeRequired +
-                ", deliveryBoy=" + deliveryBoy.getId() +
-                ", order=" + order +
-                ", isAccepted=" + accepted +
-                '}';
     }
 }

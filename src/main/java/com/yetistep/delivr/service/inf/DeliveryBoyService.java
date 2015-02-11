@@ -64,4 +64,6 @@ public interface DeliveryBoyService {
     public ItemsOrderEntity getItemOrderById(Integer itemOrderId) throws Exception;
 
     public List<Object> get_order_history(Integer dBoyId) throws Exception;
+
+    public Boolean rejectOrder(Integer deliveryBoyId, Integer orderId) throws Exception;
 }

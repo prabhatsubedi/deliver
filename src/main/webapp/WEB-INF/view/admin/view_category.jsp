@@ -51,7 +51,7 @@
                                         <div id="category_image"
                                              class="drop_zone user_image disabled unselectable text-center maintain_ratio"
                                              mr-width="200" mr-height="200">
-                                            <div class="drop_info">Drop image file <br/> (or click to browse)</div>
+                                            <div class="drop_info">Drop image file <br/> (or click to browse) <br /> Min Size: 200x200</div>
                                                 <div class="drop_title">Category Image</div>
                                         </div>
                                         <input type="file" onchange="Image.readURL(this)" id="category_image_input"

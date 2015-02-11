@@ -51,12 +51,12 @@
                                     </div>
                                     <div class="brand_images clearfix">
                                         <div id="brand_image" class="drop_zone disabled unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
-                                            <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                            <div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 720x400</div>
                                             <div class="drop_title">Brand Image</div>
                                         </div>
                                         <input type="file" onchange="Image.readURL(this)" data-dimension="720x400" id="brand_image_input" name="brand_image_input" class="hidden" />
                                         <div id="brand_logo" class="drop_zone disabled unselectable text-center maintain_ratio" mr-width="200" mr-height="200">
-                                            <div class="drop_info">Drop image file <br /> (or click to browse)</div>
+                                            <div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 200x200</div>
                                             <div class="drop_title">Brand Logo</div>
                                         </div>
                                         <input type="file" onchange="Image.readURL(this)" id="brand_logo_input" name="brand_logo_input" class="hidden" />

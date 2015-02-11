@@ -73,7 +73,8 @@ $(document).ready(function(){
         var myOptions = {
             zoom: 4,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
-            scrollwheel: scrollwheel == true ? true : false
+            scrollwheel: scrollwheel == true ? true : false,
+            mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
         }
         map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
 
@@ -427,7 +428,7 @@ $(document).ready(function(){
                                             }
 
                                             if(country != selectedCountry) {
-                                                alert('Deal redeem location doesn\'t lie within selected country boundary.');
+                                                alert('Marker location doesn\'t lie within selected country boundary.');
                                                 addMarker(lastPosition);
                                                 google.maps.event.trigger(currentMarker, 'rightclick');
                                             }
@@ -441,7 +442,7 @@ $(document).ready(function(){
                         }
                         else
                         {
-                            alert('Deal redeem location doesn\'t lie within selected country boundary.');
+                            alert('Marker location doesn\'t lie within selected country boundary.');
                             return false;
                         }
                     } else {
@@ -739,7 +740,7 @@ $(document).ready(function(){
                                             }
 
                                             if(country != selectedCountry) {
-                                                alert('Deal redeem location doesn\'t lie within selected country boundary.');
+                                                alert('Marker location doesn\'t lie within selected country boundary.');
                                                 lastPosition.dataId = infoWindowData.id;
                                                 addStoreMarker(lastPosition);
                                                 delete infoWindowData.id;
@@ -783,7 +784,7 @@ $(document).ready(function(){
                         }
                         else
                         {
-                            alert('Deal redeem location doesn\'t lie within selected country boundary.');
+                            alert('Marker location doesn\'t lie within selected country boundary.');
                         }
                     } else {
                         alert('No results found');

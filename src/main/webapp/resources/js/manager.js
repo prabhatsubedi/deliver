@@ -917,6 +917,24 @@ if (typeof(Manager) == "undefined") var Manager = {};
         Main.request('/organizer/gods_view', {}, callback);
 
         if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
+        $('.toggle_map_view').click(function(){
+            if($(this).hasClass('glyphicon-resize-full')) {
+                $('body').addClass('menu_opened');
+                $('html').animate({scrollTop: $('.count_head').eq(0).offset().top});
+                $(this).addClass('glyphicon-resize-small').removeClass('glyphicon-resize-full');
+                $('.menu_toggle').trigger('click');
+                $('.map-container').animate({height: $(window).height() - 385}, function(){
+                    google.maps.event.trigger(map, 'resize');
+                });
+            } else {
+                $('body').removeClass('menu_opened');
+                $('html').animate({scrollTop: 0});
+                $(this).addClass('glyphicon-resize-full').removeClass('glyphicon-resize-small');
+                $('.menu_toggle').trigger('click');
+                $('.map-container').css('height', '');
+                google.maps.event.trigger(map, 'resize');
+            }
+        });
 
     };
 

@@ -1696,12 +1696,28 @@ label.check_label .checkbox {
 .god_view .map-container #custom_map_controls {
     top: 20px !important;
 }
-.god_view .map-container .gmnoprint .gm-style-mtc {
-    margin-top: 15px;
+.god_view .map-container .gmnoprint.gm-style-mtc {
+    margin-top: 20px !important;
 }
 .god_view .map-container .block_counts {
     position: absolute;
     bottom: 0px;
+}
+.god_view .map-container .toggle_map_view {
+    background-color: #ffffff;
+    border: 1px solid #b9b9b9;
+    border-radius: 2px;
+    color: #565656;
+    cursor: pointer;
+    font-size: 16px;
+    left: 80px;
+    padding: 8px;
+    position: absolute;
+    top: 20px;
+    z-index: 1;
+}
+.god_view .map-container .toggle_map_view:hover {
+    background-color: #F5F5F5;
 }
 .god_view .block_counts {
     text-align: center;

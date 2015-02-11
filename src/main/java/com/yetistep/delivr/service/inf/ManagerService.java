@@ -41,4 +41,6 @@ public interface ManagerService {
     public CategoryEntity getCategory(HeaderDto headerDto) throws Exception;
 
     public PaginationDto findInactiveStoreBrands(Page page) throws Exception;
+
+    public Boolean changeOrderSettlement(HeaderDto headerDto) throws Exception;
 }

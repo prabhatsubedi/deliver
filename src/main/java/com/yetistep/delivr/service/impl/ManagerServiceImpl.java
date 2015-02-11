@@ -312,4 +312,9 @@ public class ManagerServiceImpl implements ManagerService {
         }
         return category;
     }
+
+    @Override
+    public Boolean changeOrderSettlement(HeaderDto headerDto) throws Exception {
+        return true;
+    }
 }

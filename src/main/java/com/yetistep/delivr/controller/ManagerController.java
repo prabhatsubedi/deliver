@@ -415,5 +415,44 @@ public class ManagerController {
         }
     }
 
+    @RequestMapping(value="/view_invoices", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> viewInvoices(@RequestHeader HttpHeaders headers){
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Invoice has been retrieved successfully successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        }catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving invoice", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
+    @RequestMapping(value="/change_order_settlement", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> changeOrderSettlement(@RequestHeader HttpHeaders headers){
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+
+            managerService.changeOrderSettlement(headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Invoice has been retrieved successfully successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        }catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving invoice", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
+
+
 
 }

@@ -1,5 +1,7 @@
 package com.yetistep.delivr.service.impl;
 
+import com.amazonaws.util.json.JSONArray;
+import com.amazonaws.util.json.JSONObject;
 import com.yetistep.delivr.dao.inf.AdminDaoService;
 import com.yetistep.delivr.dao.inf.CountryDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
@@ -156,15 +158,38 @@ public class AdminServiceImpl implements AdminService {
         Map<Integer, Map<String, String>> dbLocations =  new HashMap<>();
         Map<String, String> dbLatLang = new HashMap<>();
 
+        Integer i=0;
         for (OrderEntity order: orders){
             StoreEntity store = order.getStore();
             AddressEntity address = order.getAddress();
             DeliveryBoyEntity db = order.getDeliveryBoy();
-            routes.put(store.getName()+"("+store.getStreet()+")=> lat:"+store.getLatitude()+", long:"+store.getLongitude(), address.getStreet()+"=> lat:"+address.getLatitude()+", long:"+address.getLongitude());
-            storeLatLang.put(store.getLatitude(), store.getLongitude());
-            customerLatLang.put(address.getLatitude(), address.getLongitude());
-            dbLatLang.put(db.getLatitude(), db.getLongitude());
+            JSONObject jo = new JSONObject();
+            JSONObject storeObj = new JSONObject();
+            JSONObject customerObj = new JSONObject();
+            JSONObject dBoyObj = new JSONObject();
 
+            storeObj.put("name", store.getName());
+            storeObj.put("address", store.getStreet()+")");
+            storeObj.put("lat", store.getLatitude());
+            storeObj.put("lang", store.getLongitude());
+
+            customerObj.put("name", address.getUser().getFullName());
+            customerObj.put("address", address.getStreet());
+            customerObj.put("lat", address.getLatitude());
+            customerObj.put("lang", address.getLongitude());
+
+            dBoyObj.put("name", db.getUser().getFullName());
+            dBoyObj.put("lat", address.getLatitude());
+            dBoyObj.put("lang", address.getLongitude());
+
+            jo.put("store", storeObj);
+            jo.put("customer", customerObj);
+            routes.put(i.toString(), jo.toString());
+
+            storeLatLang.put(i.toString(), storeObj.toString());
+            customerLatLang.put(i.toString(), customerObj.toString());
+            dbLatLang.put(i.toString(), dBoyObj.toString());
+           i++;
         }
         newOrdersCount.put(orderInProcess, routes);
         generalData.put("newOrders", newOrdersCount);

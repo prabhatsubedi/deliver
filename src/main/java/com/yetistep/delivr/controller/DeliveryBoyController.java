@@ -394,4 +394,23 @@ public class DeliveryBoyController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value="/reject_order/{orderId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> rejectOrder(@RequestHeader HttpHeaders headers, @PathVariable Integer orderId) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
+            //validateMobileClient(headerDto.getAccessToken());
+
+            deliveryBoyService.rejectOrder(Integer.parseInt(headerDto.getId()), orderId);
+            ServiceResponse serviceResponse = new ServiceResponse("Order has been rejected successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while rejecting order", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

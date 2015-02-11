@@ -342,6 +342,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         /* Returns true if order can be accepted else returns false */
         boolean orderAcceptance = deliveryBoySelectionDaoService.checkOrderAcceptedStatus(orderId);
         if(orderAcceptance){
+            if(deliveryBoySelectionEntity.getOrder().getOrderStatus().equals(JobOrderStatus.CANCELLED)){
+                throw new YSException("ORD006");
+            }
             deliveryBoySelectionEntity.setAccepted(true);
             DeliveryBoyEntity deliveryBoyEntity = deliveryBoySelectionEntity.getDeliveryBoy();
             if(deliveryBoyEntity.getActiveOrderNo() >= 3){
@@ -1118,5 +1121,27 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
 
         return objects;
+    }
+
+    @Override
+    public Boolean rejectOrder(Integer deliveryBoyId, Integer orderId) throws Exception {
+        DeliveryBoySelectionEntity deliveryBoySelectionEntity = deliveryBoySelectionDaoService.getSelectionDetails(orderId, deliveryBoyId);
+        if(deliveryBoySelectionEntity == null){
+            throw new YSException("ORD003");
+        }
+        if(deliveryBoySelectionEntity.getAccepted()){
+            throw new YSException("ORD005");
+        }
+        if(deliveryBoySelectionEntity.getRejected()){
+           throw new YSException("ORD015");
+        }else{
+            deliveryBoySelectionEntity.setRejected(true);
+            deliveryBoySelectionDaoService.update(deliveryBoySelectionEntity);
+            if(deliveryBoySelectionDaoService.getRemainingOrderSelections(orderId).equals(0)){
+               // TODO Look for delivery boy again or cancel order
+               // OrderEntity order = orderDaoService.find(orderId);
+            }
+            return true;
+        }
     }
 }

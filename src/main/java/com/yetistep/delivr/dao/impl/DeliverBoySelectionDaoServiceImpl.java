@@ -5,6 +5,7 @@ import com.yetistep.delivr.model.DeliveryBoySelectionEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -68,8 +69,20 @@ public class DeliverBoySelectionDaoServiceImpl implements DeliveryBoySelectionDa
     public DeliveryBoySelectionEntity getSelectionDetails(Integer orderId, Integer deliveryBoyId) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(DeliveryBoySelectionEntity.class)
                 .add(Restrictions.eq("order.id", orderId))
-                .add(Restrictions.eq("deliveryBoy.id", deliveryBoyId));
+                .add(Restrictions.eq("deliveryBoy.id", deliveryBoyId))
+                .add(Restrictions.eq("rejected", false));
         DeliveryBoySelectionEntity deliveryBoySelectionEntity = (DeliveryBoySelectionEntity) criteria.uniqueResult();
         return deliveryBoySelectionEntity;
+    }
+
+    @Override
+    public Integer getRemainingOrderSelections(Integer orderId) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(DeliveryBoySelectionEntity.class)
+                .add(Restrictions.eq("order.id", orderId))
+                .add(Restrictions.eq("accepted", false))
+                .add(Restrictions.eq("rejected", true));
+        criteria.setProjection(Projections.rowCount());
+        Long count = (Long) criteria.uniqueResult();
+        return count.intValue();
     }
 }

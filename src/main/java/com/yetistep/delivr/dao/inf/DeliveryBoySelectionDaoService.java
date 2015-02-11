@@ -15,4 +15,6 @@ public interface DeliveryBoySelectionDaoService extends GenericDaoService<Intege
     public Boolean checkOrderAcceptedStatus(Integer orderId) throws Exception;
 
     public DeliveryBoySelectionEntity getSelectionDetails(Integer orderId, Integer deliveryBoyId) throws Exception;
+
+    public Integer getRemainingOrderSelections(Integer orderId) throws Exception;
 }

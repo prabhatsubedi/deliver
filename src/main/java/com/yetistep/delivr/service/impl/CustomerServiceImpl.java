@@ -719,6 +719,7 @@ public class CustomerServiceImpl implements CustomerService {
             timeDetails.add(timeRemaining);
 
             deliveryBoySelectionEntity.setAccepted(false);
+            deliveryBoySelectionEntity.setRejected(false);
             selectionDetails.add(deliveryBoySelectionEntity);
             log.info("Delivery boys selected from distance calculation:"+selectionDetails.toString());
         }

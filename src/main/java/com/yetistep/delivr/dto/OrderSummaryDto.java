@@ -1,6 +1,7 @@
 package com.yetistep.delivr.dto;
 
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.ItemsOrderEntity;
 import com.yetistep.delivr.model.StoreEntity;
 
@@ -22,6 +23,7 @@ public class OrderSummaryDto {
     private AccountSummary accountSummary;
     private List<ItemsOrderEntity> itemOrders;
     private StoreEntity store;
+    private DeliveryBoyEntity deliveryBoy;
 
     public Integer getId() {
         return id;
@@ -79,6 +81,14 @@ public class OrderSummaryDto {
         this.store = store;
     }
 
+    public DeliveryBoyEntity getDeliveryBoy() {
+        return deliveryBoy;
+    }
+
+    public void setDeliveryBoy(DeliveryBoyEntity deliveryBoy) {
+        this.deliveryBoy = deliveryBoy;
+    }
+
     public class AccountSummary{
         private BigDecimal subTotal;
         private BigDecimal vatAndServiceCharge;
@@ -87,6 +97,7 @@ public class OrderSummaryDto {
         private BigDecimal totalDiscount;
         private BigDecimal estimatedTotal;
         private Boolean partnerShipStatus;
+        private String currency;
 
         public BigDecimal getSubTotal() {
             return subTotal;
@@ -142,6 +153,14 @@ public class OrderSummaryDto {
 
         public void setPartnerShipStatus(Boolean partnerShipStatus) {
             this.partnerShipStatus = partnerShipStatus;
+        }
+
+        public String getCurrency() {
+            return currency;
+        }
+
+        public void setCurrency(String currency) {
+            this.currency = currency;
         }
     }
 }

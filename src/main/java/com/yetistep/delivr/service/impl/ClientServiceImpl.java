@@ -443,13 +443,17 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         accountSummary.setEstimatedTotal(order.getGrandTotal());
         accountSummary.setDeliveryFee(order.getCourierTransaction().getDeliveryChargedBeforeDiscount());
         accountSummary.setTotalDiscount(order.getCourierTransaction().getDeliveryChargedBeforeDiscount().subtract(order.getCourierTransaction().getDeliveryChargedAfterDiscount()));
+        accountSummary.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         orderSummary.setAccountSummary(accountSummary);
-        /*responseOrder.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge());
-        responseOrder.setTotalCost(order.getTotalCost());
-        responseOrder.setSystemServiceCharge(order.getSystemServiceCharge());
-        responseOrder.setDeliveryCharge(order.getDeliveryCharge());
-        responseOrder.setGrandTotal(order.getGrandTotal());*/
         orderSummary.setAttachments(orderAttachments);
+
+        if(order.getDeliveryBoy() != null){
+            DeliveryBoyEntity deliveryBoyEntity = new DeliveryBoyEntity();
+            UserEntity user = new UserEntity();
+            user.setProfileImage(order.getDeliveryBoy().getUser().getProfileImage());
+            deliveryBoyEntity.setUser(user);
+            orderSummary.setDeliveryBoy(deliveryBoyEntity);
+        }
         return orderSummary;
     }
 

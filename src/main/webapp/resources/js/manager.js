@@ -916,6 +916,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
         callback.requestType = "GET";
         Main.request('/organizer/gods_view', {}, callback);
 
+        disableMapEdit = true;
         if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
         $('.toggle_map_view').click(function(){
             if($(this).hasClass('glyphicon-resize-full')) {

@@ -134,6 +134,8 @@
                     </div>
                 </div>
             </div>
+            <div class="top_blur"></div>
+            <div class="bottom_blur"></div>
         </div>
 
         <div class="block_counts col-sm-12">

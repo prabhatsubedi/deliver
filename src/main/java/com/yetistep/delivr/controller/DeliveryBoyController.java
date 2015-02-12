@@ -295,15 +295,15 @@ public class DeliveryBoyController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value="/shopping_list", method = RequestMethod.GET)
+    @RequestMapping(value="/shopping_list/order/{orderId}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getOrderDetails(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> getShoppingList(@RequestHeader HttpHeaders headers, @PathVariable Integer orderId) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
+            GeneralUtil.fillHeaderCredential(headers, headerDto/*, GeneralUtil.ACCESS_TOKEN*/);
             //validateMobileClient(headerDto.getAccessToken());
 
-            OrderSummaryDto orderSummary = deliveryBoyService.getShoppingList(Integer.parseInt(headerDto.getId()));
+            OrderSummaryDto orderSummary = deliveryBoyService.getShoppingList(orderId);
             ServiceResponse serviceResponse = new ServiceResponse("Shopping List retrieved successfully");
             serviceResponse.addParam("order",orderSummary);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

@@ -981,4 +981,55 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     public String getCurrencyType() throws Exception {
         return systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
     }
+
+    @Override
+    public Boolean reOrder(Integer orderId, Long facebookId, Boolean flushCart) throws Exception{
+        Boolean cartExists = cartDaoService.checkCartExist(facebookId);
+        if (!flushCart) {
+            if (cartExists) {
+                throw new YSException("CRT009");
+            }
+        }
+        OrderEntity order = orderDaoService.find(orderId);
+        if(!order.getCustomer().getFacebookId().equals(facebookId)){
+            throw new YSException("ORD013");
+        }
+        StoresBrandEntity storesBrandEntity = order.getStore().getStoresBrand();
+        if(!storesBrandEntity.getStatus().equals(Status.ACTIVE)){
+            throw new YSException("STB001");
+        }
+        if(cartExists){
+            List<Integer> cartList = cartDaoService.findCarts(facebookId, null);
+            if (cartList.size() > 0) {
+                log.info("++++++++ Deleting previous cart and and its attributes ++++++++");
+                List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cartList);
+                // Delete Cart Attributes
+                if (cartAttributes.size() > 0)
+                    cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+                //Delete Carts
+                cartDaoService.deleteCarts(cartList);
+            }
+        }
+        List<ItemsOrderEntity> itemsOrderEntities = order.getItemsOrder();
+        for(ItemsOrderEntity itemsOrder: itemsOrderEntities){
+            if(itemsOrder.getItem() != null){
+                CartEntity cartEntity = new CartEntity();
+                cartEntity.setItem(itemsOrder.getItem());
+                cartEntity.setCustomer(order.getCustomer());
+                cartEntity.setNote(itemsOrder.getCustomerNote());
+                cartEntity.setOrderQuantity(itemsOrder.getQuantity());
+                cartEntity.setStoresBrand(storesBrandEntity);
+                List<CartAttributesEntity> cartAttributesEntities = new ArrayList<CartAttributesEntity>();
+                for(ItemsOrderAttributeEntity itemsOrderAttribute: itemsOrder.getItemOrderAttributes()){
+                    CartAttributesEntity cartAttribute = new CartAttributesEntity();
+                    cartAttribute.setCart(cartEntity);
+                    cartAttribute.setItemsAttribute(itemsOrderAttribute.getItemsAttribute());
+                    cartAttributesEntities.add(cartAttribute);
+                }
+                cartEntity.setCartAttributes(cartAttributesEntities);
+                cartDaoService.save(cartEntity);
+            }
+        }
+        return true;
+    }
 }

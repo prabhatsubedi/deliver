@@ -198,17 +198,14 @@ public class CartDaoServiceImpl implements CartDaoService{
     }
 
     @Override
-    public Boolean updateCartWithOrder(List<Integer> cartIds, Integer orderId) throws Exception {
-        String idList = "(";
-        for(Integer cartId: cartIds){
-            idList += cartId + ",";
+    public Boolean checkCartExist(Long facebookId) throws Exception {
+        String sql = "SELECT count(id) FROM cart WHERE customer_fb_id = :facebookId";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("facebookId", facebookId);
+        Integer availableQty = ((Number) query.uniqueResult()).intValue();
+        if(availableQty.equals(0)){
+            return false;
         }
-        idList = idList.substring(0, idList.length()-1) +")";
-        String sqlQuery = "UPDATE cart SET order_id = :orderId WHERE id in "+idList;
-        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
-        query.setParameter("orderId", orderId);
-        query.executeUpdate();
         return true;
     }
-
 }

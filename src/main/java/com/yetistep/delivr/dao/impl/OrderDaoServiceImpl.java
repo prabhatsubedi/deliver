@@ -108,7 +108,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
                 "o.order_date as orderDate, dbs.paid_to_courier as paidToCourier, dbs.customer_chargeable_distance " +
                 "as customerChargeableDistance, dbs.system_chargeable_distance as systemChargeableDistance, " +
                 "dbs.time_required as assignedTime, dbs.total_time_required as remainingTime FROM orders o INNER JOIN " +
-                "dboy_selections dbs on (dbs.order_id = o.id) WHERE o.order_status =:orderPlaced " +
+                "dboy_selections dbs on (dbs.order_id = o.id) WHERE dbs.rejected = :rejected AND  o.order_status =:orderPlaced " +
                 "AND dbs.dboy_id = :deliveryBoyId";
         Properties params = new Properties();
         params.put("enumClass", "com.yetistep.delivr.enums.JobOrderStatus");
@@ -126,6 +126,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
                 .addScalar("systemChargeableDistance", BigDecimalType.INSTANCE)
                 .addScalar("assignedTime", IntegerType.INSTANCE)
                 .addScalar("remainingTime", IntegerType.INSTANCE);
+        query.setParameter("rejected", false);
         query.setParameter("orderPlaced", JobOrderStatus.ORDER_PLACED.ordinal());
         query.setParameter("deliveryBoyId", deliveryBoyId);
         query.setResultTransformer(Transformers.aliasToBean(OrderInfoDto.class));

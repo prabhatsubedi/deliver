@@ -698,12 +698,16 @@ public class ClientController extends AbstractManager{
 
     @RequestMapping(value = "/reorder/order/{orderId}/fbId/{facebookId}", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> reorderPreviousItems(@RequestHeader HttpHeaders headers, @PathVariable Integer orderId, @PathVariable Long facebookId, @RequestBody RequestJsonDto requestJsonDto) {
+    public ResponseEntity<ServiceResponse> reorderPreviousItems(@RequestHeader HttpHeaders headers, @PathVariable Integer orderId, @PathVariable Long facebookId, @RequestBody(required = false) RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
             validateMobileClient(headerDto.getAccessToken());
 
+            if(requestJsonDto == null){
+                requestJsonDto = new RequestJsonDto();
+                requestJsonDto.setFlushCart(false);
+            }
             clientService.reOrder(orderId, facebookId, requestJsonDto.getFlushCart());
             ServiceResponse serviceResponse = new ServiceResponse("Reorder has been accomplished successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

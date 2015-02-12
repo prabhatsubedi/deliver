@@ -322,20 +322,21 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             if($('body').hasClass('menu_opened')) {
                 $('.menu_text', target_menu).fadeOut(100);
                 $(target_body).animate({marginLeft: close_width});
-                $('.sidebar_logo', target_menu).animate({paddingTop: close_logo_pad, paddingBottom: close_logo_pad});
+                $('.sidebar_logo', target_menu).animate({paddingTop: close_logo_pad, paddingBottom: close_logo_pad, width: 22});
                 $('.sidebar_menu a', target_menu).animate({paddingLeft: close_menu_link_pad_left});
                 $('.sidebar_menu li li', target_menu).animate({paddingLeft: 0});
-                $('.sidebar_inner', target_menu).animate({paddingLeft: close_menu_pad});
+                $('.sidebar_inner', target_menu).animate({paddingLeft: close_menu_pad, paddingRight: close_menu_pad});
                 $(target_menu).animate({width: close_width, padding: close_menu_pad}, function(){
                     $('body').removeClass('menu_opened').addClass('menu_closed');
                     Main.saveInLocalStorage('menu', 'closed');
                 });
             } else {
                 $(target_body).animate({marginLeft: open_width});
+                $('.sidebar_logo', target_menu).css('width', '100%');
                 $('.sidebar_logo', target_menu).animate({paddingTop: open_logo_pad, paddingBottom: open_logo_pad});
                 $('.sidebar_menu a', target_menu).animate({paddingLeft: open_menu_link_pad_left});
                 $('.sidebar_menu li li', target_menu).animate({paddingLeft: open_menu_link_pad_left});
-                $('.sidebar_inner', target_menu).animate({paddingLeft: open_menu_pad});
+                $('.sidebar_inner', target_menu).animate({paddingLeft: open_menu_pad, paddingRight: open_menu_pad});
                 $(target_menu).animate({width: open_width, padding: open_menu_pad}, function(){
                     $('body').removeClass('menu_closed').addClass('menu_opened');
                     Main.saveInLocalStorage('menu', 'opened');

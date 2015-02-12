@@ -162,7 +162,7 @@
         <div class="block_counts col-sm-12">
             <div class="col-sm-3 count_block_cont">
                 <div class="count_cont table_div">
-                    <span class="td_div"><span class="count_span count_red" data-get="timeExceededDelivery">0</span>%</span> <span class="count_label td_div">Exceed On Time</span>
+                    <span class="td_div count_red"><span class="count_span" data-get="timeExceededDelivery">0</span>%</span> <span class="count_label td_div">Exceed On Time</span>
                 </div>
             </div>
             <div class="col-sm-3 count_block_cont">
@@ -172,7 +172,7 @@
             </div>
             <div class="col-sm-3 count_block_cont">
                 <div class="count_cont table_div">
-                    <span class="count_span td_div count_red" data-get="totalActiveUser">0</span> <span class="count_label td_div">Total Active Users</span>
+                    <span class="count_span td_div" data-get="totalActiveUser">0</span> <span class="count_label td_div">Total Active Users</span>
                 </div>
             </div>
             <div class="col-sm-3 count_block_cont">

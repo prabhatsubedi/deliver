@@ -583,7 +583,6 @@ body.assistance_page {
 }
 .sidebar_logo {
     padding: 50px 0px;
-    margin-right: -20px;
 }
 .sidebar_logo img {
     margin: 0px auto;
@@ -641,10 +640,12 @@ body.assistance_page {
 }
 .menu_closed .sidebar .sidebar_inner {
     padding-left: 10px;
+    padding-right: 10px;
 }
 .menu_closed #sidebar_menu .sidebar_logo {
     padding-top: 10px;
     padding-bottom: 10px;
+    width: 22px;
 }
 .menu_closed #sidebar_menu .sidebar_menu ul li li {
     padding-left: 0px;

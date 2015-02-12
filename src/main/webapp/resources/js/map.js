@@ -206,6 +206,10 @@ $(document).ready(function(){
         var p_lang = params.lang;
         var location = latLngToLocation(p_lat, p_lang);
         var icon;
+
+        mapBounds.extend(location);
+        map.fitBounds(mapBounds);
+
         if(marker_type == 'customer') {
             icon = null;
         } else if(marker_type == 'store') {
@@ -221,9 +225,6 @@ $(document).ready(function(){
         });
         marker.paramName = p_name;
         marker.paramAddress = p_address;
-
-        mapBounds.extend(location);
-        map.fitBounds(mapBounds);
 
         google.maps.event.addListener(marker, 'mouseover', function () {
             var marker_address = $('.infowindow_template').clone();

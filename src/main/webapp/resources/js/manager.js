@@ -890,6 +890,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.loadDashboard = function(){
 
+        disableMapEdit = true;
+        if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
+
         $('.count_head').click(function(){
             $(this).next('.more_data_cont').stop().slideToggle(200);
         });
@@ -903,6 +906,24 @@ if (typeof(Manager) == "undefined") var Manager = {};
             }
 
             var godView = data.params.godsView[0];
+
+            var deliveryBoyLocations = godView.deliveryBoyLocations;
+            deliveryBoyLocations = deliveryBoyLocations[Object.keys(deliveryBoyLocations)[0]];
+            var storeLocations = godView.storeLocations;
+            storeLocations = storeLocations[Object.keys(storeLocations)[0]];
+            var customerLocations = godView.customerLocations;
+            customerLocations = customerLocations[Object.keys(customerLocations)[0]];
+
+            for(var i in deliveryBoyLocations) {
+                addGodMarker(JSON.parse(deliveryBoyLocations[i]), "courier");
+            }
+            for(var i in storeLocations) {
+                addGodMarker(JSON.parse(storeLocations[i]), "store");
+            }
+            for(var i in customerLocations) {
+                addGodMarker(JSON.parse(customerLocations[i]), "customer");
+            }
+
             var currentDelivery = godView.currentDelivery;
             currentDelivery = currentDelivery[Object.keys(currentDelivery)[0]];
             var newOrders = godView.newOrders;
@@ -910,7 +931,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var data_row = '';
             for(var i in newOrders) {
                 var newOrder = JSON.parse(newOrders[i]);
-                console.log(newOrder);
                 data_row += '<div class="data_row">' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
             }
             $('.new_orders .more_data').html(data_row);
@@ -932,8 +952,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
         callback.requestType = "GET";
         Main.request('/organizer/gods_view', {}, callback);
 
-        disableMapEdit = true;
-        if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
         $('.toggle_map_view').click(function(){
             if($(this).hasClass('glyphicon-resize-full')) {
                 $('body').addClass('menu_opened');
@@ -942,6 +960,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 $('.menu_toggle').trigger('click');
                 $('.map-container').animate({height: $(window).height() - 385}, function(){
                     google.maps.event.trigger(map, 'resize');
+                    map.fitBounds(mapBounds);
                 });
             } else {
                 $('body').removeClass('menu_opened');
@@ -950,6 +969,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 //                $('.menu_toggle').trigger('click');
                 $('.map-container').css('height', '');
                 google.maps.event.trigger(map, 'resize');
+                map.fitBounds(mapBounds);
             }
         });
 

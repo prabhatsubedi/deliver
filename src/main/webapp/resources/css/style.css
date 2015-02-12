@@ -1755,11 +1755,14 @@ label.check_label .checkbox {
 }
 .god_view .block_counts .count_cont  {
     background-color: #ffffff;
-    color: #969696;
+    color: #666666;
     font-size: 20px;
     padding: 15px 25px;
     text-align: left;
     height: 90px;
+}
+.god_view .map-container .block_counts .count_cont  {
+    background-color: rgba(255, 255, 255, 0.8);
 }
 .god_view .block_counts .count_cont .td_div  {
     vertical-align: middle;

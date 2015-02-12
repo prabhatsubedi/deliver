@@ -187,5 +187,14 @@
     </div>
 </div>
 
+
+
+<div class="infowindow_template hidden">
+    <div class="infowindow">
+        <p><strong class="name_line"></strong></p>
+        <p class="address_line"></p>
+    </div>
+</div>
+
 </body>
 </html>

@@ -10,4 +10,5 @@ package com.yetistep.delivr.util;
 public class CommonConstants {
     public static final String DELETE_FLAG = "D";
     public static final String BLANK = "";
+    public static final String DELIMITER = "%";
 }

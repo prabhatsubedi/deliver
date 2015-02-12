@@ -4,6 +4,7 @@ import com.yetistep.delivr.dao.inf.StoreDaoService;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.StoreEntity;
+import com.yetistep.delivr.model.StoresBrandEntity;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -82,6 +83,18 @@ public class StoreDaoServiceImpl implements StoreDaoService{
         Integer activeStore = ((Number) query.uniqueResult()).intValue();
 
         return activeStore;
+    }
+
+    @Override
+    public List<StoreEntity> findStores(Integer brandId) throws Exception {
+        String sql = "SELECT name, latitude, longitude, city, street FROM stores WHERE stores_brand_id = :brandId AND status = :status";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("brandId", brandId);
+        sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(StoreEntity.class));
+
+        List<StoreEntity> storeEntities = sqlQuery.list();
+        return storeEntities;
     }
 
 //    @Override

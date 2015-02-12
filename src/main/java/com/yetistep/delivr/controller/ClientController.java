@@ -695,6 +695,22 @@ public class ClientController extends AbstractManager{
         }
     }
 
+    @RequestMapping(value = "/search_all/word/{word}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getCurrency(@PathVariable("word") String word, @RequestBody RequestJsonDto requestJsonDto) {
+        try{
+
+            String currencyType = clientService.getCurrencyType();
+            ServiceResponse serviceResponse = new ServiceResponse("Search content retrieved successfully");
+//            serviceResponse.addParam("currency", currencyType);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while searching items and stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
     @RequestMapping(value = "/reorder/order/{orderId}/fbId/{facebookId}", method = RequestMethod.POST)
     @ResponseBody

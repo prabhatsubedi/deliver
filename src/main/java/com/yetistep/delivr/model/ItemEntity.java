@@ -61,6 +61,9 @@ public class ItemEntity implements Serializable {
     private String brandName; //Transient Value
     private Integer orderQuantity; //Transient Value
     private String currency; //Transient Value
+    private Integer brandId; //Transient Value
+    private String openingTime; //Transient Value
+    private String closingTime; //Transient Value
 
     private CategoryEntity category;
     private StoresBrandEntity storesBrand;
@@ -413,5 +416,29 @@ public class ItemEntity implements Serializable {
 
     public void setBrandName(String brandName) {
         this.brandName = brandName;
+    }
+
+    public Integer getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(Integer brandId) {
+        this.brandId = brandId;
+    }
+
+    public String getOpeningTime() {
+        return openingTime;
+    }
+
+    public void setOpeningTime(String openingTime) {
+        this.openingTime = openingTime;
+    }
+
+    public String getClosingTime() {
+        return closingTime;
+    }
+
+    public void setClosingTime(String closingTime) {
+        this.closingTime = closingTime;
     }
 }

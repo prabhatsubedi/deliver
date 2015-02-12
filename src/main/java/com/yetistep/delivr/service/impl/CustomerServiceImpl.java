@@ -11,6 +11,7 @@ import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
 import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
+import com.yetistep.delivr.model.mobile.dto.SearchDto;
 import com.yetistep.delivr.schedular.ScheduleChanger;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
@@ -88,6 +89,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     BrandsCategoryDaoService brandsCategoryDaoService;
+
+    @Autowired
+    ItemDaoService itemDaoService;
+
+    @Autowired
+    StoreDaoService storeDaoService;
 
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
@@ -863,4 +870,90 @@ public class CustomerServiceImpl implements CustomerService {
         paginationDto.setData(pastOrders);
         return paginationDto;
     }
+
+    @Override
+    public SearchDto getSearchContent(String word, RequestJsonDto requestJsonDto) throws Exception {
+        log.info("+++++++++++++ Searching content of " + word + " +++++++++++++");
+        List<SearchDto.Items> searchItemList = new ArrayList<>();
+
+        SearchDto searchDto = new SearchDto();
+        if(word.length() < 3)
+            throw new YSException("VLD028");
+
+        String lat = null;
+        String lon = null;
+        if (requestJsonDto.getGpsInfo() == null) {
+            CustomerEntity customerEntity = customerDaoService.find(requestJsonDto.getCustomerInfo().getClientId());
+            if (customerEntity == null)
+                throw new YSException("VLD011");
+            lat = customerEntity.getLatitude();
+            lon = customerEntity.getLongitude();
+        } else {
+            lat = requestJsonDto.getGpsInfo().getLatitude();
+            lon = requestJsonDto.getGpsInfo().getLongitude();
+        }
+
+
+        List<ItemEntity> items = itemDaoService.searchItems(word);
+        if(items !=null && items.size() > 0){
+            //Search Nearest Stores for Adress
+            for(ItemEntity item : items){
+                //Check Store Close or open right at now
+                //Todo:
+                SearchDto.Items tempItem = new SearchDto.Items();
+                List<StoreEntity> storeEntities = storeDaoService.findStores(item.getBrandId());
+                if(storeEntities.size() == 0) { //If all Stores are inactivated
+                    items.remove(item);
+                    continue;
+                }
+
+                //Add Default Image If Image not at item
+                if(item.getImageUrl() == null)
+                    item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+
+                /* Extract Latitude and Longitude */
+                String[] storeDistance = new String[storeEntities.size()];
+                String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
+
+                for (int i = 0; i < storeEntities.size(); i++) {
+                    storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
+                }
+
+                List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
+
+                //Set Distance to Store Entity
+                for (int i = 0; i < storeEntities.size(); i++) {
+                    storeEntities.get(i).setCustomerToStoreDistance(distanceList.get(i));
+                }
+
+                //Store Entity List Sorted by Distance
+                Collections.sort(storeEntities, new StoreDistanceComparator());
+
+                //Set to All
+                tempItem.setItemId(item.getId());
+                tempItem.setItemName(item.getName());
+                tempItem.setUnitPrice(item.getUnitPrice());
+                tempItem.setItemImageUrl(item.getImageUrl());
+                tempItem.setBrandName(item.getBrandName());
+                tempItem.setStoreStreet(storeEntities.get(0).getStreet());
+                searchItemList.add(tempItem);
+            }
+        }
+
+        //Now Goes To Search Brand
+
+
+
+        return searchDto;
+    }
+
+    class StoreDistanceComparator implements Comparator<StoreEntity> {
+
+        @Override
+        public int compare(StoreEntity o1, StoreEntity o2) {
+            BigDecimal distanceSub = o1.getCustomerToStoreDistance().subtract(o2.getCustomerToStoreDistance());
+            return distanceSub.intValue();
+        }
+    }
+
 }

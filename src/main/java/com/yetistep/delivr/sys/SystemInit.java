@@ -77,4 +77,15 @@ public class SystemInit {
 
     }
 
+//    private void closeC3P0DataSource(){
+//        log.info("Closing the C3P0 DataSource");
+//        try {
+//            C3p0DataSource.getInstance().destroy();
+//        } catch (Exception e) {
+//            log.error("Error occurred while closing C3P0 DataSource", e);
+//        }
+//
+//    }
+
+
 }

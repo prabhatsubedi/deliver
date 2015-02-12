@@ -104,7 +104,9 @@ public class CartDaoServiceImpl implements CartDaoService{
                 .add(Projections.property("i.unitPrice"), "item.unitPrice")
                 .add(Projections.property("i.serviceCharge"), "item.serviceCharge")
                 .add(Projections.property("i.vat"), "item.vat")
-                .add(Projections.property("i.status"), "item.status");
+                .add(Projections.property("i.status"), "item.status")
+                .add(Projections.property("i.minOrderQuantity"), "item.minOrderQuantity")
+                .add(Projections.property("i.maxOrderQuantity"), "item.maxOrderQuantity");
 
 
         Criteria criteria = getCurrentSession().createCriteria(CartEntity.class)
@@ -145,6 +147,17 @@ public class CartDaoServiceImpl implements CartDaoService{
         String sql = "UPDATE cart SET order_quantity = order_quantity + :additionalQuantity WHERE id = :cartId";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("additionalQuantity", additionalQuantity);
+        sqlQuery.setParameter("cartId", cartId);
+
+        sqlQuery.executeUpdate();
+        return true;
+    }
+
+    @Override
+    public Boolean updateMinOrderQuantity(Integer cartId, Integer minQn) throws Exception {
+        String sql = "UPDATE cart SET order_quantity = :minQn WHERE id = :cartId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("minQn", minQn);
         sqlQuery.setParameter("cartId", cartId);
 
         sqlQuery.executeUpdate();

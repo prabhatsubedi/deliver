@@ -699,7 +699,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
         List<CartEntity> cartEntities = cartDaoService.getMyCarts(facebookId);
         if(cartEntities==null || cartEntities.size() == 0) {
-            cartDto.setMessage("CRT001");
+            cartDto.setMessage("CRT001"); //Cart does not exist
             cartDto.setValid(false);
             return cartDto;
         }
@@ -707,7 +707,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
         Boolean isOpen = DateUtil.isTimeBetweenTwoTime(cartEntities.get(0).getStoresBrand().getOpeningTime().toString(), cartEntities.get(0).getStoresBrand().getClosingTime().toString(),DateUtil.getCurrentTime().toString());
         if(!isOpen){
-            cartDto.setMessage("CRT003");
+            cartDto.setMessage("CRT003"); //Store is closed at this time
             cartDto.setValid(false);
             return cartDto;
         }
@@ -751,7 +751,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
             cartDaoService.deleteCarts(carts);
 
-            cartDto.setMessage("CRT004");
+            cartDto.setMessage("CRT004"); //Cart has been deleted due to store is inactive
             cartDto.setValid(false);
             return cartDto;
 
@@ -772,11 +772,11 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             cartDaoService.deleteCarts(carts);
 
             if(cartEntities.size() == inActiveCarts.size())    {
-                cartDto.setMessage("CRT005");
+                cartDto.setMessage("CRT005"); //Cart has been deleted due to all items are inactive
                 cartDto.setValid(false);
                 return cartDto;
             } else {
-                cartDto.setMessage("CRT006");
+                cartDto.setMessage("CRT006"); //Some items has been deleted due to inactive
                 cartDto.setValid(false);
                 return cartDto;
             }
@@ -785,6 +785,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         }
 
        if(BigDecimalUtil.isLessThen(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)), totalPrice)) {
+           //Max order amount reached
            cartDto.setMessage("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
            cartDto.setValid(false);
            return cartDto;
@@ -792,10 +793,27 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
 
        if(BigDecimalUtil.isLessThen(totalPrice, cartEntities.get(0).getStoresBrand().getMinOrderAmount())) {
+           //Minimum order value is
            cartDto.setMessage("CRT008:"+" "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+ cartEntities.get(0).getStoresBrand().getMinOrderAmount());
            cartDto.setValid(false);
            return cartDto;
        }
+
+        //Now Check if Min and Max Order Quanitity Has been changed from system
+        boolean orderLimitationChanged = false;
+        for(CartEntity cartEntity : cartEntities){
+            if(cartEntity.getOrderQuantity()< cartEntity.getItem().getMinOrderQuantity() || cartEntity.getOrderQuantity() > cartEntity.getItem().getMaxOrderQuantity()) {
+                orderLimitationChanged = true;
+                Integer changeableOrderQn = cartEntity.getItem().getMinOrderQuantity();
+                cartDaoService.updateMinOrderQuantity(cartEntity.getId(), changeableOrderQn);
+            }
+        }
+
+        if(orderLimitationChanged) {
+            cartDto.setMessage("CRT009"); //Some item's order quantity limitation has been changed. Please review your order
+            cartDto.setValid(false);
+            return cartDto;
+        }
 
 
         cartDto.setMessage("");

@@ -44,17 +44,17 @@
                             </div>
                             <div class="form_content">
                                 <div class="product_images form-group clearfix">
-                                    <div class="product_image col-lg-4">
+                                    <div class="product_image col-sm-4">
                                         <div class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
                                             <div class="drop_info">no image available</div>
                                         </div>
                                     </div>
-                                    <div class="product_image col-lg-4">
+                                    <div class="product_image col-sm-4">
                                         <div class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
                                             <div class="drop_info">no image available</div>
                                         </div>
                                     </div>
-                                    <div class="product_image col-lg-4">
+                                    <div class="product_image col-sm-4">
                                         <div class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
                                             <div class="drop_info">no image available</div>
                                         </div>

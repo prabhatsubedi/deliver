@@ -452,6 +452,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             UserEntity user = new UserEntity();
             user.setProfileImage(order.getDeliveryBoy().getUser().getProfileImage());
             user.setFullName(order.getDeliveryBoy().getUser().getFullName());
+            user.setMobileNumber(order.getDeliveryBoy().getUser().getMobileNumber());
             deliveryBoyEntity.setUser(user);
             orderSummary.setDeliveryBoy(deliveryBoyEntity);
         }

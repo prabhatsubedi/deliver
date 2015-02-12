@@ -87,7 +87,7 @@
                         </div>
                         <div class="more_data_cont">
                             <div class="more_data">
-                                <div class="data_row"><span class="badge">0ms</span>Average Delivery time</div>
+                                <div class="data_row"><span class="badge"><span class="count_ct_averageDeliveryTime">0</span>ms</span>Average Delivery time</div>
                             </div>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                         </div>
                         <div class="more_data_cont">
                             <div class="more_data">
-                                <div class="data_row"><span class="badge">0ms</span>Average Delivery time</div>
+                                <div class="data_row"><span class="badge"><span class="count_std_averageDeliveryTime">0</span>ms</span>Average Delivery time</div>
                             </div>
                         </div>
                     </div>

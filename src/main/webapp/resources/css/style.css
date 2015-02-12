@@ -1662,16 +1662,20 @@ label.check_label .checkbox {
     padding: 5px 25px;
 }
 .count_section .count_block .data_row {
+    border-top: 1px dotted #ccc;
     color: #282828;
     font-size: 16px;
-    padding: 12px 0px;
+    padding: 12px 0;
+}
+.count_section .count_block .data_row:first-child {
+    border-top: none;
 }
 .count_section .count_block .data_row .badge {
     border-radius: 60px;
     font-size: 16px;
     margin-right: 15px;
     padding: 8px 10px;
-    width: 60px;
+    min-width: 60px;
     float: left;
     margin-top: -5px;
     background-color: #C8C8C8;

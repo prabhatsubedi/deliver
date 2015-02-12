@@ -905,6 +905,15 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var godView = data.params.godsView[0];
             var currentDelivery = godView.currentDelivery;
             currentDelivery = currentDelivery[Object.keys(currentDelivery)[0]];
+            var newOrders = godView.newOrders;
+            newOrders = newOrders[Object.keys(newOrders)[0]];
+            var data_row = '';
+            for(var i in newOrders) {
+                var newOrder = JSON.parse(newOrders[i]);
+                console.log(newOrder);
+                data_row += '<div class="data_row">' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
+            }
+            $('.new_orders .more_data').html(data_row);
 
             $('.count_span').each(function(){
                 $(this).html(Object.keys(godView[$(this).attr('data-get')])[0]);
@@ -914,6 +923,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
             $('.count_inRouteToPickUp').html(currentDelivery.inRouteToPickUp);
             $('.count_atStore').html(currentDelivery.atStore);
             $('.count_orderAccepted').html(currentDelivery.orderAccepted);
+            $('.count_ct_averageDeliveryTime').html(godView.completedToday[Object.keys(godView.completedToday)[0]].averageDeliveryTime);
+            $('.count_std_averageDeliveryTime').html(godView.servedTillDate[Object.keys(godView.servedTillDate)[0]].averageDeliveryTime);
 
 
         }

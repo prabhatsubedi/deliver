@@ -10,6 +10,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -136,7 +137,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         String sqQuery = "SELECT SUM(doh.completed_at - doh.job_started_at) FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status = 5";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
 
-        BigInteger cnt = (BigInteger) query.uniqueResult();
+        BigDecimal cnt = (BigDecimal) query.uniqueResult();
         if(cnt != null)
             return cnt.intValue();
         else return 0;
@@ -185,7 +186,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         String sqQuery = "SELECT SUM(doh.completed_at - doh.job_started_at) FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status = 5 && doh.completed_at > '"+dateFormat.format(cal.getTime())+"'";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
 
-        BigInteger cnt = (BigInteger) query.uniqueResult();
+        BigDecimal cnt = (BigDecimal) query.uniqueResult();
         if(cnt != null)
             return cnt.intValue();
         else return 0;

@@ -118,7 +118,7 @@
             </div>--%>
             <div id="custom_map_controls" class="clearfix">
                 <div id="scroll_zoom" class="pull-left">Enable Scroll Zoom</div>
-                <div id="clear_markers" class="pull-left">Clear All Markers</div>
+                <%--<div id="clear_markers" class="pull-left">Clear All Markers</div>--%>
             </div>
             <div id="map-canvas"></div>
             <div class="toggle_map_view glyphicon glyphicon-resize-full"></div>

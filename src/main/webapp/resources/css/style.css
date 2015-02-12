@@ -1618,11 +1618,12 @@ label.check_label .checkbox {
 /* Organizer Dashboard */
 .count_section {
     padding-top: 30px;
-    position: absolute;
     z-index: 10;
+    margin-bottom: -15px;
 }
 .count_section .count_block {
     background-color: #FAFAFA;
+    position: relative;
 }
 .count_section .count_block .count_number {
     color: #f7941d;
@@ -1656,6 +1657,9 @@ label.check_label .checkbox {
     display: none;
     border: 1px solid #DDDDDD;
     border-top: none;
+    background-color: #fafafa;
+    position: absolute;
+    width: 100%;
 }
 .count_section .count_block .more_data {
     padding: 5px 25px;
@@ -1686,7 +1690,6 @@ label.check_label .checkbox {
     background-color: #E5E3DF;
     border: 0 none;
     height: 1000px;
-    margin-top: 145px;
     margin-bottom: 30px;
     position: relative;
 }

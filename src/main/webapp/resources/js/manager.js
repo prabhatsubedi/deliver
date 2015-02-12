@@ -89,6 +89,11 @@ if (typeof(Manager) == "undefined") var Manager = {};
         $('#form_activation').validate({
             submitHandler: function (form) {
 
+                if($('#commission').val() == 0 && $('#service_fee').val() == 0) {
+                    alert('Both commission percent and service fee cannot be 0.');
+                    return false;
+                }
+
                 var chk_confirm = confirm('Are you sure you want to activate this merchant?');
                 if (!chk_confirm) return false;
 

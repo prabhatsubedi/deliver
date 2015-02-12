@@ -987,7 +987,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         Boolean cartExists = cartDaoService.checkCartExist(facebookId);
         if (!flushCart) {
             if (cartExists) {
-                throw new YSException("CRT009");
+                throw new YSException("CRT010");
             }
         }
         OrderEntity order = orderDaoService.find(orderId);

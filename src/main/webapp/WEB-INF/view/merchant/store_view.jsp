@@ -149,7 +149,7 @@
 </div>
 
 <div class="block_store_template hidden">
-    <div class="item_container unselectable col-lg-6 invisible">
+    <div class="item_container unselectable col-sm-6 invisible">
         <div class="block_item">
             <div class="item_image maintain_ratio" mr-height="400" mr-width="720">
                 <img class="img-responsive no_image">

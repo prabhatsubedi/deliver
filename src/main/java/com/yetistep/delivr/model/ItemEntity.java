@@ -115,7 +115,7 @@ public class ItemEntity implements Serializable {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)
     public List<ItemsImageEntity> getItemsImage() {
         return itemsImage;
     }
@@ -193,7 +193,7 @@ public class ItemEntity implements Serializable {
         this.itemsStores = itemsStores;
     }
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)
     public List<ItemsAttributesTypeEntity> getAttributesTypes() {
         return attributesTypes;
     }
@@ -395,7 +395,7 @@ public class ItemEntity implements Serializable {
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)
     public List<CartEntity> getCarts() {
         return carts;
     }

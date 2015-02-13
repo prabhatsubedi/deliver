@@ -31,13 +31,13 @@ public class ItemsAttributeDaoServiceImpl implements ItemsAttributeDaoService {
 
     @Override
     public Boolean save(ItemsAttributeEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
     @Override
     public Boolean update(ItemsAttributeEntity value) throws Exception {
-        getCurrentSession().update(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

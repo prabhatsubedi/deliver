@@ -35,7 +35,7 @@ public class CartDaoServiceImpl implements CartDaoService{
 
     @Override
     public Boolean save(CartEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

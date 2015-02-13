@@ -140,7 +140,7 @@ public class ItemsOrderEntity implements Serializable {
         this.serviceCharge = serviceCharge;
     }
 
-    @OneToOne(mappedBy = "itemsOrder", cascade = CascadeType.ALL, orphanRemoval=true)
+    @OneToOne(mappedBy = "itemsOrder", cascade = CascadeType.PERSIST, orphanRemoval=true)
     public CustomItemEntity getCustomItem() {
         return customItem;
     }
@@ -149,7 +149,7 @@ public class ItemsOrderEntity implements Serializable {
         this.customItem = customItem;
     }
 
-    @OneToMany(mappedBy = "itemOrder", cascade = CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(mappedBy = "itemOrder", cascade = CascadeType.PERSIST, orphanRemoval=true)
     public List<ItemsOrderAttributeEntity> getItemOrderAttributes() {
         return itemOrderAttributes;
     }

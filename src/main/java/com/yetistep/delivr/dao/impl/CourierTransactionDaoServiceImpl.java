@@ -31,7 +31,7 @@ public class CourierTransactionDaoServiceImpl implements CourierTransactionDaoSe
 
     @Override
     public Boolean save(CourierTransactionEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

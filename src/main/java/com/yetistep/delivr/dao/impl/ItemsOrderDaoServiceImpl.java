@@ -31,13 +31,13 @@ public class ItemsOrderDaoServiceImpl implements ItemsOrderDaoService {
 
     @Override
     public Boolean save(ItemsOrderEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
     @Override
     public Boolean update(ItemsOrderEntity value) throws Exception {
-        getCurrentSession().update(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

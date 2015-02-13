@@ -77,7 +77,7 @@ public class ItemsAttributeEntity implements Serializable {
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "itemsAttribute", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "itemsAttribute", cascade = CascadeType.PERSIST)
     public List<CartAttributesEntity> getCartAttributes() {
         return cartAttributes;
     }

@@ -636,6 +636,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         //save items category
         if(itemCategories.size()>1){
             CategoryEntity parentCategory = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
+            if(parentCategory.getItem().size() > 0)
+                throw new YSException("VLD012");
+
             itemCategories.set(0, parentCategory);
             int i;
             for(i = 1; i<itemCategories.size(); i++){
@@ -764,7 +767,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Map<Integer, ItemsAttributeEntity> dbItemAttributesMap = new HashMap<Integer, ItemsAttributeEntity>();
 
         for (ItemsStoreEntity dbItemsStore: dbItemStoreEntities){
-            dbItemsStoreIdList.add(dbItemsStore.getId());
+            dbItemsStoreIdList.add(dbItemsStore.getStore().getId());
         }
 
         for (ItemsAttributesTypeEntity itemsAttributesType: dbItemsAttributesTypes){

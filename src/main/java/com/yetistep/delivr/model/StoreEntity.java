@@ -68,7 +68,7 @@ public class StoreEntity implements Serializable {
         this.storesBrand = storesBrand;
     }
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
     @JsonProperty
     public List<ItemsStoreEntity> getItemsStore() {
         return itemsStore;
@@ -78,7 +78,7 @@ public class StoreEntity implements Serializable {
         this.itemsStore = itemsStore;
     }
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
     public List<OrderEntity> getOrder() {
         return order;
     }

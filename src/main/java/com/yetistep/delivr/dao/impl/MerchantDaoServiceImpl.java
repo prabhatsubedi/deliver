@@ -43,13 +43,13 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public Boolean save(MerchantEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
     @Override
     public Boolean update(MerchantEntity value) throws Exception {
-        getCurrentSession().update(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
@@ -68,7 +68,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public void saveStore(List<StoreEntity> values) throws Exception {
         Integer i = 0;
         for (StoreEntity value: values) {
-            getCurrentSession().save(value);
+            getCurrentSession().persist(value);
             if ( i % 20 == 0 ) { //20, same as the JDBC batch size
                 //flush a batch of inserts and release memory:
                 getCurrentSession().flush();
@@ -82,7 +82,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public void updateStores(List<StoreEntity> values) throws Exception {
         Integer i = 0;
         for (StoreEntity value: values) {
-            getCurrentSession().update(value);
+            getCurrentSession().persist(value);
             if ( i % 20 == 0 ) { //20, same as the JDBC batch size
                 //flush a batch of inserts and release memory:
                 getCurrentSession().flush();
@@ -103,7 +103,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public Boolean saveStoresBrand(StoresBrandEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
@@ -345,7 +345,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public void saveCategories(List<CategoryEntity> categories) throws Exception {
         Integer i = 0;
         for (CategoryEntity value: categories) {
-            getCurrentSession().save(value);
+            getCurrentSession().persist(value);
             if ( i % 20 == 0 ) { //20, same as the JDBC batch size
                 //flush a batch of inserts and release memory:
                 getCurrentSession().flush();
@@ -357,14 +357,14 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public void saveItem(ItemEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
     }
 
     @Override
     public void saveItemImages(List<ItemsImageEntity> itemsImageEntities) throws Exception {
         Integer i = 0;
         for (ItemsImageEntity value: itemsImageEntities) {
-            getCurrentSession().save(value);
+            getCurrentSession().persist(value);
             if ( i % 20 == 0 ) { //20, same as the JDBC batch size
                 //flush a batch of inserts and release memory:
                 getCurrentSession().flush();
@@ -459,7 +459,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public Boolean updateItem(ItemEntity value) throws Exception {
-        getCurrentSession().update(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
@@ -468,9 +468,9 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Integer i = 0;
         for (ItemsImageEntity value: ItemsImages) {
             if(value.getId() == null){
-                getCurrentSession().save(value);
+                getCurrentSession().persist(value);
             }else{
-                getCurrentSession().update(value);
+                getCurrentSession().persist(value);
             }
             if ( i % 20 == 0 ) { //20, same as the JDBC batch size
                 //flush a batch of inserts and release memory:

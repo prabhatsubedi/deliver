@@ -58,7 +58,7 @@ public class CustomerEntity implements Serializable {
         this.id = id;
     }
 
-    @OneToOne(cascade = { CascadeType.ALL})
+    @OneToOne(cascade = { CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonProperty
     public UserEntity getUser() {
@@ -69,7 +69,7 @@ public class CustomerEntity implements Serializable {
         this.user = user;
     }
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JsonProperty
     public List<OrderEntity> getOrder() {
         return order;
@@ -239,7 +239,7 @@ public class CustomerEntity implements Serializable {
         this.allowShare = allowShare;
     }
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.PERSIST)
     @JsonProperty
     public List<CartEntity> getCarts() {
         return carts;

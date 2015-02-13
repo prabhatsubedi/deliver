@@ -42,13 +42,13 @@ public class ReasonDetailsDaoServiceImpl implements ReasonDetailsDaoService {
 
     @Override
     public Boolean save(ReasonDetails value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
     @Override
     public Boolean update(ReasonDetails value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

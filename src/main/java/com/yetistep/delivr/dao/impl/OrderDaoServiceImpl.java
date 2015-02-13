@@ -44,13 +44,13 @@ public class OrderDaoServiceImpl implements OrderDaoService {
 
     @Override
     public Boolean save(OrderEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
     @Override
     public Boolean update(OrderEntity value) throws Exception {
-        getCurrentSession().update(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

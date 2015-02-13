@@ -41,13 +41,13 @@ public class DBoyOrderHistoryDaoServiceImpl implements DBoyOrderHistoryDaoServic
 
     @Override
     public Boolean save(DBoyOrderHistoryEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
     @Override
     public Boolean update(DBoyOrderHistoryEntity value) throws Exception {
-        getCurrentSession().update(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

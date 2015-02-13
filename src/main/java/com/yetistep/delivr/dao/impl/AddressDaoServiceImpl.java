@@ -34,7 +34,7 @@ public class AddressDaoServiceImpl implements AddressDaoService{
 
     @Override
     public Boolean save(AddressEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

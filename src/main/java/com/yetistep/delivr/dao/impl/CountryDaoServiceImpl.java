@@ -31,13 +31,13 @@ public class CountryDaoServiceImpl implements CountryDaoService {
 
     @Override
     public Boolean save(CountryEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
     @Override
     public Boolean update(CountryEntity value) throws Exception {
-        getCurrentSession().update(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

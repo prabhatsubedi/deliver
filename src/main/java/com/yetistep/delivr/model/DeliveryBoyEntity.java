@@ -63,7 +63,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.id = id;
     }
 
-    @OneToOne(cascade = { CascadeType.ALL })
+    @OneToOne(cascade = { CascadeType.PERSIST }, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonProperty
     public UserEntity getUser() {
@@ -257,7 +257,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "deliveryBoy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "deliveryBoy", cascade = CascadeType.PERSIST)
     public List<DBoyAdvanceAmountEntity> getdBoyAdvanceAmounts() {
         return dBoyAdvanceAmounts;
     }
@@ -267,7 +267,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "deliveryBoy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "deliveryBoy", cascade = CascadeType.PERSIST)
     public List<DBoySubmittedAmountEntity> getdBoySubmittedAmount() {
         return dBoySubmittedAmount;
     }

@@ -32,13 +32,13 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
 
     @Override
     public Boolean save(UserDeviceEntity value) throws Exception {
-        getCurrentSession().saveOrUpdate(value);
+        getCurrentSession().persist(value);
         return true;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public Boolean update(UserDeviceEntity value) throws Exception {
-        getCurrentSession().update(value);
+        getCurrentSession().persist(value);
         return true;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

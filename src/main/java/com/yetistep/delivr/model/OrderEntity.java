@@ -134,7 +134,7 @@ public class OrderEntity implements Serializable {
         this.item = item;
     }*/
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     @JsonProperty
     public List<ItemsOrderEntity> getItemsOrder() {
         return itemsOrder;

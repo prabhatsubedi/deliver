@@ -43,13 +43,13 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
 
     @Override
     public Boolean save(CustomerEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
     @Override
     public Boolean update(CustomerEntity value) throws Exception {
-        getCurrentSession().update(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

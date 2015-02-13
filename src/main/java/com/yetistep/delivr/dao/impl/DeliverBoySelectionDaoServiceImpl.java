@@ -34,13 +34,13 @@ public class DeliverBoySelectionDaoServiceImpl implements DeliveryBoySelectionDa
 
     @Override
     public Boolean save(DeliveryBoySelectionEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
     @Override
     public Boolean update(DeliveryBoySelectionEntity value) throws Exception {
-        getCurrentSession().update(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

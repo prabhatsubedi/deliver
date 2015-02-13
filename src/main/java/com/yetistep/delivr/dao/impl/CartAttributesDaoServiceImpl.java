@@ -36,7 +36,7 @@ public class CartAttributesDaoServiceImpl implements CartAttributesDaoService{
 
     @Override
     public Boolean save(CartAttributesEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

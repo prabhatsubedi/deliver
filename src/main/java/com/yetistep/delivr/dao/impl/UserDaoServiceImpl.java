@@ -63,14 +63,14 @@ public class UserDaoServiceImpl implements UserDaoService {
 
     @Override
     public Boolean save(UserEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
     }
 
 
     @Override
     public Boolean update(UserEntity value) throws Exception {
-        getCurrentSession().update(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

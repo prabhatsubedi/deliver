@@ -77,7 +77,7 @@ public class UserEntity implements Serializable {
         this.role = role;
     }
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonProperty
     public DeliveryBoyEntity getDeliveryBoy() {
         return deliveryBoy;
@@ -89,7 +89,7 @@ public class UserEntity implements Serializable {
 
 
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonProperty
     public MerchantEntity getMerchant() {
         return merchant;

@@ -77,6 +77,9 @@ public class RequestJsonDto {
     private List<Integer> brands;
     private Page page;
 
+    /* Variable to decide whether to flush cart or not. */
+    private Boolean flushCart;
+
 
 
 
@@ -359,5 +362,13 @@ public class RequestJsonDto {
 
     public void setPage(Page page) {
         this.page = page;
+    }
+
+    public Boolean getFlushCart() {
+        return flushCart;
+    }
+
+    public void setFlushCart(Boolean flushCart) {
+        this.flushCart = flushCart;
     }
 }

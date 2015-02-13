@@ -22,6 +22,7 @@ var addStoreMarker;
 var latLngToLocation;
 var removeAnimation;
 var lastPosition;
+var addGodMarker;
 
 // Sets the map on all markers in the array.
 function setAllMap(map) {
@@ -47,9 +48,10 @@ function deleteMarkers() {
     arrGeoPoints = {};
 }
 
+var mapBounds;
 $(document).ready(function(){
 
-    var mapBounds = new google.maps.LatLngBounds();
+    mapBounds = new google.maps.LatLngBounds();
 
     function geo_coding(address, noBounds, noCenter)
     {
@@ -73,7 +75,8 @@ $(document).ready(function(){
         var myOptions = {
             zoom: 4,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
-            scrollwheel: scrollwheel == true ? true : false
+            scrollwheel: scrollwheel == true ? true : false,
+            mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
         }
         map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
 
@@ -193,6 +196,47 @@ $(document).ready(function(){
 
     latLngToLocation = function(latitude, longitude) {
         return new google.maps.LatLng(latitude, longitude);
+    }
+
+    addGodMarker = function(params, marker_type) {
+
+        var p_name = params.name;
+        var p_address = params.address;
+        var p_lat = params.lat;
+        var p_lang = params.lang;
+        var location = latLngToLocation(p_lat, p_lang);
+        var icon;
+
+        mapBounds.extend(location);
+        map.fitBounds(mapBounds);
+
+        if(marker_type == 'customer') {
+            icon = null;
+        } else if(marker_type == 'store') {
+            icon = Main.modifyURL("/resources/images/marker_store.png");
+        } else {
+            icon = Main.modifyURL("/resources/images/marker_delivery_boy.png");
+        }
+
+        marker = new google.maps.Marker({
+            position: location,
+            map: map,
+            icon: icon
+        });
+        marker.paramName = p_name;
+        marker.paramAddress = p_address;
+
+        google.maps.event.addListener(marker, 'mouseover', function () {
+            var marker_address = $('.infowindow_template').clone();
+            $('.name_line', marker_address).html(this.paramName);
+            $('.address_line', marker_address).html(this.paramAddress);
+            infowindow.setContent(marker_address.html());
+            infowindow.open(map, this);
+        });
+        google.maps.event.addListener(marker, 'mouseout', function () {
+            infowindow.close();
+        });
+
     }
 
     addMarker = function(location, name) {
@@ -427,7 +471,7 @@ $(document).ready(function(){
                                             }
 
                                             if(country != selectedCountry) {
-                                                alert('Deal redeem location doesn\'t lie within selected country boundary.');
+                                                alert('Marker location doesn\'t lie within selected country boundary.');
                                                 addMarker(lastPosition);
                                                 google.maps.event.trigger(currentMarker, 'rightclick');
                                             }
@@ -441,7 +485,7 @@ $(document).ready(function(){
                         }
                         else
                         {
-                            alert('Deal redeem location doesn\'t lie within selected country boundary.');
+                            alert('Marker location doesn\'t lie within selected country boundary.');
                             return false;
                         }
                     } else {
@@ -739,7 +783,7 @@ $(document).ready(function(){
                                             }
 
                                             if(country != selectedCountry) {
-                                                alert('Deal redeem location doesn\'t lie within selected country boundary.');
+                                                alert('Marker location doesn\'t lie within selected country boundary.');
                                                 lastPosition.dataId = infoWindowData.id;
                                                 addStoreMarker(lastPosition);
                                                 delete infoWindowData.id;
@@ -783,7 +827,7 @@ $(document).ready(function(){
                         }
                         else
                         {
-                            alert('Deal redeem location doesn\'t lie within selected country boundary.');
+                            alert('Marker location doesn\'t lie within selected country boundary.');
                         }
                     } else {
                         alert('No results found');

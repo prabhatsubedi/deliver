@@ -443,13 +443,19 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         accountSummary.setEstimatedTotal(order.getGrandTotal());
         accountSummary.setDeliveryFee(order.getCourierTransaction().getDeliveryChargedBeforeDiscount());
         accountSummary.setTotalDiscount(order.getCourierTransaction().getDeliveryChargedBeforeDiscount().subtract(order.getCourierTransaction().getDeliveryChargedAfterDiscount()));
+        accountSummary.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         orderSummary.setAccountSummary(accountSummary);
-        /*responseOrder.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge());
-        responseOrder.setTotalCost(order.getTotalCost());
-        responseOrder.setSystemServiceCharge(order.getSystemServiceCharge());
-        responseOrder.setDeliveryCharge(order.getDeliveryCharge());
-        responseOrder.setGrandTotal(order.getGrandTotal());*/
         orderSummary.setAttachments(orderAttachments);
+
+        if(order.getDeliveryBoy() != null){
+            DeliveryBoyEntity deliveryBoyEntity = new DeliveryBoyEntity();
+            UserEntity user = new UserEntity();
+            user.setProfileImage(order.getDeliveryBoy().getUser().getProfileImage());
+            user.setFullName(order.getDeliveryBoy().getUser().getFullName());
+            user.setMobileNumber(order.getDeliveryBoy().getUser().getMobileNumber());
+            deliveryBoyEntity.setUser(user);
+            orderSummary.setDeliveryBoy(deliveryBoyEntity);
+        }
         return orderSummary;
     }
 
@@ -529,7 +535,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
 
         itemEntity.setBrandName(itemEntity.getStoresBrand().getBrandName());
-        itemEntity.setItemsStores(null);
+       /* itemEntity.setItemsStores(null);
         itemEntity.setItemsOrder(null);
         itemEntity.setCategory(null);
         itemEntity.setStoresBrand(null);
@@ -537,11 +543,23 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         itemEntity.setCreatedDate(null);
         itemEntity.setModifiedDate(null);
         itemEntity.setVat(null);
-        itemEntity.setServiceCharge(null);
+        itemEntity.setServiceCharge(null);*/
         itemEntity.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
 
+        String fields = "id,name,description,availableStartTime,availableEndTime,maxOrderQuantity,minOrderQuantity,unitPrice,additionalOffer,brandName,currency,itemsImage,attributesTypes";
 
-        return itemEntity;
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+//        assoc.put("itemsImage", "url");
+        assoc.put("attributesTypes", "id,type,multiSelect,itemsAttribute");
+        subAssoc.put("itemsAttribute", "id,attribute,unitPrice");
+
+        ItemEntity item = (ItemEntity) ReturnJsonUtil.getJsonObject(itemEntity, fields, assoc , subAssoc);
+
+
+        return item;
+//        return itemEntity;
     }
 
     @Override
@@ -683,7 +701,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
         List<CartEntity> cartEntities = cartDaoService.getMyCarts(facebookId);
         if(cartEntities==null || cartEntities.size() == 0) {
-            cartDto.setMessage("CRT001");
+            cartDto.setMessage("CRT001"); //Cart does not exist
             cartDto.setValid(false);
             return cartDto;
         }
@@ -691,7 +709,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
         Boolean isOpen = DateUtil.isTimeBetweenTwoTime(cartEntities.get(0).getStoresBrand().getOpeningTime().toString(), cartEntities.get(0).getStoresBrand().getClosingTime().toString(),DateUtil.getCurrentTime().toString());
         if(!isOpen){
-            cartDto.setMessage("CRT003");
+            cartDto.setMessage("CRT003"); //Store is closed at this time
             cartDto.setValid(false);
             return cartDto;
         }
@@ -735,7 +753,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
             cartDaoService.deleteCarts(carts);
 
-            cartDto.setMessage("CRT004");
+            cartDto.setMessage("CRT004"); //Cart has been deleted due to store is inactive
             cartDto.setValid(false);
             return cartDto;
 
@@ -756,11 +774,11 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             cartDaoService.deleteCarts(carts);
 
             if(cartEntities.size() == inActiveCarts.size())    {
-                cartDto.setMessage("CRT005");
+                cartDto.setMessage("CRT005"); //Cart has been deleted due to all items are inactive
                 cartDto.setValid(false);
                 return cartDto;
             } else {
-                cartDto.setMessage("CRT006");
+                cartDto.setMessage("CRT006"); //Some items has been deleted due to inactive
                 cartDto.setValid(false);
                 return cartDto;
             }
@@ -769,6 +787,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         }
 
        if(BigDecimalUtil.isLessThen(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)), totalPrice)) {
+           //Max order amount reached
            cartDto.setMessage("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
            cartDto.setValid(false);
            return cartDto;
@@ -776,10 +795,27 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
 
        if(BigDecimalUtil.isLessThen(totalPrice, cartEntities.get(0).getStoresBrand().getMinOrderAmount())) {
+           //Minimum order value is
            cartDto.setMessage("CRT008:"+" "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+ cartEntities.get(0).getStoresBrand().getMinOrderAmount());
            cartDto.setValid(false);
            return cartDto;
        }
+
+        //Now Check if Min and Max Order Quanitity Has been changed from system
+        boolean orderLimitationChanged = false;
+        for(CartEntity cartEntity : cartEntities){
+            if(cartEntity.getOrderQuantity()< cartEntity.getItem().getMinOrderQuantity() || cartEntity.getOrderQuantity() > cartEntity.getItem().getMaxOrderQuantity()) {
+                orderLimitationChanged = true;
+                Integer changeableOrderQn = cartEntity.getItem().getMinOrderQuantity();
+                cartDaoService.updateMinOrderQuantity(cartEntity.getId(), changeableOrderQn);
+            }
+        }
+
+        if(orderLimitationChanged) {
+            cartDto.setMessage("CRT009"); //Some item's order quantity limitation has been changed. Please review your order
+            cartDto.setValid(false);
+            return cartDto;
+        }
 
 
         cartDto.setMessage("");
@@ -946,5 +982,56 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     @Override
     public String getCurrencyType() throws Exception {
         return systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+    }
+
+    @Override
+    public Boolean reOrder(Integer orderId, Long facebookId, Boolean flushCart) throws Exception{
+        Boolean cartExists = cartDaoService.checkCartExist(facebookId);
+        if (!flushCart) {
+            if (cartExists) {
+                throw new YSException("CRT010");
+            }
+        }
+        OrderEntity order = orderDaoService.find(orderId);
+        if(!order.getCustomer().getFacebookId().equals(facebookId)){
+            throw new YSException("ORD013");
+        }
+        StoresBrandEntity storesBrandEntity = order.getStore().getStoresBrand();
+        if(!storesBrandEntity.getStatus().equals(Status.ACTIVE)){
+            throw new YSException("STB001");
+        }
+        if(cartExists){
+            List<Integer> cartList = cartDaoService.findCarts(facebookId, null);
+            if (cartList.size() > 0) {
+                log.info("++++++++ Deleting previous cart and and its attributes ++++++++");
+                List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cartList);
+                // Delete Cart Attributes
+                if (cartAttributes.size() > 0)
+                    cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+                //Delete Carts
+                cartDaoService.deleteCarts(cartList);
+            }
+        }
+        List<ItemsOrderEntity> itemsOrderEntities = order.getItemsOrder();
+        for(ItemsOrderEntity itemsOrder: itemsOrderEntities){
+            if(itemsOrder.getItem() != null){
+                CartEntity cartEntity = new CartEntity();
+                cartEntity.setItem(itemsOrder.getItem());
+                cartEntity.setCustomer(order.getCustomer());
+                cartEntity.setNote(itemsOrder.getCustomerNote());
+                cartEntity.setOrderQuantity(itemsOrder.getQuantity());
+                cartEntity.setStoresBrand(storesBrandEntity);
+                List<CartAttributesEntity> cartAttributesEntities = new ArrayList<CartAttributesEntity>();
+                for(ItemsOrderAttributeEntity itemsOrderAttribute: itemsOrder.getItemOrderAttributes()){
+                    CartAttributesEntity cartAttribute = new CartAttributesEntity();
+                    cartAttribute.setCart(cartEntity);
+                    cartAttribute.setItemsAttribute(itemsOrderAttribute.getItemsAttribute());
+                    cartAttributesEntities.add(cartAttribute);
+                }
+                cartEntity.setCartAttributes(cartAttributesEntities);
+                cartDaoService.save(cartEntity);
+            }
+        }
+        return true;
     }
 }

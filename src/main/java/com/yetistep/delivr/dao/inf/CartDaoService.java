@@ -23,10 +23,14 @@ public interface CartDaoService extends GenericDaoService<Integer, CartEntity>{
 
     public Boolean updateOrderQuantity(Integer cartId, Integer additionalQuantity) throws Exception;
 
+    public Boolean updateMinOrderQuantity(Integer cartId, Integer minQn) throws Exception;
+
     public CartEntity findCart(Integer cartId) throws Exception;
 
     public Integer getAvailableOrderItem(Integer cartId) throws Exception;
 
-    public Boolean updateCartWithOrder(List<Integer> cartIds, Integer orderId) throws Exception;
+    public Boolean checkCartExist(Long facebookId) throws Exception;
+
+
 
 }

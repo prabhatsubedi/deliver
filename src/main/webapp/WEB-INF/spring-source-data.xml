@@ -18,6 +18,7 @@
         <property name="acquireIncrement" value="5" />
         <property name="minPoolSize" value="5" />
         <property name="maxPoolSize" value="20" />
+        <property name="maxStatements" value="50" />
         <property name="maxIdleTime" value="3600" /> <!-- Max 1 Hours -->
         <property name="unreturnedConnectionTimeout" value="7200" /> <!-- connection will need to finish its work within 2 hour -->
 

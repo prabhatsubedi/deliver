@@ -104,7 +104,9 @@ public class CartDaoServiceImpl implements CartDaoService{
                 .add(Projections.property("i.unitPrice"), "item.unitPrice")
                 .add(Projections.property("i.serviceCharge"), "item.serviceCharge")
                 .add(Projections.property("i.vat"), "item.vat")
-                .add(Projections.property("i.status"), "item.status");
+                .add(Projections.property("i.status"), "item.status")
+                .add(Projections.property("i.minOrderQuantity"), "item.minOrderQuantity")
+                .add(Projections.property("i.maxOrderQuantity"), "item.maxOrderQuantity");
 
 
         Criteria criteria = getCurrentSession().createCriteria(CartEntity.class)
@@ -152,6 +154,17 @@ public class CartDaoServiceImpl implements CartDaoService{
     }
 
     @Override
+    public Boolean updateMinOrderQuantity(Integer cartId, Integer minQn) throws Exception {
+        String sql = "UPDATE cart SET order_quantity = :minQn WHERE id = :cartId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("minQn", minQn);
+        sqlQuery.setParameter("cartId", cartId);
+
+        sqlQuery.executeUpdate();
+        return true;
+    }
+
+    @Override
     public CartEntity findCart(Integer cartId) throws Exception {
         ProjectionList projectionList = Projections.projectionList()
                 .add(Projections.property("id"), "id")
@@ -185,17 +198,14 @@ public class CartDaoServiceImpl implements CartDaoService{
     }
 
     @Override
-    public Boolean updateCartWithOrder(List<Integer> cartIds, Integer orderId) throws Exception {
-        String idList = "(";
-        for(Integer cartId: cartIds){
-            idList += cartId + ",";
+    public Boolean checkCartExist(Long facebookId) throws Exception {
+        String sql = "SELECT count(id) FROM cart WHERE customer_fb_id = :facebookId";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("facebookId", facebookId);
+        Integer availableQty = ((Number) query.uniqueResult()).intValue();
+        if(availableQty.equals(0)){
+            return false;
         }
-        idList = idList.substring(0, idList.length()-1) +")";
-        String sqlQuery = "UPDATE cart SET order_id = :orderId WHERE id in "+idList;
-        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
-        query.setParameter("orderId", orderId);
-        query.executeUpdate();
         return true;
     }
-
 }

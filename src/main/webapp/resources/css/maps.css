@@ -21,8 +21,9 @@
 .map-container #custom_map_controls {
     position: absolute;
     z-index: 5 !important;
-    right: 94px !important;
+    right: 90px !important;
     top: 5px !important;
+    display: none;
 }
 .map-container #custom_map_controls #clear_markers {
     border: 1px solid #B9B9B9;

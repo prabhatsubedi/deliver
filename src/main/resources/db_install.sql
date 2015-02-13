@@ -101,3 +101,5 @@ INSERT INTO preferences (pref_key, value) VALUES ('ORDER_MAX_AMOUNT', '10000');
  /* ############## 2015.02.02 ####################### */
  INSERT INTO preferences (pref_key, value) VALUES ('DEFAULT_IMG_CATEGORY', 'https://delivrtest.s3.amazonaws.com/default/category/cat.jpg');
 
+/*################ 2015-01-12 #########################*/
+ALTER TABLE `cart` DROP COLUMN `order_id`;

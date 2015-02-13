@@ -89,6 +89,11 @@ if (typeof(Manager) == "undefined") var Manager = {};
         $('#form_activation').validate({
             submitHandler: function (form) {
 
+                if($('#commission').val() == 0 && $('#service_fee').val() == 0) {
+                    alert('Both commission percent and service fee cannot be 0.');
+                    return false;
+                }
+
                 var chk_confirm = confirm('Are you sure you want to activate this merchant?');
                 if (!chk_confirm) return false;
 
@@ -885,6 +890,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.loadDashboard = function(){
 
+        disableMapEdit = true;
+        if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
+
         $('.count_head').click(function(){
             $(this).next('.more_data_cont').stop().slideToggle(200);
         });
@@ -898,8 +906,34 @@ if (typeof(Manager) == "undefined") var Manager = {};
             }
 
             var godView = data.params.godsView[0];
+
+            var deliveryBoyLocations = godView.deliveryBoyLocations;
+            deliveryBoyLocations = deliveryBoyLocations[Object.keys(deliveryBoyLocations)[0]];
+            var storeLocations = godView.storeLocations;
+            storeLocations = storeLocations[Object.keys(storeLocations)[0]];
+            var customerLocations = godView.customerLocations;
+            customerLocations = customerLocations[Object.keys(customerLocations)[0]];
+
+            for(var i in deliveryBoyLocations) {
+                addGodMarker(JSON.parse(deliveryBoyLocations[i]), "courier");
+            }
+            for(var i in storeLocations) {
+                addGodMarker(JSON.parse(storeLocations[i]), "store");
+            }
+            for(var i in customerLocations) {
+                addGodMarker(JSON.parse(customerLocations[i]), "customer");
+            }
+
             var currentDelivery = godView.currentDelivery;
             currentDelivery = currentDelivery[Object.keys(currentDelivery)[0]];
+            var newOrders = godView.newOrders;
+            newOrders = newOrders[Object.keys(newOrders)[0]];
+            var data_row = '';
+            for(var i in newOrders) {
+                var newOrder = JSON.parse(newOrders[i]);
+                data_row += '<div class="data_row">' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
+            }
+            $('.new_orders .more_data').html(data_row);
 
             $('.count_span').each(function(){
                 $(this).html(Object.keys(godView[$(this).attr('data-get')])[0]);
@@ -909,6 +943,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
             $('.count_inRouteToPickUp').html(currentDelivery.inRouteToPickUp);
             $('.count_atStore').html(currentDelivery.atStore);
             $('.count_orderAccepted').html(currentDelivery.orderAccepted);
+            $('.count_ct_averageDeliveryTime').html(godView.completedToday[Object.keys(godView.completedToday)[0]].averageDeliveryTime);
+            $('.count_std_averageDeliveryTime').html(godView.servedTillDate[Object.keys(godView.servedTillDate)[0]].averageDeliveryTime);
 
 
         }
@@ -916,7 +952,26 @@ if (typeof(Manager) == "undefined") var Manager = {};
         callback.requestType = "GET";
         Main.request('/organizer/gods_view', {}, callback);
 
-        if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
+        $('.toggle_map_view').click(function(){
+            if($(this).hasClass('glyphicon-resize-full')) {
+                $('body').addClass('menu_opened');
+                $('html, body').animate({scrollTop: $('.count_head').eq(0).offset().top});
+                $(this).addClass('glyphicon-resize-small').removeClass('glyphicon-resize-full');
+                $('.menu_toggle').trigger('click');
+                $('.map-container').animate({height: $(window).height() - 385}, function(){
+                    google.maps.event.trigger(map, 'resize');
+                    map.fitBounds(mapBounds);
+                });
+            } else {
+                $('body').removeClass('menu_opened');
+                $('html, body').animate({scrollTop: 0});
+                $(this).addClass('glyphicon-resize-full').removeClass('glyphicon-resize-small');
+//                $('.menu_toggle').trigger('click');
+                $('.map-container').css('height', '');
+                google.maps.event.trigger(map, 'resize');
+                map.fitBounds(mapBounds);
+            }
+        });
 
     };
 

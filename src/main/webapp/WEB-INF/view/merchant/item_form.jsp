@@ -45,21 +45,21 @@
                                 <div class="form_head">Images</div>
                                 <div class="form_content">
                                     <div class="product_images form-group clearfix">
-                                        <div class="product_image col-lg-4">
+                                        <div class="product_image col-sm-4">
                                             <div id="product_image1" class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
                                                 <div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 400x400</div>
                                             </div>
                                             <input type="file" onchange="Image.readURL(this)" data-dimension="400x400" id="product_image1_input" name="product_image1_input" class="hidden" />
                                             <button class="btn btn_green btn_red remove_image glyphicon glyphicon-remove hidden" type="button"></button>
                                         </div>
-                                        <div class="product_image col-lg-4">
+                                        <div class="product_image col-sm-4">
                                             <div id="product_image2" class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
                                                 <div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 400x400</div>
                                             </div>
                                             <input type="file" onchange="Image.readURL(this)" data-dimension="400x400" id="product_image2_input" name="product_image2_input" class="hidden" />
                                             <button class="btn btn_green btn_red remove_image glyphicon glyphicon-remove hidden" type="button"></button>
                                         </div>
-                                        <div class="product_image col-lg-4">
+                                        <div class="product_image col-sm-4">
                                             <div id="product_image3" class="drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
                                                 <div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 400x400</div>
                                             </div>

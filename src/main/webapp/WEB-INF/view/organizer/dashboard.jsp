@@ -87,7 +87,7 @@
                         </div>
                         <div class="more_data_cont">
                             <div class="more_data">
-                                <div class="data_row"><span class="badge">0ms</span>Average Delivery time</div>
+                                <div class="data_row"><span class="badge"><span class="count_ct_averageDeliveryTime">0</span>ms</span>Average Delivery time</div>
                             </div>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                         </div>
                         <div class="more_data_cont">
                             <div class="more_data">
-                                <div class="data_row"><span class="badge">0ms</span>Average Delivery time</div>
+                                <div class="data_row"><span class="badge"><span class="count_std_averageDeliveryTime">0</span>ms</span>Average Delivery time</div>
                             </div>
                         </div>
                     </div>
@@ -118,9 +118,10 @@
             </div>--%>
             <div id="custom_map_controls" class="clearfix">
                 <div id="scroll_zoom" class="pull-left">Enable Scroll Zoom</div>
-                <div id="clear_markers" class="pull-left">Clear All Markers</div>
+                <%--<div id="clear_markers" class="pull-left">Clear All Markers</div>--%>
             </div>
             <div id="map-canvas"></div>
+            <div class="toggle_map_view glyphicon glyphicon-resize-full"></div>
             <div class="block_counts col-sm-12">
                 <div class="col-sm-3 count_block_cont">
                     <div class="count_cont table_div">
@@ -133,6 +134,8 @@
                     </div>
                 </div>
             </div>
+            <div class="top_blur"></div>
+            <div class="bottom_blur"></div>
         </div>
 
         <div class="block_counts col-sm-12">
@@ -171,7 +174,7 @@
             </div>
             <div class="col-sm-3 count_block_cont">
                 <div class="count_cont table_div">
-                    <span class="count_span td_div count_red" data-get="totalActiveUser">0</span> <span class="count_label td_div">Total Active Users</span>
+                    <span class="count_span td_div" data-get="totalActiveUser">0</span> <span class="count_label td_div">Total Active Users</span>
                 </div>
             </div>
             <div class="col-sm-3 count_block_cont">
@@ -181,6 +184,15 @@
             </div>
         </div>
 
+    </div>
+</div>
+
+
+
+<div class="infowindow_template hidden">
+    <div class="infowindow">
+        <p><strong class="name_line"></strong></p>
+        <p class="address_line"></p>
     </div>
 </div>
 

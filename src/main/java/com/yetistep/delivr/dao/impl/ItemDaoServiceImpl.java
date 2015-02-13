@@ -6,6 +6,7 @@ import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.ItemEntity;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
+import com.yetistep.delivr.util.CommonConstants;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -117,5 +118,22 @@ public class ItemDaoServiceImpl implements ItemDaoService{
         List<ItemEntity> item = criteria.list();
 
         return item;
+    }
+
+    @Override
+    public List<ItemEntity> searchItems(String word) throws Exception {
+        String sql = "SELECT i.id, i.name, i.unit_price AS unitPrice, ii.url AS imageUrl, sb.brand_name AS brandName, i.brand_id AS brandId " +
+                "sb.opening_time AS openingTime, sb.closing_time AS closingTime FROM items i " +
+                "LEFT JOIN items_images ii ON ii.id = (SELECT MIN(id) FROM items_images WHERE item_id = i.id) " +
+                "INNER JOIN stores_brands sb ON(sb.id = i.brand_id AND sb.status=:status) " +
+                "WHERE i.status = :status AND i.name LIKE :word " +
+                "ORDER BY i.unit_price ASC";
+
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
+        sqlQuery.setParameter("word", CommonConstants.DELIMITER+word+CommonConstants.DELIMITER);
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(ItemEntity.class));
+        List<ItemEntity> itemEntities = sqlQuery.list();
+        return itemEntities;
     }
 }

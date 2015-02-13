@@ -56,4 +56,6 @@ public interface ClientService {
     public Boolean updateUserDeviceTokenFromUserId(Integer userId, String deviceToken) throws Exception;
 
     public String getCurrencyType() throws Exception;
+
+    public Boolean reOrder(Integer orderId, Long facebookId, Boolean flushCart) throws Exception;
 }

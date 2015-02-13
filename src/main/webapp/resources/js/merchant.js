@@ -151,6 +151,11 @@ var merchantProfile;
         $('.save_btn').click(function () {
             if ($('#merchant_form').valid()) {
 
+                if($('#commission').val() == 0 && $('#service_fee').val() == 0) {
+                    alert('Both commission percent and service fee cannot be 0.');
+                    return false;
+                }
+
                 var address = arrGeoPoints[Object.keys(arrGeoPoints)[0]];
                 if(address == undefined) {
                     alert("Please add a marker to set address.");

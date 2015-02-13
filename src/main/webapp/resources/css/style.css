@@ -95,6 +95,9 @@ body.loader_div > .loader {
     border-radius: 0px;
     min-width: 360px;
 }
+.table-responsive {
+    border: none;
+}
 .unselectable, label {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -568,6 +571,7 @@ body.assistance_page {
     background-color: #FFFFFF;
     border-right: 1px solid #dbdada;
     overflow: hidden;
+    z-index: 10;
 }
 .sidebar .sidebar_inner {
     bottom: -20px;
@@ -1799,6 +1803,14 @@ label.check_label .checkbox {
     }
     .main_container .header .item_search .search_button {
         padding: 0px !important;
+    }
+
+}
+
+@media (max-width: 1024px) {
+
+    .main_container {
+        margin-left:  40px !important;
     }
 
 }

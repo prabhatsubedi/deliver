@@ -9,7 +9,7 @@
     </div>
     <div class="sidebar_inner">
         <div class="sidebar_logo">
-            <a href="/merchant/dashboard"><img src="${pageContext.request.contextPath}/resources/images/delivr-logo.png" class="img-responsive" /></a>
+            <a href="/merchant/store/list"><img src="${pageContext.request.contextPath}/resources/images/delivr-logo.png" class="img-responsive" /></a>
         </div>
         <div class="sidebar_menu">
             <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">

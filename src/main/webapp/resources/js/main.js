@@ -11,6 +11,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
     Main.country = "Nepal";
     Main.docHeight = window.innerHeight;
+    Main.docWidth = window.innerWidth;
     Main.ajax = undefined;
     Main.pageContext = document.getElementById('pageContext').getAttribute('data-context');
 
@@ -302,7 +303,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
     };
 
     Main.toggleMainMenu = function(){
-        if(Main.getFromLocalStorage('menu') == 'closed') {
+        if(Main.getFromLocalStorage('menu') == 'closed' || Main.docWidth <= 1024) {
             $('body').removeClass('menu_opened').addClass('menu_closed');
         } else {
             $('body').removeClass('menu_closed').addClass('menu_opened');
@@ -316,7 +317,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         var open_menu_link_pad_left = 15;
         var close_menu_link_pad_left = 5;
         $('.menu_toggle').click(function(){
-            if($(this).is(':animated')) return false;
+            if($('#sidebar_menu').is(':animated')) return false;
             var target_menu = $($(this).attr('data-menu'));
             var target_body = $($(this).attr('data-body'));
             if($('body').hasClass('menu_opened')) {
@@ -344,6 +345,14 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 });
             }
         });
+
+        if(Main.docWidth <= 1024) {
+             $('.body').click(function(){
+                 if($('body').hasClass('menu_opened') && !$('#sidebar_menu').is(':animated')) {
+                     $('.menu_toggle').trigger('click');
+                 }
+             });
+        }
     };
 
     Main.resizableCatMenu = function(){

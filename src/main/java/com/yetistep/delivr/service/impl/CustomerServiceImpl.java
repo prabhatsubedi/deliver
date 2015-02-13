@@ -628,7 +628,7 @@ public class CustomerServiceImpl implements CustomerService {
         courierTransaction.setPaidToCourier(null);
         courierTransaction.setProfit(null);
         order.setCourierTransaction(courierTransaction);
-        customerDaoService.saveOrder(order);
+        orderDaoService.save(order);
 
         deleteCarts(cartIds);
         //TODO Filter delivery boys by profit criteria - Push Notifications

@@ -44,4 +44,5 @@
     <bean id = "brandsCategoryService" class="com.yetistep.delivr.dao.impl.BrandsCategoryDaoServiceImpl" />
     <bean id = "reasonDetailsDaoService" class="com.yetistep.delivr.dao.impl.ReasonDetailsDaoServiceImpl" />
     <bean id = "adminDaoService" class="com.yetistep.delivr.dao.impl.AdminDaoServiceImpl" />
+    <bean id = "itemsOrderAttributeDaoService" class="com.yetistep.delivr.dao.impl.ItemsOrderAttributeDaoServiceImpl" />
  </beans>

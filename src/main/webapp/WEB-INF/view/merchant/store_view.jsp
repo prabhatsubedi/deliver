@@ -153,8 +153,10 @@
         <div class="block_item">
             <div class="item_image maintain_ratio" mr-height="400" mr-width="720">
                 <img class="img-responsive no_image">
-                <a class="btn btn-default btn_logins view_store">View Store</a>
-                <a class="btn btn-default btn_logins add_items">Add Item</a>
+                <div class="item_buttons">
+                    <a class="btn btn-default btn_logins view_store">View Store</a>
+                    <a class="btn btn-default btn_logins add_items">Add Item</a>
+                </div>
             </div>
             <div class="item_infos">
                 <p class="item_name"></p>

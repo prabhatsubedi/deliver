@@ -17,28 +17,28 @@
     -moz-osx-font-smoothing: grayscale;
 }
 .delivricon-courier-staff:before {
-    content: "\d01";
+    content: "\E800";
 }
 .delivricon-dashboard:before {
-    content: "\d02";
+    content: "\E801";
 }
 .delivricon-invoice:before {
-    content: "\d03";
+    content: "\E802";
 }
 .delivricon-item:before {
-    content: "\d04";
+    content: "\E803";
 }
 .delivricon-merchant:before {
-    content: "\d05";
+    content: "\E804";
 }
 .delivricon-purchase-history:before {
-    content: "\d06";
+    content: "\E805";
 }
 .delivricon-store:before {
-    content: "\d07";
+    content: "\E806";
 }
 .delivricon-orders:before {
-    content: "\d08";
+    content: "\E807";
 }
 
 *, *:focus, *:active {
@@ -1205,22 +1205,23 @@ label.check_label .checkbox {
     position: relative;
     min-height: 50px;
 }
-.items_container .block_item .item_image .btn_logins {
-    border-bottom-width: 1px;
-    bottom: 2px;
-    font-size: 12px;
-    line-height: 24px;
-    padding: 0 10px;
+.items_container .block_item .item_image .item_buttons {
     position: absolute;
     right: 2px;
-    width: auto;
-    display: none;
-}
-.items_container .block_item .item_image .view_store {
-    right: auto;
     left: 2px;
+    display: none;
+    bottom: 0px;
 }
-.items_container .block_item:hover .item_image .add_items, .items_container .block_item:hover .item_image .view_store {
+.items_container .block_item .item_image .btn_logins {
+    border-bottom-width: 1px;
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+    margin-bottom: 2px;
+    padding: 0 10px;
+    width: auto;
+}
+.items_container .block_item:hover .item_buttons {
     display: block;
 }
 .items_container .block_item .item_image .special_item {
@@ -1811,6 +1812,14 @@ label.check_label .checkbox {
 
     .main_container {
         margin-left:  40px !important;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .page_stores .items_container .item_container {
+        width: 100%;
     }
 
 }

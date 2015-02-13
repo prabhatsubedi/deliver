@@ -60,7 +60,7 @@
         <property name="userDao" ref="userDao" />
     </bean>
 
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager"/>
 
     <!-- MUST have transaction manager, using aop and aspects  -->
     <bean id="transactionManager"

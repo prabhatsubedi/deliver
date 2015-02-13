@@ -33,4 +33,6 @@ public interface CustomerDaoService extends GenericDaoService<Integer, CustomerE
     public Integer getNumberOfPastOrdersByFacebookId(Long facebookId) throws Exception;
 
     public List<MyOrderDto> getPastOrdersByFacebookId(Long facebookId, Page page) throws Exception;
+
+    public CustomerEntity getLatLong(Long facebookId) throws Exception;
 }

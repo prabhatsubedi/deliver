@@ -80,7 +80,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         String lat = null;
         String lon = null;
         if (requestJsonDto.getGpsInfo() == null) {
-            CustomerEntity customerEntity = customerDaoService.find(requestJsonDto.getCustomerInfo().getClientId());
+            CustomerEntity customerEntity = customerDaoService.getLatLong(requestJsonDto.getCustomerInfo().getClientId());
             if (customerEntity == null)
                 throw new YSException("VLD011");
 
@@ -551,7 +551,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-//        assoc.put("itemsImage", "url");
+        assoc.put("itemsImage", "url");
         assoc.put("attributesTypes", "id,type,multiSelect,itemsAttribute");
         subAssoc.put("itemsAttribute", "id,attribute,unitPrice");
 

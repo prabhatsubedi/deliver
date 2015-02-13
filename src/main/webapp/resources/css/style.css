@@ -1818,7 +1818,7 @@ label.check_label .checkbox {
 
 @media (max-width: 500px) {
 
-    .page_stores .items_container .item_container {
+    .page_item_view .items_container .item_container, .page_stores .items_container .item_container {
         width: 100%;
     }
 

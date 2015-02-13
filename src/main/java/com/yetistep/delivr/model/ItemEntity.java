@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.util.JsonDateSerializer;
 import com.yetistep.delivr.util.JsonTimeDeserializer;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -413,6 +411,7 @@ public class ItemEntity implements Serializable {
         this.brandName = brandName;
     }
 
+    @Transient
     public Integer getBrandId() {
         return brandId;
     }
@@ -421,6 +420,7 @@ public class ItemEntity implements Serializable {
         this.brandId = brandId;
     }
 
+    @Transient
     public String getOpeningTime() {
         return openingTime;
     }
@@ -429,6 +429,7 @@ public class ItemEntity implements Serializable {
         this.openingTime = openingTime;
     }
 
+    @Transient
     public String getClosingTime() {
         return closingTime;
     }

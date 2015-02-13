@@ -883,7 +883,7 @@ public class CustomerServiceImpl implements CustomerService {
         String lat = null;
         String lon = null;
         if (requestJsonDto.getGpsInfo() == null) {
-            CustomerEntity customerEntity = customerDaoService.find(requestJsonDto.getCustomerInfo().getClientId());
+            CustomerEntity customerEntity = customerDaoService.getLatLong(requestJsonDto.getCustomerInfo().getClientId());
             if (customerEntity == null)
                 throw new YSException("VLD011");
             lat = customerEntity.getLatitude();

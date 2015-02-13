@@ -175,6 +175,16 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         List<MyOrderDto> pastOrders = query.list();
         return pastOrders;
     }
+
+    @Override
+    public CustomerEntity getLatLong(Long facebookId) throws Exception {
+        String sql = "SELECT latitude, longitude FROM customers WHERE facebook_id = :facebookId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("facebookId", facebookId);
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(CustomerEntity.class));
+        CustomerEntity customerEntity = sqlQuery.list().size() > 0 ? (CustomerEntity) sqlQuery.list().get(0) : null;
+        return customerEntity;
+    }
 }
 
 

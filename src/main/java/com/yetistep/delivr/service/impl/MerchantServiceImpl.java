@@ -1410,7 +1410,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         List<Object> objects = new ArrayList<>();
 
-        String fields = "id,orderName,deliveryStatus,attachments,customer,store,deliveryBoy,grandTotal";
+        String fields = "id,orderName,deliveryStatus,attachments,customer,store,deliveryBoy,grandTotal,orderStatus";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

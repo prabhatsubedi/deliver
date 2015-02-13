@@ -43,12 +43,15 @@ public class ReturnJsonUtil {
                  */
                 if(PropertyUtils.getProperty(defaultObject, param.getKey()) != null){
                     if(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag") || PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("java.util.ArrayList")){
+
                         List<Object> assocDBs =  (List<Object>) PropertyUtils.getProperty(defaultObject, param.getKey());
                         List<Object> assocRtnList = new ArrayList<>();
 
                         for (Object assocDB: assocDBs){
                             Object assocRtnObj = BeanUtils.instantiate(assocDB.getClass());
-                             if(param.getValue() != null)  {
+                            if(!assocDB.getClass().getName().equals("java.util.ArrayList") && !assocDB.getClass().getName().equals("org.hibernate.collection.internal.PersistentBag") && !assocDB.getClass().getName().equals("com.yetistep.delivr.model")) {
+                                assocRtnList.add(assocDB);
+                            }else if(param.getValue() != null)  {
                                 String assocFields = param.getValue();
                                 String[] arrAssocFields = assocFields.split(",");
                                 for (String assocF:arrAssocFields){
@@ -60,8 +63,10 @@ public class ReturnJsonUtil {
 
                                     setValues(assocDB, assocRtnObj,  assocF.trim(), subAssoc);
                                 }
-                             }
-                            assocRtnList.add(assocRtnObj);
+                                assocRtnList.add(assocRtnObj);
+                             } else {
+                                assocRtnList.add(assocRtnObj);
+                            }
                         }
                         PropertyUtils.setProperty(rtnObject, param.getKey(), assocRtnList);
                     } else {

@@ -31,9 +31,11 @@ Order.getOrders = function(){
 
             var id = order.id;
             var link_attachments = '';
+
             if(order.attachments.length > 0){
-                for(var j= 0; j<order.attachments.length; i++){
-                    link_attachments += '<a href="'+order.attachments[j]+'">'+order.attachments[j]+'</a>';
+                for(var j= 0; j < order.attachments.length; j++){
+                    if(order.attachments[j] != "")
+                        link_attachments += '<p><a href="'+order.attachments[j]+'">'+order.attachments[j]+'</a></p>';
                 }
             }
             var deliveryBoyName = typeof(order.deliveryBoy) != 'undefined'?order.deliveryBoy.user.fullName:'';

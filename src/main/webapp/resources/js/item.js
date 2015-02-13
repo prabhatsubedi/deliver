@@ -1233,8 +1233,8 @@ function toggleSwitch(value, elem) {
             function categoryList(categories, padding, load) {
                 category_list += '<ul class="nav nav-stacked ' + (load ? "" : "hidden") + '">';
                 for(var i = 0; i < categories.length; i++) {
-                    category_list += '<li><a href="#" data-id="' + categories[i].id + '" style="padding-left: ' + padding + 'px"><span class="glyphicon ' + (categories[i].child.length > 0 ? 'glyphicon-plus' : '') + '"></span>' + categories[i].name + '</a>';
-                    if(categories[i].child.length > 0) categoryList(categories[i].child, padding + 20);
+                    category_list += '<li><a href="#" data-id="' + categories[i].id + '" style="padding-left: ' + padding + 'px"><span class="glyphicon ' + (typeof( categories[i].child) != "undefined" && categories[i].child.length > 0 ? 'glyphicon-plus' : '') + '"></span>' + categories[i].name + '</a>';
+                    if( typeof( categories[i].child) != "undefined" && categories[i].child.length > 0) categoryList(categories[i].child, padding + 20);
                     category_list += '</li>';
                 }
                 category_list += '</ul>';
@@ -1353,6 +1353,7 @@ function toggleSwitch(value, elem) {
                 var item_category = itemCategory.id;
                 var child_cat_id;
                     function getChild(category) {
+
                     if(category.child.length == 1) {
                         var childCat = category.child[0];
                         child_cat_id = childCat.id;

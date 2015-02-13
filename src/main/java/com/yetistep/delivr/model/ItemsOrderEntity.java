@@ -48,7 +48,6 @@ public class ItemsOrderEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "item_id")
-    @LazyCollection(LazyCollectionOption.FALSE)
     public ItemEntity getItem() {
         return item;
     }
@@ -142,7 +141,6 @@ public class ItemsOrderEntity implements Serializable {
     }
 
     @OneToOne(mappedBy = "itemsOrder", cascade = CascadeType.ALL, orphanRemoval=true)
-    @LazyCollection(LazyCollectionOption.FALSE)
     public CustomItemEntity getCustomItem() {
         return customItem;
     }
@@ -152,7 +150,6 @@ public class ItemsOrderEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "itemOrder", cascade = CascadeType.ALL, orphanRemoval=true)
-    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsOrderAttributeEntity> getItemOrderAttributes() {
         return itemOrderAttributes;
     }

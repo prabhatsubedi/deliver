@@ -42,7 +42,7 @@ public class ReturnJsonUtil {
                  else set values of fields in return object directly
                  */
                 if(PropertyUtils.getProperty(defaultObject, param.getKey()) != null){
-                    if(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")){
+                    if(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag") || PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("java.util.ArrayList")){
                         List<Object> assocDBs =  (List<Object>) PropertyUtils.getProperty(defaultObject, param.getKey());
                         List<Object> assocRtnList = new ArrayList<>();
 
@@ -72,7 +72,26 @@ public class ReturnJsonUtil {
                             String[] arrAssocFields = assocFields.split(",");
                             for (String assocF:arrAssocFields){
                                 if(PropertyUtils.getProperty(assocDB, assocF) != null){
-                                    if(PropertyUtils.getProperty(assocDB, assocF).getClass().toString().contains("com.yetistep.delivr.model")){
+                                    if(PropertyUtils.getProperty(assocDB, assocF).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag") || PropertyUtils.getProperty(assocDB, assocF).getClass().getName().equals("java.util.ArrayList")) {
+                                        List<Object> assoc2ndDBs = (List<Object>) PropertyUtils.getProperty(assocDB, assocF.trim());
+                                        List<Object> assoc2ndRtn = new ArrayList<>();
+                                        for (Object assoc2ndDB: assoc2ndDBs) {
+                                            Object assoc2ndRtnObj = BeanUtils.instantiate(assoc2ndDB.getClass());
+                                            if(subAssoc != null){
+                                                String accoc2ndFs = subAssoc.get(assocF.trim());
+                                                if(accoc2ndFs != null){
+                                                    String[] arrAssoc2ndFields = accoc2ndFs.split(",");
+                                                    for (String accoc2ndF: arrAssoc2ndFields){
+                                                        //PropertyUtils.setProperty(assoc2ndRtnObj, accoc2ndF,  PropertyUtils.getProperty(assoc2ndDB, accoc2ndF));
+                                                        setValues(assoc2ndDB, assoc2ndRtnObj,  accoc2ndF.trim(), subAssoc);
+                                                    }
+                                                }
+                                            }
+                                            assoc2ndRtn.add(assoc2ndRtnObj);
+                                        }
+                                        PropertyUtils.setProperty(assocRtnObj, assocF.trim(),  assoc2ndRtn);
+                                    }
+                                    else if(PropertyUtils.getProperty(assocDB, assocF).getClass().toString().contains("com.yetistep.delivr.model")){
                                           //PropertyUtils.setProperty(assocRtn, assocF,  PropertyUtils.getProperty(assocDB, assocF));
                                          Object assoc2ndDB = PropertyUtils.getProperty(assocDB, assocF.trim());
                                          Object assoc2ndRtnObj = BeanUtils.instantiate(assoc2ndDB.getClass());
@@ -137,7 +156,7 @@ public class ReturnJsonUtil {
                  else set values of fields in return object directly
                  */
                 if(PropertyUtils.getProperty(defaultObject, param.getKey()) != null){
-                    if(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")){
+                    if(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag") || PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("java.util.ArrayList")){
                         List<Object> assocDBs =  (List<Object>) PropertyUtils.getProperty(defaultObject, param.getKey());
                         List<Object> assocRtnList = new ArrayList<>();
 
@@ -191,7 +210,7 @@ public class ReturnJsonUtil {
 
     private static void setValues(Object assocDB, Object assocRtnObj,  String assocF, Map<String, String> subAssoc) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException{
         if(PropertyUtils.getProperty(assocDB, assocF) != null){
-            if(PropertyUtils.getProperty(assocDB, assocF).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")) {
+            if(PropertyUtils.getProperty(assocDB, assocF).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag") || PropertyUtils.getProperty(assocDB, assocF).getClass().getName().equals("java.util.ArrayList")) {
                 List<Object> assoc2ndDBs = (List<Object>) PropertyUtils.getProperty(assocDB, assocF.trim());
                 List<Object> assoc2ndRtn = new ArrayList<>();
                 for (Object assoc2ndDB: assoc2ndDBs) {
@@ -232,7 +251,7 @@ public class ReturnJsonUtil {
 
     private static void setValues(Object assocDB, Object assocRtnObj,  String assocF) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException{
         if(PropertyUtils.getProperty(assocDB, assocF) != null){
-            if(PropertyUtils.getProperty(assocDB, assocF).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")) {
+            if(PropertyUtils.getProperty(assocDB, assocF).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag") || PropertyUtils.getProperty(assocDB, assocF).getClass().getName().equals("java.util.ArrayList")) {
                 List<Object> assoc2ndDBs = (List<Object>) PropertyUtils.getProperty(assocDB, assocF.trim());
                 List<Object> assoc2ndRtn = new ArrayList<>();
                 for (Object assoc2ndDB: assoc2ndDBs) {

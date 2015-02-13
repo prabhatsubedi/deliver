@@ -58,7 +58,6 @@ public class StoreEntity implements Serializable {
         this.id = id;
     }
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "stores_brand_id")
     public StoresBrandEntity getStoresBrand() {
@@ -69,8 +68,7 @@ public class StoreEntity implements Serializable {
         this.storesBrand = storesBrand;
     }
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     @JsonProperty
     public List<ItemsStoreEntity> getItemsStore() {
         return itemsStore;
@@ -80,9 +78,7 @@ public class StoreEntity implements Serializable {
         this.itemsStore = itemsStore;
     }
 
-    @JsonIgnore
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
     public List<OrderEntity> getOrder() {
         return order;
     }

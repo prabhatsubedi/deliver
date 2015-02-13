@@ -32,7 +32,6 @@ public class BrandsCategoryEntity implements Serializable {
         this.id = id;
     }
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "stores_brand_id")
     public StoresBrandEntity getStoresBrand() {
@@ -43,7 +42,6 @@ public class BrandsCategoryEntity implements Serializable {
         this.storesBrand = storesBrand;
     }
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "category_id")
     public CategoryEntity getCategory() {

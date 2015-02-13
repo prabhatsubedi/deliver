@@ -158,7 +158,7 @@ public class MerchantController {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            Object storesBrand = merchantService.findBrandDetail(headerDto);
+            StoresBrandEntity storesBrand = merchantService.findBrandDetail(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Stores detail has been retrieved successfully");
             serviceResponse.addParam("storesBrand", storesBrand);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -315,8 +315,6 @@ public class MerchantController {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             ItemEntity item = merchantService.getItemDetail(headerDto);
-            item.getCategory().setItem(null);
-            item.getStoresBrand().setStore(null);
             ServiceResponse serviceResponse = new ServiceResponse("Items has been retrieved successfully");
             serviceResponse.addParam("item", item);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

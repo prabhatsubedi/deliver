@@ -47,7 +47,6 @@ public class RoleEntity implements Serializable {
         this.role = role;
     }
 
-    @JsonIgnore
     @OneToMany(mappedBy = "role")
     public List<UserEntity> getUser() {
         return user;

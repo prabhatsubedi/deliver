@@ -302,7 +302,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
                 .add(Projections.property("status"), "status")
                 .add(Projections.property("openingTime"), "openingTime")
                 .add(Projections.property("closingTime"), "closingTime")
-                .add(Projections.property("merchant"), "merchant")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId))) ;
         stores = criteria.list();
@@ -312,23 +311,9 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Override
     public List<StoresBrandEntity> findBrandList() throws Exception {
         List<StoresBrandEntity> stores = new ArrayList<>();
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class, "brand");
-        criteria.createAlias("brand.merchant", "merchant");
-        criteria.setProjection(Projections.projectionList()
-                .add(Projections.property("id"), "id")
-                .add(Projections.property("brandName"), "brandName")
-                .add(Projections.property("brandLogo"), "brandLogo")
-                .add(Projections.property("brandImage"), "brandImage")
-                .add(Projections.property("featured"), "featured")
-                .add(Projections.property("priority"), "priority")
-                .add(Projections.property("status"), "status")
-                .add(Projections.property("openingTime"), "openingTime")
-                .add(Projections.property("closingTime"), "closingTime")
-                .add(Projections.property("merchant"), "merchant")
-        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
-
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
         stores = criteria.list();
-        return stores.size() > 0 ? stores : null;
+        return stores;
     }
 
     @Override

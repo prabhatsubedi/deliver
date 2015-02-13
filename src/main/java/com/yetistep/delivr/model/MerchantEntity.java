@@ -1,7 +1,6 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yetistep.delivr.enums.MerchantType;
 import com.yetistep.delivr.enums.Status;
 import org.hibernate.annotations.DynamicUpdate;
@@ -53,8 +52,7 @@ public class MerchantEntity implements Serializable {
         this.id = id;
     }
 
-    @JsonManagedReference("merchant-user")
-    @OneToOne(cascade = { CascadeType.ALL })
+    @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
     @JoinColumn(name = "user_id")
     public UserEntity getUser() {
         return user;
@@ -74,9 +72,7 @@ public class MerchantEntity implements Serializable {
         this.type = type;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "merchant")
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "merchant", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     public List<StoresBrandEntity> getStoresBrand() {
         return storesBrand;
     }

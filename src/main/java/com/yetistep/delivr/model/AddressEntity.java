@@ -1,6 +1,5 @@
 package com.yetistep.delivr.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 
@@ -154,7 +153,6 @@ public class AddressEntity implements Serializable {
         this.dFlag = dFlag;
     }
 
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     public UserEntity getUser() {

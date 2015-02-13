@@ -46,8 +46,7 @@ public class CategoryEntity implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference("parent")
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parent_id")
     public CategoryEntity getParent() {
         return parent;
@@ -57,9 +56,7 @@ public class CategoryEntity implements Serializable {
         this.parent = parent;
     }
 
-    @OneToMany(mappedBy = "parent")
-    @JsonManagedReference("parent")
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
     public List<CategoryEntity> getChild() {
         return child;
     }
@@ -68,9 +65,7 @@ public class CategoryEntity implements Serializable {
         this.child = child;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "category")
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
     public List<BrandsCategoryEntity> getBrandsCategory() {
         return brandsCategory;
     }
@@ -79,8 +74,7 @@ public class CategoryEntity implements Serializable {
         this.brandsCategory = brandsCategory;
     }
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "brand_id")
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
@@ -90,9 +84,7 @@ public class CategoryEntity implements Serializable {
         this.storesBrand = storesBrand;
     }
 
-    //@JsonIgnore
-    @OneToMany(mappedBy = "category")
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
     public List<ItemEntity> getItem() {
         return item;
     }

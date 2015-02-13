@@ -3,7 +3,6 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.VehicleType;
@@ -47,8 +46,8 @@ public class DeliveryBoyEntity implements Serializable {
     private String vehicleNumber;
     private List<DBoyOrderHistoryEntity> dBoyOrderHistories;
     private List<DeliveryBoySelectionEntity> deliveryBoySelections;
-    private List<DboyAdvanceAmountEntity> dBoyAdvanceAmounts;
-    private List<DboySubmittedAmountEntity> dBoySubmittedAmount;
+    private List<DBoyAdvanceAmountEntity> dBoyAdvanceAmounts;
+    private List<DBoySubmittedAmountEntity> dBoySubmittedAmount;
     private String latitude;
     private String longitude;
 
@@ -64,7 +63,6 @@ public class DeliveryBoyEntity implements Serializable {
         this.id = id;
     }
 
-    @JsonManagedReference("dboy-user")
     @OneToOne(cascade = { CascadeType.ALL })
     @JoinColumn(name = "user_id")
     @JsonProperty
@@ -260,21 +258,21 @@ public class DeliveryBoyEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "deliveryBoy", cascade = CascadeType.ALL)
-    public List<DboyAdvanceAmountEntity> getdBoyAdvanceAmounts() {
+    public List<DBoyAdvanceAmountEntity> getdBoyAdvanceAmounts() {
         return dBoyAdvanceAmounts;
     }
 
-    public void setdBoyAdvanceAmounts(List<DboyAdvanceAmountEntity> dBoyAdvanceAmounts) {
+    public void setdBoyAdvanceAmounts(List<DBoyAdvanceAmountEntity> dBoyAdvanceAmounts) {
         this.dBoyAdvanceAmounts = dBoyAdvanceAmounts;
     }
 
     @JsonIgnore
     @OneToMany(mappedBy = "deliveryBoy", cascade = CascadeType.ALL)
-    public List<DboySubmittedAmountEntity> getdBoySubmittedAmount() {
+    public List<DBoySubmittedAmountEntity> getdBoySubmittedAmount() {
         return dBoySubmittedAmount;
     }
 
-    public void setdBoySubmittedAmount(List<DboySubmittedAmountEntity> dBoySubmittedAmount) {
+    public void setdBoySubmittedAmount(List<DBoySubmittedAmountEntity> dBoySubmittedAmount) {
         this.dBoySubmittedAmount = dBoySubmittedAmount;
     }
 

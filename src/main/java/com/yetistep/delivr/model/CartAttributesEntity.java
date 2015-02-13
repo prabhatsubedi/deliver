@@ -34,7 +34,6 @@ public class CartAttributesEntity {
 
     @JsonIgnore
     @ManyToOne
-//            (fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "items_attribute_id")
     public ItemsAttributeEntity getItemsAttribute() {
         return itemsAttribute;

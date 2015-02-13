@@ -240,7 +240,6 @@ public class CustomerEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonProperty
     public List<CartEntity> getCarts() {
         return carts;

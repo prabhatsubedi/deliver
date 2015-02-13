@@ -18,7 +18,7 @@ import java.sql.Timestamp;
  */
 @Entity(name="DBoyAdvanceAmountEntity")
 @Table(name = "dboy_advance_amounts")
-public class DboyAdvanceAmountEntity implements Serializable {
+public class DBoyAdvanceAmountEntity implements Serializable {
 
     private Integer id;
     private Timestamp advanceDate;
@@ -47,7 +47,7 @@ public class DboyAdvanceAmountEntity implements Serializable {
     }
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "dboy_id")
     public DeliveryBoyEntity getDeliveryBoy() {
         return deliveryBoy;

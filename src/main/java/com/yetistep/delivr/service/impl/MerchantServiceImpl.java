@@ -156,8 +156,19 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             }
             merchantEntity.getUser().setRole(null);
         }
-        return merchantEntities;
+        List<MerchantEntity> objects = new ArrayList<>();
 
+        String fields = "id,businessTitle,partnershipStatus,status,user";
+
+        Map<String, String> assoc = new HashMap<>();
+
+        assoc.put("user", "id,fullName,emailAddress,mobileNumber");
+
+        for (MerchantEntity merchant:merchantEntities){
+            objects.add((MerchantEntity) ReturnJsonUtil.getJsonObject(merchant, fields, assoc));
+        }
+
+        return objects;
     }
 
 
@@ -396,8 +407,20 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 merchantEntity.setStatus(Status.INACTIVE);
             }
         }
-        merchantEntity.getUser().setRole(null);
-        return merchantEntity;
+
+
+        String fields = "id,partnershipStatus,commissionPercentage,serviceFee,website,agreementDetail,businessTitle,businessLogo,companyRegistrationNo,vatNo,status,user";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,addresses");
+        subAssoc.put("addresses", "street,city,state,country,latitude,longitude");
+
+        return ((MerchantEntity) ReturnJsonUtil.getJsonObject(merchantEntity, fields, assoc, subAssoc));
+
+        //merchantEntity.getUser().setRole(null);
+        //return merchantEntity;
     }
 
     @Override
@@ -497,16 +520,17 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<StoresBrandEntity> storesBrands = merchantDaoService.findBrandListByMerchant(dbMerchant.getId());
         List<Object> storesBrandEntities = new ArrayList<Object>();
 
-        /*String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,featured,priority";
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,featured,priority";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("merchant", "id,businessTitle");*/
+        assoc.put("merchant", "id,businessTitle");
+        assoc.put("store", "id,name,street,city,state,country,latitude,longitude");
 
         for(StoresBrandEntity storesBrand: storesBrands){
-           //storesBrandEntities.add(ReturnJsonUtil.getJsonObject(storesBrand, fields, assoc, subAssoc));
-            storesBrandEntities.add(getStoreBrandForJson(storesBrand));
+           storesBrandEntities.add(ReturnJsonUtil.getJsonObject(storesBrand, fields, assoc, subAssoc));
+            //storesBrandEntities.add(getStoreBrandForJson(storesBrand));
         }
         return storesBrandEntities;
     }
@@ -522,29 +546,37 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             storesBrands = merchantDaoService.findBrandList();
         }
 
-        return storesBrands;
+        List<StoresBrandEntity> brandList = new ArrayList<>();
+
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,featured,priority";
+
+
+        for (StoresBrandEntity storesBrandEntity: storesBrands) {
+            brandList.add ((StoresBrandEntity) ReturnJsonUtil.getJsonObject(storesBrandEntity, fields));
+        }
+
+        return brandList;
     }
 
     @Override
-    public Object findBrandDetail(HeaderDto headerDto) throws Exception {
+    public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception {
         StoresBrandEntity storesBrandEntity =  merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
 
-        /*String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount";
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount";
 
         Map<String, String> assoc = new HashMap<>();
-        //Map<String, String> subAssoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("store", "id,street,city,state,latitude,longitude,status");
         assoc.put("brandsCategory", "id,category");
-        assoc.put("merchant", "businessLogo");
 
-        //subAssoc.put("category", "id,name,featured");
-        return ReturnJsonUtil.getJsonObject(storesBrandEntity, fields, assoc);*/
+        subAssoc.put("category", "id,name,featured");
+        return (StoresBrandEntity) ReturnJsonUtil.getJsonObject(storesBrandEntity, fields, assoc, subAssoc);
 
-        return getStoreBrandForJson(storesBrandEntity);
+        //return getStoreBrandForJson(storesBrandEntity);
     }
 
-    private Object getStoreBrandForJson(StoresBrandEntity storesBrandEntity){
+    private StoresBrandEntity getStoreBrandForJson(StoresBrandEntity storesBrandEntity){
         StoresBrandEntity storesBrand = new StoresBrandEntity();
         storesBrand.setId(storesBrandEntity.getId());
         storesBrand.setBrandName(storesBrandEntity.getBrandName());
@@ -606,11 +638,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             CategoryEntity parentCategory = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
             itemCategories.set(0, parentCategory);
             int i;
-               for(i = 1; i<itemCategories.size(); i++){
-                   itemCategories.get(i).setParent(itemCategories.get(i-1));
-                   itemCategories.get(i).setFeatured(false);
-                   itemCategories.get(i).setStoresBrand(storesBrand);
-               }
+            for(i = 1; i<itemCategories.size(); i++){
+               itemCategories.get(i).setParent(itemCategories.get(i-1));
+               itemCategories.get(i).setFeatured(false);
+               itemCategories.get(i).setStoresBrand(storesBrand);
+            }
             merchantDaoService.saveCategories(itemCategories);
             //get items category
             category = itemCategories.get(itemCategories.size()-1);
@@ -731,8 +763,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Map<Integer, ItemsAttributesTypeEntity> dbItemAttributesTypesMap = new HashMap<Integer, ItemsAttributesTypeEntity>();
         Map<Integer, ItemsAttributeEntity> dbItemAttributesMap = new HashMap<Integer, ItemsAttributeEntity>();
 
-        for (ItemsStoreEntity itemsStore: dbItemStoreEntities){
-            dbItemsStoreIdList.add(itemsStore.getId());
+        for (ItemsStoreEntity dbItemsStore: dbItemStoreEntities){
+            dbItemsStoreIdList.add(dbItemsStore.getId());
         }
 
         for (ItemsAttributesTypeEntity itemsAttributesType: dbItemsAttributesTypes){
@@ -869,17 +901,33 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 newCategory = brandsCategory.getCategory();
                 newCategories =  getCategoryTree(allCategories, brandsCategory.getCategory().getId(), brandsCategory.getStoresBrand().getId());
                 List<ItemEntity> items = newCategory.getItem();
-                if(items.size() > 0){
+               /* if(items.size() > 0){
                     newCategory.setItem(new ArrayList<ItemEntity>());
                 } else {
                     newCategory.setItem(null);
-                }
+                }*/
                 newCategory.setChild(null);
                 newCategory.setChild(newCategories);
                 categories.add(newCategory);
             }
 
-        return categories;
+        List<CategoryEntity> objects = new ArrayList<>();
+
+        String fields = "id,name,child,item";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("child", "id,name,child,item");
+        assoc.put("item", "");
+
+        subAssoc.put("child", "id,name,child,item");
+
+        for (CategoryEntity category:categories){
+            objects.add((CategoryEntity) ReturnJsonUtil.getJsonObject(category, fields, assoc, subAssoc));
+        }
+
+        return objects;
 
     }
 
@@ -945,7 +993,25 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         if(categories.size() > 0){
             newCategories =  getCategoryTree(categories, parentId, storeId);
         }
-        return  newCategories;
+
+        List<CategoryEntity> objects = new ArrayList<>();
+
+        String fields = "id,name,child,item";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("child", "id,name,child,item");
+        assoc.put("item", "");
+
+        subAssoc.put("child", "id,name,child,item");
+
+        for (CategoryEntity category:newCategories){
+            objects.add((CategoryEntity) ReturnJsonUtil.getJsonObject(category, fields, assoc, subAssoc));
+        }
+
+
+        return  objects;
     }
 
     @Override
@@ -964,7 +1030,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         List<ItemEntity> items = merchantDaoService.getCategoriesItems(categoryId, brandId, page);
-           if(items.size()>0){
+           /*if(items.size()>0){
                for (ItemEntity item: items){
                    item.getCategory().setItem(null);
                    item.setItemsStores(null);
@@ -973,7 +1039,22 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                    item.setItemsOrder(null);
                }
            }
-        paginationDto.setData(items);
+*/
+        List<ItemEntity> objects = new ArrayList<>();
+
+        String fields = "id,name,unitPrice,currencyType,additionalOffer,itemsImage";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("itemsImage", "url");
+
+        for (ItemEntity item:items){
+            objects.add((ItemEntity) ReturnJsonUtil.getJsonObject(item, fields, assoc));
+        }
+
+
+        paginationDto.setData(objects);
         return paginationDto;
     }
 
@@ -997,7 +1078,24 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             }
         }
         item.setCategory(category);
-        return item;
+
+        String fields = "id,name,description,availableQuantity,availableStartTime,availableEndTime,maxOrderQuantity,minOrderQuantity,unitPrice,currencyType,additionalOffer,vat,serviceCharge,deliveryFee,itemsImage,itemsStores,attributesTypes,category,storesBrand";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("category", "id,name,child");
+        assoc.put("storesBrand", "id,brandName");
+        assoc.put("itemsImage", "url");
+        assoc.put("itemsStores", "id,store");
+        assoc.put("attributesTypes", "id,type,multiSelect,itemsAttribute");
+
+        subAssoc.put("itemsAttribute", "id,attribute,unitPrice,selected");
+        subAssoc.put("store", "id,street,city,state,country");
+        subAssoc.put("child", "id,name,child");
+        return (ItemEntity) ReturnJsonUtil.getJsonObject(item, fields, assoc, subAssoc);
+
+        //return item;
     }
 
     @Override
@@ -1110,7 +1208,23 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             childCategory.setParent(null);
         }
 
-        return  childCategories;
+        List<CategoryEntity> objects = new ArrayList<>();
+
+        String fields = "id,name,item";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("item", "id,name,unitPrice,currencyType,additionalOffer,itemsImage");
+        subAssoc.put("itemsImage", "url");
+
+        for (CategoryEntity childCategory:childCategories){
+            objects.add((CategoryEntity) ReturnJsonUtil.getJsonObject(childCategory, fields, assoc, subAssoc));
+        }
+
+        return  objects;
+
+
     }
 
     @Override
@@ -1119,12 +1233,18 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<CategoryEntity> categories = new ArrayList<>();
 
         for (BrandsCategoryEntity brandsCategory: brandsCategories){
-            brandsCategory.getCategory().setChild(null);
             categories.add(brandsCategory.getCategory());
         }
 
-        return categories;
+        List<CategoryEntity> objects = new ArrayList<>();
 
+        String fields = "id,name";
+
+        for (CategoryEntity category:categories){
+             objects.add((CategoryEntity) ReturnJsonUtil.getJsonObject(category, fields));
+        }
+
+        return objects;
     }
 
 
@@ -1223,7 +1343,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         List<ItemEntity> items = merchantDaoService.getWebSearchItem(searchString, categoryId, storeId, page);
-        if(items.size()>0){
+        /*if(items.size()>0){
              for (ItemEntity item: items){
                  item.setCategory(null);
                  item.setItemsStores(null);
@@ -1232,9 +1352,21 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                  item.setCarts(null);
                  item.setItemsOrder(null);
              }
+        }*/
+
+        List<ItemEntity> ItemList = new ArrayList<ItemEntity>();
+
+        String fields = "id,name,status,unitPrice,currencyType,itemsImage";
+
+        Map<String, String> assoc = new HashMap<>();
+
+        assoc.put("itemsImage", "url");
+
+        for(ItemEntity item: items){
+            ItemList.add((ItemEntity) ReturnJsonUtil.getJsonObject(item, fields, assoc));
         }
 
-        paginationDto.setData(items);
+        paginationDto.setData(ItemList);
         return paginationDto;
     }
 

@@ -299,8 +299,7 @@ public class OrderEntity implements Serializable {
         this.orderDate = orderDate;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     public List<DBoyOrderHistoryEntity> getdBoyOrderHistories() {
         return dBoyOrderHistories;
     }
@@ -309,8 +308,7 @@ public class OrderEntity implements Serializable {
         this.dBoyOrderHistories = dBoyOrderHistories;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     public List<DeliveryBoySelectionEntity> getDeliveryBoySelections() {
         return deliveryBoySelections;
     }
@@ -349,7 +347,7 @@ public class OrderEntity implements Serializable {
         this.elapsedTime = elapsedTime;
     }
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST)
     @JsonProperty
     public RatingEntity getRating() {
         return rating;
@@ -371,8 +369,7 @@ public class OrderEntity implements Serializable {
         this.attachments = attachments;
     }
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST)
     public OrderCancelEntity getOrderCancel() {
         return orderCancel;
     }
@@ -383,7 +380,7 @@ public class OrderEntity implements Serializable {
     }
 
     @JsonIgnore
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     public CourierTransactionEntity getCourierTransaction() {
         return courierTransaction;
     }

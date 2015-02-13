@@ -138,8 +138,19 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if (deliveryBoyEntity == null) {
             throw new YSException("VLD011");
         }
-        deliveryBoyEntity.getUser().setRole(null);
-        return deliveryBoyEntity;
+
+
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,gender,status,addresses");
+        subAssoc.put("addresses", "street,city,state,country,latitude,longitude");
+
+        return ((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc, subAssoc));
+        //deliveryBoyEntity.getUser().setRole(null);
+        //return deliveryBoyEntity;
     }
 
     @Override
@@ -147,10 +158,27 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         log.info("Retrieving list of Deliver Boys");
         List<DeliveryBoyEntity> deliveryBoyEntities = deliveryBoyDaoService.findAll();
         /*For filtering role -- set to null as all delivery boy has same role*/
-        for(DeliveryBoyEntity deliveryBoyEntity: deliveryBoyEntities){
+
+        List<DeliveryBoyEntity> objects = new ArrayList<>();
+
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,user";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,status,addresses");
+        subAssoc.put("addresses", "street,city,state,country,latitude,longitude");
+
+        for (DeliveryBoyEntity deliveryBoyEntity:deliveryBoyEntities){
+            objects.add((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc, subAssoc));
+        }
+
+
+        return objects;
+        /*for(DeliveryBoyEntity deliveryBoyEntity: deliveryBoyEntities){
             deliveryBoyEntity.getUser().setRole(null);
         }
-        return deliveryBoyEntities;
+        return deliveryBoyEntities;*/
     }
 
     @Override

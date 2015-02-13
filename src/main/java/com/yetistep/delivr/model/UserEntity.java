@@ -77,7 +77,6 @@ public class UserEntity implements Serializable {
         this.role = role;
     }
 
-    @JsonBackReference("dboy-user")
     @OneToOne(mappedBy = "user")
     @JsonProperty
     public DeliveryBoyEntity getDeliveryBoy() {
@@ -90,8 +89,7 @@ public class UserEntity implements Serializable {
 
 
 
-    @JsonBackReference("merchant-user")
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonProperty
     public MerchantEntity getMerchant() {
         return merchant;
@@ -101,7 +99,7 @@ public class UserEntity implements Serializable {
         this.merchant = merchant;
     }
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
     @JsonProperty
     public CustomerEntity getCustomer() {
         return customer;
@@ -275,7 +273,6 @@ public class UserEntity implements Serializable {
         this.lastAddressMobile = lastAddressMobile;
     }
 
-    @JsonIgnore
     @OneToMany(mappedBy = "userEntity")
     public List<ActionLogEntity> getActionLogEntities() {
         return actionLogEntities;
@@ -285,8 +282,7 @@ public class UserEntity implements Serializable {
         this.actionLogEntities = actionLogEntities;
     }
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     @JsonProperty
     public List<AddressEntity> getAddresses() {
         return addresses;
@@ -296,8 +292,7 @@ public class UserEntity implements Serializable {
         this.addresses = addresses;
     }
 
-    @JsonManagedReference
-    @OneToOne(mappedBy = "user" ,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
     @JsonProperty
     public UserDeviceEntity getUserDevice() {
         return userDevice;
@@ -318,7 +313,6 @@ public class UserEntity implements Serializable {
         this.status = status;
     }
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user")
     @JsonProperty
     public List<OrderCancelEntity> getOrderCancelEntities() {

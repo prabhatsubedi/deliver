@@ -1,6 +1,5 @@
 package com.yetistep.delivr.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
 
@@ -143,7 +142,6 @@ public class UserDeviceEntity {
         this.width = width;
     }
 
-    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     public UserEntity getUser() {

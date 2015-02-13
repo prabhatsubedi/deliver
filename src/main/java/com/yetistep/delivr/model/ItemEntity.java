@@ -82,7 +82,7 @@ public class ItemEntity implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "category_id")
     public CategoryEntity getCategory() {
         return category;
@@ -93,7 +93,7 @@ public class ItemEntity implements Serializable {
     }
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "brand_id")
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
@@ -113,7 +113,6 @@ public class ItemEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsImageEntity> getItemsImage() {
         return itemsImage;
     }
@@ -124,7 +123,6 @@ public class ItemEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "item")
-    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsOrderEntity> getItemsOrder() {
         return itemsOrder;
     }
@@ -184,7 +182,6 @@ public class ItemEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsStoreEntity> getItemsStores() {
         return itemsStores;
     }
@@ -194,7 +191,6 @@ public class ItemEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsAttributesTypeEntity> getAttributesTypes() {
         return attributesTypes;
     }
@@ -397,7 +393,6 @@ public class ItemEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
     public List<CartEntity> getCarts() {
         return carts;
     }

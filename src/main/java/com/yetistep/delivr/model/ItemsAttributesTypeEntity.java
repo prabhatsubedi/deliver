@@ -37,7 +37,7 @@ public class ItemsAttributesTypeEntity {
     }
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "item_id")
     public ItemEntity getItem() {
         return item;
@@ -48,7 +48,6 @@ public class ItemsAttributesTypeEntity {
     }
 
     @OneToMany(mappedBy = "type", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
     public List<ItemsAttributeEntity> getItemsAttribute() {
         return itemsAttribute;
     }

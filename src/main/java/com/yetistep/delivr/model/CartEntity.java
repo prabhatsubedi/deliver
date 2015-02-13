@@ -64,8 +64,7 @@ public class CartEntity {
     }
 
 
-    //@JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "item_id")
     public ItemEntity getItem() {
         return item;
@@ -85,8 +84,7 @@ public class CartEntity {
         this.modifiedDate = modifiedDate;
     }
 
-    //@JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "brand_id")
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
@@ -96,7 +94,7 @@ public class CartEntity {
         this.storesBrand = storesBrand;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "customer_fb_id", referencedColumnName = "facebook_id")
     public CustomerEntity getCustomer() {
         return customer;
@@ -107,7 +105,6 @@ public class CartEntity {
     }
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval=true)
-    @LazyCollection(LazyCollectionOption.FALSE)
     public List<CartAttributesEntity> getCartAttributes() {
         return cartAttributes;
     }

@@ -67,8 +67,7 @@ public class StoresBrandEntity implements Serializable {
         this.id = id;
     }
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "merchant_id")
     public MerchantEntity getMerchant() {
         return merchant;
@@ -79,8 +78,7 @@ public class StoresBrandEntity implements Serializable {
     }
 
 
-    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL, orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.PERSIST)
     public List<StoreEntity> getStore() {
         return store;
     }
@@ -89,8 +87,7 @@ public class StoresBrandEntity implements Serializable {
         this.store = store;
     }
 
-    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL, orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.PERSIST)
     public List<BrandsCategoryEntity> getBrandsCategory() {
         return brandsCategory;
     }
@@ -99,9 +96,7 @@ public class StoresBrandEntity implements Serializable {
         this.brandsCategory = brandsCategory;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "storesBrand")
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.PERSIST)
     public List<ItemEntity> getItems() {
         return items;
     }
@@ -110,9 +105,7 @@ public class StoresBrandEntity implements Serializable {
         this.items = items;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.PERSIST)
     public List<CategoryEntity> getCategories() {
         return categories;
     }
@@ -226,9 +219,7 @@ public class StoresBrandEntity implements Serializable {
         this.status = status;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.PERSIST)
     public List<CartEntity> getCarts() {
         return carts;
     }

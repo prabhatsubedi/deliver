@@ -34,7 +34,7 @@ public interface MerchantService {
 
     public List<StoresBrandEntity> findBrands(HeaderDto headerDto) throws Exception;
 
-    public Object findBrandDetail(HeaderDto headerDto) throws Exception;
+    public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception;
 
     public void saveItem(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception;
 

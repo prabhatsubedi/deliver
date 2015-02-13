@@ -40,7 +40,7 @@ public class ItemsAttributeEntity implements Serializable {
     }
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_attribute_type_id")
     public ItemsAttributesTypeEntity getType() {
         return type;
@@ -78,7 +78,6 @@ public class ItemsAttributeEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "itemsAttribute", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
     public List<CartAttributesEntity> getCartAttributes() {
         return cartAttributes;
     }

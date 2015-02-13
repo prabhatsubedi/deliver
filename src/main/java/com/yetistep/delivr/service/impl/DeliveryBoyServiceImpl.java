@@ -1046,8 +1046,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 item.setName(itemOrder.getItem().getName());
                 item.setUnitPrice(itemOrder.getItem().getUnitPrice());
                 itemOrder.setItem(item);
-                itemOrder.setItemOrderAttributes(null);
+            }else if(itemOrder.getCustomItem() != null){
+                CustomItemEntity customItem = new CustomItemEntity();
+                customItem.setId(itemOrder.getCustomItem().getId());
+                customItem.setName(itemOrder.getCustomItem().getName());
+                itemOrder.setCustomItem(customItem);
             }
+            itemOrder.setItemOrderAttributes(null);
         }
 
         order.setOrderVerificationCode(null);

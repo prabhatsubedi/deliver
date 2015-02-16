@@ -33,7 +33,7 @@
         <div class="clearfix">
             <div class="count_section col-sm-12">
 
-                <div class="col-sm-3">
+                <div class="col-md-3">
                     <div class="count_block new_orders">
                         <div class="count_head unselectable">
                             <div class="count_number">
@@ -57,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-md-3">
                     <div class="count_block current_delivery">
                         <div class="count_head unselectable">
                             <div class="count_number">
@@ -76,7 +76,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-md-3">
                     <div class="count_block completed_today">
                         <div class="count_head unselectable">
                             <div class="count_number">
@@ -92,7 +92,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-md-3">
                     <div class="count_block served_till">
                         <div class="count_head unselectable">
                             <div class="count_number">

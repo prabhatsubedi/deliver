@@ -1,13 +1,10 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.util.JsonDateSerializer;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -192,6 +189,7 @@ public class StoreEntity implements Serializable {
     }
 
     @Transient
+    @JsonProperty
     public BigDecimal getCustomerToStoreDistance() {
         return customerToStoreDistance;
     }
@@ -201,6 +199,7 @@ public class StoreEntity implements Serializable {
     }
 
     @Transient
+    @JsonProperty
     public String getBrandLogo() {
         return brandLogo;
     }

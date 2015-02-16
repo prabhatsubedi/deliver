@@ -9,6 +9,7 @@ import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
 import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
 import com.yetistep.delivr.model.mobile.dto.SearchDto;
+import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 
 import java.util.List;
 import java.util.Map;
@@ -52,4 +53,6 @@ public interface CustomerService {
     public PaginationDto getMyPastOrders(Long facebookId, Page page) throws Exception;
 
     public SearchDto getSearchContent(String word, RequestJsonDto requestJsonDto) throws Exception;
+
+    public TrackOrderDto getTrackOrderInfo(Integer orderId) throws Exception;
 }

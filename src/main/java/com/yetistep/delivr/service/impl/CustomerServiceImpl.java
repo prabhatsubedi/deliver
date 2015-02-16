@@ -12,6 +12,7 @@ import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
 import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
 import com.yetistep.delivr.model.mobile.dto.SearchDto;
+import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 import com.yetistep.delivr.schedular.ScheduleChanger;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
@@ -956,4 +957,44 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
+    @Override
+    public TrackOrderDto getTrackOrderInfo(Integer orderId) throws Exception {
+        TrackOrderDto trackOrder = orderDaoService.getTrackOrderInfo(orderId);
+        if(trackOrder == null){
+            throw new YSException("ORD014");
+        }
+        if(trackOrder.getOrderStatus().equals(JobOrderStatus.ORDER_ACCEPTED)){
+            String message = MessageBundle.getMessage("TDM002", "push_notification.properties");
+            trackOrder.setTimeDisplayMessage(message);
+        }else if(trackOrder.getOrderStatus().equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)){
+            String origin = GeoCodingUtil.getLatLong(trackOrder.getCourierBoyLatitude(), trackOrder.getCourierBoyLongitude());
+            String destination = GeoCodingUtil.getLatLong(trackOrder.getStoreLatitude(), trackOrder.getStoreLongitude());
+            VehicleType vehicleType = VehicleType.fromInt(trackOrder.getVehicleType());
+            Integer requiredTime = GeoCodingUtil.getRequiredTime(origin, destination, vehicleType);
+            if(requiredTime < 1){
+                requiredTime = 1;
+            }
+            String message = MessageBundle.getMessage("TDM003", "push_notification.properties");
+            message += " "+requiredTime + " min";
+            trackOrder.setTimeDisplayMessage(message);
+        }else if(trackOrder.getOrderStatus().equals(JobOrderStatus.AT_STORE)){
+            String message = MessageBundle.getMessage("TDM004", "push_notification.properties");
+            trackOrder.setTimeDisplayMessage(message);
+        }else if(trackOrder.getOrderStatus().equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)){
+            String origin = GeoCodingUtil.getLatLong(trackOrder.getCourierBoyLatitude(), trackOrder.getCourierBoyLongitude());
+            String destination = GeoCodingUtil.getLatLong(trackOrder.getDeliveryLatitude(), trackOrder.getDeliveryLongitude());
+            VehicleType vehicleType = VehicleType.fromInt(trackOrder.getVehicleType());
+            Integer requiredTime = GeoCodingUtil.getRequiredTime(origin, destination, vehicleType);
+            if(requiredTime < 1){
+                requiredTime = 1;
+            }
+            String message = MessageBundle.getMessage("TDM005", "push_notification.properties");
+            message += " "+requiredTime + " min";
+            trackOrder.setTimeDisplayMessage(message);
+        }else if(trackOrder.getOrderStatus().equals(JobOrderStatus.DELIVERED)){
+            String message = MessageBundle.getMessage("TDM006", "push_notification.properties");
+            trackOrder.setTimeDisplayMessage(message);
+        }
+        return trackOrder;
+    }
 }

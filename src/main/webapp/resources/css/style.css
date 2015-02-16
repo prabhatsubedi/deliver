@@ -108,7 +108,7 @@ body.loader_div > .loader {
 .table-responsive {
     border: none;
 }
-.unselectable, label {
+.unselectable, label, .sidebar {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -1825,6 +1825,15 @@ label.check_label .checkbox {
     }
     .menu_opened #menu_overlay {
         display: block;
+    }
+
+}
+
+@media (max-width: 991px) {
+
+    .count_section .count_block .more_data_cont {
+        position: static;
+        margin-bottom: 15px;
     }
 
 }

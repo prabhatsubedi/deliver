@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -68,6 +65,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
     @Autowired
     HttpServletRequest httpServletRequest;
+
+    @Autowired
+    ItemsOrderAttributeDaoService itemsOrderAttributeDaoService;
 
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
@@ -283,7 +283,15 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             userDeviceEntity.setWidth(userDevice.getWidth());
             userDaoService.update(userEntity);
         }
-        DeliveryBoyEntity deliveryBoyEntity = userEntity.getDeliveryBoy();
+        String fields = "id,availabilityStatus,averageRating,totalOrderTaken,totalOrderDelivered,totalOrderUndelivered,totalEarnings," +
+                "vehicleType,activeOrderNo,licenseNumber,vehicleNumber,user";
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+        assoc.put("user", "id,username,fullName,gender,mobileNumber,mobileVerificationStatus,emailAddress," +
+                "profileImage,blacklistStatus,verifiedStatus,subscribeNewsletter,lastActivityDate,createdDate,addresses");
+        subAssoc.put("addresses", "id,street,city,state,country,countryCode");
+
+        DeliveryBoyEntity deliveryBoyEntity = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(userEntity.getDeliveryBoy(), fields, assoc , subAssoc);
         return deliveryBoyEntity;
     }
 
@@ -961,6 +969,12 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 item.setUnitPrice(itemOrder.getItem().getUnitPrice());
                 itemsOrderEntity.setItem(item);
             }
+            itemsOrderEntity.setCustomItem(itemOrder.getCustomItem());
+            List<ItemsOrderAttributeEntity> itemsOrderAttributeEntities = new ArrayList<ItemsOrderAttributeEntity>();
+            for(ItemsOrderAttributeEntity itemOrderAttribute: itemOrder.getItemOrderAttributes()){
+                itemsOrderAttributeEntities.add(itemOrderAttribute);
+            }
+            itemsOrderEntity.setItemOrderAttributes(itemsOrderAttributeEntities);
             itemsOrderEntities.add(itemsOrderEntity);
         }
 
@@ -1040,8 +1054,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 item.setName(itemOrder.getItem().getName());
                 item.setUnitPrice(itemOrder.getItem().getUnitPrice());
                 itemOrder.setItem(item);
-                itemOrder.setItemOrderAttributes(null);
+            }else if(itemOrder.getCustomItem() != null){
+                CustomItemEntity customItem = new CustomItemEntity();
+                customItem.setId(itemOrder.getCustomItem().getId());
+                customItem.setName(itemOrder.getCustomItem().getName());
+                itemOrder.setCustomItem(customItem);
             }
+            itemOrder.setItemOrderAttributes(null);
         }
 
         order.setOrderVerificationCode(null);
@@ -1065,62 +1084,42 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     public ItemsOrderEntity getItemOrderById(Integer itemOrderId) throws Exception {
         log.info("++++++++++++ Getting Item Order Detail of id " + itemOrderId + " +++++++++++++");
         ItemsOrderEntity itemOrder = itemsOrderDaoService.find(itemOrderId);
+        if(itemOrder == null){
+            throw new YSException("ITM004");
+        }
         if (itemOrder.getItem() != null) {
-            List<Integer> selectedAttributes = new ArrayList<Integer>();
-            for(ItemsOrderAttributeEntity itemOrderAttribute: itemOrder.getItemOrderAttributes()){
-                selectedAttributes.add(itemOrderAttribute.getItemsAttribute().getId());
-            }
+            String fields = "id,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,item";
+
+            Map<String, String> assoc = new HashMap<>();
+            Map<String, String> subAssoc = new HashMap<>();
+            assoc.put("item", "id,name,availableStartTime,availableEndTime,maxOrderQuantity,minOrderQuantity,unitPrice,itemsImage,attributesTypes");
+            subAssoc.put("itemsImage", "url");
+            subAssoc.put("attributesTypes", "id,itemsAttribute,multiSelect,type");
+            subAssoc.put("itemsAttribute", "id,attribute,unitPrice,selected");
+
+            itemOrder = (ItemsOrderEntity) ReturnJsonUtil.getJsonObject(itemOrder, fields, assoc, subAssoc);
             ItemEntity itemEntity = itemOrder.getItem();
-            if (itemEntity == null)
-                throw new YSException("ITM001");
-
-            if (!itemEntity.getStatus().toString().equals(Status.ACTIVE.toString()))
-                throw new YSException("ITM002");
-
-
-            if (itemEntity.getAttributesTypes().size() == 0)
-                itemEntity.setAttributesTypes(null);
-
-            if (itemEntity.getAttributesTypes() != null && itemEntity.getAttributesTypes().size() != 0) {
+            itemEntity.setBrandName("");
+            itemEntity.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+            if (itemEntity.getItemsImage() == null || itemEntity.getItemsImage().size() == 0) {
+                ItemsImageEntity itemsImage = new ItemsImageEntity();
+                itemsImage.setUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+                itemEntity.setItemsImage(Collections.singletonList(itemsImage));
+            }
+            List<Integer> selectedAttributes = itemsOrderAttributeDaoService.getSelectedAttributesOfItemOrder(itemOrderId);
+            if(selectedAttributes.size() > 0){
                 for (ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()) {
-                    //itemsAttributesTypeEntity.setId(null);
-                    itemsAttributesTypeEntity.setItem(null);
                     for (ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
-                        //itemsAttributeEntity.setId(null);
-                        itemsAttributeEntity.setType(null);
-                        itemsAttributeEntity.setCartAttributes(null);
-                        if(selectedAttributes.contains(itemsAttributeEntity.getId()))
+                        if (selectedAttributes.contains(itemsAttributeEntity.getId()))
                             itemsAttributeEntity.setSelected(true);
                     }
                 }
             }
-
-            if(itemEntity.getItemsImage()==null || itemEntity.getItemsImage().size() == 0) {
-                //If Item has not any image then set default image
-                List<ItemsImageEntity> itemImages = new ArrayList<>();
-                ItemsImageEntity itemsImage = new ItemsImageEntity();
-                itemsImage.setUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
-                itemImages.add(itemsImage);
-                itemEntity.setItemsImage(itemImages);
-            } else {
-                for (ItemsImageEntity itemsImageEntity : itemEntity.getItemsImage()) {
-                    itemsImageEntity.setId(null);
-                }
-            }
-
-
-            itemEntity.setBrandName(itemEntity.getStoresBrand().getBrandName());
-            itemEntity.setItemsStores(null);
-            itemEntity.setItemsOrder(null);
-            itemEntity.setCategory(null);
-            itemEntity.setStoresBrand(null);
-            itemEntity.setStatus(null);
-            itemEntity.setCreatedDate(null);
-            itemEntity.setModifiedDate(null);
-            itemEntity.setVat(null);
-            itemEntity.setServiceCharge(null);
-            itemEntity.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
-            itemOrder.setItemOrderAttributes(null);
+        }else{
+            String fields = "id,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,customItem";
+            Map<String, String> assoc = new HashMap<>();
+            assoc.put("customItem", "id,name");
+            itemOrder = (ItemsOrderEntity) ReturnJsonUtil.getJsonObject(itemOrder, fields, assoc);
         }
         return itemOrder;
     }

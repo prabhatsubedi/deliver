@@ -505,20 +505,20 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             throw new YSException("ITM002");
 
 
-        if (itemEntity.getAttributesTypes().size() == 0)
-            itemEntity.setAttributesTypes(null);
-
-        if (itemEntity.getAttributesTypes() != null && itemEntity.getAttributesTypes().size() != 0) {
-            for (ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()) {
-                //itemsAttributesTypeEntity.setId(null);
-                itemsAttributesTypeEntity.setItem(null);
-                for (ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
-                    //itemsAttributeEntity.setId(null);
-                    itemsAttributeEntity.setType(null);
-                    itemsAttributeEntity.setCartAttributes(null);
-                }
-            }
-        }
+//        if (itemEntity.getAttributesTypes().size() == 0)
+//            itemEntity.setAttributesTypes(null);
+//
+//        if (itemEntity.getAttributesTypes() != null && itemEntity.getAttributesTypes().size() != 0) {
+//            for (ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()) {
+//                //itemsAttributesTypeEntity.setId(null);
+//                itemsAttributesTypeEntity.setItem(null);
+//                for (ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
+//                    //itemsAttributeEntity.setId(null);
+//                    itemsAttributeEntity.setType(null);
+//                    itemsAttributeEntity.setCartAttributes(null);
+//                }
+//            }
+//        }
 
         if(itemEntity.getItemsImage()==null || itemEntity.getItemsImage().size() == 0) {
             //If Item has not any image then set default image
@@ -527,11 +527,12 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             itemsImage.setUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
             itemImages.add(itemsImage);
             itemEntity.setItemsImage(itemImages);
-        } else {
-            for (ItemsImageEntity itemsImageEntity : itemEntity.getItemsImage()) {
-                itemsImageEntity.setId(null);
-            }
         }
+// else {
+//            for (ItemsImageEntity itemsImageEntity : itemEntity.getItemsImage()) {
+//                itemsImageEntity.setId(null);
+//            }
+//        }
 
 
         itemEntity.setBrandName(itemEntity.getStoresBrand().getBrandName());

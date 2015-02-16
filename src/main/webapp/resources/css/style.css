@@ -61,9 +61,6 @@ body {
 .no_margin {
     margin: 0px !important;
 }
-.loader_div {
-    position: relative;
-}
 .no_image {
     background-image: url("../images/no_image.jpg") !important;
     background-position: left top !important;
@@ -74,6 +71,9 @@ img.no_image {
     height: 100% !important;
 }
 .img-responsive {
+    position: relative;
+}
+.loader_div {
     position: relative;
 }
 .loader {
@@ -87,6 +87,16 @@ img.no_image {
     left: 0px;
     top: 0px;
     z-index: 9999;
+}
+#menu_overlay {
+    background-color: rgba(0,0,0,0.5);
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 99;
+    display: none;
 }
 body.loader_div > .loader {
     position: fixed;
@@ -571,7 +581,7 @@ body.assistance_page {
     background-color: #FFFFFF;
     border-right: 1px solid #dbdada;
     overflow: hidden;
-    z-index: 10;
+    z-index: 100;
 }
 .sidebar .sidebar_inner {
     bottom: -20px;
@@ -1812,6 +1822,9 @@ label.check_label .checkbox {
 
     .main_container {
         margin-left:  40px !important;
+    }
+    .menu_opened #menu_overlay {
+        display: block;
     }
 
 }

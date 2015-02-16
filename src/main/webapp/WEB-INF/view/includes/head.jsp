@@ -19,4 +19,5 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/bootstrap-select.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/search.js"></script>
 <%--<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.touchSwipe.min.js"></script>--%>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/hammer.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/main.js" id="pageContext" data-context="${pageContext.request.contextPath}"></script>

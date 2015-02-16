@@ -207,9 +207,6 @@ $(document).ready(function(){
         var location = latLngToLocation(p_lat, p_lang);
         var icon;
 
-        mapBounds.extend(location);
-        map.fitBounds(mapBounds);
-
         if(marker_type == 'customer') {
             icon = null;
         } else if(marker_type == 'store') {
@@ -223,6 +220,12 @@ $(document).ready(function(){
             map: map,
             icon: icon
         });
+
+        setTimeout(function(){
+            mapBounds.extend(location);
+            map.fitBounds(mapBounds);
+        }, 1000);
+
         marker.paramName = p_name;
         marker.paramAddress = p_address;
 

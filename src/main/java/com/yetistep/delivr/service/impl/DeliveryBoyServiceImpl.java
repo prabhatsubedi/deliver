@@ -1010,7 +1010,21 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             throw new YSException("ORD003");
         }
         OrderEntity responseOrder = new OrderEntity();
-
+        responseOrder.setId(order.getId());
+        responseOrder.setOrderName(order.getOrderName());
+        responseOrder.setOrderVerificationStatus(order.getOrderVerificationStatus());
+        responseOrder.setDeliveryStatus(order.getDeliveryStatus());
+        responseOrder.setOrderStatus(order.getOrderStatus());
+        responseOrder.setCustomerChargeableDistance(order.getCustomerChargeableDistance());
+        responseOrder.setTotalCost(order.getTotalCost());
+        responseOrder.setSystemServiceCharge(order.getSystemServiceCharge());
+        responseOrder.setDeliveryCharge(order.getDeliveryCharge());
+        responseOrder.setGrandTotal(order.getGrandTotal());
+        responseOrder.setAssignedTime(order.getAssignedTime());
+        responseOrder.setRemainingTime(order.getRemainingTime());
+        responseOrder.setSurgeFactor(order.getSurgeFactor());
+        responseOrder.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge());
+        responseOrder.setOrderDate(order.getOrderDate());
         responseOrder.setAssignedTime(deliveryBoySelection.getTotalTimeRequired());
         responseOrder.setDeliveryBoyShare(deliveryBoySelection.getPaidToCourier());
         responseOrder.setSystemChargeableDistance(deliveryBoySelection.getDistanceToStore());

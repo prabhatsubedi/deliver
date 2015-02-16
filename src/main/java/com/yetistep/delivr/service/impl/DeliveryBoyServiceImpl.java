@@ -283,7 +283,15 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             userDeviceEntity.setWidth(userDevice.getWidth());
             userDaoService.update(userEntity);
         }
-        DeliveryBoyEntity deliveryBoyEntity = userEntity.getDeliveryBoy();
+        String fields = "id,availabilityStatus,averageRating,totalOrderTaken,totalOrderDelivered,totalOrderUndelivered,totalEarnings," +
+                "vehicleType,activeOrderNo,licenseNumber,vehicleNumber,user";
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+        assoc.put("user", "id,username,fullName,gender,mobileNumber,mobileVerificationStatus,emailAddress," +
+                "profileImage,blacklistStatus,verifiedStatus,subscribeNewsletter,lastActivityDate,createdDate,addresses");
+        subAssoc.put("addresses", "id,street,city,state,country,countryCode");
+
+        DeliveryBoyEntity deliveryBoyEntity = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(userEntity.getDeliveryBoy(), fields, assoc , subAssoc);
         return deliveryBoyEntity;
     }
 

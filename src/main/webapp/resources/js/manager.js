@@ -891,7 +891,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.loadDashboard = function(){
 
         disableMapEdit = true;
-        if(!initialized) initialize('nogeocoding'); else google.maps.event.trigger(map, 'resize');
+        selectedCountry = undefined;
+        if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
 
         $('.count_head').click(function(){
             $(this).next('.more_data_cont').stop().slideToggle(200);

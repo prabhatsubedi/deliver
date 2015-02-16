@@ -182,7 +182,7 @@ public class ItemEntity implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)
     public List<ItemsStoreEntity> getItemsStores() {
         return itemsStores;
     }

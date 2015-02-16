@@ -86,7 +86,7 @@ Order.getPurchaseHistory = function(){
             var deliveryBoyName = typeof(order.deliveryBoy) != 'undefined'?order.deliveryBoy.user.fullName:'';
 
 
-            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?order.grandTotal:'', deliveryBoyName, link_attachments, action];
+            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?order.grandTotal:'', deliveryBoyName, link_attachments, ''];
             tableData.push(row);
 
         }

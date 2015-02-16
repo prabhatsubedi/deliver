@@ -49,9 +49,9 @@ public class ReturnJsonUtil {
 
                         for (Object assocDB: assocDBs){
                             Object assocRtnObj = BeanUtils.instantiate(assocDB.getClass());
-                            if(!assocDB.getClass().getName().equals("java.util.ArrayList") && !assocDB.getClass().getName().equals("org.hibernate.collection.internal.PersistentBag") && !assocDB.getClass().getName().equals("com.yetistep.delivr.model")) {
+                            if(!assocDB.getClass().getName().equals("java.util.ArrayList") && !assocDB.getClass().getName().equals("org.hibernate.collection.internal.PersistentBag") && !assocDB.getClass().toString().contains("com.yetistep.delivr.model")) {
                                 assocRtnList.add(assocDB);
-                            }else if(param.getValue() != null)  {
+                            } else if(param.getValue() != null)  {
                                 String assocFields = param.getValue();
                                 String[] arrAssocFields = assocFields.split(",");
                                 for (String assocF:arrAssocFields){

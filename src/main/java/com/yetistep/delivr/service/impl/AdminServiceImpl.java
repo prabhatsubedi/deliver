@@ -178,9 +178,11 @@ public class AdminServiceImpl implements AdminService {
             customerObj.put("lat", address.getLatitude());
             customerObj.put("lang", address.getLongitude());
 
-            dBoyObj.put("name", db.getUser().getFullName());
-            dBoyObj.put("lat", address.getLatitude());
-            dBoyObj.put("lang", address.getLongitude());
+            if(db!=null) {
+                dBoyObj.put("name", db.getUser().getFullName());
+                dBoyObj.put("lat", db.getLatitude());
+                dBoyObj.put("lang", db.getLongitude());
+            }
 
             jo.put("store", storeObj);
             jo.put("customer", customerObj);

@@ -60,6 +60,7 @@ public class StoreEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "stores_brand_id")
+    @JsonProperty
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
     }
@@ -79,6 +80,7 @@ public class StoreEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
+    @JsonProperty
     public List<OrderEntity> getOrder() {
         return order;
     }
@@ -190,7 +192,6 @@ public class StoreEntity implements Serializable {
     }
 
     @Transient
-    @JsonProperty
     public BigDecimal getCustomerToStoreDistance() {
         return customerToStoreDistance;
     }
@@ -200,7 +201,6 @@ public class StoreEntity implements Serializable {
     }
 
     @Transient
-    @JsonProperty
     public String getBrandLogo() {
         return brandLogo;
     }
@@ -210,8 +210,8 @@ public class StoreEntity implements Serializable {
     }
 
     @Column(name = "status")
-    @Enumerated(EnumType.ORDINAL)
     @JsonProperty
+    @Enumerated(EnumType.ORDINAL)
     public Status getStatus() {
         return status;
     }

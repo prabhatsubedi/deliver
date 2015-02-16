@@ -31,7 +31,6 @@ public class ItemsStoreEntity implements Serializable {
         this.id = id;
     }
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "item_id")
     public ItemEntity getItem() {

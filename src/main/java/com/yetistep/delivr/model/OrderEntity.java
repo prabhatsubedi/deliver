@@ -23,7 +23,6 @@ import java.util.List;
  */
 @Entity(name="OrderEntity")
 @Table(name = "orders")
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class OrderEntity implements Serializable {
 
 
@@ -65,7 +64,6 @@ public class OrderEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    @JsonProperty
     public Integer getId() {
         return id;
     }
@@ -75,7 +73,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "order_name")
-    @JsonProperty
     public String getOrderName() {
         return orderName;
     }
@@ -85,7 +82,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "order_verification_code")
-    @JsonProperty
     public String getOrderVerificationCode() {
         return orderVerificationCode;
     }
@@ -95,7 +91,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "order_verification_status", columnDefinition = "TINYINT(1)")
-    @JsonProperty
     public Boolean getOrderVerificationStatus() {
         return orderVerificationStatus;
     }
@@ -105,7 +100,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "delivery_status")
-    @JsonProperty
     public DeliveryStatus getDeliveryStatus() {
         return deliveryStatus;
     }
@@ -115,7 +109,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "order_status")
-    @JsonProperty
     public JobOrderStatus getOrderStatus() {
         return orderStatus;
     }
@@ -135,7 +128,6 @@ public class OrderEntity implements Serializable {
     }*/
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
-    @JsonProperty
     public List<ItemsOrderEntity> getItemsOrder() {
         return itemsOrder;
     }
@@ -146,7 +138,6 @@ public class OrderEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
-    @JsonProperty
     public AddressEntity getAddress() {
         return address;
     }
@@ -157,7 +148,6 @@ public class OrderEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_boy_id")
-    @JsonProperty
     public DeliveryBoyEntity getDeliveryBoy() {
         return deliveryBoy;
     }
@@ -166,7 +156,6 @@ public class OrderEntity implements Serializable {
         this.deliveryBoy = deliveryBoy;
     }
 
-    @JsonProperty
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     public CustomerEntity getCustomer() {
@@ -179,7 +168,6 @@ public class OrderEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
-    @JsonProperty
     public StoreEntity getStore() {
         return store;
     }
@@ -189,7 +177,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "customer_chargeable_distance", precision = 19, scale = 2)
-    @JsonProperty
     public BigDecimal getCustomerChargeableDistance() {
         return customerChargeableDistance;
     }
@@ -199,7 +186,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "system_chargeable_distance", precision = 19, scale = 2)
-    @JsonProperty
     public BigDecimal getSystemChargeableDistance() {
         return systemChargeableDistance;
     }
@@ -218,7 +204,6 @@ public class OrderEntity implements Serializable {
     }*/
 
     @Column(name = "total_cost", precision = 19, scale = 2)
-    @JsonProperty
     public BigDecimal getTotalCost() {
         return totalCost;
     }
@@ -228,7 +213,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "transportation_charge", precision = 19, scale = 2)
-    @JsonProperty
     public BigDecimal getTransportationCharge() {
         return transportationCharge;
     }
@@ -238,7 +222,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "system_service_charge", precision = 19, scale = 2)
-    @JsonProperty
     public BigDecimal getSystemServiceCharge() {
         return systemServiceCharge;
     }
@@ -248,7 +231,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "delivery_charge", precision = 19, scale = 2)
-    @JsonProperty
     public BigDecimal getDeliveryCharge() {
         return deliveryCharge;
     }
@@ -258,7 +240,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "grand_total", precision = 19, scale = 2)
-    @JsonProperty
     public BigDecimal getGrandTotal() {
         return grandTotal;
     }
@@ -268,7 +249,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "delivery_boy_share", precision = 19, scale = 2)
-    @JsonProperty
     public BigDecimal getDeliveryBoyShare() {
         return deliveryBoyShare;
     }
@@ -278,7 +258,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "system_share", precision = 19, scale = 2)
-    @JsonProperty
     public BigDecimal getSystemShare() {
         return systemShare ;
     }
@@ -290,7 +269,6 @@ public class OrderEntity implements Serializable {
 
     @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "order_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    @JsonProperty
     public Timestamp getOrderDate() {
         return orderDate;
     }
@@ -318,7 +296,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "assigned_time")
-    @JsonProperty
     public Integer getAssignedTime() {
         return assignedTime;
     }
@@ -328,7 +305,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name = "remaining_time")
-    @JsonProperty
     public Integer getRemainingTime() {
         return remainingTime;
     }
@@ -338,7 +314,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Transient
-    @JsonProperty
     public Integer getElapsedTime() {
         return elapsedTime;
     }
@@ -348,7 +323,6 @@ public class OrderEntity implements Serializable {
     }
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST)
-    @JsonProperty
     public RatingEntity getRating() {
         return rating;
     }
@@ -360,7 +334,6 @@ public class OrderEntity implements Serializable {
     @ElementCollection
     @CollectionTable(name = "order_attachments", joinColumns = @JoinColumn(name = "order_id"))
     @Column(name = "url")
-    @JsonProperty
     public List<String> getAttachments() {
         return attachments;
     }
@@ -390,7 +363,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name="surge_factor")
-    @JsonProperty
     public Integer getSurgeFactor() {
         return surgeFactor;
     }
@@ -400,7 +372,6 @@ public class OrderEntity implements Serializable {
     }
 
     @Column(name="item_service_vat_charge", precision = 16, scale = 2)
-    @JsonProperty
     public BigDecimal getItemServiceAndVatCharge() {
         return itemServiceAndVatCharge;
     }

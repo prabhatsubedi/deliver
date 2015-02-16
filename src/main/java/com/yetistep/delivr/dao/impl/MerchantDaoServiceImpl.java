@@ -345,7 +345,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public void saveCategories(List<CategoryEntity> categories) throws Exception {
         Integer i = 0;
         for (CategoryEntity value: categories) {
-            getCurrentSession().persist(value);
+            getCurrentSession().save(value);
             if ( i % 20 == 0 ) { //20, same as the JDBC batch size
                 //flush a batch of inserts and release memory:
                 getCurrentSession().flush();
@@ -364,7 +364,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public void saveItemImages(List<ItemsImageEntity> itemsImageEntities) throws Exception {
         Integer i = 0;
         for (ItemsImageEntity value: itemsImageEntities) {
-            getCurrentSession().persist(value);
+            getCurrentSession().save(value);
             if ( i % 20 == 0 ) { //20, same as the JDBC batch size
                 //flush a batch of inserts and release memory:
                 getCurrentSession().flush();
@@ -468,9 +468,9 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Integer i = 0;
         for (ItemsImageEntity value: ItemsImages) {
             if(value.getId() == null){
-                getCurrentSession().persist(value);
+                getCurrentSession().save(value);
             }else{
-                getCurrentSession().persist(value);
+                getCurrentSession().save(value);
             }
             if ( i % 20 == 0 ) { //20, same as the JDBC batch size
                 //flush a batch of inserts and release memory:
@@ -585,8 +585,9 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public List<Integer> getStoreIdList(List<Integer> brandId) throws Exception {
-        String sqQuery = "SELECT s.id FROM stores s WHERE stores_brand_id IN "+brandId.toString().replace("[", "(").replace("]", ")");
+        String sqQuery = "SELECT s.id FROM stores s WHERE stores_brand_id IN(:brandId)";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameterList("brandId", brandId);
         List<Integer> storeIdList = query.list();
         return  storeIdList;
     }
@@ -617,18 +618,22 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public Integer getTotalNumbersOfOrders(List<Integer> storeId) throws Exception {
-        String sqQuery =    "SELECT COUNT(o.id) FROM orders o WHERE o.store_id IN"+storeId.toString().replace("[", "(").replace("]", ")");
+        String sqQuery =    "SELECT COUNT(o.id) FROM orders o WHERE o.store_id IN (:storeId)";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
-
+        query.setParameterList("storeId", storeId);
         BigInteger cnt = (BigInteger) query.uniqueResult();
         return cnt.intValue();
     }
 
     @Override
     public Integer getTotalNumbersOfPurchases(List<Integer> storeId) throws Exception {
-        String sqQuery =    "SELECT COUNT(o.id) FROM orders o INNER JOIN order_cancel oc WHERE o.store_id IN "+storeId.toString().replace("[", "(").replace("]", ")")+" AND o.order_status in ("+JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal()+","+JobOrderStatus.DELIVERED.ordinal()+" ) OR oc.order_status="+JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal();
+        List<Integer> purchaseOrders = new ArrayList<Integer>();
+        purchaseOrders.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal());
+        purchaseOrders.add(JobOrderStatus.DELIVERED.ordinal());
+        String sqQuery =    "SELECT COUNT(o.id) FROM orders o INNER JOIN order_cancel oc WHERE o.store_id IN(:storeId) AND o.order_status IN(:purchaseOrders) OR oc.order_status="+JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal();
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
-
+        query.setParameterList("storeId", storeId);
+        query.setParameterList("purchaseOrders", purchaseOrders);
         BigInteger cnt = (BigInteger) query.uniqueResult();
         return cnt.intValue();
     }

@@ -1,6 +1,8 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.Status;
@@ -246,70 +248,5 @@ public class StoresBrandEntity implements Serializable {
         this.merchantId = merchantId;
     }
 
-    /*@return: dynamic Object
-    * @param1 - @defaultObject - @type: Object, @description: main object
-    * @param2: @params - @type- Map(associated model - string, List(fields required of related model - string)) - @description: Map of associated model and  related fields
-    *  @param3: @subAssoc - @type- Map(2nd level associated model - string, List(fields required of related model - string)) - @description: Map of 2nd level associated model and  related fields
-    * */
-   /* public Object getJsonObject(Object defaultObject, List<String> fields, Map<String, List<String>> params, Map<String, List<String>> subAssoc) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException{
-        Object rtnObject = BeanUtils.instantiate(defaultObject.getClass());
 
-        for (String field: fields){
-            PropertyUtils.setProperty(rtnObject, field, PropertyUtils.getProperty(defaultObject, field));
-        }
-
-        for (Map.Entry<String, List<String>> param: params.entrySet()){
-
-            if(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")){
-               List<Object> objsDB =  (List<Object>) PropertyUtils.getProperty(defaultObject, param.getKey());
-               List<Object> objs = new ArrayList<>();
-
-                for (Object objDb: objsDB){
-                   Object obj = BeanUtils.instantiate(objDb.getClass());
-                   for (String s:param.getValue()){
-
-                       if(PropertyUtils.getProperty(objDb, s).getClass().getName().equals("org.hibernate.collection.internal.PersistentBag")) {
-                          List<Object> objc = (List<Object>) PropertyUtils.getProperty(objDb, s);
-                           List<Object> objsc = new ArrayList<>();
-                           for (Object objDBc: objc) {
-                               Object objcc = BeanUtils.instantiate(objDBc.getClass());
-                               List<String> fieldsc = subAssoc.get(s);
-                               for (String scc: fieldsc){
-                                   PropertyUtils.setProperty(objcc, scc,  PropertyUtils.getProperty(objDBc, scc));
-                               }
-                               objsc.add(objcc);
-                           }
-                           PropertyUtils.setProperty(obj, s,  objsc);
-                       } else {
-                           if(PropertyUtils.getProperty(objDb, s).getClass().toString().contains("com.yetistep.delivr")){
-                               Object objc = BeanUtils.instantiate(PropertyUtils.getProperty(objDb, s).getClass());
-                               List<String> fieldsc = subAssoc.get(s);
-
-                               for (String sc: fieldsc){
-                                   PropertyUtils.setProperty(objc, sc,  PropertyUtils.getProperty(PropertyUtils.getProperty(objDb, s), sc));
-                               }
-                               PropertyUtils.setProperty(obj, s,  objc);
-                           }else{
-                                PropertyUtils.setProperty(obj, s,  PropertyUtils.getProperty(objDb, s));
-                           }
-                       }
-                   }
-
-                   objs.add(obj);
-                }
-
-               PropertyUtils.setProperty(rtnObject, param.getKey(), objs);
-            } else {
-                Object obj = BeanUtils.instantiate(PropertyUtils.getProperty(defaultObject, param.getKey()).getClass());
-                Object objDb = PropertyUtils.getProperty(defaultObject, param.getKey());
-                for (String s: param.getValue()){
-                    PropertyUtils.setProperty(obj, s,  PropertyUtils.getProperty(objDb, s));
-                }
-
-                PropertyUtils.setProperty(rtnObject, param.getKey(), obj);
-            }
-        }
-
-        return rtnObject;
-    }*/
 }

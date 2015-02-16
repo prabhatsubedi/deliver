@@ -1131,10 +1131,10 @@ label.check_label .checkbox {
 }
 .categories_container {
     width: 360px;
-    background-color: #FFFFFF;
-    border-right: 1px solid #dbdada;
     min-width: 180px;
     max-width: 500px;
+    background-color: #FFFFFF;
+    border-right: 1px solid #dbdada;
 }
 .heading h1.brand_container {
     margin: -10px 0 -10px -45px !important;
@@ -1834,6 +1834,46 @@ label.check_label .checkbox {
     .count_section .count_block .more_data_cont {
         position: static;
         margin-bottom: 15px;
+    }
+
+    .main_container .body .heading {
+        padding: 10px 20px;
+    }
+
+    .heading h1.brand_container {
+        margin: 0px 0px 10px 0px !important;
+        width: 100%;
+        padding: 0px;
+    }
+
+    .heading h1 .bootstrap-select button.dropdown-toggle {
+        border: 1px solid #dbdada !important;
+        width: 100%;
+    }
+
+    .item_listing .table_div {
+        display: block;
+    }
+
+    .item_listing .table_div .td_div {
+        display: block;
+    }
+
+    .item_listing .table_div .categories_container {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        padding-left: 15px;
+        background-color: transparent;
+    }
+
+    .categories_container .cateogry_list {
+        background-color: #FFFFFF;
+        border-left: 1px solid #dbdada;
+        border-bottom: 1px solid #dbdada;
+    }
+    .cat_resize_controller {
+        display: none;
     }
 
 }

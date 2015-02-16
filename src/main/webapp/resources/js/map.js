@@ -82,7 +82,7 @@ $(document).ready(function(){
 
         deleteMarkers();
 
-        geo_coding(selectedCountry);
+        if(page != 'nogeocoding') geo_coding(selectedCountry);
 
         infowindow = new google.maps.InfoWindow();
 

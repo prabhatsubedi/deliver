@@ -8,5 +8,5 @@ package com.yetistep.delivr.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum NotifyTo {
-    DELIVERY_BOY, ANDROID_CUSTOMER, IOS_CUSTOMER;
+    DELIVERY_BOY, CUSTOMER;
 }

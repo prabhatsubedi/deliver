@@ -5,6 +5,7 @@ import com.yetistep.delivr.model.UserDeviceEntity;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigInteger;
@@ -92,5 +93,18 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
         query.setParameterList("deliveryBoyId", deliveryBoysId);
         List<String> deviceTokens = query.list();
         return deviceTokens;
+    }
+
+    @Override
+    public UserDeviceEntity getUserDeviceInfoFromOrderId(Integer orderId) throws Exception {
+        String sql = "SELECT ud.device_token as deviceToken, ud.family as family FROM orders o " +
+                "INNER JOIN customers c on (o.customer_id = c.id) INNER JOIN users u on(u.id = c.user_id) " +
+                "INNER JOIN user_device ud ON (ud.user_id = u.id) WHERE o.id = :orderId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("orderId", orderId);
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(UserDeviceEntity.class));
+
+        UserDeviceEntity userDevice = (UserDeviceEntity) sqlQuery.uniqueResult();
+        return userDevice;
     }
 }

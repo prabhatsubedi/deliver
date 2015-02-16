@@ -69,6 +69,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     @Autowired
     ItemsOrderAttributeDaoService itemsOrderAttributeDaoService;
 
+    @Autowired
+    UserDeviceDaoService userDeviceDaoService;
+
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Delivery Boy +++++++++++++++++");
@@ -433,7 +436,11 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             dBoyOrderHistoryEntities.add(dBoyOrderHistoryEntity);
             orderEntity.setdBoyOrderHistories(dBoyOrderHistoryEntities);
 
-            return orderDaoService.update(orderEntity);
+            Boolean status = orderDaoService.update(orderEntity);
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(orderId);
+            String message = MessageBundle.getMessage("CPN001","push_notification.properties");
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER);
+            return status;
         } else if (deliveryBoyId.equals(deliveryBoySelectionEntity.getDeliveryBoy().getId())) {
             throw new YSException("ORD005");
         }

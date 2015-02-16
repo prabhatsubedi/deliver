@@ -44,6 +44,8 @@
     </div>
 </div>
 
+<div id="menu_overlay"></div>
+
 <div class="modal fade modal_form" id="modal_password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form role="form" id="form_password" method="POST" action="">

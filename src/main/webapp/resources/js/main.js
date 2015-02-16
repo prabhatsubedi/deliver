@@ -321,6 +321,9 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             var target_menu = $($(this).attr('data-menu'));
             var target_body = $($(this).attr('data-body'));
             if($('body').hasClass('menu_opened')) {
+                if(Main.docWidth <= 1024) {
+                    $('#menu_overlay').fadeOut();
+                }
                 $('.menu_text', target_menu).fadeOut(100);
                 $(target_body).animate({marginLeft: close_width});
                 $('.sidebar_logo', target_menu).animate({paddingTop: close_logo_pad, paddingBottom: close_logo_pad, width: 22});
@@ -332,6 +335,9 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                     Main.saveInLocalStorage('menu', 'closed');
                 });
             } else {
+                if(Main.docWidth <= 1024) {
+                    $('#menu_overlay').fadeIn();
+                }
                 $(target_body).animate({marginLeft: open_width});
                 $('.sidebar_logo', target_menu).css('width', '100%');
                 $('.sidebar_logo', target_menu).animate({paddingTop: open_logo_pad, paddingBottom: open_logo_pad});
@@ -347,7 +353,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         });
 
         if(Main.docWidth <= 1024) {
-             $('.body').click(function(){
+             $('.body, #menu_overlay').click(function(){
                  if($('body').hasClass('menu_opened') && !$('#sidebar_menu').is(':animated')) {
                      $('.menu_toggle').trigger('click');
                  }
@@ -379,6 +385,31 @@ $(document).ready(function(){
     Main.fullHeight();
     Main.toggleMainMenu();
     $('.elem_tooltip').tooltip();
+
+    var sidebar_hammer = document.getElementById('sidebar_menu');
+    var overlay_hammer = document.getElementById('menu_overlay');
+    if(sidebar_hammer != undefined) {
+        var hammer_sidebar = new Hammer(sidebar_hammer);
+        var hammer_overlay = new Hammer(overlay_hammer);
+        hammer_sidebar.on('swiperight', function() {
+            if($('body').hasClass('menu_closed'))
+                $('.menu_toggle').trigger('click');
+        });
+        hammer_sidebar.on('swipeleft', function() {
+            if($('body').hasClass('menu_opened'))
+                $('.menu_toggle').trigger('click');
+        });
+        hammer_overlay.on('swipeleft', function() {
+            if($('body').hasClass('menu_opened'))
+                $('.menu_toggle').trigger('click');
+        });
+    }
+    /*
+    var hammertime = new Hammer(myElement, myOptions);
+    hammertime.on('pan', function(ev) {
+        console.log(ev);
+    });*/
+
 });
 $(window).resize(function(){
     Main.elemRatio();

@@ -1009,9 +1009,11 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(deliveryBoySelection == null){
             throw new YSException("ORD003");
         }
-        order.setAssignedTime(deliveryBoySelection.getTotalTimeRequired());
-        order.setDeliveryBoyShare(deliveryBoySelection.getPaidToCourier());
-        order.setSystemChargeableDistance(deliveryBoySelection.getDistanceToStore());
+        OrderEntity responseOrder = new OrderEntity();
+
+        responseOrder.setAssignedTime(deliveryBoySelection.getTotalTimeRequired());
+        responseOrder.setDeliveryBoyShare(deliveryBoySelection.getPaidToCourier());
+        responseOrder.setSystemChargeableDistance(deliveryBoySelection.getDistanceToStore());
 
         AddressEntity address = new AddressEntity();
         address.setId(order.getAddress().getId());
@@ -1023,7 +1025,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         address.setLatitude(order.getAddress().getLatitude());
         address.setLongitude(order.getAddress().getLongitude());
         address.setMobileNumber(order.getAddress().getMobileNumber());
-        order.setAddress(address);
+        responseOrder.setAddress(address);
 
         StoreEntity store = new StoreEntity();
         store.setName(order.getStore().getName());
@@ -1035,7 +1037,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         store.setLatitude(order.getStore().getLatitude());
         store.setLongitude(order.getStore().getLongitude());
         store.setBrandLogo(order.getStore().getStoresBrand().getBrandLogo());
-        order.setStore(store);
+        responseOrder.setStore(store);
 
         CustomerEntity customer = new CustomerEntity();
         customer.setId(order.getCustomer().getId());
@@ -1044,7 +1046,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         user.setFullName(order.getCustomer().getUser().getFullName());
         user.setMobileNumber(order.getCustomer().getUser().getMobileNumber());
         customer.setUser(user);
-        order.setCustomer(customer);
+        responseOrder.setCustomer(customer);
 
         List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
         for (ItemsOrderEntity itemOrder : itemsOrder) {
@@ -1063,11 +1065,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             itemOrder.setItemOrderAttributes(null);
         }
 
-        order.setOrderVerificationCode(null);
-        order.setRating(null);
-        order.setDeliveryBoy(null);
-        order.setAttachments(null);
-        return order;
+        responseOrder.setItemsOrder(itemsOrder);
+        return responseOrder;
     }
 
     @Override

@@ -8,9 +8,11 @@ import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.PayloadBuilder;
 import com.yetistep.delivr.enums.NotifyTo;
 import com.yetistep.delivr.enums.PushNotificationRedirect;
+import com.yetistep.delivr.model.UserDeviceEntity;
 import org.apache.log4j.Logger;
 
 import java.io.InputStream;
+import java.util.Collections;
 
 /**
 * Created with IntelliJ IDEA.
@@ -23,20 +25,20 @@ public class PushNotificationUtil {
     private static final Logger log = Logger.getLogger(PushNotificationUtil.class);
 
     private static final String DBOY_API_KEY = "AIzaSyBp36qfwThBp57gVjC0dOA4qf3vTv3gHCA";
-    private static final String CUSTOMER_API_KEY = "AIzaSyBp36qfwThBp57gVjC0dOA4qf3vTv3gHCA";
+    private static final String CUSTOMER_API_KEY = "AIzaSyCXcn_iKKSCnBnYbrinDFCmTdt6xyPcbTI";
 
 
-//    private static void sendPushNotification(UserDeviceEntity userDevice, String message, String extraInfo) {
-//        if (userDevice != null && userDevice.getFamily() != null || userDevice.getDeviceToken() != null) {
-//            if (userDevice != null && userDevice.getFamily() != null && userDevice.getDeviceToken() != null) {
-//                PushNotification pushNotification = new PushNotification();
-//                pushNotification.setTokens(Collections.singletonList(userDevice.getDeviceToken()));
-//                pushNotification.setExtraDetail(extraInfo);
-//                pushNotification.setMessage(message);
-//                PushNotificationUtil.sendNotification(pushNotification, userDevice.getFamily());
-//            }
-//        }
-//    }
+    public static void sendPushNotification(UserDeviceEntity userDevice, String message, NotifyTo notifyTo) {
+        if (userDevice != null && userDevice.getFamily() != null || userDevice.getDeviceToken() != null) {
+            if (userDevice != null && userDevice.getFamily() != null && userDevice.getDeviceToken() != null) {
+                PushNotification pushNotification = new PushNotification();
+                pushNotification.setTokens(Collections.singletonList(userDevice.getDeviceToken()));
+                pushNotification.setMessage(message);
+                pushNotification.setNotifyTo(notifyTo);
+                PushNotificationUtil.sendNotification(pushNotification, userDevice.getFamily());
+            }
+        }
+    }
 //
 //    public static void main(String args[]){
 //        UserDeviceEntity userDeviceEntity = new UserDeviceEntity();
@@ -59,7 +61,7 @@ public class PushNotificationUtil {
             Sender sender = null;
             if(pushNotification.getNotifyTo().equals(NotifyTo.DELIVERY_BOY)){
                 sender = new Sender(DBOY_API_KEY);
-            }else if(pushNotification.getNotifyTo().equals(NotifyTo.ANDROID_CUSTOMER)){
+            }else if(pushNotification.getNotifyTo().equals(NotifyTo.CUSTOMER)){
                 sender = new Sender(CUSTOMER_API_KEY);
             }
 

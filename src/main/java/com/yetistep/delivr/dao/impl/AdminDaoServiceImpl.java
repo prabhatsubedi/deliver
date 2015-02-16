@@ -137,7 +137,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         String sqQuery = "SELECT SUM(doh.completed_at - doh.job_started_at) FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status = 5";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
 
-        Double cnt = (Double) query.uniqueResult();
+        BigDecimal cnt = (BigDecimal) query.uniqueResult();
         if(cnt != null)
             return cnt.intValue();
         else return 0;
@@ -203,7 +203,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         String sqQuery = "SELECT SUM(doh.completed_at - doh.job_started_at) FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status = 5 && doh.completed_at <= '"+dateFormat.format(cal.getTime())+"'  && doh.completed_at > '"+dateFormat.format(calPrev.getTime())+"'";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
 
-        BigInteger cnt = (BigInteger) query.uniqueResult();
+        Double cnt = (Double) query.uniqueResult();
         if(cnt != null)
             return cnt.intValue();
         else return 0;

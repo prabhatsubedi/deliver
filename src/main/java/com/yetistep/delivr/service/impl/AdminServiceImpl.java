@@ -169,7 +169,7 @@ public class AdminServiceImpl implements AdminService {
             JSONObject dBoyObj = new JSONObject();
 
             storeObj.put("name", store.getName());
-            storeObj.put("address", store.getStreet()+")");
+            storeObj.put("address", store.getStreet());
             storeObj.put("lat", store.getLatitude());
             storeObj.put("lang", store.getLongitude());
 

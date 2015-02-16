@@ -42,7 +42,7 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
                 if(value.getParent() != null)
                     catE.setParent(value.getParent());
 
-                getCurrentSession().persist(catE);
+                getCurrentSession().save(catE);
                 if ( i % 20 == 0 ) { //20, same as the JDBC batch size
                     //flush a batch of inserts and release memory:
                     getCurrentSession().flush();
@@ -52,14 +52,14 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
             }
 
         } else {
-            getCurrentSession().persist(value);
+            getCurrentSession().save(value);
         }
         return true;
     }
 
     @Override
     public Boolean update(CategoryEntity value) throws Exception {
-        getCurrentSession().persist(value);
+        getCurrentSession().update(value);
         return true;
     }
 

@@ -97,7 +97,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public Boolean updateStoresBrand(StoresBrandEntity value) throws Exception {
-        getCurrentSession().merge(value);
+        getCurrentSession().persist(value);
         return true;
     }
 

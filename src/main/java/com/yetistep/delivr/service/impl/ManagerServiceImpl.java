@@ -189,8 +189,8 @@ public class ManagerServiceImpl implements ManagerService {
             if(items.size() > 0){
                 throw new YSException("VLD022");
             }
-        }
 
+        }
 
         String categoryImage = category.getImageUrl();
         category.setImageUrl(null);
@@ -298,18 +298,39 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public List<CategoryEntity> getDefaultCategories() throws Exception {
         List<CategoryEntity> parentCategories = merchantService.getParentCategories();
-        return  findChildCategories(parentCategories);
+        List<CategoryEntity> defaultCategories =  findChildCategories(parentCategories);
+
+        List<CategoryEntity> categories = new ArrayList<>();
+
+        String fields = "id,name,child";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("child", "id,name,child");
+
+        subAssoc.put("child", "id,name,child");
+
+        for (CategoryEntity category:defaultCategories){
+            categories.add((CategoryEntity) ReturnJsonUtil.getJsonObject(category, fields, assoc, subAssoc));
+        }
+
+        return categories;
     }
 
     @Override
     public CategoryEntity getCategory(HeaderDto headerDto) throws Exception{
         CategoryEntity category = categoryDaoService.find(Integer.parseInt(headerDto.getId()));
-        if(category != null){
+       /* if(category != null){
             category.setChild(null);
             category.setItem(null);
             category.setStoresBrand(null);
-        }
-        return category;
+        }*/
+        String fields = "id,name,parent,imageUrl";
+        Map<String, String> assoc = new HashMap<>();
+        assoc.put("parent", "id,name");
+
+        return (CategoryEntity) ReturnJsonUtil.getJsonObject(category, fields, assoc);
     }
 
     @Override

@@ -137,7 +137,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         String sqQuery = "SELECT SUM(doh.completed_at - doh.job_started_at) FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status = 5";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
 
-        BigDecimal cnt = (BigDecimal) query.uniqueResult();
+        Double cnt = (Double) query.uniqueResult();
         if(cnt != null)
             return cnt.intValue();
         else return 0;

@@ -4,6 +4,7 @@ import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
+import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 
 import java.util.List;
 
@@ -28,5 +29,7 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
     public OrderEntity getNextPendingOrder() throws Exception;
 
     public List<Object> get_dBoy_order_history(Integer dBoyId) throws Exception;
+
+    public TrackOrderDto getTrackOrderInfo(Integer orderId) throws Exception;
 
 }

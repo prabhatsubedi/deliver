@@ -10,10 +10,7 @@ import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.DeviceInfo;
-import com.yetistep.delivr.model.mobile.dto.CartDto;
-import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
-import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
-import com.yetistep.delivr.model.mobile.dto.ItemDto;
+import com.yetistep.delivr.model.mobile.dto.*;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.util.*;
@@ -729,6 +726,25 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while accomplishing reorder", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/track_order/order/{orderId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> trackOrder(@RequestHeader HttpHeaders headers, @PathVariable Integer orderId) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+          //  validateMobileClient(headerDto.getAccessToken());
+
+            TrackOrderDto trackOrder = customerService.getTrackOrderInfo(orderId);
+            ServiceResponse serviceResponse = new ServiceResponse("Order has been tracked successfully");
+            serviceResponse.addParam("order", trackOrder);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while tracking order", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

@@ -6,7 +6,9 @@ import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixElement;
 import com.google.maps.model.DistanceMatrixElementStatus;
 import com.google.maps.model.DistanceMatrixRow;
+import com.yetistep.delivr.enums.DistanceType;
 import com.yetistep.delivr.enums.PreferenceType;
+import com.yetistep.delivr.enums.VehicleType;
 import com.yetistep.delivr.service.impl.SystemPropertyServiceImpl;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import org.apache.log4j.Logger;
@@ -123,5 +125,22 @@ public class GeoCodingUtil {
             distanceList.add(getAssumedDistance(origin, destination[i]));
         }
         return distanceList;
+    }
+
+    public static Integer getRequiredTime(String origin, String destination, VehicleType vehicleType) throws Exception{
+        SystemPropertyService systemPropertyService = new SystemPropertyServiceImpl();
+        DistanceType distanceType = DistanceType.fromInt(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.AIR_OR_ACTUAL_DISTANCE_SWITCH)));
+        BigDecimal calculatedDistance = BigDecimal.ZERO;
+        if(distanceType.equals(DistanceType.AIR_DISTANCE)){
+            calculatedDistance = BigDecimalUtil.getDistanceInKiloMeters(getAssumedDistance(origin, destination));
+        }else {
+             List<BigDecimal> distances = getListOfDistances(new String[] {origin}, new String[]{destination});
+            if(distances.size() > 0){
+                calculatedDistance = BigDecimalUtil.getDistanceInKiloMeters(distances.get(0));
+            }
+        }
+        int timeFactor = Integer.parseInt(systemPropertyService.readPrefValue(GeneralUtil.getTimeTakenFor(vehicleType)));
+        BigDecimal requiredTime = calculatedDistance.multiply(new BigDecimal(timeFactor));
+        return requiredTime.intValue();
     }
 }

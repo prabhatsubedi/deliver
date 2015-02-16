@@ -103,3 +103,11 @@ INSERT INTO preferences (pref_key, value) VALUES ('ORDER_MAX_AMOUNT', '10000');
 
 /*################ 2015-01-12 #########################*/
 ALTER TABLE `cart` DROP COLUMN `order_id`;
+
+/*################# 2015-02-16 ######################*/
+INSERT INTO `reason_details` (`cancel_reason`, `status`) VALUES ('Customer Not Reachable', '1');
+INSERT INTO `reason_details` (`cancel_reason`, `status`) VALUES ('Item Not Found', '1');
+INSERT INTO `reason_details` (`cancel_reason`, `status`) VALUES ('Customer Denied to take order', '1');
+INSERT INTO `reason_details` (`cancel_reason`, `status`) VALUES ('Customer Location Unidentified', '1');
+INSERT INTO `reason_details` (`cancel_reason`, `status`) VALUES ('Order not accepted in given time', '1');
+INSERT INTO `reason_details` (`cancel_reason`, `status`) VALUES ('Others', '1');

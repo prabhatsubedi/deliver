@@ -888,6 +888,11 @@ function toggleSwitch(value, elem) {
         });*/
 
         Main.resizableCatMenu();
+
+        $(window).resize(function(){
+            Main.resizableCatMenu();
+        });
+
         $('#item_brand').selectpicker();
         Item.getBrands();
 

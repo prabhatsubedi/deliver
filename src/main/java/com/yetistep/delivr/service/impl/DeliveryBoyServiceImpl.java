@@ -255,6 +255,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         UserEntity userEntity = userDaoService.findByUserName(headerDto.getUsername());
         if(userEntity == null)
             throw new YSException("VLD011");
+        if(!userEntity.getStatus().equals(Status.ACTIVE)){
+            throw new YSException("VLD029");
+        }
         GeneralUtil.matchDBPassword(headerDto.getPassword(), userEntity.getPassword());
 
         /* Updating User Device Information */

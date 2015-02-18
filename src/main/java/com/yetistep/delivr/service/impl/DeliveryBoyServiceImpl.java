@@ -435,9 +435,12 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             orderEntity.setdBoyOrderHistories(dBoyOrderHistoryEntities);
 
             Boolean status = orderDaoService.update(orderEntity);
-            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(orderId);
-            String message = MessageBundle.getMessage("CPN001","push_notification.properties");
-            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, orderId.toString());
+            if(status){
+                UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(orderId);
+                String message = MessageBundle.getMessage("CPN001","push_notification.properties");
+                message = String.format(message, orderEntity.getStore().getName(), deliveryBoyEntity.getUser().getFullName());
+                PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, orderId.toString());
+            }
             return status;
         } else if (deliveryBoyId.equals(deliveryBoySelectionEntity.getDeliveryBoy().getId())) {
             throw new YSException("ORD005");
@@ -458,10 +461,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 break;
             }
         }
-        UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
-        String message = MessageBundle.getMessage("CPN002","push_notification.properties");
-        PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
-        return orderDaoService.update(order);
+        boolean status = orderDaoService.update(order);
+        if(status){
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String message = MessageBundle.getMessage("CPN002","push_notification.properties");
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+        }
+        return status;
     }
 
     private Boolean reachedStore(OrderEntity order, Integer deliveryBoyId) throws Exception {
@@ -478,7 +484,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 break;
             }
         }
-        return orderDaoService.update(order);
+        boolean status = orderDaoService.update(order);
+        if(status){
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String message = MessageBundle.getMessage("CPN003","push_notification.properties");
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+        }
+        return status;
     }
 
     private Boolean goRouteToDelivery(OrderEntity order, Integer deliveryBoyId) throws Exception {
@@ -489,7 +501,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         order.setOrderStatus(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         boolean partnerShipStatus = merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());
         courierBoyAccountingsAfterTakingOrder(order.getDeliveryBoy(), order, partnerShipStatus);
-        return orderDaoService.update(order);
+        boolean status = orderDaoService.update(order);
+        if(status){
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String message = MessageBundle.getMessage("CPN004","push_notification.properties");
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+        }
+        return status;
     }
 
     private Boolean deliverOrder(OrderEntity orderEntity, OrderEntity order, Integer deliveryBoyId) throws Exception {
@@ -534,7 +552,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         rating.setCustomerRating(orderEntity.getRating().getCustomerRating());
         rating.setDeliveryBoyComment(orderEntity.getRating().getDeliveryBoyComment());
         order.setRating(rating);
-        return orderDaoService.update(order);
+        boolean status = orderDaoService.update(order);
+        if(status){
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String message = MessageBundle.getMessage("CPN006","push_notification.properties");
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+        }
+        return status;
     }
 
     @Override
@@ -739,8 +763,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
         courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
         courierTransactionEntity.setProfit(courierTransaction.getProfit());
-
-        return orderDaoService.update(order);
+        boolean status = orderDaoService.update(order);
+        if(status){
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String message = MessageBundle.getMessage("CPN005","push_notification.properties");
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+        }
+        return status;
     }
 
     private ItemsOrderEntity getItemOrderById(List<ItemsOrderEntity> itemsOrderEntities, Integer itemOrderId) {
@@ -829,7 +858,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
         courierTransactionEntity.setProfit(courierTransaction.getProfit());
 
-        return orderDaoService.update(order);
+        boolean status = orderDaoService.update(order);
+        if(status){
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String message = MessageBundle.getMessage("CPN005","push_notification.properties");
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+        }
+        return status;
     }
 
     @Override
@@ -900,7 +935,13 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
 
         //TODO dboy transaction implementation
-        return orderDaoService.update(orderEntity);
+        boolean status = orderDaoService.update(orderEntity);
+        if(status){
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String message = MessageBundle.getMessage("CPN007","push_notification.properties");
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+        }
+        return status;
     }
 
     private void courierBoyAccountingsAfterTakingOrder(DeliveryBoyEntity deliveryBoy, OrderEntity order, Boolean partnerShipStatus) throws Exception{

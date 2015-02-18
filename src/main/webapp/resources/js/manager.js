@@ -719,11 +719,14 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
 
     Manager.loadEditCategory = function(){
+        Image.dropZone('#category_image_input', '#category_image');
+        $("#category_image").addClass('disabled');
         $('.edit_btn').click(function () {
-            Image.dropZone('#category_image_input', '#category_image');
 
             $(".editable").removeClass('hidden');
             $(".none_editable").addClass('hidden');
+            $("#category_image").removeClass('disabled');
+
             $.validator.setDefaults({
                 errorPlacement : function(error, element){
                     $('#error_container').html(error);
@@ -736,10 +739,10 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         $('.save_btn').removeClass('add').addClass('edit');
 
-
         $('.cancel_btn').click(function () {
             $(".none_editable").removeClass('hidden');
             $(".editable").addClass('hidden');
+            $("#category_image").addClass('disabled');
         });
     }
 
@@ -823,6 +826,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
                         $(".none_editable").removeClass('hidden');
                         $(".editable").addClass('hidden');
+                        $("#category_image").addClass('disabled');
 
                         /*if(parent_id != ''){
                             $('.cateogry_list a[data-id='+parent_id+']').siblings('ul').removeClass('hidden');
@@ -864,6 +868,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var prevId = $('.category_detail #category_id').val();
             $(".editable").removeClass('hidden');
             $(".none_editable").addClass('hidden');
+            $("#category_image").removeClass('disabled');
 
             $('#category_image').html('<div class="drop_info">Drop image file <br/> (or click to browse) <br /> Min Size: 200x200</div><div class="drop_title">Category Image</div>');
             $('.category_detail #category_id').val('');
@@ -873,7 +878,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             $(".category_detail #name").val('');
             $('.save_btn').removeClass('edit').addClass('add');
             $('.cancel_btn').removeClass('edit').addClass('add');
-            Image.dropZone('#category_image_input', '#category_image');
+//            Image.dropZone('#category_image_input', '#category_image');
 
             $('.cancel_btn').click(function () {
                 $(".none_editable").removeClass('hidden');

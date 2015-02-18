@@ -273,10 +273,12 @@ var courierProfile;
             $(this).valid();
         });
 
+        Image.dropZone('#profile_image_input', '#profile_image');
+        $("#profile_image").addClass('disabled');
         $('.edit_btn').click(function () {
             $(".editable").removeClass('hidden');
             $(".none_editable").addClass('hidden');
-            Image.dropZone('#profile_image_input', '#profile_image');
+            $("#profile_image").removeClass('disabled');
 
             $('#courier_boy_form').validate();
             $('#profile_image_input').rules('add', {imageRequired: true});
@@ -353,6 +355,7 @@ var courierProfile;
             if (data.success == true) {
                 $(".none_editable").removeClass('hidden');
                 $(".editable").addClass('hidden');
+                $("#profile_image").addClass('disabled');
                 CourierStaff.getCourierStaffProfile();
             }
         };

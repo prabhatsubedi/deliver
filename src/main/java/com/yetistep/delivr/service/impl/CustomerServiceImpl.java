@@ -128,7 +128,7 @@ public class CustomerServiceImpl implements CustomerService {
              log.info("++++++++++++ Updating Customer Info +++++++++++++");
             //Update User Device
             registeredCustomer.getUser().getUserDevice().setUuid(customerEntity.getUser().getUserDevice().getUuid());
-            registeredCustomer.getUser().getUserDevice().setDeviceToken(customerEntity.getUser().getUserDevice().getDeviceToken());
+//            registeredCustomer.getUser().getUserDevice().setDeviceToken(customerEntity.getUser().getUserDevice().getDeviceToken());
             registeredCustomer.getUser().getUserDevice().setFamily(customerEntity.getUser().getUserDevice().getFamily());
             registeredCustomer.getUser().getUserDevice().setFamilyName(customerEntity.getUser().getUserDevice().getFamilyName());
             registeredCustomer.getUser().getUserDevice().setName(customerEntity.getUser().getUserDevice().getName());

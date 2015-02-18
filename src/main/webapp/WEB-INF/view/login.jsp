@@ -25,7 +25,8 @@
 <body>
 
 <div class="login_container" id="modal_login">
-    <div class="logo_block"><img src="${pageContext.request.contextPath}/resources/images/delivr-login-logo.png" class="img-responsive center-block"></div>
+    <div class="logo_block">
+        <img src="${pageContext.request.contextPath}/resources/images/delivr-logo.png" class="img-responsive center-block"></div>
     <div class="login_block">
         <div class="login_head">Login to iDelivr</div>
         <div class="login_form">

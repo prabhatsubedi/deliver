@@ -352,13 +352,11 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             }
         });
 
-        if(Main.docWidth <= 1024) {
-             $('.body, #menu_overlay').click(function(){
-                 if($('body').hasClass('menu_opened') && !$('#sidebar_menu').is(':animated')) {
-                     $('.menu_toggle').trigger('click');
-                 }
-             });
-        }
+        $('.body, #menu_overlay').click(function(){
+            if($('body').hasClass('menu_opened') && !$('#sidebar_menu').is(':animated')) {
+                $('.menu_toggle').trigger('click');
+            }
+        });
     };
 
     Main.resizableCatMenu = function(){
@@ -413,4 +411,5 @@ $(document).ready(function(){
 });
 $(window).resize(function(){
     Main.elemRatio();
+    Main.docWidth = window.innerWidth;
 });

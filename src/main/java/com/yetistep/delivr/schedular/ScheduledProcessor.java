@@ -1,13 +1,15 @@
 package com.yetistep.delivr.schedular;
 
 import com.yetistep.delivr.dao.inf.OrderDaoService;
-import com.yetistep.delivr.enums.CancelReason;
-import com.yetistep.delivr.enums.JobOrderStatus;
-import com.yetistep.delivr.enums.PreferenceType;
+import com.yetistep.delivr.dao.inf.UserDeviceDaoService;
+import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.OrderCancelEntity;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.UserDeviceEntity;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.DateUtil;
+import com.yetistep.delivr.util.MessageBundle;
+import com.yetistep.delivr.util.PushNotificationUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,9 @@ public class ScheduledProcessor {
     OrderDaoService orderDaoService;
 
     @Autowired
+    UserDeviceDaoService userDeviceDaoService;
+
+    @Autowired
     SystemPropertyService systemPropertyService;
 
     @Autowired
@@ -50,7 +55,12 @@ public class ScheduledProcessor {
                 orderCancel.setOrder(order);
                 order.setOrderCancel(orderCancel);
                 order.setOrderStatus(JobOrderStatus.CANCELLED);
-                orderDaoService.update(order);
+                boolean status = orderDaoService.update(order);
+                if(status){
+                    UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+                    String message = MessageBundle.getMessage("CPN007", "push_notification.properties");
+                    PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+                }
             }
             checkNextOrders(timeOut);
         } catch (Exception e) {

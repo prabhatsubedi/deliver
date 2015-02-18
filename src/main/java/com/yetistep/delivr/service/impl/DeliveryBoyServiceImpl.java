@@ -143,7 +143,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
 
 
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user";
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -164,16 +164,14 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         List<DeliveryBoyEntity> objects = new ArrayList<>();
 
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,user";
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,user,latitude,longitude";
 
         Map<String, String> assoc = new HashMap<>();
-        Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,status,addresses");
-        subAssoc.put("addresses", "street,city,state,country,latitude,longitude");
+        assoc.put("user", "id,fullName,mobileNumber,emailAddress,status");
 
         for (DeliveryBoyEntity deliveryBoyEntity:deliveryBoyEntities){
-            objects.add((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc, subAssoc));
+            objects.add((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc));
         }
 
 

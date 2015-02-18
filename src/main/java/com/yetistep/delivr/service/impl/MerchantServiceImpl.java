@@ -529,7 +529,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         assoc.put("merchant", "id,businessTitle");
         assoc.put("store", "id,name,street,city,state,country,latitude,longitude");
 
-        if(storesBrands != null){
+        if(storesBrands.size()>0){
             for(StoresBrandEntity storesBrand: storesBrands){
                storesBrandEntities.add(ReturnJsonUtil.getJsonObject(storesBrand, fields, assoc, subAssoc));
                 //storesBrandEntities.add(getStoreBrandForJson(storesBrand));
@@ -577,7 +577,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("store", "id,street,city,state,latitude,longitude,status");
+        assoc.put("store", "id,street,city,state,country,latitude,longitude,status");
         assoc.put("brandsCategory", "id,category");
 
         subAssoc.put("category", "id,name,featured");
@@ -1055,7 +1055,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 */
         List<ItemEntity> objects = new ArrayList<>();
 
-        String fields = "id,name,unitPrice,currencyType,additionalOffer,itemsImage";
+        String fields = "id,name,unitPrice,status,currencyType,additionalOffer,itemsImage";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

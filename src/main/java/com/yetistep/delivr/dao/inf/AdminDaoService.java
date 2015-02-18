@@ -1,5 +1,7 @@
 package com.yetistep.delivr.dao.inf;
 
+import com.yetistep.delivr.enums.DBoyStatus;
+import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
 import org.hibernate.Session;
@@ -26,9 +28,11 @@ public interface AdminDaoService {
 
     public Integer getPartnerStoreCount() throws Exception;
 
-    public Integer getDBoyCount(String status) throws Exception;
+    public Integer getDBoyCount(List<Integer> statuses) throws Exception;
 
-    public Integer getOrderCount(String status) throws Exception;
+    public Integer getOrderCount(List<Integer> status) throws Exception;
+
+    public Integer getOrderCount(Integer status) throws Exception;
 
     public Integer getOnTimeCount(String type) throws Exception;
 
@@ -46,6 +50,6 @@ public interface AdminDaoService {
 
     public Integer getNewUserByDayCount(Integer dayCount, Integer prev) throws Exception;
 
-    public Integer getOrderByDayCount(String status, Integer dayCount, Integer prev) throws Exception;
+    public Integer getOrderByDayCount(List<JobOrderStatus> orderStatuses, Integer dayCount, Integer prev) throws Exception;
 
 }

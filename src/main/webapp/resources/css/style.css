@@ -1885,3 +1885,14 @@ label.check_label .checkbox {
     }
 
 }
+
+
+/*Order page css*/
+.order_table span.item_list {
+    color: blue;
+}
+
+.order_table span.item_list:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}

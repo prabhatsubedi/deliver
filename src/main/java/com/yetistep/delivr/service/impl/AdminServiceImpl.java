@@ -5,6 +5,8 @@ import com.amazonaws.util.json.JSONObject;
 import com.yetistep.delivr.dao.inf.AdminDaoService;
 import com.yetistep.delivr.dao.inf.CountryDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.enums.DBoyStatus;
+import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.AdminService;
@@ -60,8 +62,8 @@ public class AdminServiceImpl implements AdminService {
         partnerStoresCount.put(adminDaoService.getPartnerStoreCount(), null);
         generalData.put("partnerStores", partnerStoresCount);
 
-        Integer succeedOrderCount = adminDaoService.getOrderCount("(5)");
-        Integer failedOrderCount = adminDaoService.getOrderCount("(6)");
+        Integer succeedOrderCount = adminDaoService.getOrderCount(JobOrderStatus.DELIVERED.ordinal());
+        Integer failedOrderCount = adminDaoService.getOrderCount(JobOrderStatus.CANCELLED.ordinal());
         Integer totalOrderCount = succeedOrderCount+failedOrderCount;
 
         Map<Integer, Map<String, String>> successfulDeliveryPcn =  new HashMap<>();
@@ -101,11 +103,17 @@ public class AdminServiceImpl implements AdminService {
         generalData.put("timeExceededDelivery", exceedTimePcn);
 
         Map<Integer, Map<String, String>> onDutyDBCount =  new HashMap<>();
-        onDutyDBCount.put(adminDaoService.getDBoyCount("(1,2)"), null);
+        List<Integer> statuses = new ArrayList<>();
+        statuses.add(DBoyStatus.FREE.ordinal());
+        statuses.add(DBoyStatus.BUSY.ordinal());
+        onDutyDBCount.put(adminDaoService.getDBoyCount(statuses), null);
         generalData.put("onDutyDeliveryBoy", onDutyDBCount);
 
         Map<Integer, Map<String, String>> offDutyDBCount =  new HashMap<>();
-        offDutyDBCount.put(adminDaoService.getDBoyCount("(0)"), null);
+        List<Integer> offDutyStatus = new ArrayList<>();
+        offDutyStatus.add(DBoyStatus.NOT_AVAILABLE.ordinal());
+
+        offDutyDBCount.put(adminDaoService.getDBoyCount(offDutyStatus), null);
         generalData.put("offDutyDeliveryBoy", offDutyDBCount);
 
         Map<Integer, Map<String, String>> servedTillDateCount =  new HashMap<>();
@@ -125,26 +133,31 @@ public class AdminServiceImpl implements AdminService {
         completedTodayCount.put(todayOrderCount, avgDVTimeToday);
         generalData.put("completedToday", completedTodayCount);
 
+        List<Integer> orderStatuses = new ArrayList<>();
+        orderStatuses.add(JobOrderStatus.AT_STORE.ordinal());
+        orderStatuses.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
+        orderStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
+        orderStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
 
-        Integer orderInProcess = adminDaoService.getOrderCount("(1,2,3,4)");
+        Integer orderInProcess = adminDaoService.getOrderCount(orderStatuses);
 
         Map<Integer, Map<String, String>> currentDeliveryCount =  new HashMap<>();
         Map<String, String> currentDeliveryTypesCount = new HashMap<>();
-        currentDeliveryTypesCount.put("orderAccepted", String.valueOf(adminDaoService.getOrderCount("(1)")));
-        currentDeliveryTypesCount.put("inRouteToPickUp", String.valueOf(adminDaoService.getOrderCount("(2)")));
-        currentDeliveryTypesCount.put("atStore", String.valueOf(adminDaoService.getOrderCount("(3)")));
-        currentDeliveryTypesCount.put("inRouteToDelivery", String.valueOf(adminDaoService.getOrderCount("(4)")));
+        currentDeliveryTypesCount.put("orderAccepted", String.valueOf(adminDaoService.getOrderCount(JobOrderStatus.ORDER_ACCEPTED.ordinal())));
+        currentDeliveryTypesCount.put("inRouteToPickUp", String.valueOf(adminDaoService.getOrderCount(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal())));
+        currentDeliveryTypesCount.put("atStore", String.valueOf(adminDaoService.getOrderCount(JobOrderStatus.AT_STORE.ordinal())));
+        currentDeliveryTypesCount.put("inRouteToDelivery", String.valueOf(adminDaoService.getOrderCount(JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal())));
         currentDeliveryCount.put(orderInProcess, currentDeliveryTypesCount);
         generalData.put("currentDelivery", currentDeliveryCount);
 
 
-        List<JobOrderStatus> status = new ArrayList<>();
-        status.add(JobOrderStatus.AT_STORE);
-        status.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
-        status.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
-        status.add(JobOrderStatus.ORDER_ACCEPTED);
+        List<JobOrderStatus> routeStatuses = new ArrayList<>();
+        routeStatuses.add(JobOrderStatus.AT_STORE);
+        routeStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+        routeStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
+        routeStatuses.add(JobOrderStatus.ORDER_ACCEPTED);
 
-        List<OrderEntity> orders = adminDaoService.getOrderRoute(status);
+        List<OrderEntity> orders = adminDaoService.getOrderRoute(routeStatuses);
 
         Map<Integer, Map<String, String>> newOrdersCount =  new HashMap<>();
         Map<String, String> routes = new HashMap<>();
@@ -323,12 +336,14 @@ public class AdminServiceImpl implements AdminService {
         Map<Integer, Integer> successfulPcn = new HashMap<>();
         Map<Integer, Integer> failedPcn = new HashMap<>();
         Integer count;
+        List<JobOrderStatus> orderStatuses = new ArrayList<>();
+        orderStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
         if(headerDto.getId().equals("Day")) {
             count = 8;
             Integer i;
             for ( i=1; i< count; i++){
-                Integer successDvCount = adminDaoService.getOrderByDayCount("(5)", i, i - 1);
-                Integer failedDvCount = adminDaoService.getOrderByDayCount("(5)", i, i-1);
+                Integer successDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i, i - 1);
+                Integer failedDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i, i-1);
                 Integer totalDvCount = successDvCount+failedDvCount;
                 if(successDvCount > 0)
                     successfulPcn.put(i, successDvCount*100/totalDvCount);
@@ -345,8 +360,8 @@ public class AdminServiceImpl implements AdminService {
             count = 5;
             Integer i;
             for ( i=1; i< count; i++){
-                Integer successDvCount = adminDaoService.getOrderByDayCount("(5)", i * 7, 7 * (i - 1));
-                Integer failedDvCount = adminDaoService.getOrderByDayCount("(5)", i*7, 7*(i-1));
+                Integer successDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i * 7, 7 * (i - 1));
+                Integer failedDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i*7, 7*(i-1));
                 Integer totalDvCount = successDvCount+failedDvCount;
                 if(successDvCount > 0)
                     successfulPcn.put(i, successDvCount*100/totalDvCount);
@@ -362,9 +377,10 @@ public class AdminServiceImpl implements AdminService {
         if(headerDto.getId().equals("Month")) {
             count = 13;
             Integer i;
+
             for ( i=1; i< count; i++){
-                Integer successDvCount = adminDaoService.getOrderByDayCount("(5)", i * 30, 30 * (i - 1));
-                Integer failedDvCount = adminDaoService.getOrderByDayCount("(5)", i*30, 30*(i-1));
+                Integer successDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i * 30, 30 * (i - 1));
+                Integer failedDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i*30, 30*(i-1));
                 Integer totalDvCount = successDvCount+failedDvCount;
                 if(successDvCount > 0)
                     successfulPcn.put(i, successDvCount*100/totalDvCount);
@@ -381,8 +397,8 @@ public class AdminServiceImpl implements AdminService {
             count = 10;
             Integer i;
             for ( i=1; i< count; i++){
-                Integer successDvCount = adminDaoService.getOrderByDayCount("(5)", i * 365, 365 * (i - 1));
-                Integer failedDvCount = adminDaoService.getOrderByDayCount("(5)", i*365, 365*(i-1));
+                Integer successDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i * 365, 365 * (i - 1));
+                Integer failedDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i*365, 365*(i-1));
                 Integer totalDvCount = successDvCount+failedDvCount;
                 if(successDvCount > 0)
                     successfulPcn.put(i, successDvCount*100/totalDvCount);

@@ -1870,6 +1870,8 @@ label.check_label .checkbox {
         max-width: 100% !important;
         height: auto !important;
         padding-left: 15px;
+        padding-right: 15px;
+        border-right: none;
         background-color: transparent;
     }
 
@@ -1877,6 +1879,7 @@ label.check_label .checkbox {
         background-color: #FFFFFF;
         border-left: 1px solid #dbdada;
         border-bottom: 1px solid #dbdada;
+        border-right: 1px solid #dbdada;
     }
     .cat_resize_controller {
         display: none;
@@ -1886,7 +1889,7 @@ label.check_label .checkbox {
 
 @media (max-width: 500px) {
 
-    .page_item_view .items_container .item_container, .page_stores .items_container .item_container {
+    .page_item_view .items_container .item_container, .page_stores .items_container .item_container, .page_item_list .items_container .item_container {
         width: 100%;
     }
 

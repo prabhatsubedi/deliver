@@ -333,6 +333,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 $(target_menu).animate({width: close_width, padding: close_menu_pad}, function(){
                     $('body').removeClass('menu_opened').addClass('menu_closed');
                     Main.saveInLocalStorage('menu', 'closed');
+                    $(window).trigger('resize');
                 });
             } else {
                 if(Main.docWidth <= 1024) {
@@ -348,17 +349,16 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                     $('body').removeClass('menu_closed').addClass('menu_opened');
                     Main.saveInLocalStorage('menu', 'opened');
                     $('.menu_text', target_menu).fadeIn(100);
+                    $(window).trigger('resize');
                 });
             }
         });
 
-        if(Main.docWidth <= 1024) {
-             $('.body, #menu_overlay').click(function(){
-                 if($('body').hasClass('menu_opened') && !$('#sidebar_menu').is(':animated')) {
-                     $('.menu_toggle').trigger('click');
-                 }
-             });
-        }
+        $('#menu_overlay').click(function(){
+            if($('body').hasClass('menu_opened') && !$('#sidebar_menu').is(':animated')) {
+                $('.menu_toggle').trigger('click');
+            }
+        });
     };
 
     Main.resizableCatMenu = function(){
@@ -413,4 +413,5 @@ $(document).ready(function(){
 });
 $(window).resize(function(){
     Main.elemRatio();
+    Main.docWidth = window.innerWidth;
 });

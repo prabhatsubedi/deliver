@@ -437,7 +437,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             Boolean status = orderDaoService.update(orderEntity);
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(orderId);
             String message = MessageBundle.getMessage("CPN001","push_notification.properties");
-            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER);
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, orderId.toString());
             return status;
         } else if (deliveryBoyId.equals(deliveryBoySelectionEntity.getDeliveryBoy().getId())) {
             throw new YSException("ORD005");
@@ -458,6 +458,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 break;
             }
         }
+        UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+        String message = MessageBundle.getMessage("CPN002","push_notification.properties");
+        PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
         return orderDaoService.update(order);
     }
 

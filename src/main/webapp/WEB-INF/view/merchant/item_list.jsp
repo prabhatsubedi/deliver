@@ -16,7 +16,7 @@
     </script>
 
 </head>
-<body>
+<body class="page_item_list">
 
 <%@include file="../includes/sidebar_merchant.jsp" %>
 
@@ -48,7 +48,7 @@
 </div>
 
 <div class="item_container_template hidden">
-    <div class="item_container col-lg-3 col-sm-6 invisible">
+    <div class="item_container col-lg-3 col-xs-6 invisible">
         <div class="block_item">
             <div class="item_image maintain_ratio" mr-height="400" mr-width="400">
                 <img class="img-responsive no_image">

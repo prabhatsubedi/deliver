@@ -15,8 +15,6 @@ import java.util.List;
  */
 public class PushNotification {
     private String message;
-    private Integer badge;
-    private String sound;
     private List<String> tokens;
     private String extraDetail;//is attached after the redirect string only when required
     private PushNotificationRedirect pushNotificationRedirect = PushNotificationRedirect.DELIVR;
@@ -26,8 +24,6 @@ public class PushNotification {
 
     public PushNotification(String message){
         this.message = message;
-        this.badge = 1;
-        this.sound = "default";
         this.tokens = new ArrayList<String>();
     }
 
@@ -42,22 +38,6 @@ public class PushNotification {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public Integer getBadge() {
-        return badge;
-    }
-
-    public void setBadge(Integer badge) {
-        this.badge = badge;
-    }
-
-    public String getSound() {
-        return sound;
-    }
-
-    public void setSound(String sound) {
-        this.sound = sound;
     }
 
     public List<String> getTokens() {

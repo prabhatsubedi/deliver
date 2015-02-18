@@ -108,6 +108,9 @@ body.loader_div > .loader {
 .table-responsive {
     border: none;
 }
+.dataTables_wrapper .table-responsive {
+    margin-bottom: 15px;
+}
 .unselectable, label, .sidebar {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -772,7 +775,7 @@ body.assistance_page {
     margin-left: 10px;
 }
 .main_container .body .main_content {
-    padding: 20px 30px 20px 45px;
+    padding: 15px;
     position: relative;
 }
 
@@ -844,7 +847,7 @@ body.assistance_page {
 }
 .form_section .form_content {
     padding: 15px 15px 0px 15px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     background-color: #f6f6f6;
     border: 1px solid #d6d5d5;
     border-top: none;
@@ -1126,8 +1129,11 @@ label.check_label .checkbox {
 
 /* Item Listing page */
 .item_listing {
-    margin: -20px -15px -20px -45px;
+    margin: -15px;
     position: relative;
+}
+.item_listing .items_container {
+    padding: 15px;
 }
 .categories_container {
     width: 360px;
@@ -1193,7 +1199,7 @@ label.check_label .checkbox {
     padding-left: 75px;
 }*/
 .items_container {
-    padding: 15px 0px 15px 15px;
+    padding: 0px 15px;
 }
 .items_container .item_container {
     padding: 15px;
@@ -1864,6 +1870,8 @@ label.check_label .checkbox {
         max-width: 100% !important;
         height: auto !important;
         padding-left: 15px;
+        padding-right: 15px;
+        border-right: none;
         background-color: transparent;
     }
 
@@ -1871,6 +1879,7 @@ label.check_label .checkbox {
         background-color: #FFFFFF;
         border-left: 1px solid #dbdada;
         border-bottom: 1px solid #dbdada;
+        border-right: 1px solid #dbdada;
     }
     .cat_resize_controller {
         display: none;
@@ -1880,7 +1889,7 @@ label.check_label .checkbox {
 
 @media (max-width: 500px) {
 
-    .page_item_view .items_container .item_container, .page_stores .items_container .item_container {
+    .page_item_view .items_container .item_container, .page_stores .items_container .item_container, .page_item_list .items_container .item_container {
         width: 100%;
     }
 

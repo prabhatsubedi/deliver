@@ -25,13 +25,14 @@
 <body>
 
 <div class="login_container" id="modal_login">
-    <div class="logo_block"><img src="${pageContext.request.contextPath}/resources/images/delivr-login-logo.png" class="img-responsive center-block"></div>
+    <div class="logo_block">
+        <img src="${pageContext.request.contextPath}/resources/images/delivr-logo.png" class="img-responsive center-block"></div>
     <div class="login_block">
         <div class="login_head">Login to iDelivr</div>
         <div class="login_form">
             <form role="form" id="login_form" method="POST" action="/j_spring_security_check">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email">
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password">

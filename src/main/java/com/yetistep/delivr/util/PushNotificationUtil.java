@@ -28,15 +28,19 @@ public class PushNotificationUtil {
     private static final String CUSTOMER_API_KEY = "AIzaSyCXcn_iKKSCnBnYbrinDFCmTdt6xyPcbTI";
 
 
-    public static void sendPushNotification(UserDeviceEntity userDevice, String message, NotifyTo notifyTo) {
+    public static void sendPushNotification(UserDeviceEntity userDevice, String message, NotifyTo notifyTo, PushNotificationRedirect pushNotificationRedirect, String extraDetail) {
         if (userDevice != null && userDevice.getFamily() != null || userDevice.getDeviceToken() != null) {
             if (userDevice != null && userDevice.getFamily() != null && userDevice.getDeviceToken() != null) {
                 PushNotification pushNotification = new PushNotification();
                 pushNotification.setTokens(Collections.singletonList(userDevice.getDeviceToken()));
                 pushNotification.setMessage(message);
                 pushNotification.setNotifyTo(notifyTo);
+                pushNotification.setPushNotificationRedirect(pushNotificationRedirect);
+                pushNotification.setExtraDetail(extraDetail);
                 PushNotificationUtil.sendNotification(pushNotification, userDevice.getFamily());
             }
+        }else{
+            log.warn("Missing information of user device");
         }
     }
 //
@@ -67,8 +71,11 @@ public class PushNotificationUtil {
 
             String msg =pushNotification.getMessage();
 
+            if(pushNotification.getPushNotificationRedirect() != null){
+                msg += pushNotification.getPushNotificationRedirect().toString();
+            }
             if (pushNotification.getExtraDetail() != null)
-                msg += "_" + pushNotification.getExtraDetail();
+                msg += "/" + pushNotification.getExtraDetail();
 
             Message message = new Message.Builder()
                     .collapseKey("1")
@@ -99,17 +106,20 @@ public class PushNotificationUtil {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             PushNotificationRedirect pushNotificationRedirect = pushNotification.getPushNotificationRedirect();
 
-            String message = pushNotification.getMessage() + pushNotificationRedirect.getRedirectTo();
+            String message = pushNotification.getMessage();
 
+            if(pushNotification.getPushNotificationRedirect() != null){
+                message += pushNotification.getPushNotificationRedirect().toString();
+            }
             if (pushNotification.getExtraDetail() != null)
-                message += "_" + pushNotification.getExtraDetail();
+                message += "/" + pushNotification.getExtraDetail();
 
 
             //InputStream inputStream = classLoader.getResourceAsStream(MessageBundle.getMessage("iphone_client_app_cert","constants.properties"));
             InputStream inputStream = classLoader.getResourceAsStream("/*MessageBundle.getIphoneClientAppCert()*/");
             PayloadBuilder payloadBuilder = APNS.newPayload();
-            payloadBuilder = payloadBuilder.badge(pushNotification.getBadge());
-            payloadBuilder = payloadBuilder.sound(pushNotification.getSound());
+           /* payloadBuilder = payloadBuilder.badge(pushNotification.getBadge());
+            payloadBuilder = payloadBuilder.sound(pushNotification.getSound());*/
             payloadBuilder = payloadBuilder.alertBody(message);
             String payload = payloadBuilder.build();
 

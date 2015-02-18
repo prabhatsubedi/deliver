@@ -129,6 +129,13 @@
         });
         $(window).resize(function() {
             $('.items_container .item_container').removeAttr('style');
+            $('.items_container .item_container .item_image').removeAttr('style');
+            re_calculate_width = true;
+        });
+
+        $('.menu_toggle').click(function(){
+            $('.items_container .item_container').removeAttr('style');
+            $('.items_container .item_container .item_image').removeAttr('style');
             re_calculate_width = true;
         });
 

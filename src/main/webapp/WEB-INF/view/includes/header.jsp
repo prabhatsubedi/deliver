@@ -81,6 +81,12 @@
 <script type="text/javascript">
     $(document).ready(function(){
 
+        $('.user_menu .dropdown').hover(function(){
+            $(this).addClass('open');
+        }, function(){
+            $(this).removeClass('open');
+        });
+
         $('#modal_password').on('shown.bs.modal', function (e) {
 
             $.validator.setDefaults({

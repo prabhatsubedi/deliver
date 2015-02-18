@@ -46,6 +46,6 @@
     margin-right: 0 !important;
     position: absolute;
     right: -276px !important;
-    top: -8px !important;
+    top: -8px;
     z-index: -1 !important;
 }

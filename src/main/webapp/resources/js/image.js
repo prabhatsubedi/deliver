@@ -251,6 +251,21 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
 
         $('#crop_img_modal').on('hidden.bs.modal', function(e){
             $('#crop_img_modal img').attr('src', '');
+            $('.preview-pane.preview-pane-org').css({top: -8});
+        });
+
+        var offset_top;
+        var scroll_top;
+        var css_top;
+        $('#crop_img_modal').scroll(function(e){
+            offset_top = $('.jcrop-holder', this).offset().top;
+            scroll_top = $('html').scrollTop();
+            offset_top = scroll_top - offset_top;
+            css_top = -16;
+            if(offset_top > -16) {
+                css_top = offset_top;
+            }
+            $('.preview-pane.preview-pane-org').css({top: css_top + 8});
         });
 
     }

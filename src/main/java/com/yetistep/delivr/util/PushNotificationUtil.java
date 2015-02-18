@@ -37,6 +37,8 @@ public class PushNotificationUtil {
                 pushNotification.setNotifyTo(notifyTo);
                 PushNotificationUtil.sendNotification(pushNotification, userDevice.getFamily());
             }
+        }else{
+            log.warn("Missing information of user device");
         }
     }
 //

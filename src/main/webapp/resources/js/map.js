@@ -631,6 +631,8 @@ $(document).ready(function(){
                                 geoObj.country = geoPointData.country;
                                 geoObj.contactNo = geoPointData.contactNo;
                                 geoObj.contactPerson = geoPointData.contactPerson;
+                                geoKeyObject.email = geoPointData.email;
+                                geoKeyObject.sendEmail = geoPointData.sendEmail;
                             } else {
                                 geoObj.id = location.dataId;
                                 geoObj.latitude = location.lat();
@@ -643,6 +645,8 @@ $(document).ready(function(){
                                 geoObj.country = country;
                                 geoObj.contactNo = "";
                                 geoObj.contactPerson = "";
+                                geoObj.email = "";
+                                geoObj.sendEmail = "";
                             }
 
                             removeAnimation();
@@ -669,6 +673,8 @@ $(document).ready(function(){
                             var address_country = infoWindowData.country;
                             var address_contact_number = infoWindowData.contactNo;
                             var address_contact_person = infoWindowData.contactPerson;
+                            var address_email = infoWindowData.email;
+                            var address_email_subscription = infoWindowData.sendEmail;
                             $('#store_name', marker_address).attr('value', address_name);
                             $('#street', marker_address).attr('value', address_street_name);
 //                            $('.address_postal_code .address_value', marker_address).attr('value', address_postal_code);
@@ -677,6 +683,13 @@ $(document).ready(function(){
                             $('#country', marker_address).attr('value', address_country);
                             $('#contact_no', marker_address).attr('value', address_contact_number);
                             $('#contact_person', marker_address).attr('value', address_contact_person);
+                            $('#email', marker_address).attr('value', address_email);
+                            $('#email_subscription', marker_address).attr('checked', address_email_subscription);
+                            if(address_email_subscription)
+                                $('.check_span', marker_address).addClass('icon_full');
+                            else
+                                $('.check_span', marker_address).removeClass('icon_full');
+
                             $('.save_marker', marker_address).removeAttr('disabled').attr({'data-id': locationToKey(location)});
                             $('.cancel_marker', marker_address).removeAttr('disabled');
                             marker.setAnimation(google.maps.Animation.BOUNCE);
@@ -691,6 +704,8 @@ $(document).ready(function(){
                                 var address_country = infoWindowData.country;
                                 var address_contact_number = infoWindowData.contactNo;
                                 var address_contact_person = infoWindowData.contactPerson;
+                                var address_email = infoWindowData.email;
+                                var address_email_subscription = infoWindowData.sendEmail;
                                 $('#store_name', marker_address).attr('value', address_name);
                                 $('#street', marker_address).attr('value', address_street_name);
                                 $('#city', marker_address).attr('value', address_city);
@@ -698,6 +713,13 @@ $(document).ready(function(){
                                 $('#country', marker_address).attr('value', address_country);
                                 $('#contact_no', marker_address).attr('value', address_contact_number);
                                 $('#contact_person', marker_address).attr('value', address_contact_person);
+                                $('#email', marker_address).attr('value', address_email);
+                                $('#email_subscription', marker_address).attr('checked', address_email_subscription);
+                                if(address_email_subscription)
+                                    $('.check_span', marker_address).addClass('icon_full');
+                                else
+                                    $('.check_span', marker_address).removeClass('icon_full');
+
                                 $('.save_marker', marker_address).removeAttr('disabled').attr({'data-id': locationToKey(location)});
                                 $('.cancel_marker', marker_address).removeAttr('disabled');
                                 this.setAnimation(google.maps.Animation.BOUNCE);
@@ -774,6 +796,8 @@ $(document).ready(function(){
                                                 var address_country = newInfoData.country;
                                                 var address_contact_number = newInfoData.contactNo;
                                                 var address_contact_person = newInfoData.contactPerson;
+                                                var address_email = newInfoData.email;
+                                                var address_email_subscription = newInfoData.sendEmail;
 
                                                 $('#store_name', marker_address).attr('value', address_name);
                                                 $('#street', marker_address).attr('value', address_street_name);
@@ -782,6 +806,13 @@ $(document).ready(function(){
                                                 $('#country', marker_address).attr('value', address_country);
                                                 $('#contact_no', marker_address).attr('value', address_contact_number);
                                                 $('#contact_person', marker_address).attr('value', address_contact_person);
+                                                $('#email', marker_address).attr('value', address_email);
+                                                $('#email_subscription', marker_address).attr('checked', address_email_subscription);
+                                                if(address_email_subscription)
+                                                    $('.check_span', marker_address).addClass('icon_full');
+                                                else
+                                                    $('.check_span', marker_address).removeClass('icon_full');
+
                                                 $('#form_store').valid();
 
                                             }

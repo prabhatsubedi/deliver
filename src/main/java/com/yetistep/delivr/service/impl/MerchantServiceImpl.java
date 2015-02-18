@@ -188,7 +188,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<Integer> categories = requestJson.getCategories();
 
         MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
-        if(dbMerchant == null)
+        if((dbMerchant == null) || (dbMerchant.getUser().getStatus() != Status.ACTIVE))
             throw new YSException("VLD011");
 
         checkUniqueBrand( storesBrand.getBrandName().trim());
@@ -633,7 +633,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<String> itemsImages = requestJson.getItemImages();
 
         StoresBrandEntity storesBrand = merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
-        if(storesBrand == null)
+        if((storesBrand == null) || (storesBrand.getStatus() != Status.ACTIVE) )
             throw new YSException("VLD012");
 
         CategoryEntity category = new CategoryEntity();

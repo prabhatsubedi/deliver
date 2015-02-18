@@ -28,7 +28,8 @@
                         <li><a href="/admin/settings">Settings</a></li>
                     </sec:authorize>
                     <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
-                        <li><a href="/organizer/profile">Profile</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <%--<li><a href="/organizer/profile">Profile</a></li>--%>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_MERCHANT')">
                         <li><a href="/merchant/profile">Profile</a></li>

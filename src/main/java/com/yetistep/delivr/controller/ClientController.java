@@ -10,6 +10,7 @@ import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.DeviceInfo;
+import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.dto.*;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
@@ -692,15 +693,25 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/search_all/word/{word}", method = RequestMethod.POST)
+    @RequestMapping(value = "/search/page/{page}/content/{word}", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getCurrency(@PathVariable("word") String word, @RequestBody RequestJsonDto requestJsonDto) {
+    public ResponseEntity<ServiceResponse> getCurrency(@PathVariable("page") Integer pageNo, @PathVariable("word") String word, @RequestBody RequestJsonDto requestJsonDto) {
         try{
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setPageNumber(pageNo);
+            requestJsonDto.setPageInfo(pageInfo);
 
-            String currencyType = clientService.getCurrencyType();
+            SearchDto searchDto = customerService.getSearchContent(word, requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("Search content retrieved successfully");
-//            serviceResponse.addParam("currency", currencyType);
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+            /* Page Information and Currency Only Displayed at First page */
+            if(pageNo!=1 && pageNo > 1){
+                searchDto.setPageInfo(null);
+                searchDto.setCurrency(null);
+            }
+
+            serviceResponse.addParam("search", searchDto);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, GeneralUtil.getCacheHeader(), HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while searching items and stores", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
@@ -749,4 +760,7 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+
+
 }

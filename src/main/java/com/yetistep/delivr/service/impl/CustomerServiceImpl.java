@@ -885,9 +885,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public SearchDto getSearchContent(String word, RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++++++ Searching content of " + word + " +++++++++++++");
-        List<SearchDto.Items> searchItemList = new ArrayList<>();
+        List<SearchDto> searchResult = null;
 
-        SearchDto searchDto = new SearchDto();
         if(word.length() < 3)
             throw new YSException("VLD028");
 
@@ -907,11 +906,13 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<ItemEntity> items = itemDaoService.searchItems(word);
         if(items !=null && items.size() > 0){
-            //Search Nearest Stores for Adress
+            searchResult = new ArrayList<>();
+            //Search Nearest Stores for Address
             for(ItemEntity item : items){
                 //Check Store Close or open right at now
                 //Todo:
-                SearchDto.Items tempItem = new SearchDto.Items();
+
+                SearchDto tempItem = new SearchDto();
                 List<StoreEntity> storeEntities = storeDaoService.findStores(item.getBrandId());
                 if(storeEntities.size() == 0) { //If all Stores are inactivated
                     items.remove(item);
@@ -947,16 +948,91 @@ public class CustomerServiceImpl implements CustomerService {
                 tempItem.setItemImageUrl(item.getImageUrl());
                 tempItem.setBrandName(item.getBrandName());
                 tempItem.setStoreStreet(storeEntities.get(0).getStreet());
-                searchItemList.add(tempItem);
+                tempItem.setItem(true);
+                searchResult.add(tempItem);
             }
         }
 
         //Now Goes To Search Brand
+        List<Integer> brandIds = storesBrandDaoService.getSearchBrands(word);
+        if(brandIds!=null && brandIds.size() > 0){
+            if(searchResult == null)
+                searchResult = new ArrayList<>();
 
+            List<StoreEntity> storeEntities = storeDaoService.findSearchStores(brandIds);
 
+        /* Extract Latitude and Longitude */
+            String[] storeDistance = new String[storeEntities.size()];
+            String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
 
+            for (int i = 0; i < storeEntities.size(); i++) {
+                storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
+            }
+
+            List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
+
+            //Set Distance to Store Entity
+            for (int i = 0; i < storeEntities.size(); i++) {
+                storeEntities.get(i).setCustomerToStoreDistance(distanceList.get(i));
+            }
+
+            //Store Entity List Sorted by Distance
+            Collections.sort(storeEntities, new StoreDistanceComparator());
+
+            //Now Combine all brand in one list
+            for (StoreEntity storeEntity : storeEntities) {
+                if (!containsBrandId(searchResult, storeEntity.getStoresBrand().getId())) {
+                    SearchDto tempBrand = new SearchDto();
+                    tempBrand.setBrandId(storeEntity.getStoresBrand().getId());
+                    tempBrand.setOpeningTime(storeEntity.getStoresBrand().getOpeningTime());
+                    tempBrand.setClosingTime(storeEntity.getStoresBrand().getClosingTime());
+                    tempBrand.setBrandName(storeEntity.getStoresBrand().getBrandName());
+                    tempBrand.setBrandLogo(storeEntity.getStoresBrand().getBrandLogo());
+                    tempBrand.setBrandImage(storeEntity.getStoresBrand().getBrandImage());
+                    tempBrand.setBrandUrl(storeEntity.getStoresBrand().getBrandUrl());
+                    tempBrand.setItem(false);
+                    tempBrand.setStoreStreet(storeEntity.getStreet());
+                    searchResult.add(tempBrand);
+
+                }
+
+            }
+        }
+
+        //Perform Sorted Search Content Pagination
+        PageInfo pageInfo = null;
+        List<SearchDto> sortedList = new ArrayList<>();
+        if (searchResult !=null && searchResult.size() > 0) {
+            Integer pageId = 1;
+            if (requestJsonDto.getPageInfo() != null)
+                pageId = requestJsonDto.getPageInfo().getPageNumber();
+
+            StaticPagination staticPagination = new StaticPagination();
+            staticPagination.paginate(searchResult, pageId);
+            sortedList = (List<SearchDto>) staticPagination.getList();
+            staticPagination.setList(null);
+            pageInfo = staticPagination;
+        }
+
+        SearchDto searchDto = new SearchDto();
+        if(searchResult!=null){
+//            searchDto = new SearchDto();
+            searchDto.setSearchList(sortedList);
+            searchDto.setPageInfo(pageInfo);
+            searchDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+        }
         return searchDto;
     }
+
+    private boolean containsBrandId(List<SearchDto> list, Integer id) {
+        for (SearchDto object : list) {
+            if (object.getBrandId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     class StoreDistanceComparator implements Comparator<StoreEntity> {
 

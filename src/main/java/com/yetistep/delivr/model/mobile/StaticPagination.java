@@ -13,7 +13,7 @@ public class StaticPagination extends PageInfo{
     List<? extends Object> list;
 
     public StaticPagination(){
-        setPageSize(3);
+        setPageSize(5);
     }
 
    public StaticPagination paginate(List<? extends Object> raw, Integer pageId) {

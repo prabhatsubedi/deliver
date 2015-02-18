@@ -97,6 +97,18 @@ public class StoreDaoServiceImpl implements StoreDaoService{
         return storeEntities;
     }
 
+    @Override
+    public List<StoreEntity> findSearchStores(List<Integer> searchBrands) throws Exception {
+        List<StoreEntity> storeEntities = null;
+        Criteria criteria = getCurrentSession().createCriteria(StoreEntity.class);
+        criteria.add(Restrictions.in("storesBrand.id", searchBrands));
+        criteria.add(Restrictions.eq("status", Status.ACTIVE));
+
+        storeEntities = criteria.list();
+
+        return storeEntities;
+    }
+
 //    @Override
 //    public List<CategoryEntity> findItemCategory(Integer brandId) throws Exception {
 //        List<CategoryEntity> categoryEntities = new ArrayList<>();

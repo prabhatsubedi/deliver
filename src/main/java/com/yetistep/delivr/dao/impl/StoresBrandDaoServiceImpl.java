@@ -4,6 +4,7 @@ import com.yetistep.delivr.dao.inf.StoresBrandDaoService;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.StoresBrandEntity;
+import com.yetistep.delivr.util.CommonConstants;
 import com.yetistep.delivr.util.HibernateUtil;
 import org.hibernate.*;
 import org.hibernate.criterion.Order;
@@ -216,6 +217,19 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
             criteria.addOrder(Order.asc("priority"));
         storesBrandEntities = criteria.list();
         return storesBrandEntities;
+    }
+
+    @Override
+    public List<Integer> getSearchBrands(String word) throws Exception {
+        List<Integer> brandIds;
+        String sql = "SELECT id FROM stores_brands " +
+                "WHERE brand_name LIKE :word AND status = :status";
+
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("word", CommonConstants.DELIMITER+word+CommonConstants.DELIMITER);
+        sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
+        brandIds = sqlQuery.list();
+        return brandIds;
     }
 
 

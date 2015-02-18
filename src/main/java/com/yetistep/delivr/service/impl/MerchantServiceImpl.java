@@ -197,26 +197,20 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         String brandImage = storesBrand.getBrandImage();
 
         for (StoreEntity store: stores){
-
             store.setStoresBrand(storesBrand);
-
             List<BrandsCategoryEntity> brandsCategories = new ArrayList<BrandsCategoryEntity>();
-
             for (Integer categoryId: categories){
-                    BrandsCategoryEntity newBrandsCategory = new BrandsCategoryEntity();
-                    CategoryEntity category = new CategoryEntity();
-                    category.setId(categoryId);
-                    newBrandsCategory.setCategory(category);
-                    newBrandsCategory.setStoresBrand(store.getStoresBrand());
-                    brandsCategories.add(newBrandsCategory);
+                BrandsCategoryEntity newBrandsCategory = new BrandsCategoryEntity();
+                CategoryEntity category = new CategoryEntity();
+                category.setId(categoryId);
+                newBrandsCategory.setCategory(category);
+                newBrandsCategory.setStoresBrand(store.getStoresBrand());
+                brandsCategories.add(newBrandsCategory);
             }
-
             store.getStoresBrand().setBrandsCategory(brandsCategories);
             store.getStoresBrand().setMerchant(dbMerchant);
-
             store.getStoresBrand().setBrandLogo(null);
             store.getStoresBrand().setBrandImage(null);
-
         }
         storesBrand.setStore(stores);
 
@@ -342,11 +336,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 dbStore.setLatitude(newStore.getLatitude());
                 dbStore.setLongitude(newStore.getLongitude());
                 dbStore.setContactPerson(newStore.getContactPerson());
+                dbStore.setEmail(newStore.getEmail());
+                dbStore.setSendEmail(newStore.getSendEmail());
             }
         }
-
         dbStoresBrand.setStore(dbStores);
-
         merchantDaoService.updateStoresBrand(dbStoresBrand);
 
         String dir = MessageBundle.separateString("/", "Merchant_"+dbStoresBrand.getMerchant().getId(), "Brand_"+ dbStoresBrand.getId());

@@ -79,7 +79,15 @@ public class ManagerServiceImpl implements ManagerService {
 
         deliveryBoyDaoService.update(dBoy);
 
-        return dBoy;
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,gender,status,addresses");
+        subAssoc.put("addresses", "street,city,state,country,latitude,longitude");
+
+        return ((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(dBoy, fields, assoc, subAssoc));
     }
 
     @Override
@@ -95,7 +103,15 @@ public class ManagerServiceImpl implements ManagerService {
         dBoy.setdBoySubmittedAmount(dBoySubmittedAmounts);
 
         deliveryBoyDaoService.update(dBoy);
-        return dBoy;
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,gender,status,addresses");
+        subAssoc.put("addresses", "street,city,state,country,latitude,longitude");
+
+        return ((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(dBoy, fields, assoc, subAssoc));
     }
 
     @Override
@@ -114,7 +130,15 @@ public class ManagerServiceImpl implements ManagerService {
 
         deliveryBoyDaoService.update(dBoy);
 
-        return dBoy;
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,gender,status,addresses");
+        subAssoc.put("addresses", "street,city,state,country,latitude,longitude");
+
+        return ((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(dBoy, fields, assoc, subAssoc));
     }
 
     @Override

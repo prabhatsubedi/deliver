@@ -4,6 +4,24 @@ if(typeof(Store) == "undefined") var Store = {};
 
     Store.loadAddStore = function() {
 
+        $('label.check_label .checkbox').removeAttr("checked");
+
+        $('label.check_label .checkbox').live('click', function(){
+            if($(this).prop('checked')) {
+                $(this).siblings('.check_span').addClass("icon_full");
+            } else {
+                $(this).siblings('.check_span').removeClass("icon_full");
+            }
+        });
+
+        $("label.check_label").live('mouseover', function ( event ) {
+            $('.check_span', this).addClass("icon_semi");
+        });
+
+        $("label.check_label").live('mouseout', function ( event ) {
+            $('.check_span', this).removeClass("icon_semi");
+        });
+
         form_submit = false;
 
         var action = Main.getURLvalue(3);
@@ -141,12 +159,15 @@ if(typeof(Store) == "undefined") var Store = {};
                     if(geoPoint.country == ""){
                         location_valid = false;
                     }
-                    /*                    if(geoPoint.contactNo == ""){
-                     location_valid = false;
-                     }
-                     if(geoPoint.contactPerson == ""){
-                     location_valid = false;
-                     }*/
+                    if(geoPoint.contactNo == ""){
+                        location_valid = false;
+                    }
+                    if(geoPoint.contactPerson == ""){
+                        location_valid = false;
+                    }
+                    if(geoPoint.email == ""){
+                        location_valid = false;
+                    }
                     stores.push(geoPoint);
                     if(location_valid == false) break;
                 }
@@ -186,6 +207,8 @@ if(typeof(Store) == "undefined") var Store = {};
                 var address_country = $('#country', geoParent).val();
                 var address_contact_number = $('#contact_no', geoParent).val();
                 var address_contact_person = $('#contact_person', geoParent).val();
+                var address_email = $('#email', geoParent).val();
+                var address_email_subscription = $('#email_subscription', geoParent).prop('checked');
 
                 geoKeyObject.name = address_name;
                 geoKeyObject.street = address_street_name;
@@ -194,6 +217,8 @@ if(typeof(Store) == "undefined") var Store = {};
                 geoKeyObject.country = address_country;
                 geoKeyObject.contactNo = address_contact_number;
                 geoKeyObject.contactPerson = address_contact_person;
+                geoKeyObject.email = address_email;
+                geoKeyObject.sendEmail = address_email_subscription;
 
 //                setTimeout(function(){
 //                    $(loaderDiv).removeClass('loader_div').children('.loader').hide();
@@ -209,8 +234,9 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#city').rules('add', {required: true});
         $('#state').rules('add', {required: true});
         $('#country').rules('add', {required: true});
-//        $('#contact_no').rules('add', {required: true, contactNumber: true});
-//        $('#contact_person').rules('add', {required: true});
+        $('#contact_no').rules('add', {required: true, contactNumber: true});
+        $('#contact_person').rules('add', {required: true});
+        $('#email').rules('add', {required: true, email: true});
 
         $('#form_brand').validate({
             submitHandler: function() {

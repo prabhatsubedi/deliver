@@ -89,7 +89,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="parent_category_list items_container col-lg-12 td_div full_height">
+                    <div class="parent_category_list items_container col-lg-12 td_div">
 
                     </div>
                 </div>

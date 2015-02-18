@@ -44,15 +44,6 @@
                         </div>
                         <div class="more_data_cont">
                             <div class="more_data">
-                                <div class="data_row">Baneshwor</div>
-                                <div class="data_row">New Road</div>
-                                <div class="data_row">Naxal</div>
-                                <div class="data_row">Baneshwor</div>
-                                <div class="data_row">New Road</div>
-                                <div class="data_row">Naxal</div>
-                                <div class="data_row">Baneshwor</div>
-                                <div class="data_row">New Road</div>
-                                <div class="data_row">Naxal</div>
                             </div>
                         </div>
                     </div>

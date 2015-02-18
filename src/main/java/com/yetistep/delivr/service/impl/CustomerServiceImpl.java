@@ -645,7 +645,9 @@ public class CustomerServiceImpl implements CustomerService {
         List<String> deviceTokens = userDeviceDaoService.getDeviceTokenFromDeliveryBoyId(idList);
         PushNotification pushNotification = new PushNotification();
         pushNotification.setTokens(deviceTokens);
-        pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN001", "order/"+order.getId()));
+        pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN001"));
+        pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
+        pushNotification.setExtraDetail(order.getId().toString());
         pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
         PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
 

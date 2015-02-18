@@ -44,8 +44,10 @@ public class SpringUserDetailsServiceImpl implements UserDetailsService {
                                                          List<GrantedAuthority> authorities) {
         //The Session Value Set Here
         Integer merchantId  = null;
+        String businessName = null;
         if(user.getRole().getRole().toString().equals(Role.ROLE_MERCHANT.toString())){
             merchantId = user.getMerchant().getId();
+            businessName = user.getMerchant().getBusinessTitle();
         }
 
         AuthenticatedUser authenticatedUser = new AuthenticatedUser(user.getUsername(),
@@ -55,8 +57,12 @@ public class SpringUserDetailsServiceImpl implements UserDetailsService {
         authenticatedUser.setUserId(user.getId());
         authenticatedUser.setFullName(user.getFullName());
         authenticatedUser.setMobileNumber(user.getMobileNumber());
+        authenticatedUser.setProfileImage(user.getProfileImage());
         if(merchantId!=null)
             authenticatedUser.setMerchantId(merchantId);
+        if(businessName!=null)
+            authenticatedUser.setBusinessName(businessName);
+
         return authenticatedUser;
 
     }

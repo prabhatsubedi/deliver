@@ -57,8 +57,8 @@ public class MainController {
     @ResponseBody
     public ResponseEntity<ServiceResponse> loginDefaultPage() {
         String url = "";
+        AuthenticatedUser userDetails = (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null && !SessionManager.isAnonymousUser()) {
-            AuthenticatedUser userDetails = (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Role role = SessionManager.getRole();
             if (role.toString().equals(Role.ROLE_ADMIN.toString())) {
                 url = "organizer/dashboard";
@@ -74,6 +74,7 @@ public class MainController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         serviceResponse.addParam("url", url);
+        serviceResponse.addParam("userDetails", userDetails);
         return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
     }
 

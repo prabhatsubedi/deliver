@@ -41,6 +41,8 @@ public class StoreEntity implements Serializable {
     private Status status;
     private BigDecimal customerToStoreDistance;//Transient Variable
     private String brandLogo;//Transient Variable
+    private String email;
+    private Boolean sendEmail;//on order placed
 
 
     @Id
@@ -217,5 +219,25 @@ public class StoreEntity implements Serializable {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @Column(name = "email")
+    @JsonProperty
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Column(name = "send_email")
+    @JsonProperty
+    public Boolean getSendEmail() {
+        return sendEmail;
+    }
+
+    public void setSendEmail(Boolean sendEmail) {
+        this.sendEmail = sendEmail;
     }
 }

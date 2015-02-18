@@ -14,6 +14,8 @@ import java.util.Collection;
 public class AuthenticatedUser extends org.springframework.security.core.userdetails.User{
     private Integer userId;
     private Integer merchantId;
+    private String profileImage;
+    private String businessName;
     private String fullName;
     private String mobileNumber;
 
@@ -56,5 +58,21 @@ public class AuthenticatedUser extends org.springframework.security.core.userdet
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
 }

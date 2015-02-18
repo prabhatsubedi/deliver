@@ -125,10 +125,20 @@
                                         <input type="text" class="form-control" id="country" name="country" placeholder="Country">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="contact_no" name="contact_no" placeholder="Contact No. (Optional)">
+                                        <input type="text" class="form-control" id="contact_no" name="contact_no" placeholder="Contact No.">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="contact_person" name="contact_person" placeholder="Contact Person (Optional)">
+                                        <input type="text" class="form-control" id="contact_person" name="contact_person" placeholder="Contact Person">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="check_label">
+                                            <span class="glyphicon glyphicon-ok check_span"></span>
+                                            Enable Email Subscription
+                                            <input type="checkbox" class="checkbox">
+                                        </label>
                                     </div>
                                     <div class="form-group clearfix">
                                         <button type="button" class="btn btn_green marker_nav marker_prev" disabled="disabled">Prev</button>

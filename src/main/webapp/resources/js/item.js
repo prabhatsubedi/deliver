@@ -1215,6 +1215,9 @@ function toggleSwitch(value, elem) {
                     $('.heading h1 .bootstrap-select').removeClass('hidden');
 
                     Item.getBrandCategories($('#item_brand').val());
+                } else {
+                    $('.item_listing').html('<div style="padding: 15px;">No stores are available to list items.</div>');
+                    $('.body').removeClass('loader_div').children('.loader').hide().remove();
                 }
 
             } else {

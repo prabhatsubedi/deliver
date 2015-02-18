@@ -32,7 +32,7 @@
         <div class="login_form">
             <form role="form" id="login_form" method="POST" action="/j_spring_security_check">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email">
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password">

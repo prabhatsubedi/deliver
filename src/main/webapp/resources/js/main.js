@@ -352,7 +352,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             }
         });
 
-        $('.body, #menu_overlay').click(function(){
+        $('#menu_overlay').click(function(){
             if($('body').hasClass('menu_opened') && !$('#sidebar_menu').is(':animated')) {
                 $('.menu_toggle').trigger('click');
             }

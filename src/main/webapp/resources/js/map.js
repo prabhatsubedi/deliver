@@ -631,8 +631,8 @@ $(document).ready(function(){
                                 geoObj.country = geoPointData.country;
                                 geoObj.contactNo = geoPointData.contactNo;
                                 geoObj.contactPerson = geoPointData.contactPerson;
-                                geoKeyObject.email = geoPointData.email;
-                                geoKeyObject.sendEmail = geoPointData.sendEmail;
+                                geoObj.email = geoPointData.email;
+                                geoObj.sendEmail = geoPointData.sendEmail;
                             } else {
                                 geoObj.id = location.dataId;
                                 geoObj.latitude = location.lat();
@@ -646,7 +646,7 @@ $(document).ready(function(){
                                 geoObj.contactNo = "";
                                 geoObj.contactPerson = "";
                                 geoObj.email = "";
-                                geoObj.sendEmail = "";
+                                geoObj.sendEmail = false;
                             }
 
                             removeAnimation();

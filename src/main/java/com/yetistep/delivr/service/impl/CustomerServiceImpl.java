@@ -145,6 +145,8 @@ public class CustomerServiceImpl implements CustomerService {
         } else {
             validateUserDevice(customerEntity.getUser().getUserDevice());
             customerEntity.setRewardsEarned(BigDecimal.ZERO);
+            customerEntity.setTotalOrderPlaced(0);
+            customerEntity.setTotalOrderDelivered(0);
 //            if (customerEntity.getLatitude() != null) {
 //                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
 //                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());
@@ -532,7 +534,7 @@ public class CustomerServiceImpl implements CustomerService {
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
         Long customerId = requestJson.getOrdersCustomerId();
         Integer addressId = requestJson.getOrdersAddressId();
-        CustomerEntity customer = customerDaoService.getCustomerIdAndRewardFromFacebookId(customerId);
+        CustomerEntity customer = customerDaoService.find(customerId);
         AddressEntity address = addressDaoService.getMyAddress(addressId);
         if(address == null)
             throw new YSException("VLD014");
@@ -629,10 +631,16 @@ public class CustomerServiceImpl implements CustomerService {
         courierTransaction.setPaidToCourier(null);
         courierTransaction.setProfit(null);
         order.setCourierTransaction(courierTransaction);
+
+        if(order.getCustomer().getTotalOrderPlaced() == null){
+            order.getCustomer().setTotalOrderPlaced(1);
+        }else{
+            order.getCustomer().setTotalOrderPlaced(order.getCustomer().getTotalOrderPlaced()+1);
+        }
         orderDaoService.save(order);
 
         deleteCarts(cartIds);
-        //TODO Filter delivery boys by profit criteria - Push Notifications
+        /* Push Notifications */
         List<Integer> idList = getIdOfDeliveryBoys(deliveryBoySelectionEntitiesWithProfit);
         List<String> deviceTokens = userDeviceDaoService.getDeviceTokenFromDeliveryBoyId(idList);
         PushNotification pushNotification = new PushNotification();

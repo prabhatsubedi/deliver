@@ -1083,4 +1083,14 @@ public class CustomerServiceImpl implements CustomerService {
         }
         return trackOrder;
     }
+
+    @Override
+    public CustomerEntity getCustomerProfile(Long facebookId) throws Exception {
+        CustomerEntity customer = customerDaoService.getCustomerProfile(facebookId);
+        if (customer.getReferredFriendsCount() == null)
+            customer.setReferredFriendsCount(0);
+        if (customer.getRewardsEarned() == null)
+            customer.setRewardsEarned(BigDecimal.ZERO);
+        return customer;
+    }
 }

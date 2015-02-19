@@ -12,10 +12,13 @@ import org.hibernate.*;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.BigDecimalType;
+import org.hibernate.type.IntegerType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -183,6 +186,31 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         sqlQuery.setParameter("facebookId", facebookId);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(CustomerEntity.class));
         CustomerEntity customerEntity = sqlQuery.list().size() > 0 ? (CustomerEntity) sqlQuery.list().get(0) : null;
+        return customerEntity;
+    }
+
+    @Override
+    public CustomerEntity getCustomerProfile(Long facebookId) throws Exception {
+        String sql = "SELECT c.id as id, c.referred_friends_count as referredFriendsCount, c.rewards_earned as rewardsEarned," +
+                " count(o.id) as totalOrderPlaced FROM customers c INNER JOIN orders o on (o.customer_id = c.id) WHERE " +
+                "c.facebook_id = :facebookId AND o.order_status IN (:orderStatusList)";
+        List<Integer> orderStatusList = new ArrayList<Integer>();
+        orderStatusList.add(JobOrderStatus.ORDER_PLACED.ordinal());
+        orderStatusList.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
+        orderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
+        orderStatusList.add(JobOrderStatus.AT_STORE.ordinal());
+        orderStatusList.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal());
+
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql)
+                .addScalar("id", IntegerType.INSTANCE)
+                .addScalar("referredFriendsCount", IntegerType.INSTANCE)
+                .addScalar("totalOrderPlaced", IntegerType.INSTANCE)
+                .addScalar("rewardsEarned", BigDecimalType.INSTANCE);
+        sqlQuery.setParameter("facebookId", facebookId);
+        sqlQuery.setParameterList("orderStatusList", orderStatusList);
+
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(CustomerEntity.class));
+        CustomerEntity customerEntity = (CustomerEntity) sqlQuery.uniqueResult();
         return customerEntity;
     }
 }

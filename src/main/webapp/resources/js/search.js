@@ -233,6 +233,7 @@ var Search = function() {
 }();
 
 $(document).ready(function(){
+    if(Main.getFromLocalStorage('userRole') == undefined) return false;
     var searchRoot = Main.getURLvalue(0);
     if(Main.getFromLocalStorage('searchRoot') != searchRoot) {
         Main.clearLocalStorage('stores');

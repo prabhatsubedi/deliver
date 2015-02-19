@@ -47,9 +47,10 @@
                     <tr>
                         <th>ID</th>
                         <th><div class="width_150"> Store Name </div></th>
-                        <th> Status </th>
+                        <th> No. of Stores </th>
                         <th> Featured </th>
                         <th> Priority </th>
+                        <th> Status </th>
                         <th><div class="width_150"> Action </div></th>
                     </tr>
                     </thead>

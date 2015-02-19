@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="pull-right user_name">
-            Manager
+            <%--Manager--%>
         </div>
     </div>
 </div>
@@ -80,6 +80,11 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+
+        if(Main.getFromLocalStorage('profileImage') != "undefined" && Main.getFromLocalStorage('profileImage') != "" && Main.getFromLocalStorage('profileImage') != undefined) {
+            $('.user_menu img').attr('src', Main.getFromLocalStorage('profileImage'));
+        }
+        $('.user_menu .user_name').html(Main.getFromLocalStorage('userTitle'));
 
         $('.user_menu .dropdown').hover(function(){
             $(this).addClass('open');

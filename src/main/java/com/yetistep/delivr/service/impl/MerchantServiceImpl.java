@@ -39,7 +39,10 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public void saveMerchant(MerchantEntity merchant, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Merchant +++++++++++++++++");
         UserEntity user = merchant.getUser();
-
+        List<AddressEntity> addressEntities = user.getAddresses();
+        for (AddressEntity address: addressEntities){
+            address.setUser(user);
+        }
 
         String code = MessageBundle.generateTokenString() + "_" + System.currentTimeMillis();
 

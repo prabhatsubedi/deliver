@@ -203,7 +203,7 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public Object saveCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
         log.info("****************************saving category **************************");
-        if (headerDto.getId() != null){
+        if (headerDto.getId() != null || headerDto.getId() != "" ){
             CategoryEntity parentCategory = new CategoryEntity();
             parentCategory.setId(Integer.parseInt(headerDto.getId()));
             category.setParent(parentCategory);
@@ -233,9 +233,7 @@ public class ManagerServiceImpl implements ManagerService {
             category.setImageUrl(s3PathImage);
             categoryDaoService.update(category);
         }
-
         String fields = "id,name,imageUrl";
-
         return ReturnJsonUtil.getJsonObject(category, fields);
     }
 

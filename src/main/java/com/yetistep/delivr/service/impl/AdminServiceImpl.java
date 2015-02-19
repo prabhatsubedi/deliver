@@ -130,6 +130,7 @@ public class AdminServiceImpl implements AdminService {
         Map<String, String> avgDVTimeToday = new HashMap<>();
         if(todayOrderCount > 0)
             avgDVTimeToday.put("averageDeliveryTime", String.valueOf(adminDaoService.getTodayOrderTotalTime()/todayOrderCount));
+
         completedTodayCount.put(todayOrderCount, avgDVTimeToday);
         generalData.put("completedToday", completedTodayCount);
 
@@ -137,7 +138,7 @@ public class AdminServiceImpl implements AdminService {
         orderStatuses.add(JobOrderStatus.AT_STORE.ordinal());
         orderStatuses.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
         orderStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
-        orderStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
+        orderStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal());
 
         Integer orderInProcess = adminDaoService.getOrderCount(orderStatuses);
 
@@ -213,7 +214,7 @@ public class AdminServiceImpl implements AdminService {
         generalData.put("storeLocations", storeLocations);
 
         customerLocations.put(customerLatLang.size(), customerLatLang);
-        generalData.put("customerLocations", storeLocations);
+        generalData.put("customerLocations", customerLocations);
 
         dbLocations.put(dbLatLang.size(), dbLatLang);
         generalData.put("deliveryBoyLocations", dbLocations);

@@ -140,11 +140,17 @@
             re_calculate_width = true;
         });
 
-        $('.item_container a').live('click', function(e) {
-            e.preventDefault();
+        $('.item_container a').live('mousedown', function(e) {
+//            e.preventDefault();
             var elem_parent = $(this).parents('.item_container');
             Main.saveInLocalStorage('mid', elem_parent.attr('data-mid'));
-            window.location = $(this).attr('href');
+//            window.location = $(this).attr('href');
+        });
+
+        $('#stores_table a[data-mid]').live('mousedown', function(e) {
+//            e.preventDefault();
+            Main.saveInLocalStorage('mid', $(this).attr('data-mid'));
+//            window.location = $(this).attr('href');
         });
 
         var sortableParam = {

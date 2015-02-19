@@ -7,6 +7,7 @@ import com.yetistep.delivr.enums.VehicleType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -170,5 +171,19 @@ public class GeneralUtil {
         return preferenceType;
     }
 
+    public static HttpHeaders getCacheHeader() {
+        Integer inSec = 3*60;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Cache-Control", "max-age="+inSec);
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return httpHeaders;
+    }
 
+
+    public static Integer getMinimumTimeDisplay(Integer requiredTime){
+        if(requiredTime < 1){
+            return 1;
+        }
+        return requiredTime;
+    }
 }

@@ -111,3 +111,7 @@ INSERT INTO `reason_details` (`cancel_reason`, `status`) VALUES ('Customer Denie
 INSERT INTO `reason_details` (`cancel_reason`, `status`) VALUES ('Customer Location Unidentified', '1');
 INSERT INTO `reason_details` (`cancel_reason`, `status`) VALUES ('Order not accepted in given time', '1');
 INSERT INTO `reason_details` (`cancel_reason`, `status`) VALUES ('Others', '1');
+
+
+/*####################2015-02-19############################*/
+ALTER TABLE `customers` CHANGE COLUMN `fb_token` `fb_token` LONGTEXT NULL DEFAULT NULL ;

@@ -134,10 +134,10 @@
                                         <input type="email" class="form-control" id="email" name="email" placeholder="Email">
                                     </div>
                                     <div class="form-group">
-                                        <label class="check_label">
+                                        <label class="check_label" for="email_subscription">
                                             <span class="glyphicon glyphicon-ok check_span"></span>
                                             Enable Email Subscription
-                                            <input type="checkbox" class="checkbox">
+                                            <input type="checkbox" class="checkbox" id="email_subscription">
                                         </label>
                                     </div>
                                     <div class="form-group clearfix">

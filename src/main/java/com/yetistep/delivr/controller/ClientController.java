@@ -10,10 +10,13 @@ import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.DeviceInfo;
+import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.dto.*;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
-import com.yetistep.delivr.util.*;
+import com.yetistep.delivr.util.GeneralUtil;
+import com.yetistep.delivr.util.ServiceResponse;
+import com.yetistep.delivr.util.YSException;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -692,15 +695,25 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/search_all/word/{word}", method = RequestMethod.POST)
+    @RequestMapping(value = "/search/page/{page}/content/{word}", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getCurrency(@PathVariable("word") String word, @RequestBody RequestJsonDto requestJsonDto) {
+    public ResponseEntity<ServiceResponse> getCurrency(@PathVariable("page") Integer pageNo, @PathVariable("word") String word, @RequestBody RequestJsonDto requestJsonDto) {
         try{
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setPageNumber(pageNo);
+            requestJsonDto.setPageInfo(pageInfo);
 
-            String currencyType = clientService.getCurrencyType();
+            SearchDto searchDto = customerService.getSearchContent(word, requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("Search content retrieved successfully");
-//            serviceResponse.addParam("currency", currencyType);
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+            /* Page Information and Currency Only Displayed at First page */
+            if(pageNo!=1 && pageNo > 1){
+                searchDto.setPageInfo(null);
+                searchDto.setCurrency(null);
+            }
+
+            serviceResponse.addParam("search", searchDto);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, GeneralUtil.getCacheHeader(), HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while searching items and stores", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
@@ -745,6 +758,25 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while tracking order", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_profile/fbId/{facebookId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getProfileInformation(@RequestHeader HttpHeaders headers, @PathVariable Long facebookId) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            //  validateMobileClient(headerDto.getAccessToken());
+
+            CustomerEntity customer = customerService.getCustomerProfile(facebookId);
+            ServiceResponse serviceResponse = new ServiceResponse("Profile information has been retrieved successfully");
+            serviceResponse.addParam("customer", customer);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving profile information", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

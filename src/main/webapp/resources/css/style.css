@@ -1566,6 +1566,12 @@ label.check_label .checkbox {
     content: "INACTIVE";
 }
 
+/* store form */
+
+#store_section .check_span {
+    margin-right: 10px;
+}
+
 
 /*referral*/
 .fb_signup {

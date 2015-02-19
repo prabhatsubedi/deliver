@@ -178,12 +178,14 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             activeStatuses.add(JobOrderStatus.ORDER_ACCEPTED);
             activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
             activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
+            List<OrderEntity> currentOrders = new ArrayList<>();
             for(OrderEntity order: deliveryBoy.getOrder()){
-                 if(!activeStatuses.contains(order.getOrderStatus())){
-                     deliveryBoy.getOrder().remove(order);
+                 if(activeStatuses.contains(order.getOrderStatus())){
+                     currentOrders.add(order);
                  }
             }
-            objects.add((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc));
+            deliveryBoy.setOrder(currentOrders);
+            objects.add(deliveryBoy);
         }
 
 

@@ -200,6 +200,7 @@ public class AdminServiceImpl implements AdminService {
 
             jo.put("store", storeObj);
             jo.put("customer", customerObj);
+            jo.put("courierBoy", dBoyObj);
             routes.put(i.toString(), jo.toString());
 
             storeLatLang.put(i.toString(), storeObj.toString());

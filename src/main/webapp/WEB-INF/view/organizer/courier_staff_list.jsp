@@ -133,7 +133,7 @@
                             <div class="width_50"> Order No.</div>
                         </th>
                         <th>
-                            <div class="width_150"> Order Name</div>
+                            <div class="width_250"> Order Name</div>
                         </th>
                         <th>
                             <div class="width_150"> Job Status</div>

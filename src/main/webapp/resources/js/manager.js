@@ -350,8 +350,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.getCourierStaffs = function () {
 
         var callback = function (status, data) {
-
-            console.log(data);
             if (!data.success) {
                 alert(data.message);
                 return;
@@ -365,9 +363,30 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var id = courierStaff.id;
                 var link_courier_staff = '<a href="' + Main.modifyURL('/organizer/courier_staff/order_history/' + id) + '">' + courierStaff.user.fullName + '</a>';
                 var number = courierStaff.user.mobileNumber;
-                var order_no = 0;
-                var order_name = 0;
-                var job_status = courierStaff.availabilityStatus;
+                var order_no = '<ul class="current_order_attrs">';
+                var order_name = '<ul class="current_order_attrs">';
+                var assigned_time = '<ul class="current_order_attrs">';
+                var elapsed_time = '<ul class="current_order_attrs">';
+                var job_status = '<ul class="current_order_attrs">';
+                var order = courierStaff.order;
+                var cntOrder;
+
+                 for(cntOrder=0; cntOrder < order.length; cntOrder++){
+                     order_no += "<li>"+order[cntOrder].id+"</li>";
+                     order_name += "<li>"+order[cntOrder].orderName+"</li>";
+                     assigned_time += "<li>"+order[cntOrder].assignedTime+"</li>";
+                     elapsed_time += "<li>"+order[cntOrder].elapsedTime+"</li>";
+                     job_status += "<li>"+Main.ucfirst((order[cntOrder].orderStatus).replace('_', ' ').toLowerCase())+"</li>";
+                 }
+
+                if(job_status == '<ul>'){
+                    job_status = courierStaff.availabilityStatus+'</ol>';
+                } else {
+                    job_status+="</ul>";
+                }
+                order_no+="</ul>";
+                order_name+="</ul>";
+
                 var user_status = courierStaff.user.status;
                 var balance = courierStaff.walletAmount + courierStaff.bankAmount;
                 var action = '<div class="action_links">' +
@@ -376,7 +395,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     '<a href="' + Main.modifyURL('/organizer/courier_staff/profile/' + id) + '">View Profile</a>' +
                     '</div>';
 
-                var row = [id, link_courier_staff, number, order_no, order_name, job_status, Main.ucfirst(user_status), balance, action];
+                var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, Main.ucfirst(user_status), balance, action];
                 tdata.push(row);
             }
 

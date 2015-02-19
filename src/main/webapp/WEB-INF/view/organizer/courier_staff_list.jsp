@@ -119,7 +119,7 @@
                         <th rowspan="2">
                             <div class="width_100"> Contact No.</div>
                         </th>
-                        <th colspan="3"> Current Job</th>
+                        <th colspan="5"> Current Job</th>
                         <th rowspan="2"> Status</th>
                         <th rowspan="2">
                             <div class="width_100"> Current Balance</div>
@@ -130,13 +130,19 @@
                     </tr>
                     <tr>
                         <th>
-                            <div class="width_100"> Order No.</div>
+                            <div class="width_50"> Order No.</div>
                         </th>
                         <th>
                             <div class="width_150"> Order Name</div>
                         </th>
                         <th>
                             <div class="width_150"> Job Status</div>
+                        </th>
+                        <th>
+                            <div class="width_50">Assigned Time</div>
+                        </th>
+                        <th>
+                            <div class="width_50">Elapsed Time </div>
                         </th>
                     </tr>
                     </thead>

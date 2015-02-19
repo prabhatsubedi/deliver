@@ -1911,3 +1911,20 @@ label.check_label .checkbox {
     text-decoration: underline;
     cursor: pointer;
 }
+
+.current_order_attrs {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.current_order_attrs > li:last-child {
+    border: 0 none;
+}
+.current_order_attrs > li {
+    border-bottom: 1px solid #ffaa99;
+    list-style-type: none;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+

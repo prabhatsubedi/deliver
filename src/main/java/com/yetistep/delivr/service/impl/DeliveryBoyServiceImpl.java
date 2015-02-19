@@ -167,12 +167,15 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,user,order,latitude,longitude";
 
         Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("user", "id,fullName,mobileNumber,emailAddress,status");
-        assoc.put("order", "id,orderName,orderStatus");
+        assoc.put("order", "id,orderName,assignedTime,orderStatus,dBoyOrderHistories");
+
+        subAssoc.put("dBoyOrderHistories", "orderAcceptedAt");
 
         for (DeliveryBoyEntity deliveryBoyEntity:deliveryBoyEntities){
-            DeliveryBoyEntity deliveryBoy = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc);
+            DeliveryBoyEntity deliveryBoy = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc, subAssoc);
             List<JobOrderStatus> activeStatuses = new ArrayList<>();
             activeStatuses.add(JobOrderStatus.AT_STORE);
             activeStatuses.add(JobOrderStatus.ORDER_ACCEPTED);
@@ -181,6 +184,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             List<OrderEntity> currentOrders = new ArrayList<>();
             for(OrderEntity order: deliveryBoy.getOrder()){
                  if(activeStatuses.contains(order.getOrderStatus())){
+                     if(order.getdBoyOrderHistories().size() > 0){
+                         Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), order.getdBoyOrderHistories().get(0).getOrderAcceptedAt().getTime());
+                         order.setElapsedTime(minuteDiff.intValue());
+                     }
                      currentOrders.add(order);
                  }
             }
@@ -190,10 +197,6 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
 
         return objects;
-        /*for(DeliveryBoyEntity deliveryBoyEntity: deliveryBoyEntities){
-            deliveryBoyEntity.getUser().setRole(null);
-        }
-        return deliveryBoyEntities;*/
     }
 
     @Override

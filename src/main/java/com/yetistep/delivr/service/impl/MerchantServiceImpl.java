@@ -448,6 +448,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         merchant.getUser().getAddresses().get(0).setCountryCode(merchantEntity.getUser().getAddresses().get(0).getCountryCode());
         merchant.getUser().getAddresses().get(0).setLatitude(merchantEntity.getUser().getAddresses().get(0).getLatitude());
         merchant.getUser().getAddresses().get(0).setLongitude(merchantEntity.getUser().getAddresses().get(0).getLongitude());
+        merchant.getUser().getAddresses().get(0).setUser(merchant.getUser());
         //merchant values
         merchant.setWebsite(merchantEntity.getWebsite());
         //merchant.setBusinessTitle(merchantEntity.getBusinessTitle());
@@ -482,6 +483,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }*/
 
         merchant.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
+        merchant.getUser().setMerchant(merchant);
         merchantDaoService.update(merchant);
 
 

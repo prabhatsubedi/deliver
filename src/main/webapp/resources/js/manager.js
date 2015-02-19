@@ -937,7 +937,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var data_row = '';
             for(var i in newOrders) {
                 var newOrder = JSON.parse(newOrders[i]);
-                data_row += '<div class="data_row">' + newOrder.store.name + ', ' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
+                data_row += '<div class="data_row" data-store="' + locationToKey({latitude: newOrder.store.lat, longitude: newOrder.store.lang}) + '" data-customer="' + locationToKey({latitude: newOrder.customer.lat, longitude: newOrder.customer.lang}) + '">' + newOrder.store.name + ', ' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
             }
             $('.new_orders .more_data').html(data_row);
 
@@ -977,6 +977,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 google.maps.event.trigger(map, 'resize');
                 map.fitBounds(mapBounds);
             }
+        });
+
+        $('.new_orders .data_row').live('click', function(){
+            removeAnimation(godMarkers);
+            godMarkers[$(this).attr('data-customer')].setAnimation(google.maps.Animation.BOUNCE);
+            godMarkers[$(this).attr('data-store')].setAnimation(google.maps.Animation.BOUNCE);
         });
 
     };

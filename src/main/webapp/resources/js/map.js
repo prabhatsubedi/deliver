@@ -206,6 +206,9 @@ $(document).ready(function(){
         var p_address = params.address;
         var p_lat = params.lat;
         var p_lang = params.lang;
+
+        if(godMarkers[locationToKey({latitude: p_lat, longitude: p_lang})] != undefined) return false;
+
         var location = latLngToLocation(p_lat, p_lang);
         var icon;
 

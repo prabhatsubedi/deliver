@@ -74,7 +74,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.user = user;
     }
 
-    @JsonIgnore
+    @JsonProperty
     @OneToMany(mappedBy = "deliveryBoy")
     public List<OrderEntity> getOrder() {
         return order;

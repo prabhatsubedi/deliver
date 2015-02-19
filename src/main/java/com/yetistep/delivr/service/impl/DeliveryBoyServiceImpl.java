@@ -164,13 +164,25 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         List<DeliveryBoyEntity> objects = new ArrayList<>();
 
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,user,latitude,longitude";
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,user,order,latitude,longitude";
 
         Map<String, String> assoc = new HashMap<>();
 
         assoc.put("user", "id,fullName,mobileNumber,emailAddress,status");
+        assoc.put("order", "id,orderName,orderStatus");
 
         for (DeliveryBoyEntity deliveryBoyEntity:deliveryBoyEntities){
+            DeliveryBoyEntity deliveryBoy = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc);
+            List<JobOrderStatus> activeStatuses = new ArrayList<>();
+            activeStatuses.add(JobOrderStatus.AT_STORE);
+            activeStatuses.add(JobOrderStatus.ORDER_ACCEPTED);
+            activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+            activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
+            for(OrderEntity order: deliveryBoy.getOrder()){
+                 if(!activeStatuses.contains(order.getOrderStatus())){
+                     deliveryBoy.getOrder().remove(order);
+                 }
+            }
             objects.add((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc));
         }
 

@@ -555,11 +555,14 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Map<String, String> assoc = new HashMap<>();
 
         assoc.put("store", "id");
+        assoc.put("merchant", "id");
         if(storesBrands != null){
             for (StoresBrandEntity storesBrandEntity: storesBrands) {
                 StoresBrandEntity brand = (StoresBrandEntity) ReturnJsonUtil.getJsonObject(storesBrandEntity, fields, assoc);
                 brand.setCountStore(brand.getStore().size());
+                brand.setMerchantId(brand.getMerchant().getId());
                 brand.setStore(null);
+                brand.setMerchant(null);
                 brandList.add (brand);
             }
         }

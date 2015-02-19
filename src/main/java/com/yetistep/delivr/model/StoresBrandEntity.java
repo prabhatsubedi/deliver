@@ -56,6 +56,7 @@ public class StoresBrandEntity implements Serializable {
    private List<CartEntity> carts;
    private Integer merchantId; //Transient Variable
    private BigDecimal minOrderAmount;
+   private Integer countStore; //Transient Variable
 
 
     @Id
@@ -248,5 +249,12 @@ public class StoresBrandEntity implements Serializable {
         this.merchantId = merchantId;
     }
 
+    @Transient
+    public Integer getCountStore() {
+        return countStore;
+    }
 
+    public void setCountStore(Integer countStore) {
+        this.countStore = countStore;
+    }
 }

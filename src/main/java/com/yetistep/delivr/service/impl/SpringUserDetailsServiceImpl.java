@@ -65,6 +65,8 @@ public class SpringUserDetailsServiceImpl implements UserDetailsService {
             authenticatedUser.setBusinessName(businessName);
         if(businessLogo!=null)
             authenticatedUser.setProfileImage(businessLogo);
+        else
+            authenticatedUser.setProfileImage(user.getProfileImage());
 
         return authenticatedUser;
 

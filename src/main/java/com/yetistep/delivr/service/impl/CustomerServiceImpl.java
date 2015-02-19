@@ -909,14 +909,13 @@ public class CustomerServiceImpl implements CustomerService {
         if(items !=null && items.size() > 0){
             searchResult = new ArrayList<>();
             //Search Nearest Stores for Address
-            for(ItemEntity item : items){
-                //Check Store Close or open right at now
-                //Todo:
+            for(Iterator<ItemEntity> iterator = items.iterator(); iterator.hasNext();){
+                ItemEntity item = iterator.next();
 
                 SearchDto tempItem = new SearchDto();
                 List<StoreEntity> storeEntities = storeDaoService.findStores(item.getBrandId());
                 if(storeEntities.size() == 0) { //If all Stores are inactivated
-                    items.remove(item);
+                    iterator.remove();
                     continue;
                 }
 
@@ -1076,16 +1075,15 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         List<ItemEntity> items = itemDaoService.searchItemsInStore(word, brandId);
+        List<StoreEntity> storeEntities = storeDaoService.findStores(brandId);
+
+        if(storeEntities.size() == 0)//If all Stores are inactivated
+            items = new ArrayList<>();
+
         if(items !=null && items.size() > 0){
             searchResult = new ArrayList<>();
-            for(Iterator<ItemEntity> iterator = items.iterator(); iterator.hasNext();){
-                ItemEntity item = iterator.next();
+            for(ItemEntity item : items){
                 SearchDto tempItem = new SearchDto();
-                List<StoreEntity> storeEntities = storeDaoService.findStores(item.getBrandId());
-                if(storeEntities.size() == 0) { //If all Stores are inactivated
-                    iterator.remove();
-                    continue;
-                }
 
                 //Add Default Image If Image not at item
                 if(item.getImageUrl() == null)

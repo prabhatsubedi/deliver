@@ -763,9 +763,6 @@ public class ClientController extends AbstractManager{
         }
     }
 
-
-
-
     @RequestMapping(value = "/get_profile/fbId/{facebookId}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> getProfileInformation(@RequestHeader HttpHeaders headers, @PathVariable Long facebookId) {

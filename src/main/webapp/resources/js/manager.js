@@ -331,7 +331,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var viewItem = '<a href="' + Main.modifyURL('/merchant/item/form/create/' + brandId) + '">Add Item</a>';
                 var actions = '<div class="action_links">' + viewStore + viewItem + '</div>';
 
-                var row = [brandId, brandName, Main.ucfirst(brand.status), brand.featured ? "Featured" : "None", !brand.priority ? "None" : brand.priority, actions];
+                var row = [brandId, brandName, "", brand.featured ? "Featured" : "None", !brand.priority ? "None" : brand.priority, Main.ucfirst(brand.status), actions];
                 tdata.push(row);
             }
 
@@ -937,7 +937,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var data_row = '';
             for(var i in newOrders) {
                 var newOrder = JSON.parse(newOrders[i]);
-                data_row += '<div class="data_row">' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
+                data_row += '<div class="data_row">' + newOrder.store.name + ', ' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
             }
             $('.new_orders .more_data').html(data_row);
 

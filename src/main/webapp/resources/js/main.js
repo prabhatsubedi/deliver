@@ -9,32 +9,6 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
 (function ($){
 
-    Main.country = "Nepal";
-    Main.docHeight = window.innerHeight;
-    Main.docWidth = window.innerWidth;
-    Main.ajax = undefined;
-    Main.pageContext = document.getElementById('pageContext').getAttribute('data-context');
-
-    Main.modifyURL = function(url) {
-        if(url.indexOf("#") != 0) {
-            if(url.indexOf("/") != 0) url = "/" + url;
-            if(Main.pageContext != "" && Main.pageContext != undefined) {
-                if(url.indexOf(Main.pageContext) > -1)
-                    return url;
-                else
-                    return Main.pageContext + url;
-            }
-            return url;
-        }
-    };
-
-    Main.checkURL = function() {
-        $('a[href]').not('[href="#"], [href="javascript:;"]').each(function(){
-            if($(this).attr('href').indexOf(Main.pageContext) < 0)
-                $(this).attr('href', Main.modifyURL($(this).attr('href')));
-        });
-    };
-
     Main.saveInSessionStorage = function (key, value){
         sessionStorage.setItem(key, value);
     }
@@ -64,6 +38,33 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         else
             localStorage.removeItem(key);
     }
+
+    Main.country = "Nepal";
+    Main.docHeight = window.innerHeight;
+    Main.docWidth = window.innerWidth;
+    Main.ajax = undefined;
+    Main.pageContext = document.getElementById('pageContext').getAttribute('data-context');
+    Main.userRole = Main.getFromLocalStorage('userRole');
+
+    Main.modifyURL = function(url) {
+        if(url.indexOf("#") != 0) {
+            if(url.indexOf("/") != 0) url = "/" + url;
+            if(Main.pageContext != "" && Main.pageContext != undefined) {
+                if(url.indexOf(Main.pageContext) > -1)
+                    return url;
+                else
+                    return Main.pageContext + url;
+            }
+            return url;
+        }
+    };
+
+    Main.checkURL = function() {
+        $('a[href]').not('[href="#"], [href="javascript:;"]').each(function(){
+            if($(this).attr('href').indexOf(Main.pageContext) < 0)
+                $(this).attr('href', Main.modifyURL($(this).attr('href')));
+        });
+    };
 
     Main.request = function (url, parameter, callback, headers) {
 
@@ -114,6 +115,9 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             $("button[type='submit']","#login_form").removeAttr("disabled");
 
             if (data.success == true) {
+                Main.saveInLocalStorage('userRole', data.params.userDetails.authorities[0].authority)
+                Main.saveInLocalStorage('userTitle', data.params.userDetails.businessName == undefined? data.params.userDetails.fullName : data.params.userDetails.businessName)
+                Main.saveInLocalStorage('profileImage', data.params.userDetails.profileImage)
                 window.location = Main.modifyURL(data.params.url);
             } else {
                 alert(data.message);
@@ -158,7 +162,8 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         }
 
     };
-    if(Main.getFromLocalStorage('merchants') == undefined) Main.saveMerchants();
+
+    if(Main.getFromLocalStorage('merchants') == undefined && (Main.userRole == 'ROLE_ADMIN' || Main.userRole == 'ROLE_MANAGER')) Main.saveMerchants();
 
     Main.assistance = function(data, headers) {
 

@@ -1,7 +1,7 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.ReasonDetailsDaoService;
-import com.yetistep.delivr.model.ReasonDetails;
+import com.yetistep.delivr.model.ReasonDetailsEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -24,36 +24,36 @@ public class ReasonDetailsDaoServiceImpl implements ReasonDetailsDaoService {
     SessionFactory sessionFactory;
 
     @Override
-    public ReasonDetails find(Integer id) throws Exception {
-        return (ReasonDetails) getCurrentSession().get(ReasonDetails.class, id);
+    public ReasonDetailsEntity find(Integer id) throws Exception {
+        return (ReasonDetailsEntity) getCurrentSession().get(ReasonDetailsEntity.class, id);
     }
 
     @Override
-    public List<ReasonDetails> findAll() throws Exception {
-        Criteria criteria = getCurrentSession().createCriteria(ReasonDetails.class);
+    public List<ReasonDetailsEntity> findAll() throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(ReasonDetailsEntity.class);
         criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("cancelReason"), "cancelReason")
-        ).setResultTransformer(Transformers.aliasToBean(ReasonDetails.class));
+        ).setResultTransformer(Transformers.aliasToBean(ReasonDetailsEntity.class));
         criteria.add(Restrictions.eq("status", true));
-        List<ReasonDetails> reasonDetailsList = criteria.list();
+        List<ReasonDetailsEntity> reasonDetailsList = criteria.list();
         return reasonDetailsList;
     }
 
     @Override
-    public Boolean save(ReasonDetails value) throws Exception {
+    public Boolean save(ReasonDetailsEntity value) throws Exception {
         getCurrentSession().persist(value);
         return true;
     }
 
     @Override
-    public Boolean update(ReasonDetails value) throws Exception {
+    public Boolean update(ReasonDetailsEntity value) throws Exception {
         getCurrentSession().persist(value);
         return true;
     }
 
     @Override
-    public Boolean delete(ReasonDetails value) throws Exception {
+    public Boolean delete(ReasonDetailsEntity value) throws Exception {
         getCurrentSession().delete(value);
         return true;
     }

@@ -362,7 +362,7 @@ public class DeliveryBoyController extends AbstractManager{
             GeneralUtil.fillHeaderCredential(headers, headerDto/*, GeneralUtil.ACCESS_TOKEN*/);
             //validateMobileClient(headerDto.getAccessToken());
 
-            List<ReasonDetails> cancelReasons = deliveryBoyService.getCancelReasonList();
+            List<ReasonDetailsEntity> cancelReasons = deliveryBoyService.getCancelReasonList();
             ServiceResponse serviceResponse = new ServiceResponse("List of cancel reason retrieved successfully");
             serviceResponse.addParam("reasonList",cancelReasons);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

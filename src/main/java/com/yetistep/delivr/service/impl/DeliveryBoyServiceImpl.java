@@ -1172,7 +1172,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
-    public List<ReasonDetails> getCancelReasonList() throws Exception {
+    public List<ReasonDetailsEntity> getCancelReasonList() throws Exception {
         return reasonDetailsDaoService.findAll();
     }
 

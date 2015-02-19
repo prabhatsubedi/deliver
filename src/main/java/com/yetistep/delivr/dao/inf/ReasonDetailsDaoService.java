@@ -1,7 +1,7 @@
 package com.yetistep.delivr.dao.inf;
 
 import com.yetistep.delivr.abs.GenericDaoService;
-import com.yetistep.delivr.model.ReasonDetails;
+import com.yetistep.delivr.model.ReasonDetailsEntity;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,5 +10,5 @@ import com.yetistep.delivr.model.ReasonDetails;
  * Time: 3:59 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface ReasonDetailsDaoService extends GenericDaoService<Integer, ReasonDetails> {
+public interface ReasonDetailsDaoService extends GenericDaoService<Integer, ReasonDetailsEntity> {
 }

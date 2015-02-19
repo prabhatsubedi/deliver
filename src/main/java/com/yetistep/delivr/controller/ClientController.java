@@ -798,4 +798,24 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/rate_dboy/order/{orderId}/fbId/{facebookId}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> rateDeliveryBoy(@RequestHeader HttpHeaders headers,
+                                                           @PathVariable Integer orderId, @PathVariable Long facebookId,
+                                                           @RequestBody RatingEntity rating) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            //  validateMobileClient(headerDto.getAccessToken());
+
+            customerService.rateDeliveryBoy(orderId, facebookId, rating);
+            ServiceResponse serviceResponse = new ServiceResponse("Delivery boy has been rated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while rating delivery boy", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

@@ -59,4 +59,6 @@ public interface CustomerService {
     public TrackOrderDto getTrackOrderInfo(Integer orderId) throws Exception;
 
     public CustomerEntity getCustomerProfile(Long facebookId) throws Exception;
+
+    public Boolean rateDeliveryBoy(Integer orderId, Long facebookId, RatingEntity rating) throws Exception;
 }

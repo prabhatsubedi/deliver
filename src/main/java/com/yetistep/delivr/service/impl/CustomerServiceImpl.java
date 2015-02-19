@@ -1198,4 +1198,25 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         return customer;
     }
+
+    @Override
+    public Boolean rateDeliveryBoy(Integer orderId, Long facebookId, RatingEntity rating) throws Exception {
+        OrderEntity order = orderDaoService.find(orderId);
+        if(order == null){
+            throw new YSException("VLD017");
+        }
+        if(!order.getCustomer().getFacebookId().equals(facebookId)){
+            throw new YSException("ORD013");
+        }
+        RatingEntity ratingEntity = order.getRating();
+        if(ratingEntity == null){
+            ratingEntity = new RatingEntity();
+            ratingEntity.setOrder(order);
+            order.setRating(ratingEntity);
+        }
+        ratingEntity.setCustomerComment(rating.getCustomerComment());
+        ratingEntity.setDeliveryBoyRating(rating.getDeliveryBoyRating());
+        ratingEntity.setRatingIssues(rating.getRatingIssues());
+        return orderDaoService.update(order);
+    }
 }

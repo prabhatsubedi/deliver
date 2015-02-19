@@ -180,4 +180,10 @@ public class GeneralUtil {
     }
 
 
+    public static Integer getMinimumTimeDisplay(Integer requiredTime){
+        if(requiredTime < 1){
+            return 1;
+        }
+        return requiredTime;
+    }
 }

@@ -205,8 +205,8 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         String sqlQuery = "SELECT o.id as orderId, o.order_status as orderStatus, db.latitude as courierBoyLatitude, db.longitude " +
                 "as courierBoyLongitude, db.vehicle_type as vehicleType, s.latitude as storeLatitude, s.longitude as storeLongitude, " +
                 "u.full_name as courierBoyName, u.profile_image as courierBoyImage, u.mobile_number as courierBoyContactNo, " +
-                "a.latitude as deliveryLatitude, a.longitude as deliveryLongitude FROM orders o INNER JOIN delivery_boys db " +
-                "on (o.delivery_boy_id = db.id) INNER JOIN stores s on (s.id = o.store_id) INNER JOIN users u " +
+                "a.latitude as deliveryLatitude, a.longitude as deliveryLongitude FROM orders o LEFT JOIN delivery_boys db " +
+                "on (o.delivery_boy_id = db.id) INNER JOIN stores s on (s.id = o.store_id) LEFT JOIN users u " +
                 "on (u.id = db.user_id)  INNER JOIN address a on(o.address_id = a.id) where o.id = :orderID";
         Properties params = new Properties();
         params.put("enumClass", "com.yetistep.delivr.enums.JobOrderStatus");

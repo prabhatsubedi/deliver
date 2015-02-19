@@ -2,16 +2,10 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.yetistep.delivr.util.JsonDateSerializer;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -46,6 +40,7 @@ public class CustomerEntity implements Serializable {
     private String latitude;
     private String longitude;
     private List<CartEntity> carts;
+    private String currency;//Transient Variable
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
@@ -247,5 +242,15 @@ public class CustomerEntity implements Serializable {
 
     public void setCarts(List<CartEntity> carts) {
         this.carts = carts;
+    }
+
+    @Transient
+    @JsonProperty
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

@@ -1049,7 +1049,10 @@ public class CustomerServiceImpl implements CustomerService {
         if(trackOrder == null){
             throw new YSException("ORD014");
         }
-        if(trackOrder.getOrderStatus().equals(JobOrderStatus.ORDER_ACCEPTED)){
+        if(trackOrder.getOrderStatus().equals(JobOrderStatus.ORDER_PLACED)){
+            String message = MessageBundle.getMessage("TDM001", "push_notification.properties");
+            trackOrder.setTimeDisplayMessage(message);
+        }else if(trackOrder.getOrderStatus().equals(JobOrderStatus.ORDER_ACCEPTED)){
             String message = MessageBundle.getMessage("TDM002", "push_notification.properties");
             trackOrder.setTimeDisplayMessage(message);
         }else if(trackOrder.getOrderStatus().equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)){
@@ -1057,12 +1060,9 @@ public class CustomerServiceImpl implements CustomerService {
             String destination = GeoCodingUtil.getLatLong(trackOrder.getStoreLatitude(), trackOrder.getStoreLongitude());
             VehicleType vehicleType = VehicleType.fromInt(trackOrder.getVehicleType());
             Integer requiredTime = GeoCodingUtil.getRequiredTime(origin, destination, vehicleType);
-            if(requiredTime < 1){
-                requiredTime = 1;
-            }
+            requiredTime = GeneralUtil.getMinimumTimeDisplay(requiredTime);
             String message = MessageBundle.getMessage("TDM003", "push_notification.properties");
-            message += " "+requiredTime + " min";
-            trackOrder.setTimeDisplayMessage(message);
+            trackOrder.setTimeDisplayMessage(String.format(message, requiredTime));
         }else if(trackOrder.getOrderStatus().equals(JobOrderStatus.AT_STORE)){
             String message = MessageBundle.getMessage("TDM004", "push_notification.properties");
             trackOrder.setTimeDisplayMessage(message);
@@ -1071,12 +1071,9 @@ public class CustomerServiceImpl implements CustomerService {
             String destination = GeoCodingUtil.getLatLong(trackOrder.getDeliveryLatitude(), trackOrder.getDeliveryLongitude());
             VehicleType vehicleType = VehicleType.fromInt(trackOrder.getVehicleType());
             Integer requiredTime = GeoCodingUtil.getRequiredTime(origin, destination, vehicleType);
-            if(requiredTime < 1){
-                requiredTime = 1;
-            }
+            requiredTime = GeneralUtil.getMinimumTimeDisplay(requiredTime);
             String message = MessageBundle.getMessage("TDM005", "push_notification.properties");
-            message += " "+requiredTime + " min";
-            trackOrder.setTimeDisplayMessage(message);
+            trackOrder.setTimeDisplayMessage(String.format(message, requiredTime));
         }else if(trackOrder.getOrderStatus().equals(JobOrderStatus.DELIVERED)){
             String message = MessageBundle.getMessage("TDM006", "push_notification.properties");
             trackOrder.setTimeDisplayMessage(message);
@@ -1087,10 +1084,13 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerEntity getCustomerProfile(Long facebookId) throws Exception {
         CustomerEntity customer = customerDaoService.getCustomerProfile(facebookId);
+        if(customer.getId() == null)
+            throw new YSException("VLD011");
         if (customer.getReferredFriendsCount() == null)
             customer.setReferredFriendsCount(0);
         if (customer.getRewardsEarned() == null)
             customer.setRewardsEarned(BigDecimal.ZERO);
+        customer.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         return customer;
     }
 }

@@ -998,10 +998,25 @@ if (typeof(Manager) == "undefined") var Manager = {};
             }
         });
 
+        var flightPath;
+
         $('.new_orders .data_row').live('click', function(){
             removeAnimation(godMarkers);
-            godMarkers[$(this).attr('data-customer')].setAnimation(google.maps.Animation.BOUNCE);
-            godMarkers[$(this).attr('data-store')].setAnimation(google.maps.Animation.BOUNCE);
+            var marker1 = godMarkers[$(this).attr('data-customer')];
+            var marker2 = godMarkers[$(this).attr('data-store')];
+            marker1.setAnimation(google.maps.Animation.BOUNCE);
+            marker2.setAnimation(google.maps.Animation.BOUNCE);
+
+            if(flightPath != undefined) flightPath.setMap(null);
+            flightPath = new google.maps.Polyline({
+                path: [marker1.getPosition(), marker2.getPosition()],
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+            flightPath.setMap(map);
+
         });
 
     };

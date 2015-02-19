@@ -512,6 +512,18 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             throw new YSException("ORD003");
         }
         JobOrderStatus.traverseJobStatus(order.getOrderStatus(), JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+
+        if(BigDecimalUtil.isLessThen(order.getTotalCost(), order.getStore().getStoresBrand().getMinOrderAmount())){
+            throw new YSException("CRT008", " "+order.getStore().getStoresBrand().getMinOrderAmount());
+        }
+        if(BigDecimalUtil.isLessThenOrEqualTo(order.getTotalCost(), BigDecimal.ZERO)){
+            throw new YSException("ORD016");
+        }
+        BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
+        if(BigDecimalUtil.isLessThen(order.getCourierTransaction().getProfit(), BigDecimalUtil.percentageOf(order.getTotalCost(), MINIMUM_PROFIT_PERCENTAGE))){
+            log.warn("No Profit Condition:"+order.getId());
+            throw new YSException("ORD016");
+        }
         order.setOrderStatus(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         boolean partnerShipStatus = merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());
         courierBoyAccountingsAfterTakingOrder(order.getDeliveryBoy(), order, partnerShipStatus);
@@ -846,9 +858,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             }
         }
 
-        if(BigDecimalUtil.isLessThen(itemTotalCost, order.getStore().getStoresBrand().getMinOrderAmount())){
+       /* Commented since minimum amount is checked at start delivery. */
+       /*if(BigDecimalUtil.isLessThen(itemTotalCost, order.getStore().getStoresBrand().getMinOrderAmount())){
             throw new YSException("CRT008", " "+order.getStore().getStoresBrand().getMinOrderAmount());
-        }
+        }*/
 
         order.setTotalCost(itemTotalCost);
         order.setItemServiceAndVatCharge(itemServiceAndVatCharge);

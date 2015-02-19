@@ -790,9 +790,10 @@ public class CustomerServiceImpl implements CustomerService {
     private List<DeliveryBoySelectionEntity> filterDBoyWithProfitCriteria(OrderEntity order, List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities, MerchantEntity merchant) throws Exception {
         log.info("Unfiltered Dboys:"+deliveryBoySelectionEntities.toString());
         List<DeliveryBoySelectionEntity> filteredDeliveryBoys = new ArrayList<DeliveryBoySelectionEntity>();
+        BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
         for (DeliveryBoySelectionEntity deliveryBoySelectionEntity : deliveryBoySelectionEntities) {
             CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, deliveryBoySelectionEntity, merchant.getCommissionPercentage(), merchant.getServiceFee());
-            if (BigDecimalUtil.isGreaterThen(courierTransaction.getProfit(),BigDecimal.ZERO))
+            if(BigDecimalUtil.isGreaterThen(courierTransaction.getProfit(), BigDecimalUtil.percentageOf(order.getTotalCost(), MINIMUM_PROFIT_PERCENTAGE)))
                 filteredDeliveryBoys.add(deliveryBoySelectionEntity);
         }
         log.info("Filtered Dboys:"+filteredDeliveryBoys.toString());

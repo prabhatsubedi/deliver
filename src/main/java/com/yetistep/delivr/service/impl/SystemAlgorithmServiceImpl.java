@@ -399,8 +399,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         profit =   BigDecimalUtil.percentageOf(totalOrder, commissionPct).add(BigDecimalUtil.percentageOf(totalOrder, serviceFeePct));
         profit =  profit.add(deliveryChargedAfterDiscount.divide(BigDecimal.ONE.add(DELIVERY_FEE_VAT.divide(new BigDecimal(100))), MathContext.DECIMAL128)).subtract(paidToCourier);
         if(BigDecimalUtil.isLessThen(profit, BigDecimalUtil.percentageOf(totalOrder, MINIMUM_PROFIT_PERCENTAGE))){
-            log.info("No Profit");
-            profit = ZERO;
+            log.warn("No Profit");
         }
 
         CourierTransactionEntity courierTransactionEntity = new CourierTransactionEntity();

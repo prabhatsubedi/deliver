@@ -1,5 +1,6 @@
 package com.yetistep.delivr.util;
 
+import org.apache.log4j.Logger;
 import org.cryptonode.jncryptor.AES256JNCryptor;
 import org.cryptonode.jncryptor.JNCryptor;
 import sun.misc.BASE64Decoder;
@@ -12,6 +13,7 @@ import java.util.StringTokenizer;
  */
 public class RNCryptoEncDec {
     static String password = "password";
+    private static Logger log = Logger.getLogger(RNCryptoEncDec.class);
 
     private void showByte(byte[] bytes) {
         for (int j = 1; j < bytes.length + 1; j++) {
@@ -54,7 +56,7 @@ public class RNCryptoEncDec {
         long now = System.currentTimeMillis();
         String responseAccessTokenStr = "response:" + now;
         String responseAccessToken = encrypt(responseAccessTokenStr);
-        System.out.println("generateResponseAccessToken:- [" + responseAccessToken + "]");
+        log.info("generateResponseAccessToken:- [" + responseAccessToken + "]" + " from IOS");
         return responseAccessToken;
     }
 

@@ -54,6 +54,8 @@ public interface CustomerService {
 
     public SearchDto getSearchContent(String word, RequestJsonDto requestJsonDto) throws Exception;
 
+    public SearchDto getSearchInStore(String word, Integer brandId, RequestJsonDto requestJsonDto) throws Exception;
+
     public TrackOrderDto getTrackOrderInfo(Integer orderId) throws Exception;
 
     public CustomerEntity getCustomerProfile(Long facebookId) throws Exception;

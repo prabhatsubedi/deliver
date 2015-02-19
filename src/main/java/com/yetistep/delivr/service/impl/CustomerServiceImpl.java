@@ -949,16 +949,42 @@ public class CustomerServiceImpl implements CustomerService {
                 tempItem.setItemImageUrl(item.getImageUrl());
                 tempItem.setBrandName(item.getBrandName());
                 tempItem.setStoreStreet(storeEntities.get(0).getStreet());
+                tempItem.setAdditionalOffer(item.getAdditionalOffer());
                 tempItem.setItem(true);
                 searchResult.add(tempItem);
             }
         }
+        Integer totalItemSize = searchResult==null ? 0 : searchResult.size();
 
         //Now Goes To Search Brand
-        List<Integer> brandIds = storesBrandDaoService.getSearchBrands(word);
+        Integer limit = 0;
+        if(totalItemSize > CommonConstants.MAX_SEARCH_ITEM)
+            limit = CommonConstants.MAX_SEARCH_STORE;
+        else if(totalItemSize > 0)
+            limit = CommonConstants.MAX_SEARCH_DATA - totalItemSize;
+        else if(totalItemSize==0)
+            limit = CommonConstants.MAX_SEARCH_DATA;
+
+        List<Integer> brandIds = storesBrandDaoService.getSearchBrands(word, limit);
+
         if(brandIds!=null && brandIds.size() > 0){
             if(searchResult == null)
                 searchResult = new ArrayList<>();
+
+            //Check How Many Items
+            if(totalItemSize > CommonConstants.MAX_SEARCH_ITEM) {
+
+                Integer exceedItem = 0;
+                if(totalItemSize > CommonConstants.MAX_SEARCH_ITEM && brandIds.size()>= CommonConstants.MAX_SEARCH_STORE)
+                    exceedItem = CommonConstants.MAX_SEARCH_ITEM;
+                else
+                    exceedItem = CommonConstants.MAX_SEARCH_ITEM + CommonConstants.MAX_SEARCH_STORE - brandIds.size();
+
+                for(int i= searchResult.size()-1; i>= exceedItem; i--){
+                    searchResult.remove(i);
+                    totalItemSize--;
+                }
+            }
 
             List<StoreEntity> storeEntities = storeDaoService.findSearchStores(brandIds);
 
@@ -1001,27 +1027,107 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         //Perform Sorted Search Content Pagination
-        PageInfo pageInfo = null;
-        List<SearchDto> sortedList = new ArrayList<>();
-        if (searchResult !=null && searchResult.size() > 0) {
-            Integer pageId = 1;
-            if (requestJsonDto.getPageInfo() != null)
-                pageId = requestJsonDto.getPageInfo().getPageNumber();
-
-            StaticPagination staticPagination = new StaticPagination();
-            staticPagination.paginate(searchResult, pageId);
-            sortedList = (List<SearchDto>) staticPagination.getList();
-            staticPagination.setList(null);
-            pageInfo = staticPagination;
-        }
+//        PageInfo pageInfo = null;
+//        List<SearchDto> sortedList = new ArrayList<>();
+//        if (searchResult !=null && searchResult.size() > 0) {
+//            Integer pageId = 1;
+//            if (requestJsonDto.getPageInfo() != null)
+//                pageId = requestJsonDto.getPageInfo().getPageNumber();
+//
+//            StaticPagination staticPagination = new StaticPagination();
+//            staticPagination.paginate(searchResult, pageId);
+//            sortedList = (List<SearchDto>) staticPagination.getList();
+//            staticPagination.setList(null);
+//            pageInfo = staticPagination;
+//        }
 
         SearchDto searchDto = new SearchDto();
         if(searchResult!=null){
 //            searchDto = new SearchDto();
-            searchDto.setSearchList(sortedList);
-            searchDto.setPageInfo(pageInfo);
+
+//            searchDto.setPageInfo(pageInfo);
             searchDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+            searchDto.setTotalItemSize(totalItemSize);
+            searchDto.setTotalStoreSize(brandIds.size());
+            searchDto.setSearchList(searchResult);
         }
+        return searchDto;
+    }
+
+    @Override
+    public SearchDto getSearchInStore(String word, Integer brandId,RequestJsonDto requestJsonDto) throws Exception {
+        log.info("++++++++ Searching Items in Store " + brandId + " for content " + word + " +++++++++++++++++++++");
+
+        List<SearchDto> searchResult = null;
+        if(word.length() < 3)
+            throw new YSException("VLD028");
+
+        String lat = null;
+        String lon = null;
+        if (requestJsonDto.getGpsInfo() == null) {
+            CustomerEntity customerEntity = customerDaoService.getLatLong(requestJsonDto.getCustomerInfo().getClientId());
+            if (customerEntity == null)
+                throw new YSException("VLD011");
+            lat = customerEntity.getLatitude();
+            lon = customerEntity.getLongitude();
+        } else {
+            lat = requestJsonDto.getGpsInfo().getLatitude();
+            lon = requestJsonDto.getGpsInfo().getLongitude();
+        }
+
+        List<ItemEntity> items = itemDaoService.searchItemsInStore(word, brandId);
+        if(items !=null && items.size() > 0){
+            searchResult = new ArrayList<>();
+            for(Iterator<ItemEntity> iterator = items.iterator(); iterator.hasNext();){
+                ItemEntity item = iterator.next();
+                SearchDto tempItem = new SearchDto();
+                List<StoreEntity> storeEntities = storeDaoService.findStores(item.getBrandId());
+                if(storeEntities.size() == 0) { //If all Stores are inactivated
+                    iterator.remove();
+                    continue;
+                }
+
+                //Add Default Image If Image not at item
+                if(item.getImageUrl() == null)
+                    item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+
+                /* Extract Latitude and Longitude */
+                String[] storeDistance = new String[storeEntities.size()];
+                String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
+
+                for (int i = 0; i < storeEntities.size(); i++) {
+                    storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
+                }
+
+                List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
+
+                //Set Distance to Store Entity
+                for (int i = 0; i < storeEntities.size(); i++) {
+                    storeEntities.get(i).setCustomerToStoreDistance(distanceList.get(i));
+                }
+
+                //Store Entity List Sorted by Distance
+                Collections.sort(storeEntities, new StoreDistanceComparator());
+
+                //Set to All
+                tempItem.setItemId(item.getId());
+                tempItem.setItemName(item.getName());
+                tempItem.setUnitPrice(item.getUnitPrice());
+                tempItem.setItemImageUrl(item.getImageUrl());
+                tempItem.setBrandName(item.getBrandName());
+                tempItem.setStoreStreet(storeEntities.get(0).getStreet());
+                //tempItem.setItem(true);
+                searchResult.add(tempItem);
+            }
+        }
+
+        SearchDto searchDto = new SearchDto();
+        if(searchResult!=null && searchResult.size() > 0){
+            searchDto.setSearchList(searchResult);
+            searchDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+            searchDto.setTotalItemSize(searchResult.size());
+        }
+
         return searchDto;
     }
 

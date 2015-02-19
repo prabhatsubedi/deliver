@@ -66,7 +66,7 @@ public class EncDecUtil {
         long now = System.currentTimeMillis();
         String responseAccessTokenStr = "response:" + now;
         String responseAccessToken = encrypt(responseAccessTokenStr, secretKey);
-        log.info("generateResponseAccessToken:- " + responseAccessTokenStr + " [" + responseAccessToken + "]");
+        log.info("generateResponseAccessToken:- " + responseAccessTokenStr + " [" + responseAccessToken + "]" + " from Android");
         return responseAccessToken;
 
     }

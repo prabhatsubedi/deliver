@@ -1,5 +1,7 @@
 package com.yetistep.delivr.model.mobile;
 
+import com.yetistep.delivr.util.CommonConstants;
+
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ public class StaticPagination extends PageInfo{
     List<? extends Object> list;
 
     public StaticPagination(){
-        setPageSize(5);
+        setPageSize(CommonConstants.MAX_STATIC_PAGE_SIZE);
     }
 
    public StaticPagination paginate(List<? extends Object> raw, Integer pageId) {

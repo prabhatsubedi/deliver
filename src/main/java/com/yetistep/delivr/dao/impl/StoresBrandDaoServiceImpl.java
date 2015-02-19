@@ -220,14 +220,15 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
     }
 
     @Override
-    public List<Integer> getSearchBrands(String word) throws Exception {
+    public List<Integer> getSearchBrands(String word, Integer limit) throws Exception {
         List<Integer> brandIds;
         String sql = "SELECT id FROM stores_brands " +
-                "WHERE brand_name LIKE :word AND status = :status";
+                "WHERE brand_name LIKE :word AND status = :status LIMIT :limit";
 
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("word", CommonConstants.DELIMITER+word+CommonConstants.DELIMITER);
         sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
+        sqlQuery.setParameter("limit", limit);
         brandIds = sqlQuery.list();
         return brandIds;
     }

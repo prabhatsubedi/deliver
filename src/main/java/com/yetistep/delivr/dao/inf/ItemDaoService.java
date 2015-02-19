@@ -23,5 +23,6 @@ public interface ItemDaoService extends GenericDaoService<Integer, ItemEntity>{
 
     public List<ItemEntity> searchItems(String word) throws Exception;
 
+    public List<ItemEntity> searchItemsInStore(String word, Integer brandId) throws Exception;
 
 }

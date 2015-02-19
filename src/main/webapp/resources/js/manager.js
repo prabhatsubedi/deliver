@@ -326,12 +326,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var brand = brands[i];
 
                 var brandId = brand.id;
-                var brandName = '<a href="' + Main.modifyURL('/merchant/item/list/' + brandId) + '">' + brand.brandName + '</a>';
-                var viewStore = '<a href="' + Main.modifyURL('/merchant/store/view/' + brandId) + '">View Store</a>';
-                var viewItem = '<a href="' + Main.modifyURL('/merchant/item/form/create/' + brandId) + '">Add Item</a>';
+                var brandName = '<a href="' + Main.modifyURL('/merchant/item/list/' + brandId) + '" data-mid="' + brand.merchantId + '">' + brand.brandName + '</a>';
+                var viewStore = '<a href="' + Main.modifyURL('/merchant/store/view/' + brandId) + '" data-mid="' + brand.merchantId + '">View Store</a>';
+                var viewItem = '<a href="' + Main.modifyURL('/merchant/item/form/create/' + brandId) + '" data-mid="' + brand.merchantId + '">Add Item</a>';
                 var actions = '<div class="action_links">' + viewStore + viewItem + '</div>';
 
-                var row = [brandId, brandName, "", brand.featured ? "Featured" : "None", !brand.priority ? "None" : brand.priority, Main.ucfirst(brand.status), actions];
+                var row = [brandId, brandName, brand.countStore, brand.featured ? "Featured" : "None", !brand.priority ? "None" : brand.priority, Main.ucfirst(brand.status), actions];
                 tdata.push(row);
             }
 
@@ -956,7 +956,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var data_row = '';
             for(var i in newOrders) {
                 var newOrder = JSON.parse(newOrders[i]);
-                data_row += '<div class="data_row">' + newOrder.store.name + ', ' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
+                data_row += '<div class="data_row" data-store="' + locationToKey({latitude: newOrder.store.lat, longitude: newOrder.store.lang}) + '" data-customer="' + locationToKey({latitude: newOrder.customer.lat, longitude: newOrder.customer.lang}) + '">' + newOrder.store.name + ', ' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
             }
             $('.new_orders .more_data').html(data_row);
 
@@ -996,6 +996,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 google.maps.event.trigger(map, 'resize');
                 map.fitBounds(mapBounds);
             }
+        });
+
+        $('.new_orders .data_row').live('click', function(){
+            removeAnimation(godMarkers);
+            godMarkers[$(this).attr('data-customer')].setAnimation(google.maps.Animation.BOUNCE);
+            godMarkers[$(this).attr('data-store')].setAnimation(google.maps.Animation.BOUNCE);
         });
 
     };

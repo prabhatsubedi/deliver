@@ -31,7 +31,7 @@ public interface StoresBrandDaoService extends GenericDaoService<Integer, Stores
 
     public List<StoresBrandEntity> findStoresBrand(Boolean isPriority, Integer... brandId) throws Exception;
 
-    public List<Integer> getSearchBrands(String word) throws Exception;
+    public List<Integer> getSearchBrands(String word, Integer limit) throws Exception;
 
 
 }

@@ -695,27 +695,44 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/search/page/{page}/content/{word}", method = RequestMethod.POST)
+    @RequestMapping(value = "/search/content/{word}", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getCurrency(@PathVariable("page") Integer pageNo, @PathVariable("word") String word, @RequestBody RequestJsonDto requestJsonDto) {
+    public ResponseEntity<ServiceResponse> getAllSearch(@PathVariable("word") String word, @RequestBody RequestJsonDto requestJsonDto) {
         try{
-            PageInfo pageInfo = new PageInfo();
-            pageInfo.setPageNumber(pageNo);
-            requestJsonDto.setPageInfo(pageInfo);
+//            PageInfo pageInfo = new PageInfo();
+//            pageInfo.setPageNumber(pageNo);
+//            requestJsonDto.setPageInfo(pageInfo);
 
             SearchDto searchDto = customerService.getSearchContent(word, requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("Search content retrieved successfully");
 
             /* Page Information and Currency Only Displayed at First page */
-            if(pageNo!=1 && pageNo > 1){
-                searchDto.setPageInfo(null);
-                searchDto.setCurrency(null);
-            }
+//            if(pageNo!=1 && pageNo > 1){
+//                searchDto.setPageInfo(null);
+//                searchDto.setCurrency(null);
+//            }
 
             serviceResponse.addParam("search", searchDto);
             return new ResponseEntity<ServiceResponse>(serviceResponse, GeneralUtil.getCacheHeader(), HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while searching items and stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/search_in_store/brand/{brandId}/content/{word}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getSearchInStore(@PathVariable("word") String word, @PathVariable("brandId") Integer brandId, @RequestBody RequestJsonDto requestJsonDto) {
+        try{
+
+            SearchDto searchDto = customerService.getSearchInStore(word, brandId, requestJsonDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Search content retrieved successfully");
+            serviceResponse.addParam("search", searchDto);
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, GeneralUtil.getCacheHeader(), HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while searching items in store " + brandId, e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

@@ -23,6 +23,7 @@ var latLngToLocation;
 var removeAnimation;
 var lastPosition;
 var addGodMarker;
+var godMarkers = {};
 
 // Sets the map on all markers in the array.
 function setAllMap(map) {
@@ -205,6 +206,9 @@ $(document).ready(function(){
         var p_address = params.address;
         var p_lat = params.lat;
         var p_lang = params.lang;
+
+        if(godMarkers[locationToKey({latitude: p_lat, longitude: p_lang})] != undefined) return false;
+
         var location = latLngToLocation(p_lat, p_lang);
         var icon;
 
@@ -221,6 +225,8 @@ $(document).ready(function(){
             map: map,
             icon: icon
         });
+
+        godMarkers[locationToKey({latitude: p_lat, longitude: p_lang})] = marker;
 
         setTimeout(function(){
             mapBounds.extend(location);
@@ -527,7 +533,8 @@ $(document).ready(function(){
 
     });
 
-    removeAnimation = function() {
+    removeAnimation = function(customMarkers) {
+        if(customMarkers != undefined) markers = customMarkers;
         for(var i in markers) {
             markers[i].setAnimation(null);
         }

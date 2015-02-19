@@ -15,6 +15,13 @@ import java.util.List;
  */
 public class SearchDto {
 
+    // ============ Currency ========================= //
+    private String currency;
+
+    //Size Concern
+    private Integer totalItemSize;
+    private Integer totalStoreSize;
+
     //============ Section for Item Search =================//
     private Integer itemId;
     private String itemName;
@@ -38,8 +45,7 @@ public class SearchDto {
     private PageInfo pageInfo;
     private List<SearchDto> searchList;
 
-    // ============ Currency ========================= //
-    private String currency;
+
 
     public Integer getItemId() {
         return itemId;
@@ -183,5 +189,21 @@ public class SearchDto {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public Integer getTotalItemSize() {
+        return totalItemSize;
+    }
+
+    public void setTotalItemSize(Integer totalItemSize) {
+        this.totalItemSize = totalItemSize;
+    }
+
+    public Integer getTotalStoreSize() {
+        return totalStoreSize;
+    }
+
+    public void setTotalStoreSize(Integer totalStoreSize) {
+        this.totalStoreSize = totalStoreSize;
     }
 }

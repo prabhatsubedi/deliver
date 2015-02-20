@@ -1226,22 +1226,21 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         List<Object> objects = new ArrayList<>();
 
-        String fields = "id,orderName,deliveryStatus,attachments,customer,store,deliveryBoy,grandTotal";
+        String fields = "id,orderName,deliveryStatus,assignedTime,customer,deliveryBoy,grandTotal,orderDate,dBoyOrderHistories,rating";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("customer", "id,user");
         assoc.put("deliveryBoy", "id,user");
-        assoc.put("store", "id,name,street");
-        assoc.put("attachments", "url");
+        assoc.put("dBoyOrderHistories", "id,amountEarned,orderAcceptedAt,orderCompletedAt,distanceTravelled");
+        assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
 
         subAssoc.put("user", "id,fullName");
 
         for (Object order:orders){
             objects.add(ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
         }
-
 
         return objects;
     }

@@ -135,21 +135,16 @@ Order.courierBoyOrderHistory = function(){
             return;
         }
         var orders = data.params.orders;
+        $(".courier_name").html(orders[0].deliveryBoy.user.fullName != undefined? orders[0].deliveryBoy.user.fullName+' - ':'');
         var tableData = [];
         for (var i = 0; i < orders.length; i++) {
             var order = orders[i];
 
-            var id = order.id;
-            var link_attachments = '';
-            if(order.attachments.length > 0){
-                for(var j= 0; j<order.attachments.length; i++){
-                    link_attachments += '<a href="'+order.attachments[j]+'">'+order.attachments[j]+'</a>';
-                }
-            }
-            var deliveryBoyName = typeof(order.deliveryBoy) != 'undefined'?order.deliveryBoy.user.fullName:'';
             var action = '';
+            var orderHistoryLength =  order.dBoyOrderHistories.length;
 
-            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?order.grandTotal:'', deliveryBoyName, link_attachments, action];
+            var row = [i+1, order.deliveryBoy.user.fullName, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, order.dBoyOrderHistories[orderHistoryLength-1].amountEarned, order.assignedTime+'Min', ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt)/1000/60).toFixed(0)+'Min', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:'', action];
+            console.log(row);
             tableData.push(row);
 
         }

@@ -24,22 +24,33 @@
     <%@include file="../includes/header.jsp" %>
     <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left">Order History</h1>
+            <h1 class="pull-left"><span class="courier_name"></span> Order History</h1>
         </div>
         <div class="main_content">
             <div class="table-view order_table inroute">
                 <table id="courier_history_table">
                     <thead>
                     <tr>
-                        <th>SN</th>
-                        <th>Customer Name</th>
-                        <th>Store Name & Address</th>
-                        <th>Order No</th>
-                        <th>Total Bill Amount</th>
-                        <th>Courier Boy</th>
-                        <th>Bill</th>
-                        <th>Action</th>
+                        <th rowspan="2">SN</th>
+                        <th rowspan="2">Delivery boy</th>
+                        <th rowspan="2">Date</th>
+                        <th rowspan="2">Order No</th>
+                        <th rowspan="2">Customer Name</th>
+                        <th rowspan="2">Order Name</th>
+                        <th rowspan="2">Distance Traveled</th>
+                        <th rowspan="2">Delivery status</th>
+                        <th rowspan="2">Amount Earned</th>
+                        <th rowspan="2">Time Assigned</th>
+                        <th rowspan="2">Time Taken</th>
+                        <th colspan="2">Customer Feedback</th>
+                        <th colspan="2">Courier Boy Feedback</th>
                     </tr>
+                        <tr>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                        </tr>
                     </thead>
                     <tbody>
                     </tbody>

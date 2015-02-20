@@ -48,6 +48,7 @@
                             <th>Total Bill Amount</th>
                             <th>Courier Boy</th>
                             <th>Bill</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -59,14 +60,21 @@
                 <table id="order_successful_table">
                     <thead>
                     <tr>
-                        <th>SN</th>
-                        <th>Customer Name</th>
-                        <th>Store Name & Address</th>
-                        <th>Order No</th>
-                        <th>Total Bill Amount</th>
-                        <th>Courier Boy</th>
-                        <th>Bill</th>
-                        <th>Action</th>
+                        <th rowspan="2">SN</th>
+                        <th rowspan="2">Customer Name</th>
+                        <th rowspan="2">Store Name & Address</th>
+                        <th rowspan="2">Order No</th>
+                        <th rowspan="2">Total Bill Amount</th>
+                        <th rowspan="2">Courier Boy</th>
+                        <th rowspan="2">Bill</th>
+                        <th colspan="2">Customer Feedback</th>
+                        <th colspan="2">Courier Boy Feedback</th>
+                    </tr>
+                    <tr>
+                        <th>Rating</th>
+                        <th>Comment</th>
+                        <th>rating</th>
+                        <th>Comment</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -77,14 +85,19 @@
                 <table id="order_canceled_table">
                     <thead>
                     <tr>
-                        <th>SN</th>
-                        <th>Customer Name</th>
-                        <th>Store Name & Address</th>
-                        <th>Order No</th>
-                        <th>Total Bill Amount</th>
-                        <th>Courier Boy</th>
-                        <th>Bill</th>
-                        <th>Action</th>
+                        <th rowspan="2">SN</th>
+                        <th rowspan="2">Customer Name</th>
+                        <th rowspan="2">Store Name & Address</th>
+                        <th rowspan="2">Order No</th>
+                        <th rowspan="2">Total Bill Amount</th>
+                        <th rowspan="2">Courier Boy</th>
+                        <th rowspan="2">Bill</th>
+                        <th colspan="2">Courier Boy Feedback</th>
+                        <th rowspan="2">Cancel Reason</th>
+                    </tr>
+                    <tr>
+                        <th>rating</th>
+                        <th>Comment</th>
                     </tr>
                     </thead>
                     <tbody>

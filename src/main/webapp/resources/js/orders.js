@@ -40,13 +40,26 @@ Order.getOrders = function(){
             }
             var deliveryBoyName = typeof(order.deliveryBoy) != 'undefined'?order.deliveryBoy.user.fullName:'';
             var action = '<span class="item_list" data-id="'+id+'">View Item List</span>';
+            var activeStatus = ["ORDER_PLACED", "ORDER_ACCEPTED", "IN_ROUTE_TO_PICK_UP", "AT_STORE", "IN_ROUTE_TO_DELIVERY"];
 
-            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?order.grandTotal:'', deliveryBoyName, link_attachments, action];
-            if(order.deliveryStatus == "CANCELLED"){
+            var row;
+            if(order.orderStatus == "CANCELLED"){
+                var reason = '';
+                if(order.orderCancel.reasonDetails != undefined) {
+                    if(order.orderCancel.reasonDetails.id == 6){
+                        reason = order.orderCancel.reason;
+                    }  else{
+                         reason = order.orderCancel.reasonDetails.cancelReason;
+                    }
+                }
+
+                row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?order.grandTotal:'', deliveryBoyName, link_attachments, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason];
                 tdataCanceled.push(row);
-            } else if(order.deliveryStatus == "SUCCESSFUL") {
+            } else if(order.orderStatus == "DELIVERED") {
+                row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?order.grandTotal:'', deliveryBoyName, link_attachments, order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
                 tdataSuccessful.push(row)
-            } else if(order.deliveryStatus == "PENDING") {
+            } else if($.inArray(order.orderStaus, activeStatus)) {
+                row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?order.grandTotal:'', deliveryBoyName, link_attachments, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), action];
                 tdataInRoute.push(row)
             }
         }

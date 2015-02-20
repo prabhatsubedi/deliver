@@ -374,9 +374,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
                  for(cntOrder=0; cntOrder < order.length; cntOrder++){
                      order_no += "<li>"+order[cntOrder].id+"</li>";
                      order_name += "<li>"+order[cntOrder].orderName+"</li>";
-                     assigned_time += "<li>"+order[cntOrder].assignedTime+"</li>";
-                     elapsed_time += "<li>"+order[cntOrder].elapsedTime+"</li>";
-                     job_status += "<li>"+Main.ucfirst((order[cntOrder].orderStatus).replace('_', ' ').toLowerCase())+"</li>";
+                     assigned_time += "<li>"+order[cntOrder].assignedTime+"Min</li>";
+                     elapsed_time += "<li>"+order[cntOrder].elapsedTime+"Min</li>";
+                     job_status += "<li>"+Main.ucfirst((order[cntOrder].orderStatus).split('_').join(' ').toLowerCase())+"</li>";
                  }
 
                 if(job_status == '<ul>'){
@@ -395,7 +395,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     '<a href="' + Main.modifyURL('/organizer/courier_staff/profile/' + id) + '">View Profile</a>' +
                     '</div>';
 
-                var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, Main.ucfirst(user_status), balance, action];
+                var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, Main.ucfirst(user_status), 'Rs.'+balance, action];
                 tdata.push(row);
             }
 

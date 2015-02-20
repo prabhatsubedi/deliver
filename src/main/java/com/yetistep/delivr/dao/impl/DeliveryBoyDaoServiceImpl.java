@@ -5,16 +5,17 @@ import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.BigDecimalType;
+import org.hibernate.type.IntegerType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -77,18 +78,30 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
 
     @Override
     public DeliveryBoyEntity getProfileInformation(Integer deliveryBoyId) throws Exception {
-        Criteria criteria = getCurrentSession().createCriteria(DeliveryBoyEntity.class);
-        criteria.setProjection(Projections.projectionList()
-                .add(Projections.property("id"), "id")
-                .add(Projections.property("totalEarnings"), "totalEarnings")
-                .add(Projections.property("activeOrderNo"), "activeOrderNo")
-                .add(Projections.property("totalOrderTaken"), "totalOrderTaken")
-                .add(Projections.property("previousDue"), "previousDue")
-                .add(Projections.property("availableAmount"), "availableAmount")
-                .add(Projections.property("walletAmount"), "walletAmount")
-        ).setResultTransformer(Transformers.aliasToBean(DeliveryBoyEntity.class));
-        criteria.add(Restrictions.eq("id", deliveryBoyId));
-        return (DeliveryBoyEntity) criteria.uniqueResult();
+        String sqlQuery = "SELECT (SELECT count(o.id) FROM orders o WHERE o.delivery_boy_id = :deliveryBoyId AND " +
+                "o.order_status NOT IN (:pastStatusList)) + (SELECT count(dbs.id) FROM dboy_selections dbs INNER JOIN " +
+                "orders o on (o.id = dbs.order_id) WHERE o.order_status = :orderPlaced AND dboy_id = :deliveryBoyId) as activeOrderNo, " +
+                "(SELECT count(o.id) FROM orders o WHERE o.delivery_boy_id = :deliveryBoyId AND o.order_status in (:pastStatusList)) " +
+                "as totalOrderTaken, id, total_earnings as totalEarnings, previous_due as previousDue, wallet_amount as walletAmount, " +
+                "available_amount  as availableAmount FROM delivery_boys WHERE id = :deliveryBoyId";
+        List<Integer> pastStatusList = new ArrayList<Integer>();
+        pastStatusList.add(JobOrderStatus.DELIVERED.ordinal());
+        pastStatusList.add(JobOrderStatus.CANCELLED.ordinal());
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
+                .addScalar("id", IntegerType.INSTANCE)
+                .addScalar("activeOrderNo", IntegerType.INSTANCE)
+                .addScalar("totalOrderTaken", IntegerType.INSTANCE)
+                .addScalar("totalEarnings", BigDecimalType.INSTANCE)
+                .addScalar("previousDue", BigDecimalType.INSTANCE)
+                .addScalar("walletAmount", BigDecimalType.INSTANCE)
+                .addScalar("availableAmount", BigDecimalType.INSTANCE);
+
+        query.setParameterList("pastStatusList", pastStatusList);
+        query.setParameter("deliveryBoyId", deliveryBoyId);
+        query.setParameter("orderPlaced",JobOrderStatus.ORDER_PLACED.ordinal());
+        query.setResultTransformer(Transformers.aliasToBean(DeliveryBoyEntity.class));
+        DeliveryBoyEntity deliveryBoyEntity = (DeliveryBoyEntity) query.uniqueResult();
+        return deliveryBoyEntity;
     }
 
     @Override
@@ -109,5 +122,16 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Integer getNumberOfAssignedOrders(Integer deliveryBoyId) throws Exception {
+        String sqlQuery = "SELECT count(dbs.id) FROM dboy_selections dbs INNER JOIN orders o ON " +
+                "(o.id = dbs.order_id) WHERE o.order_status = :orderPlaced AND dboy_id =:deliveryBoyId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("orderPlaced", JobOrderStatus.ORDER_PLACED.ordinal());
+        query.setParameter("deliveryBoyId", deliveryBoyId);
+        BigInteger count = (BigInteger) query.uniqueResult();
+       return count.intValue();
     }
 }

@@ -893,8 +893,8 @@ public class CustomerServiceImpl implements CustomerService {
         if(word.length() < 3)
             throw new YSException("VLD028");
 
-        String lat = null;
-        String lon = null;
+        String lat;
+        String lon;
         if (requestJsonDto.getGpsInfo() == null) {
             CustomerEntity customerEntity = customerDaoService.getLatLong(requestJsonDto.getCustomerInfo().getClientId());
             if (customerEntity == null)
@@ -1063,8 +1063,8 @@ public class CustomerServiceImpl implements CustomerService {
         if(word.length() < 3)
             throw new YSException("VLD028");
 
-        String lat = null;
-        String lon = null;
+        String lat;
+        String lon;
         if (requestJsonDto.getGpsInfo() == null) {
             CustomerEntity customerEntity = customerDaoService.getLatLong(requestJsonDto.getCustomerInfo().getClientId());
             if (customerEntity == null)
@@ -1076,11 +1076,13 @@ public class CustomerServiceImpl implements CustomerService {
             lon = requestJsonDto.getGpsInfo().getLongitude();
         }
 
-        List<ItemEntity> items = itemDaoService.searchItemsInStore(word, brandId);
+
         List<StoreEntity> storeEntities = storeDaoService.findStores(brandId);
 
         if(storeEntities.size() == 0)//If all Stores are inactivated
-            items = new ArrayList<>();
+            return new SearchDto();
+
+        List<ItemEntity> items = itemDaoService.searchItemsInStore(word, brandId);
 
         if(items !=null && items.size() > 0){
             searchResult = new ArrayList<>();

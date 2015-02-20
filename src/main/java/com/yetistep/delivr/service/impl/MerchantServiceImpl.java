@@ -543,20 +543,20 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<StoresBrandEntity> storesBrands;
 
         if (headerDto.getMerchantId() != null){
-            storesBrands = merchantDaoService.findBrandList(headerDto.getMerchantId());
+            storesBrands = merchantDaoService.findBrandListByMerchant(headerDto.getMerchantId());
         } else {
             storesBrands = merchantDaoService.findBrandList();
         }
 
         List<StoresBrandEntity> brandList = new ArrayList<>();
 
-        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,featured,priority";
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,featured,priority,store,merchant";
 
         Map<String, String> assoc = new HashMap<>();
 
         assoc.put("store", "id");
         assoc.put("merchant", "id");
-        if(storesBrands != null){
+        if(storesBrands.size()>0){
             for (StoresBrandEntity storesBrandEntity: storesBrands) {
                 StoresBrandEntity brand = (StoresBrandEntity) ReturnJsonUtil.getJsonObject(storesBrandEntity, fields, assoc);
                 brand.setCountStore(brand.getStore().size());

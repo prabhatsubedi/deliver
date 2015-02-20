@@ -305,7 +305,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId))) ;
         stores = criteria.list();
-        return stores.size() > 0 ? stores : null;
+        return stores;
     }
 
     @Override

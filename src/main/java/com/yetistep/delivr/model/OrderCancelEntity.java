@@ -23,7 +23,7 @@ public class OrderCancelEntity {
     private Timestamp cancelledDate;
     private UserEntity user;
     private OrderEntity order;
-    private ReasonDetails reasonDetails;
+    private ReasonDetailsEntity reasonDetails;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -86,11 +86,11 @@ public class OrderCancelEntity {
 
     @ManyToOne
     @JoinColumn(name = "reason_detail_id")
-    public ReasonDetails getReasonDetails() {
+    public ReasonDetailsEntity getReasonDetails() {
         return reasonDetails;
     }
 
-    public void setReasonDetails(ReasonDetails reasonDetails) {
+    public void setReasonDetails(ReasonDetailsEntity reasonDetails) {
         this.reasonDetails = reasonDetails;
     }
 

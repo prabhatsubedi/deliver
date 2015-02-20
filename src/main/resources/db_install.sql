@@ -115,3 +115,5 @@ INSERT INTO `reason_details` (`cancel_reason`, `status`) VALUES ('Others', '1');
 
 /*####################2015-02-19############################*/
 ALTER TABLE `customers` CHANGE COLUMN `fb_token` `fb_token` LONGTEXT NULL DEFAULT NULL ;
+
+ALTER TABLE `items` DROP `brandId`, DROP `closingTime`, DROP `openingTime`;

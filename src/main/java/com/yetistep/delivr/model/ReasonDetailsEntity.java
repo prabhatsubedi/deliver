@@ -12,9 +12,9 @@ import java.util.List;
  * Time: 2:29 PM
  * To change this template use File | Settings | File Templates.
  */
-@Entity(name = "ReasonDetails")
+@Entity(name = "ReasonDetailsEntity")
 @Table(name = "reason_details")
-public class ReasonDetails {
+public class ReasonDetailsEntity {
     private Integer id;
     private String cancelReason;
     private Boolean status;

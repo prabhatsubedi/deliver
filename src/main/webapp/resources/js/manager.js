@@ -932,31 +932,24 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
             var godView = data.params.godsView[0];
 
-            var deliveryBoyLocations = godView.deliveryBoyLocations;
-            deliveryBoyLocations = deliveryBoyLocations[Object.keys(deliveryBoyLocations)[0]];
-            var storeLocations = godView.storeLocations;
-            storeLocations = storeLocations[Object.keys(storeLocations)[0]];
-            var customerLocations = godView.customerLocations;
-            customerLocations = customerLocations[Object.keys(customerLocations)[0]];
-
-            for(var i in deliveryBoyLocations) {
-                addGodMarker(JSON.parse(deliveryBoyLocations[i]), "courier");
-            }
-            for(var i in storeLocations) {
-                addGodMarker(JSON.parse(storeLocations[i]), "store");
-            }
-            for(var i in customerLocations) {
-                addGodMarker(JSON.parse(customerLocations[i]), "customer");
-            }
-
             var currentDelivery = godView.currentDelivery;
             currentDelivery = currentDelivery[Object.keys(currentDelivery)[0]];
+
             var newOrders = godView.newOrders;
             newOrders = newOrders[Object.keys(newOrders)[0]];
             var data_row = '';
             for(var i in newOrders) {
                 var newOrder = JSON.parse(newOrders[i]);
-                data_row += '<div class="data_row" data-store="' + locationToKey({latitude: newOrder.store.lat, longitude: newOrder.store.lang}) + '" data-customer="' + locationToKey({latitude: newOrder.customer.lat, longitude: newOrder.customer.lang}) + '">' + newOrder.store.name + ', ' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
+
+                var locCourierBoy = newOrder.courierBoy;
+                var locStore = newOrder.store;
+                var locCustomer = newOrder.customer;
+
+                addGodMarker(locCourierBoy, "courier");
+                addGodMarker(locCustomer, "store");
+                addGodMarker(locStore, "customer");
+
+                data_row += '<div class="data_row" data-store="' + locationToKey({latitude: locStore.lat, longitude: locStore.lang}) + '" data-customer="' + locationToKey({latitude: locCustomer.lat, longitude: locCustomer.lang}) + '" data-courierBoy="' + locationToKey({latitude: locCourierBoy.lat, longitude: locCourierBoy.lang}) + '">' + newOrder.store.name + ', ' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
             }
             $('.new_orders .more_data').html(data_row);
 
@@ -1002,14 +995,16 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         $('.new_orders .data_row').live('click', function(){
             removeAnimation(godMarkers);
-            var marker1 = godMarkers[$(this).attr('data-customer')];
-            var marker2 = godMarkers[$(this).attr('data-store')];
-            marker1.setAnimation(google.maps.Animation.BOUNCE);
-            marker2.setAnimation(google.maps.Animation.BOUNCE);
+            var mCustomer = godMarkers[$(this).attr('data-customer')];
+            var mStore = godMarkers[$(this).attr('data-store')];
+            var mCourierBoy = godMarkers[$(this).attr('data-courierBoy')];
+            mCustomer.setAnimation(google.maps.Animation.BOUNCE);
+            mStore.setAnimation(google.maps.Animation.BOUNCE);
+            mCourierBoy.setAnimation(google.maps.Animation.BOUNCE);
 
             if(flightPath != undefined) flightPath.setMap(null);
             flightPath = new google.maps.Polyline({
-                path: [marker1.getPosition(), marker2.getPosition()],
+                path: [mStore.getPosition(), mCustomer.getPosition(), mCourierBoy.getPosition()],
                 geodesic: true,
                 strokeColor: '#FF0000',
                 strokeOpacity: 1.0,

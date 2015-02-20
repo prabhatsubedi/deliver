@@ -20,4 +20,6 @@ public interface DeliveryBoyDaoService extends GenericDaoService<Integer, Delive
     public Boolean checkForPendingOrders(Integer deliveryBoyId, Integer orderId) throws Exception;
 
     public Integer getNumberOfAssignedOrders(Integer deliveryBoyId) throws Exception;
+
+    public Boolean canStartJob(Integer orderId, Integer deliveryBoyId) throws Exception;
 }

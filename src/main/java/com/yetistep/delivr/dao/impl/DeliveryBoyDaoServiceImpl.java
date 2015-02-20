@@ -134,4 +134,24 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         BigInteger count = (BigInteger) query.uniqueResult();
        return count.intValue();
     }
+
+    @Override
+    public Boolean canStartJob(Integer orderId, Integer deliveryBoyId) throws Exception {
+        String sqlQuery = "SELECT count(id) FROM orders WHERE delivery_boy_id = :deliveryBoyId " +
+                "AND order_status IN(:runningOrderList) AND id < :orderId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        List<Integer> runningOrderList = new ArrayList<Integer>();
+        runningOrderList.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
+        runningOrderList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
+        runningOrderList.add(JobOrderStatus.AT_STORE.ordinal());
+        runningOrderList.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal());
+        query.setParameterList("runningOrderList", runningOrderList);
+        query.setParameter("deliveryBoyId", deliveryBoyId);
+        query.setParameter("orderId", orderId);
+        BigInteger count = (BigInteger) query.uniqueResult();
+        if(count.intValue() == 0){
+            return true;
+        }
+        return false;
+    }
 }

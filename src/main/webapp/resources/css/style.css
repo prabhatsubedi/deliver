@@ -1240,6 +1240,10 @@ label.check_label .checkbox {
 .items_container .block_item:hover .item_buttons {
     display: block;
 }
+.item_buttons .add_items.disabled {
+    background-color: #ff9235;
+    opacity: 0.9;
+}
 .items_container .block_item .item_image .special_item {
     background-color: #ffffff;
     border: 1px solid #cccccc;

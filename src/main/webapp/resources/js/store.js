@@ -444,15 +444,18 @@ if(typeof(Store) == "undefined") var Store = {};
                         $('.item_image img', elem).attr('src', storeBrand.brandImage);
                         $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
                         $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
+                        if(Main.getFromLocalStorage('userStatus') == "INACTIVE") $('.add_items', elem).addClass('disabled');
                         $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
 
                         if(storeBrand.featured == true) $('.item_image', elem).append('<div class="special_item">Featured</div>');
                         if(storeBrand.priority != undefined) $('.item_image', elem).append('<div class="special_item">Priority : ' + storeBrand.priority + '</div>');
 
-                        if(storeBrand.status == "ACTIVE")
+                        if(storeBrand.status == "ACTIVE") {
                             active_store_list += elem.html();
-                        else
+                        } else {
+                            $('.add_items', elem).remove();
                             inactive_store_list += elem.html();
+                        }
                     }
 
                 }
@@ -716,6 +719,7 @@ if(typeof(Store) == "undefined") var Store = {};
                                 $('.item_image img', elem).attr('src', storeBrand.brandImage);
                                 $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
                                 $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
+                                if(Main.getFromLocalStorage('userStatus') == "INACTIVE") $('.add_items', elem).addClass('disabled');
                                 $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
 
                                 if(storeBrand.featured == true) $('.item_image', elem).append('<div class="special_item">Featured</div>');

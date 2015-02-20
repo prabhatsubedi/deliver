@@ -146,8 +146,8 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 var merchants = data.params.merchants;
 
                 var sess_merchants = {};
-                for (i = 0; i < merchants.length; i++) {
-                    sess_merchants[merchants[i].id] = merchants[i].businessTitle;
+                for (var i in merchants) {
+                    sess_merchants[merchants[i].id] = {businessTitle: merchants[i].businessTitle, status: merchants[i].status};
                 }
                 Main.saveInLocalStorage('merchants', JSON.stringify(sess_merchants));
             }
@@ -158,7 +158,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             callback.requestType = "GET";
             Main.request('/organizer/get_merchants', {}, callback);
         } else {
-            callback('', {params: {merchants: sess_merchants}});
+            callback('', {params: {merchants: sess_merchants}, success: true});
         }
 
     };

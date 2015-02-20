@@ -39,7 +39,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
                 var link_merchant = '<a href="' + Main.modifyURL('/merchant/store/list/' + merchantId) + '">' + merchant.businessTitle + '</a>';
 
-                sess_merchants[merchantId] = merchant.businessTitle;
+                sess_merchants[merchantId] = {id: merchantId, businessTitle: merchant.businessTitle, status: status};
                 var row = [merchantId, link_merchant, merchant.partnershipStatus ? 'Partner' : 'Non Partner', merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
                 tdata.push(row);
             }
@@ -195,6 +195,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
             url += 'get_other_brands';
         }
         var callback = function (status, data) {
+
+            var sess_merchants = JSON.parse(Main.getFromLocalStorage('merchants'));
             var featured_count = 0;
             var prioritized_count = 0;
             if (data.success == true) {
@@ -258,6 +260,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
                             $('.add_items', elem).remove();
                         else
                             $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
+
+                        if(sess_merchants[storeBrand.merchantId].status == "INACTIVE") $('.add_items', elem).addClass('disabled');
+
                         $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
                         store_list += elem.html();
                     }

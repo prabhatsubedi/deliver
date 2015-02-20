@@ -46,4 +46,5 @@
     <bean id = "adminDaoService" class="com.yetistep.delivr.dao.impl.AdminDaoServiceImpl" />
     <bean id = "itemsOrderAttributeDaoService" class="com.yetistep.delivr.dao.impl.ItemsOrderAttributeDaoServiceImpl" />
     <bean id="systemInit" class="com.yetistep.delivr.sys.SystemInit" />
+    <bean id = "ratingDaoService" class="com.yetistep.delivr.dao.impl.RatingDaoServiceImpl" />
  </beans>

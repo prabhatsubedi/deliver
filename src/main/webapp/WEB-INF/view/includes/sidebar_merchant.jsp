@@ -63,8 +63,20 @@
 
         var sess_merchants = JSON.parse(Main.getFromLocalStorage('merchants'));
         if(Main.getFromLocalStorage('mid') != undefined) {
-            $('.sidebar .merchant_name').html(sess_merchants[Main.getFromLocalStorage('mid')]);
-            $(".sidebar .merchant_title").attr({"data-original-title": sess_merchants[Main.getFromLocalStorage('mid')]});
+            $('.sidebar .merchant_name').html(sess_merchants[Main.getFromLocalStorage('mid')].businessTitle);
+            $(".sidebar .merchant_title").attr({"data-original-title": sess_merchants[Main.getFromLocalStorage('mid')].businessTitle});
+
+            Main.saveInLocalStorage('userStatus', sess_merchants[Main.getFromLocalStorage('mid')].status)
+
+            if(sess_merchants[Main.getFromLocalStorage('mid')].status == "INACTIVE") {
+
+                if(Main.getURLvalue(3) == 'create' && (Main.getURLvalue(1) == 'item' || Main.getURLvalue(1) == 'store')) {
+                    form_submit = true;
+                    window.location = Main.modifyURL('merchant/' + Main.getURLvalue(1) + '/list');
+                }
+                $('a[href*="/merchant/store/form/create"], a[href*="/merchant/item/form/create"]', '.body').addClass('disabled');
+
+            }
         }
 
         $('.sidebar_menu a[href]').not('[href="javascript:;"]').each(function(){

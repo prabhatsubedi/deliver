@@ -964,7 +964,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         DeliveryBoyEntity deliveryBoyEntity = orderEntity.getDeliveryBoy();
         if(deliveryBoyEntity != null){
             deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()-1);
-            if(deliveryBoyEntity.getActiveOrderNo() == 0){
+            if(deliveryBoyEntity.getActiveOrderNo() <= 0){
+                deliveryBoyEntity.setActiveOrderNo(0);
                 deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.FREE);
             }
         }

@@ -19,7 +19,6 @@ import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
 import eu.bitwalker.useragentutils.UserAgent;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -96,6 +95,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     StoreDaoService storeDaoService;
+
+    @Autowired
+    RatingDaoService ratingDaoService;
 
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
@@ -1218,5 +1220,23 @@ public class CustomerServiceImpl implements CustomerService {
         ratingEntity.setDeliveryBoyRating(rating.getDeliveryBoyRating());
         ratingEntity.setRatingIssues(rating.getRatingIssues());
         return orderDaoService.update(order);
+    }
+
+    @Override
+    public RatingEntity getRatingFromCustomerSide(Integer orderId) throws Exception {
+        RatingEntity ratingEntity = ratingDaoService.getCustomerSideRatingFromOrderId(orderId);
+        RatingEntity rating = new RatingEntity();
+        if(ratingEntity != null){
+            rating.setDeliveryBoyRating(ratingEntity.getDeliveryBoyRating());
+            rating.setCustomerComment(ratingEntity.getCustomerComment());
+            List<RatingReason> ratingReasons = new ArrayList<RatingReason >();
+            for(RatingReason ratingReason: ratingEntity.getRatingIssues()){
+                ratingReasons.add(ratingReason);
+            }
+            if(ratingReasons.size() > 0)
+                rating.setRatingIssues(ratingReasons);
+        }
+        rating.setAllRatingIssues(this.getRatingReasons());
+        return rating;
     }
 }

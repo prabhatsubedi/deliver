@@ -456,7 +456,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(orderId);
                 String message = MessageBundle.getMessage("CPN001","push_notification.properties");
                 message = String.format(message, orderEntity.getStore().getName(), deliveryBoyEntity.getUser().getFullName());
-                PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, orderId.toString());
+                String extraDetail = orderId.toString()+"/status/"+JobOrderStatus.ORDER_ACCEPTED.toString();
+                PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
             }
             return status;
         } else if (deliveryBoyId.equals(deliveryBoySelectionEntity.getDeliveryBoy().getId())) {
@@ -482,7 +483,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(status){
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN002","push_notification.properties");
-            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+            String extraDetail = order.getId().toString()+"/status/"+JobOrderStatus.IN_ROUTE_TO_PICK_UP.toString();
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
         }
         return status;
     }
@@ -505,7 +507,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(status){
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN003","push_notification.properties");
-            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+            String extraDetail = order.getId().toString()+"/status/"+JobOrderStatus.AT_STORE.toString();
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
         }
         return status;
     }
@@ -534,7 +537,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(status){
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN004","push_notification.properties");
-            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+            String extraDetail = order.getId().toString()+"/status/"+JobOrderStatus.IN_ROUTE_TO_DELIVERY.toString();
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
         }
         return status;
     }
@@ -585,7 +589,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(status){
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN006","push_notification.properties");
-            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+            String extraDetail = order.getId().toString()+"/status/"+JobOrderStatus.DELIVERED.toString();
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
         }
         return status;
     }
@@ -969,7 +974,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(status){
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN007","push_notification.properties");
-            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+            String extraDetail = order.getId().toString()+"/status/"+JobOrderStatus.CANCELLED.toString();
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
         }
         return status;
     }

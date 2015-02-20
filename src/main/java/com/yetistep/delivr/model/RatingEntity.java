@@ -1,6 +1,7 @@
 package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yetistep.delivr.enums.RatingReason;
 
 import javax.persistence.*;
@@ -27,6 +28,8 @@ public class RatingEntity {
     private String deliveryBoyComment;
     private OrderEntity order;
     private List<RatingReason> ratingIssues;
+    /*Transient field to send all rating issues */
+    private List<RatingReason> allRatingIssues;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -95,5 +98,15 @@ public class RatingEntity {
 
     public void setRatingIssues(List<RatingReason> ratingIssues) {
         this.ratingIssues = ratingIssues;
+    }
+
+    @JsonProperty
+    @Transient
+    public List<RatingReason> getAllRatingIssues() {
+        return allRatingIssues;
+    }
+
+    public void setAllRatingIssues(List<RatingReason> allRatingIssues) {
+        this.allRatingIssues = allRatingIssues;
     }
 }

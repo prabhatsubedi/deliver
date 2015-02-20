@@ -10,7 +10,6 @@ import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.DeviceInfo;
-import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.dto.*;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
@@ -814,6 +813,25 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while rating delivery boy", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_rating/order/{orderId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getRatingDetails(@RequestHeader HttpHeaders headers, @PathVariable Integer orderId) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            //  validateMobileClient(headerDto.getAccessToken());
+
+            RatingEntity rating = customerService.getRatingFromCustomerSide(orderId);
+            ServiceResponse serviceResponse = new ServiceResponse("Rating information has been retrieved successfully");
+            serviceResponse.addParam("rating", rating);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving rating information", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

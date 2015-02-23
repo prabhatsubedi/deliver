@@ -409,7 +409,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             }
             deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()+1);
             deliveryBoyEntity.setTotalOrderTaken(deliveryBoyEntity.getTotalOrderTaken()+1);
-            deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);
+           /* deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);*/
             deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.BUSY);
 
             OrderEntity orderEntity = deliveryBoySelectionEntity.getOrder();
@@ -552,7 +552,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
         //TODO check order id as well
         if(!orderEntity.getOrderVerificationCode().equals(order.getOrderVerificationCode())){
-            //throw new YSException("ORD004");
+            throw new YSException("ORD004");
         }
         JobOrderStatus.traverseJobStatus(order.getOrderStatus(), JobOrderStatus.DELIVERED);
         order.setDeliveryStatus(DeliveryStatus.SUCCESSFUL);
@@ -565,6 +565,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 dBoyOrderHistoryEntity.setOrderCompletedAt(DateUtil.getCurrentTimestampSQL());
                 dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.SUCCESSFUL);
                 dBoyOrderHistoryEntity.setDistanceTravelled(order.getCustomerChargeableDistance().add(order.getSystemChargeableDistance()));
+                dBoyOrderHistoryEntity.setAmountEarned(order.getCourierTransaction().getPaidToCourier());
                 break;
             }
         }
@@ -574,8 +575,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(deliveryBoyEntity.getActiveOrderNo() == 0){
             deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.FREE);
         }
+        deliveryBoyEntity.setTotalEarnings(BigDecimalUtil.checkNull(deliveryBoyEntity.getTotalEarnings()).add(order.getCourierTransaction().getPaidToCourier()));
         deliveryBoyEntity.setTotalOrderDelivered(deliveryBoyEntity.getTotalOrderDelivered() + 1);
-        deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered() - 1);
+        /*deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered() - 1);*/
         /*Accounting Implementation*/
         courierBoyAccountingsAfterOrderDelivery(deliveryBoyEntity, order);
         /*Accounting Implementation Completed*/
@@ -717,7 +719,14 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
         courierTransactionEntity.setProfit(courierTransaction.getProfit());
 
-        return orderDaoService.save(order);
+        boolean status = orderDaoService.save(order);
+        if(status){
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String message = MessageBundle.getMessage("CPN005","push_notification.properties");
+            String extraDetail = order.getId().toString()+"/status/"+order.getOrderStatus().toString();
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
+        }
+        return true;
     }
 
     @Override
@@ -900,7 +909,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(status){
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN005","push_notification.properties");
-            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+            String extraDetail = order.getId().toString()+"/status/"+order.getOrderStatus().toString();
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
         }
         return status;
     }
@@ -967,6 +977,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         DeliveryBoyEntity deliveryBoyEntity = orderEntity.getDeliveryBoy();
         if(deliveryBoyEntity != null){
             deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()-1);
+            deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);
             if(deliveryBoyEntity.getActiveOrderNo() <= 0){
                 deliveryBoyEntity.setActiveOrderNo(0);
                 deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.FREE);

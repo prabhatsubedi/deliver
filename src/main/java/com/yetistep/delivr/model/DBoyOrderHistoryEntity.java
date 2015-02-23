@@ -57,7 +57,7 @@ public class DBoyOrderHistoryEntity implements Serializable {
         this.deliveryStatus = deliveryStatus;
     }
 
-    @Column(name = "amount_earned", precision = 4, scale = 2)
+    @Column(name = "amount_earned", precision = 19, scale = 2)
     public BigDecimal getAmountEarned() {
         return amountEarned;
     }

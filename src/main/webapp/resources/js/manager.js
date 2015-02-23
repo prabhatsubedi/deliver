@@ -375,13 +375,15 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var job_status = '<ul class="current_order_attrs">';
                 var order = courierStaff.order;
                 var cntOrder;
+                var exceed_time = false;
 
                  for(cntOrder=0; cntOrder < order.length; cntOrder++){
-                     order_no += "<li>"+order[cntOrder].id+"</li>";
-                     order_name += "<li>"+order[cntOrder].orderName+"</li>";
-                     assigned_time += "<li>"+order[cntOrder].assignedTime+"Min</li>";
-                     elapsed_time += "<li>"+order[cntOrder].elapsedTime+"Min</li>";
-                     job_status += "<li>"+Main.ucfirst((order[cntOrder].orderStatus).split('_').join(' ').toLowerCase())+"</li>";
+                     var exceed_time = order[cntOrder].elapsedTime > order[cntOrder].assignedTime;
+                     order_no += "<li" + (exceed_time ? " class='color_error'" : "") + ">"+order[cntOrder].id+"</li>";
+                     order_name += "<li" + (exceed_time ? " class='color_error'" : "") + ">"+order[cntOrder].orderName+"</li>";
+                     assigned_time += "<li" + (exceed_time ? " class='color_error'" : "") + ">"+Main.convertMin(order[cntOrder].assignedTime)+"</li>";
+                     elapsed_time += "<li" + (exceed_time ? " class='color_error'" : "") + ">"+Main.convertMin(order[cntOrder].elapsedTime)+"</li>";
+                     job_status += "<li" + (exceed_time ? " class='color_error'" : "") + ">"+Main.ucfirst((order[cntOrder].orderStatus).split('_').join(' ').toLowerCase())+"</li>";
                  }
 
                 if(job_status == '<ul>'){

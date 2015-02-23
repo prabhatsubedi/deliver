@@ -382,6 +382,19 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
     };
 
+    Main.convertMin = function(valueMin) {
+
+        var min = valueMin % 60;
+        var hour = ((valueMin - min) / 60) % 24;
+        var days = ((valueMin - (min + hour * 60)) / 60) / 24;
+        var time = [];
+        if(days > 0) time.push(days + "d");
+        if(hour > 0) time.push(hour + "h");
+        if(min > 0) time.push(min + "m");
+        return time.join(" ");
+
+    }
+
 })(jQuery);
 
 $(document).ready(function(){

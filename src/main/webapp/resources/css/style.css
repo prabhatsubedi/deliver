@@ -138,6 +138,9 @@ body.loader_div > .loader {
 .width_300 {
     min-width: 300px;
 }
+.color_error {
+    color: #f71d1d;
+}
 .modal-body {
     width: 100%;
 }

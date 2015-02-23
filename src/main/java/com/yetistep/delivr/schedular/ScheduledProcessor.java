@@ -66,7 +66,8 @@ public class ScheduledProcessor {
                 if(status){
                     UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
                     String message = MessageBundle.getMessage("CPN007", "push_notification.properties");
-                    PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, order.getId().toString());
+                    String extraDetail = order.getId().toString()+"/status/"+order.getOrderStatus().toString();
+                    PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
                 }
             }
             checkNextOrders(timeOut);

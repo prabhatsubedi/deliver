@@ -67,6 +67,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     @Autowired
     UserDeviceDaoService userDeviceDaoService;
 
+    @Autowired
+    OrderCancelDaoService orderCancelDaoService;
+
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++ Getting all brands +++++++++++++++");
@@ -1035,5 +1038,18 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             }
         }
         return true;
+    }
+
+    @Override
+    public OrderCancelEntity orderCancelDetails(Integer orderId) throws Exception {
+        OrderCancelEntity orderCancel = orderCancelDaoService.getOrderCancelInfoFromOrderId(orderId);
+        if(orderCancel == null){
+            throw new YSException("ORD017");
+        }
+        String fields = "id,reason,jobOrderStatus,cancelledDate,reasonDetails";
+        Map<String, String> assoc = new HashMap<>();
+        assoc.put("reasonDetails", "id,cancelReason");
+        orderCancel =  (OrderCancelEntity) ReturnJsonUtil.getJsonObject(orderCancel, fields, assoc);
+        return orderCancel;
     }
 }

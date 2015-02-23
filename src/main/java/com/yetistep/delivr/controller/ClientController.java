@@ -836,4 +836,23 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/get_cancel_details/order/{orderId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getCancelDetails(@RequestHeader HttpHeaders headers, @PathVariable Integer orderId) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            //  validateMobileClient(headerDto.getAccessToken());
+
+            OrderCancelEntity orderCancel = clientService.orderCancelDetails(orderId);
+            ServiceResponse serviceResponse = new ServiceResponse("Order cancel information has been retrieved successfully");
+            serviceResponse.addParam("orderCancel", orderCancel);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving order cancel information", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

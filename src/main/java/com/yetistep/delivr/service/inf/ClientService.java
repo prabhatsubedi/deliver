@@ -5,6 +5,7 @@ import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.CartEntity;
 import com.yetistep.delivr.model.ItemEntity;
+import com.yetistep.delivr.model.OrderCancelEntity;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
@@ -58,4 +59,6 @@ public interface ClientService {
     public String getCurrencyType() throws Exception;
 
     public Boolean reOrder(Integer orderId, Long facebookId, Boolean flushCart) throws Exception;
+
+    public OrderCancelEntity orderCancelDetails(Integer orderId) throws Exception;
 }

@@ -1698,6 +1698,10 @@ label.check_label .checkbox {
 .count_section .new_orders .data_row {
     cursor: pointer;
 }
+.count_section .new_orders .more_data {
+    max-height: 400px;
+    overflow: auto;
+}
 .count_section .count_block .data_row {
     border-top: 1px dotted #ccc;
     color: #282828;

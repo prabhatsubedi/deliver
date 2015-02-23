@@ -13,7 +13,7 @@ public class CommonConstants {
     public static final String DELIMITER = "%";
     public static final Integer MAX_STATIC_PAGE_SIZE = 5;
 
-    public static final Integer MAX_SEARCH_ITEM = 4; // Search Max Item
-    public static final Integer MAX_SEARCH_STORE = 2; // Search Max Store
+    public static final Integer MAX_SEARCH_ITEM = 15; // Search Max Item
+    public static final Integer MAX_SEARCH_STORE = 6; // Search Max Store
     public static final Integer MAX_SEARCH_DATA = MAX_SEARCH_ITEM + MAX_SEARCH_STORE;
 }

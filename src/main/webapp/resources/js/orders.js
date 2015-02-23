@@ -67,6 +67,7 @@ Order.getOrders = function(){
         Main.createDataTable("#order_inroute_table", tdataInRoute);
         Main.createDataTable("#order_canceled_table", tdataCanceled);
         Main.createDataTable("#order_successful_table", tdataSuccessful);
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
     }
 
     var postData = {};
@@ -105,6 +106,9 @@ Order.getPurchaseHistory = function(){
         }
 
         Main.createDataTable("#purchase_history_table", tableData);
+
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+
     }
 
     var postData = {};
@@ -131,6 +135,7 @@ Order.getOrdersItems = function(){
             }
 
             Main.createDataTable("#orders_items_table", tableData);
+            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
             $("#order_items_modal").modal("show");
         }
 

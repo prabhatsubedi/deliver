@@ -117,7 +117,7 @@
                 <a class="close" data-dismiss="modal">x</a>
                 <h3>Orders Items</h3>
             </div>
-            <div class="modal-body">
+            <div class="table-view modal-body">
                 <table id="orders_items_table">
                     <thead>
                     <tr>

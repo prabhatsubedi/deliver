@@ -951,8 +951,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var locCustomer = newOrder.customer;
 
                 addGodMarker(locCourierBoy, "courier");
-                addGodMarker(locCustomer, "store");
-                addGodMarker(locStore, "customer");
+                addGodMarker(locCustomer, "customer");
+                addGodMarker(locStore, "store");
 
                 data_row += '<div class="data_row" data-store="' + locationToKey({latitude: locStore.lat, longitude: locStore.lang}) + '" data-customer="' + locationToKey({latitude: locCustomer.lat, longitude: locCustomer.lang}) + '" data-courierBoy="' + locationToKey({latitude: locCourierBoy.lat, longitude: locCourierBoy.lang}) + '">' + newOrder.store.name + ', ' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
             }
@@ -1009,7 +1009,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
             if(flightPath != undefined) flightPath.setMap(null);
             flightPath = new google.maps.Polyline({
-                path: [mStore.getPosition(), mCustomer.getPosition(), mCourierBoy.getPosition()],
+                path: [mCustomer.getPosition(), mStore.getPosition(), mCourierBoy.getPosition()],
                 geodesic: true,
                 strokeColor: '#FF0000',
                 strokeOpacity: 1.0,

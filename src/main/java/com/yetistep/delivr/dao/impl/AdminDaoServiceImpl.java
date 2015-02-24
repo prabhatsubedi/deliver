@@ -156,13 +156,13 @@ public class AdminDaoServiceImpl implements AdminDaoService {
 
     @Override
     public Integer getOrderTotalTime() throws Exception {
-        String sqQuery = "SELECT SUM(doh.completed_at - doh.job_started_at) as timeCount FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status =:orderStatus";
+        String sqQuery = "SELECT SUM(UNIX_TIMESTAMP(completed_at)-UNIX_TIMESTAMP(job_started_at)) as time_count FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status =:orderStatus";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
         query.setParameter("orderStatus", JobOrderStatus.DELIVERED.ordinal());
 
         Number cnt = (Number) query.uniqueResult();
         if(cnt != null)
-            return (Integer) cnt.intValue()/1000/60;
+            return (Integer) cnt.intValue()/60;
         else return 0;
     }
 
@@ -211,14 +211,14 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
-        String sqQuery = "SELECT SUM(doh.completed_at - doh.job_started_at) FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status =:orderStatus && doh.completed_at >:completedDate";
+        String sqQuery = "SELECT SUM(UNIX_TIMESTAMP(completed_at)-UNIX_TIMESTAMP(job_started_at)) as time_count FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status =:orderStatus && doh.completed_at >:completedDate";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
         query.setParameter("orderStatus", JobOrderStatus.DELIVERED.ordinal());
         query.setParameter("completedDate", dateFormat.format(cal.getTime()));
 
         Number cnt = (Number) query.uniqueResult();
         if(cnt != null)
-            return (Integer) cnt.intValue()/1000/60;
+            return (Integer) cnt.intValue()/60;
         else return 0;
     }
 
@@ -230,12 +230,12 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         cal.add(Calendar.DATE, -dayCount);
         Calendar calPrev = Calendar.getInstance();
         calPrev.add(Calendar.DATE, -prev);
-        String sqQuery = "SELECT SUM(doh.completed_at - doh.job_started_at) FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status = 5 && doh.completed_at <= '"+dateFormat.format(cal.getTime())+"'  && doh.completed_at > '"+dateFormat.format(calPrev.getTime())+"'";
+        String sqQuery = "SELECT SUM(UNIX_TIMESTAMP(completed_at)-UNIX_TIMESTAMP(job_started_at)) as time_count FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status = 5 && doh.completed_at <= '"+dateFormat.format(cal.getTime())+"'  && doh.completed_at > '"+dateFormat.format(calPrev.getTime())+"'";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
 
         Number cnt = (Number) query.uniqueResult();
         if(cnt != null)
-            return cnt.intValue();
+            return cnt.intValue()/60;
         else return 0;
     }
 

@@ -139,10 +139,10 @@
                             <div class="width_150"> Job Status</div>
                         </th>
                         <th>
-                            <div class="width_50">Assigned Time</div>
+                            <div class="width_100">Assigned Time</div>
                         </th>
                         <th>
-                            <div class="width_50">Elapsed Time </div>
+                            <div class="width_100">Elapsed Time </div>
                         </th>
                     </tr>
                     </thead>

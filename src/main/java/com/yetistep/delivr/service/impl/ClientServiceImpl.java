@@ -67,6 +67,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     @Autowired
     UserDeviceDaoService userDeviceDaoService;
 
+    @Autowired
+    OrderCancelDaoService orderCancelDaoService;
+
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++ Getting all brands +++++++++++++++");
@@ -81,11 +84,11 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         String lon = null;
         if (requestJsonDto.getGpsInfo() == null) {
             CustomerEntity customerEntity = customerDaoService.getLatLong(requestJsonDto.getCustomerInfo().getClientId());
-            if (customerEntity == null)
-                throw new YSException("VLD011");
-
-            lat = customerEntity.getLatitude();
-            lon = customerEntity.getLongitude();
+            if (customerEntity != null) {
+                lat = customerEntity.getLatitude();
+                lon = customerEntity.getLongitude();
+            }
+//                throw new YSException("VLD011");
 
             priorityBrands = storesBrandDaoService.findPriorityBrands(null);
         } else {
@@ -115,7 +118,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
             List<StoreEntity> storeEntities = storeDaoService.findStores(ignoreList);
 
-        /* Extract Latitude and Longitude */
+                 /* Extract Latitude and Longitude */
             String[] storeDistance = new String[storeEntities.size()];
             String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
 
@@ -132,6 +135,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
             //Store Entity List Sorted by Distance
             Collections.sort(storeEntities, new StoreDistanceComparator());
+
 
             //Now Combine all brand in one list
             for (StoreEntity storeEntity : storeEntities) {
@@ -1034,5 +1038,18 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             }
         }
         return true;
+    }
+
+    @Override
+    public OrderCancelEntity orderCancelDetails(Integer orderId) throws Exception {
+        OrderCancelEntity orderCancel = orderCancelDaoService.getOrderCancelInfoFromOrderId(orderId);
+        if(orderCancel == null){
+            throw new YSException("ORD017");
+        }
+        String fields = "id,reason,jobOrderStatus,cancelledDate,reasonDetails";
+        Map<String, String> assoc = new HashMap<>();
+        assoc.put("reasonDetails", "id,cancelReason");
+        orderCancel =  (OrderCancelEntity) ReturnJsonUtil.getJsonObject(orderCancel, fields, assoc);
+        return orderCancel;
     }
 }

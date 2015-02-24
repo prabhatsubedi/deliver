@@ -72,10 +72,11 @@ public abstract class AbstractManager {
         }
         Long timeVal = Long.valueOf(timeStr).longValue();
         Long now = System.currentTimeMillis();
+        log.info("+++++++ previous time "+ timeStr + " Current Time " + now + " +++++++++");
         Long diff = (now - timeVal) / 1000;
-
-        if (diff > 120) //if diff more than 2 minutes
-            throw  new YSException("SEC002");
+        log.info("+++++++ Time Diff " + diff);
+//        if (diff > 120) //if diff more than 2 minutes
+//            throw  new YSException("SEC002", "total time is " + diff);
 
     }
 

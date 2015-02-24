@@ -127,6 +127,12 @@ public class CustomerServiceImpl implements CustomerService {
             if(customerEntity.getFbToken()!=null && !customerEntity.getFbToken().isEmpty())
                 registeredCustomer.setFbToken(customerEntity.getFbToken());
 
+            //Update Lat and Long
+            if((customerEntity.getLatitude()!=null && !customerEntity.getLatitude().isEmpty()) && (customerEntity.getLongitude()!=null && !customerEntity.getLongitude().isEmpty())) {
+                registeredCustomer.setLatitude(customerEntity.getLatitude());
+                registeredCustomer.setLongitude(customerEntity.getLongitude());
+            }
+
              log.info("++++++++++++ Updating Customer Info +++++++++++++");
             //Update User Device
             registeredCustomer.getUser().getUserDevice().setUuid(customerEntity.getUser().getUserDevice().getUuid());
@@ -248,8 +254,12 @@ public class CustomerServiceImpl implements CustomerService {
             else
                 user.setVerificationCode(mobCode);
         }
+        //Update Customer
+        if(address.getLatitude()!=null && address.getLongitude()!=null){
+            customerDaoService.updateLatLong(address.getLatitude(), address.getLongitude(), user.getCustomer().getFacebookId());
+        }
 
-
+        //Now Update Delivery Address
         UserEntity usr  = new UserEntity();
         usr.setId(customerEntity.getUser().getId());
 
@@ -890,17 +900,19 @@ public class CustomerServiceImpl implements CustomerService {
         log.info("+++++++++++++ Searching content of " + word + " +++++++++++++");
         List<SearchDto> searchResult = null;
 
-        if(word.length() < 3)
-            throw new YSException("VLD028");
+//        if(word.length() < 3)
+//            throw new YSException("VLD028");
 
         String lat = null;
         String lon = null;
         if (requestJsonDto.getGpsInfo() == null) {
             CustomerEntity customerEntity = customerDaoService.getLatLong(requestJsonDto.getCustomerInfo().getClientId());
-            if (customerEntity == null)
-                throw new YSException("VLD011");
-            lat = customerEntity.getLatitude();
-            lon = customerEntity.getLongitude();
+            if (customerEntity != null) {
+                lat = customerEntity.getLatitude();
+                lon = customerEntity.getLongitude();
+            }
+//                throw new YSException("VLD011");
+
         } else {
             lat = requestJsonDto.getGpsInfo().getLatitude();
             lon = requestJsonDto.getGpsInfo().getLongitude();
@@ -925,29 +937,33 @@ public class CustomerServiceImpl implements CustomerService {
                 if(item.getImageUrl() == null)
                     item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
 
-                /* Extract Latitude and Longitude */
-                String[] storeDistance = new String[storeEntities.size()];
-                String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
+                if(lat !=null && lon !=null){
+                    /* Extract Latitude and Longitude */
+                    String[] storeDistance = new String[storeEntities.size()];
+                    String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
 
-                for (int i = 0; i < storeEntities.size(); i++) {
-                    storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
+                    for (int i = 0; i < storeEntities.size(); i++) {
+                        storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
+                    }
+
+                    List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
+
+                    //Set Distance to Store Entity
+                    for (int i = 0; i < storeEntities.size(); i++) {
+                        storeEntities.get(i).setCustomerToStoreDistance(distanceList.get(i));
+                    }
+
+                    //Store Entity List Sorted by Distance
+                    Collections.sort(storeEntities, new StoreDistanceComparator());
                 }
 
-                List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
-
-                //Set Distance to Store Entity
-                for (int i = 0; i < storeEntities.size(); i++) {
-                    storeEntities.get(i).setCustomerToStoreDistance(distanceList.get(i));
-                }
-
-                //Store Entity List Sorted by Distance
-                Collections.sort(storeEntities, new StoreDistanceComparator());
 
                 //Set to All
                 tempItem.setItemId(item.getId());
                 tempItem.setItemName(item.getName());
                 tempItem.setUnitPrice(item.getUnitPrice());
                 tempItem.setItemImageUrl(item.getImageUrl());
+                tempItem.setBrandId(item.getBrandId());
                 tempItem.setBrandName(item.getBrandName());
                 tempItem.setStoreStreet(storeEntities.get(0).getStreet());
                 tempItem.setAdditionalOffer(item.getAdditionalOffer());
@@ -967,6 +983,8 @@ public class CustomerServiceImpl implements CustomerService {
             limit = CommonConstants.MAX_SEARCH_DATA;
 
         List<Integer> brandIds = storesBrandDaoService.getSearchBrands(word, limit);
+
+        List<SearchDto> storeList = new ArrayList<>();
 
         if(brandIds!=null && brandIds.size() > 0){
             if(searchResult == null)
@@ -989,27 +1007,30 @@ public class CustomerServiceImpl implements CustomerService {
 
             List<StoreEntity> storeEntities = storeDaoService.findSearchStores(brandIds);
 
-        /* Extract Latitude and Longitude */
-            String[] storeDistance = new String[storeEntities.size()];
-            String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
+            if(lat !=null && lon !=null){
+                  /* Extract Latitude and Longitude */
+                String[] storeDistance = new String[storeEntities.size()];
+                String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
 
-            for (int i = 0; i < storeEntities.size(); i++) {
-                storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
+                for (int i = 0; i < storeEntities.size(); i++) {
+                    storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
+                }
+
+                List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
+
+                //Set Distance to Store Entity
+                for (int i = 0; i < storeEntities.size(); i++) {
+                    storeEntities.get(i).setCustomerToStoreDistance(distanceList.get(i));
+                }
+
+                //Store Entity List Sorted by Distance
+                Collections.sort(storeEntities, new StoreDistanceComparator());
             }
 
-            List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
-
-            //Set Distance to Store Entity
-            for (int i = 0; i < storeEntities.size(); i++) {
-                storeEntities.get(i).setCustomerToStoreDistance(distanceList.get(i));
-            }
-
-            //Store Entity List Sorted by Distance
-            Collections.sort(storeEntities, new StoreDistanceComparator());
 
             //Now Combine all brand in one list
             for (StoreEntity storeEntity : storeEntities) {
-                if (!containsBrandId(searchResult, storeEntity.getStoresBrand().getId())) {
+                if (!containsBrandId(storeList, storeEntity.getStoresBrand().getId())) {
                     SearchDto tempBrand = new SearchDto();
                     tempBrand.setBrandId(storeEntity.getStoresBrand().getId());
                     tempBrand.setOpeningTime(storeEntity.getStoresBrand().getOpeningTime());
@@ -1021,7 +1042,7 @@ public class CustomerServiceImpl implements CustomerService {
                     tempBrand.setItem(false);
                     tempBrand.setStoreStreet(storeEntity.getStreet());
                     searchResult.add(tempBrand);
-
+                    storeList.add(tempBrand);
                 }
 
             }
@@ -1043,7 +1064,7 @@ public class CustomerServiceImpl implements CustomerService {
 //        }
 
         SearchDto searchDto = new SearchDto();
-        if(searchResult!=null){
+        if(searchResult != null){
 //            searchDto = new SearchDto();
 
 //            searchDto.setPageInfo(pageInfo);
@@ -1060,27 +1081,31 @@ public class CustomerServiceImpl implements CustomerService {
         log.info("++++++++ Searching Items in Store " + brandId + " for content " + word + " +++++++++++++++++++++");
 
         List<SearchDto> searchResult = null;
-        if(word.length() < 3)
-            throw new YSException("VLD028");
+//        if(word.length() < 3)
+//            throw new YSException("VLD028");
 
         String lat = null;
         String lon = null;
         if (requestJsonDto.getGpsInfo() == null) {
             CustomerEntity customerEntity = customerDaoService.getLatLong(requestJsonDto.getCustomerInfo().getClientId());
-            if (customerEntity == null)
-                throw new YSException("VLD011");
-            lat = customerEntity.getLatitude();
-            lon = customerEntity.getLongitude();
+            if (customerEntity != null) {
+                lat = customerEntity.getLatitude();
+                lon = customerEntity.getLongitude();
+            }
+//                throw new YSException("VLD011");
+
         } else {
             lat = requestJsonDto.getGpsInfo().getLatitude();
             lon = requestJsonDto.getGpsInfo().getLongitude();
         }
 
-        List<ItemEntity> items = itemDaoService.searchItemsInStore(word, brandId);
+
         List<StoreEntity> storeEntities = storeDaoService.findStores(brandId);
 
         if(storeEntities.size() == 0)//If all Stores are inactivated
-            items = new ArrayList<>();
+            return new SearchDto();
+
+        List<ItemEntity> items = itemDaoService.searchItemsInStore(word, brandId);
 
         if(items !=null && items.size() > 0){
             searchResult = new ArrayList<>();
@@ -1091,29 +1116,32 @@ public class CustomerServiceImpl implements CustomerService {
                 if(item.getImageUrl() == null)
                     item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
 
-                /* Extract Latitude and Longitude */
-                String[] storeDistance = new String[storeEntities.size()];
-                String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
+                if(lat !=null && lon !=null) {
+                    /* Extract Latitude and Longitude */
+                    String[] storeDistance = new String[storeEntities.size()];
+                    String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
 
-                for (int i = 0; i < storeEntities.size(); i++) {
-                    storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
+                    for (int i = 0; i < storeEntities.size(); i++) {
+                        storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
+                    }
+
+                    List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
+
+                    //Set Distance to Store Entity
+                    for (int i = 0; i < storeEntities.size(); i++) {
+                        storeEntities.get(i).setCustomerToStoreDistance(distanceList.get(i));
+                    }
+
+                    //Store Entity List Sorted by Distance
+                    Collections.sort(storeEntities, new StoreDistanceComparator());
                 }
-
-                List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
-
-                //Set Distance to Store Entity
-                for (int i = 0; i < storeEntities.size(); i++) {
-                    storeEntities.get(i).setCustomerToStoreDistance(distanceList.get(i));
-                }
-
-                //Store Entity List Sorted by Distance
-                Collections.sort(storeEntities, new StoreDistanceComparator());
 
                 //Set to All
                 tempItem.setItemId(item.getId());
                 tempItem.setItemName(item.getName());
                 tempItem.setUnitPrice(item.getUnitPrice());
                 tempItem.setItemImageUrl(item.getImageUrl());
+                tempItem.setBrandId(item.getBrandId());
                 tempItem.setBrandName(item.getBrandName());
                 tempItem.setStoreStreet(storeEntities.get(0).getStreet());
                 //tempItem.setItem(true);

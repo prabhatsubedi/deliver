@@ -138,6 +138,9 @@ body.loader_div > .loader {
 .width_300 {
     min-width: 300px;
 }
+.color_error {
+    color: #f71d1d;
+}
 .modal-body {
     width: 100%;
 }
@@ -1698,6 +1701,10 @@ label.check_label .checkbox {
 .count_section .new_orders .data_row {
     cursor: pointer;
 }
+.count_section .new_orders .more_data {
+    max-height: 400px;
+    overflow: auto;
+}
 .count_section .count_block .data_row {
     border-top: 1px dotted #ccc;
     color: #282828;
@@ -1911,12 +1918,13 @@ label.check_label .checkbox {
 
 /*Order page css*/
 .order_table span.item_list {
-    color: blue;
+    color: #337ab7;
 }
 
 .order_table span.item_list:hover{
     text-decoration: underline;
     cursor: pointer;
+    color: #23527c;
 }
 
 .current_order_attrs {

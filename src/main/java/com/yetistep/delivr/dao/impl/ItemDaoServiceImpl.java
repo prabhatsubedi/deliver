@@ -139,7 +139,7 @@ public class ItemDaoServiceImpl implements ItemDaoService{
 
     @Override
     public List<ItemEntity> searchItemsInStore(String word, Integer brandId) throws Exception {
-        String sql = "SELECT i.id, i.name, i.unit_price AS unitPrice,i.additional_offer AS additionalOffer, ii.url AS imageUrl, sb.brand_name AS brandName "+
+        String sql = "SELECT i.id, i.name, i.unit_price AS unitPrice,i.additional_offer AS additionalOffer, ii.url AS imageUrl, sb.brand_name AS brandName,i.brand_id AS brandId "+
                 "FROM items i "+
                 "LEFT JOIN items_images ii ON ii.id = (SELECT MIN(id) FROM items_images WHERE item_id = i.id) " +
                 "INNER JOIN stores_brands sb ON(sb.id = i.brand_id AND sb.status=:status) " +

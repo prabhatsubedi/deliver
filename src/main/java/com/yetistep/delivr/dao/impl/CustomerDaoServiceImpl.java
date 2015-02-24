@@ -186,6 +186,9 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         sqlQuery.setParameter("facebookId", facebookId);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(CustomerEntity.class));
         CustomerEntity customerEntity = sqlQuery.list().size() > 0 ? (CustomerEntity) sqlQuery.list().get(0) : null;
+
+        if(customerEntity.getLatitude()==null || customerEntity.getLongitude() == null)
+            customerEntity = null;
         return customerEntity;
     }
 
@@ -212,6 +215,19 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         sqlQuery.setResultTransformer(Transformers.aliasToBean(CustomerEntity.class));
         CustomerEntity customerEntity = (CustomerEntity) sqlQuery.uniqueResult();
         return customerEntity;
+    }
+
+    @Override
+    public Boolean updateLatLong(String lat, String lon, Long facebookId) throws Exception {
+        String sql = "UPDATE customers SET latitude =:latitude, longitude=:longitude WHERE facebook_id = :facebookId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("latitude", lat);
+        sqlQuery.setParameter("longitude", lon);
+        sqlQuery.setParameter("facebookId", facebookId);
+
+        sqlQuery.executeUpdate();
+        return true;
+
     }
 }
 

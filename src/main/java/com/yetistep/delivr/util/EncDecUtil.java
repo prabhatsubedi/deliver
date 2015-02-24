@@ -65,6 +65,7 @@ public class EncDecUtil {
         SecretKey secretKey = retriveSecretKey(key);
         long now = System.currentTimeMillis();
         String responseAccessTokenStr = "response:" + now;
+        log.info("++++ Before Encrypt " + responseAccessTokenStr);
         String responseAccessToken = encrypt(responseAccessTokenStr, secretKey);
         log.info("generateResponseAccessToken:- " + responseAccessTokenStr + " [" + responseAccessToken + "]" + " from Android");
         return responseAccessToken;
@@ -87,7 +88,7 @@ public class EncDecUtil {
     public static String decryptAccessToken(String accessToken, String key) throws Exception {
         SecretKey secretKey = retriveSecretKey(key);
         String token = decrypt(accessToken, secretKey);
-        log.info("access token:-"  +token);
+        log.info("access token:-"  +token + " from Android");
         StringTokenizer stringTokenizer = new StringTokenizer(token, ":");
         String str1 = stringTokenizer.nextToken();
         if (!str1.equals("request")) throw new YSException("SEC001");

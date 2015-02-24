@@ -8,6 +8,7 @@ package com.yetistep.delivr.sys;
  * To change this template use File | Settings | File Templates.
  */
 import org.apache.log4j.Logger;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -26,6 +27,8 @@ public class RequestProcessingInterceptor extends HandlerInterceptorAdapter {
         logger.info("+++++ Before Handler Given to Spring Framework ++++++");
         logger.info("+++ Request URL " + request.getRequestURL().toString() +
                 " +++ Request Type " + request.getMethod() + " ++++ Content Type " + request.getContentType());
+        if(request.getHeader("accessToken") !=null && !request.getHeader("accessToken").isEmpty())
+            logger.info("+++++ Pre Handle " + request.getHeader("accessToken"));
 
         return true;
     }
@@ -44,6 +47,8 @@ public class RequestProcessingInterceptor extends HandlerInterceptorAdapter {
 
         logger.info("content type "+ response.getContentType() + " +++Http status "+ response.getStatus());
         logger.info("++++++ Framework finished the process ++++++");
+        if(response.getHeader("accessToken")!=null && !response.getHeader("accessToken").isEmpty())
+            logger.info("+++++ After Completion " + response.getHeader("accessToken"));
     }
 
 

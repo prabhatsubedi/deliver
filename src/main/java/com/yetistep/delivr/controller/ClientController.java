@@ -93,6 +93,8 @@ public class ClientController extends AbstractManager{
             /* Setting Http Headers */
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add("accessToken", token);
+            //FIXME:
+            httpHeaders.add("time", String.valueOf(System.currentTimeMillis()));
             httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
             return new ResponseEntity<ServiceResponse>(serviceResponse, httpHeaders, HttpStatus.OK);
@@ -231,6 +233,10 @@ public class ClientController extends AbstractManager{
             validateMobileClient(headerDto.getAccessToken());
 
             customerService.login(customerEntity);
+
+            //FIXME:
+            log.info("++++ Time : " + headers.get("time"));
+
             ServiceResponse serviceResponse = new ServiceResponse("Customer Login Successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 

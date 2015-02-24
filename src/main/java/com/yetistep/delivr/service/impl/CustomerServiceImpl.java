@@ -984,6 +984,8 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<Integer> brandIds = storesBrandDaoService.getSearchBrands(word, limit);
 
+        List<SearchDto> storeList = new ArrayList<>();
+
         if(brandIds!=null && brandIds.size() > 0){
             if(searchResult == null)
                 searchResult = new ArrayList<>();
@@ -1028,7 +1030,7 @@ public class CustomerServiceImpl implements CustomerService {
 
             //Now Combine all brand in one list
             for (StoreEntity storeEntity : storeEntities) {
-                if (!containsBrandId(searchResult, storeEntity.getStoresBrand().getId())) {
+                if (!containsBrandId(storeList, storeEntity.getStoresBrand().getId())) {
                     SearchDto tempBrand = new SearchDto();
                     tempBrand.setBrandId(storeEntity.getStoresBrand().getId());
                     tempBrand.setOpeningTime(storeEntity.getStoresBrand().getOpeningTime());
@@ -1040,7 +1042,7 @@ public class CustomerServiceImpl implements CustomerService {
                     tempBrand.setItem(false);
                     tempBrand.setStoreStreet(storeEntity.getStreet());
                     searchResult.add(tempBrand);
-
+                    storeList.add(tempBrand);
                 }
 
             }
@@ -1062,7 +1064,7 @@ public class CustomerServiceImpl implements CustomerService {
 //        }
 
         SearchDto searchDto = new SearchDto();
-        if(searchResult!=null){
+        if(searchResult != null){
 //            searchDto = new SearchDto();
 
 //            searchDto.setPageInfo(pageInfo);

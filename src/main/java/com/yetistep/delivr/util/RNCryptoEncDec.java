@@ -73,12 +73,12 @@ public class RNCryptoEncDec {
     public static String decryptAccessToken(String accessToken) throws Exception {
 
         String token = decrypt(accessToken);
-        //System.out.println("access token:-" + token);
+        log.info("access token:-"  +token + " from IOS");
         StringTokenizer stringTokenizer = new StringTokenizer(token, ":");
         String str1 = stringTokenizer.nextToken();
         if (!str1.equals("request")) throw new YSException("SC001");
         String now = stringTokenizer.nextToken();
-        System.out.println("decryptAccessToken: [" + str1 + "  time:-" + now + "]");
+        log.info("decryptAccessToken: [" + str1 + "  time:-" + now +"]");
         return now;
     }
 }

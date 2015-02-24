@@ -1,6 +1,21 @@
 package com.yetistep.delivr.service.impl;
 
+import com.yetistep.delivr.dao.inf.InvoiceDaoService;
+import com.yetistep.delivr.dao.inf.OrderDaoService;
+import com.yetistep.delivr.dao.inf.StoreDaoService;
+import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.enums.InvoiceStatus;
+import com.yetistep.delivr.model.InvoiceEntity;
+import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.service.inf.AccountService;
+import com.yetistep.delivr.util.InvoiceGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,8 +26,35 @@ import com.yetistep.delivr.service.inf.AccountService;
  */
 public class AccountServiceImpl implements AccountService{
 
+    @Autowired
+    OrderDaoService orderDaoService;
 
+    @Autowired
+    StoreDaoService storeDaoService;
 
+    @Autowired
+    InvoiceDaoService invoiceDaoService;
 
+    @Override
+    public String getGenerateInvoice(HeaderDto headerDto) throws Exception {
+        //TODO: generate invoice is not completed
+        Integer storeId = Integer.parseInt(headerDto.getId());
+        List<OrderEntity> orders =  orderDaoService.getStoresOrders(storeId);
+        StoreEntity store =  storeDaoService.find(storeId);
+        store.getId();
 
+        MerchantEntity merchant = store.getStoresBrand().getMerchant();
+        MerchantEntity testMerchant = new MerchantEntity();
+        testMerchant.setId(merchant.getId());
+        InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
+
+        InvoiceEntity invoice = new InvoiceEntity();
+        invoice.setInvoiceStatus(InvoiceStatus.UNPAID);
+        invoice.setMerchant(testMerchant);
+        invoice.setOrders(orders);
+
+        invoiceDaoService.save(invoice);
+        String invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice);
+        return  invoicePath;
+    }
 }

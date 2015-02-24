@@ -3,6 +3,7 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.service.inf.AccountService;
 import com.yetistep.delivr.service.inf.ManagerService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
@@ -25,10 +26,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "accountant")
 public class AccountantController {
 
-    private static final Logger log = Logger.getLogger(ManagerController.class);
+    private static final Logger log = Logger.getLogger(AccountantController.class);
 
     @Autowired
     ManagerService managerService;
+
+    @Autowired
+    AccountService accountService;
 
     @RequestMapping(value = "/update_dboy_account", method = RequestMethod.POST)
     @ResponseBody
@@ -84,6 +88,26 @@ public class AccountantController {
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/generate_invoice", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getGenerateInvoice(@RequestHeader HttpHeaders headers) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            String invoicePath = accountService.getGenerateInvoice(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Invoice has been generated successfully: "+headerDto.getId());
+            serviceResponse.addParam("path", invoicePath);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while generating invoice: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
 
 
 

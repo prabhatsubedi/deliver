@@ -231,7 +231,7 @@ public class StoreEntity implements Serializable {
         this.email = email;
     }
 
-    @Column(name = "send_email")
+    @Column(name = "send_email", columnDefinition = "TINYINT(1)")
     @JsonProperty
     public Boolean getSendEmail() {
         return sendEmail;

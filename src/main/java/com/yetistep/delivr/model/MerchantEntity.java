@@ -40,6 +40,7 @@ public class MerchantEntity implements Serializable {
     private String companyRegistrationNo;
     private String vatNo;
     private Status status;
+    private List<InvoiceEntity> invoices;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -169,5 +170,14 @@ public class MerchantEntity implements Serializable {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @OneToMany(mappedBy = "merchant", cascade = CascadeType.PERSIST)
+    public List<InvoiceEntity> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<InvoiceEntity> invoices) {
+        this.invoices = invoices;
     }
 }

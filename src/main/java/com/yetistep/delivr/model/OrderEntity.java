@@ -60,6 +60,7 @@ public class OrderEntity implements Serializable {
     private CourierTransactionEntity courierTransaction;
     private Integer surgeFactor;
     private BigDecimal itemServiceAndVatCharge;
+    private InvoiceEntity invoice;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -379,5 +380,15 @@ public class OrderEntity implements Serializable {
     public void setItemServiceAndVatCharge(BigDecimal itemServiceAndVatCharge) {
         this.itemServiceAndVatCharge = itemServiceAndVatCharge;
     }
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    public InvoiceEntity getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(InvoiceEntity invoice) {
+        this.invoice = invoice;
+    }
+
 
 }

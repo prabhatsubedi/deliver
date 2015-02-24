@@ -5,10 +5,7 @@ import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
-import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,4 +123,6 @@ public class StoreDaoServiceImpl implements StoreDaoService{
 //
 //        return categoryEntities;
 //    }
+
+
 }

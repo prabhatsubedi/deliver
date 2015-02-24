@@ -42,6 +42,14 @@ public class GeneralUtil {
             log.error(message, e);
     }
 
+    public static void wait(int millisecond) {
+        try {
+            Thread.sleep(millisecond);
+        } catch (InterruptedException e) {
+            log.error("Error occurred while holding a thread", e);
+        }
+    }
+
     public static String saveImageToBucket(String encodedString, String imageName, String dir, boolean doCompress) throws Exception {
         if (encodedString == null || encodedString.isEmpty())
             throw new YSException("VLD008");

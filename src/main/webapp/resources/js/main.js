@@ -117,7 +117,8 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             if (data.success == true) {
                 Main.saveInLocalStorage('userRole', data.params.userDetails.authorities[0].authority)
                 Main.saveInLocalStorage('userTitle', data.params.userDetails.businessName == undefined? data.params.userDetails.fullName : data.params.userDetails.businessName)
-                Main.saveInLocalStorage('profileImage', data.params.userDetails.profileImage)
+                Main.saveInLocalStorage('profileImage', data.params.userDetails.profileImage);
+                Main.saveInLocalStorage('currency', data.params.currency);
                 window.location = Main.modifyURL(data.params.url);
             } else {
                 alert(data.message);

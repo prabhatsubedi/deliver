@@ -24,5 +24,4 @@ public interface StoreDaoService extends GenericDaoService<Integer, StoreEntity>
 
     public List<StoreEntity> findSearchStores(List<Integer> searchBrands) throws Exception;
 
-
 }

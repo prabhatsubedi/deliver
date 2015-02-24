@@ -232,4 +232,13 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         TrackOrderDto order = (TrackOrderDto) query.uniqueResult();
         return order;
     }
+
+    @Override
+    public List<OrderEntity> getStoresOrders(Integer storeId) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.add(Restrictions.eq("orderStatus", JobOrderStatus.DELIVERED))
+                .add(Restrictions.eq("store.id", storeId));
+        List<OrderEntity>  orderEntities = criteria.list();
+        return orderEntities;
+    }
 }

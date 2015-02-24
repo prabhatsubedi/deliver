@@ -400,7 +400,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     '<a href="' + Main.modifyURL('/organizer/courier_staff/profile/' + id) + '">View Profile</a>' +
                     '</div>';
 
-                var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, Main.ucfirst(user_status), 'Rs.'+balance, action];
+                var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, Main.ucfirst(user_status), Main.getFromLocalStorage("currency")+balance, action];
                 tdata.push(row);
             }
 

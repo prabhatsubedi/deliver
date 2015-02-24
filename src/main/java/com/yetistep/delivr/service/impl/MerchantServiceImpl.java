@@ -578,7 +578,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("store", "id,street,city,state,country,latitude,longitude,status");
+        assoc.put("store", "id,street,city,state,country,latitude,longitude,status,contactNo,contactPerson,email,sendEmail");
         assoc.put("brandsCategory", "id,category");
 
         subAssoc.put("category", "id,name,featured");

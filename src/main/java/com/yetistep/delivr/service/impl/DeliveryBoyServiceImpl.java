@@ -550,8 +550,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
             throw new YSException("ORD003");
         }
-        //TODO check order id as well
-        if(!orderEntity.getOrderVerificationCode().equals(order.getOrderVerificationCode())){
+
+        if(!orderEntity.getOrderVerificationCode().equals(order.getOrderVerificationCode()) || !orderEntity.getId().equals(order.getId())){
             throw new YSException("ORD004");
         }
         JobOrderStatus.traverseJobStatus(order.getOrderStatus(), JobOrderStatus.DELIVERED);

@@ -434,7 +434,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     var courierStaff = data.params.deliveryBoy;
                     var srclatlng = new google.maps.LatLng(courierStaff.latitude, courierStaff.longitude);
                     //var destlatlang =  new google.maps.LatLng("27.6891424", "85.324561");
-                    map.setZoom(12);
+                    map.setZoom(20);
                     map.setCenter(srclatlng);
 
                     new google.maps.Marker({
@@ -927,6 +927,10 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         $('.count_head').click(function(){
             $(this).next('.more_data_cont').stop().slideToggle(200);
+        });
+        $('body').click(function(e){
+            var target = $(e.target);
+            if(target.parents('.count_block').length == 0) $('.more_data_cont').stop().slideUp(200);
         });
 
         var callback = function(success, data){

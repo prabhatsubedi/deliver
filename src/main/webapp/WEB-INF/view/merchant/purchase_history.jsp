@@ -18,7 +18,7 @@
 </script>
 <body>
 
-<%@include file="../includes/sidebar.jsp" %>
+<%@include file="../includes/sidebar_merchant.jsp" %>
 
 <div class="main_container">
     <%@include file="../includes/header.jsp" %>

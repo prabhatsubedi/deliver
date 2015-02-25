@@ -24,8 +24,8 @@
                             <li><a href="/merchant/store/list" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Stores"><span class="delivricon delivricon-store"></span><span class="menu_text">Stores</span></a></li>
                             <li><a href="/merchant/item/list" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Items"><span class="delivricon delivricon-item"></span><span class="menu_text">Items</span></a></li>
                             <%--<li><a href="/merchant/orders" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Orders"><span class="delivricon delivricon-orders"></span><span class="menu_text">Orders</span></a></li>--%>
-                            <li><a href="#" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Purchase History"><span class="delivricon delivricon-purchase-history"></span><span class="menu_text">Purchase History</span></a></li>
                             <li><a href="#" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Invoices"><span class="delivricon delivricon-invoice"></span><span class="menu_text">Invoices</span></a></li>
+                            <li><a href="/merchant/purchase_history" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Purchase History"><span class="delivricon delivricon-purchase-history"></span><span class="menu_text">Purchase History</span></a></li>
                         </ul>
             <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
                     </li>

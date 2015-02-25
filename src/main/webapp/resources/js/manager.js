@@ -434,7 +434,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     var courierStaff = data.params.deliveryBoy;
                     var srclatlng = new google.maps.LatLng(courierStaff.latitude, courierStaff.longitude);
                     //var destlatlang =  new google.maps.LatLng("27.6891424", "85.324561");
-                    map.setZoom(20);
+                    map.setZoom(18);
                     map.setCenter(srclatlng);
 
                     new google.maps.Marker({

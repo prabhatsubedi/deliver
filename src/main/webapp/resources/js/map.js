@@ -210,10 +210,10 @@ $(document).ready(function(){
         if(godMarkers[locationToKey({latitude: p_lat, longitude: p_lang})] != undefined) return false;
 
         var location = latLngToLocation(p_lat, p_lang);
-        var icon;
+        var icon = null;
 
         if(marker_type == 'customer') {
-            icon = null;
+            icon = Main.modifyURL("/resources/images/marker_customer.png");
         } else if(marker_type == 'store') {
             icon = Main.modifyURL("/resources/images/marker_store.png");
         } else {

@@ -14,10 +14,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -226,62 +223,34 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<Map<String, Map<Integer, Integer>>> getDeliveryGraphByDate(HeaderDto headerDto) throws Exception{
-        List<Map<String, Map<Integer, Integer>>> graphData = new ArrayList<>();
-        Map<Integer, Integer> deliveryByDate = new HashMap<>();
-        Map<Integer, Integer> averageTime = new HashMap<>();
+    public List<Map<String, Map<String, Integer>>> getDeliveryGraphByDate(HeaderDto headerDto) throws Exception{
+        List<Map<String, Map<String, Integer>>> graphData = new ArrayList<>();
+        Map<String, Integer> deliveryByDate = new HashMap<>();
+        Map<String, Integer> totalTime = new HashMap<>();
         Integer count;
-        if(headerDto.getId().equals("Day")) {
-            count = 8;
-            Integer i;
-            for ( i=1; i< count; i++){
-                Integer orderCount = adminDaoService.getOrderByDayCount(i, i-1);
-                Integer totalTime = adminDaoService.getOrderTotalTimeByDay(i, i-1);
-                deliveryByDate.put(i, orderCount);
-                if(orderCount > 0)
-                    averageTime.put(i, totalTime/orderCount);
-            }
+        if(headerDto.getId().equals("1Month")) {
+            deliveryByDate = adminDaoService.getOrderByDayCount(30);
+            totalTime  = adminDaoService.getOrderTotalTimeByDay(30);
         }
 
-        if(headerDto.getId().equals("Week")) {
-            count = 5;
-            Integer i;
-            for ( i=1; i< count; i++){
-                Integer orderCount = adminDaoService.getOrderByDayCount(i*7, 7*(i-1));
-                Integer totalTime = adminDaoService.getOrderTotalTimeByDay(i*7, 7*(i-1));
-                deliveryByDate.put(i, orderCount);
-                if(orderCount > 0)
-                    averageTime.put(i, totalTime/orderCount);
-            }
-        }
-
-        if(headerDto.getId().equals("Month")) {
-            count = 13;
-            Integer i;
-            for ( i=1; i< count; i++){
-                Integer orderCount = adminDaoService.getOrderByDayCount(i*30, 30*(i-1));
-                Integer totalTime = adminDaoService.getOrderTotalTimeByDay(i*30, 30*(i-1));
-                deliveryByDate.put(i, orderCount);
-                if(orderCount > 0)
-                    averageTime.put(i, totalTime/orderCount);
-            }
+        if(headerDto.getId().equals("3Month")) {
+            deliveryByDate = adminDaoService.getOrderByDayCount(90);
+            totalTime = adminDaoService.getOrderTotalTimeByDay(90);
         }
 
         if(headerDto.getId().equals("Year")) {
-            count = 10;
-            Integer i;
-            for ( i=1; i< count; i++){
-                Integer orderCount = adminDaoService.getOrderByDayCount(i*365, 365*(i-1));
-                Integer totalTime = adminDaoService.getOrderTotalTimeByDay(i*365, 365*(i-1));
-                deliveryByDate.put(i, orderCount);
-                if(orderCount > 0)
-                    averageTime.put(i, totalTime/orderCount);
-            }
+            deliveryByDate = adminDaoService.getOrderByDayCount(365);
+            totalTime = adminDaoService.getOrderTotalTimeByDay(365);
         }
-        Map<String, Map<Integer, Integer>> deliveryByDateMap = new HashMap<>();
-        Map<String, Map<Integer, Integer>> averageTimeMap = new HashMap<>();
+
+        if(headerDto.getId().equals("All")) {
+            deliveryByDate = adminDaoService.getOrderByDayCount(3*365);
+            totalTime = adminDaoService.getOrderTotalTimeByDay(3*365);
+        }
+        Map<String, Map<String, Integer>> deliveryByDateMap = new HashMap<>();
+        Map<String, Map<String, Integer>> averageTimeMap = new HashMap<>();
         deliveryByDateMap.put("orderCount", deliveryByDate);
-        averageTimeMap.put("averageTime", averageTime);
+        averageTimeMap.put("totalTime", totalTime);
         graphData.add(deliveryByDateMap);
         graphData.add(averageTimeMap);
 
@@ -289,139 +258,91 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Map<Integer, Integer> getNewUserGraph(HeaderDto headerDto) throws Exception{
-        Map<Integer, Integer> graphData = new HashMap<>();
+    public Map<String, Integer> getNewUserGraph(HeaderDto headerDto) throws Exception{
+        Map<String, Integer> graphData = new TreeMap<>();
         Integer count;
-        if(headerDto.getId().equals("Day")) {
-            count = 8;
-            Integer i;
-            for ( i=1; i< count; i++){
-                Integer orderCount = adminDaoService.getNewUserByDayCount(i, i - 1);
-                graphData.put(i, orderCount);
-            }
+        if(headerDto.getId().equals("1Month")) {
+            graphData = adminDaoService.getNewUserByDayCount(30);
         }
 
-        if(headerDto.getId().equals("Week")) {
-            count = 5;
-            Integer i;
-            for ( i=1; i< count; i++){
-                Integer orderCount = adminDaoService.getNewUserByDayCount(i * 7, 7 * (i - 1));
-                graphData.put(i, orderCount);
-            }
-        }
-
-        if(headerDto.getId().equals("Month")) {
-            count = 13;
-            Integer i;
-            for ( i=1; i< count; i++){
-                Integer orderCount = adminDaoService.getNewUserByDayCount(i * 30, 30 * (i - 1));
-                graphData.put(i, orderCount);
-            }
+        if(headerDto.getId().equals("3Month")) {
+            graphData = adminDaoService.getNewUserByDayCount(90);
         }
 
         if(headerDto.getId().equals("Year")) {
-            count = 10;
-            Integer i;
-            for ( i=1; i< count; i++){
-                Integer orderCount = adminDaoService.getNewUserByDayCount(i * 365, 365 * (i - 1));
-                graphData.put(i, orderCount);
+            graphData = adminDaoService.getNewUserByDayCount(365);
+        }
 
-            }
+        if(headerDto.getId().equals("All")) {
+            graphData = adminDaoService.getNewUserByDayCount(3*365);
         }
 
         return graphData;
     }
 
     @Override
-    public List<Map<String, Map<Integer, Integer>>> getDeliverySuccessGraph(HeaderDto headerDto) throws Exception{
-        List<Map<String, Map<Integer, Integer>>> graphData = new ArrayList<>();
-        Map<Integer, Integer> successfulPcn = new HashMap<>();
-        Map<Integer, Integer> failedPcn = new HashMap<>();
-        Integer count;
-        List<JobOrderStatus> orderStatuses = new ArrayList<>();
-        orderStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
-        if(headerDto.getId().equals("Day")) {
-            count = 8;
-            Integer i;
-            for ( i=1; i< count; i++){
-                Integer successDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i, i - 1);
-                Integer failedDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i, i-1);
-                Integer totalDvCount = successDvCount+failedDvCount;
-                if(successDvCount > 0)
-                    successfulPcn.put(i, successDvCount*100/totalDvCount);
-                else
-                    successfulPcn.put(i, 0);
-                if(failedDvCount > 0)
-                    failedPcn.put(i, failedDvCount*100/totalDvCount);
-                else
-                    failedPcn.put(i, 0);
-            }
+    public Map<String, Map<String, Integer>> getDeliverySuccessGraph(HeaderDto headerDto) throws Exception{
+        Map<String, Map<String, Integer>> graphData = new HashMap<>();
+        List<Integer> successOrderStatuses = new ArrayList<>();
+        successOrderStatuses.add(JobOrderStatus.DELIVERED.ordinal());
+
+        List<Integer> failedOrderStatuses = new ArrayList<>();
+        failedOrderStatuses.add(JobOrderStatus.CANCELLED.ordinal());
+        Map<String, Integer> successDvCount = new TreeMap<>();
+        Map<String, Integer> failedDvCount = new TreeMap<>();
+
+        if(headerDto.getId().equals("1Month")) {
+            successDvCount = adminDaoService.getOrderByDayCount(successOrderStatuses, 30);
+            failedDvCount = adminDaoService.getOrderByDayCount(failedOrderStatuses, 30);
         }
 
-        if(headerDto.getId().equals("Week")) {
-            count = 5;
-            Integer i;
-            for ( i=1; i< count; i++){
-                Integer successDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i * 7, 7 * (i - 1));
-                Integer failedDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i*7, 7*(i-1));
-                Integer totalDvCount = successDvCount+failedDvCount;
-                if(successDvCount > 0)
-                    successfulPcn.put(i, successDvCount*100/totalDvCount);
-                else
-                    successfulPcn.put(i, 0);
-                if(failedDvCount > 0)
-                    failedPcn.put(i, failedDvCount*100/totalDvCount);
-                else
-                    failedPcn.put(i, 0);
-            }
-        }
-
-        if(headerDto.getId().equals("Month")) {
-            count = 13;
-            Integer i;
-
-            for ( i=1; i< count; i++){
-                Integer successDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i * 30, 30 * (i - 1));
-                Integer failedDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i*30, 30*(i-1));
-                Integer totalDvCount = successDvCount+failedDvCount;
-                if(successDvCount > 0)
-                    successfulPcn.put(i, successDvCount*100/totalDvCount);
-                else
-                    successfulPcn.put(i, 0);
-                if(failedDvCount > 0)
-                    failedPcn.put(i, failedDvCount*100/totalDvCount);
-                else
-                    failedPcn.put(i, 0);
-            }
+        if(headerDto.getId().equals("3Month")) {
+            successDvCount = adminDaoService.getOrderByDayCount(successOrderStatuses, 90);
+            failedDvCount = adminDaoService.getOrderByDayCount(failedOrderStatuses, 90);
         }
 
         if(headerDto.getId().equals("Year")) {
-            count = 10;
-            Integer i;
-            for ( i=1; i< count; i++){
-                Integer successDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i * 365, 365 * (i - 1));
-                Integer failedDvCount = adminDaoService.getOrderByDayCount(orderStatuses, i*365, 365*(i-1));
-                Integer totalDvCount = successDvCount+failedDvCount;
-                if(successDvCount > 0)
-                    successfulPcn.put(i, successDvCount*100/totalDvCount);
-                else
-                    successfulPcn.put(i, 0);
-                if(failedDvCount > 0)
-                    failedPcn.put(i, failedDvCount*100/totalDvCount);
-                else
-                    failedPcn.put(i, 0);
-
-            }
+            successDvCount = adminDaoService.getOrderByDayCount(successOrderStatuses, 365);
+            failedDvCount = adminDaoService.getOrderByDayCount(failedOrderStatuses, 365);
         }
-        Map<String, Map<Integer, Integer>> successfulPcnMap = new HashMap<>();
-        Map<String, Map<Integer, Integer>> failedPcnMap = new HashMap<>();
-        successfulPcnMap.put("Successful", successfulPcn);
-        failedPcnMap.put("Failed", failedPcn);
-        graphData.add(successfulPcnMap);
-        graphData.add(failedPcnMap);
+
+        if(headerDto.getId().equals("All")) {
+            successDvCount = adminDaoService.getOrderByDayCount(successOrderStatuses, 3*365);
+            failedDvCount = adminDaoService.getOrderByDayCount(failedOrderStatuses, 3*365);
+        }
+        graphData.put("Successful", successDvCount);
+        graphData.put("Failed", failedDvCount);
         return graphData;
     }
 
+    @Override
+    public Map<String, Map<String, Integer>> getOnTimeDeliveryGraph(HeaderDto headerDto) throws Exception {
+        Map<String, Map<String, Integer>> graphData = new HashMap<>();
 
+        Map<String, Integer> onTimeDelivery = new TreeMap<>();
+        Map<String, Integer> exceededTimeDelivery = new TreeMap<>();
 
+        if(headerDto.getId().equals("1Month")) {
+            onTimeDelivery = adminDaoService.onTimeDeliveryCount(30, "<=");
+            exceededTimeDelivery = adminDaoService.onTimeDeliveryCount(30, ">");
+        }
+
+        if(headerDto.getId().equals("3Month")) {
+            onTimeDelivery = adminDaoService.onTimeDeliveryCount(90, "<=");
+            exceededTimeDelivery = adminDaoService.onTimeDeliveryCount(90, ">");
+        }
+
+        if(headerDto.getId().equals("Year")) {
+            onTimeDelivery = adminDaoService.onTimeDeliveryCount(365, "<=");
+            exceededTimeDelivery = adminDaoService.onTimeDeliveryCount(365, ">");
+        }
+
+        if(headerDto.getId().equals("All")) {
+            onTimeDelivery = adminDaoService.onTimeDeliveryCount(3*365, "<=");
+            exceededTimeDelivery = adminDaoService.onTimeDeliveryCount(3*365, ">");
+        }
+        graphData.put("onTimeDelivery", onTimeDelivery);
+        graphData.put("exceededTimeDelivery", exceededTimeDelivery);
+        return graphData;
+    }
 }

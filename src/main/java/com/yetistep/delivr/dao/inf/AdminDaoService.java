@@ -38,7 +38,7 @@ public interface AdminDaoService {
 
     public Integer getOrderTotalTime() throws Exception;
 
-    public Integer getOrderByDayCount(Integer dayCount, Integer prev) throws Exception;
+    public Map<String, Integer> getOrderByDayCount(Integer dayCount) throws Exception;
 
     public Integer getTodayOrderCount() throws Exception;
 
@@ -46,10 +46,14 @@ public interface AdminDaoService {
 
     public List<OrderEntity> getOrderRoute(List<JobOrderStatus> status) throws Exception;
 
-    public Integer getOrderTotalTimeByDay(Integer dayCount, Integer prev) throws Exception;
+    public Map<String, Integer> getOrderTotalTimeByDay(Integer dayCount) throws Exception;
 
-    public Integer getNewUserByDayCount(Integer dayCount, Integer prev) throws Exception;
+    public Map<String, Integer> getNewUserByDayCount(Integer dayCount) throws Exception;
 
-    public Integer getOrderByDayCount(List<JobOrderStatus> orderStatuses, Integer dayCount, Integer prev) throws Exception;
+    public Map<String, Integer> getOrderByDayCount(List<Integer> orderStatuses, Integer dayCount) throws Exception;
+
+    public Map<String, Integer> onTimeDeliveryCount(Integer dayCount, String type) throws Exception;
+
+
 
 }

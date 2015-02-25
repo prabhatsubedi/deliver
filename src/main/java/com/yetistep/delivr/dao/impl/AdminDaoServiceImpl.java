@@ -60,19 +60,25 @@ public class AdminDaoServiceImpl implements AdminDaoService {
     }
 
     @Override
-    public Integer getNewUserByDayCount(Integer dayCount, Integer prev) throws Exception {
+    public Map<String, Integer> getNewUserByDayCount(Integer dayCount) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -dayCount);
-        Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -prev);
-        String sqQuery =    "SELECT COUNT(c.id) FROM customers c INNER JOIN users u ON c.user_id = u.id WHERE u.created_date <=:startTime && u.created_date >:endTime";
-        Query query = getCurrentSession().createSQLQuery(sqQuery);
-        query.setParameter("startTime", dateFormat.format(cal.getTime()));
-        query.setParameter("endTime", dateFormat.format(calPrev.getTime()));
+        DateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Map<String, Integer> graphData = new TreeMap<>();
 
-        BigInteger cnt = (BigInteger) query.uniqueResult();
-        return cnt.intValue();
+        for (Integer i=0; i<dayCount; i++ ){
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -(i+1));
+            Calendar calPrev = Calendar.getInstance();
+            calPrev.add(Calendar.DATE, -i);
+            String sqQuery =    "SELECT COUNT(c.id) FROM customers c INNER JOIN users u ON c.user_id = u.id WHERE u.created_date >:startTime && u.created_date <=:endTime";
+            Query query = getCurrentSession().createSQLQuery(sqQuery);
+            query.setParameter("startTime", dateFormat.format(cal.getTime()));
+            query.setParameter("endTime", dateFormat.format(calPrev.getTime()));
+
+            BigInteger cnt = (BigInteger) query.uniqueResult();
+            graphData.put(dayFormat.format(cal.getTime()), cnt.intValue());
+        }
+        return graphData;
     }
 
     @Override
@@ -130,18 +136,26 @@ public class AdminDaoServiceImpl implements AdminDaoService {
     }
 
     @Override
-    public Integer getOrderByDayCount(List<JobOrderStatus> orderStatuses, Integer dayCount, Integer prev) throws Exception {
+    public Map<String, Integer> getOrderByDayCount(List<Integer> orderStatuses, Integer dayCount) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -dayCount);
-        Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -prev);
-        String sqQuery = "SELECT COUNT(o.id) FROM orders o INNER JOIN dboy_order_history doh ON o.id = doh.order_id  WHERE doh.completed_at <= '"+cal.getTime()+"' && doh.completed_at > '"+calPrev.getTime()+"' && o.order_status IN (:orderStatuses)";
-        Query query = getCurrentSession().createSQLQuery(sqQuery);
-        query.setParameterList("orderStatuses", orderStatuses);
+        DateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Map<String, Integer> orderCount = new TreeMap<>();
 
-        BigInteger cnt = (BigInteger) query.uniqueResult();
-        return cnt.intValue();
+        for (Integer i=0; i<dayCount; i++){
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -(i+1));
+            Calendar calPrev = Calendar.getInstance();
+            calPrev.add(Calendar.DATE, -i);
+            String sqQuery = "SELECT COUNT(o.id) FROM orders o INNER JOIN dboy_order_history doh ON o.id = doh.order_id WHERE o.order_status IN(:orderStatuses) && doh.completed_at <=:endTime  && doh.completed_at >:startTime";
+            Query query = getCurrentSession().createSQLQuery(sqQuery);
+            query.setParameterList("orderStatuses", orderStatuses);
+            query.setParameter("startTime",dateFormat.format(cal.getTime()));
+            query.setParameter("endTime", dateFormat.format(calPrev.getTime()));
+
+            BigInteger cnt = (BigInteger) query.uniqueResult();
+            orderCount.put(dayFormat.format(cal.getTime()), cnt.intValue());
+        }
+        return orderCount;
     }
 
     @Override
@@ -189,22 +203,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         return cnt.intValue();
     }
 
-    @Override
-    public Integer getOrderByDayCount(Integer dayCount, Integer prev) throws Exception {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -dayCount);
-        Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -prev);
-        String sqQuery = "SELECT COUNT(o.id) FROM orders o INNER JOIN dboy_order_history doh ON o.delivery_boy_id = doh.dboy_id && o.id = doh.order_id WHERE o.order_status =:orderStatus && doh.completed_at <=:startTime  && doh.completed_at >:endTime";
-        Query query = getCurrentSession().createSQLQuery(sqQuery);
-        query.setParameter("orderStatus", JobOrderStatus.DELIVERED.ordinal());
-        query.setParameter("startTime", dateFormat.format(cal.getTime()));
-        query.setParameter("endTime", dateFormat.format(calPrev.getTime()));
 
-        BigInteger cnt = (BigInteger) query.uniqueResult();
-        return cnt.intValue();
-    }
 
     @Override
     public Integer getTodayOrderTotalTime() throws Exception {
@@ -222,21 +221,76 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         else return 0;
     }
 
+    @Override
+    public Map<String, Integer> getOrderByDayCount(Integer dayCount) throws Exception {
+        Map<String, Integer> deliveryByDate = new TreeMap<>();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
+        for(Integer i=0; i<dayCount; i++){
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -(i+1));
+            Calendar calPrev = Calendar.getInstance();
+            calPrev.add(Calendar.DATE, -i);
+            String sqQuery = "SELECT COUNT(o.id) FROM orders o INNER JOIN dboy_order_history doh ON o.id = doh.order_id WHERE o.order_status =:orderStatus && doh.completed_at <=:endTime  && doh.completed_at >:startTime";
+            Query query = getCurrentSession().createSQLQuery(sqQuery);
+            query.setParameter("orderStatus", JobOrderStatus.DELIVERED.ordinal());
+            query.setParameter("startTime", dateFormat.format(cal.getTime()));
+            query.setParameter("endTime", dateFormat.format(calPrev.getTime()));
+
+            BigInteger cnt = (BigInteger) query.uniqueResult();
+            deliveryByDate.put(dayFormat.format(cal.getTime()), cnt.intValue());
+        }
+        return deliveryByDate;
+    }
 
     @Override
-    public Integer getOrderTotalTimeByDay(Integer dayCount, Integer prev) throws Exception {
+    public Map<String, Integer> onTimeDeliveryCount(Integer dayCount, String type) throws Exception {
+        Map<String, Integer> deliveryByDate = new TreeMap<>();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -dayCount);
-        Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -prev);
-        String sqQuery = "SELECT SUM(UNIX_TIMESTAMP(completed_at)-UNIX_TIMESTAMP(job_started_at)) as time_count FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status = 5 && doh.completed_at <= '"+dateFormat.format(cal.getTime())+"'  && doh.completed_at > '"+dateFormat.format(calPrev.getTime())+"'";
-        Query query = getCurrentSession().createSQLQuery(sqQuery);
+        DateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
+        for(Integer i=0; i<dayCount; i++){
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -(i+1));
+            Calendar calPrev = Calendar.getInstance();
+            calPrev.add(Calendar.DATE, -i);
+            String sqQuery = "SELECT COUNT(o.id) FROM orders o INNER JOIN dboy_order_history doh ON o.id = doh.order_id WHERE o.order_status =:orderStatus && doh.completed_at <=:endTime  && doh.completed_at >:startTime && o.assigned_time "+type+" ((UNIX_TIMESTAMP(doh.completed_at)-UNIX_TIMESTAMP(doh.job_started_at))/60)";
+            Query query = getCurrentSession().createSQLQuery(sqQuery);
+            query.setParameter("orderStatus", JobOrderStatus.DELIVERED.ordinal());
+            query.setParameter("startTime", dateFormat.format(cal.getTime()));
+            query.setParameter("endTime", dateFormat.format(calPrev.getTime()));
 
-        Number cnt = (Number) query.uniqueResult();
-        if(cnt != null)
-            return cnt.intValue()/60;
-        else return 0;
+            BigInteger cnt = (BigInteger) query.uniqueResult();
+            deliveryByDate.put(dayFormat.format(cal.getTime()), cnt.intValue());
+        }
+        return deliveryByDate;
+    }
+
+
+    @Override
+    public Map<String, Integer> getOrderTotalTimeByDay(Integer dayCount) throws Exception {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Map<String, Integer> totalTime = new TreeMap<>();
+
+        for (Integer i=0; i< dayCount; i++){
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -(i+1));
+            Calendar calPrev = Calendar.getInstance();
+            calPrev.add(Calendar.DATE, -i);
+            String sqQuery = "SELECT SUM(UNIX_TIMESTAMP(completed_at)-UNIX_TIMESTAMP(job_started_at)) as time_count FROM dboy_order_history doh INNER JOIN orders o on doh.order_id = o.id WHERE o.order_status =:jobOrderStatus && doh.completed_at <=:endTime  && doh.completed_at >:startTime";
+            Query query = getCurrentSession().createSQLQuery(sqQuery);
+            query.setParameter("jobOrderStatus", JobOrderStatus.DELIVERED.ordinal());
+            query.setParameter("startTime", dateFormat.format(cal.getTime()));
+            query.setParameter("endTime", dateFormat.format(calPrev.getTime()));
+
+            Number cnt = (Number) query.uniqueResult();
+            if(cnt != null){
+                totalTime.put(dayFormat.format(cal.getTime()), cnt.intValue()/60);
+            }else{
+                totalTime.put(dayFormat.format(cal.getTime()), 0);
+            }
+        }
+       return  totalTime;
     }
 
 

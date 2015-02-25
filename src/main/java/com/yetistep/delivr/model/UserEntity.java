@@ -170,7 +170,7 @@ public class UserEntity implements Serializable {
         this.mobileVerificationStatus = mobileVerificationStatus;
     }
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     @JsonProperty
     public String getEmailAddress() {
         return emailAddress;

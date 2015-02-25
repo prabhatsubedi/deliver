@@ -81,7 +81,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if ((user.getUsername() == null || user.getPassword() == null) || (user.getUsername().isEmpty() || user.getPassword().isEmpty()))
             throw new YSException("VLD009");
         if(user.getEmailAddress() != null && !user.getEmailAddress().isEmpty()){
-            if(userDaoService.checkIfEmailExists(user.getEmailAddress())){
+            if(userDaoService.checkIfEmailExists(user.getEmailAddress(), Role.ROLE_DELIVERY_BOY.toInt())){
                 throw new YSException("VLD026");
             }
         }

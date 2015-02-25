@@ -33,5 +33,5 @@ public interface UserDaoService extends GenericDaoService<Integer, UserEntity>{
 
     public Boolean checkIfMobileNumberExists(String mobileNumber) throws Exception;
 
-    public Boolean checkIfEmailExists(String emailAddress) throws Exception;
+    public Boolean checkIfEmailExists(String emailAddress, Integer roleId) throws Exception;
 }

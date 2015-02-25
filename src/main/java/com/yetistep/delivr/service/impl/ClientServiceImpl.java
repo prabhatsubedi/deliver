@@ -686,6 +686,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
            store.setOpeningTime(storesBrandEntity.getOpeningTime());
            store.setClosingTime(storesBrandEntity.getClosingTime());
            store.setBrandLogo(storesBrandEntity.getBrandLogo());
+           store.setBrandImage(storesBrandEntity.getBrandImage());
            store.setOpenStatus(isOpen);
 
            cartDto.setStoresBrand(store);

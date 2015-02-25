@@ -2,6 +2,7 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.util.HibernateUtil;
@@ -645,5 +646,22 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         criteria.add(Restrictions.and(Restrictions.eq("order.id", orderId)));
         orders = criteria.list();
         return orders;
+    }
+
+    @Override
+    public Boolean checkEmailExistence(String email) throws Exception {
+        String sql = "SELECT COUNT(id) FROM users WHERE username = :email AND role_id NOT IN(:role)";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("email", email);
+        List<Integer> roleList = new ArrayList<>();
+        roleList.add(Role.ROLE_DELIVERY_BOY.toInt());
+        roleList.add(Role.ROLE_CUSTOMER.toInt());
+        query.setParameterList("role", roleList);
+        Integer availableQty = ((Number) query.uniqueResult()).intValue();
+
+        if(availableQty.equals(0)){
+            return false;
+        }
+        return true;
     }
 }

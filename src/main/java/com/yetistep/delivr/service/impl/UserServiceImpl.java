@@ -5,7 +5,6 @@ import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.enums.Role;
-import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.UserService;
@@ -101,7 +100,9 @@ public class UserServiceImpl extends AbstractManager implements UserService{
         log.info("++++++ Changing User " +headerDto.getId() + " Password ++++++++");
         UserEntity user = userDaoService.find(Integer.parseInt(headerDto.getId()));
         GeneralUtil.matchDBPassword(headerDto.getPassword(), user.getPassword());
-
+        if(headerDto.getPassword().equals(headerDto.getNewPassword())){
+            throw new YSException("ERR018");
+        }
         user.setPassword(GeneralUtil.encryptPassword(headerDto.getNewPassword()));
         userDaoService.update(user);
 

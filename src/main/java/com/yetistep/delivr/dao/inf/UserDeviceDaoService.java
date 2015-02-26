@@ -23,4 +23,6 @@ public interface UserDeviceDaoService extends GenericDaoService<Integer, UserDev
     public List<String> getDeviceTokenFromDeliveryBoyId(List<Integer> deliveryBoysId) throws Exception;
 
     public UserDeviceEntity getUserDeviceInfoFromOrderId(Integer orderId) throws Exception;
+
+    public Boolean removeInformationForSameDevice(String uuid, Integer userId) throws Exception;
 }

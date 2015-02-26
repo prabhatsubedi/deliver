@@ -317,6 +317,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 userDeviceEntity.setUser(userEntity);
                 userEntity.setUserDevice(userDeviceEntity);
             }
+            userDeviceDaoService.removeInformationForSameDevice(userDevice.getUuid(), userEntity.getId());
             userDeviceEntity.setUuid(userDevice.getUuid());
             userDeviceEntity.setDeviceToken(userDevice.getDeviceToken());
             /* TODO Family for family, familyName, name */

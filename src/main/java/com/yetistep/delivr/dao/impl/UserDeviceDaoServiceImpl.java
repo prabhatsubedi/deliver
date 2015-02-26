@@ -1,6 +1,7 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.UserDeviceDaoService;
+import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.UserDeviceEntity;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -106,5 +107,19 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
 
         UserDeviceEntity userDevice = (UserDeviceEntity) sqlQuery.uniqueResult();
         return userDevice;
+    }
+
+    @Override
+    public Boolean removeInformationForSameDevice(String uuid, Integer userId) throws Exception {
+        String sql = "DELETE FROM user_device WHERE id in " +
+                "(SELECT id FROM (SELECT DISTINCT ud.id FROM user_device ud INNER JOIN users u on " +
+                "(u.id=ud.user_id) INNER JOIN roles r on (u.role_id = r.id) WHERE ud.uuid = :uuid AND " +
+                "r.id = :roleId AND user_id != :userId) AS temp)";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("uuid", uuid);
+        sqlQuery.setParameter("roleId", Role.ROLE_DELIVERY_BOY.toInt());
+        sqlQuery.setParameter("userId", userId);
+        sqlQuery.executeUpdate();
+        return true;
     }
 }

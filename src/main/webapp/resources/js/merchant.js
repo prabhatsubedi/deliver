@@ -22,6 +22,10 @@ var merchantProfile;
                 deleteMarkers();
             } else {
                 alert(data.message);
+                if(data.code == "VLD026") {
+                    $('#signup_form .nav li').eq(1).children('a').tab('show');
+                    $('#contact_email').addClass('error');
+                }
             }
         };
 

@@ -87,7 +87,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         log.info("Sending mail to " + user.getUsername() + " with new registration: " + url);
 
         //send email
-        String body = EmailMsg.createPasswordForNewUser(url, user.getFullName(), user.getUsername(), " You have been added as Merchant", getServerUrl());
+        String body = EmailMsg.createPasswordForNewUser(url, user.getFullName(), user.getUsername(), getServerUrl());
         String subject = "Delivr: You have been added as Merchant ";
         sendMail(user.getUsername(), body, subject);
 
@@ -118,7 +118,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         //Sending Email For Merchant
         String url = getServerUrl();
-        String body = EmailMsg.activateMerchant(url, user.getFullName(), " Your account has been activated", getServerUrl());
+        String body = EmailMsg.activateMerchant(url, user.getFullName(), getServerUrl());
         String subject = "Delivr: Your account has been activated ";
         sendMail(user.getUsername(), body, subject);
     }

@@ -143,17 +143,33 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
 
 
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude,order";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,gender,status,addresses");
+        assoc.put("order", "store,customer,orderStatus");
         subAssoc.put("addresses", "street,city,state,country,latitude,longitude");
+        subAssoc.put("store", "name,latitude,longitude");
+        subAssoc.put("customer", "latitude,longitude,user");
+        subAssoc.put("user", "id,fullName");
 
-        return ((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc, subAssoc));
-        //deliveryBoyEntity.getUser().setRole(null);
-        //return deliveryBoyEntity;
+        List<OrderEntity> activeOrders = new ArrayList<>();
+        List<JobOrderStatus> activeStatuses = new ArrayList<>();
+        activeStatuses.add(JobOrderStatus.ORDER_ACCEPTED);
+        activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
+        activeStatuses.add(JobOrderStatus.AT_STORE);
+        activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+        DeliveryBoyEntity deliveryBoy = ((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc, subAssoc));
+        for (OrderEntity order: deliveryBoy.getOrder()){
+            if(activeStatuses.contains(order.getOrderStatus())){
+                activeOrders.add(order);
+            }
+        }
+
+        deliveryBoy.setOrder(activeOrders);
+        return deliveryBoy;
     }
 
     @Override

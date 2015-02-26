@@ -2,7 +2,7 @@ package com.yetistep.delivr.util;
 
 
 
-import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -25,7 +25,7 @@ public class EmailMsg {
         style.append("body{font-size: 16px; font-family: Roboto;}");
     }
 
-    public static String createPasswordForNewUser(String url, String userName, String userEmail, String subject, String serverUrl) {
+    public static String createPasswordForNewUser(String url, String userName, String userEmail, String serverUrl) {
         StringBuilder body = new StringBuilder();
 
         body.append(getHtmlHeader(serverUrl));
@@ -51,10 +51,10 @@ public class EmailMsg {
         body.append("</div>");
         body.append("</div>");
 
-        return prepareEmail(subject, body.toString(), null, serverUrl );
+        return prepareEmail(body.toString(), null, serverUrl );
     }
 
-    public static String resetForgotPassword(String url, String userName, String subject, String serverUrl) {
+    public static String resetForgotPassword(String url, String userName, String serverUrl) {
         StringBuilder body = new StringBuilder();
 
         body.append(getHtmlHeader(serverUrl));
@@ -76,10 +76,10 @@ public class EmailMsg {
         body.append("</div>");
         body.append("</div>");
 
-        return prepareEmail(subject, body.toString(), null, serverUrl);
+        return prepareEmail(body.toString(), null, serverUrl);
     }
 
-    public static String activateMerchant(String url, String contactPerson, String subject, String serverUrl) {
+    public static String activateMerchant(String url, String contactPerson, String serverUrl) {
         StringBuilder body = new StringBuilder();
         body.append(getHtmlHeader(serverUrl));
         body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
@@ -97,11 +97,11 @@ public class EmailMsg {
         body.append("<p>iDelivr Team</p>");
         body.append("</div>");
         body.append("</div>");
-        return prepareEmail(subject, body.toString(), null, serverUrl);
+        return prepareEmail(body.toString(), null, serverUrl);
     }
 
 
-    public static String deactivateMerchant(String url, String contactPerson, String subject, String serverUrl) {
+    public static String deactivateMerchant(String contactPerson, String serverUrl) {
         StringBuilder body = new StringBuilder();
         body.append(getHtmlHeader(serverUrl));
         body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
@@ -117,7 +117,46 @@ public class EmailMsg {
         body.append("<p>iDelivr Team</p>");
         body.append("</div>");
         body.append("</div>");
-        return prepareEmail(subject, body.toString(), null, serverUrl);
+        return prepareEmail(body.toString(), null, serverUrl);
+    }
+
+    public static String orderPlaced(String contactPerson, String serverUrl, OrderEntity order) {
+        StringBuilder body = new StringBuilder();
+        body.append(getHtmlHeader(serverUrl));
+        body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
+        body.append("<div style='padding: 20px; width:100%; height:90px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='90' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 40px;color: #AAAAAA;font-weight:bold;margin-left:20px;'>iDelivr</div></div>");
+        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px;'>New order has been placed for your store: Order no - "+order.getId()+"</div>");
+
+        body.append("<div style='font-size: 16px; padding: 30px;'>");
+        body.append("<p>Dear <b>"+contactPerson+"</b></p>");
+        body.append("<p style='font-weight:bold'>New order is placed as below and "+order.getDeliveryBoy().getUser().getFullName()+" is in route to pick the item.</p>");
+        body.append("<p style='font-weight:bold'>Please prepare the item for delivery.</p>");
+        body.append("<table>");
+
+        Integer i = 1;
+        for (ItemsOrderEntity itemsOrder: order.getItemsOrder()) {
+          ItemEntity item = itemsOrder.getItem();
+            body.append("<tr>");
+                body.append("<td>"+i+"</td>");
+                body.append("<td><p>"+item.getName()+"</p>");
+                    for (ItemsOrderAttributeEntity itemsOrderAttribute: itemsOrder.getItemOrderAttributes()){
+                          body.append("<p>"+itemsOrderAttribute.getItemsAttribute().getType().getType()+":"+itemsOrderAttribute.getItemsAttribute().getAttribute()+"</p>");
+                    }
+
+                body.append("</td>");
+                body.append("<td>"+itemsOrder.getQuantity()+"</td>");
+                body.append("<td>"+item.getUnitPrice()+"</td>");
+            body.append("</tr>");
+            i++;
+        }
+        body.append("</table>");
+
+        body.append("<div style='width=100%; float: left; margin-top: 30px;'>");
+        body.append("<p>Sincerely,</p>");
+        body.append("<p>iDelivr Team</p>");
+        body.append("</div>");
+        body.append("</div>");
+        return prepareEmail(body.toString(), null, serverUrl);
     }
 
     private static String getEmailBodyButton(String viewLink, String url) {
@@ -198,7 +237,7 @@ public class EmailMsg {
         return builder.toString();
     }
 
-    public static String prepareEmail(String subjectContent, String bodyContent, String userHeadContent, String serverUrl) {
+    public static String prepareEmail(String bodyContent, String userHeadContent, String serverUrl) {
         StringBuilder builder = new StringBuilder();
         builder.append(getHtmlHeader(serverUrl));
         builder.append("<div style='background:#EFEFEF;width:900px;padding:40px;'>");

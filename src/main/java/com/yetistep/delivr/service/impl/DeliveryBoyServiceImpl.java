@@ -664,7 +664,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 dBoyEntity.setLongitude(deliveryBoyEntity.getLongitude());
             }
         }else if(deliveryBoyEntity.getAvailabilityStatus().equals(DBoyStatus.NOT_AVAILABLE)){
-            if(!dBoyEntity.getAvailabilityStatus().equals(DBoyStatus.FREE)){
+            if(dBoyEntity.getAvailabilityStatus().equals(DBoyStatus.BUSY)){
                throw new YSException("DBY001");
             }
             dBoyEntity.setAvailabilityStatus(DBoyStatus.NOT_AVAILABLE);

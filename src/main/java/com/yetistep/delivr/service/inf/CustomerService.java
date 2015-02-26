@@ -63,4 +63,8 @@ public interface CustomerService {
     public Boolean rateDeliveryBoy(Integer orderId, Long facebookId, RatingEntity rating) throws Exception;
 
     public RatingEntity getRatingFromCustomerSide(Integer orderId) throws Exception;
+
+    public Boolean reprocessOrder(Integer orderId) throws Exception;
+
+    public Boolean cancelOrder(OrderEntity order, ReasonDetailsEntity reasonDetailsEntity) throws Exception;
 }

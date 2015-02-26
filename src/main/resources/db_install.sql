@@ -123,3 +123,8 @@ ALTER TABLE `dboy_order_history` CHANGE COLUMN `amount_earned` `amount_earned` D
 
 /* ################ 2015-02-25 ####################################### */
 ALTER TABLE users DROP INDEX UK_6dotkott2kjsp8vw4d0m25fb7;
+
+/*#######################2015-02-26#####################################*/
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('REPROCESS_EXTRA_TIME', '15');
+ALTER TABLE `courier_transaction`
+CHANGE COLUMN `customer_discount` `customer_discount` DECIMAL(16,2) NULL DEFAULT NULL ;

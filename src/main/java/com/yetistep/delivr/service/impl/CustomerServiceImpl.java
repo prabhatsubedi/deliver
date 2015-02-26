@@ -99,6 +99,12 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     RatingDaoService ratingDaoService;
 
+    @Autowired
+    ReasonDetailsDaoService reasonDetailsDaoService;
+
+    @Autowired
+    DeliveryBoySelectionDaoService deliveryBoySelectionDaoService;
+
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
         log.info("++++++++++++++ Logging Customer ++++++++++++++++");
@@ -571,6 +577,7 @@ public class CustomerServiceImpl implements CustomerService {
         order.setOrderVerificationStatus(false);
         order.setDeliveryStatus(DeliveryStatus.PENDING);
         order.setOrderStatus(JobOrderStatus.ORDER_PLACED);
+        order.setReprocessTime(0);
 
         /* Transferring data of cart to order and calculating price */
         BigDecimal itemTotalCost = BigDecimal.ZERO;
@@ -642,9 +649,9 @@ public class CustomerServiceImpl implements CustomerService {
            throw new YSException("ORD012");
         }
         /* Selects nearest delivery boys based on timing. */
-        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, availableAndActiveDBoys, order);
+        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, availableAndActiveDBoys, order, false);
         /* Selects delivery boys based on profit criteria. */
-        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, merchant);
+        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, merchant.getCommissionPercentage(), merchant.getServiceFee());
         if(deliveryBoySelectionEntitiesWithProfit.size() == 0){
             throw new YSException("ORD012");
         }
@@ -732,7 +739,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /*Calculate distance of delivery boy to store and select only delivery boys satisfying timing condition*/
-    private List<DeliveryBoySelectionEntity> calculateStoreToDeliveryBoyDistance(StoreEntity store, List<DeliveryBoyEntity> capableDeliveryBoys, OrderEntity order) throws Exception {
+    private List<DeliveryBoySelectionEntity> calculateStoreToDeliveryBoyDistance(StoreEntity store, List<DeliveryBoyEntity> capableDeliveryBoys, OrderEntity order, Boolean reprocess) throws Exception {
         String storeAddress[] = {GeoCodingUtil.getLatLong(store.getLatitude(), store.getLongitude())};
         String deliveryBoyAddress[] = new String[capableDeliveryBoys.size()];
         for (int i = 0; i < capableDeliveryBoys.size(); i++) {
@@ -781,14 +788,16 @@ public class CustomerServiceImpl implements CustomerService {
             selectionDetails.add(deliveryBoySelectionEntity);
             log.info("Delivery boys selected from distance calculation:"+selectionDetails.toString());
         }
-        return filterDeliveryBoySelection(selectionDetails, timeDetails);
+        return filterDeliveryBoySelection(selectionDetails, timeDetails, reprocess);
     }
 
     /* Select only delivery boys satisfying timing condition from list of selected delivery boys from distance criteria*/
-    private List<DeliveryBoySelectionEntity> filterDeliveryBoySelection(List<DeliveryBoySelectionEntity> selectionEntities, List<Integer> timeDetails) throws Exception {
+    private List<DeliveryBoySelectionEntity> filterDeliveryBoySelection(List<DeliveryBoySelectionEntity> selectionEntities, List<Integer> timeDetails, Boolean reprocess) throws Exception {
         List<DeliveryBoySelectionEntity> filteredDBoys = new ArrayList<DeliveryBoySelectionEntity>();
         int minimumTime = Collections.min(timeDetails);
         int deviationInTime = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DEVIATION_IN_TIME));
+        if(reprocess)
+            deviationInTime += Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.REPROCESS_EXTRA_TIME));
         for (DeliveryBoySelectionEntity deliveryBoySelectionEntity : selectionEntities) {
             if ((deliveryBoySelectionEntity.getTotalTimeRequired() - minimumTime) <= deviationInTime) {
                 filteredDBoys.add(deliveryBoySelectionEntity);
@@ -811,12 +820,12 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
-    private List<DeliveryBoySelectionEntity> filterDBoyWithProfitCriteria(OrderEntity order, List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities, MerchantEntity merchant) throws Exception {
+    private List<DeliveryBoySelectionEntity> filterDBoyWithProfitCriteria(OrderEntity order, List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities, BigDecimal merchantCommission, BigDecimal merchantServiceFee) throws Exception {
         log.info("Unfiltered Dboys:"+deliveryBoySelectionEntities.toString());
         List<DeliveryBoySelectionEntity> filteredDeliveryBoys = new ArrayList<DeliveryBoySelectionEntity>();
         BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
         for (DeliveryBoySelectionEntity deliveryBoySelectionEntity : deliveryBoySelectionEntities) {
-            CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, deliveryBoySelectionEntity, merchant.getCommissionPercentage(), merchant.getServiceFee());
+            CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, deliveryBoySelectionEntity, merchantCommission, merchantServiceFee);
             if(BigDecimalUtil.isGreaterThen(courierTransaction.getProfit(), BigDecimalUtil.percentageOf(order.getTotalCost(), MINIMUM_PROFIT_PERCENTAGE)))
                 filteredDeliveryBoys.add(deliveryBoySelectionEntity);
         }
@@ -1278,5 +1287,85 @@ public class CustomerServiceImpl implements CustomerService {
         }
         rating.setAllRatingIssues(this.getRatingReasons());
         return rating;
+    }
+
+    @Override
+    public Boolean reprocessOrder(Integer orderId) throws Exception {
+        OrderEntity order = orderDaoService.find(orderId);
+        if(order != null){
+            if(order.getOrderStatus().equals(JobOrderStatus.ORDER_PLACED)){
+                if(order.getReprocessTime() > 0){
+                    log.info("Order is cancelling since it has been reprocessed already:"+orderId);
+                    ReasonDetailsEntity reasonDetailsEntity = reasonDetailsDaoService.find(5);
+                    return cancelOrder(order, reasonDetailsEntity);
+                }
+                order.setReprocessTime(GeneralUtil.ifNullToZero(order.getReprocessTime())+1);
+                order.setOrderDate(DateUtil.getCurrentTimestampSQL());
+                deliveryBoySelectionDaoService.updateAllSelectionToRejectMode(orderId);
+                /* Finding delivery boys based on active status. */
+                List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys();
+                if(availableAndActiveDBoys.size() == 0){
+                    log.info("Order is cancelling since number of available delivery boys is zero:"+orderId);
+                    ReasonDetailsEntity reasonDetailsEntity = reasonDetailsDaoService.find(5);
+                    return cancelOrder(order, reasonDetailsEntity);
+                }
+                CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
+                 /* Selects nearest delivery boys based on timing. */
+                List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(order.getStore(), availableAndActiveDBoys, order, true);
+                /* Selects delivery boys based on profit criteria. */
+                List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, courierTransactionEntity.getCommissionPct(), courierTransactionEntity.getServiceFeePct());
+                if(deliveryBoySelectionEntitiesWithProfit.size() == 0){
+                    log.info("Order is cancelling since not enough profit:"+orderId);
+                    ReasonDetailsEntity reasonDetailsEntity = reasonDetailsDaoService.find(5);
+                    return cancelOrder(order, reasonDetailsEntity);
+                }
+                order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
+
+                orderDaoService.update(order);
+
+                /* Push Notifications */
+                List<Integer> idList = getIdOfDeliveryBoys(deliveryBoySelectionEntitiesWithProfit);
+                log.info("List of delivery boy with push notification:");
+                for(Integer id: idList){
+                    log.info(id);
+                }
+                List<String> deviceTokens = userDeviceDaoService.getDeviceTokenFromDeliveryBoyId(idList);
+                PushNotification pushNotification = new PushNotification();
+                pushNotification.setTokens(deviceTokens);
+                pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN001"));
+                pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
+                pushNotification.setExtraDetail(order.getId().toString());
+                pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
+                PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
+
+                Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
+                Integer timeOut = timeInSeconds.intValue();
+                scheduleChanger.scheduleTask(DateUtil.findDelayDifference(DateUtil.getCurrentTimestampSQL(), timeOut));
+            }else{
+                log.warn("Only order with Order Placed status can be reprocessed."+orderId);
+            }
+        }else{
+            log.warn("Order not found during reprocessing it."+orderId);
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean cancelOrder(OrderEntity order, ReasonDetailsEntity reasonDetailsEntity) throws Exception {
+        OrderCancelEntity orderCancel = new OrderCancelEntity();
+        orderCancel.setReason(reasonDetailsEntity.getCancelReason());
+        orderCancel.setReasonDetails(reasonDetailsEntity);
+        orderCancel.setJobOrderStatus(order.getOrderStatus());
+        orderCancel.setOrder(order);
+        order.setOrderCancel(orderCancel);
+        order.setOrderStatus(JobOrderStatus.CANCELLED);
+        boolean status = orderDaoService.update(order);
+        if(status){
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String message = MessageBundle.getMessage("CPN007", "push_notification.properties");
+            String extraDetail = order.getId().toString()+"/status/"+order.getOrderStatus().toString();
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
+        }
+        return status;
     }
 }

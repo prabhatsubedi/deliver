@@ -100,7 +100,7 @@ public class CourierTransactionEntity {
         this.additionalDeliveryAmt = additionalDeliveryAmt;
     }
 
-    @Column(name ="customer_discount", precision = 5, scale = 2)
+    @Column(name ="customer_discount", precision = 16, scale = 2)
     public BigDecimal getCustomerDiscount() {
         return customerDiscount;
     }

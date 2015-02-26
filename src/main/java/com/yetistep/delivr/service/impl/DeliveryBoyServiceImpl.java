@@ -8,6 +8,7 @@ import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
+import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
@@ -71,6 +72,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
     @Autowired
     UserDeviceDaoService userDeviceDaoService;
+
+    @Autowired
+    CustomerService customerService;
 
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
@@ -313,6 +317,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 userDeviceEntity.setUser(userEntity);
                 userEntity.setUserDevice(userDeviceEntity);
             }
+            userDeviceDaoService.removeInformationForSameDevice(userDevice.getUuid(), userEntity.getId());
             userDeviceEntity.setUuid(userDevice.getUuid());
             userDeviceEntity.setDeviceToken(userDevice.getDeviceToken());
             /* TODO Family for family, familyName, name */
@@ -659,7 +664,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 dBoyEntity.setLongitude(deliveryBoyEntity.getLongitude());
             }
         }else if(deliveryBoyEntity.getAvailabilityStatus().equals(DBoyStatus.NOT_AVAILABLE)){
-            if(!dBoyEntity.getAvailabilityStatus().equals(DBoyStatus.FREE)){
+            if(dBoyEntity.getAvailabilityStatus().equals(DBoyStatus.BUSY)){
                throw new YSException("DBY001");
             }
             dBoyEntity.setAvailabilityStatus(DBoyStatus.NOT_AVAILABLE);
@@ -1227,7 +1232,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             throw new YSException("ITM004");
         }
         if (itemOrder.getItem() != null) {
-            String fields = "id,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,item";
+            String fields = "id,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,note,customerNote,item";
 
             Map<String, String> assoc = new HashMap<>();
             Map<String, String> subAssoc = new HashMap<>();
@@ -1303,8 +1308,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             deliveryBoySelectionEntity.setRejected(true);
             deliveryBoySelectionDaoService.update(deliveryBoySelectionEntity);
             if(deliveryBoySelectionDaoService.getRemainingOrderSelections(orderId).equals(0)){
-               // TODO Look for delivery boy again or cancel order
-               // OrderEntity order = orderDaoService.find(orderId);
+                customerService.reprocessOrder(orderId);
             }
             return true;
         }

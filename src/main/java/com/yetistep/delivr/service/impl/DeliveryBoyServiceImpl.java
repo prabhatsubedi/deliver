@@ -1232,7 +1232,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             throw new YSException("ITM004");
         }
         if (itemOrder.getItem() != null) {
-            String fields = "id,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,item";
+            String fields = "id,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,note,customerNote,item";
 
             Map<String, String> assoc = new HashMap<>();
             Map<String, String> subAssoc = new HashMap<>();

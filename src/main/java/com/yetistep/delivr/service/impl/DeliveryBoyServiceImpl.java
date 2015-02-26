@@ -162,6 +162,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         subAssoc.put("store", "name,latitude,longitude,street,city,state,country");
         subAssoc.put("customer", "latitude,longitude,user");
         subAssoc.put("user", "id,fullName");
+        subAssoc.put("addresses", "id,latitude,longitude,street,city,state,country");
 
         List<OrderEntity> activeOrders = new ArrayList<>();
         List<JobOrderStatus> activeStatuses = new ArrayList<>();

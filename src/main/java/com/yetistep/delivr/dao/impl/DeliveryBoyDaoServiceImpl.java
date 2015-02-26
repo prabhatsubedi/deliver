@@ -4,6 +4,7 @@ import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -66,7 +67,7 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
                 .add(Restrictions.lt("activeOrderNo", 3))
                 .add(Restrictions.isNotNull("latitude"))
                 .add(Restrictions.isNotNull("longitude"))
-                .add(Restrictions.and(Restrictions.eq("u.verifiedStatus", true), Restrictions.eq("u.mobileVerificationStatus", true))).list();
+                .add(Restrictions.and(Restrictions.eq("u.verifiedStatus", true), Restrictions.eq("u.mobileVerificationStatus", true), Restrictions.eq("u.status", Status.ACTIVE))).list();
         return deliveryBoys;
     }
 

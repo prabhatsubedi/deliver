@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.DeliveryBoySelectionDaoService;
 import com.yetistep.delivr.model.DeliveryBoySelectionEntity;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
@@ -80,9 +81,18 @@ public class DeliverBoySelectionDaoServiceImpl implements DeliveryBoySelectionDa
         Criteria criteria = getCurrentSession().createCriteria(DeliveryBoySelectionEntity.class)
                 .add(Restrictions.eq("order.id", orderId))
                 .add(Restrictions.eq("accepted", false))
-                .add(Restrictions.eq("rejected", true));
+                .add(Restrictions.eq("rejected", false));
         criteria.setProjection(Projections.rowCount());
         Long count = (Long) criteria.uniqueResult();
         return count.intValue();
+    }
+
+    @Override
+    public Boolean updateAllSelectionToRejectMode(Integer orderId) throws Exception {
+        String sqlQuery = "UPDATE dboy_selections SET rejected = true WHERE order_id = :orderId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("orderId", orderId);
+        query.executeUpdate();
+        return true;
     }
 }

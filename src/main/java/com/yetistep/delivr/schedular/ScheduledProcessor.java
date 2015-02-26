@@ -1,15 +1,15 @@
 package com.yetistep.delivr.schedular;
 
 import com.yetistep.delivr.dao.inf.OrderDaoService;
-import com.yetistep.delivr.dao.inf.ReasonDetailsDaoService;
 import com.yetistep.delivr.dao.inf.UserDeviceDaoService;
-import com.yetistep.delivr.enums.*;
-import com.yetistep.delivr.model.OrderCancelEntity;
+import com.yetistep.delivr.enums.NotifyTo;
+import com.yetistep.delivr.enums.PushNotificationRedirect;
 import com.yetistep.delivr.model.OrderEntity;
-import com.yetistep.delivr.model.ReasonDetailsEntity;
 import com.yetistep.delivr.model.UserDeviceEntity;
+import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.DateUtil;
+import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.MessageBundle;
 import com.yetistep.delivr.util.PushNotificationUtil;
 import org.apache.log4j.Logger;
@@ -44,7 +44,7 @@ public class ScheduledProcessor {
     private ScheduleChanger scheduleChanger;
 
     @Autowired
-    private ReasonDetailsDaoService reasonDetailsDaoService;
+    CustomerService customerService;
 
     public void process() {
         try {
@@ -53,22 +53,8 @@ public class ScheduledProcessor {
             Float timeInSeconds = 180f;
             Integer timeOut = timeInSeconds.intValue();
             List<OrderEntity> elapsedOrders = orderDaoService.getElapsedOrders(timeOut);
-            ReasonDetailsEntity reasonDetailsEntity = reasonDetailsDaoService.find(5);
             for (OrderEntity order : elapsedOrders) {
-                OrderCancelEntity orderCancel = new OrderCancelEntity();
-                orderCancel.setReason(reasonDetailsEntity.getCancelReason());
-                orderCancel.setReasonDetails(reasonDetailsEntity);
-                orderCancel.setJobOrderStatus(order.getOrderStatus());
-                orderCancel.setOrder(order);
-                order.setOrderCancel(orderCancel);
-                order.setOrderStatus(JobOrderStatus.CANCELLED);
-                boolean status = orderDaoService.update(order);
-                if(status){
-                    UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
-                    String message = MessageBundle.getMessage("CPN007", "push_notification.properties");
-                    String extraDetail = order.getId().toString()+"/status/"+order.getOrderStatus().toString();
-                    PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
-                }
+                reprocessOrder(order);
             }
             checkNextOrders(timeOut);
         } catch (Exception e) {
@@ -93,5 +79,17 @@ public class ScheduledProcessor {
             log.info("Cancelling Task");
             scheduleChanger.cancelTask();
         }
+    }
+
+    private Boolean reprocessOrder(OrderEntity order) throws Exception{
+        int orderReprocessedTime = GeneralUtil.ifNullToZero(order.getReprocessTime());
+        boolean status = customerService.reprocessOrder(order.getId());
+        if(status && orderReprocessedTime > 0){
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String message = MessageBundle.getMessage("CPN007", "push_notification.properties");
+            String extraDetail = order.getId().toString()+"/status/"+order.getOrderStatus().toString();
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
+        }
+        return status;
     }
 }

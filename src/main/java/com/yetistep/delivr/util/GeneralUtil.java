@@ -194,4 +194,11 @@ public class GeneralUtil {
         }
         return requiredTime;
     }
+
+    public static Integer ifNullToZero(Integer value){
+        if(value == null){
+            return 0;
+        }
+        return value;
+    }
 }

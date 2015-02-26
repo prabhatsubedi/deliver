@@ -174,6 +174,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("orderDate"), "orderDate")
+                .add(Projections.property("reprocessTime"), "reprocessTime")
         ).setResultTransformer(Transformers.aliasToBean(OrderEntity.class));
         criteria.add(Restrictions.eq("orderStatus", JobOrderStatus.ORDER_PLACED))
                 .addOrder(Order.asc("orderDate"));

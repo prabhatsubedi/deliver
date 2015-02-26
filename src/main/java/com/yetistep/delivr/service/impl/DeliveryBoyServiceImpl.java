@@ -8,6 +8,7 @@ import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
+import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
@@ -71,6 +72,9 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
     @Autowired
     UserDeviceDaoService userDeviceDaoService;
+
+    @Autowired
+    CustomerService customerService;
 
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
@@ -1303,8 +1307,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             deliveryBoySelectionEntity.setRejected(true);
             deliveryBoySelectionDaoService.update(deliveryBoySelectionEntity);
             if(deliveryBoySelectionDaoService.getRemainingOrderSelections(orderId).equals(0)){
-               // TODO Look for delivery boy again or cancel order
-               // OrderEntity order = orderDaoService.find(orderId);
+                customerService.reprocessOrder(orderId);
             }
             return true;
         }

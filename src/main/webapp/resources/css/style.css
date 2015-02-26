@@ -1448,8 +1448,7 @@ label.check_label .checkbox {
 .profile_body {
     padding: 15px;
 }
-.profile_map_body #no-edit-map-canvas {
-    border: 1px solid #d9d9d9;
+.profile_map_body .map-container {
     height: 500px;
 }
 .profile_header {

@@ -7,11 +7,12 @@
 
     <%@include file="../includes/head.jsp" %>
 
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/map.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/maps.css" type="text/css" />
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.dataTables.min.js"></script>
     <link href="${pageContext.request.contextPath}/resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="${pageContext.request.contextPath}/resources/css/maps.css" rel="stylesheet" type="text/css" media="screen"/>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/manager.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 
     <script type="text/javascript">
@@ -39,9 +40,14 @@
                 <h4 class="modal-title" id="mapLabel">Courier staff map</h4>
             </div>
             <div class="modal-body">
-                <div class="db-map-container">
-                    <div id="no-edit-map-canvas"></div>
-                </div>
+
+                    <div class="map-container">
+                        <div id="custom_map_controls" class="clearfix">
+                            <div id="scroll_zoom" class="pull-left">Enable Scroll Zoom</div>
+                        </div>
+                        <div id="map-canvas"></div>
+                    </div>
+
             </div>
         </div>
     </div>
@@ -152,6 +158,14 @@
             </div>
 
         </div>
+    </div>
+</div>
+
+
+<div class="infowindow_template hidden">
+    <div class="infowindow">
+        <p><strong class="name_line"></strong></p>
+        <p class="address_line"></p>
     </div>
 </div>
 

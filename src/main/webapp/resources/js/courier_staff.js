@@ -130,8 +130,12 @@ var courierProfile;
 
     CourierStaff.getCourierStaffProfile = function (courier_profile) {
         var id = Main.getURLvalue(3);
-        var mapBounds = new google.maps.LatLngBounds();
-        if(!noEditInitialised) noEditInitialise(); else google.maps.event.trigger(map, 'resize');
+//        var mapBounds = new google.maps.LatLngBounds();
+
+        disableMapEdit = true;
+        selectedCountry = undefined;
+        if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
+
         var callback = function (status, data) {
             courierProfile = data;
             if (!data.success) {
@@ -177,48 +181,33 @@ var courierProfile;
 
             if(courier_profile == undefined) {
 
-//                var srclatlng = new google.maps.LatLng(courierStaff.latitude, courierStaff.longitude);
-                var srclatlng = new google.maps.LatLng("27.689", "85.324");
-                var destlatlang = new google.maps.LatLng("27.6891424", "85.324561");
+                var locCourierBoy = {};
+                var locStore = {};
+                var locCustomer = {};
 
-                mapBounds.extend(srclatlng);
-                mapBounds.extend(destlatlang);
-                map.fitBounds(mapBounds);
-
-                new google.maps.Marker({
-                    position: srclatlng,
-                    map: map,
-                    icon: Main.modifyURL("/resources/images/marker_delivery_boy.png")
-                });
-
-                if (typeof destlatlang != 'undefined') {
-                    new google.maps.Marker({
-                        position: destlatlang,
-                        map: map,
-                        icon: Main.modifyURL("/resources/images/marker_store.png")
-                    });
-
-                    var request = {
-                        origin: srclatlng,
-                        destination: destlatlang,
-                        travelMode: google.maps.DirectionsTravelMode.DRIVING
-                    };
-
-                    var directionsService = new google.maps.DirectionsService();
-                    var directionsDisplay = new google.maps.DirectionsRenderer({
-                        preserveViewport: true
-                    });
-
-                    directionsService.route(request, function (result, status) {
-                        if (status == google.maps.DirectionsStatus.OK) {
-                            directionsDisplay.setDirections(result);
-                        } else {
-                            alert("Directions was not successful because " + status);
-                        }
-                    });
-
-                    directionsDisplay.setMap(map);
+                if(courierStaff.latitude != undefined && courierStaff.longitude != undefined) {
+                    locCourierBoy.name = courierStaff.user.fullName;
+                    locCourierBoy.lat = courierStaff.latitude;
+                    locCourierBoy.lang = courierStaff.longitude;
                 }
+
+                var orders = courierStaff.order;
+                for(var i = 0; i < orders.length; i++) {
+                    if(orders[i].orderStatus != "ORDER_ACCEPTED") {
+                        locStore.name = orders[i].store.name;
+                        locStore.lat = orders[i].store.latitude;
+                        locStore.lang = orders[i].store.longitude;
+                        locStore.address = orders[i].store.street + ', ' + orders[i].store.city;
+                        locCustomer.name = orders[i].customer.user.fullName;
+                        locCustomer.lat = orders[i].customer.latitude;
+                        locCustomer.lang = orders[i].customer.longitude;
+                        break;
+                    }
+                }
+
+                if(!$.isEmptyObject(locCourierBoy)) addGodMarker(locCourierBoy, "courier");
+                if(!$.isEmptyObject(locCustomer)) addGodMarker(locCustomer, "customer");
+                if(!$.isEmptyObject(locStore)) addGodMarker(locStore, "store");
 
             }
 

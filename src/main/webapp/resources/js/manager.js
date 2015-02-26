@@ -111,8 +111,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
             }
         });
         $('#partnership').rules('add', {notEqual: "none"});
-        $('#commission').rules('add', {required: true, digits: true, min: 0, max: 100});
-        $('#service_fee').rules('add', {required: true, digits: true, min: 0});
+        $('#commission').rules('add', {required: true, number: true, min: 0, max: 100});
+        $('#service_fee').rules('add', {required: true, number: true, min: 0});
 
         $('.trigger_activation').live('click', function () {
             var statusCheck = $(this).attr('data-status') == 'INACTIVE';
@@ -420,18 +420,30 @@ if (typeof(Manager) == "undefined") var Manager = {};
     };
 
     Manager.getCourierBoyMap = function () {
+        $('#modal_map').on('hidden.bs.modal', function(){
+            for (var i in godMarkers) {
+                godMarkers[i].setMap(null);
+            }
+            godMarkers = {};
+            mapBounds = new google.maps.LatLngBounds();
+        });
         $('body').delegate('.view_courier_boy_map', 'click', function () {
             $('#modal_map').modal('show');
             var id = $(this).data("cbid");
             setTimeout(function () {
-                noEditInitialise();
+
+                disableMapEdit = true;
+                selectedCountry = undefined;
+                if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
+
+//                noEditInitialise();
                 //if(!noEditInitialised) noEditInitialise(); else google.maps.event.trigger(map, 'resize');
                 var callback = function (status, data) {
                     if (!data.success) {
                         alert(data.message);
                         return;
                     }
-                    var courierStaff = data.params.deliveryBoy;
+ /*                   var courierStaff = data.params.deliveryBoy;
                     var srclatlng = new google.maps.LatLng(courierStaff.latitude, courierStaff.longitude);
                     //var destlatlang =  new google.maps.LatLng("27.6891424", "85.324561");
                     map.setZoom(18);
@@ -470,10 +482,41 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         });
 
                         directionsDisplay.setMap(map);
+                    }*/
+
+                    var courierStaff = data.params.deliveryBoy;
+
+                    var locCourierBoy = {};
+                    var locStore = {};
+                    var locCustomer = {};
+
+                    if(courierStaff.latitude != undefined && courierStaff.longitude != undefined) {
+                        locCourierBoy.name = courierStaff.user.fullName;
+                        locCourierBoy.lat = courierStaff.latitude;
+                        locCourierBoy.lang = courierStaff.longitude;
                     }
 
+                    var orders = courierStaff.order;
+                    for(var i = 0; i < orders.length; i++) {
+                        if(orders[i].orderStatus != "ORDER_ACCEPTED") {
+                            locStore.name = orders[i].store.name;
+                            locStore.lat = orders[i].store.latitude;
+                            locStore.lang = orders[i].store.longitude;
+                            locStore.address = orders[i].store.street + ', ' + orders[i].store.city;
+                            locCustomer.name = orders[i].customer.user.fullName;
+                            locCustomer.lat = orders[i].customer.latitude;
+                            locCustomer.lang = orders[i].customer.longitude;
+                            break;
+                        }
+                    }
+
+                    if(!$.isEmptyObject(locCourierBoy)) addGodMarker(locCourierBoy, "courier");
+                    if(!$.isEmptyObject(locCustomer)) addGodMarker(locCustomer, "customer");
+                    if(!$.isEmptyObject(locStore)) addGodMarker(locStore, "store");
+
+
                 }
-                callback.loaderDiv = ".view_courier_boy_map";
+//                callback.loaderDiv = ".view_courier_boy_map";
                 callback.requestType = "GET";
                 var headers = {};
                 headers.id = id;

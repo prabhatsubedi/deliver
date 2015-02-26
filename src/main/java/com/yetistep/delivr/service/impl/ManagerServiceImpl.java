@@ -203,7 +203,7 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public Object saveCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
         log.info("****************************saving category **************************");
-        if (headerDto.getId() != null || headerDto.getId() != "" ){
+        if (headerDto.getId() != null && !headerDto.getId().equals("") ){
             CategoryEntity parentCategory = new CategoryEntity();
             parentCategory.setId(Integer.parseInt(headerDto.getId()));
             category.setParent(parentCategory);

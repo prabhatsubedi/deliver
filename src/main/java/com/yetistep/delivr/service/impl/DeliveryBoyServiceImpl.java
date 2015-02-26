@@ -119,6 +119,11 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         String profileImage = deliveryBoy.getUser().getProfileImage();
         deliveryBoy.getUser().setProfileImage(null);
+
+        for (AddressEntity address: deliveryBoy.getUser().getAddresses()){
+            address.setUser(deliveryBoy.getUser());
+        }
+
         deliveryBoyDaoService.save(deliveryBoy);
         if (profileImage != null && !profileImage.isEmpty()) {
             log.info("Uploading Profile Image of delivery boy to S3 Bucket ");
@@ -150,8 +155,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,gender,status,addresses");
         assoc.put("order", "store,customer,orderStatus");
-        subAssoc.put("addresses", "street,city,state,country,latitude,longitude");
-        subAssoc.put("store", "name,latitude,longitude");
+        subAssoc.put("store", "name,latitude,longitude,street,city,state,country");
         subAssoc.put("customer", "latitude,longitude,user");
         subAssoc.put("user", "id,fullName");
 
@@ -226,7 +230,8 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         dBoyEntity.getUser().setPassword(GeneralUtil.encryptPassword(headerDto.getPassword()));
 
         dBoyEntity.getUser().setMobileNumber(headerDto.getUsername());
-        for(AddressEntity addressEntity: deliveryBoyEntity.getUser().getAddresses()){
+        List<AddressEntity> addressEntities =  deliveryBoyEntity.getUser().getAddresses();
+        for(AddressEntity addressEntity: addressEntities){
             for(AddressEntity address: dBoyEntity.getUser().getAddresses()){
                 if(address.getId().equals(addressEntity.getId())){
                    address.setStreet(addressEntity.getStreet());
@@ -234,6 +239,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                    address.setState(addressEntity.getState());
                    address.setCountry(addressEntity.getCountry());
                    address.setCountryCode(addressEntity.getCountryCode());
+                   address.setUser(deliveryBoyEntity.getUser());
                    break;
                 }
             }

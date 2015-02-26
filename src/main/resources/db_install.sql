@@ -120,3 +120,6 @@ ALTER TABLE `items` DROP `brandId`, DROP `closingTime`, DROP `openingTime`;
 
 /*#######################2015-02-23#####################################*/
 ALTER TABLE `dboy_order_history` CHANGE COLUMN `amount_earned` `amount_earned` DECIMAL(19,2) NULL DEFAULT NULL ;
+
+/* ################ 2015-02-25 ####################################### */
+ALTER TABLE users DROP INDEX UK_6dotkott2kjsp8vw4d0m25fb7;

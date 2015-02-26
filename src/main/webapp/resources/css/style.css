@@ -198,6 +198,9 @@ body.loader_div > .loader {
 .login_container .logo_block {
     padding-bottom: 25px;
 }
+.login_container .logo_block img {
+    width: 60px;
+}
 .login_container .login_block {
     padding: 20px;
     border-radius: 10px;

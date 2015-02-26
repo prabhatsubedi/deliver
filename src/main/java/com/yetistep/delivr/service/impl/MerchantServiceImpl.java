@@ -39,10 +39,19 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public void saveMerchant(MerchantEntity merchant, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Merchant +++++++++++++++++");
         UserEntity user = merchant.getUser();
+        if(!user.getEmailAddress().equals(headerDto.getUsername()))
+            throw new YSException("VLD030");
+
+        /* Check Merchant Email Address */
+        if(merchantDaoService.checkEmailExistence(headerDto.getUsername()))
+            throw new YSException("VLD026");
+
         List<AddressEntity> addressEntities = user.getAddresses();
         for (AddressEntity address: addressEntities){
             address.setUser(user);
         }
+
+
 
         String code = MessageBundle.generateTokenString() + "_" + System.currentTimeMillis();
 

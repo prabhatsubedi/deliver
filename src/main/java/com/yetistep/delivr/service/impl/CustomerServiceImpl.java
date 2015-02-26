@@ -146,15 +146,27 @@ public class CustomerServiceImpl implements CustomerService {
             registeredCustomer.getUser().getUserDevice().setHeight(customerEntity.getUser().getUserDevice().getHeight());
             registeredCustomer.getUser().getUserDevice().setWidth(customerEntity.getUser().getUserDevice().getWidth());
 
+            registeredCustomer.getUser().setLastActivityDate(MessageBundle.getCurrentTimestampSQL());
 
             validateUserDevice(registeredCustomer.getUser().getUserDevice());
             customerDaoService.update(registeredCustomer);
 
         } else {
+            /* Check User Email */
+           if(customerEntity.getUser().getEmailAddress()!=null && !customerEntity.getUser().getEmailAddress().isEmpty()) {
+               if(userDaoService.checkIfEmailExists(customerEntity.getUser().getEmailAddress(), Role.ROLE_CUSTOMER.toInt()))
+                   throw new YSException("VLD026");
+           }
+
             validateUserDevice(customerEntity.getUser().getUserDevice());
             customerEntity.setRewardsEarned(BigDecimal.ZERO);
             customerEntity.setTotalOrderPlaced(0);
             customerEntity.setTotalOrderDelivered(0);
+
+            RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_CUSTOMER);
+            customerEntity.getUser().setRole(userRole);
+            customerEntity.getUser().getUserDevice().setUser(customerEntity.getUser());
+
 //            if (customerEntity.getLatitude() != null) {
 //                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
 //                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());

@@ -8,6 +8,7 @@ import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
+import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
@@ -1313,5 +1314,12 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             }
             return true;
         }
+    }
+
+    @Override
+    public PreferenceDto getAcceptanceDetails() throws Exception {
+        PreferenceDto preferenceDto = new PreferenceDto();
+        preferenceDto.setAcceptanceRadius(systemPropertyService.readPrefValue(PreferenceType.ACCEPTANCE_RADIUS));
+        return preferenceDto;
     }
 }

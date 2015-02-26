@@ -6,6 +6,7 @@ import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
+import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
 
 import java.util.List;
 
@@ -66,4 +67,6 @@ public interface DeliveryBoyService {
     public List<Object> get_order_history(Integer dBoyId) throws Exception;
 
     public Boolean rejectOrder(Integer deliveryBoyId, Integer orderId) throws Exception;
+
+    public PreferenceDto getAcceptanceDetails() throws Exception;
 }

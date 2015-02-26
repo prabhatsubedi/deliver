@@ -13,6 +13,7 @@ import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
+import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
@@ -1052,5 +1053,13 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         assoc.put("reasonDetails", "id,cancelReason");
         orderCancel =  (OrderCancelEntity) ReturnJsonUtil.getJsonObject(orderCancel, fields, assoc);
         return orderCancel;
+    }
+
+    @Override
+    public PreferenceDto getHelpLineDetails() throws Exception {
+        PreferenceDto preferenceDto = new PreferenceDto();
+        preferenceDto.setHelplineNumber(systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+        preferenceDto.setCustomerCareEmail(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_CARE_EMAIL));
+        return preferenceDto;
     }
 }

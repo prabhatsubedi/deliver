@@ -535,7 +535,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
             i++;
         }
 
-        String sqQuery =    "SELECT COUNT(i.id) FROM Items i WHERE "+queryString+" AND i.category_id IN "+categoryId.toString().replace("[", "(").replace("]", ")")+" AND i.brand_id IN "+storeId.toString().replace("[", "(").replace("]", ")")+" ";
+        String sqQuery =    "SELECT COUNT(i.id) FROM items i WHERE "+queryString+" AND i.category_id IN "+categoryId.toString().replace("[", "(").replace("]", ")")+" AND i.brand_id IN "+storeId.toString().replace("[", "(").replace("]", ")")+" ";
 
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
         //query.setParameter("storeId", storeId);
@@ -546,7 +546,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public Integer getTotalNumberOfItems(Integer categoryId, Integer storeId) throws Exception {
-        String sqQuery =    "SELECT COUNT(i.id) FROM Items i WHERE i.category_id =:categoryId AND i.brand_id =:storeId";
+        String sqQuery =    "SELECT COUNT(i.id) FROM items i WHERE i.category_id =:categoryId AND i.brand_id =:storeId";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
         query.setParameter("categoryId", categoryId);
         query.setParameter("storeId", storeId);

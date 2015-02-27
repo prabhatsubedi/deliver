@@ -152,6 +152,14 @@ public class CustomerServiceImpl implements CustomerService {
             registeredCustomer.getUser().getUserDevice().setHeight(customerEntity.getUser().getUserDevice().getHeight());
             registeredCustomer.getUser().getUserDevice().setWidth(customerEntity.getUser().getUserDevice().getWidth());
 
+            /*
+            * if current login is the first login of the current customer
+            * set reward for the customer
+            * */
+            if(registeredCustomer.getUser().getLastActivityDate().equals(null)) {
+                registeredCustomer.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
+            }
+
             registeredCustomer.getUser().setLastActivityDate(MessageBundle.getCurrentTimestampSQL());
 
             validateUserDevice(registeredCustomer.getUser().getUserDevice());
@@ -870,6 +878,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         referrer.setReferredFriendsCount(referred_friends_count);
         referrer.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
+        //referrer.setRewardsEarned(referrer.getRewardsEarned().add(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT))));
         customerDaoService.update(referrer);
 
         CustomerEntity cUser = getCustomerByFbId(user.getCustomer().getFacebookId());
@@ -886,7 +895,7 @@ public class CustomerServiceImpl implements CustomerService {
         user.getCustomer().setReferredBy(Long.parseLong(headerDto.getId()));
         user.getCustomer().setFbToken(headerDto.getAccessToken());
         user.getCustomer().setUser(user);
-        user.getCustomer().setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_REWARD_AMOUNT)));
+        //user.getCustomer().setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
         userDaoService.save(user);
     }
 

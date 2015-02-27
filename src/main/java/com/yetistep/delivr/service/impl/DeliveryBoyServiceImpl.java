@@ -78,6 +78,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     @Autowired
     CustomerService customerService;
 
+    @Autowired
+    CustomerDaoService customerDaoService;
+
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Delivery Boy +++++++++++++++++");
@@ -489,6 +492,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 String extraDetail = orderId.toString()+"/status/"+JobOrderStatus.ORDER_ACCEPTED.toString();
                 PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
 
+                /*
+                * if email subscription is set true
+                * send the email containing order detail to the contact person of the store
+                * */
                 if (orderEntity.getStore().getSendEmail()){
                     String subject = "New order has been placed : "+orderEntity.getId();
                     String body = EmailMsg.orderPlaced(orderEntity.getStore().getContactPerson(), getServerUrl(), orderEntity);
@@ -626,6 +633,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         rating.setCustomerRating(orderEntity.getRating().getCustomerRating());
         rating.setDeliveryBoyComment(orderEntity.getRating().getDeliveryBoyComment());
         order.setRating(rating);
+        List<OrderEntity> customersOrders = orderDaoService.getCustomersOrders(order.getCustomer().getId());
         boolean status = orderDaoService.update(order);
         if(status){
             /* Updating unit price of item */
@@ -634,6 +642,17 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             String message = MessageBundle.getMessage("CPN006","push_notification.properties");
             String extraDetail = order.getId().toString()+"/status/"+JobOrderStatus.DELIVERED.toString();
             PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
+            /*
+            * if the transaction is first transaction of  the current customer
+            * set reward for referrer
+            * */
+            if(customersOrders.size() == 0){
+               Long referrerId = order.getCustomer().getReferredBy();
+               CustomerEntity referrer = customerDaoService.find(referrerId);
+               referrer.setRewardsEarned(referrer.getRewardsEarned().add(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT))));
+               customerDaoService.update(referrer);
+            }
+
         }
         return status;
     }

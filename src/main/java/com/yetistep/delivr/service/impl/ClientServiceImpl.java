@@ -941,7 +941,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         String clientName = client.getUser().getFullName();
         Integer referredFriendsCount = client.getReferredFriendsCount();
 
-        if(referredFriendsCount >= 3)
+        if(referredFriendsCount >= Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.MAX_REFERRED_FRIENDS_COUNT)))
             throw new YSException("Your friend invitation already reached the maximum number.");
 
 
@@ -956,7 +956,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         Integer cnt = 0;
         if(emailList.size()>0){
             for (String email: emailList){
-                if(referredFriendsCount >= 3)
+                if(referredFriendsCount >= Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.MAX_REFERRED_FRIENDS_COUNT)))
                     break;
                 String serverUrl = getServerUrl();
                 String body = "<p>Hi</p>";

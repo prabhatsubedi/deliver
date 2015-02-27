@@ -682,15 +682,15 @@ $(document).ready(function(){
                             var address_contact_person = infoWindowData.contactPerson;
                             var address_email = infoWindowData.email;
                             var address_email_subscription = infoWindowData.sendEmail;
-                            $('#store_name', marker_address).attr('value', address_name);
-                            $('#street', marker_address).attr('value', address_street_name);
-//                            $('.address_postal_code .address_value', marker_address).attr('value', address_postal_code);
-                            $('#city', marker_address).attr('value', address_city);
-                            $('#state', marker_address).attr('value', address_state);
-                            $('#country', marker_address).attr('value', address_country);
-                            $('#contact_no', marker_address).attr('value', address_contact_number);
-                            $('#contact_person', marker_address).attr('value', address_contact_person);
-                            $('#email', marker_address).attr('value', address_email);
+                            $('#store_name', marker_address).val(address_name);
+                            $('#street', marker_address).val(address_street_name);
+//                            $('.address_postal_code .address_value', marker_address).val(address_postal_code);
+                            $('#city', marker_address).val(address_city);
+                            $('#state', marker_address).val(address_state);
+                            $('#country', marker_address).val(address_country);
+                            $('#contact_no', marker_address).val(address_contact_number);
+                            $('#contact_person', marker_address).val(address_contact_person);
+                            $('#email', marker_address).val(address_email);
                             $('#email_subscription', marker_address).attr('checked', address_email_subscription);
                             if(address_email_subscription)
                                 $('.check_span', marker_address).addClass('icon_full');
@@ -713,14 +713,14 @@ $(document).ready(function(){
                                 var address_contact_person = infoWindowData.contactPerson;
                                 var address_email = infoWindowData.email;
                                 var address_email_subscription = infoWindowData.sendEmail;
-                                $('#store_name', marker_address).attr('value', address_name);
-                                $('#street', marker_address).attr('value', address_street_name);
-                                $('#city', marker_address).attr('value', address_city);
-                                $('#state', marker_address).attr('value', address_state);
-                                $('#country', marker_address).attr('value', address_country);
-                                $('#contact_no', marker_address).attr('value', address_contact_number);
-                                $('#contact_person', marker_address).attr('value', address_contact_person);
-                                $('#email', marker_address).attr('value', address_email);
+                                $('#store_name', marker_address).val(address_name);
+                                $('#street', marker_address).val(address_street_name);
+                                $('#city', marker_address).val(address_city);
+                                $('#state', marker_address).val(address_state);
+                                $('#country', marker_address).val(address_country);
+                                $('#contact_no', marker_address).val(address_contact_number);
+                                $('#contact_person', marker_address).val(address_contact_person);
+                                $('#email', marker_address).val(address_email);
                                 $('#email_subscription', marker_address).attr('checked', address_email_subscription);
                                 if(address_email_subscription)
                                     $('.check_span', marker_address).addClass('icon_full');
@@ -806,14 +806,14 @@ $(document).ready(function(){
                                                 var address_email = newInfoData.email;
                                                 var address_email_subscription = newInfoData.sendEmail;
 
-                                                $('#store_name', marker_address).attr('value', address_name);
-                                                $('#street', marker_address).attr('value', address_street_name);
-                                                $('#city', marker_address).attr('value', address_city);
-                                                $('#state', marker_address).attr('value', address_state);
-                                                $('#country', marker_address).attr('value', address_country);
-                                                $('#contact_no', marker_address).attr('value', address_contact_number);
-                                                $('#contact_person', marker_address).attr('value', address_contact_person);
-                                                $('#email', marker_address).attr('value', address_email);
+                                                $('#store_name', marker_address).val(address_name);
+                                                $('#street', marker_address).val(address_street_name);
+                                                $('#city', marker_address).val(address_city);
+                                                $('#state', marker_address).val(address_state);
+                                                $('#country', marker_address).val(address_country);
+                                                $('#contact_no', marker_address).val(address_contact_number);
+                                                $('#contact_person', marker_address).val(address_contact_person);
+                                                $('#email', marker_address).val(address_email);
                                                 $('#email_subscription', marker_address).attr('checked', address_email_subscription);
                                                 if(address_email_subscription)
                                                     $('.check_span', marker_address).addClass('icon_full');

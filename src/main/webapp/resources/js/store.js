@@ -192,10 +192,39 @@ if(typeof(Store) == "undefined") var Store = {};
             $('#form_store').submit();
         });
 
-        $('#form_store').validate({
+        $('#form_store').submit(function(e) {
+
+            e.preventDefault();
+
+            var geoKeyObject = arrGeoPoints[$(".save_marker").eq(0).attr('data-id')];
+            var geoParent = '#form_store';
+
+            var address_name = $('#store_name', geoParent).val();
+            var address_street_name = $('#street', geoParent).val();
+            var address_city = $('#city', geoParent).val();
+            var address_state = $('#state', geoParent).val();
+            var address_country = $('#country', geoParent).val();
+            var address_contact_number = $('#contact_no', geoParent).val();
+            var address_contact_person = $('#contact_person', geoParent).val();
+            var address_email = $('#email', geoParent).val();
+            var address_email_subscription = $('#email_subscription', geoParent).prop('checked');
+
+            geoKeyObject.name = address_name;
+            geoKeyObject.street = address_street_name;
+            geoKeyObject.city = address_city;
+            geoKeyObject.state = address_state;
+            geoKeyObject.country = address_country;
+            geoKeyObject.contactNo = address_contact_number;
+            geoKeyObject.contactPerson = address_contact_person;
+            geoKeyObject.email = address_email;
+            geoKeyObject.sendEmail = address_email_subscription;
+
+            return false;
+        });
+        $('#form_store').validate();
+
+/*        $('#form_store').validate({
             submitHandler: function() {
-//                var loaderDiv = "#store_section .form_content";
-//                $(loaderDiv).addClass('loader_div').append('<div class="loader"></div>');
 
                 var geoKeyObject = arrGeoPoints[$(".save_marker").eq(0).attr('data-id')];
                 var geoParent = '#form_store';
@@ -220,14 +249,9 @@ if(typeof(Store) == "undefined") var Store = {};
                 geoKeyObject.email = address_email;
                 geoKeyObject.sendEmail = address_email_subscription;
 
-//                setTimeout(function(){
-//                    $(loaderDiv).removeClass('loader_div').children('.loader').hide();
-                    updateGeoPoints(false);
-//                }, 500);
-
                 return false;
             }
-        });
+        });*/
 
 //        $('#store_name').rules('add', {required: true});
         $('#street').rules('add', {required: true});

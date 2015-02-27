@@ -34,6 +34,7 @@ public class ReasonDetailsDaoServiceImpl implements ReasonDetailsDaoService {
         criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("cancelReason"), "cancelReason")
+               // .add(Projections.property("ratingStar"), "ratingStar")
         ).setResultTransformer(Transformers.aliasToBean(ReasonDetailsEntity.class));
         criteria.add(Restrictions.eq("status", true));
         List<ReasonDetailsEntity> reasonDetailsList = criteria.list();

@@ -17,7 +17,9 @@ import java.util.List;
 public class ReasonDetailsEntity {
     private Integer id;
     private String cancelReason;
+    //private Integer ratingStar;
     private Boolean status;
+
     private List<OrderCancelEntity> orderCancelEntities;
 
     @Id
@@ -39,6 +41,15 @@ public class ReasonDetailsEntity {
     public void setCancelReason(String cancelReason) {
         this.cancelReason = cancelReason;
     }
+
+//    @Column(name="rating_star")
+//    public Integer getRatingStar() {
+//        return ratingStar;
+//    }
+//
+//    public void setRatingStar(Integer ratingStar) {
+//        this.ratingStar = ratingStar;
+//    }
 
     @Column(name="status", columnDefinition = "TINYINT(1)")
     public Boolean getStatus() {

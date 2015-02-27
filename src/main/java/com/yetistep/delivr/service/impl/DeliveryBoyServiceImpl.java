@@ -644,11 +644,14 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         for(ItemsOrderEntity itemsOrder: itemsOrderEntities){
             ItemEntity item = itemsOrder.getItem();
             if(item != null && itemsOrder.getAvailabilityStatus()){
-                BigDecimal unitPrice = BigDecimalUtil.getUnitPrice(itemsOrder.getItemTotal(), itemsOrder.getQuantity());
-                if(unitPrice != null){
-                    if(!item.getUnitPrice().equals(unitPrice)){
-                        item.setUnitPrice(unitPrice);
-                        itemDaoService.update(item);
+                if(item.getAttributesTypes().size() == 0){
+                    BigDecimal unitPrice = BigDecimalUtil.getUnitPrice(itemsOrder.getItemTotal(), itemsOrder.getQuantity());
+                    if(unitPrice != null){
+                        if(!item.getUnitPrice().equals(unitPrice)){
+                            log.info("Updating unit price of item with ID:"+item.getId());
+                            item.setUnitPrice(unitPrice);
+                            itemDaoService.update(item);
+                        }
                     }
                 }
             }

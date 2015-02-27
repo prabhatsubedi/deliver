@@ -866,4 +866,23 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/get_helpline_info", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getHelplineInformation(@RequestHeader HttpHeaders headers) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            //  validateMobileClient(headerDto.getAccessToken());
+
+            PreferenceDto helplineInfo = clientService.getHelpLineDetails();
+            ServiceResponse serviceResponse = new ServiceResponse("Help line details has been retrieved successfully");
+            serviceResponse.addParam("helplineInfo", helplineInfo);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving helpline information", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

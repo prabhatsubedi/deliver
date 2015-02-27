@@ -7,6 +7,7 @@ import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
+import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.UserService;
 import com.yetistep.delivr.util.GeneralUtil;
@@ -408,6 +409,25 @@ public class DeliveryBoyController extends AbstractManager{
 
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while rejecting order", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_acceptance_radius", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getAcceptanceRadius(@RequestHeader HttpHeaders headers) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            //  validateMobileClient(headerDto.getAccessToken());
+
+            PreferenceDto acceptanceDetails = deliveryBoyService.getAcceptanceDetails();
+            ServiceResponse serviceResponse = new ServiceResponse("Acceptance radius has been retrieved successfully");
+            serviceResponse.addParam("acceptanceDetails", acceptanceDetails);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving acceptance radius", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

@@ -8,6 +8,7 @@ import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
+import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
@@ -162,6 +163,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         subAssoc.put("store", "name,latitude,longitude,street,city,state,country");
         subAssoc.put("customer", "latitude,longitude,user");
         subAssoc.put("user", "id,fullName");
+        subAssoc.put("addresses", "id,latitude,longitude,street,city,state,country");
 
         List<OrderEntity> activeOrders = new ArrayList<>();
         List<JobOrderStatus> activeStatuses = new ArrayList<>();
@@ -619,12 +621,31 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         order.setRating(rating);
         boolean status = orderDaoService.update(order);
         if(status){
+            /* Updating unit price of item */
+            this.updateItemPrice(order);
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN006","push_notification.properties");
             String extraDetail = order.getId().toString()+"/status/"+JobOrderStatus.DELIVERED.toString();
             PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
         }
         return status;
+    }
+
+    /* This method is used to update unit price of an item. */
+    private void updateItemPrice(OrderEntity orderEntity) throws Exception {
+        List<ItemsOrderEntity> itemsOrderEntities = orderEntity.getItemsOrder();
+        for(ItemsOrderEntity itemsOrder: itemsOrderEntities){
+            ItemEntity item = itemsOrder.getItem();
+            if(item != null && itemsOrder.getAvailabilityStatus()){
+                BigDecimal unitPrice = BigDecimalUtil.getUnitPrice(itemsOrder.getItemTotal(), itemsOrder.getQuantity());
+                if(unitPrice != null){
+                    if(!item.getUnitPrice().equals(unitPrice)){
+                        item.setUnitPrice(unitPrice);
+                        itemDaoService.update(item);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -1312,5 +1333,12 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             }
             return true;
         }
+    }
+
+    @Override
+    public PreferenceDto getAcceptanceDetails() throws Exception {
+        PreferenceDto preferenceDto = new PreferenceDto();
+        preferenceDto.setAcceptanceRadius(systemPropertyService.readPrefValue(PreferenceType.ACCEPTANCE_RADIUS));
+        return preferenceDto;
     }
 }

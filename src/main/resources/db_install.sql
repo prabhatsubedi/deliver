@@ -128,3 +128,7 @@ ALTER TABLE users DROP INDEX UK_6dotkott2kjsp8vw4d0m25fb7;
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('REPROCESS_EXTRA_TIME', '15');
 ALTER TABLE `courier_transaction`
 CHANGE COLUMN `customer_discount` `customer_discount` DECIMAL(16,2) NULL DEFAULT NULL ;
+
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('HELPLINE_NUMBER', '9800000000');
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('CUSTOMER_CARE_EMAIL', 'customercare@yetistep.com');
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('ACCEPTANCE_RADIUS', '0');

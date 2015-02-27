@@ -15,6 +15,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/image.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/courier_staff.js"></script>
 
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/maps.css" type="text/css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jquery.Jcrop.css" type="text/css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jcrop.css" type="text/css"/>
     <script>
@@ -212,7 +213,14 @@
                             <div class="profile_map form-group col-lg-7">
                                 <div class="profile_sub_title">Courier Staff Location</div>
                                 <div class="profile_map_body">
-                                    <div id="no-edit-map-canvas"></div>
+
+                                    <div class="map-container">
+                                        <div id="custom_map_controls" class="clearfix">
+                                            <div id="scroll_zoom" class="pull-left">Enable Scroll Zoom</div>
+                                        </div>
+                                        <div id="map-canvas"></div>
+                                    </div>
+
                                 </div>
                                 <div class="profile_map_info">
 
@@ -265,5 +273,15 @@
         </div>
     </div>
 </div>
+
+
+
+<div class="infowindow_template hidden">
+    <div class="infowindow">
+        <p><strong class="name_line"></strong></p>
+        <p class="address_line"></p>
+    </div>
+</div>
+
 </body>
 </html>

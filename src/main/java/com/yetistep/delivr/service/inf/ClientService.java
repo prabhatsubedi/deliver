@@ -9,6 +9,7 @@ import com.yetistep.delivr.model.OrderCancelEntity;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
+import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,4 +62,6 @@ public interface ClientService {
     public Boolean reOrder(Integer orderId, Long facebookId, Boolean flushCart) throws Exception;
 
     public OrderCancelEntity orderCancelDetails(Integer orderId) throws Exception;
+
+    public PreferenceDto getHelpLineDetails() throws Exception;
 }

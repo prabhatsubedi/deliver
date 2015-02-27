@@ -132,3 +132,5 @@ CHANGE COLUMN `customer_discount` `customer_discount` DECIMAL(16,2) NULL DEFAULT
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('HELPLINE_NUMBER', '9800000000');
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('CUSTOMER_CARE_EMAIL', 'customercare@yetistep.com');
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('ACCEPTANCE_RADIUS', '0');
+/* ############# 2015-02-27 ######################### */
+INSERT INTO `delivr_db`.`reason_details` (`cancel_reason`, `status`, `rating_star`) VALUES ('Item not available at store', '1', '5'), ('Item price is different in store', '1', '5'), ('Customer not reachable', '1', '0'), ('Customer denied to accept the items', '1', '0'), ('Customer location address not found', '1', '0'), ('Others', '1', '1');

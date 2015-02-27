@@ -648,9 +648,11 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             * */
             if(customersOrders.size() == 0){
                Long referrerId = order.getCustomer().getReferredBy();
-               CustomerEntity referrer = customerDaoService.find(referrerId);
-               referrer.setRewardsEarned(referrer.getRewardsEarned().add(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT))));
-               customerDaoService.update(referrer);
+               if(referrerId != null){
+                   CustomerEntity referrer = customerDaoService.find(referrerId);
+                   referrer.setRewardsEarned(referrer.getRewardsEarned().add(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT))));
+                   customerDaoService.update(referrer);
+               }
             }
 
         }

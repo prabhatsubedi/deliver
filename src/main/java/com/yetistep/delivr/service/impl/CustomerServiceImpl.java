@@ -185,7 +185,9 @@ public class CustomerServiceImpl implements CustomerService {
 //                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
 //                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());
 //            }
-
+            if(registeredCustomer.getUser().getLastActivityDate().equals(null)) {
+                customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
+            }
             customerDaoService.save(customerEntity);
 
         }

@@ -118,4 +118,11 @@ public class BigDecimalUtil {
         return input;
     }
 
+    public static BigDecimal getUnitPrice(BigDecimal itemTotal, Integer quantity){
+       if(itemTotal != null && quantity != null){
+            return itemTotal.divide(new BigDecimal(quantity));
+       }
+       return null;
+    }
+
 }

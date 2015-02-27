@@ -68,7 +68,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
 
     @Override
     public List<OrderInfoDto> getActiveOrdersList(Integer deliverBoyId) throws Exception {
-        String sqlQuery = "SELECT o.id as id, o.order_name as orderName, o.order_status as orderStatus, o.order_date as orderDate, " +
+        String sqlQuery = "SELECT DISTINCT o.id as id, o.order_name as orderName, o.order_status as orderStatus, o.order_date as orderDate, " +
                 "dbs.paid_to_courier as paidToCourier, dbs.customer_chargeable_distance as customerChargeableDistance, " +
                 "dbs.system_chargeable_distance as systemChargeableDistance, dbs.time_required as assignedTime, " +
                 "dbs.total_time_required as remainingTime, dbh.order_accepted_at as orderAcceptedAt FROM " +

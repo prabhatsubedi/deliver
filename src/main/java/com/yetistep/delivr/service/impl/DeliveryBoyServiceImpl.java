@@ -375,7 +375,17 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }
         List<OrderInfoDto> assignedOrders = orderDaoService.getAssignedOrders(deliveryBoyId);
         orderEntities.addAll(assignedOrders);
+        this.setOrderPriorities(orderEntities);
         return orderEntities;
+    }
+
+    /* This method is used to set order priorities. */
+    private void setOrderPriorities(List<OrderInfoDto> orderInfoDtos) {
+        int i = 1;
+       for(OrderInfoDto orderInfo: orderInfoDtos){
+          orderInfo.setPriority(i);
+           i++;
+       }
     }
 
     private void updateRemainingAndElapsedTime(OrderInfoDto orderInfoDto){

@@ -75,7 +75,8 @@ public class OrderDaoServiceImpl implements OrderDaoService {
                 "orders o INNER JOIN delivery_boys db on (db.id = o.delivery_boy_id) INNER JOIN " +
                 "dboy_selections dbs on (dbs.order_id = o.id AND dbs.dboy_id = db.id) INNER JOIN " +
                 "dboy_order_history dbh on(dbh.order_id = o.id) WHERE o.order_status in " +
-                "(:orderAccepted, :inRouteToPickUp, :atStore, :inRouteToDelivery) AND o.delivery_boy_id = :deliveryBoyId";
+                "(:orderAccepted, :inRouteToPickUp, :atStore, :inRouteToDelivery) AND o.delivery_boy_id = :deliveryBoyId " +
+                "order by orderStatus desc , id asc";
         Properties params = new Properties();
         params.put("enumClass", "com.yetistep.delivr.enums.JobOrderStatus");
         /*type 12 instructs to use the String representation of enum value*/
@@ -110,7 +111,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
                 "as customerChargeableDistance, dbs.system_chargeable_distance as systemChargeableDistance, " +
                 "dbs.time_required as assignedTime, dbs.total_time_required as remainingTime FROM orders o INNER JOIN " +
                 "dboy_selections dbs on (dbs.order_id = o.id) WHERE dbs.rejected = :rejected AND  o.order_status =:orderPlaced " +
-                "AND dbs.dboy_id = :deliveryBoyId";
+                "AND dbs.dboy_id = :deliveryBoyId order by id asc";
         Properties params = new Properties();
         params.put("enumClass", "com.yetistep.delivr.enums.JobOrderStatus");
         /*type 12 instructs to use the String representation of enum value*/

@@ -625,8 +625,15 @@ function toggleSwitch(value, elem) {
             return result;
         }, "Only numbers are allowed.");*/
 
+        $('#form_item').submit(function(){
+            $('#name_item').valid();
+            $('#description').valid();
+        });
+
         $('#form_item').validate({
             submitHandler: function() {
+
+                if($('#name_item').valid() == false || $('#description').valid() == false) return false;
 
                 if($('#category_container select.category_options').length < 2) {
                     alert('Item is not allowed to add to main category.');

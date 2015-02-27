@@ -134,6 +134,7 @@ public class EmailMsg {
         body.append("<table>");
 
         Integer i = 1;
+        body.append("<tr><td>SN</td><td>Item Name</td><td>Quantity</td><td>Rate</td></tr>");
         for (ItemsOrderEntity itemsOrder: order.getItemsOrder()) {
           ItemEntity item = itemsOrder.getItem();
             body.append("<tr>");

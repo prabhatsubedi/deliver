@@ -646,6 +646,7 @@ public class CustomerServiceImpl implements CustomerService {
         /* Finding delivery boys based on active status. */
         List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys();
         if(availableAndActiveDBoys.size() == 0){
+            log.info("No delivery boys available");
            throw new YSException("ORD012");
         }
         /* Selects nearest delivery boys based on timing. */
@@ -806,6 +807,7 @@ public class CustomerServiceImpl implements CustomerService {
         return filteredDBoys;
     }
 
+    /* This method return the time required for completing previous orders. */
     private int findRemainingTimeForPreviousOrder(Integer deliveryBoyId) throws Exception {
         OrderEntity previousActiveOrder = orderDaoService.getLastActiveOrder(deliveryBoyId);
         if (previousActiveOrder != null) {

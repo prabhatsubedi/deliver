@@ -496,7 +496,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 * if email subscription is set true
                 * send the email containing order detail to the contact person of the store
                 * */
-                if (orderEntity.getStore().getSendEmail()){
+                if (orderEntity.getStore().getSendEmail() != null && orderEntity.getStore().getSendEmail()){
                     String subject = "New order has been placed : "+orderEntity.getId();
                     String body = EmailMsg.orderPlaced(orderEntity.getStore().getContactPerson(), getServerUrl(), orderEntity);
                     sendMail(orderEntity.getStore().getEmail(), body, subject);

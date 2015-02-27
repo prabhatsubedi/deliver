@@ -1,5 +1,6 @@
 package com.yetistep.delivr.service.impl;
 
+import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.OrderSummaryDto;
@@ -29,7 +30,7 @@ import java.util.*;
  * Time: 12:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DeliveryBoyServiceImpl implements DeliveryBoyService {
+public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryBoyService {
     private static final Logger log = Logger.getLogger(DeliveryBoyServiceImpl.class);
 
     @Autowired
@@ -487,6 +488,12 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 message = String.format(message, orderEntity.getStore().getName(), deliveryBoyEntity.getUser().getFullName());
                 String extraDetail = orderId.toString()+"/status/"+JobOrderStatus.ORDER_ACCEPTED.toString();
                 PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
+
+                if (orderEntity.getStore().getSendEmail()){
+                    String subject = "New order has been placed : "+orderEntity.getId();
+                    String body = EmailMsg.orderPlaced(orderEntity.getStore().getContactPerson(), getServerUrl(), orderEntity);
+                    sendMail(orderEntity.getStore().getEmail(), body, subject);
+                }
             }
             return status;
         } else if (deliveryBoyId.equals(deliveryBoySelectionEntity.getDeliveryBoy().getId())) {

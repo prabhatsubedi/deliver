@@ -646,8 +646,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
             function categoryList(categories, padding, load) {
                 category_list += '<ul class="nav nav-stacked ' + (load ? "" : "hidden") + '">';
                 for(var i = 0; i < categories.length; i++) {
-                    category_list += '<li><a href="#" data-id="' + categories[i].id + '" style="padding-left: ' + padding + 'px"><span class="glyphicon ' + (categories[i].child.length > 0 ? 'glyphicon-plus' : '') + '"></span>' + categories[i].name + '</a>';
-                    if(categories[i].child.length > 0) categoryList(categories[i].child, padding + 20);
+                    category_list += '<li><a href="#" data-id="' + categories[i].id + '" style="padding-left: ' + padding + 'px"><span class="glyphicon ' + ( (categories[i].child != undefined) && (categories[i].child.length > 0) ? 'glyphicon-plus' : '') + '"></span>' + categories[i].name + '</a>';
+                    if((categories[i].child != undefined) && (categories[i].child.length > 0)) categoryList(categories[i].child, padding + 20);
                     category_list += '</li>';
                 }
                 category_list += '</ul>';

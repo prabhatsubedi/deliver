@@ -56,7 +56,9 @@
        <mapping class="com.yetistep.delivr.model.ItemsOrderAttributeEntity" />
        <mapping class="com.yetistep.delivr.model.CustomItemEntity" />
        <mapping class="com.yetistep.delivr.model.ReasonDetailsEntity" />
-        <mapping class="com.yetistep.delivr.model.InvoiceEntity" />
+       <mapping class="com.yetistep.delivr.model.InvoiceEntity" />
+       <mapping class="com.yetistep.delivr.model.BillEntity" />
+       <mapping class="com.yetistep.delivr.model.ReceiptEntity" />
         <!--<mapping class="com.yetistep.delivr.model.TestEntity" />-->
 
     </session-factory>

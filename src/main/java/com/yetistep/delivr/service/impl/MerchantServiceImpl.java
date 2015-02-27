@@ -657,20 +657,23 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         if(itemCategories.size()>1){
             CategoryEntity parentCategory = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
             if(parentCategory.getItem().size() > 0)
-                throw new YSException("VLD012");
+                throw new YSException("VLD031");
 
-            itemCategories.set(0, parentCategory);
             int i;
             for(i = 1; i<itemCategories.size(); i++){
                itemCategories.get(i).setParent(itemCategories.get(i-1));
                itemCategories.get(i).setFeatured(false);
                itemCategories.get(i).setStoresBrand(storesBrand);
             }
+            itemCategories.set(0, parentCategory);
             merchantDaoService.saveCategories(itemCategories);
             //get items category
             category = itemCategories.get(itemCategories.size()-1);
         }else{
             category = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
+            if (category.getChild().size() > 0){
+                throw new YSException("VLD032");
+            }
         }
 
         item.setCategory(category);
@@ -758,26 +761,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
         StoresBrandEntity storesBrand = dbItem.getStoresBrand();
-        CategoryEntity category = new CategoryEntity();
-        //update items category
-        if(itemCategories.size()>1){
-            //get items category
-            category = itemCategories.get(itemCategories.size()-1);
-            int i;
-            for(i = 1; i<itemCategories.size(); i++){
-                itemCategories.get(i).setParent(itemCategories.get(i-1));
-                itemCategories.get(i).setFeatured(false);
-                itemCategories.get(i).setStoresBrand(storesBrand);
-            }
-            //save categories
-            itemCategories.remove(itemCategories.get(0));
-            merchantDaoService.saveCategories(itemCategories);
-        }else{
-            category = itemCategories.get(0);
-        }
-
-        dbItem.setCategory(category);
-
         List<ItemsStoreEntity> dbItemStoreEntities = dbItem.getItemsStores();
         List<ItemsAttributesTypeEntity> dbItemsAttributesTypes = dbItem.getAttributesTypes();
         List<Integer> dbItemsAttributesTypeIdList = new ArrayList<Integer>();
@@ -854,6 +837,33 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         dbItem.setModifiedDate(DateUtil.getCurrentTimestampSQL());
+
+        CategoryEntity category = new CategoryEntity();
+        //update items category
+        if(itemCategories.size()>1){
+            CategoryEntity parentCategory = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
+            if(parentCategory.getItem().size() > 0)
+                throw new YSException("VLD031");
+
+            int i;
+            for(i = 1; i<itemCategories.size(); i++){
+                itemCategories.get(i).setParent(itemCategories.get(i-1));
+                itemCategories.get(i).setFeatured(false);
+                itemCategories.get(i).setStoresBrand(storesBrand);
+            }
+            itemCategories.set(0, parentCategory);
+            merchantDaoService.saveCategories(itemCategories);
+            //get items category
+            category = itemCategories.get(itemCategories.size()-1);
+        }else{
+            category = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
+            if (category.getChild().size() > 0){
+                throw new YSException("VLD032");
+            }
+        }
+
+        dbItem.setCategory(category);
+
         merchantDaoService.updateItem(dbItem);
 
         //add new images
@@ -987,7 +997,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
           List<CategoryEntity> newCategories = new ArrayList<CategoryEntity>();
           for(CategoryEntity newCategory:  categories)
           {
-            if(newCategory.getParent().getId()==parent_id && (newCategory.getStoresBrand()== null || newCategory.getStoresBrand().getId() == storeId ))
+            if(newCategory.getParent().getId().equals(parent_id) && (newCategory.getStoresBrand()== null || newCategory.getStoresBrand().getId() == storeId ))
             {
                 newCategory.setChild(getCategoryTree(categories, newCategory.getId(), storeId));
                 List<ItemEntity> items = newCategory.getItem();

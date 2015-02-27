@@ -5,10 +5,7 @@ import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.dao.inf.StoreDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.InvoiceStatus;
-import com.yetistep.delivr.model.InvoiceEntity;
-import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.model.OrderEntity;
-import com.yetistep.delivr.model.StoreEntity;
+import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.AccountService;
 import com.yetistep.delivr.util.InvoiceGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,4 +54,19 @@ public class AccountServiceImpl implements AccountService{
         String invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice);
         return  invoicePath;
     }
+
+    @Override
+    public String getGenerateBillAndReceipt(HeaderDto headerDto) throws Exception{
+        Integer orderId = Integer.parseInt(headerDto.getId());
+        OrderEntity order = orderDaoService.find(orderId);
+        InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
+        BillEntity bill = new BillEntity();
+        bill.setOrder(order);
+        bill.setCustomer(order.getCustomer());
+
+        String invoicePath = invoiceGenerator.generateBillAndReceipt(order, bill);
+
+        return invoicePath;
+    }
+
 }

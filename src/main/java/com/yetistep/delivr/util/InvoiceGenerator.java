@@ -8,6 +8,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.yetistep.delivr.enums.PreferenceType;
+import com.yetistep.delivr.model.BillEntity;
 import com.yetistep.delivr.model.InvoiceEntity;
 import com.yetistep.delivr.model.MerchantEntity;
 import com.yetistep.delivr.model.OrderEntity;
@@ -66,6 +67,12 @@ public class InvoiceGenerator {
         //send emails
         //sendInvoicePaymentNReceiptMail(coupon, merchant, ytInvoice, adminStripeId, invoicePath);
         return invoicePath;
+    }
+
+
+    public String generateBillAndReceipt(OrderEntity order, BillEntity bill){
+
+        return new String();
     }
 
     private File generateInvoicePDF(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice) throws Exception {

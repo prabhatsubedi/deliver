@@ -1,5 +1,6 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -61,6 +62,7 @@ public class OrderEntity implements Serializable {
     private BigDecimal itemServiceAndVatCharge;
     private InvoiceEntity invoice;
     private Integer reprocessTime;
+    private BillEntity bill;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -394,8 +396,15 @@ public class OrderEntity implements Serializable {
     public Integer getReprocessTime() {
         return reprocessTime;
     }
+    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST)
+    public BillEntity getBill() {
+        return bill;
+    }
 
     public void setReprocessTime(Integer reprocessTime) {
         this.reprocessTime = reprocessTime;
+    }
+    public void setBill(BillEntity bill) {
+        this.bill = bill;
     }
 }

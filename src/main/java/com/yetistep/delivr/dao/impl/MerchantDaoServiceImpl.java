@@ -460,7 +460,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public Boolean updateItem(ItemEntity value) throws Exception {
-        getCurrentSession().persist(value);
+        getCurrentSession().merge(value);
         return true;
     }
 
@@ -471,7 +471,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
             if(value.getId() == null){
                 getCurrentSession().save(value);
             }else{
-                getCurrentSession().save(value);
+                getCurrentSession().update(value);
             }
             if ( i % 20 == 0 ) { //20, same as the JDBC batch size
                 //flush a batch of inserts and release memory:

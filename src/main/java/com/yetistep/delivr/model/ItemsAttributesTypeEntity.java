@@ -47,7 +47,7 @@ public class ItemsAttributesTypeEntity {
         this.item = item;
     }
 
-    @OneToMany(mappedBy = "type", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "type", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     public List<ItemsAttributeEntity> getItemsAttribute() {
         return itemsAttribute;
     }

@@ -107,6 +107,24 @@ public class AccountantController {
         }
     }
 
+    @RequestMapping(value = "/generate_bill_and_receipt", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getGenerateBillAndReceipt(@RequestHeader HttpHeaders headers) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            String invoicePath = accountService.getGenerateBillAndReceipt(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Invoice has been generated successfully: "+headerDto.getId());
+            serviceResponse.addParam("path", invoicePath);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while generating invoice: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
 
 

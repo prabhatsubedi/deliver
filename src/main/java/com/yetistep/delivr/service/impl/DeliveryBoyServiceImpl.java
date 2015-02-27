@@ -633,6 +633,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         rating.setCustomerRating(orderEntity.getRating().getCustomerRating());
         rating.setDeliveryBoyComment(orderEntity.getRating().getDeliveryBoyComment());
         order.setRating(rating);
+        CustomerEntity customerEntity = order.getCustomer();
+        customerEntity.setTotalOrderDelivered(customerEntity.getTotalOrderDelivered()+1);
         List<OrderEntity> customersOrders = orderDaoService.getCustomersOrders(order.getCustomer().getId());
         boolean status = orderDaoService.update(order);
         if(status){

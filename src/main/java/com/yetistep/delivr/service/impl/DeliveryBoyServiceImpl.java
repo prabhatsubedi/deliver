@@ -644,7 +644,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         rating.setDeliveryBoyComment(orderEntity.getRating().getDeliveryBoyComment());
         order.setRating(rating);
         CustomerEntity customerEntity = order.getCustomer();
-        customerEntity.setTotalOrderDelivered(customerEntity.getTotalOrderDelivered()+1);
+        customerEntity.setTotalOrderDelivered(GeneralUtil.ifNullToZero(customerEntity.getTotalOrderDelivered())+1);
         List<OrderEntity> customersOrders = orderDaoService.getCustomersOrders(order.getCustomer().getId());
         boolean status = orderDaoService.update(order);
         if(status){
@@ -940,7 +940,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         itemsOrderEntity.setVat(itemOrder.getVat());
         itemsOrderEntity.setServiceCharge(itemOrder.getServiceCharge());
         itemsOrderEntity.setNote(itemOrder.getNote());
-
+        itemsOrderEntity.setPurchaseStatus(itemOrder.getPurchaseStatus());
+        if (itemOrder.getPurchaseStatus() != null && itemOrder.getPurchaseStatus()) {
+            itemsOrderEntity.setAvailabilityStatus(true);
+        }
          /* Updating name of custom item added by delivery boy */
         if(itemsOrderEntity.getCustomItem() != null && itemOrder.getCustomItem() != null){
             itemsOrderEntity.getCustomItem().setName(itemOrder.getCustomItem().getName());
@@ -1296,7 +1299,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             throw new YSException("ITM004");
         }
         if (itemOrder.getItem() != null) {
-            String fields = "id,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,note,customerNote,item";
+            String fields = "id,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,note,purchaseStatus,customerNote,item";
 
             Map<String, String> assoc = new HashMap<>();
             Map<String, String> subAssoc = new HashMap<>();

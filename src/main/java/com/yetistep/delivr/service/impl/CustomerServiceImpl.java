@@ -596,6 +596,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<Integer> cartIds = new ArrayList<Integer>();
         List<ItemsOrderEntity> itemsOrder = new ArrayList<ItemsOrderEntity>();
         Integer brandId = null;
+        StoresBrandEntity storesBrand = null;
         for (CartEntity cart : cartEntities) {
             ItemsOrderEntity itemsOrderEntity = new ItemsOrderEntity();
             itemsOrderEntity.setOrder(order);
@@ -629,6 +630,7 @@ public class CustomerServiceImpl implements CustomerService {
             itemsOrderEntity.setServiceAndVatCharge(serviceAndVatCharge);
             itemsOrder.add(itemsOrderEntity);
             brandId = cart.getStoresBrand().getId();
+            storesBrand = cart.getStoresBrand();
             cartIds.add(cart.getId());
         }
 
@@ -636,6 +638,11 @@ public class CustomerServiceImpl implements CustomerService {
         MerchantEntity merchant = merchantDaoService.getCommissionVatPartnerShipStatus(brandId);
         if(merchant == null){
             throw new YSException("MRC003");
+        }
+
+        Boolean isOpen = DateUtil.isTimeBetweenTwoTime(storesBrand.getOpeningTime().toString(), storesBrand.getClosingTime().toString(),DateUtil.getCurrentTime().toString());
+        if(!isOpen){
+            throw new YSException("CRT003");
         }
 
         order.setItemsOrder(itemsOrder);

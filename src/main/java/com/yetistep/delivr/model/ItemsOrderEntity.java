@@ -2,8 +2,6 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -32,6 +30,7 @@ public class ItemsOrderEntity implements Serializable {
     private String customerNote;
     private BigDecimal vat;
     private BigDecimal serviceCharge;
+    private Boolean purchaseStatus;
     private CustomItemEntity customItem;
     private List<ItemsOrderAttributeEntity> itemOrderAttributes;
 
@@ -138,6 +137,15 @@ public class ItemsOrderEntity implements Serializable {
 
     public void setServiceCharge(BigDecimal serviceCharge) {
         this.serviceCharge = serviceCharge;
+    }
+
+    @Column(name="purchase_status", columnDefinition = "TINYINT(1)")
+    public Boolean getPurchaseStatus() {
+        return purchaseStatus;
+    }
+
+    public void setPurchaseStatus(Boolean purchaseStatus) {
+        this.purchaseStatus = purchaseStatus;
     }
 
     @OneToOne(mappedBy = "itemsOrder", cascade = CascadeType.PERSIST, orphanRemoval=true)

@@ -1068,6 +1068,87 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         });
 
+        $('.open_chart').click(function(){
+
+            $('.open_chart').removeClass('active_chart');
+            $(this).addClass('active_chart');
+            $('#modal_chart').modal('show');
+
+        });
+
+        $('#chart-date-interval button').click(function(){
+
+            $('#chart-date-interval button').removeClass('btn-primary');
+            $(this).addClass('btn-primary');
+            Manager.getChart($('.active_chart').attr('data-action'), $('.active_chart').attr('data-title'), $(this).attr('data-period'));
+
+        });
+
+        $('#modal_chart').on('shown.bs.modal', function(){
+            Manager.getChart($('.active_chart').attr('data-action'), $('.active_chart').attr('data-title'))
+        });
+
+        $('#modal_chart').on('hidden.bs.modal', function(){
+            $('#chart_container').html('');
+        });
+
     };
+
+    Manager.getChart = function(action, title, period) {
+
+        var callback = function (status, jsondata){
+
+            if(!jsondata.success){
+                alert(jsondata.message)
+                return false;
+            }
+
+            var graphData = jsondata.params.graphData;
+            var count1 = graphData[Object.keys(graphData)[0]];
+            var count2 = graphData[Object.keys(graphData)[1]];
+            var chartData = [];
+
+            if(action == "get_on_time_delivery_graph") {
+                chartData = [['Date', 'On Time Delivery', 'Exceed On Time']];
+            } else if (action == "get_delivery_success_graph") {
+                chartData = [['Date', 'Successful Delivery', 'Failed Delivery']];
+            } else {
+                chartData = [['Date', 'Order Count', 'Total Time']];
+            }
+
+            for(var i in count1) {
+                var dateStr = new Date(i).format("mmm dd, yyyy");
+                chartData.push([dateStr, count1[i], count2[i]]);
+            }
+
+            if(Object.keys(count1).length < 1) chartData.push([null, 0, 0]);
+
+            title = title == undefined ? '' : title
+            var showTextEvery = Math.ceil(Object.keys(count1).length/10);
+            console.log(chartData.length);
+            var options = {
+                title: title,
+                titlePosition: 'out',
+                legend: {position: 'top'},
+                orientation: 'horizontal',
+                height: 280,
+                pointSize: 5,
+                hAxis: {showTextEvery: showTextEvery}
+            };
+
+            var chart = new google.visualization.AreaChart(document.getElementById('chart_container'));
+            var dataTable = google.visualization.arrayToDataTable(chartData);
+
+            chart.draw(dataTable, options);
+
+        };
+        callback.requestType = "GET";
+        callback.loaderDiv = "#modal_chart .modal-content";
+
+        if(!period) period = "1Month";
+
+        Main.request("/organizer/" + action, {}, callback, {id: period});
+
+    }
 
 })(jQuery);

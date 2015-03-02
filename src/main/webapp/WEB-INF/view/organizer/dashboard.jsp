@@ -7,13 +7,16 @@
 
     <%@include file="../includes/head.jsp" %>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/map.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false&libraries=places" type="text/javascript"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false&libraries=places,visualization" type="text/javascript"></script>
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/maps.css" type="text/css" />
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/manager.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
 
     <script type="text/javascript">
         var merchantRole = false;
+        google.load('visualization', '1.1', {packages: ['corechart']});
         $(document).ready(function(){
             Manager.loadDashboard();
         });
@@ -94,7 +97,7 @@
                         </div>
                         <div class="more_data_cont">
                             <div class="more_data">
-                                <div class="data_row"><span class="badge"><span class="count_std_averageDeliveryTime">0</span>m</span>Average Delivery time</div>
+                                <div class="data_row open_chart" data-action="get_delivery_graph" data-title="Delivery Graph"><span class="badge"><span class="count_std_averageDeliveryTime">0</span>m</span>Average Delivery time</div>
                             </div>
                         </div>
                     </div>
@@ -129,48 +132,50 @@
             <div class="bottom_blur"></div>
         </div>
 
-        <div class="block_counts col-sm-12">
-            <div class="col-sm-3 count_block_cont">
-                <div class="count_cont table_div">
-                    <span class="td_div"><span class="count_span" data-get="onTimeDelivery">0</span>%</span> <span class="count_label td_div">On Time Delivery</span>
+        <div class="clearfix">
+            <div class="block_counts col-sm-12">
+                <div class="col-sm-3 count_block_cont">
+                    <div class="count_cont table_div open_chart" data-action="get_on_time_delivery_graph" data-title="On Time and Time Exceed Delivery Graph">
+                        <span class="td_div"><span class="count_span" data-get="onTimeDelivery">0</span>%</span> <span class="count_label td_div">On Time Delivery</span>
+                    </div>
+                </div>
+                <div class="col-sm-3 count_block_cont open_chart" data-action="get_delivery_success_graph" data-title="Successful and Failed Delivery Graph">
+                    <div class="count_cont table_div">
+                        <span class="td_div"><span class="count_span" data-get="successfulDelivery">0</span>%</span> <span class="count_label td_div">Successful Delivery</span>
+                    </div>
+                </div>
+                <div class="col-sm-3 count_block_cont">
+                    <div class="count_cont table_div">
+                        <span class="count_span td_div" data-get="partnerStores">0</span> <span class="count_label td_div">Partner Stores</span>
+                    </div>
+                </div>
+                <div class="col-sm-3 count_block_cont">
+                    <div class="count_cont table_div">
+                        <span class="count_span td_div" data-get="totalUserRegistered">0</span> <span class="count_label td_div">Total User Registered</span>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-3 count_block_cont">
-                <div class="count_cont table_div">
-                    <span class="td_div"><span class="count_span" data-get="successfulDelivery">0</span>%</span> <span class="count_label td_div">Successful Delivery</span>
-                </div>
-            </div>
-            <div class="col-sm-3 count_block_cont">
-                <div class="count_cont table_div">
-                    <span class="count_span td_div" data-get="partnerStores">0</span> <span class="count_label td_div">Partner Stores</span>
-                </div>
-            </div>
-            <div class="col-sm-3 count_block_cont">
-                <div class="count_cont table_div">
-                    <span class="count_span td_div" data-get="totalUserRegistered">0</span> <span class="count_label td_div">Total User Registered</span>
-                </div>
-            </div>
-        </div>
 
-        <div class="block_counts col-sm-12">
-            <div class="col-sm-3 count_block_cont">
-                <div class="count_cont table_div">
-                    <span class="td_div count_red"><span class="count_span" data-get="timeExceededDelivery">0</span>%</span> <span class="count_label td_div">Exceed On Time</span>
+            <div class="block_counts col-sm-12">
+                <div class="col-sm-3 count_block_cont">
+                    <div class="count_cont table_div open_chart" data-action="get_on_time_delivery_graph" data-title="On Time and Time Exceed Delivery Graph">
+                        <span class="td_div count_red"><span class="count_span" data-get="timeExceededDelivery">0</span>%</span> <span class="count_label td_div">Exceed On Time</span>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-3 count_block_cont">
-                <div class="count_cont table_div">
-                    <span class="td_div count_red"><span class="count_span" data-get="deliveryFailed">0</span>%</span> <span class="count_label td_div">Delivery Fails</span>
+                <div class="col-sm-3 count_block_cont">
+                    <div class="count_cont table_div open_chart" data-action="get_delivery_success_graph" data-title="Successful and Failed Delivery Graph">
+                        <span class="td_div count_red"><span class="count_span" data-get="deliveryFailed">0</span>%</span> <span class="count_label td_div">Delivery Fails</span>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-3 count_block_cont">
-                <div class="count_cont table_div">
-                    <span class="count_span td_div" data-get="totalActiveUser">0</span> <span class="count_label td_div">Total Active Users</span>
+                <div class="col-sm-3 count_block_cont">
+                    <div class="count_cont table_div">
+                        <span class="count_span td_div" data-get="totalActiveUser">0</span> <span class="count_label td_div">Total Active Users</span>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-3 count_block_cont">
-                <div class="count_cont table_div">
-                    <span class="count_span td_div" data-get="newUserRegistered">0</span> <span class="count_label td_div">New User Registered</span>
+                <div class="col-sm-3 count_block_cont">
+                    <div class="count_cont table_div open_chart" data-action="get_new_user_graph" data-title="New Users Graph">
+                        <span class="count_span td_div" data-get="newUserRegistered">0</span> <span class="count_label td_div">New User Registered</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -184,6 +189,28 @@
     <div class="infowindow">
         <p><strong class="name_line"></strong></p>
         <p class="address_line"></p>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_chart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="chart_container">
+                </div>
+            </div>
+            <div class="modal-footer clearfix">
+                <div class="btn-toolbar pull-left" role="toolbar" id="chart-date-interval">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-primary" data-period="1Month"><b>1 M</b></button>
+                        <button type="button" class="btn btn-default" data-period="3Month"><b>3 M</b></button>
+                        <button type="button" class="btn btn-default" data-period="Year"><b>1 Y</b></button>
+                        <button type="button" class="btn btn-default" data-period="All"><b>All</b></button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -1822,6 +1822,20 @@ label.check_label .checkbox {
 .god_view .block_counts .count_cont .td_div.count_red {
     color: #f71d1d;
 }
+.god_view .open_chart {
+    cursor: pointer;
+}
+#modal_chart .modal-dialog {
+    width: auto;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+#modal_chart .modal-header {
+    font-weight: bold;
+}
+#modal_chart .modal-body {
+    min-height: 300px;
+}
 
 
 /* css media queries */

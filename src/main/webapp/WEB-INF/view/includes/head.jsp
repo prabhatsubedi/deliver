@@ -20,3 +20,4 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/search.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/hammer.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/main.js" id="pageContext" data-context="${pageContext.request.contextPath}"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/date.format.js"></script>

@@ -57,6 +57,7 @@ $(document).ready(function(){
                 data.businessLogo = $('#drop_zone img').attr('src');
                 data.companyRegistrationNo = $('#registration_no').val();
                 data.vatNo = $('#vat').val();
+                data.panNo = $('#pan').val();
 
                 user.status = 'ACTIVE';
                 user.fullName = $('#contact_person').val();

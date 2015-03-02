@@ -176,6 +176,9 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" id="vat" name="vat" placeholder="VAT">
                             </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="pan" name="pan" placeholder="PAN">
+                            </div>
                         </div>
 
                         <div class="tab-pane" id="step_3">

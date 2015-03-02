@@ -150,6 +150,16 @@
                                 </div>
 
                                 <div class="form-group clearfix">
+                                    <label for="pan" class="col-lg-4 floated_label no_pad">PAN</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_pan none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="pan" id="pan" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group clearfix">
                                     <label for="partnership" class="col-lg-4 floated_label no_pad">Partnership Status</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_partnership none_editable"></div>

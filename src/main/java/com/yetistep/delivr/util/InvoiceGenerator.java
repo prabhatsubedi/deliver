@@ -110,14 +110,11 @@ public class InvoiceGenerator {
 
             addBillBody(document, order, bill);
 
-            /*for (OrderEntity order: orders){
-                //add invoice body
-                addInvoiceBody(document, order, merchant, invoice);
+            document.newPage();
 
-                //add invoice footer
-                document.newPage();
-                cntPage++;
-            }*/
+            addBillAndReceiptHeader(document);
+
+            addReceiptBody(document, order, receipt, bill);
 
 
             document.close();
@@ -346,8 +343,9 @@ public class InvoiceGenerator {
 
     private void addBillBody(Document document, OrderEntity order, BillEntity bill) throws Exception {
         //add invoice detail
-        Paragraph title1 = PdfUtil.getParagraph(PdfUtil.smallBold, "Tax Invoice : "+bill.getId());
-        document.add(title1);
+        Paragraph title = PdfUtil.getParagraph(PdfUtil.smallBold, "Tax Invoice : "+bill.getId());
+        title.setAlignment(Element.ALIGN_CENTER);
+        document.add(title);
         PdfUtil.addEmptyLine(document, 1);//add empty line
 
 
@@ -364,7 +362,7 @@ public class InvoiceGenerator {
         String country = "";
         String mobile = "";
         for (AddressEntity address: order.getCustomer().getUser().getAddresses()){
-            if (address.getdFlag().equals("D")){
+            if (address.getdFlag() != null && address.getdFlag().equals("D")){
                 street = address.getStreet();
                 city = address.getCity();
                 state = address.getState();
@@ -383,6 +381,8 @@ public class InvoiceGenerator {
         invoiceTable.addCell(orderCell);
         invoiceTable.addCell(addressCell);
 
+        PdfUtil.setBorder(0, orderCell, addressCell);
+
         document.add(invoiceTable);
 
         PdfUtil.addEmptyLine(document, 2);//add empty line
@@ -390,27 +390,74 @@ public class InvoiceGenerator {
         //add billing table
         PdfPTable billingTable = new PdfPTable(2);
         billingTable.setWidthPercentage(100);
-        billingTable.setWidths(new float[]{10, 45, 45});
+        billingTable.setWidths(new float[]{45, 45});
 
 
         String currency = "NRS";
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Title", PdfUtil.smallBold), PdfUtil.getPhrase("Amount"+currency, PdfUtil.smallBold));
-        /*PdfUtil.addRow(billingTable, PdfUtil.getPhrase("1"), PdfUtil.getPhrase("Deal Fee"),
-                PdfUtil.getPhrase(currency + " " + invoice.getAmount()));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase("Total", PdfUtil.smallBold),
-                PdfUtil.getPhrase(currency + " " + invoice.getAmount(), PdfUtil.smallBold));
+       PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Title", PdfUtil.smallBold), PdfUtil.getPhrase("Amount"+currency, PdfUtil.smallBold));
+       PdfUtil.addRow(billingTable, PdfUtil.getPhrase("iDelivr Fee"),
+                PdfUtil.getPhrase(bill.getSystemServiceCharge()));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Delivery Fee"),
+                PdfUtil.getPhrase(currency + " " + bill.getDeliveryCharge(), PdfUtil.smallBold));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Subtotal"),
+                PdfUtil.getPhrase(currency + " " + bill.getDeliveryCharge().add(bill.getSystemServiceCharge()), PdfUtil.smallBold));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Vat"),
+                PdfUtil.getPhrase(currency + " " + bill.getVat(), PdfUtil.smallBold));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Grand Total"),
+                PdfUtil.getPhrase(currency + " " + bill.getDeliveryCharge().add(bill.getSystemServiceCharge()).add(bill.getVat()), PdfUtil.smallBold));
 
         document.add(billingTable);
 
 
+
+    }
+
+
+    private void addReceiptBody(Document document, OrderEntity order, ReceiptEntity receipt, BillEntity bill) throws Exception {
+        //add invoice detail
+        Paragraph title = PdfUtil.getParagraph(PdfUtil.smallBold, "Receipt for Payment of Delivery and iDelivery Fee");
+        document.add(title);
+        title.setAlignment(Element.ALIGN_CENTER);
+        PdfUtil.addEmptyLine(document, 1);//add empty line
+
+        PdfPCell infoCell = new PdfPCell();
+        PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
+        Paragraph info = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Bill No: "+bill.getId(), "Bill Issued On: "+bill.getGeneratedDate(), "Receipt No: "+receipt.getId(), "Order Id: "+order.getId());
+        infoCell.addElement(info);
+
         PdfUtil.addEmptyLine(document, 2);//add empty line
 
-        //add notes
-        document.add(PdfUtil.getParagraph(PdfUtil.smallFont, "Notes:"));
-        com.itextpdf.text.List noteList = new com.itextpdf.text.List(true);
-        noteList.add(new ListItem("Total cost is calculated as " + currency + " " + invoice.getAmount() + " per Deal per month.", PdfUtil.smallFont));
-        noteList.add(new ListItem("Deals with less than month period also, same rate is applicable.", PdfUtil.smallFont));
-        document.add(noteList);*/
+        PdfPCell receiptDetailCell = new PdfPCell();
+        PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
+        Paragraph detail = PdfUtil.getParagraph(PdfUtil.smallFont, true, "From: "+bill.getId(), "Delivered at: "+bill.getGeneratedDate(), "Mode of Payment : "+receipt.getId(), "Time of Payment: "+order.getId(), "Card Number: "+order.getId());
+        receiptDetailCell.addElement(detail);
+
+        PdfUtil.addEmptyLine(document, 2);//add empty line
+
+        PdfPCell billAmountCell = new PdfPCell();
+        PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
+        Paragraph amount = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Total Amount Billed: "+bill.getBillAmount());
+        billAmountCell.addElement(amount);
+
+        PdfUtil.addEmptyLine(document, 2);//add empty line
+
+        PdfPCell receivedCell = new PdfPCell();
+        PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
+        Paragraph receivedBy = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Received by: "+bill.getCustomer().getUser().getFullName());
+        receivedCell.addElement(receivedBy);
+
+        PdfUtil.addEmptyLine(document, 2);//add empty line
+
+        PdfPTable receiptTable = new PdfPTable(1);
+        receiptTable.setWidthPercentage(100);
+        receiptTable.addCell(infoCell);
+        receiptTable.addCell(receiptDetailCell);
+        receiptTable.addCell(billAmountCell);
+        receiptTable.addCell(receivedCell);
+
+        PdfUtil.setBorder(0, infoCell, receiptDetailCell, billAmountCell, receivedCell);
+
+        document.add(receiptTable);
     }
 
    /* private void sendInvoicePaymentNReceiptMail() {

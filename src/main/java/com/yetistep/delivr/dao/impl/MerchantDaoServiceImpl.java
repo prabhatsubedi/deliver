@@ -610,6 +610,9 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class, "order");
         criteria.createAlias("orderCancel", "orderCancel");
         List<JobOrderStatus> purchaseOrders = new ArrayList<JobOrderStatus>();
+        purchaseOrders.add(JobOrderStatus.ORDER_ACCEPTED);
+        purchaseOrders.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
+        purchaseOrders.add(JobOrderStatus.AT_STORE);
         purchaseOrders.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         purchaseOrders.add(JobOrderStatus.DELIVERED);
         criteria.add(Restrictions.and(Restrictions.in("store.id", storeId), Restrictions.or(Restrictions.in("orderStatus", purchaseOrders) , Restrictions.eq("orderCancel.jobOrderStatus", JobOrderStatus.IN_ROUTE_TO_DELIVERY))));

@@ -1,11 +1,14 @@
 package com.yetistep.delivr.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.ItemsOrderEntity;
 import com.yetistep.delivr.model.StoreEntity;
+import com.yetistep.delivr.util.JsonDateSerializer;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -19,6 +22,7 @@ public class OrderSummaryDto {
     private Integer id;
     private JobOrderStatus orderStatus;
     private String orderVerificationCode;
+    private Timestamp orderDate;
     private List<String> attachments;
     private AccountSummary accountSummary;
     private List<ItemsOrderEntity> itemOrders;
@@ -48,6 +52,16 @@ public class OrderSummaryDto {
     public void setOrderVerificationCode(String orderVerificationCode) {
         this.orderVerificationCode = orderVerificationCode;
     }
+
+    @JsonSerialize(using = JsonDateSerializer.class)
+    public Timestamp getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Timestamp orderDate) {
+        this.orderDate = orderDate;
+    }
+
 
     public List<String> getAttachments() {
         return attachments;

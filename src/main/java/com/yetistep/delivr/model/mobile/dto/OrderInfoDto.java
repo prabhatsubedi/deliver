@@ -26,6 +26,7 @@ public class OrderInfoDto {
     private Integer remainingTime;
     private Integer elapsedTime;
     private BigDecimal paidToCourier;
+    private Integer priority;
 
     public Integer getId() {
         return id;
@@ -115,5 +116,13 @@ public class OrderInfoDto {
 
     public void setPaidToCourier(BigDecimal paidToCourier) {
         this.paidToCourier = paidToCourier;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 }

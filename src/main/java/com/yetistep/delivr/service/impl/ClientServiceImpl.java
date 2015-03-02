@@ -438,6 +438,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         orderSummary.setId(order.getId());
         orderSummary.setStore(store);
         orderSummary.setOrderStatus(order.getOrderStatus());
+        orderSummary.setOrderDate(order.getOrderDate());
         orderSummary.setOrderVerificationCode(order.getOrderVerificationCode());
         orderSummary.setItemOrders(itemsOrder);
 

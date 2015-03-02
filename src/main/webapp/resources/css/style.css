@@ -1959,3 +1959,22 @@ label.check_label .checkbox {
     padding-top: 10px;
 }
 
+#purchase_history_table .db_info{
+    line-height: 1.8;
+}
+
+#purchase_history_table .show_db_info{
+    color: #64A4EA;
+}
+
+#purchase_history_table .show_db_info:hover{
+    text-decoration: underline;
+}
+
+#purchase_history_table .db_image {
+    border: 1px solid #999;
+    padding: 10px;
+}
+
+
+

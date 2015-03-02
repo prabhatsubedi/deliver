@@ -1508,7 +1508,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         assoc.put("store", "id,name,street");
         assoc.put("attachments", "url");
 
-        subAssoc.put("user", "id,fullName");
+        subAssoc.put("user", "id,fullName,mobileNumber,profileImage");
 
         for (OrderEntity order:orders){
             objects.add(ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));

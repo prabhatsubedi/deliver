@@ -39,6 +39,7 @@ public class MerchantEntity implements Serializable {
     private String businessLogo;
     private String companyRegistrationNo;
     private String vatNo;
+    private String panNo;
     private Status status;
     private List<InvoiceEntity> invoices;
 
@@ -161,6 +162,15 @@ public class MerchantEntity implements Serializable {
 
     public void setVatNo(String vatNo) {
         this.vatNo = vatNo;
+    }
+
+    @Column(name = "pan_no")
+    public String getPanNo() {
+        return panNo;
+    }
+
+    public void setPanNo(String panNo) {
+        this.panNo = panNo;
     }
 
     @Transient

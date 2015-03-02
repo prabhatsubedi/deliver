@@ -98,10 +98,17 @@ Order.getPurchaseHistory = function(){
                     link_attachments += '<a href="'+order.attachments[j]+'">'+order.attachments[j]+'</a>';
                 }
             }
-            var deliveryBoyName = typeof(order.deliveryBoy) != 'undefined'?order.deliveryBoy.user.fullName:'';
+            var deliveryBoyName = typeof(order.deliveryBoy) != 'undefined'?"<span class='show_db_info'>"+order.deliveryBoy.user.fullName+"</span>":'';
             var view_items = '<span class="item_list" data-id="'+id+'">View Item List</span>';
 
-            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoyName, link_attachments, view_items, ''];
+            var db_info = "";
+            if(typeof(order.deliveryBoy) != 'undefined')
+                 db_info = "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>Contact: "+order.deliveryBoy.user.mobileNumber+"</div></div>";
+            else
+                db_info = "<div class='db_info hidden'></div>";
+
+
+            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoyName+db_info, link_attachments, view_items, ''];
             tableData.push(row);
 
         }
@@ -115,6 +122,18 @@ Order.getPurchaseHistory = function(){
     var postData = {};
     //postData.page = {pageNumber: 1, pageSize: 20, sortOrder: 'desc'};
     Main.request('/merchant/get_purchase_history', postData, callback, {merchantId:Main.getFromLocalStorage('mid')});
+
+
+   $("body").delegate("span.show_db_info", "mouseover", function(){
+         $(this).siblings(".db_info").removeClass("hidden");
+         $(this).addClass("hidden");
+   });
+
+    $("body").delegate(".db_info", "mouseleave", function(){
+        $(this).siblings("span.show_db_info").removeClass("hidden");
+        $(this).addClass("hidden");
+    });
+
 }
 
 

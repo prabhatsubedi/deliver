@@ -408,45 +408,42 @@ public class InvoiceGenerator {
 
         document.add(billingTable);
 
-
-
     }
 
 
     private void addReceiptBody(Document document, OrderEntity order, ReceiptEntity receipt, BillEntity bill) throws Exception {
         //add invoice detail
-        Paragraph title = PdfUtil.getParagraph(PdfUtil.smallBold, "Receipt for Payment of Delivery and iDelivery Fee");
+        Paragraph title = PdfUtil.getParagraph(PdfUtil.largeBold, "Receipt for Payment of Delivery and iDelivery Fee");
         document.add(title);
         title.setAlignment(Element.ALIGN_CENTER);
         PdfUtil.addEmptyLine(document, 1);//add empty line
 
         PdfPCell infoCell = new PdfPCell();
         PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
-        Paragraph info = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Bill No: "+bill.getId(), "Bill Issued On: "+bill.getGeneratedDate(), "Receipt No: "+receipt.getId(), "Order Id: "+order.getId());
+        Paragraph info = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Bill No: "+bill.getId(), "Bill Issued On: "+bill.getGeneratedDate(), "Receipt No: "+receipt.getId(), "Order Id: "+order.getId());
         infoCell.addElement(info);
 
         PdfUtil.addEmptyLine(document, 2);//add empty line
 
         PdfPCell receiptDetailCell = new PdfPCell();
         PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
-        Paragraph detail = PdfUtil.getParagraph(PdfUtil.smallFont, true, "From: "+bill.getId(), "Delivered at: "+bill.getGeneratedDate(), "Mode of Payment : "+receipt.getId(), "Time of Payment: "+order.getId(), "Card Number: "+order.getId());
+        Paragraph detail = PdfUtil.getParagraph(PdfUtil.largeBold, true, "From: "+bill.getId(), "Delivered at: "+bill.getGeneratedDate(), "Mode of Payment : "+receipt.getId(), "Time of Payment: "+order.getId(), "Card Number: "+order.getId());
         receiptDetailCell.addElement(detail);
 
         PdfUtil.addEmptyLine(document, 2);//add empty line
 
         PdfPCell billAmountCell = new PdfPCell();
         PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
-        Paragraph amount = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Total Amount Billed: "+bill.getBillAmount());
+        Paragraph amount = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Total Amount Billed: "+bill.getBillAmount());
         billAmountCell.addElement(amount);
 
         PdfUtil.addEmptyLine(document, 2);//add empty line
 
         PdfPCell receivedCell = new PdfPCell();
         PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
-        Paragraph receivedBy = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Received by: "+bill.getCustomer().getUser().getFullName());
+        Paragraph receivedBy = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Received by: "+bill.getCustomer().getUser().getFullName());
         receivedCell.addElement(receivedBy);
 
-        PdfUtil.addEmptyLine(document, 2);//add empty line
 
         PdfPTable receiptTable = new PdfPTable(1);
         receiptTable.setWidthPercentage(100);

@@ -49,9 +49,13 @@ public class AccountServiceImpl implements AccountService{
         invoice.setInvoiceStatus(InvoiceStatus.UNPAID);
         invoice.setMerchant(testMerchant);
         invoice.setOrders(orders);
-
-        invoiceDaoService.save(invoice);
-        String invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice);
+        invoice.setGeneratedDate(new Date(System.currentTimeMillis()));
+        invoice.setId(1);
+        //invoiceDaoService.save(invoice);
+        String invoicePath = new String();
+        if(orders.size()>0){
+            invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice);
+        }
         return  invoicePath;
     }
 

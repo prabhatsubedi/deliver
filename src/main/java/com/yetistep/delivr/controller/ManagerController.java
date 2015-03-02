@@ -364,7 +364,7 @@ public class ManagerController {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            List<Map<String, Map<String, Integer>>> graphData = adminService.getDeliveryGraphByDate(headerDto);
+            Map<String, Map<String, Integer>> graphData = adminService.getDeliveryGraphByDate(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Delivery graph view has been retrieved successfully successfully");
             serviceResponse.addParam("graphData", graphData);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

@@ -106,9 +106,11 @@ public class InvoiceGenerator {
             document.open();
             document.setMargins(20, 20, 20, 20);
             //add doc header
-            /*addInvoiceHeader(document, invoice);
+            addBillAndReceiptHeader(document);
 
-            for (OrderEntity order: orders){
+            addBillBody(document, order, bill);
+
+            /*for (OrderEntity order: orders){
                 //add invoice body
                 addInvoiceBody(document, order, merchant, invoice);
 
@@ -116,7 +118,8 @@ public class InvoiceGenerator {
                 document.newPage();
                 cntPage++;
             }*/
-            addFooter(document);
+
+
             document.close();
         }catch (Exception e) {
             log.error("Error occurred while generating coupon bill", e);
@@ -235,6 +238,51 @@ public class InvoiceGenerator {
         document.add(headerTable);
     }
 
+    //create a header for the company
+    private void addBillAndReceiptHeader(Document document) throws Exception {
+        int bottomPadding = 35;
+
+        //address cell
+        PdfPCell addressCell = new PdfPCell();
+        PdfUtil.setPadding(addressCell, 0, 0, bottomPadding, 0);
+        addressCell.addElement(PdfUtil.getParagraph(PdfUtil.catFont, ""));
+
+        String name = "Deliver Private Limited";
+        String street = "Charkhal Road, Dillibazar";
+        String city = "Kathmandu, Nepal";
+        String reg = "258956555";
+
+        Paragraph info = PdfUtil.getParagraph(PdfUtil.largeBold, true, name, street, city, "Reg: " + reg);
+        addressCell.addElement(info);
+
+        //billing cell
+        PdfPCell billingCell = new PdfPCell();
+
+        Paragraph paragraph1 = new Paragraph();
+        paragraph1.add(PdfUtil.getPhrase("iDelivr Customer Care : 1800 208 9898", PdfUtil.largeBold));
+        paragraph1.setAlignment(Element.ALIGN_RIGHT);
+
+        Paragraph paragraph2 = new Paragraph();
+        paragraph2.add(PdfUtil.getPhrase("cs@idelivr.com", PdfUtil.largeBold));
+        paragraph2.setAlignment(Element.ALIGN_RIGHT);
+
+        PdfUtil.setPadding(billingCell, 0, 0, bottomPadding, 0);
+
+        billingCell.addElement(paragraph1);
+        billingCell.addElement(paragraph2);
+
+        //no border on the cells
+        PdfUtil.setBorder(0, addressCell, billingCell);
+
+        //add cells to table
+        PdfPTable headerTable = new PdfPTable(2);
+        headerTable.setWidthPercentage(100);
+        headerTable.addCell(addressCell);
+        headerTable.addCell(billingCell);
+
+        document.add(headerTable);
+    }
+
     private void addInvoiceBody(Document document, OrderEntity order, MerchantEntity merchant, InvoiceEntity invoice) throws Exception {
         //add invoice detail
         Paragraph title1 = PdfUtil.getParagraph(PdfUtil.smallBold, "Invoice Details");
@@ -293,6 +341,76 @@ public class InvoiceGenerator {
         noteList.add(new ListItem("Total cost is calculated as " + currency + " " + invoice.getAmount() + " per Deal per month.", PdfUtil.smallFont));
         noteList.add(new ListItem("Deals with less than month period also, same rate is applicable.", PdfUtil.smallFont));
         document.add(noteList);
+    }
+
+
+    private void addBillBody(Document document, OrderEntity order, BillEntity bill) throws Exception {
+        //add invoice detail
+        Paragraph title1 = PdfUtil.getParagraph(PdfUtil.smallBold, "Tax Invoice : "+bill.getId());
+        document.add(title1);
+        PdfUtil.addEmptyLine(document, 1);//add empty line
+
+
+        PdfPCell orderCell = new PdfPCell();
+        PdfUtil.setPadding(orderCell, 0, 0, 10, 10);
+        Paragraph advertiserInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Order Detail Billing Address", "Order Id: "+order.getId(), "Order Date: "+order.getOrderDate(), "Invoice Date: "+bill.getGeneratedDate());
+        orderCell.addElement(advertiserInfo);
+
+        PdfPCell addressCell = new PdfPCell();
+        PdfUtil.setPadding(addressCell, 0, 0, 10, 10);
+        String street = "";
+        String city = "";
+        String state = "";
+        String country = "";
+        String mobile = "";
+        for (AddressEntity address: order.getCustomer().getUser().getAddresses()){
+            if (address.getdFlag().equals("D")){
+                street = address.getStreet();
+                city = address.getCity();
+                state = address.getState();
+                country = address.getCountry();
+                mobile = address.getMobileNumber();
+            }
+        }
+
+        Paragraph couponInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Billing Address", street+", "+city, state+", "+country, "Phone: "+mobile);
+        addressCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        addressCell.addElement(couponInfo);
+
+        //add cells to table
+        PdfPTable invoiceTable = new PdfPTable(2);
+        invoiceTable.setWidthPercentage(100);
+        invoiceTable.addCell(orderCell);
+        invoiceTable.addCell(addressCell);
+
+        document.add(invoiceTable);
+
+        PdfUtil.addEmptyLine(document, 2);//add empty line
+
+        //add billing table
+        PdfPTable billingTable = new PdfPTable(2);
+        billingTable.setWidthPercentage(100);
+        billingTable.setWidths(new float[]{10, 45, 45});
+
+
+        String currency = "NRS";
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Title", PdfUtil.smallBold), PdfUtil.getPhrase("Amount"+currency, PdfUtil.smallBold));
+        /*PdfUtil.addRow(billingTable, PdfUtil.getPhrase("1"), PdfUtil.getPhrase("Deal Fee"),
+                PdfUtil.getPhrase(currency + " " + invoice.getAmount()));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase("Total", PdfUtil.smallBold),
+                PdfUtil.getPhrase(currency + " " + invoice.getAmount(), PdfUtil.smallBold));
+
+        document.add(billingTable);
+
+
+        PdfUtil.addEmptyLine(document, 2);//add empty line
+
+        //add notes
+        document.add(PdfUtil.getParagraph(PdfUtil.smallFont, "Notes:"));
+        com.itextpdf.text.List noteList = new com.itextpdf.text.List(true);
+        noteList.add(new ListItem("Total cost is calculated as " + currency + " " + invoice.getAmount() + " per Deal per month.", PdfUtil.smallFont));
+        noteList.add(new ListItem("Deals with less than month period also, same rate is applicable.", PdfUtil.smallFont));
+        document.add(noteList);*/
     }
 
    /* private void sendInvoicePaymentNReceiptMail() {

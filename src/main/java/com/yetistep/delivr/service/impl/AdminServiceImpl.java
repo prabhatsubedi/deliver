@@ -223,8 +223,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<Map<String, Map<String, Integer>>> getDeliveryGraphByDate(HeaderDto headerDto) throws Exception{
-        List<Map<String, Map<String, Integer>>> graphData = new ArrayList<>();
+    public Map<String, Map<String, Integer>> getDeliveryGraphByDate(HeaderDto headerDto) throws Exception{
+        //List<Map<String, Map<String, Integer>>> graphData = new ArrayList<>();
         Map<String, Integer> deliveryByDate = new HashMap<>();
         Map<String, Integer> totalTime = new HashMap<>();
         Integer count;
@@ -247,12 +247,12 @@ public class AdminServiceImpl implements AdminService {
             deliveryByDate = adminDaoService.getOrderByDayCount(3*365);
             totalTime = adminDaoService.getOrderTotalTimeByDay(3*365);
         }
-        Map<String, Map<String, Integer>> deliveryByDateMap = new HashMap<>();
-        Map<String, Map<String, Integer>> averageTimeMap = new HashMap<>();
-        deliveryByDateMap.put("orderCount", deliveryByDate);
-        averageTimeMap.put("totalTime", totalTime);
-        graphData.add(deliveryByDateMap);
-        graphData.add(averageTimeMap);
+        Map<String, Map<String, Integer>> graphData = new HashMap<>();
+        //Map<String, Map<String, Integer>> averageTimeMap = new HashMap<>();
+        graphData.put("orderCount", deliveryByDate);
+        graphData.put("totalTime", totalTime);
+        /*graphData.add(deliveryByDateMap);
+        graphData.add(averageTimeMap);*/
 
         return graphData;
     }

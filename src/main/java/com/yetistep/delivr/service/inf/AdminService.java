@@ -20,7 +20,7 @@ public interface AdminService {
 
     public List<Map<String, Map<Integer, Map<String, String>>>> getGodsView() throws Exception;
 
-    public List<Map<String, Map<String, Integer>>> getDeliveryGraphByDate(HeaderDto headerDto) throws Exception;
+    public Map<String, Map<String, Integer>> getDeliveryGraphByDate(HeaderDto headerDto) throws Exception;
 
     public Map<String, Integer> getNewUserGraph(HeaderDto headerDto) throws Exception;
 

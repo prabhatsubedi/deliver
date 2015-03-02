@@ -23,7 +23,10 @@ public class BillEntity {
     private Integer id;
     private Date generatedDate;
     private String path;
-    private BigDecimal amount;
+    private BigDecimal vat;
+    private BigDecimal deliveryCharge;
+    private BigDecimal systemServiceCharge;
+    private BigDecimal billAmount;
     private OrderEntity order;
     private CustomerEntity customer;
 
@@ -59,8 +62,41 @@ public class BillEntity {
     }
 
 
+    @Column(name = "vat")
+    public BigDecimal getVat() {
+        return vat;
+    }
 
+    public void setVat(BigDecimal vat) {
+        this.vat = vat;
+    }
 
+    @Column(name = "delivery_charge")
+    public BigDecimal getDeliveryCharge() {
+        return deliveryCharge;
+    }
+
+    public void setDeliveryCharge(BigDecimal deliveryCharge) {
+        this.deliveryCharge = deliveryCharge;
+    }
+
+    @Column(name = "service_charge")
+    public BigDecimal getSystemServiceCharge() {
+        return systemServiceCharge;
+    }
+
+    public void setSystemServiceCharge(BigDecimal systemServiceCharge) {
+        this.systemServiceCharge = systemServiceCharge;
+    }
+
+    @Column(name = "bill_amount")
+    public BigDecimal getBillAmount() {
+        return billAmount;
+    }
+
+    public void setBillAmount(BigDecimal billAmount) {
+        this.billAmount = billAmount;
+    }
 
     @OneToOne(cascade = CascadeType.PERSIST)
     public OrderEntity getOrder() {

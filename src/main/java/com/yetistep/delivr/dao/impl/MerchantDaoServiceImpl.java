@@ -535,10 +535,11 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
             i++;
         }
 
-        String sqQuery =    "SELECT COUNT(i.id) FROM items i WHERE "+queryString+" AND i.category_id IN "+categoryId.toString().replace("[", "(").replace("]", ")")+" AND i.brand_id IN "+storeId.toString().replace("[", "(").replace("]", ")")+" ";
+        String sqQuery =    "SELECT COUNT(i.id) FROM items i WHERE "+queryString+" AND i.category_id IN(:categoryId) AND i.brand_id IN(:storeId)";
 
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
-        //query.setParameter("storeId", storeId);
+        query.setParameterList("storeId", storeId);
+        query.setParameterList("categoryId", categoryId);
 
         BigInteger cnt = (BigInteger) query.uniqueResult();
         return cnt.intValue();

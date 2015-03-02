@@ -8,10 +8,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.yetistep.delivr.enums.PreferenceType;
-import com.yetistep.delivr.model.BillEntity;
-import com.yetistep.delivr.model.InvoiceEntity;
-import com.yetistep.delivr.model.MerchantEntity;
-import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.*;
 import org.apache.commons.mail.EmailException;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import org.apache.log4j.Logger;
@@ -63,16 +60,80 @@ public class InvoiceGenerator {
                     }
                 }
             }
-
-        //send emails
-        //sendInvoicePaymentNReceiptMail(coupon, merchant, ytInvoice, adminStripeId, invoicePath);
         return invoicePath;
     }
 
 
-    public String generateBillAndReceipt(OrderEntity order, BillEntity bill){
+    public String generateBillAndReceipt(OrderEntity order, BillEntity bill, ReceiptEntity receipt) throws Exception{
+        File invoiceFile = generateBillAndReceiptPDF(order, bill, receipt);
 
-        return new String();
+        if (invoiceFile == null)
+            return null;
+
+        String invoicePath = invoiceFile.getPath();
+
+        //upload invoice to S3 Bucket
+        if (!MessageBundle.isLocalHost()) {
+            int noOfRetry = 3;
+            for (int i = 0; i < noOfRetry; i++) {//retry three time, if exception occurs
+                try {
+                    String dir = getBillAndReiceptDir(order.getStore().getStoresBrand().getMerchant(), order, "/");
+
+                    String bucketUrl = AmazonUtil.uploadFileToS3(invoiceFile, dir, invoiceFile.getName(), true);
+                    invoicePath = AmazonUtil.cacheImage(bucketUrl);
+                    break;
+                } catch (Exception e) {
+                    if (i == (noOfRetry - 1)) throw e;
+                    GeneralUtil.wait(1500);
+                }
+            }
+        }
+        return invoicePath;
+    }
+
+    private File generateBillAndReceiptPDF(OrderEntity order, BillEntity bill, ReceiptEntity receipt) throws Exception{
+        FileOutputStream stream = null;
+        File billAndReceiptFile = null;
+
+
+        try{
+            Document document = new Document();
+            Integer cntPage = 1;
+
+            billAndReceiptFile = getBillAndReceiptFile(order.getStore().getStoresBrand().getMerchant(), order, "receipt");
+            stream = new FileOutputStream(billAndReceiptFile);
+            PdfWriter writer = PdfWriter.getInstance(document, stream);
+            document.open();
+            document.setMargins(20, 20, 20, 20);
+            //add doc header
+            /*addInvoiceHeader(document, invoice);
+
+            for (OrderEntity order: orders){
+                //add invoice body
+                addInvoiceBody(document, order, merchant, invoice);
+
+                //add invoice footer
+                document.newPage();
+                cntPage++;
+            }*/
+            addFooter(document);
+            document.close();
+        }catch (Exception e) {
+            log.error("Error occurred while generating coupon bill", e);
+
+            if (stream != null) {
+                stream.flush();
+                stream.close();
+            }
+
+            if (billAndReceiptFile != null) {
+                billAndReceiptFile.delete();
+            }
+            billAndReceiptFile = null;
+            throw e;
+        }
+
+        return billAndReceiptFile;
     }
 
     private File generateInvoicePDF(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice) throws Exception {
@@ -248,8 +309,22 @@ public class InvoiceGenerator {
 
 
 
+
+
     private File getFile(MerchantEntity merchant, String name) {
         String dir = getInvoiceDir(merchant, File.separator);
+
+        File invoiceDir = new File(HOME_DIR + File.separator + dir + File.separator);
+        if (!invoiceDir.exists()) {
+            invoiceDir.mkdirs();
+        }
+
+        String fileName = DateUtil.getCurrentDate() + "_" +name+ ".pdf";
+        return new File(invoiceDir, fileName);
+    }
+
+    private File getBillAndReceiptFile(MerchantEntity merchant, OrderEntity order, String name) {
+        String dir = getBillAndReiceptDir(merchant, order, File.separator);
 
         File invoiceDir = new File(HOME_DIR + File.separator + dir + File.separator);
         if (!invoiceDir.exists()) {
@@ -263,6 +338,11 @@ public class InvoiceGenerator {
     private String getInvoiceDir(MerchantEntity merchant, String separator) {
         String dir = MessageBundle.separateString(separator, "Invoices", "Merchant_" + merchant.getId());
 
+        return dir;
+    }
+
+    private String getBillAndReiceptDir(MerchantEntity merchant, OrderEntity order, String separator) {
+        String dir = MessageBundle.separateString(separator, "receipts", "Merchant_" + merchant.getId(), "Order_" + merchant.getId());
         return dir;
     }
 

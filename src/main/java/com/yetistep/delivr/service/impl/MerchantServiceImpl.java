@@ -200,7 +200,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<Integer> categories = requestJson.getCategories();
 
         MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
-        if((dbMerchant == null) || (dbMerchant.getUser().getStatus() != Status.ACTIVE))
+        if((dbMerchant == null) || (!dbMerchant.getUser().getVerifiedStatus()))
             throw new YSException("VLD011");
 
         checkUniqueBrand( storesBrand.getBrandName().trim());
@@ -421,8 +421,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,addresses");
-        subAssoc.put("addresses", "street,city,state,country,latitude,longitude");
+        assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,addresses,status");
+        subAssoc.put("addresses", "id,street,city,state,country,latitude,longitude");
 
         return ((MerchantEntity) ReturnJsonUtil.getJsonObject(merchantEntity, fields, assoc, subAssoc));
 

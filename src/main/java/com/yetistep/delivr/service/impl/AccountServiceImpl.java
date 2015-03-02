@@ -63,8 +63,16 @@ public class AccountServiceImpl implements AccountService{
         BillEntity bill = new BillEntity();
         bill.setOrder(order);
         bill.setCustomer(order.getCustomer());
+        BigDecimal vat = order.getItemsOrder().get(0).getVat();
+        bill.setVat(order.getItemsOrder().get(0).getVat());
+        bill.setDeliveryCharge(BigDecimal.TEN);
+        bill.setSystemServiceCharge(BigDecimal.TEN);
+        bill.setBillAmount(BigDecimal.TEN);
 
-        String invoicePath = invoiceGenerator.generateBillAndReceipt(order, bill);
+        ReceiptEntity receipt = new ReceiptEntity();
+
+
+        String invoicePath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt);
 
         return invoicePath;
     }

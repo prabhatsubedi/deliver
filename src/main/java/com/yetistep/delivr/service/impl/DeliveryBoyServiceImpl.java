@@ -113,7 +113,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             user.setEmailAddress(null);
         }
 
-        deliveryBoy.setAvailabilityStatus(DBoyStatus.FREE);
+        deliveryBoy.setAvailabilityStatus(DBoyStatus.NOT_AVAILABLE);
         deliveryBoy.setAverageRating(new BigDecimal(0));
         deliveryBoy.setTotalOrderTaken(0);
         deliveryBoy.setTotalOrderDelivered(0);

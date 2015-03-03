@@ -644,8 +644,9 @@ body.assistance_page {
 .sidebar_menu ul li.merchant_name a {
     color: #FFFFFF;
 }*/
-.sidebar_menu ul li a.merchant_name:hover {
+.sidebar_menu ul li a.merchant_title:hover {
     border-color: transparent;
+    cursor: auto;
 }
 #sidebar_menu .navbar-toggle {
     background-color: #f9f9f9;

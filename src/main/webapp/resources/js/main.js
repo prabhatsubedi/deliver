@@ -399,6 +399,23 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 })(jQuery);
 
 $(document).ready(function(){
+
+    var preventCustomTab = false;
+    $(document).keyup(function(e){
+        var target = $(e.target);
+        if(e.keyCode == 9 && target.hasClass('selectpicker') && !preventCustomTab) {
+            target.attr('aria-expanded', true);
+            target.parent('.bootstrap-select').addClass('open');
+        }
+    });
+    $(document).keydown(function(e){
+        if(e.keyCode == 9 && $(':focus').hasClass('selectpicker')) {
+            preventCustomTab = true;
+        } else {
+            preventCustomTab = false;
+        }
+    });
+
     Main.checkURL();
     Main.elemRatio();
     Main.fullHeight();

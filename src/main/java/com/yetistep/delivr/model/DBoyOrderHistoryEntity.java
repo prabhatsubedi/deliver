@@ -25,6 +25,10 @@ public class DBoyOrderHistoryEntity implements Serializable {
     private Timestamp jobStartedAt;
     private Timestamp reachedStoreAt;
     private Timestamp orderCompletedAt;
+    private String startLatitude;
+    private String startLongitude;
+    private String endLatitude;
+    private String endLongitude;
     private DeliveryBoyEntity deliveryBoy;
     private OrderEntity order;
 
@@ -100,6 +104,42 @@ public class DBoyOrderHistoryEntity implements Serializable {
 
     public void setOrderCompletedAt(Timestamp orderCompletedAt) {
         this.orderCompletedAt = orderCompletedAt;
+    }
+
+    @Column(name="start_latitude")
+    public String getStartLatitude() {
+        return startLatitude;
+    }
+
+    public void setStartLatitude(String startLatitude) {
+        this.startLatitude = startLatitude;
+    }
+
+    @Column(name="start_longitude")
+    public String getStartLongitude() {
+        return startLongitude;
+    }
+
+    public void setStartLongitude(String startLongitude) {
+        this.startLongitude = startLongitude;
+    }
+
+    @Column(name="end_latitude")
+    public String getEndLatitude() {
+        return endLatitude;
+    }
+
+    public void setEndLatitude(String endLatitude) {
+        this.endLatitude = endLatitude;
+    }
+
+    @Column(name="end_longitude")
+    public String getEndLongitude() {
+        return endLongitude;
+    }
+
+    public void setEndLongitude(String endLongitude) {
+        this.endLongitude = endLongitude;
     }
 
     @ManyToOne

@@ -11,4 +11,5 @@ import com.yetistep.delivr.model.ItemsOrderEntity;
  * To change this template use File | Settings | File Templates.
  */
 public interface ItemsOrderDaoService extends GenericDaoService<Integer, ItemsOrderEntity> {
+    public Integer getNumberOfUnprocessedItems(Integer orderId) throws Exception;
 }

@@ -414,7 +414,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if(orderStatus.equals(JobOrderStatus.ORDER_ACCEPTED)){
             return acceptDeliveryOrder(orderEntity.getId(), deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)){
-            return startJob(order, deliveryBoyId);
+            return startJob(order, orderEntity, deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.AT_STORE)){
             //Such as bill upload and Bill edit
             return reachedStore(order, deliveryBoyId);
@@ -520,7 +520,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         throw new YSException("ORD001");
     }
 
-    private Boolean startJob(OrderEntity order, Integer deliveryBoyId) throws Exception{
+    private Boolean startJob(OrderEntity order, OrderEntity orderJson, Integer deliveryBoyId) throws Exception{
         if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
             throw new YSException("ORD003");
         }
@@ -532,6 +532,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         List<DBoyOrderHistoryEntity> orderHistoryEntities = order.getdBoyOrderHistories();
         for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: orderHistoryEntities){
             if(dBoyOrderHistoryEntity.getDeliveryBoy().getId().equals(deliveryBoyId)){
+                if(orderJson.getDeliveryBoy() != null){
+                    dBoyOrderHistoryEntity.setStartLatitude(orderJson.getDeliveryBoy().getLatitude());
+                    dBoyOrderHistoryEntity.setStartLongitude(orderJson.getDeliveryBoy().getLongitude());
+                }
                 dBoyOrderHistoryEntity.setJobStartedAt(DateUtil.getCurrentTimestampSQL());
                 break;
             }
@@ -575,7 +579,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             throw new YSException("ORD003");
         }
         JobOrderStatus.traverseJobStatus(order.getOrderStatus(), JobOrderStatus.IN_ROUTE_TO_DELIVERY);
-
+        if(itemsOrderDaoService.getNumberOfUnprocessedItems(order.getId()) > 0){
+           throw new YSException("ORD018");
+        }
         if(BigDecimalUtil.isLessThen(order.getTotalCost(), order.getStore().getStoresBrand().getMinOrderAmount())){
             throw new YSException("CRT008", " "+order.getStore().getStoresBrand().getMinOrderAmount());
         }

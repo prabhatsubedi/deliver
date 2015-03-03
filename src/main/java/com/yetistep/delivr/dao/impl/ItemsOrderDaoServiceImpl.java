@@ -2,6 +2,7 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.ItemsOrderDaoService;
 import com.yetistep.delivr.model.ItemsOrderEntity;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,14 @@ public class ItemsOrderDaoServiceImpl implements ItemsOrderDaoService {
     public Session getCurrentSession() throws Exception {
         Session session = sessionFactory.getCurrentSession();
         return session;
+    }
+
+    @Override
+    public Integer getNumberOfUnprocessedItems(Integer orderId) throws Exception {
+        String sqlQuery = "SELECT count(id) FROM items_orders WHERE order_id = :orderId AND purchase_status IS NULL";
+        SQLQuery query = getCurrentSession().createSQLQuery(sqlQuery);
+        query.setParameter("orderId", orderId);
+        Integer unProcessedOrders = ((Number) query.uniqueResult()).intValue();
+        return unProcessedOrders;
     }
 }

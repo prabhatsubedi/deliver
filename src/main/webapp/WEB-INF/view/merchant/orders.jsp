@@ -47,7 +47,7 @@
                             <th>Store Name & Address</th>
                             <th>Order No</th>
                             <th>Total Bill Amount</th>
-                            <th>Courier Boy</th>
+                            <th>Shopper Staff</th>
                             <th>Bill</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -66,10 +66,10 @@
                         <th rowspan="2">Store Name & Address</th>
                         <th rowspan="2">Order No</th>
                         <th rowspan="2">Total Bill Amount</th>
-                        <th rowspan="2">Courier Boy</th>
+                        <th rowspan="2">Shopper Staff</th>
                         <th rowspan="2">Bill</th>
                         <th colspan="2">Customer Feedback</th>
-                        <th colspan="2">Courier Boy Feedback</th>
+                        <th colspan="2">Shopper Staff Feedback</th>
                     </tr>
                     <tr>
                         <th>Rating</th>
@@ -91,9 +91,9 @@
                         <th rowspan="2">Store Name & Address</th>
                         <th rowspan="2">Order No</th>
                         <th rowspan="2">Total Bill Amount</th>
-                        <th rowspan="2">Courier Boy</th>
+                        <th rowspan="2">Shopper Staff</th>
                         <th rowspan="2">Bill</th>
-                        <th colspan="2">Courier Boy Feedback</th>
+                        <th colspan="2">Shopper Staff Feedback</th>
                         <th rowspan="2">Cancel Reason</th>
                     </tr>
                     <tr>

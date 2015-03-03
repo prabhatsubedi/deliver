@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Courier Staff Profile</title>
+    <title>Shopper Staff Profile</title>
 
     <%@include file="../includes/head.jsp" %>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/map.js"></script>
@@ -34,7 +34,7 @@
 <%@include file="../includes/header.jsp" %>
     <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left">Courier Staff Profile</h1>
+            <h1 class="pull-left">Shopper Staff Profile</h1>
         </div>
         <div class="main_content">
             <div class="profile_container">
@@ -65,7 +65,7 @@
                                 <div class="profile_sub_title">INFORMATION</div>
 
                                 <div class="form-group clearfix">
-                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Name of Courier Staff</label>
+                                    <label for="full_name" class="col-lg-4 floated_label no_pad">Name of Shopper Staff</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_full_name none_editable"></div>
                                         <div class="info_edit editable hidden">
@@ -211,7 +211,7 @@
                             </div>
 
                             <div class="profile_map form-group col-lg-7">
-                                <div class="profile_sub_title">Courier Staff Location</div>
+                                <div class="profile_sub_title">Shopper Staff Location</div>
                                 <div class="profile_map_body">
 
                                     <div class="map-container">

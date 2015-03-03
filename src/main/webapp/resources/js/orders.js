@@ -195,4 +195,5 @@ Order.courierBoyOrderHistory = function(){
     console.log(header);
 
     Main.request('/dboy/get_dBoy_order_history', {}, callback, header);
+
 }

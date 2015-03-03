@@ -54,7 +54,7 @@ var courierProfile;
         $('#courier_boy_form').validate({
             submitHandler: function () {
 
-                var chk_confirm = confirm('Are you sure you want to add delivery boy?');
+                var chk_confirm = confirm('Are you sure you want to add shopper staff?');
                 if (!chk_confirm) return false;
 
                 var data = {};
@@ -147,7 +147,7 @@ var courierProfile;
             $(".profile_header_image #profile_image").html('<img src="' + courierStaff.user.profileImage + '" class="img-responsive" style="height: 100%;" />');
 
             $(".profile_header_info .info1").html(courierStaff.user.fullName);
-            $(".profile_header_info .info2").html(courierStaff.availabilityStatus);
+            $(".profile_header_info .info2").html((courierStaff.availabilityStatus).replace(/\_/g, ' '));
 
             $(".val_full_name").html(courierStaff.user.fullName);
             $(".val_email").html(courierStaff.user.emailAddress);
@@ -294,7 +294,7 @@ var courierProfile;
 
         $('.save_btn').click(function () {
             if ($('#courier_boy_form').valid()) {
-                var chk_confirm = confirm('Are you sure you want to update delivery boy?');
+                var chk_confirm = confirm('Are you sure you want to update shopper staff?');
                 if (!chk_confirm) return false;
 
                 var data = {};

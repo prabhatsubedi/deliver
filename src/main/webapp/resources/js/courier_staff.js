@@ -115,7 +115,7 @@ var courierProfile;
             if (data.success == true) {
                 alert(data.message);
                 $('#courier_boy_form').trigger('reset');
-                $('#drop_zone').html('');
+                $('#profile_image').html('<div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 200x200</div><div class="drop_title">Profile Picture</div>');
             } else {
                 alert(data.message);
             }

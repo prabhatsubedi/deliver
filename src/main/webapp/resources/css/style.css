@@ -1826,9 +1826,11 @@ label.check_label .checkbox {
     cursor: pointer;
 }
 #modal_chart .modal-dialog {
-    width: auto;
     margin-left: 15px;
     margin-right: 15px;
+    margin-top: -190px;
+    top: 50%;
+    width: auto;
 }
 #modal_chart .modal-header {
     font-weight: bold;

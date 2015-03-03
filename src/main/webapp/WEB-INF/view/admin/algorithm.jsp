@@ -69,7 +69,7 @@
                                 </div>
                             </div>
                             <div class="form-group clearfix">
-                                <label for="distance_charge_unpaid" class="col-lg-4 floated_label">Additional Unpaid KM for delivery boy</label>
+                                <label for="distance_charge_unpaid" class="col-lg-4 floated_label">Additional Unpaid KM for Shopper Staff</label>
                                 <div class="col-lg-8">
                                     <div class="form-control info_display val_distance_charge_unpaid none_editable"></div>
                                     <div class="info_edit editable hidden">
@@ -78,7 +78,7 @@
                                 </div>
                             </div>
                             <div class="form-group clearfix">
-                                <label for="distance_charge_additional" class="col-lg-4 floated_label">Per KM charge for Additional KM given to Delivery Boy</label>
+                                <label for="distance_charge_additional" class="col-lg-4 floated_label">Per KM charge for Additional KM given to Shopper Staff</label>
                                 <div class="col-lg-8">
                                     <div class="form-control info_display val_distance_charge_additional none_editable"></div>
                                     <div class="info_edit editable hidden">
@@ -156,7 +156,7 @@
                                 </div>
                             </div>
                             <div class="form-group clearfix">
-                                <label for="commission_courier" class="col-lg-4 floated_label">Courier Commission %</label>
+                                <label for="commission_courier" class="col-lg-4 floated_label">Shopper Commission %</label>
                                 <div class="col-lg-8">
                                     <div class="form-control info_display val_commission_courier none_editable"></div>
                                     <div class="info_edit editable hidden">
@@ -165,7 +165,7 @@
                                 </div>
                             </div>
                             <div class="form-group clearfix">
-                                <label for="min_amount_courier" class="col-lg-4 floated_label">Minimum Amount Given to Courier</label>
+                                <label for="min_amount_courier" class="col-lg-4 floated_label">Minimum Amount Given to Shopper</label>
                                 <div class="col-lg-8">
                                     <div class="form-control info_display val_min_amount_courier none_editable"></div>
                                     <div class="info_edit editable hidden">

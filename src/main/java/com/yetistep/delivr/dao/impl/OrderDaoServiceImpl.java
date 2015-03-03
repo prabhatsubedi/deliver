@@ -3,13 +3,11 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.RatingEntity;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 import com.yetistep.delivr.util.DateUtil;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -18,8 +16,10 @@ import org.hibernate.transform.Transformers;
 import org.hibernate.type.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -254,5 +254,36 @@ public class OrderDaoServiceImpl implements OrderDaoService {
                 .add(Restrictions.eq("customer.id", customerId));
         List<OrderEntity>  orderEntities = criteria.list();
         return orderEntities;
+    }
+
+    @Override
+    public RatingEntity getCustomerRatingInfo(Integer customerId) throws Exception {
+        String sql = "SELECT COALESCE(SUM(r.customer_rating),0) AS totalRateSum, COUNT(r.id) AS totalRate FROM orders o " +
+                "INNER JOIN ratings r ON(r.order_id = o.id AND r.customer_rating IS NOT NULL) " +
+                "WHERE o.customer_id =:customerId " +
+                "ORDER BY o.order_date DESC";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("customerId", customerId);
+//        sqlQuery.setResultTransformer(Transformers.aliasToBean(RatingEntity.class));
+        List<Object[]> rows = sqlQuery.list();
+        RatingEntity rating = new RatingEntity();
+        for(Object[] row : rows){
+            rating.setTotalRateSum(new BigDecimal(row[0].toString()));
+            rating.setTotalRate(Integer.valueOf(row[1].toString()));
+        }
+        return rating;
+    }
+
+    @Override
+    public Integer hasCustomerRunningOrders(Integer customerId) throws Exception {
+        String sql = "SELECT COUNT(id) FROM orders WHERE order_status NOT IN(:jobOrderList) AND customer_id =:customerId";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("customerId", customerId);
+        List<Integer> jobOrderList = new ArrayList<>();
+        jobOrderList.add(JobOrderStatus.DELIVERED.ordinal());
+        jobOrderList.add(JobOrderStatus.CANCELLED.ordinal());
+        query.setParameterList("jobOrderList", jobOrderList);
+        Integer count = ((Number) query.uniqueResult()).intValue();
+        return count;
     }
 }

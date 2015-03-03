@@ -229,6 +229,17 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         return true;
 
     }
+
+    @Override
+    public Boolean updateAverageRating(BigDecimal averageRating, Integer customerId) throws Exception {
+        String sql = "UPDATE customers SET average_rating = :averageRating WHERE id = :customerId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("averageRating", averageRating);
+        sqlQuery.setParameter("customerId", customerId);
+
+        sqlQuery.executeUpdate();
+        return true;
+    }
 }
 
 

@@ -13722,7 +13722,7 @@ var tabs = $.widget( "ui.tabs", {
  */
 
 
-var tooltip = $.widget( "ui.jtooltip", {
+var tooltip = $.widget( "ui.tooltip", {
 	version: "1.11.2",
 	options: {
 		content: function() {

@@ -295,4 +295,5 @@ public class DeliveryBoyEntity implements Serializable {
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
+
 }

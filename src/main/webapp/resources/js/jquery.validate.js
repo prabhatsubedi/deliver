@@ -241,6 +241,11 @@ $.extend($.validator, {
 			}
 		},
 		onkeyup: function( element, event ) {
+            var value = element.value;
+            if(value.length > $(element).rules().maxlength) {
+                element.value = value.substr(0, 10);
+                return false;
+            }
 			if ( event.which === 9 && this.elementValue(element) === "" ) {
 				return;
 			} else if ( element.name in this.submitted || element === this.lastElement ) {

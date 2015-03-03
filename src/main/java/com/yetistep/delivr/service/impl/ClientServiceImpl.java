@@ -75,6 +75,11 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++ Getting all brands +++++++++++++++");
 
+        /* Check Client Info */
+        CustomerEntity customer = customerDaoService.find(requestJsonDto.getCustomerInfo().getClientId());
+        if(customer == null)
+            throw new YSException("VLD033");
+
         /* Featured Brand List Only */
         List<StoresBrandEntity> featuredBrands = storesBrandDaoService.findFeaturedBrands();
 

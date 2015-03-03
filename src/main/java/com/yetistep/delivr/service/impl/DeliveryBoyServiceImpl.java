@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.*;
 
 /**
@@ -112,7 +113,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             user.setEmailAddress(null);
         }
 
-        deliveryBoy.setAvailabilityStatus(DBoyStatus.FREE);
+        deliveryBoy.setAvailabilityStatus(DBoyStatus.NOT_AVAILABLE);
         deliveryBoy.setAverageRating(new BigDecimal(0));
         deliveryBoy.setTotalOrderTaken(0);
         deliveryBoy.setTotalOrderDelivered(0);
@@ -413,7 +414,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if(orderStatus.equals(JobOrderStatus.ORDER_ACCEPTED)){
             return acceptDeliveryOrder(orderEntity.getId(), deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)){
-            return startJob(order, deliveryBoyId);
+            return startJob(order, orderEntity, deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.AT_STORE)){
             //Such as bill upload and Bill edit
             return reachedStore(order, deliveryBoyId);
@@ -519,7 +520,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         throw new YSException("ORD001");
     }
 
-    private Boolean startJob(OrderEntity order, Integer deliveryBoyId) throws Exception{
+    private Boolean startJob(OrderEntity order, OrderEntity orderJson, Integer deliveryBoyId) throws Exception{
         if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
             throw new YSException("ORD003");
         }
@@ -531,6 +532,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         List<DBoyOrderHistoryEntity> orderHistoryEntities = order.getdBoyOrderHistories();
         for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: orderHistoryEntities){
             if(dBoyOrderHistoryEntity.getDeliveryBoy().getId().equals(deliveryBoyId)){
+                if(orderJson.getDeliveryBoy() != null){
+                    dBoyOrderHistoryEntity.setStartLatitude(orderJson.getDeliveryBoy().getLatitude());
+                    dBoyOrderHistoryEntity.setStartLongitude(orderJson.getDeliveryBoy().getLongitude());
+                }
                 dBoyOrderHistoryEntity.setJobStartedAt(DateUtil.getCurrentTimestampSQL());
                 break;
             }
@@ -574,7 +579,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             throw new YSException("ORD003");
         }
         JobOrderStatus.traverseJobStatus(order.getOrderStatus(), JobOrderStatus.IN_ROUTE_TO_DELIVERY);
-
+        if(itemsOrderDaoService.getNumberOfUnprocessedItems(order.getId()) > 0){
+           throw new YSException("ORD018");
+        }
         if(BigDecimalUtil.isLessThen(order.getTotalCost(), order.getStore().getStoresBrand().getMinOrderAmount())){
             throw new YSException("CRT008", " "+order.getStore().getStoresBrand().getMinOrderAmount());
         }
@@ -1078,8 +1085,37 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
         }
 
+
+
+
+
+
         //TODO dboy transaction implementation
         boolean status = orderDaoService.update(orderEntity);
+
+        //Now Calculate Average Rating for Customer
+        RatingEntity ratingEntity = orderDaoService.getCustomerRatingInfo(orderEntity.getCustomer().getId());
+        BigDecimal averageRating = BigDecimal.ZERO;
+        if(ratingEntity.getTotalRate()<= 10 && ratingEntity.getTotalRate() > 0){
+            Integer rate = Integer.valueOf(ratingEntity.getTotalRateSum().intValue()) + Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING)) * (10-ratingEntity.getTotalRate());
+            averageRating = new BigDecimal(rate).divide(new BigDecimal(10), MathContext.DECIMAL128);
+            averageRating = averageRating.setScale(0, BigDecimal.ROUND_HALF_UP);
+        } else {
+            averageRating = ratingEntity.getTotalRateSum().divide(new BigDecimal(ratingEntity.getTotalRate()), MathContext.DECIMAL128);
+            averageRating = averageRating.setScale(0, BigDecimal.ROUND_HALF_UP);
+        }
+
+        //Now Update the average rating and deactivate the customer if
+        customerDaoService.updateAverageRating(averageRating, orderEntity.getCustomer().getId());
+
+        //Lets Change User Status
+        /* Less then or equal 1 means Current Delivery Also In Session (That has not completed) */
+        if(orderDaoService.hasCustomerRunningOrders(orderEntity.getCustomer().getId()) <= 1){
+            if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING))))
+                //Deactivate User
+                userDaoService.deactivateUser(orderEntity.getCustomer().getUser().getId());
+        }
+
         if(status){
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN007","push_notification.properties");

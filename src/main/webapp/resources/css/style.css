@@ -1264,9 +1264,10 @@ label.check_label .checkbox {
     top: 2px;
 }
 .items_container .block_item .item_infos {
-    padding: 15px 20px;
-    background-color: #FFFFFF;
-    font-size: 16px;
+    background-color: #ffffff;
+    font-size: 14px;
+    height: 100px;
+    padding: 10px 15px;
 }
 .items_container .inactive_item .item_infos {
     opacity: 0.4;
@@ -1276,8 +1277,8 @@ label.check_label .checkbox {
 }
 .items_container .block_item .item_infos .item_name {
     font-weight: bold;
+    max-height: 60px;
     overflow: hidden;
-    white-space: nowrap;
 }
 .items_container .block_item .item_infos .item_name a {
     color: #333333;

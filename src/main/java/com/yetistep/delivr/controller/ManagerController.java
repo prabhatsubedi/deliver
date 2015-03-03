@@ -116,7 +116,7 @@ public class ManagerController {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME);
 
-            List<String> hd = headers.get("passowrd");
+            List<String> hd = headers.get("password");
             if (hd != null && hd.size() > 0)
                 headerDto.setPassword(hd.get(0));
             else

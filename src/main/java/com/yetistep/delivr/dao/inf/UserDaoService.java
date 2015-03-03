@@ -20,6 +20,10 @@ public interface UserDaoService extends GenericDaoService<Integer, UserEntity>{
 
     public List<RoleEntity> findAllRoles() throws Exception;
 
+    public List<UserEntity> findManagers() throws Exception;
+
+    public List<UserEntity> findAccountants() throws Exception;
+
     //Spring Authentication Only
     public UserEntity findByUserName(String userName);
 

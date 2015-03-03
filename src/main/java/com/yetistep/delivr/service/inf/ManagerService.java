@@ -3,10 +3,7 @@ package com.yetistep.delivr.service.inf;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.model.CategoryEntity;
-import com.yetistep.delivr.model.DeliveryBoyEntity;
-import com.yetistep.delivr.model.Page;
-import com.yetistep.delivr.model.StoresBrandEntity;
+import com.yetistep.delivr.model.*;
 
 import java.util.List;
 
@@ -19,6 +16,16 @@ import java.util.List;
  */
 public interface ManagerService {
     public PaginationDto getActionLog(Page page) throws Exception;
+
+    public void saveManagerOrAccountant(UserEntity user, HeaderDto headerDto) throws Exception;
+
+    public Boolean updateManagerOrAccountant(UserEntity user, HeaderDto headerDto) throws Exception;
+
+    public UserEntity findUserById(HeaderDto headerDto) throws Exception;
+
+    public List<UserEntity> findAllManagers() throws Exception;
+
+    public List<UserEntity> findAllAccountants() throws Exception;
 
     public DeliveryBoyEntity updateDboyAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 

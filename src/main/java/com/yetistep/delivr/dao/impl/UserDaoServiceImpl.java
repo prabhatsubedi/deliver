@@ -62,6 +62,34 @@ public class UserDaoServiceImpl implements UserDaoService {
     }
 
     @Override
+    public List<UserEntity> findManagers() throws Exception {
+        List<UserEntity> usersList = new ArrayList<>();
+        try {
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(UserEntity.class);
+            criteria.add(Restrictions.eq("role.id", 2));
+            usersList = criteria.list();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        return usersList;
+    }
+
+    @Override
+    public List<UserEntity> findAccountants() throws Exception {
+        List<UserEntity> usersList = new ArrayList<>();
+        try {
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(UserEntity.class);
+            criteria.add(Restrictions.eq("role.id", 3));
+            usersList = criteria.list();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        return usersList;
+    }
+
+    @Override
     public Boolean save(UserEntity value) throws Exception {
         getCurrentSession().persist(value);
         return true;

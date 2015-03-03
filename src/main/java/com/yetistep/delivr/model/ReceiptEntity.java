@@ -21,7 +21,7 @@ public class ReceiptEntity {
     private Integer id;
     private Date generatedDate;
     private String path;
-    private BigDecimal amount;
+    private BigDecimal receiptAmount;
     private OrderEntity order;
     private CustomerEntity customer;
 
@@ -56,7 +56,14 @@ public class ReceiptEntity {
         this.path = path;
     }
 
+    @Column(name = "receipt_amount")
+    public BigDecimal getReceiptAmount() {
+        return receiptAmount;
+    }
 
+    public void setReceiptAmount(BigDecimal receiptAmount) {
+        this.receiptAmount = receiptAmount;
+    }
 
     @OneToOne(cascade = CascadeType.PERSIST)
     public OrderEntity getOrder() {

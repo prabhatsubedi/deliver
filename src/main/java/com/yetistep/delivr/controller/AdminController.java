@@ -2,7 +2,6 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.PreferencesEntity;
 import com.yetistep.delivr.model.RoleEntity;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,39 +34,109 @@ public class AdminController {
     @Autowired
     UserService userService;
     @Autowired
-    DeliveryBoyService deliveryBoyService;
-    @Autowired
     MerchantService merchantService;
     @Autowired
     CustomerService customerService;
     @Autowired
     SystemPropertyService systemPropertyService;
+    @Autowired
+    ManagerService managerService;
 
     private static final Logger log = Logger.getLogger(AdminController.class);
 
-    @RequestMapping(value = "/save_manager", method = RequestMethod.POST)
+    /*
+    * save manager or accountant
+    * */
+    @RequestMapping(value = "/save_user", method = RequestMethod.POST)
     @ResponseBody
-    public ServiceResponse processRegistration(@RequestBody final UserEntity user) {
+    public ResponseEntity<ServiceResponse> saveUser(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
 
         try {
-            String password = user.getPassword();
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String hashedPassword = passwordEncoder.encode(password);
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME);
+            managerService.saveManagerOrAccountant(user, headerDto);
 
-            user.setPassword(hashedPassword);
-
-            user.setMobileVerificationStatus(false);
-            //user.setLastActivityDate(new Date());
-            user.setBlacklistStatus(false);
-            user.setVerifiedStatus(false);
-
-            userService.saveUser(user);
+            ServiceResponse serviceResponse = new ServiceResponse("User has been saved successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
         } catch (Exception e) {
-            e.printStackTrace();
+            GeneralUtil.logError(log, "Error Occurred while creating user", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
+    }
 
-        ServiceResponse serviceResponse = new ServiceResponse("User has been saved successfully");
-        return serviceResponse;
+    @RequestMapping(value = "/update_user", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME);
+
+            List<String> hd = headers.get("password");
+            if (hd != null && hd.size() > 0)
+                headerDto.setPassword(hd.get(0));
+            else
+                headerDto.setPassword(null);
+
+            managerService.updateManagerOrAccountant(user, headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("User has been updated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while updating user", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_user", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getUser(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            UserEntity user = managerService.findUserById(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Detail of user with ID: "+headerDto.getId());
+            serviceResponse.addParam("user", user);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving delivery boy: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_managers", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getManagers() {
+        try {
+            List<UserEntity> managers = managerService.findAllManagers();
+
+            ServiceResponse serviceResponse = new ServiceResponse("List of managers");
+            serviceResponse.addParam("managers", managers);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving managers", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_accountants", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getAccountants() {
+        try {
+            List<UserEntity> allAccountants = managerService.findAllAccountants();
+
+            ServiceResponse serviceResponse = new ServiceResponse("List of accountants");
+            serviceResponse.addParam("accountants", allAccountants);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving accountants", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
     }
 
     @RequestMapping(value = "/get_users", method = RequestMethod.GET)

@@ -49,4 +49,6 @@
     <bean id = "ratingDaoService" class="com.yetistep.delivr.dao.impl.RatingDaoServiceImpl" />
     <bean id = "orderCancelDaoService" class="com.yetistep.delivr.dao.impl.OrderCancelDaoServiceImpl" />
     <bean id = "invoiceDaoService" class="com.yetistep.delivr.dao.impl.InvoiceDaoServiceImpl" />
+    <bean id = "billDaoService" class="com.yetistep.delivr.dao.impl.BillDaoServiceImpl" />
+    <bean id = "receiptDaoService" class="com.yetistep.delivr.dao.impl.ReceiptDaoServiceImpl" />
  </beans>

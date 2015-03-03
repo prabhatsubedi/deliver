@@ -1,8 +1,6 @@
 package com.yetistep.delivr.service.impl;
 
-import com.yetistep.delivr.dao.inf.InvoiceDaoService;
-import com.yetistep.delivr.dao.inf.OrderDaoService;
-import com.yetistep.delivr.dao.inf.StoreDaoService;
+import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.InvoiceStatus;
 import com.yetistep.delivr.model.*;
@@ -31,6 +29,12 @@ public class AccountServiceImpl implements AccountService{
 
     @Autowired
     InvoiceDaoService invoiceDaoService;
+
+    @Autowired
+    BillDaoService billDaoService;
+
+    @Autowired
+    ReceiptDaoService receiptDaoService;
 
     @Override
     public String getGenerateInvoice(HeaderDto headerDto) throws Exception {
@@ -68,17 +72,26 @@ public class AccountServiceImpl implements AccountService{
         bill.setOrder(order);
         bill.setCustomer(order.getCustomer());
         BigDecimal vat = order.getItemsOrder().get(0).getVat();
-        bill.setVat(order.getItemsOrder().get(0).getVat());
-        bill.setDeliveryCharge(BigDecimal.TEN);
-        bill.setSystemServiceCharge(BigDecimal.TEN);
-        bill.setBillAmount(BigDecimal.TEN);
+        bill.setVat(vat);
+        bill.setDeliveryCharge(order.getDeliveryCharge());
+        bill.setSystemServiceCharge(order.getSystemServiceCharge());
+        bill.setGeneratedDate(new Date(System.currentTimeMillis()));
+        bill.setBillAmount(order.getDeliveryCharge().add(order.getSystemServiceCharge()).add(order.getItemsOrder().get(0).getVat()));
 
         ReceiptEntity receipt = new ReceiptEntity();
+        receipt.setReceiptAmount(order.getDeliveryCharge().add(order.getSystemServiceCharge()).add(order.getItemsOrder().get(0).getVat()));
+        receipt.setGeneratedDate(new Date(System.currentTimeMillis()));
 
+        String billAndReceiptPath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt);
+        bill.setPath(billAndReceiptPath);
+        receipt.setPath(billAndReceiptPath);
 
-        String invoicePath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt);
+        //billDaoService.save(bill);
+        //receiptDaoService.save(receipt);
 
-        return invoicePath;
+        return billAndReceiptPath;
     }
+
+
 
 }

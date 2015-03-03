@@ -277,7 +277,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
             log.info("Uploading Profile Image of delivery boy to S3 Bucket ");
 
-            String dir = MessageBundle.separateString("/", "DBoy", "DBoy" + dBoyEntity.getId());
+            String dir = MessageBundle.separateString("/", "DBoys", "DBoy_" + dBoyEntity.getId());
             boolean isLocal = MessageBundle.isLocalHost();
             String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + dBoyEntity.getId()+System.currentTimeMillis();
             String s3Path = GeneralUtil.saveImageToBucket(profileImage, imageName, dir, true);

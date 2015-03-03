@@ -110,7 +110,7 @@
 
                         <div class="col-lg-6">
 
-                            <div class="other_contents items_container hidden">
+                            <div class="other_contents items_container stores_container hidden">
                                 <div class="form_head">Other Stores</div>
                                 <div class="form_content clearfix"></div>
                             </div>

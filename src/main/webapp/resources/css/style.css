@@ -1280,6 +1280,12 @@ label.check_label .checkbox {
     max-height: 60px;
     overflow: hidden;
 }
+.stores_container .block_item .item_infos {
+    height: auto;
+}
+.stores_container .block_item .item_infos .item_name {
+    white-space: nowrap;
+}
 .items_container .block_item .item_infos .item_name a {
     color: #333333;
     display: block;

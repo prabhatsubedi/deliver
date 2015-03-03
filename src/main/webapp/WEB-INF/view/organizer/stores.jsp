@@ -39,7 +39,7 @@
         </div>
         <div class="main_content">
 
-            <div class="items_container table-view row hidden not_loaded">
+            <div class="items_container stores_container table-view row hidden not_loaded">
 
                 <table id="stores_table">
                     <thead>

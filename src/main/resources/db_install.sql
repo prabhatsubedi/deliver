@@ -133,4 +133,16 @@ INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('HELPLINE_NUMBER', '9800
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('CUSTOMER_CARE_EMAIL', 'customercare@yetistep.com');
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('ACCEPTANCE_RADIUS', '0');
 /* ############# 2015-02-27 ######################### */
+/* IF data not available in reason details then insert */
 INSERT INTO `delivr_db`.`reason_details` (`cancel_reason`, `status`, `rating_star`) VALUES ('Item not available at store', '1', '5'), ('Item price is different in store', '1', '5'), ('Customer not reachable', '1', '0'), ('Customer denied to accept the items', '1', '0'), ('Customer location address not found', '1', '0'), ('Others', '1', '1');
+/* If data available in reason details then update */
+UPDATE reason_details SET cancel_reason = 'Item not available at store', rating_star = 5 WHERE id = 1;
+UPDATE reason_details SET cancel_reason = 'Item price is different in store', rating_star = 5 WHERE id =2;
+UPDATE reason_details SET cancel_reason = 'Customer not reachable', rating_star = 0 WHERE id =3;
+UPDATE reason_details SET cancel_reason = 'Customer denied to accept the items', rating_star = 0 WHERE id =4;
+UPDATE reason_details SET cancel_reason = 'Customer location address not found', rating_star = 0 WHERE id =5;
+UPDATE reason_details SET cancel_reason = 'Others', rating_star = 1 WHERE id =6;
+
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('DBOY_GRESS_TIME', '10');
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('DBOY_DEFAULT_RATING', '3');
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('CUSTOMER_DEFAULT_RATING', '3');

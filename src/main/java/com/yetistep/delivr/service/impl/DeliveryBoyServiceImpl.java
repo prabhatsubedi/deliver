@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.*;
 
 /**
@@ -1078,8 +1079,37 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
         }
 
+
+
+
+
+
         //TODO dboy transaction implementation
         boolean status = orderDaoService.update(orderEntity);
+
+        //Now Calculate Average Rating for Customer
+        RatingEntity ratingEntity = orderDaoService.getCustomerRatingInfo(orderEntity.getCustomer().getId());
+        BigDecimal averageRating = BigDecimal.ZERO;
+        if(ratingEntity.getTotalRate()<= 10 && ratingEntity.getTotalRate() > 0){
+            Integer rate = Integer.valueOf(ratingEntity.getTotalRateSum().intValue()) + Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING)) * (10-ratingEntity.getTotalRate());
+            averageRating = new BigDecimal(rate).divide(new BigDecimal(10), MathContext.DECIMAL128);
+            averageRating = averageRating.setScale(0, BigDecimal.ROUND_HALF_UP);
+        } else {
+            averageRating = ratingEntity.getTotalRateSum().divide(new BigDecimal(ratingEntity.getTotalRate()), MathContext.DECIMAL128);
+            averageRating = averageRating.setScale(0, BigDecimal.ROUND_HALF_UP);
+        }
+
+        //Now Update the average rating and deactivate the customer if
+        customerDaoService.updateAverageRating(averageRating, orderEntity.getCustomer().getId());
+
+        //Lets Change User Status
+        /* Less then or equal 1 means Current Delivery Also In Session (That has not completed) */
+        if(orderDaoService.hasCustomerRunningOrders(orderEntity.getCustomer().getId()) <= 1){
+            if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING))))
+                //Deactivate User
+                userDaoService.deactivateUser(orderEntity.getCustomer().getUser().getId());
+        }
+
         if(status){
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN007","push_notification.properties");

@@ -2,6 +2,7 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 import org.hibernate.Criteria;
@@ -168,5 +169,16 @@ public class UserDaoServiceImpl implements UserDaoService {
 
         BigInteger count = (BigInteger) sqlQuery.uniqueResult();
         return (count.intValue() > 0) ? true : false;
+    }
+
+    @Override
+    public Boolean deactivateUser(Integer userId) throws Exception {
+        String sql = "UPDATE users set status=:status WHERE id = :userId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("status", Status.INACTIVE.ordinal());
+        sqlQuery.setParameter("userId", userId);
+
+        sqlQuery.executeUpdate();
+        return true;
     }
 }

@@ -243,7 +243,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             Main.remove_value(value, remove);
         }
         return value;
-    }
+    };
 
     Main.getURLvalue = function(index) {
         if(index == undefined) return false;

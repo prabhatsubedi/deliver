@@ -69,7 +69,7 @@
                                 </div>
                             </div>
                             <div class="form-group clearfix">
-                                <label for="distance_charge_unpaid" class="col-lg-4 floated_label">Additional Unpaid KM for Shopper Staff</label>
+                                <label for="distance_charge_unpaid" class="col-lg-4 floated_label">Additional Unpaid KM for Shopper</label>
                                 <div class="col-lg-8">
                                     <div class="form-control info_display val_distance_charge_unpaid none_editable"></div>
                                     <div class="info_edit editable hidden">
@@ -78,7 +78,7 @@
                                 </div>
                             </div>
                             <div class="form-group clearfix">
-                                <label for="distance_charge_additional" class="col-lg-4 floated_label">Per KM charge for Additional KM given to Shopper Staff</label>
+                                <label for="distance_charge_additional" class="col-lg-4 floated_label">Per KM charge for Additional KM given to Shopper</label>
                                 <div class="col-lg-8">
                                     <div class="form-control info_display val_distance_charge_additional none_editable"></div>
                                     <div class="info_edit editable hidden">

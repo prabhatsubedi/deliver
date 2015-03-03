@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Shopper Staff Order History</title>
+    <title>Shopper Order History</title>
 
     <%@include file="../includes/head.jsp" %>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.dataTables.min.js"></script>
@@ -32,7 +32,7 @@
                     <thead>
                     <tr>
                         <th rowspan="2">SN</th>
-                        <th rowspan="2">Shopper Staff</th>
+                        <th rowspan="2">Shopper</th>
                         <th rowspan="2">Date</th>
                         <th rowspan="2">Order No</th>
                         <th rowspan="2">Customer Name</th>
@@ -43,7 +43,7 @@
                         <th rowspan="2">Time Assigned</th>
                         <th rowspan="2">Time Taken</th>
                         <th colspan="2">Customer Feedback</th>
-                        <th colspan="2">Shopper Staff Feedback</th>
+                        <th colspan="2">Shopper Feedback</th>
                     </tr>
                         <tr>
                             <th>Rating</th>

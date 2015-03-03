@@ -1071,6 +1071,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: dBoyOrderHistoryEntities){
             if(dBoyOrderHistoryEntity.getDeliveryStatus().equals(DeliveryStatus.PENDING)){
                 dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.CANCELLED);
+                dBoyOrderHistoryEntity.setOrderCompletedAt(DateUtil.getCurrentTimestampSQL());
             }
         }
 

@@ -135,7 +135,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
                     address.setState(addressEntity.getState());
                     address.setCountry(addressEntity.getCountry());
                     address.setCountryCode(addressEntity.getCountryCode());
-                    address.setUser(user);
+                    address.setUser(dbUser);
                     break;
                 }
             }

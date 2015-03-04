@@ -83,33 +83,33 @@
         </div>
     </div>
 </div>
-<form role="form" id="form_user" method="POST" action="">
-    <div class="modal-content">
-        <div class="modal-header text-center"></div>
-        <div class="modal-body body_padding">
-            <div class="form-group">
-                <input type="text" class="form-control" id="name" name="name" placeholder="Name">
-            </div>
-            <div class="form-group">
-                <input type="email" class="form-control" id="email" name="email" placeholder="Email">
-            </div>
-            <div class="form-group">
-                <input type="phone" class="form-control" id="phone" name="phone" placeholder="Phone">
-            </div>
-        </div>
-        <div class="modal-footer">
-            <div class="col-lg-6 no_pad">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            </div>
-            <div class="col-lg-6 no_pad">
-                <button type="submit" class="btn btn-default next">Create</button>
-            </div>
-        </div>
-    </div>
-</form>
 
 <div class="modal fade modal_form" id="modal_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
+        <form role="form" id="form_user" method="POST" action="">
+            <div class="modal-content">
+                <div class="modal-header text-center"></div>
+                <div class="modal-body body_padding">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-lg-6 no_pad">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                    <div class="col-lg-6 no_pad">
+                        <button type="submit" class="btn btn-default next">Create</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 

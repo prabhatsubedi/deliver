@@ -129,22 +129,17 @@ var Admin = function() {
             $('#form_user').validate({
                 submitHandler: function (form) {
 
-/*                    if($('#commission').val() == 0 && $('#service_fee').val() == 0) {
-                        alert('Both commission percent and service fee cannot be 0.');
-                        return false;
-                    }
-
-                    var chk_confirm = confirm('Are you sure you want to activate this merchant?');
+                    var chk_confirm = confirm('Are you sure you want to ' + $('#modal_user .modal-header').html().toLowerCase() + '?');
                     if (!chk_confirm) return false;
 
                     var data = {};
 
-                    data.id = $(form).attr('data-id');
-                    data.partnershipStatus = $('#partnership').val();
-                    data.commissionPercentage = $('#commission').val();
-                    data.serviceFee = $('#service_fee').val();
+                    data.fullName = $('#name').val();
+                    data.emailAddress = $('#email').val();
+                    data.mobileNumber = $('#phone').val();
+                    data.role = {role: $('#modal_user .modal-header').attr('data-role')};
 
-                    Manager.merchantActivation(data);*/
+                    Admin.saveUser(data);
 
                     return false;
 
@@ -213,10 +208,26 @@ var Admin = function() {
             Main.request('/organizer/get_merchants', {}, callback);
 
         },
-        createManager: function() {
+        saveUser: function(params) {
 
-        },
-        createAccountant: function() {
+            $("button[type='submit']").attr("disabled", true);
+
+            var callback = function (status, data) {
+                $("button[type='submit']").removeAttr("disabled");
+
+                alert(data.message);
+                if (data.success == true) {
+                    $('#modal_user').modal('hide');
+                    if(params.role.role == 'ROLE_MANAGER')
+                        Admin.getManagers();
+                    else
+                        Admin.getAccountants();
+                }
+            };
+
+            callback.loaderDiv = ".modal-dialog";
+
+            Main.request('/admin/save_user', params, callback);
 
         }
 

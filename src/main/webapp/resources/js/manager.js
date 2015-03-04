@@ -677,6 +677,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
         $("a.view_home").click(function(){
             $(".parent_category_list").removeClass("hidden");
             $(".category_detail").addClass("hidden");
+            Main.elemRatio();
         });
         var callback = function (status, data) {
             if (!data.success) {
@@ -777,6 +778,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
             else
                 $('#category_image').html('<div class="drop_info">Drop image file <br/> (or click to browse)</div><div class="drop_title">Category Image</div>');
+
+            Main.elemRatio();
 
         }
         var headers = {};
@@ -928,6 +931,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.loadAddSubCategory = function(){
 
         $('body').delegate('a.add_child_btn, a.add_root_btn', 'click', function(){
+            Main.elemRatio();
             $(".category_detail").removeClass('hidden');
             $(".parent_category_list").addClass('hidden');
             if($(this).hasClass('add_root_btn')){

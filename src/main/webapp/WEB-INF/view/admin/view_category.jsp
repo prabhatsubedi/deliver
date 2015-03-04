@@ -53,11 +53,11 @@
                                     <div class="profile_header_image col-lg-5 pull-left">
                                         <div id="category_image"
                                              class="drop_zone user_image disabled unselectable text-center maintain_ratio"
-                                             mr-width="200" mr-height="200">
-                                            <div class="drop_info">Drop image file <br/> (or click to browse) <br /> Min Size: 200x200</div>
+                                             mr-width="720" mr-height="160">
+                                            <div class="drop_info">Drop image file <br/> (or click to browse) <br /> Min Size: 720x160</div>
                                                 <div class="drop_title">Category Image</div>
                                         </div>
-                                        <input type="file" onchange="Image.readURL(this)" id="category_image_input"
+                                        <input type="file" onchange="Image.readURL(this)" id="category_image_input" data-dimension="720x160"
                                                name="category_image_input" class="hidden"/>
                                     </div>
                                     <div class="profile_header_info pull-left">

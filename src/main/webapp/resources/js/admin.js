@@ -102,6 +102,122 @@ var Admin = function() {
             callback.loaderDiv = "body";
             Main.request('/admin/update_preferences', updatedData, callback);
 
+        },
+        loadUserManagement: function() {
+
+            Admin.getManagers();
+
+            var accountsLoad = true;
+
+            $('.main_tabs ul li a[href="#accountants"]').on('show.bs.tab', function (e) {
+                if(accountsLoad) {
+                    Admin.getAccountants();
+                    accountsLoad = false;
+                }
+            });
+            $('.main_tabs button').click(function(){
+                $('#modal_user .modal-header').attr('data-role', $(this).attr('data-role')).html('Create ' + $(this).attr('data-user'));
+            });
+
+            $.validator.setDefaults({
+                errorPlacement: function (error, element) {
+                    $('#error_container').html(error);
+                },
+                ignore: []
+            });
+
+            $('#form_user').validate({
+                submitHandler: function (form) {
+
+/*                    if($('#commission').val() == 0 && $('#service_fee').val() == 0) {
+                        alert('Both commission percent and service fee cannot be 0.');
+                        return false;
+                    }
+
+                    var chk_confirm = confirm('Are you sure you want to activate this merchant?');
+                    if (!chk_confirm) return false;
+
+                    var data = {};
+
+                    data.id = $(form).attr('data-id');
+                    data.partnershipStatus = $('#partnership').val();
+                    data.commissionPercentage = $('#commission').val();
+                    data.serviceFee = $('#service_fee').val();
+
+                    Manager.merchantActivation(data);*/
+
+                    return false;
+
+                }
+            });
+            $('#name').rules('add', {required: true});
+            $('#email').rules('add', {required: true, email: true});
+            $('#phone').rules('add', {required: true, minlength: 10, maxlength: 10});
+
+        },
+        getManagers: function() {
+
+            var callback = function (status, data) {
+
+                console.log(data);
+                if (!data.success) {
+                    alert(data.message);
+                    return;
+                }
+//                var merchants = data.params.merchants;
+                var tdata = [];
+
+//                for (i = 0; i < merchants.length; i++) {
+//                    var row = ["abc", "bbbb"];
+//                    tdata.push(row);
+//                }
+
+                Main.createDataTable("#manager_table", tdata);
+
+                $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+
+            };
+
+            callback.loaderDiv = "body";
+            callback.requestType = "GET";
+
+            Main.request('/organizer/get_merchants', {}, callback);
+
+        },
+        getAccountants: function() {
+
+            var callback = function (status, data) {
+
+                console.log(data);
+                if (!data.success) {
+                    alert(data.message);
+                    return;
+                }
+//                var merchants = data.params.merchants;
+                var tdata = [];
+
+//                for (i = 0; i < merchants.length; i++) {
+//                    var row = ["abc", "bbbb"];
+//                    tdata.push(row);
+//                }
+
+                Main.createDataTable("#accountant_table", tdata);
+
+                $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+
+            };
+
+            callback.loaderDiv = "body";
+            callback.requestType = "GET";
+
+            Main.request('/organizer/get_merchants', {}, callback);
+
+        },
+        createManager: function() {
+
+        },
+        createAccountant: function() {
+
         }
 
     };

@@ -1449,8 +1449,8 @@ label.check_label .checkbox {
     background-color: #FFFFFF;
 }
 .profile_header_image .user_image {
-    width: 150px;
-    height: 150px;
+    width: 100%;
+    height: auto;
     margin: 0 auto;
 }
 .profile_body {

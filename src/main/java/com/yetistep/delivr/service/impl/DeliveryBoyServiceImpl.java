@@ -663,20 +663,30 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
             /*=========== Calculate Average Rating For Customer ================ (Appended By Surendra) */
             log.info("Calculating Average Rating of Customer After Delivered ");
-            RatingEntity ratingEntity = orderDaoService.getCustomerRatingInfo(customerEntity.getId());
-            BigDecimal averageRating = getAverageRating(ratingEntity);
-            //Now Update the average rating and deactivate the customer if
-            customerDaoService.updateAverageRating(averageRating, customerEntity.getId());
-            //Lets Change User Status
+            //RatingEntity ratingEntity = orderDaoService.getCustomerRatingInfo(customerEntity.getId());
+            List<Integer> ratings = orderDaoService.getCustomerRatings(customerEntity.getId());
+            if(ratings !=null && ratings.size()> 0){
+                BigDecimal totalRate = BigDecimal.ZERO;
 
-            if(orderDaoService.hasCustomerRunningOrders(customerEntity.getId()) <= 0){
-                if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING))))
-                    //Deactivate User
-                    log.info("Deactivating Customer id : " + customerEntity.getId());
+                for(Integer rate : ratings){
+                    totalRate = totalRate.add(new BigDecimal(rate));
+                }
+
+                BigDecimal averageRating = getAverageRating(ratings.size(), totalRate);
+                //Now Update the average rating and deactivate the customer if
+                customerDaoService.updateAverageRating(averageRating, customerEntity.getId());
+                //Lets Change User Status
+
+                if(orderDaoService.hasCustomerRunningOrders(customerEntity.getId()) <= 0){
+                    if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING))))
+                        //Deactivate User
+                        log.info("Deactivating Customer id : " + customerEntity.getId());
                     userDaoService.deactivateUser(customerEntity.getUser().getId());
-            }
+                }
 
             /* Ended By Surendra */
+            }
+
 
             /* Updating unit price of item */
             this.updateItemPrice(order);
@@ -701,14 +711,14 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         return status;
     }
 
-    private BigDecimal getAverageRating(RatingEntity ratingEntity) throws Exception {
+    private BigDecimal getAverageRating(Integer totalRate, BigDecimal totalRateSum) throws Exception {
         BigDecimal averageRating;
-        if(ratingEntity.getTotalRate()<= 10 && ratingEntity.getTotalRate() > 0){
-            Integer rate = Integer.valueOf(ratingEntity.getTotalRateSum().intValue()) + Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING)) * (10-ratingEntity.getTotalRate());
+        if(totalRate<= 10 && totalRate > 0){
+            Integer rate = Integer.valueOf(totalRateSum.intValue()) + Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING)) * (10-totalRate);
             averageRating = new BigDecimal(rate).divide(new BigDecimal(10), MathContext.DECIMAL128);
             averageRating = averageRating.setScale(0, BigDecimal.ROUND_HALF_UP);
         } else {
-            averageRating = ratingEntity.getTotalRateSum().divide(new BigDecimal(ratingEntity.getTotalRate()), MathContext.DECIMAL128);
+            averageRating = totalRateSum.divide(new BigDecimal(totalRate), MathContext.DECIMAL128);
             averageRating = averageRating.setScale(0, BigDecimal.ROUND_HALF_UP);
         }
         return averageRating;
@@ -1131,22 +1141,31 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         boolean status = orderDaoService.update(orderEntity);
 
         /* Now Calculate Average Rating for Customer (Appended By Surendra) */
-        RatingEntity ratingEntity = orderDaoService.getCustomerRatingInfo(orderEntity.getCustomer().getId());
-        BigDecimal averageRating = getAverageRating(ratingEntity);
+        List<Integer> ratings = orderDaoService.getCustomerRatings(orderEntity.getCustomer().getId());
+        if(ratings !=null && ratings.size()> 0){
+            BigDecimal totalRate = BigDecimal.ZERO;
 
-        //Now Update the average rating and deactivate the customer if
-        customerDaoService.updateAverageRating(averageRating, orderEntity.getCustomer().getId());
+            for(Integer rate : ratings){
+                totalRate = totalRate.add(new BigDecimal(rate));
+            }
 
-        //Lets Change User Status
+            BigDecimal averageRating = getAverageRating(ratings.size(), totalRate);
+
+            //Now Update the average rating and deactivate the customer if
+            customerDaoService.updateAverageRating(averageRating, orderEntity.getCustomer().getId());
+
+            //Lets Change User Status
         /* Less then or equal 1 means Current Delivery Also In Session (That has not completed) */
-        if(orderDaoService.hasCustomerRunningOrders(orderEntity.getCustomer().getId()) <= 1){
-            if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING))))
-                //Deactivate User
-                log.info("Deactivating Customer id : " + orderEntity.getCustomer().getId());
+            if(orderDaoService.hasCustomerRunningOrders(orderEntity.getCustomer().getId()) <= 1){
+                if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING))))
+                    //Deactivate User
+                    log.info("Deactivating Customer id : " + orderEntity.getCustomer().getId());
                 userDaoService.deactivateUser(orderEntity.getCustomer().getUser().getId());
-        }
+            }
 
         /* Ended By Surendra */
+        }
+
 
         if(status){
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());

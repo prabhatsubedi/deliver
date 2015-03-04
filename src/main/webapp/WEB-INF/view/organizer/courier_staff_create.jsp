@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Shopper Staff</title>
+    <title>Add Shopper</title>
 
     <%@include file="../includes/head.jsp" %>
 
@@ -36,7 +36,7 @@
 
     <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left">Add Shopper Staff</h1>
+            <h1 class="pull-left">Add Shopper</h1>
         </div>
         <div class="main_content">
 
@@ -51,7 +51,7 @@
 
                         <div class="profile_pic_left">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Name of Shopper Staff">
+                                <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Name of Shopper">
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="email" name="email" placeholder="Email Address (Optional)">

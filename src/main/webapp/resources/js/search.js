@@ -220,7 +220,7 @@ var Search = function() {
 
             var searchParams = {};
             if($("#item_stores").val() != "All") searchParams.brands = $("#item_stores").val();
-            if($("#item_categoires").val() != "All") searchParams.categories = $("#item_categoires").val();
+            if($("#item_categories").val() != "All") searchParams.categories = $("#item_categories").val();
             searchParams.searchString = $("#item_name").val();
             searchParams.page = pageOptions;
 
@@ -233,6 +233,14 @@ var Search = function() {
 }();
 
 $(document).ready(function(){
+
+    $('#item_search').submit(function(){
+        if($("#item_name").val() == "" && $("#item_stores").val() == "All" && $("#item_categories").val() == "All") {
+            alert('Blank search is not allowed with both all stores and all categories selected.');
+            return false;
+        }
+    });
+
     if(Main.getFromLocalStorage('userRole') == undefined) return false;
     var searchRoot = Main.getURLvalue(0);
     if(Main.getFromLocalStorage('searchRoot') != searchRoot) {

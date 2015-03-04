@@ -54,7 +54,7 @@ var courierProfile;
         $('#courier_boy_form').validate({
             submitHandler: function () {
 
-                var chk_confirm = confirm('Are you sure you want to add shopper staff?');
+                var chk_confirm = confirm('Are you sure you want to add shopper?');
                 if (!chk_confirm) return false;
 
                 var data = {};
@@ -115,7 +115,7 @@ var courierProfile;
             if (data.success == true) {
                 alert(data.message);
                 $('#courier_boy_form').trigger('reset');
-                $('#drop_zone').html('');
+                $('#profile_image').html('<div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 200x200</div><div class="drop_title">Profile Picture</div>');
             } else {
                 alert(data.message);
             }
@@ -294,7 +294,7 @@ var courierProfile;
 
         $('.save_btn').click(function () {
             if ($('#courier_boy_form').valid()) {
-                var chk_confirm = confirm('Are you sure you want to update shopper staff?');
+                var chk_confirm = confirm('Are you sure you want to update shopper?');
                 if (!chk_confirm) return false;
 
                 var data = {};

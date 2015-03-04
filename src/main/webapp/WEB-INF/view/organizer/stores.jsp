@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div class="main_content">
+        <div class="main_content stores_container">
 
             <div class="items_container table-view row hidden not_loaded">
 

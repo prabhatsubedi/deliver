@@ -119,12 +119,12 @@
             <div class="block_counts col-sm-12">
                 <div class="col-sm-3 count_block_cont">
                     <div class="count_cont table_div">
-                        <span class="count_span td_div" data-get="onDutyDeliveryBoy">0</span> <span class="count_label td_div">On Duty Shopper Staff</span>
+                        <span class="count_span td_div" data-get="onDutyDeliveryBoy">0</span> <span class="count_label td_div">On Duty Shopper</span>
                     </div>
                 </div>
                 <div class="col-sm-3 count_block_cont">
                     <div class="count_cont table_div">
-                        <span class="count_span td_div count_red" data-get="offDutyDeliveryBoy">0</span> <span class="count_label td_div">Off Duty Shopper Staff</span>
+                        <span class="count_span td_div count_red" data-get="offDutyDeliveryBoy">0</span> <span class="count_label td_div">Off Duty Shopper</span>
                     </div>
                 </div>
             </div>

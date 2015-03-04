@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Shopper Staffs</title>
+    <title>Shopper</title>
 
     <%@include file="../includes/head.jsp" %>
 
@@ -37,7 +37,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="mapLabel">Shopper staff map</h4>
+                <h4 class="modal-title" id="mapLabel">Shopper map</h4>
             </div>
             <div class="modal-body">
 
@@ -109,8 +109,8 @@
 
     <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left">Shopper Staffs</h1>
-            <a class="btn btn_green pull-right" href="/organizer/courier_staff/create">Add Shopper Staff</a>
+            <h1 class="pull-left">Shopper</h1>
+            <a class="btn btn_green pull-right" href="/organizer/courier_staff/create">Add Shopper</a>
         </div>
         <div class="main_content">
 
@@ -120,7 +120,7 @@
                     <tr>
                         <th rowspan="2">SN</th>
                         <th rowspan="2">
-                            <div class="width_150"> Shopper Staff Name</div>
+                            <div class="width_150"> Shopper Name</div>
                         </th>
                         <th rowspan="2">
                             <div class="width_100"> Contact No.</div>

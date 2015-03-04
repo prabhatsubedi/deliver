@@ -37,7 +37,7 @@
                             <th>Store Name & Address</th>
                             <th>Order No</th>
                             <th>Total Bill Amount</th>
-                            <th>Shopper Staff</th>
+                            <th>Shopper</th>
                             <th>Bill</th>
                             <th>Items</th>
                             <th>Action</th>

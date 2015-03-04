@@ -1969,13 +1969,18 @@ label.check_label .checkbox {
     padding-top: 10px;
 }
 
+#purchase_history_table .db_td, #purchase_history_table .bill_td{
+    padding: 10px;
+    position: relative;
+}
+
 #purchase_history_table .db_info, #purchase_history_table .bill_list{
     line-height: 1.8;
     z-index: 10;
-    /*box-shadow: 0 0 15px #999;
+    box-shadow: 0 0 15px #999;
     position: absolute;
     padding: 10px;
-    background-color: #FFF;*/
+    background-color: #FFF;
 }
 
 #purchase_history_table .show_db_info, #purchase_history_table .view_bills{
@@ -1989,6 +1994,10 @@ label.check_label .checkbox {
 #purchase_history_table .db_image {
     border: 1px solid #999;
     padding: 10px;
+}
+
+#purchase_history_table .bill_td{
+    min-width: 250px;
 }
 
 

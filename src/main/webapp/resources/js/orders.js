@@ -69,7 +69,7 @@ Order.getOrders = function(){
         Main.createDataTable("#order_successful_table", tdataSuccessful);
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
     }
-
+    callback.loaderDiv = ".main_content";
     var postData = {};
     //postData.page = {pageNumber: 1, pageSize: 20, sortOrder: 'desc'};
 
@@ -94,23 +94,21 @@ Order.getPurchaseHistory = function(){
             var id = order.id;
             var link_attachments = '';
             if(order.attachments.length > 0){
-                 link_attachments += '<span class="view_bills">View Bills</span><div class="bill_list hidden">';
+                 link_attachments += '<div class="bill_td"><span class="view_bills">View Bills</span><div class="bill_list hidden">';
                 for(var j= 0; j<order.attachments.length; j++){
                     link_attachments += '<p><a href="'+order.attachments[j]+'">'+order.attachments[j]+'</a></p>';
                 }
-                link_attachments += '</div>';
+                link_attachments += '</div></div>';
             }
-            var deliveryBoyName = typeof(order.deliveryBoy) != 'undefined'?"<span class='show_db_info'>"+order.deliveryBoy.user.fullName+"</span>":'';
+            var deliveryBoy = typeof(order.deliveryBoy) != 'undefined'?"<div class='db_td'><span class='show_db_info'>"+order.deliveryBoy.user.fullName+"</span>":'';
             var view_items = '<span class="item_list" data-id="'+id+'">View Item List</span>';
 
-            var db_info = "";
             if(typeof(order.deliveryBoy) != 'undefined')
-                 db_info = "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>Contact: "+order.deliveryBoy.user.mobileNumber+"</div></div>";
-            else
-                db_info = "<div class='db_info hidden'></div>";
+                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>Name: "+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>Contact: "+order.deliveryBoy.user.mobileNumber+"</div></div></div>";
 
 
-            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoyName+db_info, link_attachments, view_items, ''];
+
+            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, view_items, ''];
             tableData.push(row);
 
         }
@@ -120,6 +118,7 @@ Order.getPurchaseHistory = function(){
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     }
+    callback.loaderDiv = ".main_content";
 
     var postData = {};
     //postData.page = {pageNumber: 1, pageSize: 20, sortOrder: 'desc'};
@@ -129,22 +128,18 @@ Order.getPurchaseHistory = function(){
 
    $("body").delegate("span.show_db_info", "mouseover", function(){
          $(this).siblings(".db_info").removeClass("hidden");
-         $(this).addClass("hidden");
    });
 
-    $("body").delegate(".db_info", "mouseout", function(){
-        $(this).siblings("span.show_db_info").removeClass("hidden");
-        $(this).addClass("hidden");
+    $("body").delegate(".db_td", "mouseleave", function(){
+        $(this).find(".db_info").addClass("hidden");
     });
 
     $("body").delegate("span.view_bills", "mouseover", function(){
         $(this).siblings(".bill_list").removeClass("hidden");
-        $(this).addClass("hidden");
     });
 
-    $("body").delegate(".bill_list", "mouseout", function(){
-        $(this).siblings("span.view_bills").removeClass("hidden");
-        $(this).addClass("hidden");
+    $("body").delegate(".bill_td", "mouseleave", function(){
+        $(this).find(".bill_list").addClass("hidden");
     });
 
 }
@@ -194,14 +189,13 @@ Order.courierBoyOrderHistory = function(){
             var action = '';
             var orderHistoryLength =  order.dBoyOrderHistories.length;
 
-
-
-            var row = [i+1, order.deliveryBoy.user.fullName, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, order.dBoyOrderHistories[orderHistoryLength-1].amountEarned, order.assignedTime+'Min', ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt)/1000/60).toFixed(0)+'Min', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:'', view_items, action];
+            var row = [i+1, order.deliveryBoy.user.fullName, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, order.dBoyOrderHistories[orderHistoryLength-1].amountEarned, order.assignedTime+'Min', ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt)/1000/60).toFixed(0)+'Min', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
             tableData.push(row);
         }
 
         Main.createDataTable("#courier_history_table", tableData);
     }
+    callback.loaderDiv = ".main_content";
     var header = {};
     header.id = Main.getURLvalue(3);
 

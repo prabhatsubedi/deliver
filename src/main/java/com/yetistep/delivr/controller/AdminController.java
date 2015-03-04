@@ -70,13 +70,7 @@ public class AdminController {
     public ResponseEntity<ServiceResponse> updateDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME);
-
-            List<String> hd = headers.get("password");
-            if (hd != null && hd.size() > 0)
-                headerDto.setPassword(hd.get(0));
-            else
-                headerDto.setPassword(null);
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
 
             managerService.updateManagerOrAccountant(user, headerDto);
 

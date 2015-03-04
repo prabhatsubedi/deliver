@@ -122,15 +122,10 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
     @Override
     public Boolean updateManagerOrAccountant(UserEntity user, HeaderDto headerDto) throws Exception {
-        UserEntity dbUser = userDaoService.find(user.getId());
+        UserEntity dbUser = userDaoService.find(Integer.parseInt(headerDto.getId()));
         if (dbUser == null) {
             throw new YSException("VLD011");
         }
-        dbUser.setUsername(headerDto.getUsername());
-        if(headerDto.getPassword() != null)
-            dbUser.setPassword(GeneralUtil.encryptPassword(headerDto.getPassword()));
-
-        dbUser.setMobileNumber(headerDto.getUsername());
         List<AddressEntity> addressEntities =  user.getAddresses();
         for(AddressEntity addressEntity: addressEntities){
             for(AddressEntity address: dbUser.getAddresses()){
@@ -146,7 +141,6 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
             }
         }
 
-        dbUser.setUsername(user.getMobileNumber());
         dbUser.setFullName(user.getFullName());
         dbUser.setEmailAddress(user.getEmailAddress());
         dbUser.setMobileNumber(user.getMobileNumber());

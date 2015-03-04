@@ -202,7 +202,7 @@ public class CourierTransactionEntity {
     }
 
     @JsonIgnore
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     public OrderEntity getOrder() {
         return order;

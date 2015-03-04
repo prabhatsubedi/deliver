@@ -50,6 +50,15 @@
                         <div class="profile_header_info pull-left">
                             <div class="info1 business_name"></div>
                             <div class="info2 contact_person"></div>
+                            <div class="ratings">
+                                <ul class="nav">
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="action detail_options pull-right">
                             <a class="pull-left btn btn_green edit_btn none_editable glyphicon glyphicon-edit"></a>

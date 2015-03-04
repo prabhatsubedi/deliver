@@ -18,4 +18,6 @@ public interface DBoyOrderHistoryDaoService extends GenericDaoService<Integer, D
     public List<PastDeliveriesDto> getPastOrders(Page page, Integer deliveryBoyId) throws Exception;
 
     public Integer getTotalNumberOfPastDeliveries(Integer deliveryBoyId) throws Exception;
+
+    public DBoyOrderHistoryEntity getOrderHistory(Integer orderId, Integer dboyId) throws Exception;
 }

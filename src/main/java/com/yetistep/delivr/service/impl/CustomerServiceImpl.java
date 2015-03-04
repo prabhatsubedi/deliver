@@ -25,6 +25,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.*;
 
@@ -38,6 +39,9 @@ import java.util.*;
 @Controller
 public class CustomerServiceImpl implements CustomerService {
     private static final Logger log = Logger.getLogger(CustomerServiceImpl.class);
+    private static final Integer ON_TIME_DELIVERY = 0;
+    private static final Integer DELAYED_DELIVERY = -1;
+
 
     @Autowired
     CustomerDaoService customerDaoService;
@@ -105,6 +109,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     DeliveryBoySelectionDaoService deliveryBoySelectionDaoService;
 
+    @Autowired
+    DBoyOrderHistoryDaoService dBoyOrderHistoryDaoService;
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
         log.info("++++++++++++++ Logging Customer ++++++++++++++++");
@@ -156,7 +162,7 @@ public class CustomerServiceImpl implements CustomerService {
             * if current login is the first login of the current customer
             * set reward for the customer
             * */
-            if(registeredCustomer.getUser().getLastActivityDate().equals(null)) {
+            if(registeredCustomer.getUser().getLastActivityDate() == null) {
                 registeredCustomer.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
             }
 
@@ -185,9 +191,9 @@ public class CustomerServiceImpl implements CustomerService {
 //                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
 //                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());
 //            }
-            if(registeredCustomer.getUser().getLastActivityDate().equals(null)) {
-                customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
-            }
+            //if(registeredCustomer.getUser().getLastActivityDate().equals(null)) {
+            customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
+           // }
             customerDaoService.save(customerEntity);
 
         }
@@ -1285,10 +1291,56 @@ public class CustomerServiceImpl implements CustomerService {
             ratingEntity.setOrder(order);
             order.setRating(ratingEntity);
         }
+
+        // IF Delayed In Deliver Then Rating Will be Decreased (Appended By Surendra)
+        DBoyOrderHistoryEntity dBoyOrderHistoryEntity = dBoyOrderHistoryDaoService.getOrderHistory(orderId, order.getDeliveryBoy().getId());
+        Integer assignedTime = order.getAssignedTime();
+        Double deliveredTime = DateUtil.getMinDiff(dBoyOrderHistoryEntity.getOrderAcceptedAt().getTime(), dBoyOrderHistoryEntity.getOrderCompletedAt().getTime());
+        Integer remainingTime = (assignedTime + Integer.valueOf(systemPropertyService.readPrefValue(PreferenceType.DBOY_GRESS_TIME))) - deliveredTime.intValue();
+        log.info("+++++++ Assigned Time " + assignedTime + " & Delivered Time " + deliveredTime + " +++++++++");
+        Integer dboyRating = rating.getDeliveryBoyRating();
+        if(remainingTime < 0)
+            dboyRating = dboyRating - DELAYED_DELIVERY;
+
+        // Ended By Surendra
+
         ratingEntity.setCustomerComment(rating.getCustomerComment());
-        ratingEntity.setDeliveryBoyRating(rating.getDeliveryBoyRating());
+        ratingEntity.setDeliveryBoyRating(dboyRating);
         ratingEntity.setRatingIssues(rating.getRatingIssues());
-        return orderDaoService.update(order);
+        orderDaoService.update(order);
+
+        /* Now Calculate Average Rating (Appended By Surendra) */
+//        DeliveryBoyEntity deliveryBoy = order.getDeliveryBoy();
+        RatingEntity rate = orderDaoService.getDboyRatingInfo(order.getDeliveryBoy().getId());
+        BigDecimal averageRating = getAverageRating(rate);
+        deliveryBoyDaoService.updateAverageRating(averageRating, order.getDeliveryBoy().getId());
+
+        /* Less then or equal 1 means Current Delivery Also In Session (That has not completed) */
+        if(orderDaoService.hasDboyRunningOrders(order.getDeliveryBoy().getId()) <= 1){
+            if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)))) {
+                //Deactivate User
+                log.info("Deactivating Delivery Boy id : " + order.getDeliveryBoy().getId());
+                userDaoService.deactivateUser(order.getDeliveryBoy().getUser().getId());
+            }
+
+        }
+
+        /* Ended By Surendra */
+
+        return true;
+    }
+
+    private BigDecimal getAverageRating(RatingEntity ratingEntity) throws Exception {
+        BigDecimal averageRating;
+        if(ratingEntity.getTotalRate()<= 10 && ratingEntity.getTotalRate() > 0){
+            Integer rate = Integer.valueOf(ratingEntity.getTotalRateSum().intValue()) + Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)) * (10-ratingEntity.getTotalRate());
+            averageRating = new BigDecimal(rate).divide(new BigDecimal(10), MathContext.DECIMAL128);
+            averageRating = averageRating.setScale(0, BigDecimal.ROUND_HALF_UP);
+        } else {
+            averageRating = ratingEntity.getTotalRateSum().divide(new BigDecimal(ratingEntity.getTotalRate()), MathContext.DECIMAL128);
+            averageRating = averageRating.setScale(0, BigDecimal.ROUND_HALF_UP);
+        }
+        return averageRating;
     }
 
     @Override

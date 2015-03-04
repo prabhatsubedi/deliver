@@ -275,10 +275,48 @@ public class OrderDaoServiceImpl implements OrderDaoService {
     }
 
     @Override
+    public RatingEntity getDboyRatingInfo(Integer dboyId) throws Exception {
+        String sql = "SELECT COALESCE(SUM(r.dboy_rating),0) AS totalRateSum, COUNT(r.id) AS totalRate FROM orders o " +
+                "INNER JOIN ratings r ON(r.order_id = o.id AND r.dboy_rating IS NOT NULL) " +
+                "WHERE o.delivery_boy_id =:dboyId " +
+                "ORDER BY o.order_date DESC";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("dboyId", dboyId);
+//        sqlQuery.setResultTransformer(Transformers.aliasToBean(RatingEntity.class));
+        List<Object[]> rows = sqlQuery.list();
+        RatingEntity rating = new RatingEntity();
+        for(Object[] row : rows){
+            rating.setTotalRateSum(new BigDecimal(row[0].toString()));
+            rating.setTotalRate(Integer.valueOf(row[1].toString()));
+        }
+        return rating;
+    }
+
+    @Override
     public Integer hasCustomerRunningOrders(Integer customerId) throws Exception {
-        String sql = "SELECT COUNT(id) FROM orders WHERE order_status NOT IN(:jobOrderList) AND customer_id =:customerId";
+           return hasRunningOrders(customerId, null);
+    }
+
+    @Override
+    public Integer hasDboyRunningOrders(Integer dboyId) throws Exception {
+        return hasRunningOrders(null, dboyId);
+    }
+
+    private Integer hasRunningOrders(Integer customerId, Integer dboyId) throws Exception{
+        String sql = "SELECT COUNT(id) FROM orders WHERE order_status NOT IN(:jobOrderList) ";
+        if(customerId != null)
+            sql = sql +  "AND customer_id =:customerId";
+        else if(dboyId != null)
+            sql = sql +  "AND delivery_boy_id =:dboyId";
+
+
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
-        query.setParameter("customerId", customerId);
+
+        if(customerId != null)
+            query.setParameter("customerId", customerId);
+        else if(dboyId != null)
+            query.setParameter("dboyId", dboyId);
+
         List<Integer> jobOrderList = new ArrayList<>();
         jobOrderList.add(JobOrderStatus.DELIVERED.ordinal());
         jobOrderList.add(JobOrderStatus.CANCELLED.ordinal());

@@ -7,6 +7,7 @@ import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
 import com.yetistep.delivr.util.HibernateUtil;
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -102,5 +103,21 @@ public class DBoyOrderHistoryDaoServiceImpl implements DBoyOrderHistoryDaoServic
                 .add(Restrictions.in("deliveryStatus", deliveryStatus));
         Long count = (Long) criteriaCount.uniqueResult();
         return (count != null) ? count.intValue() : null;
+    }
+
+    @Override
+    public DBoyOrderHistoryEntity getOrderHistory(Integer orderId, Integer dboyId) throws Exception {
+        String sql = "SELECT id, amount_earned AS amountEarned, distance_travelled AS distanceTravelled, job_started_at AS jobStartedAt, " +
+                "order_accepted_at AS orderAcceptedAt,completed_at AS orderCompletedAt, reached_stored_at AS reachedStoreAt " +
+                "FROM dboy_order_history " +
+                "WHERE dboy_id =:dboyId AND order_id = :orderId";
+
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("dboyId", dboyId);
+        sqlQuery.setParameter("orderId", orderId);
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(DBoyOrderHistoryEntity.class));
+
+        DBoyOrderHistoryEntity dBoyOrderHistoryEntity = sqlQuery.list().size() > 0 ? (DBoyOrderHistoryEntity) sqlQuery.list().get(0) : null;
+        return dBoyOrderHistoryEntity;
     }
 }

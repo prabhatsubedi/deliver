@@ -7,6 +7,7 @@ import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -15,6 +16,7 @@ import org.hibernate.type.BigDecimalType;
 import org.hibernate.type.IntegerType;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,5 +156,16 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Boolean updateAverageRating(BigDecimal averageRating, Integer dboyId) throws Exception {
+        String sql = "UPDATE delivery_boys SET average_rating = :averageRating WHERE id = :dboyId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("averageRating", averageRating);
+        sqlQuery.setParameter("dboyId", dboyId);
+
+        sqlQuery.executeUpdate();
+        return true;
     }
 }

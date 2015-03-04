@@ -146,3 +146,11 @@ UPDATE reason_details SET cancel_reason = 'Others', rating_star = 1 WHERE id =6;
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('DBOY_GRESS_TIME', '10');
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('DBOY_DEFAULT_RATING', '3');
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('CUSTOMER_DEFAULT_RATING', '3');
+
+/* ########### 2015.03.03 #################### */
+DELETE FROM `delivr_db`.`preferences` WHERE `preferences`.`pref_key` = 'CUSTOMER_REWARD_AMOUNT';
+
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('REFERRAL_REWARD_AMOUNT', '200');
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('REFEREE_REWARD_AMOUNT', '200');
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('NORMAL_USER_BONUS_AMOUNT', '200');
+

@@ -1959,15 +1959,20 @@ label.check_label .checkbox {
     padding-top: 10px;
 }
 
-#purchase_history_table .db_info{
+#purchase_history_table .db_info, #purchase_history_table .bill_list{
     line-height: 1.8;
+    z-index: 10;
+    /*box-shadow: 0 0 15px #999;
+    position: absolute;
+    padding: 10px;
+    background-color: #FFF;*/
 }
 
-#purchase_history_table .show_db_info{
+#purchase_history_table .show_db_info, #purchase_history_table .view_bills{
     color: #64A4EA;
 }
 
-#purchase_history_table .show_db_info:hover{
+#purchase_history_table .show_db_info:hover, #purchase_history_table .view_bills:hover{
     text-decoration: underline;
 }
 

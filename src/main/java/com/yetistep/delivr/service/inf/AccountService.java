@@ -13,6 +13,6 @@ public interface AccountService {
 
     public String getGenerateInvoice(HeaderDto headerDto) throws Exception;
 
-    public String getGenerateBillAndReceipt(HeaderDto headerDto) throws Exception;
+    public String generateBillAndReceiptAndSendEmail(Integer orderId) throws Exception;
 
 }

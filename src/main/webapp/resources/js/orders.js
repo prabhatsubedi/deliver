@@ -84,7 +84,7 @@ Order.getPurchaseHistory = function(){
             alert(data.message);
             return;
         }
-        console.log(data.params);
+
         var orders = data.params.orders.data;
         var tableData = [];
 
@@ -94,9 +94,11 @@ Order.getPurchaseHistory = function(){
             var id = order.id;
             var link_attachments = '';
             if(order.attachments.length > 0){
-                for(var j= 0; j<order.attachments.length; i++){
-                    link_attachments += '<a href="'+order.attachments[j]+'">'+order.attachments[j]+'</a>';
+                 link_attachments += '<span class="view_bills">View Bills</span><div class="bill_list hidden">';
+                for(var j= 0; j<order.attachments.length; j++){
+                    link_attachments += '<p><a href="'+order.attachments[j]+'">'+order.attachments[j]+'</a></p>';
                 }
+                link_attachments += '</div>';
             }
             var deliveryBoyName = typeof(order.deliveryBoy) != 'undefined'?"<span class='show_db_info'>"+order.deliveryBoy.user.fullName+"</span>":'';
             var view_items = '<span class="item_list" data-id="'+id+'">View Item List</span>';
@@ -124,13 +126,24 @@ Order.getPurchaseHistory = function(){
     Main.request('/merchant/get_purchase_history', postData, callback, {merchantId:Main.getFromLocalStorage('mid')});
 
 
+
    $("body").delegate("span.show_db_info", "mouseover", function(){
          $(this).siblings(".db_info").removeClass("hidden");
          $(this).addClass("hidden");
    });
 
-    $("body").delegate(".db_info", "mouseleave", function(){
+    $("body").delegate(".db_info", "mouseout", function(){
         $(this).siblings("span.show_db_info").removeClass("hidden");
+        $(this).addClass("hidden");
+    });
+
+    $("body").delegate("span.view_bills", "mouseover", function(){
+        $(this).siblings(".bill_list").removeClass("hidden");
+        $(this).addClass("hidden");
+    });
+
+    $("body").delegate(".bill_list", "mouseout", function(){
+        $(this).siblings("span.view_bills").removeClass("hidden");
         $(this).addClass("hidden");
     });
 

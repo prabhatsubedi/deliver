@@ -98,7 +98,7 @@ public class BillEntity {
         this.billAmount = billAmount;
     }
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     public OrderEntity getOrder() {
         return order;
     }
@@ -107,7 +107,7 @@ public class BillEntity {
         this.order = order;
     }
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     public CustomerEntity getCustomer() {
         return customer;
     }

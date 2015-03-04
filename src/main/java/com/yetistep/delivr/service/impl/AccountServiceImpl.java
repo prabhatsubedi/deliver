@@ -1,13 +1,16 @@
 package com.yetistep.delivr.service.impl;
 
+import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.InvoiceStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.AccountService;
+import com.yetistep.delivr.util.EmailMsg;
 import com.yetistep.delivr.util.InvoiceGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
@@ -19,7 +22,7 @@ import java.util.List;
  * Time: 10:38 AM
  * To change this template use File | Settings | File Templates.
  */
-public class AccountServiceImpl implements AccountService{
+public class AccountServiceImpl extends AbstractManager implements AccountService{
 
     @Autowired
     OrderDaoService orderDaoService;
@@ -35,6 +38,9 @@ public class AccountServiceImpl implements AccountService{
 
     @Autowired
     ReceiptDaoService receiptDaoService;
+
+    @Autowired
+    HttpServletRequest httpServletRequest;
 
     @Override
     public String getGenerateInvoice(HeaderDto headerDto) throws Exception {
@@ -55,7 +61,7 @@ public class AccountServiceImpl implements AccountService{
         invoice.setOrders(orders);
         invoice.setGeneratedDate(new Date(System.currentTimeMillis()));
         invoice.setId(1);
-        //invoiceDaoService.save(invoice);
+        invoiceDaoService.save(invoice);
         String invoicePath = new String();
         if(orders.size()>0){
             invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice);
@@ -64,8 +70,8 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public String getGenerateBillAndReceipt(HeaderDto headerDto) throws Exception{
-        Integer orderId = Integer.parseInt(headerDto.getId());
+    public String generateBillAndReceiptAndSendEmail(Integer orderId) throws Exception{
+        //Integer orderId = Integer.parseInt(headerDto.getId());
         OrderEntity order = orderDaoService.find(orderId);
         InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
         BillEntity bill = new BillEntity();
@@ -75,19 +81,36 @@ public class AccountServiceImpl implements AccountService{
         bill.setVat(vat);
         bill.setDeliveryCharge(order.getDeliveryCharge());
         bill.setSystemServiceCharge(order.getSystemServiceCharge());
+
         bill.setGeneratedDate(new Date(System.currentTimeMillis()));
-        bill.setBillAmount(order.getDeliveryCharge().add(order.getSystemServiceCharge()).add(order.getItemsOrder().get(0).getVat()));
+        bill.setPath("path");
+        BigDecimal vatPcn = order.getItemsOrder().get(0).getVat();
+        BigDecimal totalCharge = order.getDeliveryCharge().add(order.getSystemServiceCharge());
+        bill.setVat(totalCharge.multiply(vatPcn).divide(new BigDecimal(100)));
+        BigDecimal totalAmount = totalCharge.add(totalCharge.multiply(vatPcn).divide(new BigDecimal(100)));
+        bill.setBillAmount(totalAmount);
 
         ReceiptEntity receipt = new ReceiptEntity();
-        receipt.setReceiptAmount(order.getDeliveryCharge().add(order.getSystemServiceCharge()).add(order.getItemsOrder().get(0).getVat()));
+        receipt.setReceiptAmount(totalAmount);
         receipt.setGeneratedDate(new Date(System.currentTimeMillis()));
 
-        String billAndReceiptPath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt);
+        receipt.setOrder(order);
+        receipt.setCustomer(order.getCustomer());
+
+        billDaoService.save(bill);
+        receiptDaoService.save(receipt);
+
+        String billAndReceiptPath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt, getServerUrl());
         bill.setPath(billAndReceiptPath);
         receipt.setPath(billAndReceiptPath);
 
-        //billDaoService.save(bill);
-        //receiptDaoService.save(receipt);
+
+        billDaoService.update(bill);
+        receiptDaoService.update(receipt);
+
+        String message = EmailMsg.sendBillAndReceipt(order, order.getCustomer().getUser().getFullName(), "sagar123@yopmail.com"/*order.getCustomer().getUser().getEmailAddress()*/, getServerUrl());
+
+        sendAttachmentEmail("sagar123@yopmail.com"/*order.getCustomer().getUser().getEmailAddress()*/,  message, "Bill and Receipt", billAndReceiptPath);
 
         return billAndReceiptPath;
     }

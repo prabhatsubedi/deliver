@@ -44,9 +44,22 @@ public abstract class AbstractManager {
         return sendCommonMail(mail);
     }
 
+
+    protected boolean sendAttachmentEmail(String toAddress, String message, String subject, String path) throws Exception {
+        EmailUtil.Email mail = new EmailUtil.Email(toAddress, subject, message);
+        EmailUtil.Attachment attachment = new EmailUtil.Attachment(path);
+        return sendMailWithAttachments(mail, attachment);
+    }
+
     private boolean sendCommonMail(EmailUtil.Email mail) throws Exception {
         EmailUtil email = new EmailUtil(mail);
         email.sendMail();
+        return true;
+    }
+
+    private boolean sendMailWithAttachments(EmailUtil.Email mail, EmailUtil.Attachment attachment) throws Exception {
+        EmailUtil email = new EmailUtil(mail);
+        email.sendMailWithAttachment(attachment);
         return true;
     }
 

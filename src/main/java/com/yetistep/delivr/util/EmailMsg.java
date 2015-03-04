@@ -32,7 +32,7 @@ public class EmailMsg {
 
         body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
         body.append("<div style='padding: 20px; width:100%; height:90px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='90' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 40px;color: #AAAAAA;font-weight:bold;margin-left:20px;'>iDelivr</div></div>");
-        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px;'>Please click on the link to verify your account and create your own password.</div>");
+        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px; text-align: center;'>Please click on the link to verify your account and create your own password.</div>");
 
         body.append("<div style='font-size: 16px; padding: 30px;'>");
         body.append("<p>Dear <b>"+userName+", </b></p>");
@@ -61,7 +61,7 @@ public class EmailMsg {
 
         body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
         body.append("<div style='padding: 20px; width:100%; height:90px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='90' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 40px;color: #AAAAAA;font-weight:bold;margin-left:20px;'>iDelivr</div></div>");
-        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px;'>We're sorry you are having difficulty logging in.</div>");
+        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px; text-align: center;'>We're sorry you are having difficulty logging in.</div>");
 
         body.append("<div style='font-size: 16px; padding: 30px;'>");
         body.append("<p>Dear <b>"+userName+", </b></p>");
@@ -84,7 +84,7 @@ public class EmailMsg {
         body.append(getHtmlHeader(serverUrl));
         body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
         body.append("<div style='padding: 20px; width:100%; height:90px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='90' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 40px;color: #AAAAAA;font-weight:bold;margin-left:20px;'>iDelivr</div></div>");
-        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px;'>Your account has been approved & activated.</div>");
+        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px; text-align: center;'>Your account has been approved & activated.</div>");
 
         body.append("<div style='font-size: 16px; padding: 30px;'>");
         body.append("<p>Dear <b>"+contactPerson+"</b></p>");
@@ -106,7 +106,7 @@ public class EmailMsg {
         body.append(getHtmlHeader(serverUrl));
         body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
         body.append("<div style='padding: 20px; width:100%; height:90px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='90' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 40px;color: #AAAAAA;font-weight:bold;margin-left:20px;'>iDelivr</div></div>");
-        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px;'>We have deactivated your account as requested.</div>");
+        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px; text-align: center;'>We have deactivated your account as requested.</div>");
 
         body.append("<div style='font-size: 16px; padding: 30px;'>");
         body.append("<p>Dear <b>"+contactPerson+"</b></p>");
@@ -125,7 +125,7 @@ public class EmailMsg {
         body.append(getHtmlHeader(serverUrl));
         body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
         body.append("<div style='padding: 20px; width:100%; height:90px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='90' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 40px;color: #AAAAAA;font-weight:bold;margin-left:20px;'>iDelivr</div></div>");
-        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px;'>New order has been placed for your store: Order no - "+order.getId()+"</div>");
+        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px; text-align: center;'>New order has been placed for your store: Order no - "+order.getId()+"</div>");
 
         body.append("<div style='font-size: 16px; padding: 30px;'>");
         body.append("<p>Dear <b>"+contactPerson+"</b></p>");
@@ -159,6 +159,31 @@ public class EmailMsg {
         body.append("</div>");
         return prepareEmail(body.toString(), null, serverUrl);
     }
+
+    public static String sendBillAndReceipt(OrderEntity order, String userName, String userEmail, String serverUrl) {
+        StringBuilder body = new StringBuilder();
+
+        body.append(getHtmlHeader(serverUrl));
+
+        body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
+        body.append("<div style='padding: 20px; width:100%; height:90px;'><img src='"+serverUrl+"/resources/images/delivr-logo.png' width='90' height='64' alt='iDelivr Logo' style='float: left;'/> <div style='float: left;font-size: 40px;color: #AAAAAA;font-weight:bold;margin-left:20px;'>iDelivr</div></div>");
+        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px; text-align: center;'>Find your bill and receipt</div>");
+
+        body.append("<div style='font-size: 16px; padding: 30px;'>");
+        body.append("<p>Dear <b>"+userName+", </b></p>");
+        body.append("<p>We have sent you bill and receipt for order: "+order.getId()+"</p>");
+
+        body.append("<p>Please find the attachment.</p>");
+
+        body.append("<div style='width=100%; float: left; margin-top: 30px;'>");
+        body.append("<p>Sincerely,</p>");
+        body.append("<p>iDelivr Team</p>");
+        body.append("</div>");
+        body.append("</div>");
+
+        return prepareEmail(body.toString(), null, serverUrl );
+    }
+
 
     private static String getEmailBodyButton(String viewLink, String url) {
         StringBuilder builder = new StringBuilder();

@@ -3,6 +3,8 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.ReceiptDaoService;
 import com.yetistep.delivr.model.ReceiptEntity;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -15,6 +17,8 @@ import java.util.List;
  */
 public class ReceiptDaoServiceImpl implements ReceiptDaoService {
 
+    @Autowired
+    SessionFactory sessionFactory;
 
     @Override
     public ReceiptEntity find(Integer id) throws Exception {
@@ -34,7 +38,8 @@ public class ReceiptDaoServiceImpl implements ReceiptDaoService {
 
     @Override
     public Boolean update(ReceiptEntity value) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        getCurrentSession().persist(value);
+        return true;
     }
 
     @Override
@@ -44,6 +49,6 @@ public class ReceiptDaoServiceImpl implements ReceiptDaoService {
 
     @Override
     public Session getCurrentSession() throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return sessionFactory.getCurrentSession();
     }
 }

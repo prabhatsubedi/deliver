@@ -41,7 +41,8 @@ public class CustomerEntity implements Serializable {
     private String longitude;
     private List<CartEntity> carts;
     private String currency;//Transient Variable
-    private BillEntity bill;
+    private List<BillEntity> bill;
+    private List<ReceiptEntity> receipt;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -256,12 +257,21 @@ public class CustomerEntity implements Serializable {
         this.currency = currency;
     }
 
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.PERSIST)
-    public BillEntity getBill() {
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.PERSIST)
+    public List<BillEntity> getBill() {
         return bill;
     }
 
-    public void setBill(BillEntity bill) {
+    public void setBill(List<BillEntity> bill) {
         this.bill = bill;
+    }
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.PERSIST)
+    public List<ReceiptEntity> getReceipt() {
+        return receipt;
+    }
+
+    public void setReceipt(List<ReceiptEntity> receipt) {
+        this.receipt = receipt;
     }
 }

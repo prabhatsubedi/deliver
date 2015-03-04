@@ -607,15 +607,14 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Override
     public List<OrderEntity> getPurchaseHistory(List<Integer> storeId, Page page) throws Exception {
         List<OrderEntity> orders = new ArrayList<>();
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class, "order");
-        criteria.createAlias("orderCancel", "orderCancel");
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
         List<JobOrderStatus> purchaseOrders = new ArrayList<JobOrderStatus>();
         purchaseOrders.add(JobOrderStatus.ORDER_ACCEPTED);
         purchaseOrders.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
         purchaseOrders.add(JobOrderStatus.AT_STORE);
         purchaseOrders.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         purchaseOrders.add(JobOrderStatus.DELIVERED);
-        criteria.add(Restrictions.and(Restrictions.in("store.id", storeId), Restrictions.or(Restrictions.in("orderStatus", purchaseOrders) , Restrictions.eq("orderCancel.jobOrderStatus", JobOrderStatus.IN_ROUTE_TO_DELIVERY))));
+        criteria.add(Restrictions.and(Restrictions.in("store.id", storeId), Restrictions.in("orderStatus", purchaseOrders)));
         HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
         orders = criteria.list();
         return orders;
@@ -635,7 +634,10 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<Integer> purchaseOrders = new ArrayList<Integer>();
         purchaseOrders.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal());
         purchaseOrders.add(JobOrderStatus.DELIVERED.ordinal());
-        String sqQuery =    "SELECT COUNT(o.id) FROM orders o INNER JOIN order_cancel oc WHERE o.store_id IN(:storeId) AND o.order_status IN(:purchaseOrders) OR oc.order_status="+JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal();
+        purchaseOrders.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
+        purchaseOrders.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
+        purchaseOrders.add(JobOrderStatus.AT_STORE.ordinal());
+        String sqQuery =    "SELECT COUNT(o.id) FROM orders o INNER JOIN order_cancel oc WHERE o.store_id IN(:storeId) AND o.order_status IN(:purchaseOrders)";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
         query.setParameterList("storeId", storeId);
         query.setParameterList("purchaseOrders", purchaseOrders);

@@ -3,6 +3,8 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.BillDaoService;
 import com.yetistep.delivr.model.BillEntity;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -14,6 +16,10 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class BillDaoServiceImpl implements BillDaoService {
+
+    @Autowired
+    SessionFactory sessionFactory;
+
     @Override
     public BillEntity find(Integer id) throws Exception {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
@@ -32,7 +38,8 @@ public class BillDaoServiceImpl implements BillDaoService {
 
     @Override
     public Boolean update(BillEntity value) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        getCurrentSession().persist(value);
+        return true;
     }
 
     @Override
@@ -42,6 +49,6 @@ public class BillDaoServiceImpl implements BillDaoService {
 
     @Override
     public Session getCurrentSession() throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return sessionFactory.getCurrentSession();
     }
 }

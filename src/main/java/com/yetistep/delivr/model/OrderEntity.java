@@ -63,6 +63,7 @@ public class OrderEntity implements Serializable {
     private InvoiceEntity invoice;
     private Integer reprocessTime;
     private BillEntity bill;
+    private ReceiptEntity receipt;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -396,15 +397,26 @@ public class OrderEntity implements Serializable {
     public Integer getReprocessTime() {
         return reprocessTime;
     }
+
+    public void setReprocessTime(Integer reprocessTime) {
+        this.reprocessTime = reprocessTime;
+    }
+
     @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST)
     public BillEntity getBill() {
         return bill;
     }
 
-    public void setReprocessTime(Integer reprocessTime) {
-        this.reprocessTime = reprocessTime;
-    }
     public void setBill(BillEntity bill) {
         this.bill = bill;
+    }
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST)
+    public ReceiptEntity getReceipt() {
+        return receipt;
+    }
+
+    public void setReceipt(ReceiptEntity receipt) {
+        this.receipt = receipt;
     }
 }

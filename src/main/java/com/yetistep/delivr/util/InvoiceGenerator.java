@@ -65,8 +65,8 @@ public class InvoiceGenerator {
     }
 
 
-    public String generateBillAndReceipt(OrderEntity order, BillEntity bill, ReceiptEntity receipt) throws Exception{
-        File invoiceFile = generateBillAndReceiptPDF(order, bill, receipt);
+    public String generateBillAndReceipt(OrderEntity order, BillEntity bill, ReceiptEntity receipt, String serverUrl) throws Exception{
+        File invoiceFile = generateBillAndReceiptPDF(order, bill, receipt, serverUrl);
 
         if (invoiceFile == null)
             return null;
@@ -92,7 +92,7 @@ public class InvoiceGenerator {
         return invoicePath;
     }
 
-    private File generateBillAndReceiptPDF(OrderEntity order, BillEntity bill, ReceiptEntity receipt) throws Exception{
+    private File generateBillAndReceiptPDF(OrderEntity order, BillEntity bill, ReceiptEntity receipt, String serverUrl) throws Exception{
         FileOutputStream stream = null;
         File billAndReceiptFile = null;
 
@@ -105,14 +105,14 @@ public class InvoiceGenerator {
             document.open();
             document.setMargins(20, 20, 20, 20);
             //add bill header
-            addBillAndReceiptHeader(document);
+            addBillAndReceiptHeader(document, serverUrl);
 
             addBillBody(document, order, bill);
 
             document.newPage();
 
             //add receipt header
-            addBillAndReceiptHeader(document);
+            addBillAndReceiptHeader(document, serverUrl);
 
             addReceiptBody(document, order, receipt, bill);
 
@@ -235,7 +235,7 @@ public class InvoiceGenerator {
     }
 
     //create a header for the company
-    private void addBillAndReceiptHeader(Document document) throws Exception {
+    private void addBillAndReceiptHeader(Document document, String serverUrl) throws Exception {
         int bottomPadding = 35;
 
         //address cell
@@ -247,7 +247,7 @@ public class InvoiceGenerator {
         String city = "Kathmandu, Nepal";
         String reg = "258956555";
 
-        String imageUrl = "http://test.idelivr.com/resources/images/delivr-logo.png";
+        String imageUrl = serverUrl+"/resources/images/delivr-logo.png";
 
         Image logo = Image.getInstance(new URL(imageUrl));
         logo.setAlignment(Element.ALIGN_LEFT);
@@ -402,17 +402,17 @@ public class InvoiceGenerator {
 
 
         String currency = "NRS";
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Title", PdfUtil.smallBold), PdfUtil.getPhrase("Amount"+currency, PdfUtil.smallBold));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Title", PdfUtil.smallBold), PdfUtil.getPhrase("Amount ("+currency+")", PdfUtil.smallBold));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("iDelivr Fee"),
                 PdfUtil.getPhrase(bill.getSystemServiceCharge()));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Delivery Fee"),
-                PdfUtil.getPhrase(currency + " " + bill.getDeliveryCharge(), PdfUtil.smallBold));
+                PdfUtil.getPhrase(bill.getDeliveryCharge(), PdfUtil.smallBold));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Subtotal"),
-                PdfUtil.getPhrase(currency + " " + bill.getDeliveryCharge().add(bill.getSystemServiceCharge()), PdfUtil.smallBold));
+                PdfUtil.getPhrase(bill.getDeliveryCharge().add(bill.getSystemServiceCharge()), PdfUtil.smallBold));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Vat"),
-                PdfUtil.getPhrase(currency + " " + bill.getVat(), PdfUtil.smallBold));
+                PdfUtil.getPhrase(bill.getVat(), PdfUtil.smallBold));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Grand Total"),
-                PdfUtil.getPhrase(currency + " " + bill.getDeliveryCharge().add(bill.getSystemServiceCharge()).add(bill.getVat()), PdfUtil.smallBold));
+                PdfUtil.getPhrase(bill.getDeliveryCharge().add(bill.getSystemServiceCharge()).add(bill.getVat()), PdfUtil.smallBold));
 
         document.add(billingTable);
 
@@ -424,42 +424,38 @@ public class InvoiceGenerator {
         Paragraph title = PdfUtil.getParagraph(PdfUtil.largeBold, "Receipt for Payment of Delivery and iDelivery Fee");
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);
-        PdfUtil.addEmptyLine(document, 1);//add empty line
+
+        PdfUtil.addEmptyLine(document, 2);
 
         PdfPCell infoCell = new PdfPCell();
         PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
         Paragraph info = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Bill No: "+bill.getId(), "Bill Issued On: "+bill.getGeneratedDate(), "Receipt No: "+receipt.getId(), "Order Id: "+order.getId());
         infoCell.addElement(info);
 
-        PdfUtil.addEmptyLine(document, 2);//add empty line
-
         PdfPCell receiptDetailCell = new PdfPCell();
-        PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
-        Paragraph detail = PdfUtil.getParagraph(PdfUtil.largeBold, true, "From: "+bill.getId(), "Delivered at: "+bill.getGeneratedDate(), "Mode of Payment : "+receipt.getId(), "Time of Payment: "+order.getId(), "Card Number: "+order.getId());
+        PdfUtil.setPadding(receiptDetailCell, 0, 0, 10, 10);
+        Paragraph detail = PdfUtil.getParagraph(PdfUtil.largeBold, true, "From: "+bill.getId(), "Delivered at: "+bill.getGeneratedDate(), "Mode of Payment : "+receipt.getId(), "Time of Payment: "+bill.getGeneratedDate(), "Card Number: ");
         receiptDetailCell.addElement(detail);
 
-        PdfUtil.addEmptyLine(document, 4);//add empty line
-
         PdfPCell billAmountCell = new PdfPCell();
-        PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
+        PdfUtil.setPadding(billAmountCell, 0, 0, 10, 10);
         Paragraph amount = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Total Amount Billed: "+bill.getBillAmount());
         billAmountCell.addElement(amount);
 
-        PdfUtil.addEmptyLine(document, 4);//add empty line
-
-        PdfPCell receivedCell = new PdfPCell();
-        PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
+        PdfPCell receiptCell = new PdfPCell();
+        PdfUtil.setPadding(receiptCell, 0, 0, 10, 10);
         Paragraph receivedBy = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Received by: "+bill.getCustomer().getUser().getFullName());
-        receivedCell.addElement(receivedBy);
+        receiptCell.addElement(receivedBy);
 
-        PdfUtil.setBorder(0, infoCell, receiptDetailCell, billAmountCell, receivedCell);
+        PdfUtil.setBorder(0, infoCell, receiptDetailCell, billAmountCell, receiptCell);
 
         PdfPTable receiptTable = new PdfPTable(1);
+        receiptTable.spacingBefore();
         receiptTable.setWidthPercentage(100);
         receiptTable.addCell(infoCell);
         receiptTable.addCell(receiptDetailCell);
         receiptTable.addCell(billAmountCell);
-        receiptTable.addCell(receivedCell);
+        receiptTable.addCell(receiptCell);
 
         receiptTable.getDefaultCell().setBorder(0);
         document.add(receiptTable);

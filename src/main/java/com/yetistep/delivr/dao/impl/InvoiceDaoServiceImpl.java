@@ -3,6 +3,8 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.InvoiceDaoService;
 import com.yetistep.delivr.model.InvoiceEntity;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -14,6 +16,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class InvoiceDaoServiceImpl implements InvoiceDaoService {
+
+    @Autowired
+    SessionFactory sessionFactory;
 
     @Override
     public InvoiceEntity find(Integer id) throws Exception {
@@ -43,7 +48,7 @@ public class InvoiceDaoServiceImpl implements InvoiceDaoService {
 
     @Override
     public Session getCurrentSession() throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return sessionFactory.getCurrentSession();
     }
 
 

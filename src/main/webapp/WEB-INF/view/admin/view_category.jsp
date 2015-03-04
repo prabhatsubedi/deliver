@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jcrop.css" type="text/css"/>
     <script type="text/javascript">
         $(document).ready(function () {
+            $('.main_tabs .active').click(function(e){
+                e.preventDefault();
+            });
             Manager.getCategories();
             Manager.loadEditCategory();
             Manager.saveCategory();
@@ -25,11 +28,11 @@
 <div class="main_container">
     <%@include file="../includes/header.jsp" %>
     <div class="body">
-        <div class="settings_menu">
+        <div class="main_tabs">
             <ul class="nav nav-pills">
                 <li class="col-xs-4"><a href="/admin/settings">General</a></li>
                 <li class="col-xs-4"><a href="/admin/algorithm">Algorithm</a></li>
-                <li class="col-xs-4 current_page"><a href="/admin/view_category">Categories</a></li>
+                <li class="col-xs-4 active"><a href="/admin/view_category">Categories</a></li>
             </ul>
         </div>
         <div class="heading clearfix">

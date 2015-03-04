@@ -1645,11 +1645,11 @@ label.check_label .checkbox {
 }
 
 /* settings */
-.settings_menu ul li {
+.main_tabs ul li {
     margin: 0px;
     padding: 0px;
 }
-.settings_menu ul li a, .settings_menu ul li a:focus {
+.main_tabs ul li a, .main_tabs ul li a:focus {
     background-color: #ffffff;
     border-bottom: 1px solid #dbdada;
     border-left: 1px solid #dbdada;
@@ -1659,15 +1659,16 @@ label.check_label .checkbox {
     font-size: 18px;
     line-height: 40px;
 }
-.settings_menu ul li:first-child a {
+.main_tabs ul li:first-child a {
     border-left: none;
 }
-.settings_menu ul li a:hover {
+.main_tabs ul li a:hover {
     background-color: #F9F9F9;
 }
-.settings_menu ul li.current_page a {
-    background-color: #F5F5F5;
+.main_tabs ul li.active a, .main_tabs ul li:focus a {
+    background-color: #F5F5F5 !important;
     cursor: auto;
+    color: #282828 !important;
 }
 
 /* Organizer Dashboard */

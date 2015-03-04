@@ -201,7 +201,9 @@ public class UserDaoServiceImpl implements UserDaoService {
 
     @Override
     public Boolean deactivateUser(Integer userId) throws Exception {
-        String sql = "UPDATE users set status=:status WHERE id = :userId";
+        String sql = "UPDATE users set status=:status, " +
+                "inactivated_count = (CASE WHEN inactivated_count IS NULL THEN 1 ELSE inactivated_count + 1 END) " +
+                "WHERE id = :userId";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("status", Status.INACTIVE.ordinal());
         sqlQuery.setParameter("userId", userId);

@@ -1312,15 +1312,19 @@ public class CustomerServiceImpl implements CustomerService {
         /* Now Calculate Average Rating (Appended By Surendra) */
 //        DeliveryBoyEntity deliveryBoy = order.getDeliveryBoy();
         RatingEntity rate = orderDaoService.getDboyRatingInfo(order.getDeliveryBoy().getId());
-        BigDecimal averageRating = getAverageRating(rate);
-        deliveryBoyDaoService.updateAverageRating(averageRating, order.getDeliveryBoy().getId());
+
+        if(rate.getTotalRate()!=0) {
+            BigDecimal averageRating = getAverageRating(rate);
+            deliveryBoyDaoService.updateAverageRating(averageRating, order.getDeliveryBoy().getId());
 
         /* Less then or equal 1 means Current Delivery Also In Session (That has not completed) */
-        if(orderDaoService.hasDboyRunningOrders(order.getDeliveryBoy().getId()) <= 1){
-            if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)))) {
-                //Deactivate User
-                log.info("Deactivating Delivery Boy id : " + order.getDeliveryBoy().getId());
-                userDaoService.deactivateUser(order.getDeliveryBoy().getUser().getId());
+            if(orderDaoService.hasDboyRunningOrders(order.getDeliveryBoy().getId()) <= 1){
+                if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)))) {
+                    //Deactivate User
+                    log.info("Deactivating Delivery Boy id : " + order.getDeliveryBoy().getId());
+                    userDaoService.deactivateUser(order.getDeliveryBoy().getUser().getId());
+                }
+
             }
 
         }

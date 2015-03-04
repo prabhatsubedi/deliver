@@ -51,6 +51,10 @@ public class UserEntity implements Serializable {
     private String lastAddressMobile;
     private UserDeviceEntity userDevice;
     private Status status;
+
+    private Integer inactivatedCount;
+    private Integer activatedCount;
+
     private List<OrderCancelEntity> orderCancelEntities;
     private List<AddressEntity> addresses;
     private List<ActionLogEntity> actionLogEntities;
@@ -271,6 +275,24 @@ public class UserEntity implements Serializable {
 
     public void setLastAddressMobile(String lastAddressMobile) {
         this.lastAddressMobile = lastAddressMobile;
+    }
+
+    @Column(name = "inactivated_count")
+    public Integer getInactivatedCount() {
+        return inactivatedCount;
+    }
+
+    public void setInactivatedCount(Integer inactivatedCount) {
+        this.inactivatedCount = inactivatedCount;
+    }
+
+    @Column(name = "activated_count")
+    public Integer getActivatedCount() {
+        return activatedCount;
+    }
+
+    public void setActivatedCount(Integer activatedCount) {
+        this.activatedCount = activatedCount;
     }
 
     @OneToMany(mappedBy = "userEntity")

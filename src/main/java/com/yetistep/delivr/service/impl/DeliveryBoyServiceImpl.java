@@ -668,8 +668,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             //Now Update the average rating and deactivate the customer if
             customerDaoService.updateAverageRating(averageRating, customerEntity.getId());
             //Lets Change User Status
-           /* Less then or equal 1 means Current Delivery Also In Session (That has not completed) */
-            if(orderDaoService.hasCustomerRunningOrders(customerEntity.getId()) <= 1){
+
+            if(orderDaoService.hasCustomerRunningOrders(customerEntity.getId()) <= 0){
                 if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING))))
                     //Deactivate User
                     log.info("Deactivating Customer id : " + customerEntity.getId());

@@ -70,9 +70,9 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     }
 
     @Override
-    public String generateBillAndReceiptAndSendEmail(Integer orderId) throws Exception{
+    public String generateBillAndReceiptAndSendEmail(OrderEntity order) throws Exception{
         //Integer orderId = Integer.parseInt(headerDto.getId());
-        OrderEntity order = orderDaoService.find(orderId);
+        //OrderEntity order = orderDaoService.find(orderId);
         InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
         BillEntity bill = new BillEntity();
         bill.setOrder(order);

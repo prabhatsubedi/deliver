@@ -1,6 +1,7 @@
 package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.model.OrderEntity;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,6 +14,6 @@ public interface AccountService {
 
     public String getGenerateInvoice(HeaderDto headerDto) throws Exception;
 
-    public String generateBillAndReceiptAndSendEmail(Integer orderId) throws Exception;
+    public String generateBillAndReceiptAndSendEmail(OrderEntity order) throws Exception;
 
 }

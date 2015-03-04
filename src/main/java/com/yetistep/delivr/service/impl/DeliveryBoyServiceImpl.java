@@ -10,10 +10,7 @@ import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.PastDeliveriesDto;
 import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
-import com.yetistep.delivr.service.inf.CustomerService;
-import com.yetistep.delivr.service.inf.DeliveryBoyService;
-import com.yetistep.delivr.service.inf.SystemAlgorithmService;
-import com.yetistep.delivr.service.inf.SystemPropertyService;
+import com.yetistep.delivr.service.inf.*;
 import com.yetistep.delivr.util.*;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.log4j.Logger;
@@ -81,6 +78,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
     @Autowired
     CustomerDaoService customerDaoService;
+
+    @Autowired
+    AccountService accountService;
 
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
@@ -657,6 +657,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         List<OrderEntity> customersOrders = orderDaoService.getCustomersOrders(order.getCustomer().getId());
         boolean status = orderDaoService.update(order);
         if(status){
+            /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
+            accountService.generateBillAndReceiptAndSendEmail(order);
+
 
             /*=========== Calculate Average Rating For Customer ================ (Appended By Surendra) */
             log.info("Calculating Average Rating of Customer After Delivered ");

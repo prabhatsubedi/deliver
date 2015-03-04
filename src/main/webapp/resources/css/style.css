@@ -1477,6 +1477,17 @@ label.check_label .checkbox {
     font-size: 15px;
     font-weight: bold;
 }
+.profile_header_info .ratings ul li {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-image: url('../images/rating.png');
+    background-position: center top;
+    background-repeat: no-repeat;
+}
+.profile_header_info .ratings ul li.active {
+    background-position: center bottom;
+}
 .profile_sub_title {
     color: #f28220;
     font-size: 16px;

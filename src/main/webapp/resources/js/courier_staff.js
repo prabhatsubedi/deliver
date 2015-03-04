@@ -148,6 +148,10 @@ var courierProfile;
 
             $(".profile_header_info .info1").html(courierStaff.user.fullName);
             $(".profile_header_info .info2").html((courierStaff.availabilityStatus).replace(/\_/g, ' '));
+            var rating = parseInt(courierStaff.averageRating);
+            for(var i = 0; i < rating; i++) {
+                $(".profile_header_info .ratings ul li").eq(i).addClass('active');
+            }
 
             $(".val_full_name").html(courierStaff.user.fullName);
             $(".val_email").html(courierStaff.user.emailAddress);

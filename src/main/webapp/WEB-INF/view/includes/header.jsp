@@ -25,6 +25,7 @@
                 <a href="#" class="user_image" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="false"><img src="${pageContext.request.contextPath}/resources/images/user-icon.png" class="img-responsive" /> </a>
                 <ul class="dropdown-menu pull-right">
                     <sec:authorize access="hasRole('ROLE_ADMIN')">
+                        <li><a href="/admin/users">User Management</a></li>
                         <li><a href="/admin/settings">Settings</a></li>
                     </sec:authorize>
                     <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">

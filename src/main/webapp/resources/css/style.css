@@ -1224,6 +1224,8 @@ label.check_label .checkbox {
     border: 1px solid #bcbbbb;
 }
 .items_container .block_item .item_image {
+    border: none;
+    padding: 0px;
     border-bottom: 1px solid #bcbbbb;
     position: relative;
     min-height: 50px;

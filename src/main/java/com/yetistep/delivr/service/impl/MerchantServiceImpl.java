@@ -1539,6 +1539,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         return objects;
     }
 
+    @Override
+    public void addItemsImages(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
+
+    }
+
 
 }
 

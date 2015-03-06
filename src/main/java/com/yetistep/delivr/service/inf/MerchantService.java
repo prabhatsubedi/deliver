@@ -72,4 +72,7 @@ public interface MerchantService {
 
     public List<Object> getOrderItems(HeaderDto headerDto) throws Exception;
 
+    public void addItemsImages(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
+
+
 }

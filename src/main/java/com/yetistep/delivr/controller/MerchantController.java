@@ -478,6 +478,23 @@ public class MerchantController {
         }
     }
 
+    @RequestMapping(value = "/add_items_images", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> addItemsImages(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            merchantService.addItemsImages(headerDto, requestJson);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Images has been saved successfully for item: "+headerDto.getId());
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving purchase history: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     @RequestMapping(value = "/get_orders_items", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> getOrdersItems(@RequestHeader HttpHeaders headers) {

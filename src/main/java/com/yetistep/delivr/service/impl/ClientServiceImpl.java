@@ -584,7 +584,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         if(customerEntity == null)
              throw new YSException("VLD033");
 
-        if(customerEntity.getUser().getStatus().toInt() == Status.INACTIVE.toInt())
+        if(customerEntity.getUser().getStatus() !=null && (customerEntity.getUser().getStatus().toInt() == Status.INACTIVE.toInt()))
             throw new YSException("SEC012"); //Customer Inactivated
 
         //This Will Delete If Cart from Another Brand
@@ -723,7 +723,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         if(customerEntity == null)
             throw new YSException("VLD033");
 
-        if(customerEntity.getUser().getStatus().toInt() == Status.INACTIVE.toInt())
+        if(customerEntity.getUser().getStatus() !=null && (customerEntity.getUser().getStatus().toInt() == Status.INACTIVE.toInt()))
             throw new YSException("SEC012"); //Customer Inactivated
 
         CartDto cartDto = new CartDto();

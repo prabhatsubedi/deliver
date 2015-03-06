@@ -83,7 +83,7 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
     public DeliveryBoyEntity getProfileInformation(Integer deliveryBoyId) throws Exception {
         String sqlQuery = "SELECT (SELECT count(o.id) FROM orders o WHERE o.delivery_boy_id = :deliveryBoyId AND " +
                 "o.order_status NOT IN (:pastStatusList)) + (SELECT count(dbs.id) FROM dboy_selections dbs INNER JOIN " +
-                "orders o on (o.id = dbs.order_id) WHERE o.order_status = :orderPlaced AND dboy_id = :deliveryBoyId) as activeOrderNo, " +
+                "orders o on (o.id = dbs.order_id) WHERE o.order_status = :orderPlaced AND dboy_id = :deliveryBoyId AND dbs.rejected = :rejected) as activeOrderNo, " +
                 "(SELECT count(o.id) FROM orders o WHERE o.delivery_boy_id = :deliveryBoyId AND o.order_status in (:pastStatusList)) " +
                 "as totalOrderTaken, id, total_earnings as totalEarnings, previous_due as previousDue, wallet_amount as walletAmount, " +
                 "available_amount  as availableAmount FROM delivery_boys WHERE id = :deliveryBoyId";
@@ -102,6 +102,7 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         query.setParameterList("pastStatusList", pastStatusList);
         query.setParameter("deliveryBoyId", deliveryBoyId);
         query.setParameter("orderPlaced",JobOrderStatus.ORDER_PLACED.ordinal());
+        query.setParameter("rejected", false);
         query.setResultTransformer(Transformers.aliasToBean(DeliveryBoyEntity.class));
         DeliveryBoyEntity deliveryBoyEntity = (DeliveryBoyEntity) query.uniqueResult();
         return deliveryBoyEntity;
@@ -167,5 +168,14 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
 
         sqlQuery.executeUpdate();
         return true;
+    }
+
+    @Override
+    public Boolean checkIfLicenseNumberExists(String licenseNumber) throws Exception {
+        String sql = "SELECT count(id) FROM delivery_boys WHERE license_number = :licenseNumber";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("licenseNumber", licenseNumber);
+        BigInteger count = (BigInteger) sqlQuery.uniqueResult();
+        return (count.intValue() > 0) ? true : false;
     }
 }

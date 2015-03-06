@@ -26,4 +26,6 @@ public interface DeliveryBoyDaoService extends GenericDaoService<Integer, Delive
 
     public Boolean updateAverageRating(BigDecimal averageRating, Integer dboyId) throws Exception;
 
+    public Boolean checkIfLicenseNumberExists(String licenseNumber) throws Exception;
+
 }

@@ -14,7 +14,7 @@
 <script>
     $(document).ready(function () {
         Order.getOrders();
-        setInterval(Order.getOrders, 60000);
+        //setInterval(Order.getOrders, 60000);
         Order.getOrdersItems();
     });
 </script>

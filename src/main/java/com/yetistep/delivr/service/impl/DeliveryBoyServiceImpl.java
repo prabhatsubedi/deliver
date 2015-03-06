@@ -1125,6 +1125,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                     /* Calculates the distance travelled by a delivery boy and his earning to that specific order. */
                     BigDecimal paidToCourier = this.getCourierBoyEarningAtAnyStage(dBoyOrderHistoryEntity, orderEntity.getOrderStatus());
                     orderEntity.getCourierTransaction().setPaidToCourier(paidToCourier);
+                    orderEntity.getDeliveryBoy().setTotalEarnings(orderEntity.getDeliveryBoy().getTotalEarnings().add(paidToCourier));
                     if(BigDecimalUtil.isGreaterThen(orderEntity.getTotalCost(), BigDecimal.ZERO)){
                         if (orderEntity.getOrderStatus().equals(JobOrderStatus.AT_STORE)) {
                             boolean partnerShipStatus = merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());
@@ -1205,9 +1206,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             String startAddress[] = {GeoCodingUtil.getLatLong(dBoyOrderHistory.getStartLatitude(), dBoyOrderHistory.getStartLongitude())};
             String endAddress[] = {GeoCodingUtil.getLatLong(dBoyOrderHistory.getEndLatitude(), dBoyOrderHistory.getEndLongitude())};
             if (distanceType.equals(DistanceType.AIR_DISTANCE))
-                chargeableDistance = GeoCodingUtil.getListOfAssumedDistance(startAddress[0], endAddress).get(0);
+                chargeableDistance = BigDecimalUtil.getDistanceInKiloMeters(GeoCodingUtil.getListOfAssumedDistance(startAddress[0], endAddress).get(0));
             else
-                chargeableDistance = GeoCodingUtil.getListOfDistances(startAddress, endAddress).get(0);
+                chargeableDistance = BigDecimalUtil.getDistanceInKiloMeters(GeoCodingUtil.getListOfDistances(startAddress, endAddress).get(0));
             if (BigDecimalUtil.isGreaterThen(chargeableDistance, ADDITIONAL_KM_FREE_LIMIT))
                 deliveryCost = chargeableDistance.subtract(ADDITIONAL_KM_FREE_LIMIT).multiply(DBOY_ADDITIONAL_PER_KM_CHARGE);
             dBoyOrderHistory.setDistanceTravelled(chargeableDistance);
@@ -1234,9 +1235,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             String startAddress[] = {GeoCodingUtil.getLatLong(dBoyOrderHistory.getOrder().getStore().getLatitude(), dBoyOrderHistory.getOrder().getStore().getLongitude())};
             String endAddress[] = {GeoCodingUtil.getLatLong(dBoyOrderHistory.getEndLatitude(), dBoyOrderHistory.getEndLongitude())};
             if (distanceType.equals(DistanceType.AIR_DISTANCE))
-                customerSideDistance = GeoCodingUtil.getListOfAssumedDistance(startAddress[0], endAddress).get(0);
+                customerSideDistance = BigDecimalUtil.getDistanceInKiloMeters(GeoCodingUtil.getListOfAssumedDistance(startAddress[0], endAddress).get(0));
             else
-                customerSideDistance = GeoCodingUtil.getListOfDistances(startAddress, endAddress).get(0);
+                customerSideDistance = BigDecimalUtil.getDistanceInKiloMeters(GeoCodingUtil.getListOfDistances(startAddress, endAddress).get(0));
             if(BigDecimalUtil.isLessThen(customerSideDistance, DEFAULT_NKM_DISTANCE))
                 customerSideDeliveryCost = DBOY_PER_KM_CHARGE_UPTO_NKM.multiply(new BigDecimal(dBoyOrderHistory.getOrder().getSurgeFactor()));
             else

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -43,9 +44,8 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     HttpServletRequest httpServletRequest;
 
     @Override
-    public String getGenerateInvoice(HeaderDto headerDto) throws Exception {
-        Integer storeId = Integer.parseInt(headerDto.getId());
-        List<OrderEntity> orders =  orderDaoService.getStoresOrders(storeId);
+    public String generateInvoice(Integer storeId, String fromDate, String toDate) throws Exception {
+        List<OrderEntity> orders =  orderDaoService.getStoresOrders(storeId, fromDate, toDate);
         StoreEntity store =  storeDaoService.find(storeId);
         store.getId();
 
@@ -57,7 +57,9 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         invoice.setMerchant(merchant);
         invoice.setOrders(orders);
         invoice.setGeneratedDate(new Date(System.currentTimeMillis()));
-       // invoiceDaoService.save(invoice);
+        invoice.setFromDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(fromDate).getTime()));
+        invoice.setToDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(toDate).getTime()));
+        invoiceDaoService.save(invoice);
         String invoicePath = new String();
         if(orders.size()>0){
             invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice, store, getServerUrl());

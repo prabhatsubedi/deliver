@@ -3,6 +3,8 @@ package com.yetistep.delivr.service.inf;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.OrderEntity;
 
+import java.sql.Date;
+
 /**
  * Created with IntelliJ IDEA.
  * User: surendraJ
@@ -12,7 +14,7 @@ import com.yetistep.delivr.model.OrderEntity;
  */
 public interface AccountService {
 
-    public String getGenerateInvoice(HeaderDto headerDto) throws Exception;
+    public String generateInvoice(Integer storeId, String fromDate, String toDate) throws Exception;
 
     public String generateBillAndReceiptAndSendEmail(OrderEntity order) throws Exception;
 

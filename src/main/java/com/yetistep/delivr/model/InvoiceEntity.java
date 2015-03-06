@@ -25,7 +25,8 @@ public class InvoiceEntity {
     private String path;
     private InvoiceStatus invoiceStatus;
     private BigDecimal amount;
-    private BigDecimal paidAmount;
+    private Date fromDate;
+    private Date toDate;
     private Date paidDate;
     private List<OrderEntity> orders;
     private MerchantEntity merchant;
@@ -79,10 +80,6 @@ public class InvoiceEntity {
         this.amount = amount;
     }
 
-    public void setPaidAmount(BigDecimal paidAmount) {
-        this.paidAmount = paidAmount;
-    }
-
     @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "paid_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     public Date getPaidDate() {
@@ -91,6 +88,24 @@ public class InvoiceEntity {
 
     public void setPaidDate(Date paidDate) {
         this.paidDate = paidDate;
+    }
+
+    @Column(name = "from_date")
+    public Date getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    @Column(name = "to_date")
+    public Date getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
     }
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.PERSIST)

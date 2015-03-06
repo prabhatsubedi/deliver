@@ -292,14 +292,20 @@ public class InvoiceGenerator {
 
         PdfPCell transactionCell = new PdfPCell();
         PdfUtil.setPadding(transactionCell, 0, 0, 10, 10);
-        Paragraph transactionInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Transaction Detail", "Transaction Between: ", "Invoice Date: "+invoice.getGeneratedDate());
+        Paragraph transactionHeader = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Transaction Detail");
+        Paragraph transactionInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Transaction Between: "+invoice.getFromDate()+" and "+invoice.getToDate(), "Invoice Date: "+invoice.getGeneratedDate());
+        transactionHeader.setAlignment(Element.ALIGN_LEFT);
         transactionInfo.setAlignment(Element.ALIGN_LEFT);
+        transactionCell.addElement(transactionHeader);
         transactionCell.addElement(transactionInfo);
 
         PdfPCell billingCell = new PdfPCell();
         PdfUtil.setPadding(transactionCell, 0, 0, 10, 10);
-        Paragraph billingInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Billing Address", store.getStoresBrand().getBrandName(), store.getStreet()+", "+store.getCity(), store.getState()+", "+store.getCountry(), "Phone: "+store.getContactNo() );
+        Paragraph billingHeader = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Billing Address");
+        Paragraph billingInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, store.getStoresBrand().getBrandName(), store.getStreet()+", "+store.getCity(), store.getState()+", "+store.getCountry(), "Phone: "+store.getContactNo() );
         billingInfo.setAlignment(Element.ALIGN_RIGHT);
+        billingHeader.setAlignment(Element.ALIGN_RIGHT);
+        billingCell.addElement(billingHeader);
         billingCell.addElement(billingInfo);
 
         PdfUtil.setBorder(0, transactionCell, billingCell);

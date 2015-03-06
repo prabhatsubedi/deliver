@@ -15,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Sagar
@@ -95,9 +98,9 @@ public class AccountantController {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            String invoicePath = accountService.getGenerateInvoice(headerDto);
+            String invoicePath = accountService.generateInvoice(Integer.parseInt(headerDto.getId()), "2015-02-18", "2015-03-06");
 
-            ServiceResponse serviceResponse = new ServiceResponse("Invoice has been generated successfully: "+headerDto.getId());
+            ServiceResponse serviceResponse = new ServiceResponse("Invoice has been generated successfully for store: "+headerDto.getId());
             serviceResponse.addParam("path", invoicePath);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){

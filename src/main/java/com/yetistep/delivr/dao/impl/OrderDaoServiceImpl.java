@@ -17,6 +17,7 @@ import org.hibernate.type.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -243,6 +244,14 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.eq("orderStatus", JobOrderStatus.DELIVERED))
                 .add(Restrictions.eq("store.id", storeId));
+        List<OrderEntity>  orderEntities = criteria.list();
+        return orderEntities;
+    }
+
+    @Override
+    public List<OrderEntity> getStoresOrders(Integer storeId, String fromDate, String toDate) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.add(Restrictions.and(Restrictions.eq("orderStatus", JobOrderStatus.DELIVERED), Restrictions.eq("store.id", storeId), Restrictions.gt("orderDate", new SimpleDateFormat("yyyy-MM-dd").parse(fromDate)), Restrictions.le("orderDate", new SimpleDateFormat("yyyy-MM-dd").parse(toDate))));
         List<OrderEntity>  orderEntities = criteria.list();
         return orderEntities;
     }

@@ -36,6 +36,8 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
 
     public List<OrderEntity> getStoresOrders(Integer storeId) throws Exception;
 
+    public List<OrderEntity> getStoresOrders(Integer storeId, String fromDate, String toDate) throws Exception;
+
     public List<Integer> getCustomerRatings(Integer customerId) throws Exception;
 
     public List<Integer> getDboyRatings(Integer dboyId) throws Exception;

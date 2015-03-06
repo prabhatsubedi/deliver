@@ -2,6 +2,7 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.CustomerDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.Page;
@@ -9,6 +10,7 @@ import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
 import com.yetistep.delivr.util.HibernateUtil;
 import org.hibernate.*;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
@@ -239,6 +241,15 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
 
         sqlQuery.executeUpdate();
         return true;
+    }
+
+    @Override
+    public CustomerEntity getCustomerStatus(Long facebookId) throws Exception {
+
+        Criteria criteria = getCurrentSession().createCriteria(CustomerEntity.class);
+        criteria.add(Restrictions.eq("facebookId", facebookId));
+        CustomerEntity customerEntity = criteria.list().size() > 0 ? (CustomerEntity) criteria.list().get(0) : null;
+        return customerEntity;
     }
 }
 

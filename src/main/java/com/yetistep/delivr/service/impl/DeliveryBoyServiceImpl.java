@@ -658,7 +658,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         boolean status = orderDaoService.update(order);
         if(status){
             /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
-            accountService.generateBillAndReceiptAndSendEmail(order);
+            //accountService.generateBillAndReceiptAndSendEmail(order);
 
 
             /*=========== Calculate Average Rating For Customer ================ (Appended By Surendra) */
@@ -678,10 +678,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 //Lets Change User Status
 
                 if(orderDaoService.hasCustomerRunningOrders(customerEntity.getId()) <= 0){
-                    if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING))))
+                    if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING)))) {
                         //Deactivate User
                         log.info("Deactivating Customer id : " + customerEntity.getId());
-                    userDaoService.deactivateUser(customerEntity.getUser().getId());
+                        userDaoService.deactivateUser(customerEntity.getUser().getId());
+                    }
+
                 }
 
             /* Ended By Surendra */

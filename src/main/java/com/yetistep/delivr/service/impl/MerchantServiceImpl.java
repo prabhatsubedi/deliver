@@ -1540,10 +1540,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     @Override
     public void addItemsImages(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
 
-          Integer itemId = Integer.parseInt(headerDto.getId());
-          List<String> itemsImages = requestJsonDto.getItemImages();
-          ItemEntity item = merchantDaoService.getItemDetail(itemId);
-
+        Integer itemId = Integer.parseInt(headerDto.getId());
+        List<String> itemsImages = requestJsonDto.getItemImages();
+        ItemEntity item = merchantDaoService.getItemDetail(itemId);
 
         List<ItemsImageEntity> dbImages = item.getItemsImage();
         if (dbImages == null || dbImages.size()==0){
@@ -1567,8 +1566,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 merchantDaoService.saveItemImages(itemsImageEntities);
             }
         }else{
-                String dir = MessageBundle.separateString("/", "Merchant_"+item.getStoresBrand().getMerchant().getId(), "Brand_"+ item.getStoresBrand().getId(), "item" + item.getId());
-                boolean isLocal = MessageBundle.isLocalHost();
+               String dir = MessageBundle.separateString("/", "Merchant_"+item.getStoresBrand().getMerchant().getId(), "Brand_"+ item.getStoresBrand().getId(), "item" + item.getId());
+               boolean isLocal = MessageBundle.isLocalHost();
 
                List<ItemsImageEntity> itemsImageEntities = new ArrayList<>();
                ItemsImageEntity itemsImage = dbImages.get(0);

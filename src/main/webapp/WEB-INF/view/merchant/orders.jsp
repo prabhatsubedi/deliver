@@ -30,7 +30,7 @@
         <div class="heading clearfix">
             <h1 class="pull-left">Orders</h1>
         </div>
-        <div class="settings_menu">
+        <div class="main_tabs">
             <ul class="nav nav-pills">
                 <li class="col-xs-4 current_page" data-ref="inroute"><a href="#">Live</a></li>
                 <li class="col-xs-4" data-ref="successful"><a href="#">Successful</a></li>

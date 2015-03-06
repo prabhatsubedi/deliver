@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.List;
 
@@ -37,8 +38,8 @@ public class InvoiceGenerator {
     private static final String HOME_DIR = System.getProperty("catalina.home");
     private static final String INVOICE_URL = "http://www.iDeliver.com";
 
-    public String generateInvoice(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice) throws Exception {
-            File invoiceFile = generateInvoicePDF(orders, merchant, invoice);
+    public String generateInvoice(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store, String serverUrl) throws Exception {
+            File invoiceFile = generateInvoicePDF(orders, merchant, invoice, store, serverUrl);
 
             if (invoiceFile == null)
                 return null;
@@ -105,14 +106,14 @@ public class InvoiceGenerator {
             document.open();
             document.setMargins(20, 20, 20, 20);
             //add bill header
-            addBillAndReceiptHeader(document, serverUrl);
+            addPdfHeader(document, serverUrl);
 
             addBillBody(document, order, bill);
 
             document.newPage();
 
             //add receipt header
-            addBillAndReceiptHeader(document, serverUrl);
+            addPdfHeader(document, serverUrl);
 
             addReceiptBody(document, order, receipt, bill);
 
@@ -135,7 +136,7 @@ public class InvoiceGenerator {
         return billAndReceiptFile;
     }
 
-    private File generateInvoicePDF(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice) throws Exception {
+    private File generateInvoicePDF(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store, String serverUrl) throws Exception {
 
         FileOutputStream stream = null;
         File invoiceFile = null;
@@ -143,7 +144,7 @@ public class InvoiceGenerator {
 
         try{
             Document document = new Document();
-            Integer cntPage = 1;
+            /*Integer cntOrder = 1;*/
 
             invoiceFile = getFile(merchant, "invoice");
             stream = new FileOutputStream(invoiceFile);
@@ -151,16 +152,13 @@ public class InvoiceGenerator {
             document.open();
             document.setMargins(20, 20, 20, 20);
             //add doc header
-            addInvoiceHeader(document, invoice);
+            addPdfHeader(document, serverUrl);
 
-            for (OrderEntity order: orders){
-                //add invoice body
-                addInvoiceBody(document, order, merchant, invoice);
+            addInvoiceDetail(document, merchant, invoice, store);
+            //document.newPage();
 
-                //add invoice footer
-                document.newPage();
-                cntPage++;
-            }
+            addInvoiceBody(document, orders);
+
             addFooter(document);
             document.close();
         }catch (Exception e) {
@@ -181,61 +179,61 @@ public class InvoiceGenerator {
         return invoiceFile;
     }
 
+//    //create a header for the company
+//    private void addInvoiceHeader(Document document, InvoiceEntity invoice) throws Exception {
+//        int bottomPadding = 35;
+//
+//        Paragraph title = PdfUtil.getParagraph(PdfUtil.catFont, "INVOICE");
+//        title.setAlignment(Element.ALIGN_CENTER);
+//        document.add(title);
+//
+//        //add empty line
+//        PdfUtil.addEmptyLine(document, 2);
+//
+//        //address cell
+//        PdfPCell addressCell = new PdfPCell();
+//        PdfUtil.setPadding(addressCell, 0, 0, bottomPadding, 0);
+//        addressCell.addElement(PdfUtil.getParagraph(PdfUtil.catFont, ""));
+//
+//        String address = "";
+//        String contactNo = "";
+//        String vatNo = "";
+//
+//        Paragraph info = PdfUtil.getParagraph(PdfUtil.smallFont, true, address, "Ph: " + contactNo, "VAT No.: " + vatNo);
+//        addressCell.addElement(info);
+//
+//        //billing cell
+//        PdfPCell billingCell = new PdfPCell();
+//
+//        Paragraph paragraph1 = new Paragraph();
+//        paragraph1.add(PdfUtil.getPhrase("Billing Date: ", PdfUtil.smallBold));
+//        paragraph1.add(PdfUtil.getPhrase(invoice.getGeneratedDate(), PdfUtil.smallFont));
+//        paragraph1.setAlignment(Element.ALIGN_RIGHT);
+//
+//        Paragraph paragraph2 = new Paragraph();
+//        paragraph2.add(PdfUtil.getPhrase("Invoice No: ", PdfUtil.smallBold));
+//        paragraph2.add(PdfUtil.getPhrase(1, PdfUtil.smallFont));
+//        paragraph2.setAlignment(Element.ALIGN_RIGHT);
+//
+//        PdfUtil.setPadding(billingCell, 0, 0, bottomPadding, 0);
+//
+//        billingCell.addElement(paragraph1);
+//        billingCell.addElement(paragraph2);
+//
+//        //no border on the cells
+//        PdfUtil.setBorder(0, addressCell, billingCell);
+//
+//        //add cells to table
+//        PdfPTable headerTable = new PdfPTable(2);
+//        headerTable.setWidthPercentage(100);
+//        headerTable.addCell(addressCell);
+//        headerTable.addCell(billingCell);
+//
+//        document.add(headerTable);
+//    }
+
     //create a header for the company
-    private void addInvoiceHeader(Document document, InvoiceEntity invoice) throws Exception {
-        int bottomPadding = 35;
-
-        Paragraph title = PdfUtil.getParagraph(PdfUtil.catFont, "INVOICE");
-        title.setAlignment(Element.ALIGN_CENTER);
-        document.add(title);
-
-        //add empty line
-        PdfUtil.addEmptyLine(document, 2);
-
-        //address cell
-        PdfPCell addressCell = new PdfPCell();
-        PdfUtil.setPadding(addressCell, 0, 0, bottomPadding, 0);
-        addressCell.addElement(PdfUtil.getParagraph(PdfUtil.catFont, ""));
-
-        String address = "";
-        String contactNo = "";
-        String vatNo = "";
-
-        Paragraph info = PdfUtil.getParagraph(PdfUtil.smallFont, true, address, "Ph: " + contactNo, "VAT No.: " + vatNo);
-        addressCell.addElement(info);
-
-        //billing cell
-        PdfPCell billingCell = new PdfPCell();
-
-        Paragraph paragraph1 = new Paragraph();
-        paragraph1.add(PdfUtil.getPhrase("Billing Date: ", PdfUtil.smallBold));
-        paragraph1.add(PdfUtil.getPhrase(invoice.getGeneratedDate(), PdfUtil.smallFont));
-        paragraph1.setAlignment(Element.ALIGN_RIGHT);
-
-        Paragraph paragraph2 = new Paragraph();
-        paragraph2.add(PdfUtil.getPhrase("Invoice No: ", PdfUtil.smallBold));
-        paragraph2.add(PdfUtil.getPhrase(invoice.getId(), PdfUtil.smallFont));
-        paragraph2.setAlignment(Element.ALIGN_RIGHT);
-
-        PdfUtil.setPadding(billingCell, 0, 0, bottomPadding, 0);
-
-        billingCell.addElement(paragraph1);
-        billingCell.addElement(paragraph2);
-
-        //no border on the cells
-        PdfUtil.setBorder(0, addressCell, billingCell);
-
-        //add cells to table
-        PdfPTable headerTable = new PdfPTable(2);
-        headerTable.setWidthPercentage(100);
-        headerTable.addCell(addressCell);
-        headerTable.addCell(billingCell);
-
-        document.add(headerTable);
-    }
-
-    //create a header for the company
-    private void addBillAndReceiptHeader(Document document, String serverUrl) throws Exception {
+    private void addPdfHeader(Document document, String serverUrl) throws Exception {
         int bottomPadding = 35;
 
         //address cell
@@ -285,65 +283,73 @@ public class InvoiceGenerator {
         document.add(headerTable);
     }
 
-    private void addInvoiceBody(Document document, OrderEntity order, MerchantEntity merchant, InvoiceEntity invoice) throws Exception {
+    private void addInvoiceDetail(Document document, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store) throws Exception{
         //add invoice detail
-        Paragraph title1 = PdfUtil.getParagraph(PdfUtil.smallBold, "Invoice Details");
+        Paragraph title1 = PdfUtil.getParagraph(PdfUtil.largeBold, "Tax Invoice: "+invoice.getId());
         title1.setAlignment(Element.ALIGN_CENTER);
         document.add(title1);
         PdfUtil.addEmptyLine(document, 1);//add empty line
 
-        PdfPCell advertiserCell = new PdfPCell();
-        PdfUtil.setPadding(advertiserCell, 0, 0, 10, 10);
-        Paragraph advertiserInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "To:", merchant.getBusinessTitle());
-        advertiserCell.addElement(advertiserInfo);
+        PdfPCell transactionCell = new PdfPCell();
+        PdfUtil.setPadding(transactionCell, 0, 0, 10, 10);
+        Paragraph transactionInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Transaction Detail", "Transaction Between: ", "Invoice Date: "+invoice.getGeneratedDate());
+        transactionInfo.setAlignment(Element.ALIGN_LEFT);
+        transactionCell.addElement(transactionInfo);
 
-        PdfPCell couponCell = new PdfPCell();
-        PdfUtil.setPadding(couponCell, 0, 0, 10, 10);
-        Paragraph couponInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Deal ID: " + order.getId(), "Order: " + order.getOrderName());
-        couponCell.addElement(couponInfo);
+        PdfPCell billingCell = new PdfPCell();
+        PdfUtil.setPadding(transactionCell, 0, 0, 10, 10);
+        Paragraph billingInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Billing Address", store.getStoresBrand().getBrandName(), store.getStreet()+", "+store.getCity(), store.getState()+", "+store.getCountry(), "Phone: "+store.getContactNo() );
+        billingInfo.setAlignment(Element.ALIGN_RIGHT);
+        billingCell.addElement(billingInfo);
+
+        PdfUtil.setBorder(0, transactionCell, billingCell);
 
         //add cells to table
-        PdfPTable invoiceTable = new PdfPTable(2);
-        invoiceTable.setWidthPercentage(100);
-        invoiceTable.addCell(advertiserCell);
-        invoiceTable.addCell(couponCell);
+        PdfPTable invoiceDetailTable = new PdfPTable(2);
+        invoiceDetailTable.setWidthPercentage(100);
+        invoiceDetailTable.addCell(transactionCell);
+        invoiceDetailTable.addCell(billingCell);
 
-        document.add(invoiceTable);
+        document.add(invoiceDetailTable);
 
-        PdfUtil.addEmptyLine(document, 2);//add empty line
+        PdfUtil.addEmptyLine(document, 2);
+    }
 
-        //add billing activity
-        Paragraph title2 = PdfUtil.getParagraph(PdfUtil.smallBold, "Billing Activity");
-        document.add(title2);
+    private void addInvoiceBody(Document document, List<OrderEntity> orders) throws Exception {
 
-        PdfUtil.addEmptyLine(document, 1);//add empty line
+        Integer cntOrder = 1;
 
-        //add billing table
-        PdfPTable billingTable = new PdfPTable(3);
+        PdfPTable billingTable = new PdfPTable(4);
         billingTable.setWidthPercentage(100);
-        billingTable.setWidths(new float[]{10, 45, 45});
-
-        //Apparently, setting total sales to zero
-        invoice.setAmount(BigDecimal.ZERO);
+        billingTable.setWidths(new float[]{10, 30, 30, 20});
 
         String currency = "NRS";
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("SN", PdfUtil.smallBold), PdfUtil.getPhrase("Item", PdfUtil.smallBold), PdfUtil.getPhrase("Amount", PdfUtil.smallBold));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("1"), PdfUtil.getPhrase("Deal Fee"),
-                PdfUtil.getPhrase(currency + " " + invoice.getAmount()));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase("Total", PdfUtil.smallBold),
-                PdfUtil.getPhrase(currency + " " + invoice.getAmount(), PdfUtil.smallBold));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("SN", PdfUtil.smallBold), PdfUtil.getPhrase("Date and Time of Transaction", PdfUtil.smallBold), PdfUtil.getPhrase("Order No.", PdfUtil.smallBold), PdfUtil.getPhrase("Amount ("+currency+")", PdfUtil.smallBold));
+        BigDecimal totalOrderAmount = BigDecimal.ZERO;
+        for (OrderEntity order: orders){
 
+            //add order
+            PdfUtil.addRow(billingTable, PdfUtil.getPhrase(cntOrder), PdfUtil.getPhrase(order.getOrderDate()), PdfUtil.getPhrase(order.getId()), PdfUtil.getPhrase(order.getTotalCost()));
+            totalOrderAmount = totalOrderAmount.add(order.getTotalCost());
+
+            if(cntOrder%20==0){
+                document.newPage();
+            }
+
+            cntOrder++;
+        }
+        BigDecimal vatAmount =  totalOrderAmount.multiply(new BigDecimal(13)).divide(new BigDecimal(100));
+        BigDecimal commissionAmount = BigDecimal.ZERO;
+        Phrase totalPayable = PdfUtil.getPhrase("Total Payable", PdfUtil.largeBold);
+        Phrase vat = PdfUtil.getPhrase("Vat(13%)", PdfUtil.largeBold);
+        Phrase commission = PdfUtil.getPhrase("Commission", PdfUtil.largeBold);
+        Phrase subTotal = PdfUtil.getPhrase("Sub Total", PdfUtil.largeBold);
+
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), subTotal, PdfUtil.getPhrase(totalOrderAmount));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), commission, PdfUtil.getPhrase(commissionAmount));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), vat, PdfUtil.getPhrase(vatAmount));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), totalPayable, PdfUtil.getPhrase(totalOrderAmount.add(vatAmount).add(commissionAmount)));
         document.add(billingTable);
-
-
-        PdfUtil.addEmptyLine(document, 2);//add empty line
-
-        //add notes
-        document.add(PdfUtil.getParagraph(PdfUtil.smallFont, "Notes:"));
-        com.itextpdf.text.List noteList = new com.itextpdf.text.List(true);
-        noteList.add(new ListItem("Total cost is calculated as " + currency + " " + invoice.getAmount() + " per Deal per month.", PdfUtil.smallFont));
-        noteList.add(new ListItem("Deals with less than month period also, same rate is applicable.", PdfUtil.smallFont));
-        document.add(noteList);
     }
 
 
@@ -469,7 +475,7 @@ public class InvoiceGenerator {
         PdfUtil.addEmptyLine(document, 2);//add empty line
 
         document.add(PdfUtil.getParagraph(PdfUtil.smallFont, "Thank you for your business."));
-        document.add(PdfUtil.getParagraph(PdfUtil.smallFont, "If you have any questions, contact us at support@dealify.com"));
+        document.add(PdfUtil.getParagraph(PdfUtil.smallFont, "If you have any questions, contact us at support@iDelivr.com"));
         document.add(PdfUtil.getParagraph(PdfUtil.smallFont, "View all invoices: " + INVOICE_URL));
     }
 

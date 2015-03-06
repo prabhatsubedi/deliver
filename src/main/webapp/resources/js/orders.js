@@ -199,8 +199,6 @@ Order.courierBoyOrderHistory = function(){
     var header = {};
     header.id = Main.getURLvalue(3);
 
-    console.log(header);
-
     Main.request('/dboy/get_dBoy_order_history', {}, callback, header);
 
 }

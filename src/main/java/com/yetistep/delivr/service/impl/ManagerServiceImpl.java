@@ -423,7 +423,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         }
 
 
-        String fields = "id,fullName,mobileNumber,emailAddress,profileImage,gender,status,addresses";
+        String fields = "id,fullName,mobileNumber,emailAddress,profileImage,gender,status,verifiedStatus,addresses";
 
         Map<String, String> assoc = new HashMap<>();
 
@@ -443,7 +443,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
         List<UserEntity> users = new ArrayList<>();
 
-        String fields = "id,fullName,mobileNumber,emailAddress,status,addresses";
+        String fields = "id,fullName,mobileNumber,emailAddress,status,verifiedStatus,addresses";
 
         Map<String, String> assoc = new HashMap<>();
 

@@ -44,27 +44,23 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
     @Override
     public String getGenerateInvoice(HeaderDto headerDto) throws Exception {
-        //TODO: generate invoice is not completed
         Integer storeId = Integer.parseInt(headerDto.getId());
         List<OrderEntity> orders =  orderDaoService.getStoresOrders(storeId);
         StoreEntity store =  storeDaoService.find(storeId);
         store.getId();
 
         MerchantEntity merchant = store.getStoresBrand().getMerchant();
-        MerchantEntity testMerchant = new MerchantEntity();
-        testMerchant.setId(merchant.getId());
         InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
 
         InvoiceEntity invoice = new InvoiceEntity();
         invoice.setInvoiceStatus(InvoiceStatus.UNPAID);
-        invoice.setMerchant(testMerchant);
+        invoice.setMerchant(merchant);
         invoice.setOrders(orders);
         invoice.setGeneratedDate(new Date(System.currentTimeMillis()));
-        invoice.setId(1);
-        invoiceDaoService.save(invoice);
+       // invoiceDaoService.save(invoice);
         String invoicePath = new String();
         if(orders.size()>0){
-            invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice);
+            invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice, store, getServerUrl());
         }
         return  invoicePath;
     }
@@ -108,9 +104,12 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         billDaoService.update(bill);
         receiptDaoService.update(receipt);
 
-        String message = EmailMsg.sendBillAndReceipt(order, order.getCustomer().getUser().getFullName(), "sagar123@yopmail.com"/*order.getCustomer().getUser().getEmailAddress()*/, getServerUrl());
+        String email = order.getCustomer().getUser().getEmailAddress();
+        if(email != null || !email.equals("")) {
+            String message = EmailMsg.sendBillAndReceipt(order, order.getCustomer().getUser().getFullName(), order.getCustomer().getUser().getEmailAddress(), getServerUrl());
 
-        sendAttachmentEmail("sagar123@yopmail.com"/*order.getCustomer().getUser().getEmailAddress()*/,  message, "Bill and Receipt", billAndReceiptPath);
+            sendAttachmentEmail(order.getCustomer().getUser().getEmailAddress(),  message, "Bill and Receipt", billAndReceiptPath);
+        }
 
         return billAndReceiptPath;
     }

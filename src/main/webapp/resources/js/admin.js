@@ -107,6 +107,8 @@ var Admin = function() {
 
             Admin.getManagers();
 
+            $('#status').selectpicker();
+
             var accountsLoad = true;
 
             $('.main_tabs ul li a[href="#accountants"]').on('show.bs.tab', function (e) {
@@ -115,8 +117,26 @@ var Admin = function() {
                     accountsLoad = false;
                 }
             });
+
             $('.main_tabs button').click(function(){
-                $('#modal_user .modal-header').attr('data-role', $(this).attr('data-role')).html('Create ' + $(this).attr('data-user'));
+                $('#modal_user .modal-header').removeAttr('data-id').attr('data-role', $(this).attr('data-role')).html('Create ' + $(this).attr('data-user'));
+                $('#modal_user button[type="submit"]').html('Create');
+                $('#modal_user .edit_group').addClass('hidden');
+            });
+
+            $('.action_links a[data-target="#modal_user"]').live('click', function(){
+                var parent = $(this).parents('tr').eq(0);
+
+                $('#name').val($('td', parent).eq(1).html());
+                $('#email').val($('td', parent).eq(2).html());
+                $('#phone').val($('td', parent).eq(3).html());
+                $('#status').val($('td', parent).eq(4).html());
+                $('#status').selectpicker('refresh');
+
+                $('#modal_user .modal-header').removeAttr('data-role').attr('data-id', $(this).attr('data-id')).html('Update ' + $(this).attr('data-user'));
+                $('#modal_user button[type="submit"]').html('Update');
+                $('#modal_user .edit_group').removeClass('hidden');
+
             });
 
             $.validator.setDefaults({
@@ -137,9 +157,17 @@ var Admin = function() {
                     data.fullName = $('#name').val();
                     data.emailAddress = $('#email').val();
                     data.mobileNumber = $('#phone').val();
-                    data.role = {role: $('#modal_user .modal-header').attr('data-role')};
 
-                    Admin.saveUser(data);
+                    var header = {};
+                    if($('#modal_user .modal-header').attr('data-id') == undefined) {
+                        header.username = $('#email').val();
+                        data.role = {role: $('#modal_user .modal-header').attr('data-role')};
+                    } else {
+                        header.id = $('#modal_user .modal-header').attr('data-id');
+                        data.status = $('#status').val().toUpperCase();
+                    }
+
+                    Admin.saveUser(data, header);
 
                     return false;
 
@@ -148,6 +176,11 @@ var Admin = function() {
             $('#name').rules('add', {required: true});
             $('#email').rules('add', {required: true, email: true});
             $('#phone').rules('add', {required: true, minlength: 10, maxlength: 10});
+
+            $('#modal_user').on('hidden.bs.modal', function(){
+                $('#form_user')[0].reset();
+                $('#status').selectpicker('refresh');
+            });
 
         },
         getManagers: function() {
@@ -159,13 +192,21 @@ var Admin = function() {
                     alert(data.message);
                     return;
                 }
-//                var merchants = data.params.merchants;
+                var managers = data.params.managers;
                 var tdata = [];
 
-//                for (i = 0; i < merchants.length; i++) {
-//                    var row = ["abc", "bbbb"];
-//                    tdata.push(row);
-//                }
+                for (var i = 0; i < managers.length; i++) {
+                    var manager = managers[i];
+                    var id = manager.id;
+
+                    var actions = '<div class="action_links">';
+//                    actions += '<a href="/delivr/merchant/profile/1">Profile</a>';
+                    actions += '<a href="#" data-target="#modal_user" data-toggle="modal" data-user="Manager" data-id="' + id + '">Edit</a>';
+                    actions += '</div>';
+
+                    var row = [id, manager.fullName, manager.emailAddress, manager.mobileNumber, "Status", actions];
+                    tdata.push(row);
+                }
 
                 Main.createDataTable("#manager_table", tdata);
 
@@ -176,7 +217,7 @@ var Admin = function() {
             callback.loaderDiv = "body";
             callback.requestType = "GET";
 
-            Main.request('/organizer/get_merchants', {}, callback);
+            Main.request('/admin/get_managers', {}, callback);
 
         },
         getAccountants: function() {
@@ -188,13 +229,22 @@ var Admin = function() {
                     alert(data.message);
                     return;
                 }
-//                var merchants = data.params.merchants;
+
+                var accountants = data.params.accountants;
                 var tdata = [];
 
-//                for (i = 0; i < merchants.length; i++) {
-//                    var row = ["abc", "bbbb"];
-//                    tdata.push(row);
-//                }
+                for (var i = 0; i < accountants.length; i++) {
+                    var accountant = accountants[i];
+                    var id = accountant.id;
+
+                    var actions = '<div class="action_links">';
+//                    actions += '<a href="/delivr/merchant/profile/1">Profile</a>';
+                    actions += '<a href="#" data-target="#modal_user" data-toggle="modal" data-user="Accountant" data-id="' + id + '">Edit</a>';
+                    actions += '</div>';
+
+                    var row = [id, accountant.fullName, accountant.emailAddress, accountant.mobileNumber, "Status", actions];
+                    tdata.push(row);
+                }
 
                 Main.createDataTable("#accountant_table", tdata);
 
@@ -205,10 +255,10 @@ var Admin = function() {
             callback.loaderDiv = "body";
             callback.requestType = "GET";
 
-            Main.request('/organizer/get_merchants', {}, callback);
+            Main.request('/admin/get_accountants', {}, callback);
 
         },
-        saveUser: function(params) {
+        saveUser: function(params, headers) {
 
             $("button[type='submit']").attr("disabled", true);
 
@@ -227,7 +277,7 @@ var Admin = function() {
 
             callback.loaderDiv = ".modal-dialog";
 
-            Main.request('/admin/save_user', params, callback);
+            Main.request('/admin/save_user', params, callback, headers);
 
         }
 

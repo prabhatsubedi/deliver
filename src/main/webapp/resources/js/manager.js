@@ -863,6 +863,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
                         $(".none_editable").removeClass('hidden');
                         $(".editable").addClass('hidden');
+                        $("#category_image").addClass('disabled');
 
                     }
                     var headers = {};

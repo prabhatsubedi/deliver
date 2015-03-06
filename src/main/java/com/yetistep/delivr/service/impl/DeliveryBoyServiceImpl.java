@@ -1109,17 +1109,30 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         orderCancelEntity.setUser(user);
         orderCancelEntity.setOrder(orderEntity);
 
-        orderEntity.setOrderCancel(orderCancelEntity);
-        orderEntity.setOrderStatus(JobOrderStatus.CANCELLED);
-        orderEntity.setDeliveryStatus(DeliveryStatus.CANCELLED);
-
-
         /* updating order histories */
-        List<DBoyOrderHistoryEntity> dBoyOrderHistoryEntities =  orderEntity.getdBoyOrderHistories();
-        for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: dBoyOrderHistoryEntities){
-            if(dBoyOrderHistoryEntity.getDeliveryStatus().equals(DeliveryStatus.PENDING)){
-                dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.CANCELLED);
-                dBoyOrderHistoryEntity.setOrderCompletedAt(DateUtil.getCurrentTimestampSQL());
+        List<DBoyOrderHistoryEntity> dBoyOrderHistoryEntities = orderEntity.getdBoyOrderHistories();
+        for (DBoyOrderHistoryEntity dBoyOrderHistoryEntity : dBoyOrderHistoryEntities) {
+            if (order.getDeliveryBoy() != null) {
+                if (dBoyOrderHistoryEntity.getDeliveryStatus().equals(DeliveryStatus.PENDING)
+                        && dBoyOrderHistoryEntity.getDeliveryBoy().getId().equals(order.getDeliveryBoy().getId())) {
+                    dBoyOrderHistoryEntity.setEndLatitude(order.getDeliveryBoy().getLatitude());
+                    dBoyOrderHistoryEntity.setEndLongitude(order.getDeliveryBoy().getLongitude());
+                    dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.CANCELLED);
+                    dBoyOrderHistoryEntity.setOrderCompletedAt(DateUtil.getCurrentTimestampSQL());
+                    /* Calculates the distance travelled by a delivery boy and his earning to that specific order. */
+                    BigDecimal paidToCourier = this.getCourierBoyEarningAtAnyStage(dBoyOrderHistoryEntity, orderEntity.getOrderStatus());
+                    orderEntity.getCourierTransaction().setPaidToCourier(paidToCourier);
+                    if(BigDecimalUtil.isGreaterThen(orderEntity.getTotalCost(), BigDecimal.ZERO)){
+                        if (orderEntity.getOrderStatus().equals(JobOrderStatus.AT_STORE)) {
+                            boolean partnerShipStatus = merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());
+                            courierBoyAccountingsAfterTakingOrder(orderEntity.getDeliveryBoy(), orderEntity, partnerShipStatus);
+                            courierBoyAccountingsAfterOrderDelivery(orderEntity.getDeliveryBoy(), orderEntity);
+                        }else if (orderEntity.getOrderStatus().equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)) {
+                            courierBoyAccountingsAfterOrderDelivery(orderEntity.getDeliveryBoy(), orderEntity);
+                        }
+                    }
+                    break;
+                }
             }
         }
 
@@ -1134,10 +1147,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
         }
 
-
-
-
-
+        orderEntity.setOrderCancel(orderCancelEntity);
+        orderEntity.setOrderStatus(JobOrderStatus.CANCELLED);
+        orderEntity.setDeliveryStatus(DeliveryStatus.CANCELLED);
 
         //TODO dboy transaction implementation
         boolean status = orderDaoService.update(orderEntity);

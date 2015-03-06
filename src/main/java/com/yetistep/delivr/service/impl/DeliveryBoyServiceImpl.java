@@ -98,6 +98,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if(userDaoService.checkIfMobileNumberExists(user.getUsername())){
             throw new YSException("VLD027");
         }
+        if(deliveryBoyDaoService.checkIfLicenseNumberExists(deliveryBoy.getLicenseNumber())){
+            throw new YSException("VLD034");
+        }
         user.setPassword(GeneralUtil.encryptPassword(user.getPassword()));
 
         RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_DELIVERY_BOY);

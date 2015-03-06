@@ -11,7 +11,7 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
-            $('.current_page').click(function(e){
+            $('.main_tabs .active').click(function(e){
                 e.preventDefault();
             });
             Admin.loadSettings();
@@ -32,9 +32,9 @@
 <%--        <div class="heading clearfix">
             <h1 class="pull-left">Settings</h1>
         </div>--%>
-        <div class="settings_menu">
+        <div class="main_tabs">
             <ul class="nav nav-pills">
-                <li class="col-xs-4 current_page"><a href="/admin/settings">General</a></li>
+                <li class="col-xs-4 active"><a href="/admin/settings">General</a></li>
                 <li class="col-xs-4"><a href="/admin/algorithm">Algorithm</a></li>
                 <li class="col-xs-4"><a href="/admin/view_category">Categories</a></li>
             </ul>

@@ -31,8 +31,7 @@ public class RatingEntity {
     private List<RatingReason> ratingIssues;
     /*Transient field to send all rating issues */
     private List<RatingReason> allRatingIssues;
-    private BigDecimal totalRateSum; //Transient Value
-    private Integer totalRate; //Transient Value
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -112,21 +111,4 @@ public class RatingEntity {
         this.allRatingIssues = allRatingIssues;
     }
 
-    @Transient
-    public BigDecimal getTotalRateSum() {
-        return totalRateSum;
-    }
-
-    public void setTotalRateSum(BigDecimal totalRateSum) {
-        this.totalRateSum = totalRateSum;
-    }
-
-    @Transient
-    public Integer getTotalRate() {
-        return totalRate;
-    }
-
-    public void setTotalRate(Integer totalRate) {
-        this.totalRate = totalRate;
-    }
 }

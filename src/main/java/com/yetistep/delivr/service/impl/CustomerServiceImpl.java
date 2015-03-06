@@ -1311,16 +1311,25 @@ public class CustomerServiceImpl implements CustomerService {
 
         /* Now Calculate Average Rating (Appended By Surendra) */
 //        DeliveryBoyEntity deliveryBoy = order.getDeliveryBoy();
-        RatingEntity rate = orderDaoService.getDboyRatingInfo(order.getDeliveryBoy().getId());
-        BigDecimal averageRating = getAverageRating(rate);
-        deliveryBoyDaoService.updateAverageRating(averageRating, order.getDeliveryBoy().getId());
+        List<Integer> ratings = orderDaoService.getDboyRatings(order.getDeliveryBoy().getId());
+        if(ratings !=null && ratings.size()> 0){
+            BigDecimal totalRate = BigDecimal.ZERO;
+
+            for(Integer rate : ratings){
+                totalRate = totalRate.add(new BigDecimal(rate));
+            }
+
+            BigDecimal averageRating = getAverageRating(ratings.size(), totalRate);
+            deliveryBoyDaoService.updateAverageRating(averageRating, order.getDeliveryBoy().getId());
 
         /* Less then or equal 1 means Current Delivery Also In Session (That has not completed) */
-        if(orderDaoService.hasDboyRunningOrders(order.getDeliveryBoy().getId()) <= 1){
-            if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)))) {
-                //Deactivate User
-                log.info("Deactivating Delivery Boy id : " + order.getDeliveryBoy().getId());
-                userDaoService.deactivateUser(order.getDeliveryBoy().getUser().getId());
+            if(orderDaoService.hasDboyRunningOrders(order.getDeliveryBoy().getId()) <= 1){
+                if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)))) {
+                    //Deactivate User
+                    log.info("Deactivating Delivery Boy id : " + order.getDeliveryBoy().getId());
+                    userDaoService.deactivateUser(order.getDeliveryBoy().getUser().getId());
+                }
+
             }
 
         }
@@ -1330,14 +1339,14 @@ public class CustomerServiceImpl implements CustomerService {
         return true;
     }
 
-    private BigDecimal getAverageRating(RatingEntity ratingEntity) throws Exception {
+    private BigDecimal getAverageRating(Integer totalRate, BigDecimal totalRateSum) throws Exception {
         BigDecimal averageRating;
-        if(ratingEntity.getTotalRate()<= 10 && ratingEntity.getTotalRate() > 0){
-            Integer rate = Integer.valueOf(ratingEntity.getTotalRateSum().intValue()) + Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)) * (10-ratingEntity.getTotalRate());
+        if(totalRate<= 10 && totalRate > 0){
+            Integer rate = Integer.valueOf(totalRateSum.intValue()) + Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)) * (10-totalRate);
             averageRating = new BigDecimal(rate).divide(new BigDecimal(10), MathContext.DECIMAL128);
             averageRating = averageRating.setScale(0, BigDecimal.ROUND_HALF_UP);
         } else {
-            averageRating = ratingEntity.getTotalRateSum().divide(new BigDecimal(ratingEntity.getTotalRate()), MathContext.DECIMAL128);
+            averageRating = totalRateSum.divide(new BigDecimal(totalRate), MathContext.DECIMAL128);
             averageRating = averageRating.setScale(0, BigDecimal.ROUND_HALF_UP);
         }
         return averageRating;

@@ -256,40 +256,33 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         return orderEntities;
     }
 
-    @Override
-    public RatingEntity getCustomerRatingInfo(Integer customerId) throws Exception {
-        String sql = "SELECT COALESCE(SUM(r.customer_rating),0) AS totalRateSum, COUNT(r.id) AS totalRate FROM orders o " +
-                "INNER JOIN ratings r ON(r.order_id = o.id AND r.customer_rating IS NOT NULL) " +
-                "WHERE o.customer_id =:customerId " +
-                "ORDER BY o.order_date DESC";
-        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
-        sqlQuery.setParameter("customerId", customerId);
-//        sqlQuery.setResultTransformer(Transformers.aliasToBean(RatingEntity.class));
-        List<Object[]> rows = sqlQuery.list();
-        RatingEntity rating = new RatingEntity();
-        for(Object[] row : rows){
-            rating.setTotalRateSum(new BigDecimal(row[0].toString()));
-            rating.setTotalRate(Integer.valueOf(row[1].toString()));
-        }
-        return rating;
-    }
 
     @Override
-    public RatingEntity getDboyRatingInfo(Integer dboyId) throws Exception {
-        String sql = "SELECT COALESCE(SUM(r.dboy_rating),0) AS totalRateSum, COUNT(r.id) AS totalRate FROM orders o " +
+    public List<Integer> getCustomerRatings(Integer customerId) throws Exception {
+        String sql = "SELECT r.customer_rating FROM orders o " +
+                "INNER JOIN ratings r ON(r.order_id = o.id AND r.customer_rating IS NOT NULL) " +
+                "WHERE o.customer_id =:customerId " +
+                "ORDER BY o.order_date DESC LIMIT 10";
+
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("customerId", customerId);
+        List<Integer> list = query.list();
+        return list;
+    }
+
+
+
+    @Override
+    public List<Integer> getDboyRatings(Integer dboyId) throws Exception {
+        String sql = "SELECT r.dboy_rating FROM orders o " +
                 "INNER JOIN ratings r ON(r.order_id = o.id AND r.dboy_rating IS NOT NULL) " +
                 "WHERE o.delivery_boy_id =:dboyId " +
-                "ORDER BY o.order_date DESC";
-        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
-        sqlQuery.setParameter("dboyId", dboyId);
-//        sqlQuery.setResultTransformer(Transformers.aliasToBean(RatingEntity.class));
-        List<Object[]> rows = sqlQuery.list();
-        RatingEntity rating = new RatingEntity();
-        for(Object[] row : rows){
-            rating.setTotalRateSum(new BigDecimal(row[0].toString()));
-            rating.setTotalRate(Integer.valueOf(row[1].toString()));
-        }
-        return rating;
+                "ORDER BY o.order_date DESC LIMIT 10";
+
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("dboyId", dboyId);
+        List<Integer> list = query.list();
+        return list;
     }
 
     @Override

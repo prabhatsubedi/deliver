@@ -277,7 +277,10 @@ var Admin = function() {
 
             callback.loaderDiv = ".modal-dialog";
 
-            Main.request('/admin/save_user', params, callback, headers);
+            var url = '/admin/save_user'
+            if(headers.id != undefined) url = '/admin/update_user';
+
+            Main.request(url, params, callback, headers);
 
         }
 

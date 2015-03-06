@@ -65,7 +65,7 @@ public class AdminController {
         }
     }
 
-    @RequestMapping(value = "/update_user", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update_user", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> updateDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
         try {

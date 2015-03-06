@@ -83,8 +83,10 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         String profileImage = user.getProfileImage();
         user.setProfileImage(null);
 
-        for (AddressEntity address: user.getAddresses()){
-            address.setUser(user);
+        if(user.getAddresses() != null) {
+            for (AddressEntity address: user.getAddresses()){
+                address.setUser(user);
+            }
         }
 
         userDaoService.save(user);
@@ -126,17 +128,19 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         if (dbUser == null) {
             throw new YSException("VLD011");
         }
-        List<AddressEntity> addressEntities =  user.getAddresses();
-        for(AddressEntity addressEntity: addressEntities){
-            for(AddressEntity address: dbUser.getAddresses()){
-                if(address.getId().equals(addressEntity.getId())){
-                    address.setStreet(addressEntity.getStreet());
-                    address.setCity(addressEntity.getCity());
-                    address.setState(addressEntity.getState());
-                    address.setCountry(addressEntity.getCountry());
-                    address.setCountryCode(addressEntity.getCountryCode());
-                    address.setUser(dbUser);
-                    break;
+        if(user.getAddresses() != null){
+            List<AddressEntity> addressEntities =  user.getAddresses();
+            for(AddressEntity addressEntity: addressEntities){
+                for(AddressEntity address: dbUser.getAddresses()){
+                    if(address.getId().equals(addressEntity.getId())){
+                        address.setStreet(addressEntity.getStreet());
+                        address.setCity(addressEntity.getCity());
+                        address.setState(addressEntity.getState());
+                        address.setCountry(addressEntity.getCountry());
+                        address.setCountryCode(addressEntity.getCountryCode());
+                        address.setUser(dbUser);
+                        break;
+                    }
                 }
             }
         }
@@ -144,7 +148,6 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         dbUser.setFullName(user.getFullName());
         dbUser.setEmailAddress(user.getEmailAddress());
         dbUser.setMobileNumber(user.getMobileNumber());
-        dbUser.setGender(user.getGender());
         dbUser.setStatus(user.getStatus());
 
         String profileImage = user.getProfileImage();

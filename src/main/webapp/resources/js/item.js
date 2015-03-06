@@ -894,6 +894,8 @@ function toggleSwitch(value, elem) {
             allowPageScroll: 'vertical'
         });*/
 
+        Image.dropZone('#item_image_input', '.item_image');
+
         Main.resizableCatMenu();
 
         $(window).resize(function(){
@@ -1033,6 +1035,7 @@ function toggleSwitch(value, elem) {
                             for(var j = 0; j < category.item.length; j++) {
                                 var item = category.item[j];
                                 var elem = $('.item_container_template').clone();
+                                $('.item_image', elem).attr('data-id', item.id);
                                 if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
                                 $('.item_name a', elem).attr('href', Main.modifyURL('/merchant/item/view/' + item.id)).html(item.name);
                                 $('.item_price span', elem).html(item.unitPrice);
@@ -1146,6 +1149,7 @@ function toggleSwitch(value, elem) {
                     for(var j = 0; j < items.data.length; j++) {
                         var item = items.data[j];
                         var elem = $('.item_container_template').clone();
+                        $('.item_image', elem).attr('data-id', item.id);
                         if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
                         $('.item_name a', elem).attr('href', Main.modifyURL('/merchant/item/view/' + item.id)).html(item.name);
                         $('.item_price span', elem).html(item.unitPrice);

@@ -99,6 +99,12 @@
                     <div class="form-group">
                         <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone">
                     </div>
+                    <div class="form-group edit_group">
+                        <select id="status" name="status" class="col-xs-12 no_pad no_margin" data-style="form-control">
+                            <option value="Inactive">Inactive</option>
+                            <option value="Active">Active</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <div class="col-lg-6 no_pad">

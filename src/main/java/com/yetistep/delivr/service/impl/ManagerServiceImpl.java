@@ -563,4 +563,18 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     public Boolean changeOrderSettlement(HeaderDto headerDto) throws Exception {
         return true;
     }
+
+    @Override
+    public List<UserEntity> getInactivatedCustomers() throws Exception {
+        log.info("+++++++++++++ Getting Inactivated Customers ++++++++++");
+        List<UserEntity> users = userDaoService.getInactivatedCustomers();
+        return users;
+    }
+
+    @Override
+    public Boolean activateUser(HeaderDto headerDto) throws Exception {
+        log.info("+++++++++++++++ Activating User +++++++++++++");
+        userDaoService.activateUser(Integer.parseInt(headerDto.getId()));
+        return true;
+    }
 }

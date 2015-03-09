@@ -3,12 +3,15 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
+import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -210,5 +213,45 @@ public class UserDaoServiceImpl implements UserDaoService {
 
         sqlQuery.executeUpdate();
         return true;
+    }
+
+    @Override
+    public Boolean activateUser(Integer userId) throws Exception {
+        String sql = "UPDATE users set status=:status, " +
+                "activated_count = (CASE WHEN activated_count IS NULL THEN 1 ELSE activated_count + 1 END) " +
+                "WHERE id = :userId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
+        sqlQuery.setParameter("userId", userId);
+
+        sqlQuery.executeUpdate();
+        return true;
+    }
+
+    @Override
+    public List<UserEntity> getInactivatedCustomers() throws Exception {
+        ProjectionList projectionList = Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("emailAddress"), "emailAddress")
+                .add(Projections.property("mobileNumber"), "mobileNumber")
+                .add(Projections.property("fullName"), "fullName")
+                .add(Projections.property("inactivatedCount"), "inactivatedCount")
+                .add(Projections.property("activatedCount"), "activatedCount")
+                .add(Projections.property("c.averageRating"), "customer.averageRating")
+                .add(Projections.property("c.totalOrderDelivered"), "customer.totalOrderDelivered")
+                .add(Projections.property("c.totalOrderPlaced"), "customer.totalOrderPlaced")
+                .add(Projections.property("c.profileUrl"), "customer.profileUrl");
+
+        Criteria criteria = getCurrentSession().createCriteria(UserEntity.class)
+                .createAlias("customer", "c")
+                .setProjection(projectionList)
+                .setResultTransformer(new AliasToBeanNestedResultTransformer(UserEntity.class));
+        criteria.add(Restrictions.eq("status", Status.INACTIVE));
+        criteria.add(Restrictions.eq("role.id", Role.ROLE_CUSTOMER.toInt()));
+
+        List<UserEntity> users = criteria.list();
+        return users;
+
+
     }
 }

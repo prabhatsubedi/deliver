@@ -50,4 +50,8 @@ public interface ManagerService {
     public PaginationDto findInactiveStoreBrands(Page page) throws Exception;
 
     public Boolean changeOrderSettlement(HeaderDto headerDto) throws Exception;
+
+    public List<UserEntity> getInactivatedCustomers() throws Exception;
+
+    public Boolean activateUser(HeaderDto headerDto) throws Exception;
 }

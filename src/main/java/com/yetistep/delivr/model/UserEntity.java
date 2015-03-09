@@ -32,9 +32,6 @@ public class UserEntity implements Serializable {
     private RoleEntity role;
     private String username;
     private String password;
-    private DeliveryBoyEntity deliveryBoy;
-    private MerchantEntity merchant;
-    private CustomerEntity customer;
     private String fullName;
     private Gender gender;
     private String mobileNumber;
@@ -49,11 +46,14 @@ public class UserEntity implements Serializable {
     private String verificationCode;
     private Boolean subscribeNewsletter;
     private String lastAddressMobile;
-    private UserDeviceEntity userDevice;
     private Status status;
-
     private Integer inactivatedCount;
     private Integer activatedCount;
+
+    private DeliveryBoyEntity deliveryBoy;
+    private MerchantEntity merchant;
+    private CustomerEntity customer;
+    private UserDeviceEntity userDevice;
 
     private List<OrderCancelEntity> orderCancelEntities;
     private List<AddressEntity> addresses;
@@ -278,6 +278,7 @@ public class UserEntity implements Serializable {
     }
 
     @Column(name = "inactivated_count")
+    @JsonProperty
     public Integer getInactivatedCount() {
         return inactivatedCount;
     }
@@ -287,6 +288,7 @@ public class UserEntity implements Serializable {
     }
 
     @Column(name = "activated_count")
+    @JsonProperty
     public Integer getActivatedCount() {
         return activatedCount;
     }

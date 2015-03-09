@@ -579,6 +579,14 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         log.info("+++++++++++++ Performing Add to Cart of " + cart.getCustomer().getFacebookId() + " +++++++++++");
         /*Check The Cart If Customer Have Previous Cart on different store
         If cart on different brand then delete it */
+
+        CustomerEntity customerEntity = customerDaoService.getCustomerStatus(cart.getCustomer().getFacebookId());
+        if(customerEntity == null)
+             throw new YSException("VLD033");
+
+        if(customerEntity.getUser().getStatus() !=null && (customerEntity.getUser().getStatus().toInt() == Status.INACTIVE.toInt()))
+            throw new YSException("SEC012"); //Customer Inactivated
+
         //This Will Delete If Cart from Another Brand
         List<Integer> cartList = cartDaoService.findCarts(cart.getCustomer().getFacebookId(), cart.getStoresBrand().getId());
         if (cartList.size() > 0) {
@@ -710,6 +718,14 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     @Override
     public CartDto validateCart(Long facebookId) throws Exception {
         log.info("+++++++++++++ Validating Cart of Client Facebook Id : " + facebookId  +" +++++++++++++");
+
+        CustomerEntity customerEntity = customerDaoService.getCustomerStatus(facebookId);
+        if(customerEntity == null)
+            throw new YSException("VLD033");
+
+        if(customerEntity.getUser().getStatus() !=null && (customerEntity.getUser().getStatus().toInt() == Status.INACTIVE.toInt()))
+            throw new YSException("SEC012"); //Customer Inactivated
+
         CartDto cartDto = new CartDto();
 
         List<CartEntity> cartEntities = cartDaoService.getMyCarts(facebookId);

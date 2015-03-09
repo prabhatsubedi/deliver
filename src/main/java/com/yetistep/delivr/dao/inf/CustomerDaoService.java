@@ -41,4 +41,6 @@ public interface CustomerDaoService extends GenericDaoService<Integer, CustomerE
     public Boolean updateLatLong(String lat, String lon, Long facebookId) throws Exception;
 
     public Boolean updateAverageRating(BigDecimal averageRating, Integer customerId) throws Exception;
+
+    public CustomerEntity getCustomerStatus(Long facebookId) throws Exception;
 }

@@ -826,11 +826,13 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         String dir = MessageBundle.separateString("/", "Orders", "Order" + order.getId());
         boolean isLocal = MessageBundle.isLocalHost();
         List<String> attachments = orderEntity.getAttachments();
+        int i = 1;
         for (String bill: order.getAttachments()) {
             if (bill != null && !bill.isEmpty()) {
-                String imageName = "bill" + (isLocal ? "_tmp_" : "_") + System.currentTimeMillis();
-                String s3Path = GeneralUtil.saveImageToBucket(bill, imageName, dir, false);
+                String imageName = "Bill_" + order.getId() + "_" + (isLocal ? "_tmp_" : "_") + i;
+                String s3Path = GeneralUtil.saveImageToBucket(bill, imageName, dir, true);
                 attachments.add(s3Path);
+                i++;
             }
         }
         return orderDaoService.update(orderEntity);

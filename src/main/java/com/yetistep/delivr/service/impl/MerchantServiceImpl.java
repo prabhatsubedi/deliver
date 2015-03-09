@@ -1447,12 +1447,12 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         assoc.put("customer", "id,user");
         assoc.put("deliveryBoy", "id,user,averageRating");
-        assoc.put("store", "id,name,street");
+        assoc.put("store", "id,name,street,contactPerson,contactNo");
         assoc.put("attachments", "url");
         assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
         assoc.put("orderCancel", "id,reasonDetails,reason");
 
-        subAssoc.put("user", "id,fullName");
+        subAssoc.put("user", "id,fullName,mobileNumber,profileImage");
         subAssoc.put("reasonDetails", "id,cancelReason");
 
         for (OrderEntity order:orders){
@@ -1505,7 +1505,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         assoc.put("customer", "id,user");
         assoc.put("deliveryBoy", "id,user,averageRating");
-        assoc.put("store", "id,name,street");
+        assoc.put("store", "id,name,street,contactPerson,contactNo");
         assoc.put("attachments", "url");
 
         subAssoc.put("user", "id,fullName,mobileNumber,profileImage");

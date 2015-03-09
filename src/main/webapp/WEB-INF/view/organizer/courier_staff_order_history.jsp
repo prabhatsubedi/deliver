@@ -42,8 +42,8 @@
                         <th rowspan="2">Amount Earned</th>
                         <th rowspan="2">Time Assigned</th>
                         <th rowspan="2">Time Taken</th>
-                        <th colspan="2">Customer By Feedback</th>
-                        <th colspan="2">Shopper By Feedback</th>
+                        <th colspan="2">Feedback By Customer</th>
+                        <th colspan="2">Feedback By Shopper</th>
                     </tr>
                         <tr>
                             <th>Rating</th>

@@ -1983,12 +1983,12 @@ label.check_label .checkbox {
     padding-top: 10px;
 }
 
-#purchase_history_table .db_td, #purchase_history_table .bill_td{
+.table-view .db_td, .table-view .bill_td, .table-view .store_info_td{
     padding: 10px;
     position: relative;
 }
 
-#purchase_history_table .db_info, #purchase_history_table .bill_list{
+.table-view .db_info, .table-view .bill_list, .table-view .store_info{
     line-height: 1.8;
     z-index: 10;
     box-shadow: 0 0 15px #999;
@@ -1997,20 +1997,20 @@ label.check_label .checkbox {
     background-color: #FFF;
 }
 
-#purchase_history_table .show_db_info, #purchase_history_table .view_bills{
+.table-view .show_db_info, .table-view .view_bills, .table-view .show_store_info{
     color: #64A4EA;
 }
 
-#purchase_history_table .show_db_info:hover, #purchase_history_table .view_bills:hover{
+.table-view .show_db_info:hover, .table-view .view_bills:hover, .table-view .show_store_info:hover{
     text-decoration: underline;
 }
 
-#purchase_history_table .db_image {
+.table-view .db_image {
     border: 1px solid #999;
     padding: 10px;
 }
 
-#purchase_history_table .bill_td{
+.table-view .bill_td{
     min-width: 250px;
 }
 

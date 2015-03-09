@@ -51,6 +51,8 @@
     </div>
 </div>
 
+<div class="shopper_preview_container hidden"></div>
+
 <div class="modal fade" id="order_items_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">

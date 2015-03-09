@@ -17,6 +17,7 @@
         $(document).ready(function(){
 
             Manager.getCustomers();
+            Manager.loadActivateCustomers();
 
         });
 
@@ -42,13 +43,11 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th><div class="width_150"> Merchant Name </div></th>
-                        <th><div class="width_100"> Type </div></th>
-                        <th><div class="width_150"> Contact Person </div></th>
+                        <th><div class="width_150"> Customer Name </div></th>
                         <th><div class="width_150"> Email </div></th>
-                        <th><div class="width_100"> Contact No. </div></th>
-                        <th> Status </th>
-                        <th><div class="width_150"> Action </div></th>
+                        <th><div class="width_150"> Contact No. </div></th>
+                        <th><div class="width_150"> Deactivation Count </div></th>
+                        <th><div class="width_100"> Action </div></th>
                     </tr>
                     </thead>
                     <tbody>

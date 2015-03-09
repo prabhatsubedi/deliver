@@ -50,7 +50,7 @@
                             <th>Shopper</th>
                             <th>Bill</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th><div class="width_100">Action</div></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -109,6 +109,8 @@
         </div>
     </div>
 </div>
+
+<div class="shopper_preview_container hidden"></div>
 
 <div class="modal fade" id="order_items_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">

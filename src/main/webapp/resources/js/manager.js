@@ -12,42 +12,27 @@ if (typeof(Manager) == "undefined") var Manager = {};
         var callback = function (status, data) {
 
             console.log(data);
-            return false;
             if (!data.success) {
                 alert(data.message);
                 return;
             }
-            var merchants = data.params.merchants;
+            var users = data.params.users;
             var tdata = [];
 
-            var sess_merchants = {};
-            for (i = 0; i < merchants.length; i++) {
-                var merchant = merchants[i];
+            for (i = 0; i < users.length; i++) {
+                var user = users[i];
 
-                var merchantId = merchant.id;
-                var userId = merchant.user.id;
-                var status = merchant.status;
-                var link_activation = "", link_profile = "";
+                var id = user.id;
+                var fullName = user.fullName;
+                var emailAddress = !user.emailAddress ? '' : user.emailAddress;
+                var mobileNumber = !user.mobileNumber ? '' : user.mobileNumber;
+                var inactivatedCount = !user.inactivatedCount ? '0' : user.inactivatedCount;
 
-                if (status == "VERIFIED" || status == "UNVERIFIED") {
-                    link_activation = '<a href="#" data-id="' + merchantId + '"  data-status="' + status + '"  data-toggle="modal" data-target="#modal_activation">Activate</a>';
-                } else if (status == "ACTIVE") {
-                    link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '"  data-status="' + status + '" >Deactivate</a>';
-                } else if (status == "INACTIVE") {
-                    link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '" data-status="' + status + '" >Activate</a>';
-                }
-                link_profile = '<a href="' + Main.modifyURL('/merchant/profile/' + merchantId) + '">Profile</a>';
-                var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
-                var link_merchant = '<a href="' + Main.modifyURL('/merchant/store/list/' + merchantId) + '">' + merchant.businessTitle + '</a>';
-
-                sess_merchants[merchantId] = {id: merchantId, businessTitle: merchant.businessTitle, status: status};
-                var row = [merchantId, link_merchant, merchant.partnershipStatus ? 'Partner' : 'Non Partner', merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
+                var row = [id, fullName, emailAddress, mobileNumber, inactivatedCount, '<a class="trigger_activation" href="#" data-id="' + id + '" >Activate</a>'];
                 tdata.push(row);
             }
 
-            Main.saveMerchants(sess_merchants);
-
-            Main.createDataTable("#merchants_table", tdata);
+            Main.createDataTable("#customers_table", tdata);
 
             $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
@@ -57,6 +42,27 @@ if (typeof(Manager) == "undefined") var Manager = {};
         callback.requestType = "GET";
 
         Main.request('/organizer/deactivated_customers', {}, callback);
+
+    };
+
+    Manager.loadActivateCustomers = function() {
+
+        var callback = function (status, data) {
+
+            alert(data.message);
+            if (data.success == true) {
+                Manager.getCustomers();
+            }
+        };
+
+        $('.trigger_activation').live('click', function(){
+
+            var chk_confirm = confirm('Are you sure you want to activate this customer?');
+            if (!chk_confirm) return false;
+            callback.loaderDiv = "body";
+            Main.request('/organizer/activate_user', {}, callback, {id: $(this).attr('data-id')});
+
+        });
 
     };
 

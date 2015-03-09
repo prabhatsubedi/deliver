@@ -1479,7 +1479,7 @@ label.check_label .checkbox {
     font-size: 15px;
     font-weight: bold;
 }
-.profile_header_info .ratings ul li {
+.ratings ul li {
     display: inline-block;
     width: 24px;
     height: 24px;
@@ -1487,7 +1487,7 @@ label.check_label .checkbox {
     background-position: center top;
     background-repeat: no-repeat;
 }
-.profile_header_info .ratings ul li.active {
+.ratings ul li.active {
     background-position: center bottom;
 }
 .profile_sub_title {
@@ -1990,8 +1990,12 @@ label.check_label .checkbox {
     padding: 10px;
     position: relative;
 }
+.table-view .db_td {
+    margin: -10px -15px;
+    padding: 20px 25px;
+}
 
-.table-view .db_info, .table-view .bill_list, .table-view .store_info{
+.shopper_preview_container, .table-view .bill_list, .table-view .store_info{
     line-height: 1.8;
     z-index: 10;
     box-shadow: 0 0 15px #999;
@@ -2008,7 +2012,7 @@ label.check_label .checkbox {
     text-decoration: underline;
 }
 
-.table-view .db_image {
+.shopper_preview_container .db_image {
     border: 1px solid #999;
     padding: 10px;
 }

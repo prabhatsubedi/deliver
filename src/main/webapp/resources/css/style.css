@@ -1847,6 +1847,9 @@ label.check_label .checkbox {
 .god_view .open_chart {
     cursor: pointer;
 }
+#modal_chart {
+    height: 100%;
+}
 #modal_chart .modal-dialog {
     margin-left: 15px;
     margin-right: 15px;

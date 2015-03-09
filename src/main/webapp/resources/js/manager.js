@@ -7,6 +7,59 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
 (function ($) {
 
+    Manager.getCustomers = function () {
+
+        var callback = function (status, data) {
+
+            console.log(data);
+            return false;
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+            var merchants = data.params.merchants;
+            var tdata = [];
+
+            var sess_merchants = {};
+            for (i = 0; i < merchants.length; i++) {
+                var merchant = merchants[i];
+
+                var merchantId = merchant.id;
+                var userId = merchant.user.id;
+                var status = merchant.status;
+                var link_activation = "", link_profile = "";
+
+                if (status == "VERIFIED" || status == "UNVERIFIED") {
+                    link_activation = '<a href="#" data-id="' + merchantId + '"  data-status="' + status + '"  data-toggle="modal" data-target="#modal_activation">Activate</a>';
+                } else if (status == "ACTIVE") {
+                    link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '"  data-status="' + status + '" >Deactivate</a>';
+                } else if (status == "INACTIVE") {
+                    link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '" data-status="' + status + '" >Activate</a>';
+                }
+                link_profile = '<a href="' + Main.modifyURL('/merchant/profile/' + merchantId) + '">Profile</a>';
+                var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
+                var link_merchant = '<a href="' + Main.modifyURL('/merchant/store/list/' + merchantId) + '">' + merchant.businessTitle + '</a>';
+
+                sess_merchants[merchantId] = {id: merchantId, businessTitle: merchant.businessTitle, status: status};
+                var row = [merchantId, link_merchant, merchant.partnershipStatus ? 'Partner' : 'Non Partner', merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
+                tdata.push(row);
+            }
+
+            Main.saveMerchants(sess_merchants);
+
+            Main.createDataTable("#merchants_table", tdata);
+
+            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+
+        };
+
+        callback.loaderDiv = "body";
+        callback.requestType = "GET";
+
+        Main.request('/organizer/deactivated_customers', {}, callback);
+
+    };
+
     Manager.getMerchants = function () {
 
         var callback = function (status, data) {

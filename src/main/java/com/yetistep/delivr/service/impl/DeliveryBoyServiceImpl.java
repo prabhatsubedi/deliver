@@ -393,7 +393,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     }
 
     private void updateRemainingAndElapsedTime(OrderInfoDto orderInfoDto){
-        Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), orderInfoDto.getOrderAcceptedAt().getTime());
+        Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), orderInfoDto.getOrderDate().getTime());
         int remainingTime = orderInfoDto.getRemainingTime() - minuteDiff.intValue();
         orderInfoDto.setElapsedTime(minuteDiff.intValue());
         remainingTime = (remainingTime < 0) ? 0 : remainingTime;
@@ -829,7 +829,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         for (String bill: order.getAttachments()) {
             if (bill != null && !bill.isEmpty()) {
                 String imageName = "bill" + (isLocal ? "_tmp_" : "_") + System.currentTimeMillis();
-                String s3Path = GeneralUtil.saveImageToBucket(bill, imageName, dir, true);
+                String s3Path = GeneralUtil.saveImageToBucket(bill, imageName, dir, false);
                 attachments.add(s3Path);
             }
         }

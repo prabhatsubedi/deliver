@@ -522,13 +522,13 @@ public class MerchantController {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
 
-            List<StoreEntity> stores = merchantService.getInvoices(headerDto);
+            List<InvoiceEntity> invoices = merchantService.getInvoices(headerDto);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Purchase History retrieved successfully with Merchant ID: "+headerDto.getMerchantId());
-            serviceResponse.addParam("stores", stores);
+            ServiceResponse serviceResponse = new ServiceResponse("Invoices retrieved successfully with Merchant ID: "+headerDto.getMerchantId());
+            serviceResponse.addParam("invoices", invoices);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while retrieving purchase history: ", e);
+            GeneralUtil.logError(log, "Error Occurred while retrieving Invoices: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

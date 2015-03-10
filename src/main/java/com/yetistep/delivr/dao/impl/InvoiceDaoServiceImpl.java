@@ -2,10 +2,14 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.InvoiceDaoService;
 import com.yetistep.delivr.model.InvoiceEntity;
+import com.yetistep.delivr.model.StoresBrandEntity;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +33,17 @@ public class InvoiceDaoServiceImpl implements InvoiceDaoService {
     public List<InvoiceEntity> findAll() throws Exception {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    @Override
+    public List<InvoiceEntity> findInvoicesByMerchant(Integer merchantId) throws Exception {
+        List<InvoiceEntity> invoiceEntities = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(InvoiceEntity.class);
+        criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId))) ;
+        invoiceEntities = criteria.list();
+        return invoiceEntities;
+    }
+
+
 
     @Override
     public Boolean save(InvoiceEntity value) throws Exception {

@@ -1,6 +1,7 @@
 package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.abs.AbstractManager;
+import com.yetistep.delivr.dao.inf.InvoiceDaoService;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
 import com.yetistep.delivr.dao.inf.StoreDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
@@ -35,6 +36,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Autowired
     StoreDaoService storeDaoService;
+
+    @Autowired
+    InvoiceDaoService invoiceDaoService;
 
     @Autowired
     HttpServletRequest httpServletRequest;
@@ -1588,30 +1592,28 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<StoreEntity> getInvoices(HeaderDto headerDto) throws Exception{
+    public List<InvoiceEntity> getInvoices(HeaderDto headerDto) throws Exception{
 
-        List<StoreEntity> stores = new ArrayList<>();
-        List<StoresBrandEntity> storesBrandEntities  = merchantDaoService.findBrandListByMerchant(headerDto.getMerchantId());
+        List<InvoiceEntity> invoices = new ArrayList<>();
 
-        //List<StoreEntity> stores = storeDaoService.findAll();
+        List<InvoiceEntity> invoiceList = invoiceDaoService.findInvoicesByMerchant(headerDto.getMerchantId());
 
-       for (StoresBrandEntity storesBrandEntity: storesBrandEntities){
-           stores.addAll(storesBrandEntity.getStore());
-       }
+
 
 
         List<StoreEntity> storeEntityList = new ArrayList<>();
-        String fields = "id,street,storesBrand,invoice";
+        String fields = "id,generatedDate,path,amount,fromDate,toDate,paidDate,store";
         Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("storesBrand", "id,brandName");
-        assoc.put("invoice", "id,generatedDate,path,amount,fromDate,toDate,paidDate");
+        assoc.put("store", "id,street,storesBrand");
+        subAssoc.put("storesBrand", "id,brandName");
 
-        for (StoreEntity storeEntity: stores){
-            storeEntityList.add((StoreEntity) ReturnJsonUtil.getJsonObject(storeEntity, fields, assoc));
+        for (InvoiceEntity invoiceEntity: invoiceList){
+            invoices.add((InvoiceEntity) ReturnJsonUtil.getJsonObject(invoiceEntity, fields, assoc, subAssoc));
         }
 
-        return storeEntityList;
+        return invoices;
     }
 
 

@@ -311,3 +311,30 @@ Order.courierBoyOrderHistory = function(){
     Main.request('/dboy/get_dBoy_order_history', {}, callback, header);
 
 }
+
+Order.getInvoices = function(){
+    var callback = function(success, data){
+        if (!data.success) {
+            alert(data.message);
+            return;
+        }
+        var invoices = data.params.invoices;
+        console.log(invoices);
+
+        var tableData = [];
+        for (var i = 0; i < invoices.length; i++) {
+            var invoice = invoices[i];
+            var link = '<a target="_blank" href="'+invoice.path+'">View Invoice</a>';
+            var row = [invoice.id, link, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", invoice.generatedDate, invoice.fromDate, invoice.toDate, invoice.paidDate!=undefined?invoice.paidDate:''];
+            tableData.push(row);
+        }
+
+        Main.createDataTable("#invoices_table", tableData);
+    }
+    callback.loaderDiv = ".main_content";
+    callback.requestType = "GET";
+    var header = {};
+    header.merchantId = Main.getFromLocalStorage('mid');
+
+    Main.request('/merchant/get_invoices', {}, callback, header);
+}

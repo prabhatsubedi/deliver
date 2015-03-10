@@ -78,7 +78,7 @@ public class MerchantController {
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
 
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
+            GeneralUtil.logError(log, "Error Occurred while retrieving categories", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
         }

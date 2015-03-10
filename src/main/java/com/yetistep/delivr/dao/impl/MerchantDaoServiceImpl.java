@@ -1,6 +1,7 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
+import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
@@ -613,6 +614,27 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
         orders = criteria.list();
         return orders;
+    }
+
+    @Override
+    public List<OrderEntity> getOrders(List<Integer> storeId, Page page, DeliveryStatus status) throws Exception {
+        List<OrderEntity> orders = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.add(Restrictions.and(Restrictions.in("store.id", storeId), Restrictions.eq("deliveryStatus", status)));
+        criteria.addOrder(Order.desc("id"));
+        HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
+        orders = criteria.list();
+        return orders;
+    }
+
+    @Override
+    public Integer getTotalNumbersOfOrders(List<Integer> storeId, DeliveryStatus status) throws Exception {
+        String sqQuery =    "SELECT COUNT(o.id) FROM orders o WHERE o.store_id IN (:storeId) && o.delivery_status =:deliveryStatus";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameterList("storeId", storeId);
+        query.setParameter("deliveryStatus", status.ordinal());
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
     }
 
     @Override

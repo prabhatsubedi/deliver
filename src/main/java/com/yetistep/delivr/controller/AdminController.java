@@ -95,7 +95,7 @@ public class AdminController {
             serviceResponse.addParam("user", user);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while retrieving delivery boy: ", e);
+            GeneralUtil.logError(log, "Error Occurred while retrieving shopper: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

@@ -45,11 +45,11 @@ public class AccountantController {
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             DeliveryBoyEntity deliveryBoy = managerService.updateDboyAccount(headerDto, requestJsonDto);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Delivery boy account updated successfully with ID: "+headerDto.getId());
+            ServiceResponse serviceResponse = new ServiceResponse("Shopper account updated successfully with ID: "+headerDto.getId());
             serviceResponse.addParam("deliveryBoy", deliveryBoy);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while delivery boy account: ", e);
+            GeneralUtil.logError(log, "Error Occurred while updating shopper account: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
@@ -63,11 +63,11 @@ public class AccountantController {
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             DeliveryBoyEntity deliveryBoy = managerService.ackSubmittedAmount(headerDto, requestJsonDto);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Delivery boy payment acknowledged successfully with ID: "+headerDto.getId());
+            ServiceResponse serviceResponse = new ServiceResponse("Shopper payment acknowledged successfully with ID: "+headerDto.getId());
             serviceResponse.addParam("deliveryBoy", deliveryBoy);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while retrieving merchant: ", e);
+            GeneralUtil.logError(log, "Error Occurred on the process of acknowledgement: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
@@ -82,11 +82,11 @@ public class AccountantController {
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             DeliveryBoyEntity deliveryBoy = managerService.walletSubmittedAmount(headerDto, requestJsonDto);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Delivery boy payment submitted successfully with ID: "+headerDto.getId());
+            ServiceResponse serviceResponse = new ServiceResponse("Shopper payment submitted successfully with ID: "+headerDto.getId());
             serviceResponse.addParam("deliveryBoy", deliveryBoy);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while retrieving merchant: ", e);
+            GeneralUtil.logError(log, "Error Occurred on the process of payment submission: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

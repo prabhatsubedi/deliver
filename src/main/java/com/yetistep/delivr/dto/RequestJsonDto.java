@@ -1,5 +1,6 @@
 package com.yetistep.delivr.dto;
 
+import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.CustomerInfo;
@@ -80,6 +81,8 @@ public class RequestJsonDto {
     /* Variable to decide whether to flush cart or not. */
     private Boolean flushCart;
 
+    /*Get orders properties*/
+    private DeliveryStatus deliveryStatus;
 
 
 
@@ -370,5 +373,13 @@ public class RequestJsonDto {
 
     public void setFlushCart(Boolean flushCart) {
         this.flushCart = flushCart;
+    }
+
+    public DeliveryStatus getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
     }
 }

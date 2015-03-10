@@ -84,7 +84,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
-        log.info("++++++++++++++++++ Creating Delivery Boy +++++++++++++++++");
+        log.info("++++++++++++++++++ Creating Shopper +++++++++++++++++");
         deliveryBoy.getUser().setUsername(headerDto.getUsername());
         deliveryBoy.getUser().setPassword(headerDto.getPassword());
         UserEntity user = deliveryBoy.getUser();
@@ -294,7 +294,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
     @Override
     public Boolean updateDeliveryBoyStatus(DeliveryBoyEntity deliveryBoyEntity) throws Exception {
-        log.info("Updating Status of Delivery Boy to:" + deliveryBoyEntity.getAvailabilityStatus());
+        log.info("Updating Status of Shopper to:" + deliveryBoyEntity.getAvailabilityStatus());
         DeliveryBoyEntity dBoyEntity = deliveryBoyDaoService.find(deliveryBoyEntity.getId());
         if (dBoyEntity == null) {
             throw new YSException("VLD011");
@@ -360,7 +360,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
     @Override
     public Boolean updateLocationOfDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception {
-        log.info("Updating location of Delivery Boy with ID:"+deliveryBoyEntity.getId());
+        log.info("Updating location of Shopper with ID:"+deliveryBoyEntity.getId());
         DeliveryBoyEntity dBoyEntity = deliveryBoyDaoService.find(deliveryBoyEntity.getId());
         if (dBoyEntity == null) {
             throw new YSException("VLD011");
@@ -787,7 +787,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
     @Override
     public Boolean changeDeliveryBoyStatus(DeliveryBoyEntity deliveryBoyEntity) throws Exception {
-        log.info("Updating Status of Delivery Boy to:" + deliveryBoyEntity.getAvailabilityStatus());
+        log.info("Updating Status of Shopper to:" + deliveryBoyEntity.getAvailabilityStatus());
         DeliveryBoyEntity dBoyEntity = deliveryBoyDaoService.find(deliveryBoyEntity.getId());
         if (dBoyEntity == null) {
             throw new YSException("VLD011");

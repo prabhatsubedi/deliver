@@ -820,10 +820,10 @@ public class ClientController extends AbstractManager{
             //  validateMobileClient(headerDto.getAccessToken());
 
             customerService.rateDeliveryBoy(orderId, facebookId, rating);
-            ServiceResponse serviceResponse = new ServiceResponse("Delivery boy has been rated successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Shopper has been rated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while rating delivery boy", e);
+            GeneralUtil.logError(log, "Error Occurred while rating shopper", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

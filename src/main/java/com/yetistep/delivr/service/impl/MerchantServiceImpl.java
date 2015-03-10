@@ -1437,14 +1437,23 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         PaginationDto paginationDto = new PaginationDto();
-        Integer totalRows =  merchantDaoService.getTotalNumbersOfOrders(storeIdList);
+        Integer totalRows;
+        if(requestJson.getDeliveryStatus() != null){
+            totalRows =  merchantDaoService.getTotalNumbersOfOrders(storeIdList, requestJson.getDeliveryStatus());
+        }else{
+            totalRows =  merchantDaoService.getTotalNumbersOfOrders(storeIdList);
+        }
         paginationDto.setNumberOfRows(totalRows);
 
         if(page != null){
             page.setTotalRows(totalRows);
         }
-
-        List<OrderEntity> orders = merchantDaoService.getOrders(storeIdList, page);
+        List<OrderEntity> orders;
+        if(requestJson.getDeliveryStatus() != null){
+            orders = merchantDaoService.getOrders(storeIdList, page, requestJson.getDeliveryStatus());
+        } else{
+            orders = merchantDaoService.getOrders(storeIdList, page);
+        }
 
         List<Object> objects = new ArrayList<>();
 

@@ -51,10 +51,10 @@ public class ManagerController {
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.USERNAME, GeneralUtil.PASSWORD);
             deliveryBoyService.saveDeliveryBoy(deliveryBoy, headerDto);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Delivery Boy has been saved successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Shopper has been saved successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while creating delivery boy", e);
+            GeneralUtil.logError(log, "Error Occurred while creating shopper", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
@@ -68,11 +68,11 @@ public class ManagerController {
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             DeliveryBoyEntity deliveryBoy = deliveryBoyService.findDeliveryBoyById(headerDto);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Details of delivery boy with ID: "+headerDto.getId());
+            ServiceResponse serviceResponse = new ServiceResponse("Details of shopper with ID: "+headerDto.getId());
             serviceResponse.addParam("deliveryBoy", deliveryBoy);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while retrieving delivery boy: ", e);
+            GeneralUtil.logError(log, "Error Occurred while retrieving shopper: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
@@ -84,11 +84,11 @@ public class ManagerController {
         try {
             List<DeliveryBoyEntity> deliveryBoyEntities = deliveryBoyService.findAllDeliverBoy();
 
-            ServiceResponse serviceResponse = new ServiceResponse("List of delivery boys");
+            ServiceResponse serviceResponse = new ServiceResponse("List of shoppers");
             serviceResponse.addParam("deliveryBoys", deliveryBoyEntities);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while retrieving delivery boys", e);
+            GeneralUtil.logError(log, "Error Occurred while retrieving shoppers", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
@@ -100,10 +100,10 @@ public class ManagerController {
         try {
             deliveryBoyService.updateDeliveryBoyStatus(deliveryBoyEntity);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Delivery Boy status has been updated successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Shopper status has been updated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while updating delivery boy status", e);
+            GeneralUtil.logError(log, "Error Occurred while updating shopper status", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
@@ -124,10 +124,10 @@ public class ManagerController {
 
             deliveryBoyService.updateDeliveryBoy(deliveryBoy, headerDto);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Delivery Boy has been updated successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Shopper has been updated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while updating delivery boy", e);
+            GeneralUtil.logError(log, "Error Occurred while updating shopper", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

@@ -30,7 +30,7 @@ public class TaskSchedule {
     /* second(0-59)  minute(0-59)   hour(0-23)  Day of month(1-31)  month(0-11 or JAN-DEC)  Day of week(1-7 or SUN-SAT) */
     @Scheduled(cron="0 0 12 * * ?")
     public void deliveryBoyStatus() {
-        System.out.println("Updating Status of delivery boy:");
+        System.out.println("Updating Status of shopper:");
     }
 
     @Scheduled(cron="0 0 12 * * TUE")

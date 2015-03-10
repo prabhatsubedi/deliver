@@ -669,7 +669,7 @@ public class CustomerServiceImpl implements CustomerService {
         /* Finding delivery boys based on active status. */
         List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys();
         if(availableAndActiveDBoys.size() == 0){
-            log.info("No delivery boys available");
+            log.info("No shoppers available");
            throw new YSException("ORD012");
         }
         /* Selects nearest delivery boys based on timing. */
@@ -810,7 +810,7 @@ public class CustomerServiceImpl implements CustomerService {
             deliveryBoySelectionEntity.setAccepted(false);
             deliveryBoySelectionEntity.setRejected(false);
             selectionDetails.add(deliveryBoySelectionEntity);
-            log.info("Delivery boys selected from distance calculation:"+selectionDetails.toString());
+            log.info("Shoppers selected from distance calculation:"+selectionDetails.toString());
         }
         return filterDeliveryBoySelection(selectionDetails, timeDetails, reprocess);
     }
@@ -1331,7 +1331,7 @@ public class CustomerServiceImpl implements CustomerService {
             if(orderDaoService.hasDboyRunningOrders(order.getDeliveryBoy().getId()) <= 1){
                 if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)))) {
                     //Deactivate User
-                    log.info("Deactivating Delivery Boy id : " + order.getDeliveryBoy().getId());
+                    log.info("Deactivating Shopper id : " + order.getDeliveryBoy().getId());
                     userDaoService.deactivateUser(order.getDeliveryBoy().getUser().getId());
                 }
 
@@ -1390,7 +1390,7 @@ public class CustomerServiceImpl implements CustomerService {
                 /* Finding delivery boys based on active status. */
                 List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys();
                 if(availableAndActiveDBoys.size() == 0){
-                    log.info("Order is cancelling since number of available delivery boys is zero:"+orderId);
+                    log.info("Order is cancelling since number of available shoppers is zero:"+orderId);
                     return cancelOrder(order);
                 }
                 CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
@@ -1408,7 +1408,7 @@ public class CustomerServiceImpl implements CustomerService {
 
                 /* Push Notifications */
                 List<Integer> idList = getIdOfDeliveryBoys(deliveryBoySelectionEntitiesWithProfit);
-                log.info("List of delivery boy with push notification:");
+                log.info("List of shopper with push notification:");
                 for(Integer id: idList){
                     log.info(id);
                 }

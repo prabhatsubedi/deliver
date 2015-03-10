@@ -51,7 +51,7 @@ public class DeliveryBoyController extends AbstractManager{
             validateMobileClient(headerDto.getAccessToken());
 
             DeliveryBoyEntity deliveryBoyEntity =  deliveryBoyService.dboyLogin(headerDto, userDevice);
-            ServiceResponse serviceResponse = new ServiceResponse("Delivery boy logged in successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Shopper logged in successfully");
             serviceResponse.addParam("userDetail", deliveryBoyEntity);
 
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -72,10 +72,10 @@ public class DeliveryBoyController extends AbstractManager{
             validateMobileClient(headerDto.getAccessToken());
 
             deliveryBoyService.updateLocationOfDeliveryBoy(deliveryBoy);
-            ServiceResponse serviceResponse = new ServiceResponse("Location of delivery boy updated successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Location of shopper updated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred during updating location of delivery boy", e);
+            GeneralUtil.logError(log, "Error Occurred during updating location of shopper", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
@@ -183,10 +183,10 @@ public class DeliveryBoyController extends AbstractManager{
             validateMobileClient(headerDto.getAccessToken());*/
             deliveryBoyService.changeDeliveryBoyStatus(deliveryBoyEntity);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Delivery Boy status has been updated successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Shopper status has been updated successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while updating delivery boy status", e);
+            GeneralUtil.logError(log, "Error Occurred while updating shopper status", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
@@ -217,11 +217,11 @@ public class DeliveryBoyController extends AbstractManager{
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
             //validateMobileClient(headerDto.getAccessToken());
             DeliveryBoyEntity deliveryBoy = deliveryBoyService.getProfileOfDeliveryBoy(Integer.parseInt(headerDto.getId()));
-            ServiceResponse serviceResponse = new ServiceResponse("Information of delivery boy retrieved successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Information of shopper retrieved successfully");
             serviceResponse.addParam("deliveryBoy", deliveryBoy);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while retrieving information of delivery boy", e);
+            GeneralUtil.logError(log, "Error Occurred while retrieving information of shopper", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

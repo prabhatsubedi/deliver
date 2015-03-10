@@ -1508,7 +1508,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("customer", "id,user");
-        assoc.put("deliveryBoy", "id,user");
+        assoc.put("deliveryBoy", "id,averageRating,user");
         assoc.put("dBoyOrderHistories", "id,amountEarned,orderAcceptedAt,orderCompletedAt,distanceTravelled");
         assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
 

@@ -563,4 +563,6 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     public Boolean changeOrderSettlement(HeaderDto headerDto) throws Exception {
         return true;
     }
+
+
 }

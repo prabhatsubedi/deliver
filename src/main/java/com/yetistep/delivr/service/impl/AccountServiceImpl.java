@@ -9,6 +9,7 @@ import com.yetistep.delivr.service.inf.AccountService;
 import com.yetistep.delivr.util.EmailMsg;
 import com.yetistep.delivr.util.InvoiceGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -44,27 +45,52 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     HttpServletRequest httpServletRequest;
 
     @Override
-    public String generateInvoice(Integer storeId, String fromDate, String toDate) throws Exception {
-        List<OrderEntity> orders =  orderDaoService.getStoresOrders(storeId, fromDate, toDate);
-        StoreEntity store =  storeDaoService.find(storeId);
-        store.getId();
-
-        MerchantEntity merchant = store.getStoresBrand().getMerchant();
-        InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
-
-        InvoiceEntity invoice = new InvoiceEntity();
-        invoice.setInvoiceStatus(InvoiceStatus.UNPAID);
-        invoice.setMerchant(merchant);
-        invoice.setOrders(orders);
-        invoice.setGeneratedDate(new Date(System.currentTimeMillis()));
-        invoice.setFromDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(fromDate).getTime()));
-        invoice.setToDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(toDate).getTime()));
-        invoiceDaoService.save(invoice);
+    public String generateInvoice(Integer storeId, String fromDate, String toDate, String serverUrl) throws Exception {
         String invoicePath = new String();
+        List<OrderEntity> orders =  orderDaoService.getStoresOrders(storeId, fromDate, toDate);
         if(orders.size()>0){
-            invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice, store, getServerUrl());
+            StoreEntity store =  storeDaoService.find(storeId);
+            store.getId();
+
+            MerchantEntity merchant = store.getStoresBrand().getMerchant();
+            InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
+
+            InvoiceEntity invoice = new InvoiceEntity();
+            invoice.setInvoiceStatus(InvoiceStatus.UNPAID);
+            invoice.setMerchant(merchant);
+            invoice.setStore(store);
+            invoice.setOrders(orders);
+            for (OrderEntity orderEntity: orders){
+                orderEntity.setInvoice(invoice);
+            }
+
+            invoice.setGeneratedDate(new Date(System.currentTimeMillis()));
+            invoice.setFromDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(fromDate).getTime()));
+            invoice.setToDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(toDate).getTime()));
+            BigDecimal totalOrderAmount = BigDecimal.ZERO;
+            for (OrderEntity order: orders){
+                totalOrderAmount = totalOrderAmount.add(order.getTotalCost());
+            }
+            BigDecimal vatAmount =  totalOrderAmount.multiply(new BigDecimal(13)).divide(new BigDecimal(100));
+            BigDecimal commissionAmount = BigDecimal.ZERO;
+            BigDecimal totalPayableAmount = totalOrderAmount.add(vatAmount).add(commissionAmount);
+            invoice.setAmount(totalPayableAmount);
+            invoiceDaoService.save(invoice);
+
+            invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice, store, serverUrl);
+            invoice.setPath(invoicePath);
+            invoiceDaoService.update(invoice);
+
+            String email = store.getEmail();
+            if(email != null && !email.equals("")) {
+                String message = EmailMsg.sendInvoiceEmail(store, fromDate, toDate, serverUrl);
+                sendAttachmentEmail(email,  message, "get invoice-"+fromDate+"-"+toDate, invoicePath);
+            }
+            System.out.println("Email sent successfully with attachment: "+invoicePath+" for store "+store.getId());
+        }else{
+            System.out.println("Invoice not generated for store "+storeId);
         }
-        return  invoicePath;
+        return invoicePath;
     }
 
     @Override
@@ -107,15 +133,17 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         receiptDaoService.update(receipt);
 
         String email = order.getCustomer().getUser().getEmailAddress();
-        if(email != null || !email.equals("")) {
+        if(email != null && !email.equals("")) {
             String message = EmailMsg.sendBillAndReceipt(order, order.getCustomer().getUser().getFullName(), order.getCustomer().getUser().getEmailAddress(), getServerUrl());
-
             sendAttachmentEmail(order.getCustomer().getUser().getEmailAddress(),  message, "Bill and Receipt", billAndReceiptPath);
         }
 
         return billAndReceiptPath;
     }
 
-
-
+    @Override
+    public List<StoreEntity> getAllStores() throws Exception {
+        List<StoreEntity> storeEntities = storeDaoService.findAll();
+        return  storeEntities;
+    }
 }

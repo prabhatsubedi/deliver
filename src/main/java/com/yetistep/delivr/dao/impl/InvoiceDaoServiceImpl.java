@@ -38,7 +38,8 @@ public class InvoiceDaoServiceImpl implements InvoiceDaoService {
 
     @Override
     public Boolean update(InvoiceEntity value) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        getCurrentSession().persist(value);
+        return true;
     }
 
     @Override

@@ -2,8 +2,10 @@ package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.StoreEntity;
 
 import java.sql.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,8 +16,10 @@ import java.sql.Date;
  */
 public interface AccountService {
 
-    public String generateInvoice(Integer storeId, String fromDate, String toDate) throws Exception;
+    public String generateInvoice(Integer storeId, String fromDate, String toDate, String serverUrl) throws Exception;
 
     public String generateBillAndReceiptAndSendEmail(OrderEntity order) throws Exception;
+
+    List<StoreEntity> getAllStores() throws Exception;
 
 }

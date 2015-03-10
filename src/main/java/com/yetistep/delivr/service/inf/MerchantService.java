@@ -74,5 +74,5 @@ public interface MerchantService {
 
     public void addItemsImages(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 
-
+    public List<StoreEntity> getInvoices(HeaderDto headerDto) throws Exception;
 }

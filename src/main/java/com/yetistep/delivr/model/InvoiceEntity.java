@@ -30,6 +30,7 @@ public class InvoiceEntity {
     private Date paidDate;
     private List<OrderEntity> orders;
     private MerchantEntity merchant;
+    private  StoreEntity store;
 
 
     @Id
@@ -124,5 +125,14 @@ public class InvoiceEntity {
 
     public void setMerchant(MerchantEntity merchant) {
         this.merchant = merchant;
+    }
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    public StoreEntity getStore() {
+        return store;
+    }
+
+    public void setStore(StoreEntity store) {
+        this.store = store;
     }
 }

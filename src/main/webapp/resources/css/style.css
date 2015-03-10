@@ -1986,6 +1986,7 @@ label.check_label .checkbox {
 .table-view .db_td, .table-view .bill_td, .table-view .store_info_td{
     padding: 10px;
     position: relative;
+
 }
 
 .table-view .db_info, .table-view .bill_list, .table-view .store_info{
@@ -2003,6 +2004,7 @@ label.check_label .checkbox {
 
 .table-view .show_db_info:hover, .table-view .view_bills:hover, .table-view .show_store_info:hover{
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .table-view .db_image {

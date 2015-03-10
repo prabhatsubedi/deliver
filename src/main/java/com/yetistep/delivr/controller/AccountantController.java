@@ -98,7 +98,7 @@ public class AccountantController {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            String invoicePath = accountService.generateInvoice(Integer.parseInt(headerDto.getId()), "2015-02-18", "2015-03-06");
+            String invoicePath = accountService.generateInvoice(Integer.parseInt(headerDto.getId()), "2015-02-18", "2015-03-06", "http://test.idelivr.com/");
 
             ServiceResponse serviceResponse = new ServiceResponse("Invoice has been generated successfully for store: "+headerDto.getId());
             serviceResponse.addParam("path", invoicePath);

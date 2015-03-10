@@ -51,7 +51,7 @@ public class InvoiceGenerator {
                 int noOfRetry = 3;
                 for (int i = 0; i < noOfRetry; i++) {//retry three time, if exception occurs
                     try {
-                        String dir = getInvoiceDir(merchant, "/");
+                        String dir = getInvoiceDir(merchant, store, "/");
 
                         String bucketUrl = AmazonUtil.uploadFileToS3(invoiceFile, dir, invoiceFile.getName(), true);
                         invoicePath = AmazonUtil.cacheImage(bucketUrl);
@@ -146,7 +146,7 @@ public class InvoiceGenerator {
             Document document = new Document();
             /*Integer cntOrder = 1;*/
 
-            invoiceFile = getFile(merchant, "invoice");
+            invoiceFile = getFile(merchant, store, "invoice");
             stream = new FileOutputStream(invoiceFile);
             PdfWriter writer = PdfWriter.getInstance(document, stream);
             document.open();
@@ -354,7 +354,8 @@ public class InvoiceGenerator {
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), subTotal, PdfUtil.getPhrase(totalOrderAmount));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), commission, PdfUtil.getPhrase(commissionAmount));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), vat, PdfUtil.getPhrase(vatAmount));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), totalPayable, PdfUtil.getPhrase(totalOrderAmount.add(vatAmount).add(commissionAmount)));
+        BigDecimal totalPayableAmount = totalOrderAmount.add(vatAmount).add(commissionAmount);
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), totalPayable, PdfUtil.getPhrase(totalPayableAmount));
         document.add(billingTable);
     }
 
@@ -489,8 +490,8 @@ public class InvoiceGenerator {
 
 
 
-    private File getFile(MerchantEntity merchant, String name) {
-        String dir = getInvoiceDir(merchant, File.separator);
+    private File getFile(MerchantEntity merchant, StoreEntity store, String name) {
+        String dir = getInvoiceDir(merchant, store, File.separator);
 
         File invoiceDir = new File(HOME_DIR + File.separator + dir + File.separator);
         if (!invoiceDir.exists()) {
@@ -513,8 +514,8 @@ public class InvoiceGenerator {
         return new File(invoiceDir, fileName);
     }
 
-    private String getInvoiceDir(MerchantEntity merchant, String separator) {
-        String dir = MessageBundle.separateString(separator, "Invoices", "Merchant_" + merchant.getId());
+    private String getInvoiceDir(MerchantEntity merchant, StoreEntity store, String separator) {
+        String dir = MessageBundle.separateString(separator, "Invoices", "Merchant_" + merchant.getId(), "StoreBrand_"+store.getStoresBrand().getId(), "Store"+store.getId());
 
         return dir;
     }

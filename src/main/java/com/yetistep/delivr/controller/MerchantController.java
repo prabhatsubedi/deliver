@@ -515,6 +515,25 @@ public class MerchantController {
     }
 
 
+    @RequestMapping(value = "/get_invoices", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getInvoices(@RequestHeader HttpHeaders headers) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
+
+            List<StoreEntity> stores = merchantService.getInvoices(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Purchase History retrieved successfully with Merchant ID: "+headerDto.getMerchantId());
+            serviceResponse.addParam("stores", stores);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving purchase history: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
 
 }

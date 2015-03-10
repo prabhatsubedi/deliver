@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.MerchantDaoService;
+import com.yetistep.delivr.dao.inf.StoreDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
@@ -31,6 +32,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Autowired
     UserDaoService userDaoService;
+
+    @Autowired
+    StoreDaoService storeDaoService;
 
     @Autowired
     HttpServletRequest httpServletRequest;
@@ -1581,6 +1585,33 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         }
 
+    }
+
+    @Override
+    public List<StoreEntity> getInvoices(HeaderDto headerDto) throws Exception{
+
+        List<StoreEntity> stores = new ArrayList<>();
+        List<StoresBrandEntity> storesBrandEntities  = merchantDaoService.findBrandListByMerchant(headerDto.getMerchantId());
+
+        //List<StoreEntity> stores = storeDaoService.findAll();
+
+       for (StoresBrandEntity storesBrandEntity: storesBrandEntities){
+           stores.addAll(storesBrandEntity.getStore());
+       }
+
+
+        List<StoreEntity> storeEntityList = new ArrayList<>();
+        String fields = "id,street,storesBrand,invoice";
+        Map<String, String> assoc = new HashMap<>();
+
+        assoc.put("storesBrand", "id,brandName");
+        assoc.put("invoice", "id,generatedDate,path,amount,fromDate,toDate,paidDate");
+
+        for (StoreEntity storeEntity: stores){
+            storeEntityList.add((StoreEntity) ReturnJsonUtil.getJsonObject(storeEntity, fields, assoc));
+        }
+
+        return storeEntityList;
     }
 
 

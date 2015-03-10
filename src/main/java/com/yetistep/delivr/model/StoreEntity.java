@@ -25,9 +25,6 @@ import java.util.List;
 public class StoreEntity implements Serializable {
 
     private Integer id;
-    private StoresBrandEntity storesBrand;
-    private List<ItemsStoreEntity> itemsStore;
-    private List<OrderEntity> order;
     private String name;
     private String street;
     private String city;
@@ -43,6 +40,10 @@ public class StoreEntity implements Serializable {
     private String brandLogo;//Transient Variable
     private String email;
     private Boolean sendEmail;//on order placed
+    private StoresBrandEntity storesBrand;
+    private List<ItemsStoreEntity> itemsStore;
+    private List<OrderEntity> order;
+    private List<InvoiceEntity> invoice;
 
 
     @Id
@@ -239,5 +240,15 @@ public class StoreEntity implements Serializable {
 
     public void setSendEmail(Boolean sendEmail) {
         this.sendEmail = sendEmail;
+    }
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
+    @JsonProperty
+    public List<InvoiceEntity> getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(List<InvoiceEntity> invoice) {
+        this.invoice = invoice;
     }
 }

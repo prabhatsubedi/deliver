@@ -63,6 +63,7 @@ public class PushNotificationUtil {
         log.info("Sending push notification to Android Device:" + pushNotification.getMessage() + ": " + pushNotification.getTokens());
         try {
             Sender sender = null;
+            int retries = 3;
             if(pushNotification.getNotifyTo().equals(NotifyTo.DELIVERY_BOY)){
                 sender = new Sender(DBOY_API_KEY);
             }else if(pushNotification.getNotifyTo().equals(NotifyTo.CUSTOMER)){
@@ -83,7 +84,7 @@ public class PushNotificationUtil {
                     .delayWhileIdle(false)
                     .addData("message", msg)
                     .build();
-            MulticastResult result = sender.send(message, pushNotification.getTokens(), 1);
+            MulticastResult result = sender.send(message, pushNotification.getTokens(), retries);
 
 
             log.info(result.toString());

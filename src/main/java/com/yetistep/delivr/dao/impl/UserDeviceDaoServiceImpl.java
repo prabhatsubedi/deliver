@@ -122,4 +122,19 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
         sqlQuery.executeUpdate();
         return true;
     }
+
+    @Override
+    public List<String> getDeviceTokensExceptAcceptedDeliveryBoy(Integer orderId, Integer exceptDeliveryBoyId) throws Exception {
+        String sql = "SELECT ud.device_token FROM dboy_selections dbs INNER JOIN delivery_boys db " +
+                "on (dbs.dboy_id = db.id) INNER JOIN user_device ud on (db.user_id = ud.user_id) " +
+                "WHERE dbs.accepted = :accepted AND dbs.rejected = :rejected AND dbs.order_id = :orderId " +
+                "AND dbs.dboy_id != :deliveryBoyId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("accepted", false);
+        sqlQuery.setParameter("rejected", false);
+        sqlQuery.setParameter("orderId", orderId);
+        sqlQuery.setParameter("deliveryBoyId", exceptDeliveryBoyId);
+        List<String> deviceTokens = sqlQuery.list();
+        return deviceTokens;
+    }
 }

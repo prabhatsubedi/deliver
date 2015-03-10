@@ -40,8 +40,19 @@ Order.getOrders = function(){
             }
             var deliveryBoy = typeof(order.deliveryBoy) != 'undefined'?"<div class='db_td'><span class='show_db_info'>"+order.deliveryBoy.user.fullName+"</span>":'';
 
-            if(typeof(order.deliveryBoy) != 'undefined')
-                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>Name: "+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>Contact: "+order.deliveryBoy.user.mobileNumber+"</div></div></div>";
+            if(typeof(order.deliveryBoy) != 'undefined') {
+                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>Name: "+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>Contact: "+order.deliveryBoy.user.mobileNumber+"</div>";
+                deliveryBoy += "<div class='ratings'><ul class=nav>";
+
+                var rating = parseInt(order.deliveryBoy.averageRating);
+                for(var j = 0; j < 5; j++) {
+                    deliveryBoy += '<li ' + (rating > 0 ? 'class="active"' : '' ) + '></li>';
+                    rating--;
+                }
+
+                deliveryBoy += "</ul></div>";
+                deliveryBoy += "</div></div>";
+            }
 
             var storeInfo = "<div class='store_info_td'><span class='show_store_info'>"+order.store.name+' - '+order.store.street+"</span>";
 
@@ -80,11 +91,11 @@ Order.getOrders = function(){
         Main.createDataTable("#order_successful_table", tdataSuccessful);
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
     }
-    callback.loaderDiv = ".main_content";
+    callback.loaderDiv = "body";
     var postData = {};
     //postData.page = {pageNumber: 1, pageSize: 20, sortOrder: 'desc'};
 
-    $("body").delegate("span.show_db_info", "mouseover", function(){
+/*    $("body").delegate("span.show_db_info", "mouseover", function(){
         $(this).siblings(".db_info").removeClass("hidden");
     });
 
@@ -106,8 +117,32 @@ Order.getOrders = function(){
 
     $("body").delegate(".bill_td", "mouseleave", function(){
         $(this).find(".bill_list").addClass("hidden");
-    });
+    });*/
 
+
+    $('.db_td').live('mouseover', function(){
+        $(this).addClass('currentPreview');
+        var left = $(this).offset().left - 230;
+        var top = $(this).offset().top - 130;
+        var maxTop = ($(this).parents('.dataTable').eq(0).offset().top + $(this).parents('.dataTable').eq(0).height()) - 325;
+        if(top > maxTop) top = maxTop;
+        if($('.shopper_preview_container').css('top') == 'auto')
+            $('.shopper_preview_container').css({left: left, top: top}).html($('.db_info', this).clone().html()).removeClass('hidden');
+        else
+            $('.shopper_preview_container').stop(false, false).animate({left: left, top: top}).html($('.db_info', this).clone().html()).removeClass('hidden');
+    });
+    $('.db_td').live('mouseout', function(e){
+        if(!$(e.relatedTarget).hasClass('shopper_preview_container') && $(e.relatedTarget).parents('.shopper_preview_container').length == 0) {
+            $('.currentPreview').removeClass('currentPreview');
+            $('.shopper_preview_container').html('').addClass('hidden');
+        }
+    });
+    $('.shopper_preview_container').live('mouseout', function(e){
+        if(!$(e.relatedTarget).hasClass('currentPreview') && $(e.relatedTarget).parents('.shopper_preview_container').length == 0) {
+            $('.currentPreview').removeClass('currentPreview');
+            $('.shopper_preview_container').html('').addClass('hidden');
+        }
+    });
 
     Main.request('/merchant/get_orders', postData, callback);
 }
@@ -138,8 +173,19 @@ Order.getPurchaseHistory = function(){
             var deliveryBoy = typeof(order.deliveryBoy) != 'undefined'?"<div class='db_td'><span class='show_db_info'>"+order.deliveryBoy.user.fullName+"</span>":'';
             var view_items = '<span class="item_list" data-id="'+id+'">View Item List</span>';
 
-            if(typeof(order.deliveryBoy) != 'undefined')
-                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>Name: "+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>Contact: "+order.deliveryBoy.user.mobileNumber+"</div></div></div>";
+            if(typeof(order.deliveryBoy) != 'undefined') {
+                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>Name: "+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>Contact: "+order.deliveryBoy.user.mobileNumber+"</div>";
+                deliveryBoy += "<div class='ratings'><ul class=nav>";
+
+                var rating = parseInt(order.deliveryBoy.averageRating);
+                for(var j = 0; j < 5; j++) {
+                    deliveryBoy += '<li ' + (rating > 0 ? 'class="active"' : '' ) + '></li>';
+                    rating--;
+                }
+
+                deliveryBoy += "</ul></div>";
+                deliveryBoy += "</div></div>";
+            }
 
 
 
@@ -153,7 +199,7 @@ Order.getPurchaseHistory = function(){
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     }
-    callback.loaderDiv = ".main_content";
+    callback.loaderDiv = "body";
 
     var postData = {};
     //postData.page = {pageNumber: 1, pageSize: 20, sortOrder: 'desc'};
@@ -161,7 +207,7 @@ Order.getPurchaseHistory = function(){
 
 
 
-   $("body").delegate("span.show_db_info", "mouseover", function(){
+/*   $("body").delegate("span.show_db_info", "mouseover", function(){
          $(this).siblings(".db_info").removeClass("hidden");
    });
 
@@ -175,6 +221,30 @@ Order.getPurchaseHistory = function(){
 
     $("body").delegate(".bill_td", "mouseleave", function(){
         $(this).find(".bill_list").addClass("hidden");
+    });*/
+
+    $('.db_td').live('mouseover', function(){
+        $(this).addClass('currentPreview');
+        var left = $(this).offset().left - 230;
+        var top = $(this).offset().top - 130;
+        var maxTop = ($(this).parents('.dataTable').eq(0).offset().top + $(this).parents('.dataTable').eq(0).height()) - 325;
+        if(top > maxTop) top = maxTop;
+        if($('.shopper_preview_container').css('top') == 'auto')
+            $('.shopper_preview_container').css({left: left, top: top}).html($('.db_info', this).clone().html()).removeClass('hidden');
+        else
+            $('.shopper_preview_container').stop(false, false).animate({left: left, top: top}).html($('.db_info', this).clone().html()).removeClass('hidden');
+    });
+    $('.db_td').live('mouseout', function(e){
+        if(!$(e.relatedTarget).hasClass('shopper_preview_container') && $(e.relatedTarget).parents('.shopper_preview_container').length == 0) {
+            $('.currentPreview').removeClass('currentPreview');
+            $('.shopper_preview_container').html('').addClass('hidden');
+        }
+    });
+    $('.shopper_preview_container').live('mouseout', function(e){
+        if(!$(e.relatedTarget).hasClass('currentPreview') && $(e.relatedTarget).parents('.shopper_preview_container').length == 0) {
+            $('.currentPreview').removeClass('currentPreview');
+            $('.shopper_preview_container').html('').addClass('hidden');
+        }
     });
 
 }

@@ -585,7 +585,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
              throw new YSException("VLD033");
 
         if(customerEntity.getUser().getStatus() !=null && (customerEntity.getUser().getStatus().toInt() == Status.INACTIVE.toInt()))
-            throw new YSException("SEC012"); //Customer Inactivated
+            throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER)); //Customer Inactivated
 
         //This Will Delete If Cart from Another Brand
         List<Integer> cartList = cartDaoService.findCarts(cart.getCustomer().getFacebookId(), cart.getStoresBrand().getId());
@@ -724,7 +724,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             throw new YSException("VLD033");
 
         if(customerEntity.getUser().getStatus() !=null && (customerEntity.getUser().getStatus().toInt() == Status.INACTIVE.toInt()))
-            throw new YSException("SEC012"); //Customer Inactivated
+            throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER)); //Customer Inactivated
 
         CartDto cartDto = new CartDto();
 

@@ -1268,7 +1268,7 @@ label.check_label .checkbox {
 .items_container .block_item .item_infos {
     background-color: #ffffff;
     font-size: 14px;
-    height: 100px;
+    height: auto;
     padding: 10px 15px;
 }
 .items_container .inactive_item .item_infos {
@@ -1281,12 +1281,13 @@ label.check_label .checkbox {
     font-weight: bold;
     max-height: 60px;
     overflow: hidden;
-}
-.stores_container .block_item .item_infos {
-    height: auto;
-}
-.stores_container .block_item .item_infos .item_name {
     white-space: nowrap;
+}
+.items_list .block_item .item_infos {
+    height: 100px;
+}
+.items_list .block_item .item_infos .item_name {
+    white-space: normal;
 }
 .items_container .block_item .item_infos .item_name a {
     color: #333333;
@@ -1451,9 +1452,13 @@ label.check_label .checkbox {
     background-color: #FFFFFF;
 }
 .profile_header_image .user_image {
-    width: 100%;
-    height: auto;
+    border: none;
+    border-radius: 50%;
+    height: 160px;
     margin: 0 auto;
+    overflow: hidden;
+    padding: 0;
+    width: 160px;
 }
 .profile_body {
     padding: 15px;
@@ -1479,16 +1484,19 @@ label.check_label .checkbox {
     font-size: 15px;
     font-weight: bold;
 }
-.profile_header_info .ratings ul li {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    background-image: url('../images/rating.png');
-    background-position: center top;
+.ratings ul li {
+    background-clip: content-box;
+    background-image: url("../images/rating.png");
+    background-position: center 4px;
     background-repeat: no-repeat;
+    background-size: 12px auto;
+    display: inline-block;
+    height: 19px;
+    padding: 3px 0;
+    width: 14px;
 }
-.profile_header_info .ratings ul li.active {
-    background-position: center bottom;
+.ratings ul li.active {
+    background-position: center -9px;
 }
 .profile_sub_title {
     color: #f28220;
@@ -1847,6 +1855,9 @@ label.check_label .checkbox {
 .god_view .open_chart {
     cursor: pointer;
 }
+#modal_chart {
+    height: 100%;
+}
 #modal_chart .modal-dialog {
     margin-left: 15px;
     margin-right: 15px;
@@ -1988,8 +1999,12 @@ label.check_label .checkbox {
     position: relative;
 
 }
+.table-view .db_td {
+    margin: -10px -15px;
+    padding: 20px 25px;
+}
 
-.table-view .db_info, .table-view .bill_list, .table-view .store_info{
+.shopper_preview_container, .table-view .bill_list, .table-view .store_info{
     line-height: 1.8;
     z-index: 10;
     box-shadow: 0 0 15px #999;
@@ -2007,7 +2022,7 @@ label.check_label .checkbox {
     cursor: pointer;
 }
 
-.table-view .db_image {
+.shopper_preview_container .db_image {
     border: 1px solid #999;
     padding: 10px;
 }

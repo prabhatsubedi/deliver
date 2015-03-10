@@ -849,10 +849,15 @@ public class CustomerServiceImpl implements CustomerService {
         log.info("Unfiltered Dboys:"+deliveryBoySelectionEntities.toString());
         List<DeliveryBoySelectionEntity> filteredDeliveryBoys = new ArrayList<DeliveryBoySelectionEntity>();
         BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
+        Boolean PROFIT_CHECK = Boolean.parseBoolean(systemPropertyService.readPrefValue(PreferenceType.PROFIT_CHECK_FLAG));
         for (DeliveryBoySelectionEntity deliveryBoySelectionEntity : deliveryBoySelectionEntities) {
             CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, deliveryBoySelectionEntity, merchantCommission, merchantServiceFee);
-            if(BigDecimalUtil.isGreaterThen(courierTransaction.getProfit(), BigDecimalUtil.percentageOf(order.getTotalCost(), MINIMUM_PROFIT_PERCENTAGE)))
+            if(PROFIT_CHECK){
+                if(BigDecimalUtil.isGreaterThen(courierTransaction.getProfit(), BigDecimalUtil.percentageOf(order.getTotalCost(), MINIMUM_PROFIT_PERCENTAGE)))
+                    filteredDeliveryBoys.add(deliveryBoySelectionEntity);
+            }else{
                 filteredDeliveryBoys.add(deliveryBoySelectionEntity);
+            }
         }
         log.info("Filtered Dboys:"+filteredDeliveryBoys.toString());
         return filteredDeliveryBoys;
@@ -1377,8 +1382,7 @@ public class CustomerServiceImpl implements CustomerService {
             if(order.getOrderStatus().equals(JobOrderStatus.ORDER_PLACED)){
                 if(order.getReprocessTime() > 0){
                     log.info("Order is cancelling since it has been reprocessed already:"+orderId);
-                    ReasonDetailsEntity reasonDetailsEntity = reasonDetailsDaoService.find(5);
-                    return cancelOrder(order, reasonDetailsEntity);
+                    return cancelOrder(order);
                 }
                 order.setReprocessTime(GeneralUtil.ifNullToZero(order.getReprocessTime())+1);
                 order.setOrderDate(DateUtil.getCurrentTimestampSQL());
@@ -1387,8 +1391,7 @@ public class CustomerServiceImpl implements CustomerService {
                 List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys();
                 if(availableAndActiveDBoys.size() == 0){
                     log.info("Order is cancelling since number of available delivery boys is zero:"+orderId);
-                    ReasonDetailsEntity reasonDetailsEntity = reasonDetailsDaoService.find(5);
-                    return cancelOrder(order, reasonDetailsEntity);
+                    return cancelOrder(order);
                 }
                 CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
                  /* Selects nearest delivery boys based on timing. */
@@ -1397,8 +1400,7 @@ public class CustomerServiceImpl implements CustomerService {
                 List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, courierTransactionEntity.getCommissionPct(), courierTransactionEntity.getServiceFeePct());
                 if(deliveryBoySelectionEntitiesWithProfit.size() == 0){
                     log.info("Order is cancelling since not enough profit:"+orderId);
-                    ReasonDetailsEntity reasonDetailsEntity = reasonDetailsDaoService.find(5);
-                    return cancelOrder(order, reasonDetailsEntity);
+                    return cancelOrder(order);
                 }
                 order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
 
@@ -1432,11 +1434,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Boolean cancelOrder(OrderEntity order, ReasonDetailsEntity reasonDetailsEntity) throws Exception {
+    public Boolean cancelOrder(OrderEntity order) throws Exception {
+        String CANCEL_REASON = "Unable to process your order";
         OrderCancelEntity orderCancel = new OrderCancelEntity();
-        orderCancel.setReason(reasonDetailsEntity.getCancelReason());
-        orderCancel.setReasonDetails(reasonDetailsEntity);
         orderCancel.setJobOrderStatus(order.getOrderStatus());
+        orderCancel.setReason(CANCEL_REASON);
         orderCancel.setOrder(order);
         order.setOrderCancel(orderCancel);
         order.setOrderStatus(JobOrderStatus.CANCELLED);

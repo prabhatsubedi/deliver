@@ -85,7 +85,8 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
                 "o.order_status NOT IN (:pastStatusList)) + (SELECT count(dbs.id) FROM dboy_selections dbs INNER JOIN " +
                 "orders o on (o.id = dbs.order_id) WHERE o.order_status = :orderPlaced AND dboy_id = :deliveryBoyId AND dbs.rejected = :rejected) as activeOrderNo, " +
                 "(SELECT count(o.id) FROM orders o WHERE o.delivery_boy_id = :deliveryBoyId AND o.order_status in (:pastStatusList)) " +
-                "as totalOrderTaken, id, total_earnings as totalEarnings, previous_due as previousDue, wallet_amount as walletAmount, " +
+                "as totalOrderTaken, id, total_earnings as totalEarnings, previous_due as previousDue, " +
+                "wallet_amount as walletAmount, average_rating as averageRating, " +
                 "available_amount  as availableAmount FROM delivery_boys WHERE id = :deliveryBoyId";
         List<Integer> pastStatusList = new ArrayList<Integer>();
         pastStatusList.add(JobOrderStatus.DELIVERED.ordinal());
@@ -97,7 +98,8 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
                 .addScalar("totalEarnings", BigDecimalType.INSTANCE)
                 .addScalar("previousDue", BigDecimalType.INSTANCE)
                 .addScalar("walletAmount", BigDecimalType.INSTANCE)
-                .addScalar("availableAmount", BigDecimalType.INSTANCE);
+                .addScalar("availableAmount", BigDecimalType.INSTANCE)
+                .addScalar("averageRating", BigDecimalType.INSTANCE);
 
         query.setParameterList("pastStatusList", pastStatusList);
         query.setParameter("deliveryBoyId", deliveryBoyId);

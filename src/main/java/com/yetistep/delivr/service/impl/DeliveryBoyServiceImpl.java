@@ -393,7 +393,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     }
 
     private void updateRemainingAndElapsedTime(OrderInfoDto orderInfoDto){
-        Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), orderInfoDto.getOrderAcceptedAt().getTime());
+        Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), orderInfoDto.getOrderDate().getTime());
         int remainingTime = orderInfoDto.getRemainingTime() - minuteDiff.intValue();
         orderInfoDto.setElapsedTime(minuteDiff.intValue());
         remainingTime = (remainingTime < 0) ? 0 : remainingTime;
@@ -401,30 +401,30 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     }
 
     @Override
-    public Boolean changeOrderStatus(OrderEntity orderEntity, Integer deliveryBoyId) throws Exception{
-        OrderEntity order = orderDaoService.find(orderEntity.getId());
+    public Boolean changeOrderStatus(OrderEntity orderEntityJson, Integer deliveryBoyId) throws Exception{
+        OrderEntity order = orderDaoService.find(orderEntityJson.getId());
         if(order == null){
             throw new YSException("VLD017");
         }
-        JobOrderStatus orderStatus = orderEntity.getOrderStatus();
+        JobOrderStatus orderStatus = orderEntityJson.getOrderStatus();
         if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP) ||
                 orderStatus.equals(JobOrderStatus.AT_STORE) ||
                 orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)){
-            if(!deliveryBoyDaoService.checkForPendingOrders(deliveryBoyId, orderEntity.getId())){
+            if(!deliveryBoyDaoService.checkForPendingOrders(deliveryBoyId, orderEntityJson.getId())){
                 throw new YSException("DBY004");
             }
         }
         if(orderStatus.equals(JobOrderStatus.ORDER_ACCEPTED)){
-            return acceptDeliveryOrder(orderEntity.getId(), deliveryBoyId);
+            return acceptDeliveryOrder(orderEntityJson.getId(), deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)){
-            return startJob(order, orderEntity, deliveryBoyId);
+            return startJob(order, orderEntityJson, deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.AT_STORE)){
             //Such as bill upload and Bill edit
             return reachedStore(order, deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)){
              return goRouteToDelivery(order, deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.DELIVERED)){
-            return deliverOrder(orderEntity, order, deliveryBoyId);
+            return deliverOrder(orderEntityJson, order, deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.CANCELLED)){
             //reason
         }else{
@@ -591,6 +591,11 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if(BigDecimalUtil.isLessThenOrEqualTo(order.getTotalCost(), BigDecimal.ZERO)){
             throw new YSException("ORD016");
         }
+
+        BigDecimal maxOrderAmount = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT));
+        if (BigDecimalUtil.isGreaterThen(order.getTotalCost(), maxOrderAmount)) {
+           throw new YSException("CRT007", "Maximum order value is "+maxOrderAmount);
+        }
         BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
         if(BigDecimalUtil.isLessThen(order.getCourierTransaction().getProfit(), BigDecimalUtil.percentageOf(order.getTotalCost(), MINIMUM_PROFIT_PERCENTAGE))){
             log.warn("No Profit Condition:"+order.getId());
@@ -609,12 +614,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         return status;
     }
 
-    private Boolean deliverOrder(OrderEntity orderEntity, OrderEntity order, Integer deliveryBoyId) throws Exception {
+    private Boolean deliverOrder(OrderEntity orderEntityJson, OrderEntity order, Integer deliveryBoyId) throws Exception {
         if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
             throw new YSException("ORD003");
         }
 
-        if(!orderEntity.getOrderVerificationCode().equals(order.getOrderVerificationCode()) || !orderEntity.getId().equals(order.getId())){
+        if(!orderEntityJson.getOrderVerificationCode().equals(order.getOrderVerificationCode()) || !orderEntityJson.getId().equals(order.getId())){
             throw new YSException("ORD004");
         }
         JobOrderStatus.traverseJobStatus(order.getOrderStatus(), JobOrderStatus.DELIVERED);
@@ -628,7 +633,19 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 dBoyOrderHistoryEntity.setOrderCompletedAt(DateUtil.getCurrentTimestampSQL());
                 dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.SUCCESSFUL);
                 dBoyOrderHistoryEntity.setDistanceTravelled(order.getCustomerChargeableDistance().add(order.getSystemChargeableDistance()));
-                dBoyOrderHistoryEntity.setAmountEarned(order.getCourierTransaction().getPaidToCourier());
+                Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), order.getOrderDate().getTime());
+                Integer GRACE_TIME = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DBOY_GRESS_TIME));
+                Integer totalTime = minuteDiff.intValue() + GRACE_TIME;
+                int remainingTime = order.getRemainingTime();
+                BigDecimal deliveryCost = order.getCourierTransaction().getPaidToCourier();
+                if(remainingTime < totalTime) {
+                    BigDecimal deductionPercent = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEDUCTION_PERCENT));
+                    BigDecimal deductAmount = BigDecimalUtil.percentageOf(deliveryCost, deductionPercent);
+                    deliveryCost = deliveryCost.subtract(deductAmount);
+                    order.getCourierTransaction().setPaidToCourier(deliveryCost);
+                    order.getCourierTransaction().setProfit(order.getCourierTransaction().getProfit().add(deductAmount));
+                }
+                dBoyOrderHistoryEntity.setAmountEarned(deliveryCost);
                 break;
             }
         }
@@ -652,8 +669,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             rating.setOrder(order);
         }
 
-        rating.setCustomerRating(orderEntity.getRating().getCustomerRating());
-        rating.setDeliveryBoyComment(orderEntity.getRating().getDeliveryBoyComment());
+        rating.setCustomerRating(orderEntityJson.getRating().getCustomerRating());
+        rating.setDeliveryBoyComment(orderEntityJson.getRating().getDeliveryBoyComment());
        // order.setRating(rating);
         CustomerEntity customerEntity = order.getCustomer();
         customerEntity.setTotalOrderDelivered(GeneralUtil.ifNullToZero(customerEntity.getTotalOrderDelivered())+1);
@@ -809,11 +826,13 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         String dir = MessageBundle.separateString("/", "Orders", "Order" + order.getId());
         boolean isLocal = MessageBundle.isLocalHost();
         List<String> attachments = orderEntity.getAttachments();
+        int i = 1;
         for (String bill: order.getAttachments()) {
             if (bill != null && !bill.isEmpty()) {
-                String imageName = "bill" + (isLocal ? "_tmp_" : "_") + System.currentTimeMillis();
+                String imageName = "Bill_" + order.getId() + "_" + (isLocal ? "_tmp_" : "_") + i;
                 String s3Path = GeneralUtil.saveImageToBucket(bill, imageName, dir, true);
                 attachments.add(s3Path);
+                i++;
             }
         }
         return orderDaoService.update(orderEntity);
@@ -1245,6 +1264,16 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             customerSideDeliveryCost = BigDecimalUtil.percentageOf(customerSideDeliveryCost, DBOY_COMMISSION);
             deliveryCost = deliveryCost.add(customerSideDeliveryCost);
             dBoyOrderHistory.setDistanceTravelled(chargeableDistance.add(customerSideDistance));
+        }
+        Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), dBoyOrderHistory.getOrder().getOrderDate().getTime());
+        Integer GRACE_TIME = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DBOY_GRESS_TIME));
+        Integer totalTime = minuteDiff.intValue() + GRACE_TIME;
+        int remainingTime = dBoyOrderHistory.getOrder().getRemainingTime();
+        if(remainingTime < totalTime) {
+            BigDecimal deductionPercent = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEDUCTION_PERCENT));
+            BigDecimal deductAmount = BigDecimalUtil.percentageOf(deliveryCost, deductionPercent);
+            deliveryCost = deliveryCost.subtract(deductAmount);
+            dBoyOrderHistory.getOrder().getCourierTransaction().setProfit(dBoyOrderHistory.getOrder().getCourierTransaction().getProfit().add(deductAmount));
         }
         dBoyOrderHistory.setAmountEarned(deliveryCost);
         return deliveryCost;

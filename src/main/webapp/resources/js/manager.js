@@ -7,6 +7,65 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
 (function ($) {
 
+    Manager.getCustomers = function () {
+
+        var callback = function (status, data) {
+
+            console.log(data);
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+            var users = data.params.users;
+            var tdata = [];
+
+            for (i = 0; i < users.length; i++) {
+                var user = users[i];
+
+                var id = user.id;
+                var fullName = user.fullName;
+                var emailAddress = !user.emailAddress ? '' : user.emailAddress;
+                var mobileNumber = !user.mobileNumber ? '' : user.mobileNumber;
+                var inactivatedCount = !user.inactivatedCount ? '0' : user.inactivatedCount;
+
+                var row = [id, fullName, emailAddress, mobileNumber, inactivatedCount, '<a class="trigger_activation" href="#" data-id="' + id + '" >Activate</a>'];
+                tdata.push(row);
+            }
+
+            Main.createDataTable("#customers_table", tdata);
+
+            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+
+        };
+
+        callback.loaderDiv = "body";
+        callback.requestType = "GET";
+
+        Main.request('/organizer/deactivated_customers', {}, callback);
+
+    };
+
+    Manager.loadActivateCustomers = function() {
+
+        var callback = function (status, data) {
+
+            alert(data.message);
+            if (data.success == true) {
+                Manager.getCustomers();
+            }
+        };
+
+        $('.trigger_activation').live('click', function(){
+
+            var chk_confirm = confirm('Are you sure you want to activate this customer?');
+            if (!chk_confirm) return false;
+            callback.loaderDiv = "body";
+            Main.request('/organizer/activate_user', {}, callback, {id: $(this).attr('data-id')});
+
+        });
+
+    };
+
     Manager.getMerchants = function () {
 
         var callback = function (status, data) {

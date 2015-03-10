@@ -128,7 +128,7 @@
 
                         <div class="col-lg-6">
 
-                            <div class="other_contents items_container hidden">
+                            <div class="other_contents items_container items_list hidden">
                                 <div class="form_head">Similar Items</div>
                                 <div class="form_content clearfix"></div>
                             </div>

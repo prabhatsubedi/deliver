@@ -63,8 +63,8 @@
                     <div class="profile_header clearfix">
                         <div class="profile_header_image pull-left">
                             <div id="brand_logo" class="drop_zone user_image disabled unselectable text-center maintain_ratio" mr-width="200" mr-height="200">
-                                <div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 200x200</div>
-                                <div class="drop_title">Brand Logo</div>
+<%--                                <div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 200x200</div>
+                                <div class="drop_title">Brand Logo</div>--%>
                             </div>
                             <input type="file" onchange="Image.readURL(this)" id="brand_logo_input" name="brand_logo_input" class="hidden" />
                         </div>

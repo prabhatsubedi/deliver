@@ -154,3 +154,8 @@ INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('REFERRAL_REWARD_AMOUNT'
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('REFEREE_REWARD_AMOUNT', '200');
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('NORMAL_USER_BONUS_AMOUNT', '200');
 
+
+/*##########################2015-03-09###########################*/
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('DEDUCTION_PERCENT', '10');
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('PROFIT_CHECK_FLAG', '0');
+

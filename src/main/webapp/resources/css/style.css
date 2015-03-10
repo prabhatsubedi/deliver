@@ -1268,7 +1268,7 @@ label.check_label .checkbox {
 .items_container .block_item .item_infos {
     background-color: #ffffff;
     font-size: 14px;
-    height: 100px;
+    height: auto;
     padding: 10px 15px;
 }
 .items_container .inactive_item .item_infos {
@@ -1281,12 +1281,13 @@ label.check_label .checkbox {
     font-weight: bold;
     max-height: 60px;
     overflow: hidden;
-}
-.stores_container .block_item .item_infos {
-    height: auto;
-}
-.stores_container .block_item .item_infos .item_name {
     white-space: nowrap;
+}
+.items_list .block_item .item_infos {
+    height: 100px;
+}
+.items_list .block_item .item_infos .item_name {
+    white-space: normal;
 }
 .items_container .block_item .item_infos .item_name a {
     color: #333333;
@@ -1451,8 +1452,8 @@ label.check_label .checkbox {
     background-color: #FFFFFF;
 }
 .profile_header_image .user_image {
-    width: 100%;
-    height: auto;
+    width: 160px;
+    height: 160px;
     margin: 0 auto;
 }
 .profile_body {

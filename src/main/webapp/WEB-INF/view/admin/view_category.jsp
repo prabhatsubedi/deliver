@@ -102,9 +102,9 @@
 </div>
 
 <div class="item_container_template hidden">
-    <div class="item_container col-lg-3 invisible">
+    <div class="item_container col-lg-4 col-sm-6 invisible">
         <div class="block_item">
-            <div class="item_image maintain_ratio" mr-height="400" mr-width="400">
+            <div class="item_image maintain_ratio" mr-height="160" mr-width="720">
                 <img class="img-responsive no_image">
             </div>
             <div class="item_infos">

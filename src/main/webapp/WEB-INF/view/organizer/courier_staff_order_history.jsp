@@ -25,6 +25,16 @@
     <div class="body">
         <div class="heading clearfix">
             <h1 class="pull-left"><span class="courier_name"></span> Order History</h1>
+
+            <div class="ratings pull-right">
+                <ul class="nav">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
         </div>
         <div class="main_content">
             <div class="table-view order_table inroute">

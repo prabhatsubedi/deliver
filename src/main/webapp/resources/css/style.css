@@ -756,6 +756,9 @@ body.assistance_page {
     border-bottom: 1px solid #dbdada;
     position: relative;
 }
+.main_container .body .heading .ratings {
+    margin-top: 10px;
+}
 .main_container .body .heading.form_action {
     border-top: 1px solid #dbdada;
     border-bottom: none;

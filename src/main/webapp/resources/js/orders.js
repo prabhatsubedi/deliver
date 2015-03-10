@@ -289,25 +289,36 @@ Order.courierBoyOrderHistory = function(){
             return;
         }
         var orders = data.params.orders;
-        $(".courier_name").html(orders[0].deliveryBoy.user.fullName != undefined? orders[0].deliveryBoy.user.fullName+' - ':'');
+
         var tableData = [];
-        for (var i = 0; i < orders.length; i++) {
-            var order = orders[i];
+        if(orders.length > 0) {
+            var rating = parseInt(orders[0].deliveryBoy.averageRating);
 
-            var action = '';
-            var orderHistoryLength =  order.dBoyOrderHistories.length;
-            var time_taken;
-            if(order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt != undefined && order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt != undefined){
-                time_taken = ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt)/1000/60).toFixed(0);
+            $(".courier_name").html(orders[0].deliveryBoy.user.fullName != undefined? orders[0].deliveryBoy.user.fullName+' - ':'');
+            for (var i = 0; i < orders.length; i++) {
+                var order = orders[i];
+
+                var action = '';
+                var orderHistoryLength =  order.dBoyOrderHistories.length;
+                var time_taken;
+                if(order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt != undefined && order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt != undefined){
+                    time_taken = ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt)/1000/60).toFixed(0);
+                }
+
+                var row = [i+1, order.deliveryBoy.user.fullName, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, order.dBoyOrderHistories[orderHistoryLength-1].amountEarned, order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
+                tableData.push(row);
             }
+        } else {
+            var rating = 0;
+        }
 
-            var row = [i+1, order.deliveryBoy.user.fullName, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, order.dBoyOrderHistories[orderHistoryLength-1].amountEarned, order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
-            tableData.push(row);
+        for(var i = 0; i < rating; i++) {
+            $(".heading .ratings ul li").eq(i).addClass('active');
         }
 
         Main.createDataTable("#courier_history_table", tableData);
     }
-    callback.loaderDiv = ".main_content";
+    callback.loaderDiv = "body";
     var header = {};
     header.id = Main.getURLvalue(3);
 

@@ -501,10 +501,19 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             Boolean status = orderDaoService.update(orderEntity);
             if(status){
                 UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(orderId);
-                String message = MessageBundle.getMessage("CPN001","push_notification.properties");
+                String message = MessageBundle.getPushNotificationMsg("CPN001");
                 message = String.format(message, orderEntity.getStore().getName(), deliveryBoyEntity.getUser().getFullName());
                 String extraDetail = orderId.toString()+"/status/"+JobOrderStatus.ORDER_ACCEPTED.toString();
                 PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
+
+                List<String> deviceTokens = userDeviceDaoService.getDeviceTokensExceptAcceptedDeliveryBoy(orderId, deliveryBoyId);
+                PushNotification pushNotification = new PushNotification();
+                pushNotification.setTokens(deviceTokens);
+                pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN002"));
+                pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
+                pushNotification.setExtraDetail(orderId.toString()+"/status/"+JobOrderStatus.ORDER_ACCEPTED.toString());
+                pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
+                PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
 
                 /*
                 * if email subscription is set true

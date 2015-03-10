@@ -44,7 +44,7 @@ Order.getOrders = function(){
             var deliveryBoy = typeof(order.deliveryBoy) != 'undefined'?"<div class='db_td'><span class='show_db_info'>"+order.deliveryBoy.user.fullName+"</span>":'';
 
             if(typeof(order.deliveryBoy) != 'undefined') {
-                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>Name: "+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>Contact: "+order.deliveryBoy.user.mobileNumber+"</div>";
+                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>"+order.deliveryBoy.user.mobileNumber+"</div>";
                 deliveryBoy += "<div class='ratings'><ul class=nav>";
 
                 var rating = parseInt(order.deliveryBoy.averageRating);
@@ -127,7 +127,7 @@ Order.getOrders = function(){
         $(this).addClass('currentPreview');
         var left = $(this).offset().left - 230;
         var top = $(this).offset().top - 130;
-        var maxTop = ($(this).parents('.dataTable').eq(0).offset().top + $(this).parents('.dataTable').eq(0).height()) - 325;
+        var maxTop = ($(this).parents('.dataTable').eq(0).offset().top + $(this).parents('.dataTable').eq(0).height()) - 320;
         if(top > maxTop) top = maxTop;
         if($('.shopper_preview_container').css('top') == 'auto')
             $('.shopper_preview_container').css({left: left, top: top}).html($('.db_info', this).clone().html()).removeClass('hidden');
@@ -177,7 +177,7 @@ Order.getPurchaseHistory = function(){
             var view_items = '<span class="item_list" data-id="'+id+'">View Item List</span>';
 
             if(typeof(order.deliveryBoy) != 'undefined') {
-                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>Name: "+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>Contact: "+order.deliveryBoy.user.mobileNumber+"</div>";
+                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>"+order.deliveryBoy.user.mobileNumber+"</div>";
                 deliveryBoy += "<div class='ratings'><ul class=nav>";
 
                 var rating = parseInt(order.deliveryBoy.averageRating);
@@ -210,14 +210,13 @@ Order.getPurchaseHistory = function(){
 
 
 
-   $("body").delegate("span.show_db_info", "mouseover", function(){
+/*   $("body").delegate("span.show_db_info", "mouseover", function(){
          $(this).siblings(".db_info").removeClass("hidden");
    });
 
     $("body").delegate(".db_td", "mouseleave", function(){
         $(this).find(".db_info").addClass("hidden");
     });
-    /*
     $("body").delegate("span.view_bills", "mouseover", function(){
         $(this).siblings(".bill_list").removeClass("hidden");
     });
@@ -230,7 +229,7 @@ Order.getPurchaseHistory = function(){
         $(this).addClass('currentPreview');
         var left = $(this).offset().left - 230;
         var top = $(this).offset().top - 130;
-        var maxTop = ($(this).parents('.dataTable').eq(0).offset().top + $(this).parents('.dataTable').eq(0).height()) - 325;
+        var maxTop = ($(this).parents('.dataTable').eq(0).offset().top + $(this).parents('.dataTable').eq(0).height()) - 320;
         if(top > maxTop) top = maxTop;
         if($('.shopper_preview_container').css('top') == 'auto')
             $('.shopper_preview_container').css({left: left, top: top}).html($('.db_info', this).clone().html()).removeClass('hidden');
@@ -289,25 +288,36 @@ Order.courierBoyOrderHistory = function(){
             return;
         }
         var orders = data.params.orders;
-        $(".courier_name").html(orders[0].deliveryBoy.user.fullName != undefined? orders[0].deliveryBoy.user.fullName+' - ':'');
+
         var tableData = [];
-        for (var i = 0; i < orders.length; i++) {
-            var order = orders[i];
+        if(orders.length > 0) {
+            var rating = parseInt(orders[0].deliveryBoy.averageRating);
 
-            var action = '';
-            var orderHistoryLength =  order.dBoyOrderHistories.length;
-            var time_taken;
-            if(order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt != undefined && order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt != undefined){
-                time_taken = ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt)/1000/60).toFixed(0);
+            $(".courier_name").html(orders[0].deliveryBoy.user.fullName != undefined? orders[0].deliveryBoy.user.fullName+' - ':'');
+            for (var i = 0; i < orders.length; i++) {
+                var order = orders[i];
+
+                var action = '';
+                var orderHistoryLength =  order.dBoyOrderHistories.length;
+                var time_taken;
+                if(order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt != undefined && order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt != undefined){
+                    time_taken = ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt)/1000/60).toFixed(0);
+                }
+
+                var row = [i+1, order.deliveryBoy.user.fullName, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, order.dBoyOrderHistories[orderHistoryLength-1].amountEarned, order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
+                tableData.push(row);
             }
+        } else {
+            var rating = 0;
+        }
 
-            var row = [i+1, order.deliveryBoy.user.fullName, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, order.dBoyOrderHistories[orderHistoryLength-1].amountEarned, order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
-            tableData.push(row);
+        for(var i = 0; i < rating; i++) {
+            $(".heading .ratings ul li").eq(i).addClass('active');
         }
 
         Main.createDataTable("#courier_history_table", tableData);
     }
-    callback.loaderDiv = ".main_content";
+    callback.loaderDiv = "body";
     var header = {};
     header.id = Main.getURLvalue(3);
 

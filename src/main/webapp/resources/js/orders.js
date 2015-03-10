@@ -44,7 +44,7 @@ Order.getOrders = function(){
             var deliveryBoy = typeof(order.deliveryBoy) != 'undefined'?"<div class='db_td'><span class='show_db_info'>"+order.deliveryBoy.user.fullName+"</span>":'';
 
             if(typeof(order.deliveryBoy) != 'undefined') {
-                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>Name: "+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>Contact: "+order.deliveryBoy.user.mobileNumber+"</div>";
+                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>"+order.deliveryBoy.user.mobileNumber+"</div>";
                 deliveryBoy += "<div class='ratings'><ul class=nav>";
 
                 var rating = parseInt(order.deliveryBoy.averageRating);
@@ -127,7 +127,7 @@ Order.getOrders = function(){
         $(this).addClass('currentPreview');
         var left = $(this).offset().left - 230;
         var top = $(this).offset().top - 130;
-        var maxTop = ($(this).parents('.dataTable').eq(0).offset().top + $(this).parents('.dataTable').eq(0).height()) - 325;
+        var maxTop = ($(this).parents('.dataTable').eq(0).offset().top + $(this).parents('.dataTable').eq(0).height()) - 320;
         if(top > maxTop) top = maxTop;
         if($('.shopper_preview_container').css('top') == 'auto')
             $('.shopper_preview_container').css({left: left, top: top}).html($('.db_info', this).clone().html()).removeClass('hidden');
@@ -177,7 +177,7 @@ Order.getPurchaseHistory = function(){
             var view_items = '<span class="item_list" data-id="'+id+'">View Item List</span>';
 
             if(typeof(order.deliveryBoy) != 'undefined') {
-                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>Name: "+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>Contact: "+order.deliveryBoy.user.mobileNumber+"</div>";
+                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>"+order.deliveryBoy.user.mobileNumber+"</div>";
                 deliveryBoy += "<div class='ratings'><ul class=nav>";
 
                 var rating = parseInt(order.deliveryBoy.averageRating);
@@ -210,14 +210,13 @@ Order.getPurchaseHistory = function(){
 
 
 
-   $("body").delegate("span.show_db_info", "mouseover", function(){
+/*   $("body").delegate("span.show_db_info", "mouseover", function(){
          $(this).siblings(".db_info").removeClass("hidden");
    });
 
     $("body").delegate(".db_td", "mouseleave", function(){
         $(this).find(".db_info").addClass("hidden");
     });
-    /*
     $("body").delegate("span.view_bills", "mouseover", function(){
         $(this).siblings(".bill_list").removeClass("hidden");
     });
@@ -230,7 +229,7 @@ Order.getPurchaseHistory = function(){
         $(this).addClass('currentPreview');
         var left = $(this).offset().left - 230;
         var top = $(this).offset().top - 130;
-        var maxTop = ($(this).parents('.dataTable').eq(0).offset().top + $(this).parents('.dataTable').eq(0).height()) - 325;
+        var maxTop = ($(this).parents('.dataTable').eq(0).offset().top + $(this).parents('.dataTable').eq(0).height()) - 320;
         if(top > maxTop) top = maxTop;
         if($('.shopper_preview_container').css('top') == 'auto')
             $('.shopper_preview_container').css({left: left, top: top}).html($('.db_info', this).clone().html()).removeClass('hidden');

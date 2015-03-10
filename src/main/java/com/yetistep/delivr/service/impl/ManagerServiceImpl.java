@@ -442,8 +442,6 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     public List<UserEntity> findAllManagers() throws Exception {
         log.info("Retrieving list of Deliver Boys");
         List<UserEntity> userEntities = userDaoService.findManagers();
-        /*For filtering role -- set to null as all delivery boy has same role*/
-
         List<UserEntity> users = new ArrayList<>();
 
         String fields = "id,fullName,mobileNumber,emailAddress,status,verifiedStatus,addresses";
@@ -466,8 +464,6 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     public List<UserEntity> findAllAccountants() throws Exception {
         log.info("Retrieving list of Deliver Boys");
         List<UserEntity> userEntities = userDaoService.findAccountants();
-        /*For filtering role -- set to null as all delivery boy has same role*/
-
         List<UserEntity> users = new ArrayList<>();
 
         String fields = "id,fullName,mobileNumber,emailAddress,status,addresses";
@@ -476,12 +472,10 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
         assoc.put("addresses", "id,latitude,longitude,street,city,state,country");
 
-
         for (UserEntity userEntity:userEntities){
             UserEntity user = (UserEntity) ReturnJsonUtil.getJsonObject(userEntity, fields, assoc);
             users.add(user);
         }
-
 
         return users;
     }

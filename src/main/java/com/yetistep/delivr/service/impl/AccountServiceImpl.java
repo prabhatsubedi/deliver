@@ -71,9 +71,9 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             for (OrderEntity order: orders){
                 totalOrderAmount = totalOrderAmount.add(order.getTotalCost());
             }
-            BigDecimal vatAmount =  totalOrderAmount.multiply(new BigDecimal(13)).divide(new BigDecimal(100));
-            BigDecimal commissionAmount = BigDecimal.ZERO;
-            BigDecimal totalPayableAmount = totalOrderAmount.add(vatAmount).add(commissionAmount);
+            BigDecimal commissionAmount = totalOrderAmount.max(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
+            BigDecimal vatAmount =  commissionAmount.multiply(new BigDecimal(13)).divide(new BigDecimal(100));
+            BigDecimal totalPayableAmount = commissionAmount.add(vatAmount);
             invoice.setAmount(totalPayableAmount);
             invoiceDaoService.save(invoice);
 

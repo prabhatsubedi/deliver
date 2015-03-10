@@ -157,7 +157,7 @@ public class InvoiceGenerator {
             addInvoiceDetail(document, merchant, invoice, store);
             //document.newPage();
 
-            addInvoiceBody(document, orders);
+            addInvoiceBody(document, merchant, orders);
 
             addFooter(document);
             document.close();
@@ -321,7 +321,7 @@ public class InvoiceGenerator {
         PdfUtil.addEmptyLine(document, 2);
     }
 
-    private void addInvoiceBody(Document document, List<OrderEntity> orders) throws Exception {
+    private void addInvoiceBody(Document document, MerchantEntity merchant, List<OrderEntity> orders) throws Exception {
 
         Integer cntOrder = 1;
 
@@ -344,8 +344,9 @@ public class InvoiceGenerator {
 
             cntOrder++;
         }
-        BigDecimal vatAmount =  totalOrderAmount.multiply(new BigDecimal(13)).divide(new BigDecimal(100));
-        BigDecimal commissionAmount = BigDecimal.ZERO;
+        BigDecimal commissionAmount = totalOrderAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
+        BigDecimal vatAmount =  commissionAmount.multiply(new BigDecimal(13)).divide(new BigDecimal(100));
+        BigDecimal totalPayableAmount = commissionAmount.add(vatAmount);
         Phrase totalPayable = PdfUtil.getPhrase("Total Payable", PdfUtil.largeBold);
         Phrase vat = PdfUtil.getPhrase("Vat(13%)", PdfUtil.largeBold);
         Phrase commission = PdfUtil.getPhrase("Commission", PdfUtil.largeBold);
@@ -354,7 +355,6 @@ public class InvoiceGenerator {
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), subTotal, PdfUtil.getPhrase(totalOrderAmount));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), commission, PdfUtil.getPhrase(commissionAmount));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), vat, PdfUtil.getPhrase(vatAmount));
-        BigDecimal totalPayableAmount = totalOrderAmount.add(vatAmount).add(commissionAmount);
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), totalPayable, PdfUtil.getPhrase(totalPayableAmount));
         document.add(billingTable);
     }

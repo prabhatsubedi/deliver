@@ -34,7 +34,10 @@ Order.getOrders = function(){
             if(order.attachments.length > 0){
                 link_attachments += '<div class="bill_td"><span class="view_bills">View Bills</span><div class="bill_list hidden">';
                 for(var j= 0; j<order.attachments.length; j++){
-                    link_attachments += '<p><a href="'+order.attachments[j]+'">'+order.attachments[j]+'</a></p>';
+                    var nameArray = order.attachments[j].split("/");
+                    var  nameArrayLength = nameArray.length;
+
+                    link_attachments += '<p><a target="_blank" href="'+order.attachments[j]+'">'+nameArray[nameArrayLength-1]+'</a></p>';
                 }
                 link_attachments += '</div></div>';
             }
@@ -102,7 +105,7 @@ Order.getOrders = function(){
     $("body").delegate(".db_td", "mouseleave", function(){
         $(this).find(".db_info").addClass("hidden");
     });
-
+ */
     $("body").delegate("span.show_store_info", "mouseover", function(){
         $(this).siblings(".store_info").removeClass("hidden");
     });
@@ -117,7 +120,7 @@ Order.getOrders = function(){
 
     $("body").delegate(".bill_td", "mouseleave", function(){
         $(this).find(".bill_list").addClass("hidden");
-    });*/
+    });
 
 
     $('.db_td').live('mouseover', function(){
@@ -207,14 +210,14 @@ Order.getPurchaseHistory = function(){
 
 
 
-/*   $("body").delegate("span.show_db_info", "mouseover", function(){
+   $("body").delegate("span.show_db_info", "mouseover", function(){
          $(this).siblings(".db_info").removeClass("hidden");
    });
 
     $("body").delegate(".db_td", "mouseleave", function(){
         $(this).find(".db_info").addClass("hidden");
     });
-
+    /*
     $("body").delegate("span.view_bills", "mouseover", function(){
         $(this).siblings(".bill_list").removeClass("hidden");
     });

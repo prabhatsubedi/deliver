@@ -38,6 +38,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public List<MerchantEntity> findAll() throws Exception {
         List<MerchantEntity> merchants  = new ArrayList<MerchantEntity>();
         Criteria criteria  = getCurrentSession().createCriteria(MerchantEntity.class, "merchant");
+        criteria.addOrder(Order.desc("id"));
         merchants = criteria.list();
         return merchants;
     }
@@ -114,6 +115,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<StoresBrandEntity> storeBrandList = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
         criteria.add(Restrictions.eq("brandName", brandName));
+        criteria.addOrder(Order.desc("id"));
         storeBrandList = criteria.list();
 
         return storeBrandList.size() > 0 ? storeBrandList.get(0) : null;
@@ -129,6 +131,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<CategoryEntity> categories = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
         criteria.add(Restrictions.isNotNull("parent.id"));
+        criteria.addOrder(Order.desc("id"));
         categories = criteria.list();
 
         return categories;
@@ -139,6 +142,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<CategoryEntity> categories = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
         criteria.add(Restrictions.and(Restrictions.isNotNull("parent.id"), Restrictions.isNull("storesBrand.id")));
+        criteria.addOrder(Order.desc("id"));
         categories = criteria.list();
 
         return categories;
@@ -182,6 +186,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<BrandsCategoryEntity> brandsCategories = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BrandsCategoryEntity.class);
         criteria.add(Restrictions.eq("storesBrand.id", brandId));
+        criteria.addOrder(Order.desc("id"));
         brandsCategories = criteria.list();
 
         return brandsCategories.size() > 0 ? brandsCategories : null;
@@ -253,6 +258,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("name"), "name")
         ).setResultTransformer(Transformers.aliasToBean(StoreEntity.class));
+        criteria.addOrder(Order.desc("id"));
         stores = criteria.list();
 
         return stores;
@@ -284,6 +290,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<StoresBrandEntity> stores = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class, "brand");
         criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId))) ;
+        criteria.addOrder(Order.desc("id"));
         stores = criteria.list();
         return stores;
     }
@@ -305,6 +312,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
                 .add(Projections.property("closingTime"), "closingTime")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId))) ;
+        criteria.addOrder(Order.desc("id"));
         stores = criteria.list();
         return stores;
     }
@@ -313,6 +321,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public List<StoresBrandEntity> findBrandList() throws Exception {
         List<StoresBrandEntity> stores = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        criteria.addOrder(Order.desc("id"));
         stores = criteria.list();
         return stores;
     }
@@ -381,6 +390,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
         criteria.add(Restrictions.and(Restrictions.eq("category.id", categoryId), Restrictions.eq("storesBrand.id", brandId)));
         criteria.setMaxResults(itemCount);
+        criteria.addOrder(Order.asc("status"));
         items = criteria.list();
         return items;
     }
@@ -599,6 +609,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<OrderEntity> orders = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.and(Restrictions.in("store.id", storeId)));
+        criteria.addOrder(Order.desc("id"));
         HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
         orders = criteria.list();
         return orders;
@@ -615,6 +626,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         purchaseOrders.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         purchaseOrders.add(JobOrderStatus.DELIVERED);
         criteria.add(Restrictions.and(Restrictions.in("store.id", storeId), Restrictions.in("orderStatus", purchaseOrders)));
+        criteria.addOrder(Order.desc("id"));
         HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
         orders = criteria.list();
         return orders;

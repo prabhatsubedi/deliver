@@ -1452,9 +1452,13 @@ label.check_label .checkbox {
     background-color: #FFFFFF;
 }
 .profile_header_image .user_image {
-    width: 160px;
+    border: none;
+    border-radius: 50%;
     height: 160px;
     margin: 0 auto;
+    overflow: hidden;
+    padding: 0;
+    width: 160px;
 }
 .profile_body {
     padding: 15px;

@@ -455,19 +455,28 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
                 var user_status = courierStaff.user.status;
                 var balance = courierStaff.walletAmount + courierStaff.bankAmount;
+                var status_link = '';
+                if(user_status == 'ACTIVE')
+                    status_link = '<a class="elem_tooltip delivricon delivricon-remove" href="javascript:;" data-id="' + id + '" data-status="' + user_status + '" data-placement="left" title="Deactivate"></a>';
+                else
+                    status_link = '<a class="elem_tooltip delivricon delivricon-ok" href="javascript:;" data-id="' + id + '" data-status="' + user_status + '" data-placement="left" title="Activate"></a>';
+
                 var action = '<div class="action_links">' +
-                    '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' + id + '">View on Map</a>' +
-                    '<a href="#" data-toggle="modal" class="update_courier_boy_account"  data-cbid = "' + id + '" data-target="#modal_account">Update Accounts</a>' +
-                    '<a href="' + Main.modifyURL('/organizer/courier_staff/profile/' + id) + '">View Profile</a>' +
+                    '<a href="#" data-toggle="modal" class="view_courier_boy_map elem_tooltip delivricon delivricon-map " data-cbid = "' + id + '" data-placement="left" title="View on Map"></a>' +
+                    '<a href="#" data-toggle="modal" class="update_courier_boy_account elem_tooltip delivricon delivricon-wallet"  data-cbid = "' + id + '" data-target="#modal_account" data-placement="left" title="Update Accounts"></a>' +
+                    '<a class="elem_tooltip delivricon delivricon-user" href="' + Main.modifyURL('/organizer/courier_staff/profile/' + id) + '" data-placement="left"  title="View Profile"></a>' + status_link
                     '</div>';
 
                 var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, Main.ucfirst(user_status), Main.getFromLocalStorage("currency")+balance, action];
                 tdata.push(row);
             }
 
-            Main.createDataTable("#courier_staff_table", tdata);
+            Main.createDataTable("#courier_staff_table", tdata, function(){
+                $('.dataTable .elem_tooltip:not([data-original-title])').tooltip();
+            });
 
             $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+
 
         };
 

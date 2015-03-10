@@ -12,6 +12,7 @@
     font-style: normal;
     font-weight: normal;
     line-height: 1;
+    text-decoration: none !important;
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -39,6 +40,21 @@
 }
 .delivricon-orders:before {
     content: "\E807";
+}
+.delivricon-ok:before {
+    content: "\E808";
+}
+.delivricon-map:before {
+    content: "\E809";
+}
+.delivricon-user:before {
+    content: "\E80A";
+}
+.delivricon-wallet:before {
+    content: "\E80B";
+}
+.delivricon-remove:before {
+    content: "\E80C";
 }
 
 *, *:focus, *:active {
@@ -685,6 +701,9 @@ body.assistance_page {
 }
 .menu_opened .tooltip {
     display: none !important;
+}
+.dataTable .tooltip {
+    display: inline !important;
 }
 .tooltip_conatiner {
     width: 500px;

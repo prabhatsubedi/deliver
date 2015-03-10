@@ -1442,6 +1442,7 @@ public class CustomerServiceImpl implements CustomerService {
         orderCancel.setOrder(order);
         order.setOrderCancel(orderCancel);
         order.setOrderStatus(JobOrderStatus.CANCELLED);
+        order.setDeliveryStatus(DeliveryStatus.CANCELLED);
         boolean status = orderDaoService.update(order);
         if(status){
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());

@@ -80,7 +80,7 @@ public class PushNotificationUtil {
             Message message = new Message.Builder()
                     .collapseKey("1")
                     .timeToLive(3)
-                    .delayWhileIdle(true)
+                    .delayWhileIdle(false)
                     .addData("message", msg)
                     .build();
             MulticastResult result = sender.send(message, pushNotification.getTokens(), 1);

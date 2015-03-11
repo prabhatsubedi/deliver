@@ -224,7 +224,9 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 }
             }
         });
-        dataTable = $(selector).dataTable();
+        var dataTableParams = {};
+        if(typeof(colindex) == 'function') dataTableParams.fnDrawCallback = colindex;
+        var dataTable = $(selector).dataTable(dataTableParams);
         dataTable.fnClearTable();
         if(data.length > 0) {
             dataTable.fnAddData(data);

@@ -11,6 +11,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -50,6 +51,7 @@ public class DeliveryBoyEntity implements Serializable {
     private List<DBoySubmittedAmountEntity> dBoySubmittedAmount;
     private String latitude;
     private String longitude;
+    private Timestamp lastLocationUpdate;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -296,4 +298,13 @@ public class DeliveryBoyEntity implements Serializable {
         this.longitude = longitude;
     }
 
+    @JsonIgnore
+    @Column(name="last_location_update", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
+    public Timestamp getLastLocationUpdate() {
+        return lastLocationUpdate;
+    }
+
+    public void setLastLocationUpdate(Timestamp lastLocationUpdate) {
+        this.lastLocationUpdate = lastLocationUpdate;
+    }
 }

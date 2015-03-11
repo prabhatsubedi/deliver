@@ -336,10 +336,13 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     @Override
     public Object saveCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
         log.info("****************************saving category **************************");
+        List<CategoryEntity> childCategories = new ArrayList<>();
         if (headerDto.getId() != null && !headerDto.getId().equals("") ){
             CategoryEntity parentCategory = new CategoryEntity();
             parentCategory.setId(Integer.parseInt(headerDto.getId()));
             category.setParent(parentCategory);
+
+            childCategories = merchantDaoService.findChildCategories(Integer.parseInt(headerDto.getId()), null);
 
             List<ItemEntity> items = merchantDaoService.getCategoriesItems(Integer.parseInt(headerDto.getId()));
 
@@ -347,6 +350,16 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
                 throw new YSException("VLD022");
             }
 
+        }  else {
+            childCategories = merchantDaoService.findParentCategories();
+        }
+
+        if(childCategories != null && childCategories.size()>0){
+            for (CategoryEntity categoryEntity: childCategories){
+                if(categoryEntity.getName().equals(category.getName())){
+                    throw new YSException("VLD035");
+                }
+            }
         }
 
         String categoryImage = category.getImageUrl();

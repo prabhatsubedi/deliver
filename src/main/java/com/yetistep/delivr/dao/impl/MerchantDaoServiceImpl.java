@@ -336,17 +336,9 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public List<CategoryEntity> findChildCategories(Integer parentId, Integer storeId) throws Exception {
         List<CategoryEntity> categories = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
-        //criteria.createAlias("child", "child");
-       /* criteria.setProjection(Projections.projectionList()
-                .add(Projections.property("id"), "id")
-                .add(Projections.property("name"), "name")
-        ).setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));*/
-
         Criterion rest1 = Restrictions.and(Restrictions.isNull("storesBrand"), Restrictions.eq("parent.id", parentId));
-        Criterion rest2 = Restrictions.and(Restrictions.eq("storesBrand.id", storeId), Restrictions.eq("parent.id", parentId)/*, Restrictions.eq("child.storesBrand.id", storeId)*/);
-
+        Criterion rest2 = Restrictions.and(Restrictions.eq("storesBrand.id", storeId), Restrictions.eq("parent.id", parentId));
         criteria.add(Restrictions.or(rest1, rest2));
-
         categories = criteria.list();
         return categories.size() > 0 ? categories : null;
     }

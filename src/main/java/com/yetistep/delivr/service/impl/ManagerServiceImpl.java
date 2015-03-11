@@ -387,6 +387,15 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     public Object updateCategory(CategoryEntity category, HeaderDto headerDto) throws Exception{
         log.info("****************************updating category "+headerDto.getId()+"**************************");
         CategoryEntity dbCategory = categoryDaoService.find(Integer.parseInt(headerDto.getId()));
+        List<CategoryEntity> childCategories = new ArrayList<>();
+
+        if (dbCategory.getParent() != null){
+            CategoryEntity parentCategory = dbCategory.getParent();
+            childCategories = merchantDaoService.findChildCategories(parentCategory.getId(), null);
+        }  else {
+            childCategories = merchantDaoService.findParentCategories();
+        }
+
 
         String categoryImage = category.getImageUrl();
         String dbImageUrl = dbCategory.getImageUrl();
@@ -396,6 +405,14 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         }
 
         dbCategory.setName(category.getName());
+        if(childCategories != null && childCategories.size()>0){
+            for (CategoryEntity child: childCategories){
+                if( child.getName() != null && child.getId() != dbCategory.getId() &&  child.getName().equals(dbCategory.getName())){
+                    throw new YSException("VLD035");
+                }
+            }
+        }
+
         if(category.getParent() != null){
             CategoryEntity parentCategory = new CategoryEntity();
             parentCategory.setId(category.getParent().getId());

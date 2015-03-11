@@ -1,11 +1,8 @@
 package com.yetistep.delivr.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yetistep.delivr.enums.MerchantType;
 import com.yetistep.delivr.enums.Status;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -92,7 +89,7 @@ public class MerchantEntity implements Serializable {
         this.partnershipStatus = partnershipStatus;
     }
 
-    @Column(name = "commission_percentage", columnDefinition="Decimal(6,4)")
+    @Column(name = "commission_percentage", columnDefinition="Decimal(6,2)")
     public BigDecimal getCommissionPercentage() {
         return commissionPercentage;
     }
@@ -101,7 +98,7 @@ public class MerchantEntity implements Serializable {
         this.commissionPercentage = commissionPercentage;
     }
 
-    @Column(name = "service_fee", columnDefinition="Decimal(16,4)")
+    @Column(name = "service_fee", columnDefinition="Decimal(16,2)")
     public BigDecimal getServiceFee() {
         return serviceFee;
     }

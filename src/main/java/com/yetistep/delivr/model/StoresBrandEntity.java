@@ -57,6 +57,7 @@ public class StoresBrandEntity implements Serializable {
    private Integer merchantId; //Transient Variable
    private BigDecimal minOrderAmount;
    private Integer countStore; //Transient Variable
+   private String nearestStoreLocation; //Transient Variable
 
 
     @Id
@@ -256,5 +257,14 @@ public class StoresBrandEntity implements Serializable {
 
     public void setCountStore(Integer countStore) {
         this.countStore = countStore;
+    }
+
+    @Transient
+    public String getNearestStoreLocation() {
+        return nearestStoreLocation;
+    }
+
+    public void setNearestStoreLocation(String nearestStoreLocation) {
+        this.nearestStoreLocation = nearestStoreLocation;
     }
 }

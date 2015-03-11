@@ -107,8 +107,22 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         /* Add Both Brand in One List */
         List<StoresBrandEntity> storeBrandResult = new ArrayList<>();
 
-        if (priorityBrands.size() > 0)
+        if (priorityBrands.size() > 0) {
+
+            for(StoresBrandEntity priorityBrandEntity : priorityBrands){
+                List<StoreEntity> storeEntities = storeDaoService.findStores(priorityBrandEntity.getId());
+
+                sortStoreByLocation(lat, lon, storeEntities);
+
+                if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
+                    priorityBrandEntity.setNearestStoreLocation(storeEntities.get(0).getStreet());
+                else
+                    priorityBrandEntity.setNearestStoreLocation("Unknown Location");
+            }
+
             storeBrandResult.addAll(priorityBrands);
+        }
+
 
         /* Other then Featured and Priority List, Should be Sort by Customer Distance */
         if (isBrandWitDistanceSort) {
@@ -125,22 +139,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             List<StoreEntity> storeEntities = storeDaoService.findStores(ignoreList);
 
                  /* Extract Latitude and Longitude */
-            String[] storeDistance = new String[storeEntities.size()];
-            String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
-
-            for (int i = 0; i < storeEntities.size(); i++) {
-                storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
-            }
-
-            List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
-
-            //Set Distance to Store Entity
-            for (int i = 0; i < storeEntities.size(); i++) {
-                storeEntities.get(i).setCustomerToStoreDistance(distanceList.get(i));
-            }
-
-            //Store Entity List Sorted by Distance
-            Collections.sort(storeEntities, new StoreDistanceComparator());
+            sortStoreByLocation(lat, lon, storeEntities);
 
 
             //Now Combine all brand in one list
@@ -159,6 +158,12 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                     tempBrand.setBrandUrl(storeEntity.getStoresBrand().getBrandUrl());
                     tempBrand.setFeatured(storeEntity.getStoresBrand().getFeatured());
                     tempBrand.setPriority(storeEntity.getStoresBrand().getPriority());
+                    //Nearest Location
+                    if(storeEntity.getStreet() !=null && !storeEntity.getStreet().isEmpty())
+                        tempBrand.setNearestStoreLocation(storeEntity.getStreet());
+                    else
+                        tempBrand.setNearestStoreLocation("Unknown Location");
+
                     storeBrandResult.add(tempBrand);
 
                 }
@@ -168,8 +173,20 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
         /* If all stores are not activate then  brand should escaped to display */
         for(StoresBrandEntity featureBrand : featuredBrands){
-             if(storeDaoService.getActiveStores(featureBrand.getId()) == 0)
+             if(storeDaoService.getActiveStores(featureBrand.getId()) == 0) {
                  featuredBrands.remove(featureBrand);
+             } else {
+                 List<StoreEntity> storeEntities = storeDaoService.findStores(featureBrand.getId());
+
+                 sortStoreByLocation(lat, lon, storeEntities);
+
+                 if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
+                     featureBrand.setNearestStoreLocation(storeEntities.get(0).getStreet());
+                 else
+                     featureBrand.setNearestStoreLocation("Unknown Location");
+             }
+
+
         }
 
         for(StoresBrandEntity otherBrand : storeBrandResult) {
@@ -200,6 +217,25 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         map.put("page", pageInfo);
 
         return map;
+    }
+
+    private void sortStoreByLocation(String lat, String lon, List<StoreEntity> storeEntities) throws Exception {
+        String[] storeDistance = new String[storeEntities.size()];
+        String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
+
+        for (int i = 0; i < storeEntities.size(); i++) {
+            storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
+        }
+
+        List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
+
+        //Set Distance to Store Entity
+        for (int i = 0; i < storeEntities.size(); i++) {
+            storeEntities.get(i).setCustomerToStoreDistance(distanceList.get(i));
+        }
+
+        //Store Entity List Sorted by Distance
+        Collections.sort(storeEntities, new StoreDistanceComparator());
     }
 
     @Override
@@ -663,8 +699,19 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     }
 
     @Override
-    public CartDto getMyCart(Long facebookId) throws Exception {
+    public CartDto getMyCart(Long facebookId, String lat, String lon) throws Exception {
         log.info("++++++++++++ Getting my carts of client " + facebookId + " ++++++++++++");
+
+
+        if (lat==null && lon == null) {
+            CustomerEntity customerEntity = customerDaoService.getLatLong(facebookId);
+            if(customerEntity == null)
+                throw new YSException("VLD033");
+
+            lat = customerEntity.getLatitude();
+            lon = customerEntity.getLongitude();
+        }
+
        CartDto cartDto = null;
        List<CartEntity> cartEntities = cartDaoService.getMyCarts(facebookId);
 
@@ -703,6 +750,19 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
            store.setBrandLogo(storesBrandEntity.getBrandLogo());
            store.setBrandImage(storesBrandEntity.getBrandImage());
            store.setOpenStatus(isOpen);
+
+           if(lat!=null && lon != null){
+               List<StoreEntity> storeEntities = storeDaoService.findStores(storesBrandEntity.getId());
+
+               sortStoreByLocation(lat, lon, storeEntities);
+
+               if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
+                   store.setNearestStoreLocation(storeEntities.get(0).getStreet());
+               else
+                   store.setNearestStoreLocation("Unknown Location");
+           } else {
+               store.setNearestStoreLocation("Unknown Location");
+           }
 
            cartDto.setStoresBrand(store);
            cartDto.setCarts(cartEntities);

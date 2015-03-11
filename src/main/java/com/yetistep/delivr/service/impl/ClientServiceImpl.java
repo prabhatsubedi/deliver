@@ -702,14 +702,17 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     public CartDto getMyCart(Long facebookId, String lat, String lon) throws Exception {
         log.info("++++++++++++ Getting my carts of client " + facebookId + " ++++++++++++");
 
+        CustomerEntity customerEntity = customerDaoService.getCustomerStatus(facebookId);
+        if(customerEntity == null)
+            throw new YSException("VLD033");
+
 
         if (lat==null && lon == null) {
-            CustomerEntity customerEntity = customerDaoService.getLatLong(facebookId);
-            if(customerEntity == null)
-                throw new YSException("VLD033");
-
-            lat = customerEntity.getLatitude();
-            lon = customerEntity.getLongitude();
+            CustomerEntity customer = customerDaoService.getLatLong(facebookId);
+            if(customer != null) {
+                lat = customer.getLatitude();
+                lon = customer.getLongitude();
+            }
         }
 
        CartDto cartDto = null;

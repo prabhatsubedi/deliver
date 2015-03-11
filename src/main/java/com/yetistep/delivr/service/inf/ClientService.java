@@ -37,7 +37,7 @@ public interface ClientService {
 
     public void saveCart(CartEntity cart) throws Exception;
 
-    public CartDto getMyCart(Long facebookId) throws Exception;
+    public CartDto getMyCart(Long facebookId, String lat, String lon) throws Exception;
 
     public CartDto validateCart(Long facebookId) throws Exception;
 

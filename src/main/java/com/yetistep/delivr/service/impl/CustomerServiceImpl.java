@@ -1196,7 +1196,12 @@ public class CustomerServiceImpl implements CustomerService {
                 tempItem.setItemImageUrl(item.getImageUrl());
                 tempItem.setBrandId(item.getBrandId());
                 tempItem.setBrandName(item.getBrandName());
-                tempItem.setStoreStreet(storeEntities.get(0).getStreet());
+
+                if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
+                    tempItem.setStoreStreet(storeEntities.get(0).getStreet());
+                else
+                    tempItem.setStoreStreet("Unknown Location");
+
                 //tempItem.setItem(true);
                 searchResult.add(tempItem);
             }

@@ -224,12 +224,10 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                     next: '&raquo;',
                     previous: '&laquo'
                 }
-            }
+            },
+            fnDrawCallback: typeof(colindex) == 'function' ? colindex : null
         });
-        var dataTableParams = {};
-        if(typeof(colindex) == 'function') dataTableParams.fnDrawCallback = colindex;
-        if(dataTable) dataTable.fnDestroy();
-        dataTable = $(selector).dataTable(dataTableParams);
+        dataTable = $(selector).dataTable();
         dataTable.fnClearTable();
         if(data.length > 0) {
             dataTable.fnAddData(data);

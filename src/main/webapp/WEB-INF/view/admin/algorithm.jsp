@@ -23,9 +23,8 @@
         </div>--%>
         <div class="main_tabs">
             <ul class="nav nav-pills">
-                <li class="col-xs-4"><a href="/admin/settings">General</a></li>
-                <li class="col-xs-4 active"><a href="/admin/algorithm">Algorithm</a></li>
-                <li class="col-xs-4"><a href="/admin/view_category">Categories</a></li>
+                <li class="col-xs-6"><a href="/admin/settings">General</a></li>
+                <li class="col-xs-6 active"><a href="/admin/algorithm">Algorithm</a></li>
             </ul>
         </div>
         <div class="main_content">

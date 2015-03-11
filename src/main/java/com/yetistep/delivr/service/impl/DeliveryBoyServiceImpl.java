@@ -368,6 +368,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         GeoCodingUtil.getLatLong(deliveryBoyEntity.getLatitude(), deliveryBoyEntity.getLongitude());
         dBoyEntity.setLatitude(deliveryBoyEntity.getLatitude());
         dBoyEntity.setLongitude(deliveryBoyEntity.getLongitude());
+        dBoyEntity.setLastLocationUpdate(DateUtil.getCurrentTimestampSQL());
         return deliveryBoyDaoService.update(dBoyEntity);
     }
 

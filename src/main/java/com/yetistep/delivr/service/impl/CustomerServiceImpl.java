@@ -667,7 +667,8 @@ public class CustomerServiceImpl implements CustomerService {
         order.setOrderVerificationCode(GeneralUtil.generateMobileCode());
 
         /* Finding delivery boys based on active status. */
-        List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys();
+        int timeInMin = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.LOCATION_UPDATE_TIMEOUT_IN_MIN));
+        List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys(timeInMin);
         if(availableAndActiveDBoys.size() == 0){
             log.info("No shoppers available");
            throw new YSException("ORD012");
@@ -1388,7 +1389,8 @@ public class CustomerServiceImpl implements CustomerService {
                 order.setOrderDate(DateUtil.getCurrentTimestampSQL());
                 deliveryBoySelectionDaoService.updateAllSelectionToRejectMode(orderId);
                 /* Finding delivery boys based on active status. */
-                List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys();
+                int timeInMin = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.LOCATION_UPDATE_TIMEOUT_IN_MIN));
+                List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys(timeInMin);
                 if(availableAndActiveDBoys.size() == 0){
                     log.info("Order is cancelling since number of available shoppers is zero:"+orderId);
                     return cancelOrder(order);

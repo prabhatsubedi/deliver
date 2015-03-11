@@ -191,4 +191,10 @@ public class DateUtil {
         Long delay = addSeconds(time, delayInSeconds).getTime() - System.currentTimeMillis();
         return delay.intValue();
     }
+
+    public  static Timestamp getTimestampLessThanNMinutes(int minutes){
+        Long currentMillis = System.currentTimeMillis();
+        currentMillis = currentMillis - minutes * 60 * 1000;
+        return new Timestamp(currentMillis);
+    }
 }

@@ -159,3 +159,7 @@ INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('NORMAL_USER_BONUS_AMOUN
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('DEDUCTION_PERCENT', '10');
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('PROFIT_CHECK_FLAG', '0');
 
+
+/*##########################2015-03-11###########################*/
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('LOCATION_UPDATE_TIMEOUT_IN_MIN', '10');
+

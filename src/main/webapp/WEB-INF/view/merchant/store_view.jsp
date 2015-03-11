@@ -135,6 +135,7 @@
             <p>
                 <span class="contact_person"></span>
                 <span class="contact_no"></span>
+                <span class="contact_email"></span>
             </p>
             <div class="clearfix">
                 <button type="button" class="btn-link btn_view_map pull-left">View on Map</button>

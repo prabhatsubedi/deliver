@@ -254,7 +254,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                    address.setState(addressEntity.getState());
                    address.setCountry(addressEntity.getCountry());
                    address.setCountryCode(addressEntity.getCountryCode());
-                   address.setUser(deliveryBoyEntity.getUser());
+                   address.setUser(dBoyEntity.getUser());
                    break;
                 }
             }

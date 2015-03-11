@@ -306,7 +306,7 @@ public class UserEntity implements Serializable {
         this.actionLogEntities = actionLogEntities;
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE})
     @JsonProperty
     public List<AddressEntity> getAddresses() {
         return addresses;

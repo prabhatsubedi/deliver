@@ -15,6 +15,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface DBoyOrderHistoryDaoService extends GenericDaoService<Integer, DBoyOrderHistoryEntity> {
+
+    public List<DBoyOrderHistoryEntity> find(List<Integer> id) throws Exception;
+
     public List<PastDeliveriesDto> getPastOrders(Page page, Integer deliveryBoyId) throws Exception;
 
     public Integer getTotalNumberOfPastDeliveries(Integer deliveryBoyId) throws Exception;

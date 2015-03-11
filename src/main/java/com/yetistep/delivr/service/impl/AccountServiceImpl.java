@@ -3,6 +3,7 @@ package com.yetistep.delivr.service.impl;
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.InvoiceStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.AccountService;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +42,9 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
     @Autowired
     ReceiptDaoService receiptDaoService;
+
+    @Autowired
+    DBoyOrderHistoryDaoService dBoyOrderHistoryDaoService;
 
     @Autowired
     HttpServletRequest httpServletRequest;
@@ -145,5 +150,20 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     public List<StoreEntity> getAllStores() throws Exception {
         List<StoreEntity> storeEntities = storeDaoService.findAll();
         return  storeEntities;
+    }
+
+    @Override
+    public void payDboy(HeaderDto headerDto) throws Exception {
+        String orderHistoryId = headerDto.getId();
+        String[] orderHistoryIds =  orderHistoryId.split(",");
+        List<DBoyOrderHistoryEntity> orderHistoryEntities = new ArrayList<>();
+
+        for (String id: orderHistoryIds )
+            orderHistoryEntities.add(dBoyOrderHistoryDaoService.find(Integer.parseInt(id)));
+
+        for (DBoyOrderHistoryEntity orderHistory: orderHistoryEntities){
+            orderHistory.setdBoyPaid(true);
+            dBoyOrderHistoryDaoService.update(orderHistory);
+        }
     }
 }

@@ -29,6 +29,8 @@ public class DBoyOrderHistoryEntity implements Serializable {
     private String startLongitude;
     private String endLatitude;
     private String endLongitude;
+    //commission paid to the shopper
+    private Boolean dBoyPaid;
     private DeliveryBoyEntity deliveryBoy;
     private OrderEntity order;
 
@@ -140,6 +142,15 @@ public class DBoyOrderHistoryEntity implements Serializable {
 
     public void setEndLongitude(String endLongitude) {
         this.endLongitude = endLongitude;
+    }
+
+    @Column(name = "dboy_paid")
+    public Boolean getdBoyPaid() {
+        return dBoyPaid;
+    }
+
+    public void setdBoyPaid(Boolean dBoyPaid) {
+        this.dBoyPaid = dBoyPaid;
     }
 
     @ManyToOne

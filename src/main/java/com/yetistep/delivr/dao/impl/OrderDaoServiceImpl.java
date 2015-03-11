@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,6 +34,14 @@ public class OrderDaoServiceImpl implements OrderDaoService {
     @Override
     public OrderEntity find(Integer id) throws Exception {
         return (OrderEntity) getCurrentSession().get(OrderEntity.class, id);
+    }
+
+    @Override
+    public List<OrderEntity> find(List<Integer> id) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.add(Restrictions.in("id", id));
+        List<OrderEntity>  orderEntities = criteria.list();
+        return orderEntities;
     }
 
     @Override
@@ -201,6 +206,18 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         orderStatuses.add(JobOrderStatus.DELIVERED);
         orderStatuses.add(JobOrderStatus.CANCELLED);
         criteria.add(Restrictions.and(Restrictions.in("orderStatus", orderStatuses), Restrictions.eq("deliveryBoy.id", dBoyId)));
+
+        List<Object>  orderEntities = criteria.list();
+        return orderEntities;
+    }
+
+    @Override
+    public List<Object> get_dBoy_order_history(Integer dBoyId, Date fromDate, Date toDate) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class, "order");
+        List<JobOrderStatus> orderStatuses = new ArrayList<>();
+        orderStatuses.add(JobOrderStatus.DELIVERED);
+        orderStatuses.add(JobOrderStatus.CANCELLED);
+        criteria.add(Restrictions.and(Restrictions.in("orderStatus", orderStatuses), Restrictions.eq("deliveryBoy.id", dBoyId), Restrictions.lt("orderDate", toDate), Restrictions.ge("orderDate", fromDate)));
 
         List<Object>  orderEntities = criteria.list();
         return orderEntities;

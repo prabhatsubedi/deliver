@@ -1,6 +1,7 @@
 package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.StoreEntity;
 
@@ -20,6 +21,8 @@ public interface AccountService {
 
     public String generateBillAndReceiptAndSendEmail(OrderEntity order) throws Exception;
 
-    List<StoreEntity> getAllStores() throws Exception;
+    public List<StoreEntity> getAllStores() throws Exception;
+
+    public void payDboy(HeaderDto headerDto) throws Exception;
 
 }

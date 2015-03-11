@@ -5,6 +5,7 @@ import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
@@ -1536,8 +1537,26 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     }
 
     @Override
-    public List<Object> get_order_history(Integer dBoyId) throws Exception {
-        List<Object> orders = orderDaoService.get_dBoy_order_history(dBoyId);
+    public List<Object> get_order_history(Integer dBoyId, RequestJsonDto requestJsonDto) throws Exception {
+        Map<String, Date> dateRange = requestJsonDto.getDateRange();
+        Date fromDate = null;
+        Date toDate = null;
+        if(dateRange != null){
+            if(dateRange.get("fromDate") != null){
+                fromDate = dateRange.get("fromDate");
+            }
+            if(dateRange.get("toDate") != null){
+                toDate = dateRange.get("toDate");
+            }
+        }
+
+        List<Object> orders = new ArrayList<>();
+
+        if(fromDate != null && toDate != null){
+            orders = orderDaoService.get_dBoy_order_history(dBoyId, fromDate, toDate);
+        } else {
+            orders = orderDaoService.get_dBoy_order_history(dBoyId);
+        }
 
         List<Object> objects = new ArrayList<>();
 
@@ -1548,7 +1567,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         assoc.put("customer", "id,user");
         assoc.put("deliveryBoy", "id,averageRating,user");
-        assoc.put("dBoyOrderHistories", "id,amountEarned,orderAcceptedAt,orderCompletedAt,distanceTravelled");
+        assoc.put("dBoyOrderHistories", "id,amountEarned,orderAcceptedAt,orderCompletedAt,distanceTravelled,dBoyPaid");
         assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
 
         subAssoc.put("user", "id,fullName");

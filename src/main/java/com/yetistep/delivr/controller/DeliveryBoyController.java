@@ -4,6 +4,7 @@ import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
@@ -122,12 +123,12 @@ public class DeliveryBoyController extends AbstractManager{
 
     @RequestMapping(value = "/get_dBoy_order_history", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> dBoyOrderHistory(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> dBoyOrderHistory(@RequestHeader HttpHeaders headers, RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
 
-            List <Object> orders = deliveryBoyService.get_order_history(Integer.parseInt(headerDto.getId()));
+            List <Object> orders = deliveryBoyService.get_order_history(Integer.parseInt(headerDto.getId()), requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("List of past deliveries retrieved successfully");
             serviceResponse.addParam("orders", orders);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

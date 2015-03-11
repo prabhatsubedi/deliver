@@ -31,8 +31,16 @@ public class DBoyOrderHistoryDaoServiceImpl implements DBoyOrderHistoryDaoServic
     SessionFactory sessionFactory;
 
     @Override
-    public DBoyOrderHistoryEntity find(Integer id) throws Exception {
+     public DBoyOrderHistoryEntity find(Integer id) throws Exception {
         return (DBoyOrderHistoryEntity) getCurrentSession().get(DBoyOrderHistoryEntity.class, id);
+    }
+
+    @Override
+    public List<DBoyOrderHistoryEntity> find(List<Integer> id) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(DBoyOrderHistoryEntity.class);
+        criteria.add(Restrictions.in("id", id));
+        List<DBoyOrderHistoryEntity>  orderHistoryEntities = criteria.list();
+        return orderHistoryEntities;
     }
 
     @Override

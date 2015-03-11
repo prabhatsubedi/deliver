@@ -7,6 +7,7 @@ import com.yetistep.delivr.model.RatingEntity;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,8 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
 
     public List<Object> get_dBoy_order_history(Integer dBoyId) throws Exception;
 
+    public List<Object> get_dBoy_order_history(Integer dBoyId, Date fromDate, Date toDate) throws Exception;
+
     public TrackOrderDto getTrackOrderInfo(Integer orderId) throws Exception;
 
     public List<OrderEntity> getStoresOrders(Integer storeId) throws Exception;
@@ -48,6 +51,7 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
 
     public List<OrderEntity> getCustomersOrders(Integer customerId) throws Exception;
 
+    public List<OrderEntity> find(List<Integer> id) throws Exception;
 
 
 }

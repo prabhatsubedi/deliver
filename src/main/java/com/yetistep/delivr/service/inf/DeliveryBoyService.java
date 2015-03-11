@@ -3,6 +3,7 @@ package com.yetistep.delivr.service.inf;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.PaginationDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
@@ -64,7 +65,7 @@ public interface DeliveryBoyService {
 
     public ItemsOrderEntity getItemOrderById(Integer itemOrderId) throws Exception;
 
-    public List<Object> get_order_history(Integer dBoyId) throws Exception;
+    public List<Object> get_order_history(Integer dBoyId, RequestJsonDto requestJsonDto) throws Exception;
 
     public Boolean rejectOrder(Integer deliveryBoyId, Integer orderId) throws Exception;
 

@@ -9,7 +9,9 @@ import com.yetistep.delivr.model.mobile.GpsInfo;
 import com.yetistep.delivr.model.mobile.PageInfo;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -76,6 +78,7 @@ public class RequestJsonDto {
 
     private String searchString;
     private List<Integer> brands;
+    private Map<String, Date> dateRange;
     private Page page;
 
     /* Variable to decide whether to flush cart or not. */
@@ -381,5 +384,13 @@ public class RequestJsonDto {
 
     public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
+    }
+
+    public Map<String, Date> getDateRange() {
+        return dateRange;
+    }
+
+    public void setDateRange(Map<String, Date> dateRange) {
+        this.dateRange = dateRange;
     }
 }

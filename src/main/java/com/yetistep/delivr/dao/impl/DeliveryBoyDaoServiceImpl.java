@@ -6,6 +6,7 @@ import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.util.DateUtil;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -62,13 +63,14 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
     }
 
     @Override
-    public List<DeliveryBoyEntity> findAllCapableDeliveryBoys() throws Exception {
+    public List<DeliveryBoyEntity> findAllCapableDeliveryBoys(Integer updateLocationTimeOut) throws Exception {
         List<DeliveryBoyEntity> deliveryBoys = getCurrentSession().createCriteria(DeliveryBoyEntity.class)
                 .createAlias("user", "u")
                 .add(Restrictions.or(Restrictions.eq("availabilityStatus", DBoyStatus.FREE), Restrictions.eq("availabilityStatus", DBoyStatus.BUSY)))
                 .add(Restrictions.lt("activeOrderNo", 3))
                 .add(Restrictions.isNotNull("latitude"))
                 .add(Restrictions.isNotNull("longitude"))
+                .add(Restrictions.gt("lastLocationUpdate", DateUtil.getTimestampLessThanNMinutes(updateLocationTimeOut)))
                 .add(Restrictions.and(Restrictions.eq("u.verifiedStatus", true), Restrictions.eq("u.mobileVerificationStatus", true), Restrictions.eq("u.status", Status.ACTIVE))).list();
         return deliveryBoys;
     }

@@ -356,7 +356,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
     @Override
     public List<DeliveryBoyEntity> getAllCapableDeliveryBoys() throws Exception {
-        return deliveryBoyDaoService.findAllCapableDeliveryBoys();
+        int timeInMin = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.LOCATION_UPDATE_TIMEOUT_IN_MIN));
+        return deliveryBoyDaoService.findAllCapableDeliveryBoys(timeInMin);
     }
 
     @Override

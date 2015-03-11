@@ -170,7 +170,7 @@ var courierProfile;
             $("#email").val(courierStaff.user.emailAddress);
             $("#mobile").val(courierStaff.user.mobileNumber);
             $("#gender").val(courierStaff.user.gender);
-            $("#street").val(courierStaff.user.addresses[0].street);
+            $("#street").attr('data-id', courierStaff.user.addresses[0].id).val(courierStaff.user.addresses[0].street);
             $("#city").val(courierStaff.user.addresses[0].city);
             $("#state").val(courierStaff.user.addresses[0].state);
             $("#country").val(courierStaff.user.addresses[0].country);
@@ -305,6 +305,7 @@ var courierProfile;
                 var user = {};
                 var address = {};
 
+                address.id = $('#street').attr('data-id');
                 address.street = $('#street').val();
                 address.city = $('#city').val();
                 address.state = $('#state').val();

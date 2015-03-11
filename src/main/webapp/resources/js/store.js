@@ -397,6 +397,8 @@ if(typeof(Store) == "undefined") var Store = {};
                             geoPointData.country = store.country;
                             geoPointData.contactNo = store.contactNo;
                             geoPointData.contactPerson = store.contactPerson;
+                            geoPointData.email = store.email;
+                            geoPointData.sendEmail = store.sendEmail;
                             geoPointData.latitude = store.latitude;
                             geoPointData.longitude = store.longitude;
                             location.geoPointData = geoPointData;
@@ -549,8 +551,17 @@ if(typeof(Store) == "undefined") var Store = {};
         $('.btns_save').click(function(){
 
             var callback = function (status, data) {
-                console.log(data);
-                hideEdit();
+                if(data.success) {
+                    hideEdit();
+                    $('.store_location .block_store').each(function() {
+
+                        if($('input.checkbox', this).prop('checked'))
+                            $('.inactive_store', this).addClass('hidden');
+                        else
+                            $('.inactive_store', this).removeClass('hidden');
+
+                    });
+                }
             };
             callback.loaderDiv = "body";
             var data = {};
@@ -678,6 +689,7 @@ if(typeof(Store) == "undefined") var Store = {};
                     $('.city', elem).html(store.city + ', ' + store.state + ', ' + store.country);
                     $('.contact_person', elem).html(store.contactPerson);
                     $('.contact_no', elem).html(store.contactNo);
+                    $('.contact_email', elem).html(store.email + (store.sendEmail ? ' <button class="btn-link inactive_store" type="button">(Subscribed)</button>' : ''));
                     var location = latLngToLocation(store.latitude, store.longitude);
                     $('.btn_view_map', elem).attr('data-id', locationToKey(location));
                     location.readOnly = true;

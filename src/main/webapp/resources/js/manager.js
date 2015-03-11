@@ -207,7 +207,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     };
 
-    Manager.changeUserStatus = function (data) {
+    Manager.changeUserStatus = function (data, fnCallback) {
 
         var callback = function (status, data) {
             alert(data.message);
@@ -457,9 +457,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var balance = courierStaff.walletAmount + courierStaff.bankAmount;
                 var status_link = '';
                 if(user_status == 'ACTIVE')
-                    status_link = '<a class="elem_tooltip delivricon delivricon-remove" href="javascript:;" data-id="' + id + '" data-status="' + user_status + '" data-placement="left" title="Deactivate"></a>';
+                    status_link = '<a class="change_status elem_tooltip delivricon delivricon-remove" href="javascript:;" data-id="' + courierStaff.user.id + '" data-status="' + user_status + '" data-placement="left" title="Deactivate"></a>';
                 else
-                    status_link = '<a class="elem_tooltip delivricon delivricon-ok" href="javascript:;" data-id="' + id + '" data-status="' + user_status + '" data-placement="left" title="Activate"></a>';
+                    status_link = '<a class="change_status elem_tooltip delivricon delivricon-ok" href="javascript:;" data-id="' + courierStaff.user.id + '" data-status="' + user_status + '" data-placement="left" title="Activate"></a>';
 
                 var action = '<div class="action_links">' +
                     '<a href="#" data-toggle="modal" class="view_courier_boy_map elem_tooltip delivricon delivricon-map " data-cbid = "' + id + '" data-placement="left" title="View on Map"></a>' +
@@ -488,6 +488,21 @@ if (typeof(Manager) == "undefined") var Manager = {};
     };
 
     Manager.getCourierBoyMap = function () {
+
+        $('.change_status').live('click', function(){
+
+            var callback = function(status, data) {
+                if(data.success) Manager.getCourierStaffs();
+            };
+
+            var data = {};
+            data.className = 'User';
+            data.statusId = $(this).attr('data-status') == 'ACTIVE' ? '3' : '2';
+
+            Main.request('/merchant/change_status', data, callback, {id: $(this).attr('data-id')});
+
+        });
+
         $('#modal_map').on('hidden.bs.modal', function(){
             for (var i in godMarkers) {
                 godMarkers[i].setMap(null);

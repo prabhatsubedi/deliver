@@ -14,7 +14,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface DeliveryBoyDaoService extends GenericDaoService<Integer, DeliveryBoyEntity> {
-    public List<DeliveryBoyEntity> findAllCapableDeliveryBoys() throws Exception;
+    public List<DeliveryBoyEntity> findAllCapableDeliveryBoys(Integer updateLocationTimeOut) throws Exception;
 
     public DeliveryBoyEntity getProfileInformation(Integer deliveryBoyId) throws Exception;
 

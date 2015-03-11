@@ -159,3 +159,20 @@ INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('NORMAL_USER_BONUS_AMOUN
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('DEDUCTION_PERCENT', '10');
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('PROFIT_CHECK_FLAG', '0');
 
+
+/*##########################2015-03-11###########################*/
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('LOCATION_UPDATE_TIMEOUT_IN_MIN', '10');
+
+ALTER TABLE `delivery_boys`
+CHANGE COLUMN `advance_amount` `advance_amount` DECIMAL(16,2) NULL DEFAULT NULL ,
+CHANGE COLUMN `available_amount` `available_amount` DECIMAL(16,2) NULL DEFAULT NULL ,
+CHANGE COLUMN `bank_amount` `bank_amount` DECIMAL(16,2) NULL DEFAULT NULL ,
+CHANGE COLUMN `previous_due` `previous_due` DECIMAL(16,2) NULL DEFAULT NULL ,
+CHANGE COLUMN `total_earnings` `total_earnings` DECIMAL(16,2) NULL DEFAULT NULL ,
+CHANGE COLUMN `wallet_amount` `wallet_amount` DECIMAL(16,2) NULL DEFAULT NULL ;
+
+ALTER TABLE `merchants`
+CHANGE COLUMN `commission_percentage` `commission_percentage` DECIMAL(6,2) NULL DEFAULT NULL ,
+CHANGE COLUMN `service_fee` `service_fee` DECIMAL(16,2) NULL DEFAULT NULL ;
+
+

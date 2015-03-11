@@ -137,7 +137,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.totalOrderUndelivered = totalOrderUndelivered;
     }
 
-    @Column(name = "total_earnings", precision = 16, scale = 4)
+    @Column(name = "total_earnings", precision = 16, scale = 2)
     @JsonProperty
     public BigDecimal getTotalEarnings() {
         return totalEarnings;
@@ -168,7 +168,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.activeOrderNo = activeOrderNo;
     }
 
-    @Column(name = "available_amount", precision = 16, scale = 4)
+    @Column(name = "available_amount", precision = 16, scale = 2)
     @JsonProperty
     public BigDecimal getAvailableAmount() {
         return availableAmount;
@@ -178,7 +178,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.availableAmount = availableAmount;
     }
 
-    @Column(name = "advance_amount", precision = 16, scale = 4)
+    @Column(name = "advance_amount", precision = 16, scale = 2)
     @JsonProperty
     public BigDecimal getAdvanceAmount() {
         return advanceAmount;
@@ -188,7 +188,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.advanceAmount = advanceAmount;
     }
 
-    @Column(name = "bank_amount", precision = 16, scale = 4)
+    @Column(name = "bank_amount", precision = 16, scale = 2)
     @JsonProperty
     public BigDecimal getBankAmount() {
         return bankAmount;
@@ -198,7 +198,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.bankAmount = bankAmount;
     }
 
-    @Column(name = "wallet_amount", precision = 16, scale = 4)
+    @Column(name = "wallet_amount", precision = 16, scale = 2)
     @JsonProperty
     public BigDecimal getWalletAmount() {
         return walletAmount;
@@ -208,7 +208,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.walletAmount = walletAmount;
     }
 
-    @Column(name = "previous_due", precision = 16, scale = 4)
+    @Column(name = "previous_due", precision = 16, scale = 2)
     @JsonProperty
     public BigDecimal getPreviousDue() {
         return previousDue;

@@ -2,6 +2,8 @@
 * Created by Lunek on 11/25/2014.
 */
 
+var dataTable;
+
 if(typeof(Main) == "undefined") var Main = {};
 
 var form_submit = true;
@@ -226,7 +228,8 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         });
         var dataTableParams = {};
         if(typeof(colindex) == 'function') dataTableParams.fnDrawCallback = colindex;
-        var dataTable = $(selector).dataTable(dataTableParams);
+        if(dataTable) dataTable.fnDestroy();
+        dataTable = $(selector).dataTable(dataTableParams);
         dataTable.fnClearTable();
         if(data.length > 0) {
             dataTable.fnAddData(data);

@@ -549,8 +549,17 @@ if(typeof(Store) == "undefined") var Store = {};
         $('.btns_save').click(function(){
 
             var callback = function (status, data) {
-                console.log(data);
-                hideEdit();
+                if(data.success) {
+                    hideEdit();
+                    $('.store_location .block_store').each(function() {
+
+                        if($('input.checkbox', this).prop('checked'))
+                            $('.inactive_store', this).addClass('hidden');
+                        else
+                            $('.inactive_store', this).removeClass('hidden');
+
+                    });
+                }
             };
             callback.loaderDiv = "body";
             var data = {};

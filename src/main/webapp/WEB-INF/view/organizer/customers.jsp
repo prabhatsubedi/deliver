@@ -35,7 +35,7 @@
 
     <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left">Customers</h1>
+            <h1 class="pull-left">Inactive Customers</h1>
         </div>
         <div class="main_content">
             <div class="table-view">

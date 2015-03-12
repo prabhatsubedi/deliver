@@ -117,7 +117,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                 if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
                     priorityBrandEntity.setNearestStoreLocation(storeEntities.get(0).getStreet());
                 else
-                    priorityBrandEntity.setNearestStoreLocation("Unknown Location");
+                    priorityBrandEntity.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
             }
 
             storeBrandResult.addAll(priorityBrands);
@@ -162,7 +162,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                     if(storeEntity.getStreet() !=null && !storeEntity.getStreet().isEmpty())
                         tempBrand.setNearestStoreLocation(storeEntity.getStreet());
                     else
-                        tempBrand.setNearestStoreLocation("Unknown Location");
+                        tempBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
 
                     storeBrandResult.add(tempBrand);
 
@@ -183,7 +183,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                  if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
                      featureBrand.setNearestStoreLocation(storeEntities.get(0).getStreet());
                  else
-                     featureBrand.setNearestStoreLocation("Unknown Location");
+                     featureBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
              }
 
 
@@ -702,14 +702,17 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     public CartDto getMyCart(Long facebookId, String lat, String lon) throws Exception {
         log.info("++++++++++++ Getting my carts of client " + facebookId + " ++++++++++++");
 
+        CustomerEntity customerEntity = customerDaoService.getCustomerStatus(facebookId);
+        if(customerEntity == null)
+            throw new YSException("VLD033");
+
 
         if (lat==null && lon == null) {
-            CustomerEntity customerEntity = customerDaoService.getLatLong(facebookId);
-            if(customerEntity == null)
-                throw new YSException("VLD033");
-
-            lat = customerEntity.getLatitude();
-            lon = customerEntity.getLongitude();
+            CustomerEntity customer = customerDaoService.getLatLong(facebookId);
+            if(customer != null) {
+                lat = customer.getLatitude();
+                lon = customer.getLongitude();
+            }
         }
 
        CartDto cartDto = null;
@@ -759,9 +762,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
                    store.setNearestStoreLocation(storeEntities.get(0).getStreet());
                else
-                   store.setNearestStoreLocation("Unknown Location");
+                   store.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
            } else {
-               store.setNearestStoreLocation("Unknown Location");
+               store.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
            }
 
            cartDto.setStoresBrand(store);

@@ -27,8 +27,10 @@
                     <sec:authorize access="hasRole('ROLE_ADMIN')">
                         <li><a href="/admin/users">User Management</a></li>
                         <li><a href="/admin/settings">Settings</a></li>
+                        <li><a href="/admin/view_category">Categories</a></li>
                     </sec:authorize>
-                    <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
+                    <%--<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">--%>
+                    <sec:authorize access="hasRole('ROLE_MANAGER')">
                         <li><a href="#">Profile</a></li>
                         <%--<li><a href="/organizer/profile">Profile</a></li>--%>
                     </sec:authorize>

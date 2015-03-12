@@ -16,4 +16,6 @@ public class CommonConstants {
     public static final Integer MAX_SEARCH_ITEM = 15; // Search Max Item
     public static final Integer MAX_SEARCH_STORE = 6; // Search Max Store
     public static final Integer MAX_SEARCH_DATA = MAX_SEARCH_ITEM + MAX_SEARCH_STORE;
+
+    public static final String UNKNOWN_LOCATION = "Unknown Location";
 }

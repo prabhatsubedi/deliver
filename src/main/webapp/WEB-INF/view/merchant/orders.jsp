@@ -43,13 +43,13 @@
                     <thead>
                         <tr>
                             <th>SN</th>
-                            <th>Customer Name</th>
-                            <th>Store Name & Address</th>
-                            <th>Order No</th>
+                            <th><div class="width_150">Customer Name</div></th>
+                            <th><div class="width_200">Store Name & Address</div></th>
+                            <th><div class="width_80">Order No</div></th>
                             <th>Total Bill Amount</th>
-                            <th>Shopper</th>
-                            <th>Bill</th>
-                            <th>Status</th>
+                            <th><div class="width_150">Shopper</div></th>
+                            <th><div class="width_80">Bill</div></th>
+                            <th><div class="width_100">Status</div></th>
                             <th><div class="width_100">Action</div></th>
                         </tr>
                     </thead>
@@ -62,20 +62,20 @@
                     <thead>
                     <tr>
                         <th rowspan="2">SN</th>
-                        <th rowspan="2">Customer Name</th>
-                        <th rowspan="2">Store Name & Address</th>
-                        <th rowspan="2">Order No</th>
+                        <th rowspan="2"><div class="width_150">Customer Name</div></th>
+                        <th rowspan="2"><div class="width_200">Store Name & Address</div></th>
+                        <th rowspan="2"><div class="width_80">Order No</div></th>
                         <th rowspan="2">Total Bill Amount</th>
-                        <th rowspan="2">Shopper</th>
-                        <th rowspan="2">Bill</th>
+                        <th rowspan="2"><div class="width_150">Shopper</div></th>
+                        <th rowspan="2"><div class="width_80">Bill</div></th>
                         <th colspan="2">Customer Feedback</th>
                         <th colspan="2">Shopper Feedback</th>
                     </tr>
                     <tr>
                         <th>Rating</th>
-                        <th>Comment</th>
+                        <th><div class="width_150">Comment</div></th>
                         <th>rating</th>
-                        <th>Comment</th>
+                        <th><div class="width_150">Comment</div></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -92,7 +92,7 @@
                         <th rowspan="2">Order No</th>
                         <th rowspan="2">Total Bill Amount</th>
                         <th rowspan="2">Shopper</th>
-                        <th rowspan="2">Bill</th>
+                        <th rowspan="2"><div class="width_80">Bill</div></th>
                         <th colspan="2">Shopper Feedback</th>
                         <th rowspan="2">Cancel Reason</th>
                     </tr>

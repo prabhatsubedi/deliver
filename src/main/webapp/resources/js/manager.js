@@ -491,6 +491,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         $('.change_status').live('click', function(){
 
+            var chk_confirm = confirm('Are you sure you want to ' + ($(this).attr('data-status') == 'ACTIVE' ? "deactivate" : "activate") + ' shopper?');
+            if (!chk_confirm) return false;
+
             var callback = function(status, data) {
                 if(data.success) Manager.getCourierStaffs();
             };
@@ -1192,24 +1195,40 @@ if (typeof(Manager) == "undefined") var Manager = {};
             }
 
             var graphData = jsondata.params.graphData;
-            var count1 = graphData[Object.keys(graphData)[0]];
-            var count2 = graphData[Object.keys(graphData)[1]];
-            var chartData = [];
+            if(action == 'get_new_user_graph') {
 
-            if(action == "get_on_time_delivery_graph") {
-                chartData = [['Date', 'On Time Delivery', 'Exceed On Time']];
-            } else if (action == "get_delivery_success_graph") {
-                chartData = [['Date', 'Successful Delivery', 'Failed Delivery']];
+                var count1 = graphData;
+                var chartData = [['Date', 'New User Registered']];
+
+                for(var i in count1) {
+                    var dateStr = new Date(i).format("mmm dd, yyyy");
+                    chartData.push([dateStr, count1[i]]);
+                }
+
+                if(Object.keys(count1).length < 1) chartData.push([null, 0]);
+
             } else {
-                chartData = [['Date', 'Order Count', 'Total Time']];
-            }
 
-            for(var i in count1) {
-                var dateStr = new Date(i).format("mmm dd, yyyy");
-                chartData.push([dateStr, count1[i], count2[i]]);
-            }
+                var count1 = graphData[Object.keys(graphData)[0]];
+                var count2 = graphData[Object.keys(graphData)[1]];
+                var chartData = [];
 
-            if(Object.keys(count1).length < 1) chartData.push([null, 0, 0]);
+                if(action == "get_on_time_delivery_graph") {
+                    chartData = [['Date', 'Exceed On Time', 'On Time Delivery']];
+                } else if (action == "get_delivery_success_graph") {
+                    chartData = [['Date', 'Successful Delivery', 'Failed Delivery']];
+                } else {
+                    chartData = [['Date', 'Total Time', 'Order Count']];
+                }
+
+                for(var i in count1) {
+                    var dateStr = new Date(i).format("mmm dd, yyyy");
+                    chartData.push([dateStr, count1[i], count2[i]]);
+                }
+
+                if(Object.keys(count1).length < 1) chartData.push([null, 0, 0]);
+
+            }
 
             title = title == undefined ? '' : title
             var showTextEvery = Math.ceil(Object.keys(count1).length/10);

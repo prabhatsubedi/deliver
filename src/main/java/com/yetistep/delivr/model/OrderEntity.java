@@ -140,7 +140,7 @@ public class OrderEntity implements Serializable {
         this.itemsOrder = itemsOrder;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "address_id")
     public AddressEntity getAddress() {
         return address;
@@ -150,7 +150,7 @@ public class OrderEntity implements Serializable {
         this.address = address;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "delivery_boy_id")
     public DeliveryBoyEntity getDeliveryBoy() {
         return deliveryBoy;
@@ -160,7 +160,7 @@ public class OrderEntity implements Serializable {
         this.deliveryBoy = deliveryBoy;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     public CustomerEntity getCustomer() {
         return customer;
@@ -170,7 +170,7 @@ public class OrderEntity implements Serializable {
         this.customer = customer;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "store_id")
     public StoreEntity getStore() {
         return store;
@@ -326,7 +326,7 @@ public class OrderEntity implements Serializable {
         this.elapsedTime = elapsedTime;
     }
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     public RatingEntity getRating() {
         return rating;
     }
@@ -346,7 +346,7 @@ public class OrderEntity implements Serializable {
         this.attachments = attachments;
     }
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     public OrderCancelEntity getOrderCancel() {
         return orderCancel;
     }
@@ -402,7 +402,7 @@ public class OrderEntity implements Serializable {
         this.reprocessTime = reprocessTime;
     }
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     public BillEntity getBill() {
         return bill;
     }
@@ -411,7 +411,7 @@ public class OrderEntity implements Serializable {
         this.bill = bill;
     }
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     public ReceiptEntity getReceipt() {
         return receipt;
     }

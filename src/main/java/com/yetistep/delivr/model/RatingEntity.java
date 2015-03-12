@@ -80,7 +80,7 @@ public class RatingEntity {
     }
 
     @JsonIgnore
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     public OrderEntity getOrder() {
         return order;

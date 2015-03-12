@@ -103,7 +103,7 @@ public class UserEntity implements Serializable {
         this.merchant = merchant;
     }
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JsonProperty
     public CustomerEntity getCustomer() {
         return customer;
@@ -316,7 +316,7 @@ public class UserEntity implements Serializable {
         this.addresses = addresses;
     }
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JsonProperty
     public UserDeviceEntity getUserDevice() {
         return userDevice;

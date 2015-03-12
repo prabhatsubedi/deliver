@@ -148,7 +148,7 @@ public class ItemsOrderEntity implements Serializable {
         this.purchaseStatus = purchaseStatus;
     }
 
-    @OneToOne(mappedBy = "itemsOrder", cascade = CascadeType.PERSIST, orphanRemoval=true)
+    @OneToOne(mappedBy = "itemsOrder", cascade = CascadeType.PERSIST, orphanRemoval=true, fetch = FetchType.LAZY)
     public CustomItemEntity getCustomItem() {
         return customItem;
     }

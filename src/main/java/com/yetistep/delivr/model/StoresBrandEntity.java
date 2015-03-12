@@ -71,7 +71,7 @@ public class StoresBrandEntity implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "merchant_id")
     public MerchantEntity getMerchant() {
         return merchant;

@@ -50,7 +50,7 @@ public class CustomItemEntity {
     }
 
     @JsonIgnore
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "items_order_id")
     public ItemsOrderEntity getItemsOrder() {
         return itemsOrder;

@@ -142,7 +142,7 @@ public class UserDeviceEntity {
         this.width = width;
     }
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     public UserEntity getUser() {
         return user;

@@ -662,6 +662,9 @@ public class CustomerServiceImpl implements CustomerService {
             throw new YSException("VLD024");
         }
         StoreEntity store = findNearestStoreFromCustomer(order, stores);
+        if(BigDecimalUtil.isGreaterThen(store.getCustomerToStoreDistance(), new BigDecimal("300"))){
+            throw new YSException("VLD036");
+        }
         order.setStore(store);
         order.setOrderName(store.getName() + " to " + order.getAddress().getStreet());
         order.setOrderVerificationCode(GeneralUtil.generateMobileCode());

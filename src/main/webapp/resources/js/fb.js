@@ -8,12 +8,14 @@ var clientEmail;
 window.fbAsyncInit = function() {
     var hostName = window.location.hostname;
     //set the FB AppId
-    if(hostName=="localhost"){
+    if(hostName=="localhost")
          apId = "938896656121323";
-    }else if(hostName=="delivr.com" || hostName=="www.delivr.com")
+    else if(hostName=="delivr.com" || hostName=="www.delivr.com")
         apId = "910783542265968";
-    else
-         apId = "942608175750171";//764634910220474
+    else if(hostName=="test.idelivr.com" || hostName=="www.test.idelivr.com")
+         apId = "942608175750171";
+    else if(hostName=="test1.idelivr.com" || hostName=="www.test1.idelivr.com")
+        apId = "969692939708361";
 
 
     // init the FB JS SDK                                                            n

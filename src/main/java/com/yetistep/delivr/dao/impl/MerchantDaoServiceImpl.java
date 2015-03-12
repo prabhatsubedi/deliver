@@ -663,7 +663,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         purchaseOrders.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
         purchaseOrders.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
         purchaseOrders.add(JobOrderStatus.AT_STORE.ordinal());
-        String sqQuery =    "SELECT COUNT(o.id) FROM orders o INNER JOIN order_cancel oc WHERE o.store_id IN(:storeId) AND o.order_status IN(:purchaseOrders)";
+        String sqQuery =    "SELECT COUNT(o.id) FROM orders o INNER JOIN order_cancel oc on(o.id = oc.order_id)  WHERE o.store_id IN(:storeId) AND o.order_status IN(:purchaseOrders)";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
         query.setParameterList("storeId", storeId);
         query.setParameterList("purchaseOrders", purchaseOrders);
@@ -696,4 +696,5 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         }
         return true;
     }
+
 }

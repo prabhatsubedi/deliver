@@ -123,7 +123,7 @@ public class DeliveryBoyController extends AbstractManager{
 
     @RequestMapping(value = "/get_dBoy_order_history", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> dBoyOrderHistory(@RequestHeader HttpHeaders headers, RequestJsonDto requestJsonDto) {
+    public ResponseEntity<ServiceResponse> dBoyOrderHistory(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);

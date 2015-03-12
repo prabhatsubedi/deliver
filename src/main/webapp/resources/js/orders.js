@@ -332,20 +332,25 @@ Order.getInvoices = function(){
             return;
         }
         var invoices = data.params.invoices;
-        console.log(invoices);
 
         var tableData = [];
         for (var i = 0; i < invoices.length; i++) {
             var invoice = invoices[i];
             var link = '<a target="_blank" href="'+invoice.path+'">View Invoice</a>';
-            var row = [invoice.id, link, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", invoice.generatedDate, invoice.fromDate, invoice.toDate, invoice.paidDate!=undefined?invoice.paidDate:''];
+            if(invoice.invoicePaid != undefined){
+                var checkBox = '<input type="checkbox" checked data-id="'+invoice.id+'" class="pay_invoice">';
+            }else{
+                var checkBox = '<input type="checkbox" data-id="'+invoice.id+'" class="pay_invoice">';
+            }
+
+            var row = [invoice.id, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", invoice.generatedDate, invoice.fromDate, invoice.toDate, invoice.paidDate!=undefined?invoice.paidDate:'', link, checkBox];
             tableData.push(row);
         }
 
         Main.createDataTable("#invoices_table", tableData);
     }
     callback.loaderDiv = ".main_content";
-    callback.requestType = "GET";
+    callback.requestType = "POST";
     var header = {};
     header.merchantId = Main.getFromLocalStorage('mid');
 

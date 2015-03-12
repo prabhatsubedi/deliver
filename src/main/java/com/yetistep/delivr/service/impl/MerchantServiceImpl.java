@@ -1601,17 +1601,47 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<InvoiceEntity> getInvoices(HeaderDto headerDto) throws Exception{
+    public List<InvoiceEntity> getInvoices(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
+
+        Map<String, Date> dateRange = requestJsonDto.getDateRange();
+        Date fromDate = null;
+        Date toDate = null;
+        if(dateRange != null){
+            if(dateRange.get("fromDate") != null){
+                fromDate = dateRange.get("fromDate");
+            }
+            if(dateRange.get("toDate") != null){
+                toDate = dateRange.get("toDate");
+            }
+        }
+
+
+        Page page = requestJsonDto.getPage();
+
+
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  invoiceDaoService.getTotalNumberOfInvoices(headerDto.getMerchantId());
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
 
         List<InvoiceEntity> invoices = new ArrayList<>();
 
-        List<InvoiceEntity> invoiceList = invoiceDaoService.findInvoicesByMerchant(headerDto.getMerchantId());
+        List<InvoiceEntity> invoiceList = new ArrayList<>();
+
+        if(fromDate != null && toDate != null){
+            invoiceList = invoiceDaoService.findInvoicesByMerchant(headerDto.getMerchantId(), page, fromDate, toDate);
+        }else{
+            invoiceList = invoiceDaoService.findInvoicesByMerchant(headerDto.getMerchantId(), page);
+        }
 
 
 
 
         List<StoreEntity> storeEntityList = new ArrayList<>();
-        String fields = "id,generatedDate,path,amount,fromDate,toDate,paidDate,store";
+        String fields = "id,generatedDate,path,amount,fromDate,toDate,invoicePaid,paidDate,store";
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 

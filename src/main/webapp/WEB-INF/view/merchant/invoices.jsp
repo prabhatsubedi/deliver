@@ -33,12 +33,13 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Invoice</th>
                             <th>Store Name & Address</th>
                             <th>Generated Date</th>
                             <th>From Date</th>
                             <th>To Date</th>
                             <th>Paid Date</th>
+                            <th>Invoice</th>
+                            <th>Select All<span style="margin-left: 10px;"><input type="checkbox" id="selectAllInvoices" name="selectAllInvoices" /></span></th>
                         </tr>
                     </thead>
                     <tbody>

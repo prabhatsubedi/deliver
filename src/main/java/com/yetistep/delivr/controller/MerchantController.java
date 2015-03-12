@@ -515,14 +515,14 @@ public class MerchantController {
     }
 
 
-    @RequestMapping(value = "/get_invoices", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_invoices", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getInvoices(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> getInvoices(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
 
-            List<InvoiceEntity> invoices = merchantService.getInvoices(headerDto);
+            List<InvoiceEntity> invoices = merchantService.getInvoices(headerDto, requestJsonDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Invoices retrieved successfully with Merchant ID: "+headerDto.getMerchantId());
             serviceResponse.addParam("invoices", invoices);

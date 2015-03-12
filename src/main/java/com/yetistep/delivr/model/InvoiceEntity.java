@@ -28,6 +28,7 @@ public class InvoiceEntity {
     private Date fromDate;
     private Date toDate;
     private Date paidDate;
+    private Boolean invoicePaid;
     private List<OrderEntity> orders;
     private MerchantEntity merchant;
     private  StoreEntity store;
@@ -107,6 +108,15 @@ public class InvoiceEntity {
 
     public void setToDate(Date toDate) {
         this.toDate = toDate;
+    }
+
+    @Column(name = "invoice_paid")
+    public Boolean getInvoicePaid() {
+        return invoicePaid;
+    }
+
+    public void setInvoicePaid(Boolean invoicePaid) {
+        this.invoicePaid = invoicePaid;
     }
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.PERSIST)

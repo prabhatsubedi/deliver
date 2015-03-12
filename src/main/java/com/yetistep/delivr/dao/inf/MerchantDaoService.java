@@ -121,4 +121,5 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public List<ItemsOrderEntity> getOrdersItems(Integer orderId) throws Exception;
 
     public Boolean checkEmailExistence(String email) throws Exception;
+
 }

@@ -51,7 +51,7 @@ public class MainController {
             } else if (role.toString().equals(Role.ROLE_MANAGER.toString())) {
                 model.setViewName("organizer/dashboard");
             } else if (role.toString().equals(Role.ROLE_ACCOUNTANT.toString())) {
-                model.setViewName("accountant/dashboard");
+                model.setViewName("merchant/orders");
             } else if (role.toString().equals(Role.ROLE_MERCHANT.toString())) {
                 model.setViewName("merchant/store/list");
             }
@@ -74,7 +74,7 @@ public class MainController {
                 } else if (role.toString().equals(Role.ROLE_MANAGER.toString())) {
                     url = "organizer/dashboard";
                 } else if (role.toString().equals(Role.ROLE_ACCOUNTANT.toString())) {
-                    url = "accountant/dashboard";
+                    url = "merchant/orders";
                 } else if (role.toString().equals(Role.ROLE_MERCHANT.toString())) {
                     url = "merchant/store/list";
                 }

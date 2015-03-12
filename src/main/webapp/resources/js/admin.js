@@ -133,7 +133,7 @@ var Admin = function() {
                 $('#status').val($('td', parent).eq(4).html());
                 $('#status').selectpicker('refresh');
 
-                $('#modal_user .modal-header').removeAttr('data-role').attr('data-id', $(this).attr('data-id')).html('Update ' + $(this).attr('data-user'));
+                $('#modal_user .modal-header').attr('data-role', $('.main_tabs .active button').attr('data-role')).attr('data-id', $(this).attr('data-id')).html('Update ' + $(this).attr('data-user'));
                 $('#modal_user button[type="submit"]').html('Update');
                 $('#modal_user .edit_group').removeClass('hidden');
 
@@ -159,12 +159,12 @@ var Admin = function() {
                     data.mobileNumber = $('#phone').val();
 
                     var header = {};
+                    data.role = {role: $('#modal_user .modal-header').attr('data-role')};
                     if($('#modal_user .modal-header').attr('data-id') == undefined) {
                         header.username = $('#email').val();
-                        data.role = {role: $('#modal_user .modal-header').attr('data-role')};
                     } else {
                         header.id = $('#modal_user .modal-header').attr('data-id');
-                        data.status = $('#status').val().toUpperCase();
+                        data.status = $('#status').val() == 'Active';
                     }
 
                     Admin.saveUser(data, header);
@@ -204,7 +204,7 @@ var Admin = function() {
                     actions += '<a href="#" data-target="#modal_user" data-toggle="modal" data-user="Manager" data-id="' + id + '">Edit</a>';
                     actions += '</div>';
 
-                    var row = [id, manager.fullName, manager.emailAddress, manager.mobileNumber, "Status", actions];
+                    var row = [id, manager.fullName, manager.emailAddress, manager.mobileNumber, manager.verifiedStatus ? 'Active' : 'Inactive', actions];
                     tdata.push(row);
                 }
 
@@ -242,7 +242,7 @@ var Admin = function() {
                     actions += '<a href="#" data-target="#modal_user" data-toggle="modal" data-user="Accountant" data-id="' + id + '">Edit</a>';
                     actions += '</div>';
 
-                    var row = [id, accountant.fullName, accountant.emailAddress, accountant.mobileNumber, "Status", actions];
+                    var row = [id, accountant.fullName, accountant.emailAddress, accountant.mobileNumber, accountant.verifiedStatus ? 'Active' : 'Inactive', actions];
                     tdata.push(row);
                 }
 

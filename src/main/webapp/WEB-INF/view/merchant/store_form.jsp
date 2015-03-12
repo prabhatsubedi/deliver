@@ -125,10 +125,10 @@
                                         <input type="text" class="form-control" id="country" name="country" placeholder="Country">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="contact_no" name="contact_no" placeholder="Contact No.">
+                                        <input type="text" class="form-control" id="contact_person" name="contact_person" placeholder="Contact Person">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="contact_person" name="contact_person" placeholder="Contact Person">
+                                        <input type="text" class="form-control" id="contact_no" name="contact_no" placeholder="Contact No.">
                                     </div>
                                     <div class="form-group">
                                         <input type="email" class="form-control" id="email" name="email" placeholder="Email">

@@ -139,6 +139,12 @@ body.loader_div > .loader {
     width: 100% !important;
     max-width: none !important;
 }
+.width_80 {
+    min-width: 80px;
+}
+.width_100 {
+    min-width: 100px;
+}
 .width_100 {
     min-width: 100px;
 }
@@ -2048,10 +2054,5 @@ label.check_label .checkbox {
     border: 1px solid #999;
     padding: 10px;
 }
-
-.table-view .bill_td{
-    min-width: 250px;
-}
-
 
 

@@ -15,6 +15,7 @@ import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
+import com.yetistep.delivr.util.SparrowResultModel;
 import com.yetistep.delivr.util.YSException;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.log4j.Logger;
@@ -568,7 +569,29 @@ public class ClientController extends AbstractManager{
     @ResponseBody
     public ResponseEntity<ServiceResponse> getCategoryBrands(@PathVariable("catId") Integer categoryId, @PathVariable("pageNo") Integer pageNo) {
         try{
-            Map<String, Object> map = customerService.getCategoryBrands(categoryId, pageNo);
+            Map<String, Object> map = customerService.getCategoryBrands(categoryId, pageNo, null, null);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Brands fetched successfully");
+            if(pageNo!=null && pageNo.equals(1)) {
+                serviceResponse.addParam("pageInfo", map.get("page"));
+                serviceResponse.addParam("featuredBrands", map.get("featured"));
+            }
+            serviceResponse.addParam("otherBrands", map.get("all"));
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        }catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving category's brands", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_category_brands/catId/{catId}/pageNo/{pageNo}/lat/{lat}/long/{lon}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getCategoryBrands(@PathVariable("catId") Integer categoryId, @PathVariable("pageNo") Integer pageNo,
+                                                              @PathVariable("lat") String lat, @PathVariable("lon") String lon) {
+        try{
+            Map<String, Object> map = customerService.getCategoryBrands(categoryId, pageNo, lat, lon);
 
             ServiceResponse serviceResponse = new ServiceResponse("Brands fetched successfully");
             if(pageNo!=null && pageNo.equals(1)) {
@@ -899,6 +922,22 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while retrieving helpline information", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_sms", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getSms() {
+        try{
+
+            SparrowResultModel sparrowResultModel = clientService.getSmsResult();
+            ServiceResponse serviceResponse = new ServiceResponse("Succesully Tested");
+            //serviceResponse.addParam("helplineInfo", helplineInfo);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while Testing on Sending SMS", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

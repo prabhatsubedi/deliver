@@ -514,8 +514,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Map<String, Object> getCategoryBrands(Integer categoryId, Integer pageNo) throws Exception {
+    public Map<String, Object> getCategoryBrands(Integer categoryId, Integer pageNo, String lat, String lon) throws Exception {
         log.info("++++++++++++++++++ Getting Category's Brands of Id: " + categoryId + " ++++++++++++++");
+
         List<StoresBrandEntity> resultBrands = new ArrayList<>();
         List<StoresBrandEntity> featuredBrands = new ArrayList<>();
 
@@ -558,6 +559,41 @@ public class CustomerServiceImpl implements CustomerService {
             resultBrands.addAll(tempBrands);
         }
 
+        //Now Implement Nearest Location To Of store
+
+        for(StoresBrandEntity featureBrand : featuredBrands) {
+            if(lat!=null && lon!=null){
+                List<StoreEntity> storeEntities = storeDaoService.findStores(featureBrand.getId());
+
+                sortStoreByLocation(lat, lon, storeEntities);
+
+                if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
+                    featureBrand.setNearestStoreLocation(storeEntities.get(0).getStreet());
+                else
+                    featureBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
+            }  else {
+                featureBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
+            }
+
+        }
+
+        //For All Brands
+        for(StoresBrandEntity resultBrand : resultBrands) {
+            if(lat!=null && lon!=null){
+                List<StoreEntity> storeEntities = storeDaoService.findStores(resultBrand.getId());
+
+                sortStoreByLocation(lat, lon, storeEntities);
+
+                if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
+                    resultBrand.setNearestStoreLocation(storeEntities.get(0).getStreet());
+                else
+                    resultBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
+            }  else {
+                resultBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
+            }
+
+        }
+
         // Perform sorted store pagination
         PageInfo pageInfo = null;
         List<StoresBrandEntity> sortedList = new ArrayList<>();
@@ -574,6 +610,25 @@ public class CustomerServiceImpl implements CustomerService {
         map.put("page", pageInfo);
         map.put("all", sortedList);
         return map;
+    }
+
+    private void sortStoreByLocation(String lat, String lon, List<StoreEntity> storeEntities) throws Exception {
+        String[] storeDistance = new String[storeEntities.size()];
+        String[] customerDistance = {GeoCodingUtil.getLatLong(lat, lon)};
+
+        for (int i = 0; i < storeEntities.size(); i++) {
+            storeDistance[i] = GeoCodingUtil.getLatLong(storeEntities.get(i).getLatitude(), storeEntities.get(i).getLongitude());
+        }
+
+        List<BigDecimal> distanceList = GeoCodingUtil.getListOfAirDistances(customerDistance, storeDistance);
+
+        //Set Distance to Store Entity
+        for (int i = 0; i < storeEntities.size(); i++) {
+            storeEntities.get(i).setCustomerToStoreDistance(distanceList.get(i));
+        }
+
+        //Store Entity List Sorted by Distance
+        Collections.sort(storeEntities, new StoreDistanceComparator());
     }
 
     @Override
@@ -662,6 +717,9 @@ public class CustomerServiceImpl implements CustomerService {
             throw new YSException("VLD024");
         }
         StoreEntity store = findNearestStoreFromCustomer(order, stores);
+        if(BigDecimalUtil.isGreaterThen(order.getCustomerChargeableDistance(), new BigDecimal("300"))){
+            throw new YSException("VLD036");
+        }
         order.setStore(store);
         order.setOrderName(store.getName() + " to " + order.getAddress().getStreet());
         order.setOrderVerificationCode(GeneralUtil.generateMobileCode());

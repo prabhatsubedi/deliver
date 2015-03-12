@@ -135,7 +135,7 @@
         <div class="clearfix">
             <div class="block_counts col-sm-12">
                 <div class="col-sm-3 count_block_cont">
-                    <div class="count_cont table_div open_chart" data-action="get_on_time_delivery_graph" data-title="On Time and Time Exceed Delivery Graph">
+                    <div class="count_cont table_div open_chart" data-action="get_on_time_delivery_graph" data-title="Delivery Graph Based on Time">
                         <span class="td_div"><span class="count_span" data-get="onTimeDelivery">0</span>%</span> <span class="count_label td_div">On Time Delivery</span>
                     </div>
                 </div>
@@ -158,7 +158,7 @@
 
             <div class="block_counts col-sm-12">
                 <div class="col-sm-3 count_block_cont">
-                    <div class="count_cont table_div open_chart" data-action="get_on_time_delivery_graph" data-title="On Time and Time Exceed Delivery Graph">
+                    <div class="count_cont table_div open_chart" data-action="get_on_time_delivery_graph" data-title="Delivery Graph Based on Time">
                         <span class="td_div count_red"><span class="count_span" data-get="timeExceededDelivery">0</span>%</span> <span class="count_label td_div">Exceed On Time</span>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.CategoryDaoService;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.CategoryEntity;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -88,9 +89,11 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
     public List<CategoryEntity> findDefaultCategories() throws Exception {
         String sql = "SELECT DISTINCT(c.id), c.name, c.image_url AS imageUrl FROM categories c " +
                 "INNER JOIN brands_categories bc ON(bc.category_id = c.id) " +
+                "INNER JOIN stores_brands sb ON(bc.stores_brand_id = sb.id AND sb.status = :status) " +
                 "WHERE c.parent_id IS NULL ";
 
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("status", Status.ACTIVE.toInt());
         sqlQuery.setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
         List<CategoryEntity> categories = sqlQuery.list();
         return categories;

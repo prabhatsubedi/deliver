@@ -44,7 +44,7 @@ public interface CustomerService {
 
     public List<CategoryEntity> getDefaultCategories() throws Exception;
 
-    public Map<String, Object> getCategoryBrands(Integer categoryId, Integer pageNo) throws Exception;
+    public Map<String, Object> getCategoryBrands(Integer categoryId, Integer pageNo,String lat, String lon) throws Exception;
 
     public List<RatingReason> getRatingReasons() throws Exception;
 

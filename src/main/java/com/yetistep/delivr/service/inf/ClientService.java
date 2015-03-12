@@ -10,6 +10,7 @@ import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
+import com.yetistep.delivr.util.SparrowResultModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,4 +65,6 @@ public interface ClientService {
     public OrderCancelEntity orderCancelDetails(Integer orderId) throws Exception;
 
     public PreferenceDto getHelpLineDetails() throws Exception;
+
+//    public SparrowResultModel getSmsResult() throws Exception;
 }

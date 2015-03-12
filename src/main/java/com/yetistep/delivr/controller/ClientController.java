@@ -927,19 +927,19 @@ public class ClientController extends AbstractManager{
         }
     }
 
-//    @RequestMapping(value = "/get_sms", method = RequestMethod.GET)
-//    @ResponseBody
-//    public ResponseEntity<ServiceResponse> getSms() {
-//        try{
-//
-//            SparrowResultModel sparrowResultModel = clientService.getSmsResult();
-//            ServiceResponse serviceResponse = new ServiceResponse("Succesully Tested");
-//            //serviceResponse.addParam("helplineInfo", helplineInfo);
-//            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
-//        } catch (Exception e) {
-//            GeneralUtil.logError(log, "Error Occurred while Testing on Sending SMS", e);
-//            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-//            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
-//        }
-//    }
+    @RequestMapping(value = "/get_sms", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getSms() {
+        try{
+
+            SparrowResultModel sparrowResultModel = clientService.getSmsResult();
+            ServiceResponse serviceResponse = new ServiceResponse("Succesully Tested");
+            //serviceResponse.addParam("helplineInfo", helplineInfo);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while Testing on Sending SMS", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

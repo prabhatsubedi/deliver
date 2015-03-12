@@ -66,5 +66,5 @@ public interface ClientService {
 
     public PreferenceDto getHelpLineDetails() throws Exception;
 
-//    public SparrowResultModel getSmsResult() throws Exception;
+    public SparrowResultModel getSmsResult() throws Exception;
 }

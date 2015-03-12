@@ -1148,9 +1148,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         return preferenceDto;
     }
 
-//    @Override
-//    public SparrowResultModel getSmsResult() throws Exception {
-//        SparrowResultModel sparrowResultModel = SparrowSMSUtil.getSendSMS("9841531001", "Hello Bro!!!");
-//        return sparrowResultModel;
-//    }
+    @Override
+    public SparrowResultModel getSmsResult() throws Exception {
+        SparrowResultModel sparrowResultModel = SparrowSMSUtil.getSendSMS("9841531001", "Hello Bro!!!");
+        return sparrowResultModel;
+    }
 }

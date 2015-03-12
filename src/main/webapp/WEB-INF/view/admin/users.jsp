@@ -101,8 +101,8 @@
                     </div>
                     <div class="form-group edit_group">
                         <select id="status" name="status" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                            <option value="Inactive">Inactive</option>
-                            <option value="Active">Active</option>
+                            <option value="INACTIVE">Inactive</option>
+                            <option value="ACTIVE">Active</option>
                         </select>
                     </div>
                 </div>

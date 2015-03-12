@@ -130,7 +130,7 @@ var Admin = function() {
                 $('#name').val($('td', parent).eq(1).html());
                 $('#email').val($('td', parent).eq(2).html());
                 $('#phone').val($('td', parent).eq(3).html());
-                $('#status').val($('td', parent).eq(4).html());
+                $('#status').val($('td', parent).eq(4).html().toUpperCase());
                 $('#status').selectpicker('refresh');
 
                 $('#modal_user .modal-header').attr('data-role', $('.main_tabs .active button').attr('data-role')).attr('data-id', $(this).attr('data-id')).html('Update ' + $(this).attr('data-user'));
@@ -164,7 +164,7 @@ var Admin = function() {
                         header.username = $('#email').val();
                     } else {
                         header.id = $('#modal_user .modal-header').attr('data-id');
-                        data.status = $('#status').val() == 'Active';
+                        data.status = $('#status').val();
                     }
 
                     Admin.saveUser(data, header);
@@ -204,7 +204,7 @@ var Admin = function() {
                     actions += '<a href="#" data-target="#modal_user" data-toggle="modal" data-user="Manager" data-id="' + id + '">Edit</a>';
                     actions += '</div>';
 
-                    var row = [id, manager.fullName, manager.emailAddress, manager.mobileNumber, manager.verifiedStatus ? 'Active' : 'Inactive', actions];
+                    var row = [id, manager.fullName, manager.emailAddress, manager.mobileNumber, manager.status == undefined ? 'Unverified' : Main.ucfirst(manager.status), actions];
                     tdata.push(row);
                 }
 
@@ -242,7 +242,7 @@ var Admin = function() {
                     actions += '<a href="#" data-target="#modal_user" data-toggle="modal" data-user="Accountant" data-id="' + id + '">Edit</a>';
                     actions += '</div>';
 
-                    var row = [id, accountant.fullName, accountant.emailAddress, accountant.mobileNumber, accountant.verifiedStatus ? 'Active' : 'Inactive', actions];
+                    var row = [id, accountant.fullName, accountant.emailAddress, accountant.mobileNumber, accountant.status == undefined ? 'Unverified' : Main.ucfirst(accountant.status), actions];
                     tdata.push(row);
                 }
 

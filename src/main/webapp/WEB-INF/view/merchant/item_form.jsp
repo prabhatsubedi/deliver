@@ -177,10 +177,10 @@
                                             <div class="col-lg-8">
                                                 <div class="row">
                                                     <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="min_order" name="min_order" placeholder="Min.">
+                                                        <input type="text" class="form-control" id="min_order" name="min_order" placeholder="Min." value="1">
                                                     </div>
                                                     <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="max_order" name="max_order" placeholder="Max.">
+                                                        <input type="text" class="form-control" id="max_order" name="max_order" placeholder="Max." value="100">
                                                     </div>
                                                 </div>
                                             </div>

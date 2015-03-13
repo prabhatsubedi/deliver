@@ -610,7 +610,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if (BigDecimalUtil.isGreaterThen(order.getTotalCost(), maxOrderAmount)) {
            throw new YSException("CRT007", "Maximum order value is "+maxOrderAmount);
         }
-        Boolean PROFIT_CHECK = Boolean.parseBoolean(systemPropertyService.readPrefValue(PreferenceType.PROFIT_CHECK_FLAG));
+        Boolean PROFIT_CHECK = GeneralUtil.parseBoolean(systemPropertyService.readPrefValue(PreferenceType.PROFIT_CHECK_FLAG));
         if(PROFIT_CHECK){
             BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
             if(BigDecimalUtil.isLessThen(order.getCourierTransaction().getProfit(), BigDecimalUtil.percentageOf(order.getTotalCost(), MINIMUM_PROFIT_PERCENTAGE))){
@@ -843,11 +843,17 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         String dir = MessageBundle.separateString("/", "Orders", "Order" + order.getId());
         boolean isLocal = MessageBundle.isLocalHost();
         List<String> attachments = orderEntity.getAttachments();
+        for(String bill: attachments){
+            log.info("Deleting brand log to S3 Bucket ");
+            AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(bill));
+        }
+        attachments.clear();
         int i = 1;
         for (String bill: order.getAttachments()) {
             if (bill != null && !bill.isEmpty()) {
-                String imageName = "Bill_" + order.getId() + "_" + (isLocal ? "_tmp_" : "_") + i;
-                String s3Path = GeneralUtil.saveImageToBucket(bill, imageName, dir, true);
+                bill = "data:image/jpeg;base64,"+bill;
+                String imageName = "Bill_" + order.getId() + "_" + (isLocal ? "_tmp_" : "_") + i + "_"+System.currentTimeMillis();
+                String s3Path = GeneralUtil.saveImageToBucket(bill, imageName, dir, false);
                 attachments.add(s3Path);
                 i++;
             }

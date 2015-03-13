@@ -1514,6 +1514,17 @@ public class CustomerServiceImpl implements CustomerService {
             String message = MessageBundle.getMessage("CPN007", "push_notification.properties");
             String extraDetail = order.getId().toString()+"/status/"+order.getOrderStatus().toString();
             PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
+
+            List<String> deviceTokens = userDeviceDaoService.getDeviceTokensOfAssignedDeliveryBoy(order.getId());
+            if(deviceTokens.size() > 0){
+                PushNotification pushNotification = new PushNotification();
+                pushNotification.setTokens(deviceTokens);
+                pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN003"));
+                pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
+                pushNotification.setExtraDetail(order.getId().toString()+"/status/"+JobOrderStatus.CANCELLED.toString());
+                pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
+                PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
+            }
         }
         return status;
     }

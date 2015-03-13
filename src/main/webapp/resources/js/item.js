@@ -755,7 +755,7 @@ function toggleSwitch(value, elem) {
 //        $('#product_image2_input').rules('add', {imageRequired: true});
 //        $('#product_image3_input').rules('add', {imageRequired: true});
         $('#name_item').rules('add', {required: true});
-        $('#description').rules('add', {required: true});
+//        $('#description').rules('add', {required: true});
 //        $('#additional_offer').rules('add', {required: true});
         $('#item_brand').rules('add', {notEqual: 'none'});
         $('#validate_stores').rules('add', {stores: true});
@@ -832,9 +832,10 @@ function toggleSwitch(value, elem) {
                 update_subcat(data_categories_id);
 
                 $('.product_image .drop_zone').html('<div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 400x400</div>');
-                $('#name_item, #description, #min_order, #max_order, #price').val('');
-                $('#additional_offer, #return_policy').val('N/A');
-                $('#delivery_fee, #vat, #service_charge').val('0');
+//                $('#name_item, #description, #min_order, #max_order, #price').val('');
+//                $('#additional_offer, #return_policy').val('N/A');
+//                $('#delivery_fee, #vat, #service_charge').val('0');
+                $('#form_item')[0].reset();
                 $('.item_attributes').html('');
 
             }

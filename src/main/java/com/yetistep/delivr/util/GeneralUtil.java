@@ -201,4 +201,12 @@ public class GeneralUtil {
         }
         return value;
     }
+
+    public static Boolean parseBoolean(String value) {
+        boolean returnValue = false;
+        if ("1".equalsIgnoreCase(value) || "yes".equalsIgnoreCase(value) ||
+                "true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value))
+            returnValue = true;
+        return returnValue;
+    }
 }

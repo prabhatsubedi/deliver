@@ -62,39 +62,41 @@ public class PushNotificationUtil {
     public static void sendNotificationToAndroidDevice(PushNotification pushNotification) {
         log.info("Sending push notification to Android Device:" + pushNotification.getMessage() + ": " + pushNotification.getTokens());
         try {
-            Sender sender = null;
-            int retries = 3;
-            if(pushNotification.getNotifyTo().equals(NotifyTo.DELIVERY_BOY)){
-                sender = new Sender(DBOY_API_KEY);
-            }else if(pushNotification.getNotifyTo().equals(NotifyTo.CUSTOMER)){
-                sender = new Sender(CUSTOMER_API_KEY);
-            }
-
-            String msg =pushNotification.getMessage();
-
-            if(pushNotification.getPushNotificationRedirect() != null){
-                msg += pushNotification.getPushNotificationRedirect().toString();
-            }
-            if (pushNotification.getExtraDetail() != null)
-                msg += "/" + pushNotification.getExtraDetail();
-
-            Message message = new Message.Builder()
-                    .collapseKey("1")
-                    .timeToLive(3)
-                    .delayWhileIdle(false)
-                    .addData("message", msg)
-                    .build();
-            MulticastResult result = sender.send(message, pushNotification.getTokens(), retries);
-
-
-            log.info(result.toString());
-            if (result.getResults() != null) {
-                int canonicalRegId = result.getCanonicalIds();
-                if (canonicalRegId != 0) {
+            if(pushNotification.getTokens().size()  > 0){
+                Sender sender = null;
+                int retries = 3;
+                if(pushNotification.getNotifyTo().equals(NotifyTo.DELIVERY_BOY)){
+                    sender = new Sender(DBOY_API_KEY);
+                }else if(pushNotification.getNotifyTo().equals(NotifyTo.CUSTOMER)){
+                    sender = new Sender(CUSTOMER_API_KEY);
                 }
-            } else {
-                int error = result.getFailure();
-                log.error("failed push notification ids" + error);
+
+                String msg =pushNotification.getMessage();
+
+                if(pushNotification.getPushNotificationRedirect() != null){
+                    msg += pushNotification.getPushNotificationRedirect().toString();
+                }
+                if (pushNotification.getExtraDetail() != null)
+                    msg += "/" + pushNotification.getExtraDetail();
+
+                Message message = new Message.Builder()
+                        .collapseKey("1")
+                        .timeToLive(3)
+                        .delayWhileIdle(false)
+                        .addData("message", msg)
+                        .build();
+                MulticastResult result = sender.send(message, pushNotification.getTokens(), retries);
+
+
+                log.info(result.toString());
+                if (result.getResults() != null) {
+                    int canonicalRegId = result.getCanonicalIds();
+                    if (canonicalRegId != 0) {
+                    }
+                } else {
+                    int error = result.getFailure();
+                    log.error("failed push notification ids" + error);
+                }
             }
         } catch (Exception e) {
             log.error("Error occurred while sending push notification to android device ", e);
@@ -117,7 +119,7 @@ public class PushNotificationUtil {
 
 
             //InputStream inputStream = classLoader.getResourceAsStream(MessageBundle.getMessage("iphone_client_app_cert","constants.properties"));
-            InputStream inputStream = classLoader.getResourceAsStream("/*MessageBundle.getIphoneClientAppCert()*/");
+            InputStream inputStream = classLoader.getResourceAsStream("ios_server.pem");
             PayloadBuilder payloadBuilder = APNS.newPayload();
            /* payloadBuilder = payloadBuilder.badge(pushNotification.getBadge());
             payloadBuilder = payloadBuilder.sound(pushNotification.getSound());*/

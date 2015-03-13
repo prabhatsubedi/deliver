@@ -510,13 +510,15 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
 
                 List<String> deviceTokens = userDeviceDaoService.getDeviceTokensExceptAcceptedDeliveryBoy(orderId, deliveryBoyId);
-                PushNotification pushNotification = new PushNotification();
-                pushNotification.setTokens(deviceTokens);
-                pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN002"));
-                pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
-                pushNotification.setExtraDetail(orderId.toString()+"/status/"+JobOrderStatus.ORDER_ACCEPTED.toString());
-                pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
-                PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
+                if(deviceTokens.size() > 0){
+                    PushNotification pushNotification = new PushNotification();
+                    pushNotification.setTokens(deviceTokens);
+                    pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN002"));
+                    pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
+                    pushNotification.setExtraDetail(orderId.toString()+"/status/"+JobOrderStatus.ORDER_ACCEPTED.toString());
+                    pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
+                    PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
+                }
 
                 /*
                 * if email subscription is set true
@@ -529,7 +531,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 }
             }
             return status;
-        } else if (deliveryBoyId.equals(deliveryBoySelectionEntity.getDeliveryBoy().getId())) {
+        } else if (deliveryBoyId.equals(deliveryBoySelectionEntity.getOrder().getDeliveryBoy().getId())) {
             throw new YSException("ORD005");
         }
         throw new YSException("ORD001");
@@ -608,10 +610,13 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if (BigDecimalUtil.isGreaterThen(order.getTotalCost(), maxOrderAmount)) {
            throw new YSException("CRT007", "Maximum order value is "+maxOrderAmount);
         }
-        BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
-        if(BigDecimalUtil.isLessThen(order.getCourierTransaction().getProfit(), BigDecimalUtil.percentageOf(order.getTotalCost(), MINIMUM_PROFIT_PERCENTAGE))){
-            log.warn("No Profit Condition:"+order.getId());
-            throw new YSException("ORD016");
+        Boolean PROFIT_CHECK = Boolean.parseBoolean(systemPropertyService.readPrefValue(PreferenceType.PROFIT_CHECK_FLAG));
+        if(PROFIT_CHECK){
+            BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
+            if(BigDecimalUtil.isLessThen(order.getCourierTransaction().getProfit(), BigDecimalUtil.percentageOf(order.getTotalCost(), MINIMUM_PROFIT_PERCENTAGE))){
+                log.warn("No Profit Condition:"+order.getId());
+                throw new YSException("ORD016");
+            }
         }
         order.setOrderStatus(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         boolean partnerShipStatus = merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());

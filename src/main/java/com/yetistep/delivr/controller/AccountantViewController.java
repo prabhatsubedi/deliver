@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
  * To change this template use File | Settings | File Templates.
  */
 @Controller
-@RequestMapping(value = "/dashboard")
+@RequestMapping(value = "/accountant")
 public class AccountantViewController {
 
     @RequestMapping(value = {"/dashboard"}, method = RequestMethod.GET)

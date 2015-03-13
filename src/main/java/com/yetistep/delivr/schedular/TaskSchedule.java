@@ -33,7 +33,7 @@ public class TaskSchedule {
         System.out.println("Updating Status of shopper:");
     }
 
-    @Scheduled(cron="0 32 15 * * FRI")
+    @Scheduled(cron="0 30 18 * * FRI")
     public void generateInvoice() throws Exception{
         System.out.println("Generating invoice:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

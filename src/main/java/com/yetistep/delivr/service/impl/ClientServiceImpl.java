@@ -1031,12 +1031,12 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
 
         boolean isLocal =  MessageBundle.isLocalHost();
-        String clientUrl;
-        if(isLocal) {
-            clientUrl = "http://localhost:8080/anon/referral/"+headerDto.getId();
+        String clientUrl = getServerUrl()+"/anon/referral/"+headerDto.getId();;
+        /*if(isLocal) {
+            clientUrl = getServerUrl()+"/anon/referral/"+headerDto.getId();
         }else{
-            clientUrl = "http://delivr.com/anon/referral/"+headerDto.getId();
-        }
+            clientUrl = getServerUrl()+"/anon/referral/"+headerDto.getId();
+        }*/
 
         Integer cnt = 0;
         if(emailList.size()>0){
@@ -1045,7 +1045,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                     break;
                 String serverUrl = getServerUrl();
                 String body = "<p>Hi</p>";
-                body += clientName+"<p> has invited you to use delivr application.</p>";
+                body += clientName+"<p> has invited you to use iDelivr application.</p>";
                 body += "<p>to join the delivr please find the following link: </p>";
                 body += "<p>"+clientUrl+"</p>";
                 String subject = " You are invited to use delivr application ";

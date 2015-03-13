@@ -2,6 +2,7 @@ package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.*;
 import com.yetistep.delivr.util.GeneralUtil;
@@ -150,12 +151,11 @@ public class ManagerController {
 
     }
 
-    @RequestMapping(value = "/get_merchants", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_merchants", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getMerchants() {
+    public ResponseEntity<ServiceResponse> getMerchants(@RequestBody RequestJsonDto requestJsonDto) {
         try{
-            List<MerchantEntity> merchantEntities = merchantService.getMerchants();
-
+            PaginationDto merchantEntities = merchantService.getMerchants(requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("Merchant retrieved successfully");
             serviceResponse.addParam("merchants", merchantEntities);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -164,7 +164,6 @@ public class ManagerController {
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
-
     }
 
     @RequestMapping(value = "/change_user_status", method = RequestMethod.PUT)

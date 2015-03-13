@@ -45,6 +45,16 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
+    public List<MerchantEntity> findAll(Page page) throws Exception {
+        List<MerchantEntity> merchants  = new ArrayList<MerchantEntity>();
+        Criteria criteria  = getCurrentSession().createCriteria(MerchantEntity.class, "merchant");
+        criteria.addOrder(Order.desc("id"));
+        HibernateUtil.fillPaginationCriteria(criteria, page, MerchantEntity.class);
+        merchants = criteria.list();
+        return merchants;
+    }
+
+    @Override
     public Boolean save(MerchantEntity value) throws Exception {
         getCurrentSession().persist(value);
         return true;
@@ -695,6 +705,14 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Integer getTotalNumberOfMerchants() throws Exception{
+        String sqQuery =    "SELECT COUNT(m.id) FROM merchants m";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
     }
 
 }

@@ -141,11 +141,20 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<MerchantEntity> getMerchants() throws Exception {
+    public PaginationDto getMerchants(RequestJsonDto requestJsonDto) throws Exception {
         log.info("++++++++++++ Getting All Merchants +++++++++++++++");
         List<MerchantEntity> merchantEntities = new ArrayList<>();
+        Page page = requestJsonDto.getPage();
 
-        merchantEntities = merchantDaoService.findAll();
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  merchantDaoService.getTotalNumberOfMerchants();
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+        merchantEntities = merchantDaoService.findAll(page);
         for(MerchantEntity merchantEntity: merchantEntities){
             /*
             * If password is empty, then our assumption is merchant has not clicked the verification link
@@ -188,7 +197,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             objects.add((MerchantEntity) ReturnJsonUtil.getJsonObject(merchant, fields, assoc));
         }
 
-        return objects;
+        paginationDto.setData(objects);
+        return paginationDto;
     }
 
 

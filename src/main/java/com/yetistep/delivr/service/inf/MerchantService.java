@@ -20,7 +20,7 @@ public interface MerchantService {
 
     public void activateMerchant(MerchantEntity merchantEntity) throws Exception;
 
-    public List<MerchantEntity> getMerchants() throws Exception;
+    public PaginationDto getMerchants(RequestJsonDto requestJsonDto) throws Exception;
 
     public void saveStore(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception;
 

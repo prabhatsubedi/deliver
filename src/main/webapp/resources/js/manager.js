@@ -75,7 +75,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 alert(data.message);
                 return;
             }
-            var merchants = data.params.merchants;
+            var merchants = data.params.merchants.data;
             var tdata = [];
 
             var sess_merchants = {};
@@ -112,9 +112,13 @@ if (typeof(Manager) == "undefined") var Manager = {};
         };
 
         callback.loaderDiv = "body";
-        callback.requestType = "GET";
+        callback.requestType = "POST";
+        var data = {};
+        data.page = page = {};
+        page.pageNumber = 1;
+        page.pageSize = 10;
 
-        Main.request('/organizer/get_merchants', {}, callback);
+        Main.request('/organizer/get_merchants', data, callback);
 
     };
 

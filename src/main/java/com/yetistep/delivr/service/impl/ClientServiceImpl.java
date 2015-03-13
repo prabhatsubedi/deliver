@@ -1145,8 +1145,11 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         PreferenceDto preferenceDto = new PreferenceDto();
         preferenceDto.setHelplineNumber(systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
         preferenceDto.setCustomerCareEmail(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_CARE_EMAIL));
+
         return preferenceDto;
     }
+
+
 
     @Override
     public SparrowResultModel getSmsResult() throws Exception {

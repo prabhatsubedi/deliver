@@ -23,7 +23,7 @@ public interface DeliveryBoyService {
 
     public DeliveryBoyEntity findDeliveryBoyById(HeaderDto headerDto) throws Exception;
 
-    public List<DeliveryBoyEntity> findAllDeliverBoy() throws Exception;
+    public PaginationDto findAllDeliverBoy(RequestJsonDto requestJsonDto) throws Exception;
 
     public Boolean updateDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity, HeaderDto headerDto) throws Exception;
 

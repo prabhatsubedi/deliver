@@ -31,19 +31,14 @@ public class ItemEntity implements Serializable {
     private Integer availableQuantity;
     private Date availableStartTime;
     private Date availableEndTime;
-
-    //private Set<OrderEntity> order;
     private Integer maxOrderQuantity;
     private Integer minOrderQuantity;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
-    //private Timestamp validTill;
     private Boolean paymentMethodCd;  //cash on demand
     private Boolean paymentMethodCc; //credit card
     private BigDecimal unitPrice;
     private String currencyType;
-    //private Boolean multiSelectOffer;
-    //private Boolean singleSelectOffer;
     private String additionalOffer;
     private Integer approxSize;
     private Integer approxWeight;
@@ -53,8 +48,6 @@ public class ItemEntity implements Serializable {
     private BigDecimal vat;
     private BigDecimal serviceCharge;
     private Status status;
-
-
     private String imageUrl; //Transient Value
     private String brandName; //Transient Value
     private Integer orderQuantity; //Transient Value

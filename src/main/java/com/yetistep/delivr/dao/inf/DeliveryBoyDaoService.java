@@ -2,6 +2,7 @@ package com.yetistep.delivr.dao.inf;
 
 import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.Page;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,10 +23,14 @@ public interface DeliveryBoyDaoService extends GenericDaoService<Integer, Delive
 
     public Integer getNumberOfAssignedOrders(Integer deliveryBoyId) throws Exception;
 
+    public List<DeliveryBoyEntity> findAll(Page page) throws Exception;
+
     public Boolean canStartJob(Integer orderId, Integer deliveryBoyId) throws Exception;
 
     public Boolean updateAverageRating(BigDecimal averageRating, Integer dboyId) throws Exception;
 
     public Boolean checkIfLicenseNumberExists(String licenseNumber) throws Exception;
+
+    public Integer getTotalNumberOfDboys() throws Exception;
 
 }

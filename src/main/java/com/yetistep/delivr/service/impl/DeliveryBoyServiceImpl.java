@@ -192,9 +192,23 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     }
 
     @Override
-    public List<DeliveryBoyEntity> findAllDeliverBoy() throws Exception {
+    public PaginationDto findAllDeliverBoy(RequestJsonDto requestJsonDto) throws Exception {
         log.info("Retrieving list of Deliver Boys");
-        List<DeliveryBoyEntity> deliveryBoyEntities = deliveryBoyDaoService.findAll();
+
+
+        Page page = requestJsonDto.getPage();
+
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  deliveryBoyDaoService.getTotalNumberOfDboys();
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+
+
+        List<DeliveryBoyEntity> deliveryBoyEntities = deliveryBoyDaoService.findAll(page);
         /*For filtering role -- set to null as all delivery boy has same role*/
 
         List<DeliveryBoyEntity> objects = new ArrayList<>();
@@ -230,8 +244,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             objects.add(deliveryBoy);
         }
 
-
-        return objects;
+          paginationDto.setData(objects);
+        return paginationDto;
     }
 
     @Override

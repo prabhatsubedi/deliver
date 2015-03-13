@@ -6,11 +6,11 @@ import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.util.DateUtil;
-import org.hibernate.Query;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import com.yetistep.delivr.util.HibernateUtil;
+import org.hibernate.*;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.BigDecimalType;
@@ -43,6 +43,26 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
     @Override
     public List<DeliveryBoyEntity> findAll() throws Exception {
         return (List<DeliveryBoyEntity>) getCurrentSession().createCriteria(DeliveryBoyEntity.class).list();
+    }
+
+    @Override
+    public List<DeliveryBoyEntity> findAll(Page page) throws Exception {
+        //return (List<DeliveryBoyEntity>) getCurrentSession().createCriteria(DeliveryBoyEntity.class).list();
+
+        List<DeliveryBoyEntity> merchants  = new ArrayList<DeliveryBoyEntity>();
+        Criteria criteria  = getCurrentSession().createCriteria(DeliveryBoyEntity.class);
+        criteria.addOrder(Order.desc("id"));
+        HibernateUtil.fillPaginationCriteria(criteria, page, DeliveryBoyEntity.class);
+        merchants = criteria.list();
+        return merchants;
+    }
+
+    @Override
+    public Integer getTotalNumberOfDboys() throws Exception {
+        String sqQuery =    "SELECT COUNT(db.id) FROM delivery_boys db";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
     }
 
     @Override

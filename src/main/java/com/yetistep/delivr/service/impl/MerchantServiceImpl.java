@@ -279,45 +279,21 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         String brandLogoUrl = dbStoresBrand.getBrandLogo();
         String brandImageUrl = dbStoresBrand.getBrandImage();
 
-        //dbStoresBrand.setBrandName(storesBrand.getBrandName());
         dbStoresBrand.setBrandUrl(storesBrand.getBrandUrl());
         dbStoresBrand.setMinOrderAmount(storesBrand.getMinOrderAmount());
         dbStoresBrand.setOpeningTime(storesBrand.getOpeningTime());
         dbStoresBrand.setClosingTime(storesBrand.getClosingTime());
         dbStoresBrand.setOpenStatus(storesBrand.getOpenStatus());
 
-
-        Map<Integer, StoreEntity> storeWithId = new HashMap<Integer, StoreEntity>();
-        Map<Integer, StoreEntity> dbStoreWithId = new HashMap<Integer, StoreEntity>();
-
         List<BrandsCategoryEntity> dbBrandsCategories = dbStoresBrand.getBrandsCategory();
         Map<Integer, Integer> brandCategoriesIdList = new HashMap<Integer, Integer>();
-        //Map<Integer, BrandsCategoryEntity> brandCategoriesMap= new HashMap<Integer, BrandsCategoryEntity>();
         for (BrandsCategoryEntity brandsCategory: dbBrandsCategories){
-            //if (categories.contains(brandsCategory.getCategory().getId()) && brandsCategory.getStoresBrand().getId() == storesBrand.getId()) {
-                brandCategoriesIdList.put(brandsCategory.getCategory().getId(), brandsCategory.getId());
-           // }
-            //brandCategoriesMap.put(brandsCategory.getId(), brandsCategory);
+            brandCategoriesIdList.put(brandsCategory.getCategory().getId(), brandsCategory.getId());
         }
 
-        /*for (BrandsCategoryEntity dbCategory: dbBrandsCategories){
-            if(!categories.contains(dbCategory.getCategory().getId())){
-                dbBrandsCategories.remove(dbCategory);
-            }
-        }*/
-       /* Iterator it = brandCategoriesIdList.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pairs = (Map.Entry)it.next();
-           if(!categories.contains(pairs.getKey())){
-               dbBrandsCategories.remove(brandCategoriesMap.get(pairs.getValue()));
-           }
-        }*/
-
-        //List<BrandsCategoryEntity> brandsCategories = new ArrayList<BrandsCategoryEntity>();
         for (Integer categoryId: categories){
             if(brandCategoriesIdList.get(categoryId) == null) {
                 BrandsCategoryEntity newBrandsCategory = new BrandsCategoryEntity();
-                //newBrandsCategory.setId(null);
                 CategoryEntity category = new CategoryEntity();
                 category.setId(categoryId);
                 newBrandsCategory.setCategory(category);
@@ -327,26 +303,33 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         dbStoresBrand.setBrandsCategory(dbBrandsCategories);
-        //dbStoresBrand.setBrandLogo(null);
-        //dbStoresBrand.setBrandImage(null);
+
+        Map<Integer, StoreEntity> storeWithId = new HashMap<Integer, StoreEntity>();
+        Map<Integer, StoreEntity> dbStoreWithId = new HashMap<Integer, StoreEntity>();
 
         List<StoreEntity> dbStores = dbStoresBrand.getStore();
         List<Integer> storeIdList = new ArrayList<Integer>();
 
+        for (StoreEntity dbStore:dbStores){
+            //if(dbStore.getId() != null)
+            dbStoreWithId.put(dbStore.getId(), dbStore);
+        }
+
         for (StoreEntity store: stores){
             if(store.getId() == null){
+                store.setStoresBrand(dbStoresBrand);
                 dbStores.add(store);
             } else {
                 storeIdList.add(store.getId());
                 storeWithId.put(store.getId(), store);
             }
-            store.setStoresBrand(dbStoresBrand);
+            //store.setStoresBrand(dbStoresBrand);
         }
 
-        for (StoreEntity dbStore:dbStores){
+        /*for (StoreEntity dbStore:dbStores){
             if(dbStore.getId() != null)
                 dbStoreWithId.put(dbStore.getId(), dbStore);
-        }
+        }*/
 
         Iterator itS = dbStoreWithId.entrySet().iterator();
         while (itS.hasNext()) {

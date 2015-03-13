@@ -116,7 +116,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
         var data = {};
         data.page = page = {};
         page.pageNumber = 1;
-        page.pageSize = 10;
+        page.pageSize = 30;
 
         Main.request('/organizer/get_merchants', data, callback);
 
@@ -323,6 +323,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                             $('.add_items', elem).remove();
                         else
                             $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
+                        console.log(storeBrand.merchantId);
 
                         if(sess_merchants[storeBrand.merchantId].status == "INACTIVE") $('.add_items', elem).addClass('disabled');
 
@@ -422,7 +423,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 alert(data.message);
                 return;
             }
-            var courierStaffs = data.params.deliveryBoys;
+            var courierStaffs = data.params.deliveryBoys.data;
             var tdata = [];
 
             for (i = 0; i < courierStaffs.length; i++) {
@@ -485,7 +486,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
         };
 
         callback.loaderDiv = "body";
-        callback.requestType = "GET";
+        callback.requestType = "POST";
 
         Main.request('/organizer/get_dboys', {}, callback);
 

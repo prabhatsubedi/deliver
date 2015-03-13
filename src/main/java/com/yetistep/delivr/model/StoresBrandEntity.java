@@ -36,11 +36,6 @@ import java.util.Map;
 public class StoresBrandEntity implements Serializable {
 
    private Integer id;
-   private MerchantEntity merchant;
-   private List<StoreEntity> store;
-   private List<BrandsCategoryEntity> brandsCategory;
-   private List<ItemEntity> items;
-   private List<CategoryEntity> categories;
    private String brandName;
    private Date openingTime;
    private Date closingTime;
@@ -53,11 +48,16 @@ public class StoresBrandEntity implements Serializable {
    private Status status;
     //Transient Variable
    private Boolean openStatus;
-   private List<CartEntity> carts;
    private Integer merchantId; //Transient Variable
    private BigDecimal minOrderAmount;
    private Integer countStore; //Transient Variable
    private String nearestStoreLocation; //Transient Variable
+   private MerchantEntity merchant;
+   private List<StoreEntity> store;
+   private List<BrandsCategoryEntity> brandsCategory;
+   private List<ItemEntity> items;
+   private List<CategoryEntity> categories;
+   private List<CartEntity> carts;
 
 
     @Id
@@ -82,7 +82,7 @@ public class StoresBrandEntity implements Serializable {
     }
 
 
-    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "storesBrand", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )
     public List<StoreEntity> getStore() {
         return store;
     }
@@ -91,7 +91,7 @@ public class StoresBrandEntity implements Serializable {
         this.store = store;
     }
 
-    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "storesBrand", cascade = { CascadeType.PERSIST, CascadeType.MERGE})
     public List<BrandsCategoryEntity> getBrandsCategory() {
         return brandsCategory;
     }
@@ -100,7 +100,7 @@ public class StoresBrandEntity implements Serializable {
         this.brandsCategory = brandsCategory;
     }
 
-    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "storesBrand")
     public List<ItemEntity> getItems() {
         return items;
     }
@@ -109,7 +109,7 @@ public class StoresBrandEntity implements Serializable {
         this.items = items;
     }
 
-    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "storesBrand")
     public List<CategoryEntity> getCategories() {
         return categories;
     }
@@ -223,7 +223,7 @@ public class StoresBrandEntity implements Serializable {
         this.status = status;
     }
 
-    @OneToMany(mappedBy = "storesBrand", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "storesBrand")
     public List<CartEntity> getCarts() {
         return carts;
     }

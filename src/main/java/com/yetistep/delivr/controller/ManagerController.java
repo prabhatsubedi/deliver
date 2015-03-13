@@ -79,11 +79,11 @@ public class ManagerController {
         }
     }
 
-    @RequestMapping(value = "/get_dboys", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_dboys", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getAllDeliveryBoy() {
+    public ResponseEntity<ServiceResponse> getAllDeliveryBoy(@RequestBody RequestJsonDto requestJsonDto) {
         try {
-            List<DeliveryBoyEntity> deliveryBoyEntities = deliveryBoyService.findAllDeliverBoy();
+            PaginationDto deliveryBoyEntities = deliveryBoyService.findAllDeliverBoy(requestJsonDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("List of shoppers");
             serviceResponse.addParam("deliveryBoys", deliveryBoyEntities);

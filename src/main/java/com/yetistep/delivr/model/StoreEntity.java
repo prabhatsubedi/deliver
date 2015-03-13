@@ -242,7 +242,7 @@ public class StoreEntity implements Serializable {
         this.sendEmail = sendEmail;
     }
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "store")
     @JsonProperty
     public List<InvoiceEntity> getInvoice() {
         return invoice;

@@ -259,7 +259,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "deliveryBoy", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "deliveryBoy", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )
     public List<DBoyAdvanceAmountEntity> getdBoyAdvanceAmounts() {
         return dBoyAdvanceAmounts;
     }
@@ -269,7 +269,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "deliveryBoy", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "deliveryBoy", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )
     public List<DBoySubmittedAmountEntity> getdBoySubmittedAmount() {
         return dBoySubmittedAmount;
     }

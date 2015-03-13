@@ -113,12 +113,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         callback.loaderDiv = "body";
         callback.requestType = "POST";
-        var data = {};
+      /*  var data = {};
         data.page = page = {};
         page.pageNumber = 1;
-        page.pageSize = 30;
+        page.pageSize = 30;*/
 
-        Main.request('/organizer/get_merchants', data, callback);
+        Main.request('/organizer/get_merchants', {}, callback);
 
     };
 

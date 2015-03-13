@@ -417,7 +417,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
 
-        String fields = "id,partnershipStatus,commissionPercentage,serviceFee,website,agreementDetail,businessTitle,businessLogo,companyRegistrationNo,vatNo,status,user";
+        String fields = "id,partnershipStatus,commissionPercentage,serviceFee,website,agreementDetail,businessTitle,businessLogo,companyRegistrationNo,vatNo,panNo,status,user";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -461,6 +461,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         merchant.getUser().getAddresses().get(0).setUser(merchant.getUser());
         //merchant values
         merchant.setWebsite(merchantEntity.getWebsite());
+        merchant.setPanNo(merchantEntity.getPanNo());
         //merchant.setBusinessTitle(merchantEntity.getBusinessTitle());
         merchant.setVatNo(merchantEntity.getVatNo());
         merchant.setCompanyRegistrationNo(merchantEntity.getCompanyRegistrationNo());
@@ -1594,7 +1595,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<InvoiceEntity> getInvoices(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
+    public PaginationDto getInvoices(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
 
         Map<String, Date> dateRange = requestJsonDto.getDateRange();
         Date fromDate = null;
@@ -1645,7 +1646,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             invoices.add((InvoiceEntity) ReturnJsonUtil.getJsonObject(invoiceEntity, fields, assoc, subAssoc));
         }
 
-        return invoices;
+        paginationDto.setData(invoices);
+        return paginationDto;
     }
 
 

@@ -26,7 +26,6 @@ public class MerchantEntity implements Serializable {
     private Integer id;
     private UserEntity user;
     private MerchantType type;
-    private List<StoresBrandEntity> storesBrand;
     private Boolean partnershipStatus;
     private BigDecimal commissionPercentage;
     private BigDecimal serviceFee;
@@ -38,6 +37,7 @@ public class MerchantEntity implements Serializable {
     private String vatNo;
     private String panNo;
     private Status status;
+    private List<StoresBrandEntity> storesBrand;
     private List<InvoiceEntity> invoices;
 
     @Id
@@ -51,7 +51,7 @@ public class MerchantEntity implements Serializable {
         this.id = id;
     }
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+    @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "user_id")
     public UserEntity getUser() {
         return user;
@@ -71,7 +71,7 @@ public class MerchantEntity implements Serializable {
         this.type = type;
     }
 
-    @OneToMany(mappedBy = "merchant", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "merchant")
     public List<StoresBrandEntity> getStoresBrand() {
         return storesBrand;
     }
@@ -179,7 +179,7 @@ public class MerchantEntity implements Serializable {
         this.status = status;
     }
 
-    @OneToMany(mappedBy = "merchant", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "merchant")
     public List<InvoiceEntity> getInvoices() {
         return invoices;
     }

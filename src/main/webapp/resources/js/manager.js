@@ -69,7 +69,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.getMerchants = function () {
 
         var callback = function (status, data) {
-
             console.log(data);
             if (!data.success) {
                 alert(data.message);
@@ -108,6 +107,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             Main.createDataTable("#merchants_table", tdata);
 
             $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+//            Main.createDataTable();
 
         };
 
@@ -1222,12 +1222,15 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 } else if (action == "get_delivery_success_graph") {
                     chartData = [['Date', 'Successful Delivery', 'Failed Delivery']];
                 } else {
-                    chartData = [['Date', 'Total Time', 'Order Count']];
+                    chartData = [['Date', 'Average Time', 'Order Count']];
                 }
 
                 for(var i in count1) {
                     var dateStr = new Date(i).format("mmm dd, yyyy");
-                    chartData.push([dateStr, count1[i], count2[i]]);
+                    if(action =='get_delivery_graph')
+                        chartData.push([dateStr, count2[i] == 0 ? 0 : Math.ceil(count1[i]/count2[i]), count2[i]]);
+                    else
+                        chartData.push([dateStr, count1[i], count2[i]]);
                 }
 
                 if(Object.keys(count1).length < 1) chartData.push([null, 0, 0]);

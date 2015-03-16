@@ -832,10 +832,12 @@ function toggleSwitch(value, elem) {
                 update_subcat(data_categories_id);
 
                 $('.product_image .drop_zone').html('<div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 400x400</div>');
-//                $('#name_item, #description, #min_order, #max_order, #price').val('');
-//                $('#additional_offer, #return_policy').val('N/A');
-//                $('#delivery_fee, #vat, #service_charge').val('0');
-                $('#form_item')[0].reset();
+                $('#name_item, #description, #price').val('');
+                $('#min_order').val('1');
+                $('#max_order').val('100');
+                $('#additional_offer').val('N/A');
+                $('#service_charge').val('0');
+                $('#vat').val('13');
                 $('.item_attributes').html('');
 
             }

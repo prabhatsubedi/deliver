@@ -1,11 +1,9 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.DeliveryBoySelectionDaoService;
+import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.DeliveryBoySelectionEntity;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,5 +92,28 @@ public class DeliverBoySelectionDaoServiceImpl implements DeliveryBoySelectionDa
         query.setParameter("orderId", orderId);
         query.executeUpdate();
         return true;
+    }
+
+    @Override
+    public List<DeliveryBoySelectionEntity> getAllSelectionDetails(Integer orderId, Integer deliveryBoyId) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(DeliveryBoySelectionEntity.class)
+                .createAlias("order", "o")
+                .add(Restrictions.not(Restrictions.eq("o.id", orderId)))
+                .add(Restrictions.eq("o.orderStatus", JobOrderStatus.ORDER_PLACED))
+                .add(Restrictions.eq("deliveryBoy.id", deliveryBoyId))
+                .add(Restrictions.eq("rejected", false));
+        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = (List<DeliveryBoySelectionEntity>) criteria.list();
+        return deliveryBoySelectionEntities;
+    }
+
+    @Override
+    public Integer getCountOfDeliveryBoyForOrder(Integer orderId, Integer deliveryBoyId) throws Exception {
+        String sql = "SELECT count(id) FROM dboy_selections WHERE order_id = :orderId AND dboy_id != :deliveryBoyId  AND rejected = :rejected";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("orderId", orderId);
+        sqlQuery.setParameter("deliveryBoyId", deliveryBoyId);
+        sqlQuery.setParameter("rejected", false);
+        Integer numberOfDeliveryBoys = ((Number)sqlQuery.uniqueResult()).intValue();
+        return numberOfDeliveryBoys;
     }
 }

@@ -239,12 +239,19 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 url: Main.modifyURL(dataFilter.url),
                 type: dataFilter.requestType == undefined ? "POST" : dataFilter.requestType,
                 headers: headers,
-                beforeSend: function( jqXHR, settings){
-                    console.log(jqXHR);
-                    console.log(settings);
+                data: function(data){
+                    console.log(data);
+                    var request = {}
+                    var page = {};
+                    if(typeof(dataFilter.params) == "object") request = dataFilter.params;
+                    page.pageNumber = parseInt((data.start/data.length) + 1);
+                    page.pageSize = data.length;
+                    request.page = page;
+                    return JSON.stringify(request);
                 },
                 dataFilter : function(data, type) {
                     var jsonData = dataFilter(JSON.parse(data), type);
+                    console.log(jsonData);
                     return JSON.stringify(jsonData);
                 }
             }

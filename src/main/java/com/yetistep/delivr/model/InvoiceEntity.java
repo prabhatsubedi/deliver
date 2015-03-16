@@ -119,7 +119,7 @@ public class InvoiceEntity {
         this.invoicePaid = invoicePaid;
     }
 
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "invoice", cascade = { CascadeType.PERSIST, CascadeType.MERGE } )
     public List<OrderEntity> getOrders() {
         return orders;
     }
@@ -128,7 +128,7 @@ public class InvoiceEntity {
         this.orders = orders;
     }
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     public MerchantEntity getMerchant() {
         return merchant;
     }
@@ -137,7 +137,7 @@ public class InvoiceEntity {
         this.merchant = merchant;
     }
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE } )
     public StoreEntity getStore() {
         return store;
     }

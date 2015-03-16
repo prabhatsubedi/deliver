@@ -46,7 +46,7 @@ public class CategoryEntity implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "parent_id")
     public CategoryEntity getParent() {
         return parent;
@@ -56,7 +56,7 @@ public class CategoryEntity implements Serializable {
         this.parent = parent;
     }
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "parent")
     public List<CategoryEntity> getChild() {
         return child;
     }
@@ -65,7 +65,7 @@ public class CategoryEntity implements Serializable {
         this.child = child;
     }
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "category")
     public List<BrandsCategoryEntity> getBrandsCategory() {
         return brandsCategory;
     }
@@ -74,7 +74,7 @@ public class CategoryEntity implements Serializable {
         this.brandsCategory = brandsCategory;
     }
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "brand_id")
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
@@ -84,7 +84,7 @@ public class CategoryEntity implements Serializable {
         this.storesBrand = storesBrand;
     }
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "category")
     public List<ItemEntity> getItem() {
         return item;
     }

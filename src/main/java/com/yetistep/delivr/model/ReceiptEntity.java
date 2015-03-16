@@ -65,7 +65,7 @@ public class ReceiptEntity {
         this.receiptAmount = receiptAmount;
     }
 
-    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE } , fetch = FetchType.LAZY)
     public OrderEntity getOrder() {
         return order;
     }
@@ -74,7 +74,7 @@ public class ReceiptEntity {
         this.order = order;
     }
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     public CustomerEntity getCustomer() {
         return customer;
     }

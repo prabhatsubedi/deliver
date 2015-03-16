@@ -54,7 +54,6 @@ public class UserEntity implements Serializable {
     private MerchantEntity merchant;
     private CustomerEntity customer;
     private UserDeviceEntity userDevice;
-
     private List<OrderCancelEntity> orderCancelEntities;
     private List<AddressEntity> addresses;
     private List<ActionLogEntity> actionLogEntities;
@@ -81,7 +80,7 @@ public class UserEntity implements Serializable {
         this.role = role;
     }
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonProperty
     public DeliveryBoyEntity getDeliveryBoy() {
         return deliveryBoy;
@@ -93,7 +92,7 @@ public class UserEntity implements Serializable {
 
 
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonProperty
     public MerchantEntity getMerchant() {
         return merchant;
@@ -103,7 +102,7 @@ public class UserEntity implements Serializable {
         this.merchant = merchant;
     }
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JsonProperty
     public CustomerEntity getCustomer() {
         return customer;

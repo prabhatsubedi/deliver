@@ -9,14 +9,15 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.getCustomers = function () {
 
-        var callback = function (status, data) {
+        var dataFilter = function (data, type) {
 
             console.log(data);
             if (!data.success) {
                 alert(data.message);
                 return;
             }
-            var users = data.params.users;
+            var responseRows = data.params.users.numberOfRows;
+            var users = data.params.users.data;
             var tdata = [];
 
             for (i = 0; i < users.length; i++) {
@@ -29,19 +30,23 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var inactivatedCount = !user.inactivatedCount ? '0' : user.inactivatedCount;
 
                 var row = [id, fullName, emailAddress, mobileNumber, inactivatedCount, '<a class="trigger_activation" href="#" data-id="' + id + '" >Activate</a>'];
+                row = $.extend({}, row);
                 tdata.push(row);
             }
 
-            Main.createDataTable("#customers_table", tdata);
+            var response = {};
+            response.data = tdata;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
 
-            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+            return response;
 
         };
 
-        callback.loaderDiv = "body";
-        callback.requestType = "GET";
+        dataFilter.url = "/organizer/deactivated_customers";
+        Main.createDataTable("#customers_table", dataFilter);
 
-        Main.request('/organizer/deactivated_customers', {}, callback);
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     };
 
@@ -75,6 +80,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 alert(data.message);
                 return;
             }
+            var responseRows = data.params.merchants.numberOfRows;
             var merchants = data.params.merchants.data;
             var tdata = [];
 
@@ -106,7 +112,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
             Main.saveMerchants(sess_merchants);
 
-            return {data: tdata, recordsTotal: 65, recordsFiltered: 65};
+            var response = {};
+            response.data = tdata;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
+
+            return response;
 
         };
 
@@ -318,6 +329,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                             $('.add_items', elem).remove();
                         else
                             $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
+                        console.log(storeBrand.merchantId);
 
                         if(sess_merchants[storeBrand.merchantId].status == "INACTIVE") $('.add_items', elem).addClass('disabled');
 
@@ -375,14 +387,15 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.listStores = function() {
 
-        var callback = function (status, data) {
+        var dataFilter = function (data, type) {
 
             console.log(data);
             if (!data.success) {
                 alert(data.message);
                 return;
             }
-            var brands = data.params.brands;
+            var responseRows = data.params.brands.numberOfRows;
+            var brands = data.params.brands.data;
             var tdata = [];
 
             for (var i = 0; i < brands.length; i++) {
@@ -395,29 +408,35 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var actions = '<div class="action_links">' + viewStore + viewItem + '</div>';
 
                 var row = [brandId, brandName, brand.countStore, brand.featured ? "Featured" : "None", !brand.priority ? "None" : brand.priority, Main.ucfirst(brand.status), actions];
+                row = $.extend({}, row);
                 tdata.push(row);
             }
 
-            Main.createDataTable("#stores_table", tdata);
+            var response = {};
+            response.data = tdata;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
 
-            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+            return response;
 
         };
-        callback.requestType = "GET";
-        callback.loaderDiv = 'body';
 
-        Main.request('/merchant/get_brands', {}, callback);
+        dataFilter.url = "/merchant/get_brands";
+        Main.createDataTable("#stores_table", dataFilter);
+
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     };
 
     Manager.getCourierStaffs = function () {
 
-        var callback = function (status, data) {
+        var dataFilter = function (data, type) {
             if (!data.success) {
                 alert(data.message);
                 return;
             }
-            var courierStaffs = data.params.deliveryBoys;
+            var responseRows = data.params.deliveryBoys.numberOfRows;
+            var courierStaffs = data.params.deliveryBoys.data;
             var tdata = [];
 
             for (i = 0; i < courierStaffs.length; i++) {
@@ -467,22 +486,23 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     '</div>';
 
                 var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, Main.ucfirst(user_status), Main.getFromLocalStorage("currency")+balance, action];
+                row = $.extend({}, row);
                 tdata.push(row);
             }
 
-            Main.createDataTable("#courier_staff_table", tdata, function(){
-                $('.dataTable .elem_tooltip:not([data-original-title])').tooltip();
-            });
+            var response = {};
+            response.data = tdata;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
 
-            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
-
+            return response;
 
         };
 
-        callback.loaderDiv = "body";
-        callback.requestType = "GET";
+        dataFilter.url = "/organizer/get_dboys";
+        Main.createDataTable("#courier_staff_table", dataFilter);
 
-        Main.request('/organizer/get_dboys', {}, callback);
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     };
 

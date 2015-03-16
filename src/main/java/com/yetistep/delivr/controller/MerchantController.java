@@ -440,7 +440,6 @@ public class MerchantController {
                 }
             }
             PaginationDto orders = merchantService.getOrders(headerDto, requestJson);
-
             ServiceResponse serviceResponse = new ServiceResponse("Orders retrieved successfully with Merchant ID: "+headerDto.getMerchantId());
             serviceResponse.addParam("orders", orders);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -522,7 +521,7 @@ public class MerchantController {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
 
-            List<InvoiceEntity> invoices = merchantService.getInvoices(headerDto, requestJsonDto);
+            PaginationDto invoices = merchantService.getInvoices(headerDto, requestJsonDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Invoices retrieved successfully with Merchant ID: "+headerDto.getMerchantId());
             serviceResponse.addParam("invoices", invoices);

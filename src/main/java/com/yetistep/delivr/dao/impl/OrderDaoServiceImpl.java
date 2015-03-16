@@ -3,7 +3,6 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
-import com.yetistep.delivr.model.RatingEntity;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 import com.yetistep.delivr.util.DateUtil;
@@ -16,9 +15,11 @@ import org.hibernate.transform.Transformers;
 import org.hibernate.type.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
@@ -81,8 +82,8 @@ public class OrderDaoServiceImpl implements OrderDaoService {
                 "orders o INNER JOIN delivery_boys db on (db.id = o.delivery_boy_id) INNER JOIN " +
                 "dboy_selections dbs on (dbs.order_id = o.id AND dbs.dboy_id = db.id) INNER JOIN " +
                 "dboy_order_history dbh on(dbh.order_id = o.id) WHERE o.order_status in " +
-                "(:orderAccepted, :inRouteToPickUp, :atStore, :inRouteToDelivery) AND o.delivery_boy_id = :deliveryBoyId " +
-                "order by orderStatus desc , id asc";
+                "(:orderAccepted, :inRouteToPickUp, :atStore, :inRouteToDelivery) AND dbs.rejected = false " +
+                "AND o.delivery_boy_id = :deliveryBoyId order by orderStatus desc , dbh.order_accepted_at asc";
         Properties params = new Properties();
         params.put("enumClass", "com.yetistep.delivr.enums.JobOrderStatus");
         /*type 12 instructs to use the String representation of enum value*/

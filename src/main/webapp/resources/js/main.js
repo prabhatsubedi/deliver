@@ -210,8 +210,51 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
     };
 
-    Main.createDataTable = function (selector, data, colindex, sortorder, hideCols){
+    Main.createDataTable = function (selector, dataFilter, colindex, sortorder, hideCols){
+
+        var headers = {};
+        if(dataFilter.headers != undefined)
+            headers = dataFilter.headers;
+
+        headers['Content-Type'] = 'application/json';
+
         $.extend($.fn.dataTable.defaults, {
+            sDom: '<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
+            columnDefs: [
+                {
+                    targets: hideCols,
+                    visible: false
+                }
+            ],
+            language: {
+                paginate: {
+                    next: '&raquo;',
+                    previous: '&laquo'
+                }
+            },
+            fnDrawCallback: typeof(colindex) == 'function' ? colindex : null,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: Main.modifyURL(dataFilter.url),
+                type: dataFilter.requestType == undefined ? "POST" : dataFilter.requestType,
+                headers: headers,
+                beforeSend: function( jqXHR, settings){
+                    console.log(jqXHR);
+                    console.log(settings);
+                },
+                dataFilter : function(data, type) {
+                    var jsonData = dataFilter(JSON.parse(data), type);
+                    return JSON.stringify(jsonData);
+                }
+            }
+        });
+
+        $(selector).dataTable();
+
+/*
+            selector = "#merchants_table";
+            $.extend($.fn.dataTable.defaults, {
             sDom: '<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
             columnDefs: [
                 {
@@ -233,7 +276,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             dataTable.fnAddData(data);
             if(colindex != undefined && sortorder != undefined) dataTable.fnSort( [ [colindex, sortorder] ] );
         }
-        dataTable.fnDraw();
+        dataTable.fnDraw();*/
     }
 
     Main.ucfirst = function(word){

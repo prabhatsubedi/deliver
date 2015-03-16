@@ -68,7 +68,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.getMerchants = function () {
 
-        var callback = function (status, data) {
+        var dataFilter = function (data, type) {
+
             console.log(data);
             if (!data.success) {
                 alert(data.message);
@@ -99,26 +100,20 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
                 sess_merchants[merchantId] = {id: merchantId, businessTitle: merchant.businessTitle, status: status};
                 var row = [merchantId, link_merchant, merchant.partnershipStatus ? 'Partner' : 'Non Partner', merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
+                row = $.extend({}, row);
                 tdata.push(row);
             }
 
             Main.saveMerchants(sess_merchants);
 
-            Main.createDataTable("#merchants_table", tdata);
-
-            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
-//            Main.createDataTable();
+            return {data: tdata, recordsTotal: 65, recordsFiltered: 65};
 
         };
 
-        callback.loaderDiv = "body";
-        callback.requestType = "POST";
-        var data = {};
-        data.page = page = {};
-        page.pageNumber = 1;
-        page.pageSize = 30;
+        dataFilter.url = "/organizer/get_merchants";
+        Main.createDataTable("#merchants_table", dataFilter);
 
-        Main.request('/organizer/get_merchants', data, callback);
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     };
 
@@ -323,7 +318,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
                             $('.add_items', elem).remove();
                         else
                             $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
-                        console.log(storeBrand.merchantId);
 
                         if(sess_merchants[storeBrand.merchantId].status == "INACTIVE") $('.add_items', elem).addClass('disabled');
 
@@ -423,7 +417,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 alert(data.message);
                 return;
             }
-            var courierStaffs = data.params.deliveryBoys.data;
+            var courierStaffs = data.params.deliveryBoys;
             var tdata = [];
 
             for (i = 0; i < courierStaffs.length; i++) {
@@ -486,7 +480,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
         };
 
         callback.loaderDiv = "body";
-        callback.requestType = "POST";
+        callback.requestType = "GET";
 
         Main.request('/organizer/get_dboys', {}, callback);
 

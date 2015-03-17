@@ -51,7 +51,7 @@ public interface ManagerService {
 
     public Boolean changeOrderSettlement(HeaderDto headerDto) throws Exception;
 
-    public List<UserEntity> getInactivatedCustomers() throws Exception;
+    public PaginationDto getInactivatedCustomers(RequestJsonDto requestJsonDto) throws Exception;
 
     public Boolean activateUser(HeaderDto headerDto) throws Exception;
 }

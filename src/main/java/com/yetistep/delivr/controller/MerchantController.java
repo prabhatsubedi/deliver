@@ -126,9 +126,9 @@ public class MerchantController {
         }
     }
 
-    @RequestMapping(value = "/get_brands", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_brands", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> findAllBrands(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> findAllBrands(@RequestHeader HttpHeaders headers, RequestJsonDto requestJsonDto) {
         try {
             HeaderDto headerDto = new HeaderDto();
             List<String> hd = headers.get("merchantId");
@@ -141,7 +141,7 @@ public class MerchantController {
                     headerDto.setMerchantId(null);
                 }
             }
-            List<StoresBrandEntity> brands = merchantService.findBrands(headerDto);
+            PaginationDto brands = merchantService.findBrands(headerDto, requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("brands has been retrieved successfully");
             serviceResponse.addParam("brands", brands);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

@@ -549,14 +549,29 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<StoresBrandEntity> findBrands(HeaderDto headerDto) throws Exception {
+    public PaginationDto findBrands(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
 
         List<StoresBrandEntity> storesBrands;
+        PaginationDto paginationDto = new PaginationDto();
+
+        Page page = requestJsonDto.getPage();
+
+        Integer totalRows;
+        if (headerDto.getMerchantId() != null){
+             totalRows =  merchantDaoService.getTotalNumberOfBrandByMerchant(headerDto.getMerchantId());
+        }else{
+             totalRows =  merchantDaoService.getTotalNumberOfBrand();
+        }
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
 
         if (headerDto.getMerchantId() != null){
-            storesBrands = merchantDaoService.findBrandListByMerchant(headerDto.getMerchantId());
+            storesBrands = merchantDaoService.findBrandListByMerchant(headerDto.getMerchantId(), page);
         } else {
-            storesBrands = merchantDaoService.findBrandList();
+            storesBrands = merchantDaoService.findBrandList(page);
         }
 
         List<StoresBrandEntity> brandList = new ArrayList<>();
@@ -577,7 +592,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 brandList.add (brand);
             }
         }
-        return brandList;
+        paginationDto.setData(brandList);
+        return paginationDto;
     }
 
     @Override

@@ -48,7 +48,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public List<MerchantEntity> findAll(Page page) throws Exception {
         List<MerchantEntity> merchants  = new ArrayList<MerchantEntity>();
         Criteria criteria  = getCurrentSession().createCriteria(MerchantEntity.class, "merchant");
-        criteria.addOrder(Order.desc("id"));
         HibernateUtil.fillPaginationCriteria(criteria, page, MerchantEntity.class);
         merchants = criteria.list();
         return merchants;
@@ -297,6 +296,18 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
+    public List<StoresBrandEntity> findBrandListByMerchant(Integer merchantId, Page page) throws Exception {
+        List<StoresBrandEntity> stores = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class, "brand");
+        criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId))) ;
+        criteria.addOrder(Order.desc("id"));
+        HibernateUtil.fillPaginationCriteria(criteria, page, StoresBrandEntity.class);
+        stores = criteria.list();
+        return stores;
+    }
+
+
+    @Override
     public List<StoresBrandEntity> findBrandListByMerchant(Integer merchantId) throws Exception {
         List<StoresBrandEntity> stores = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class, "brand");
@@ -304,6 +315,24 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         criteria.addOrder(Order.desc("id"));
         stores = criteria.list();
         return stores;
+    }
+
+
+    @Override
+     public Integer getTotalNumberOfBrandByMerchant(Integer merchantId) throws Exception{
+        String sqQuery =    "SELECT COUNT(sb.id) FROM stores_brands sb WHERE  sb.merchant_id =:merchantId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("merchantId", merchantId);
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
+    }
+
+    @Override
+    public Integer getTotalNumberOfBrand() throws Exception {
+        String sqQuery =    "SELECT COUNT(sb.id) FROM stores_brands sb";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
     }
 
     @Override
@@ -324,6 +353,16 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId))) ;
         criteria.addOrder(Order.desc("id"));
+        stores = criteria.list();
+        return stores;
+    }
+
+    @Override
+    public List<StoresBrandEntity> findBrandList(Page page) throws Exception {
+        List<StoresBrandEntity> stores = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        criteria.addOrder(Order.desc("id"));
+        HibernateUtil.fillPaginationCriteria(criteria, page, StoresBrandEntity.class);
         stores = criteria.list();
         return stores;
     }

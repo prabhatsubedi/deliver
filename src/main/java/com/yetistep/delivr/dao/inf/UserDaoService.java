@@ -2,6 +2,7 @@ package com.yetistep.delivr.dao.inf;
 
 import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
 
@@ -43,6 +44,8 @@ public interface UserDaoService extends GenericDaoService<Integer, UserEntity>{
 
     public Boolean activateUser(Integer userId) throws Exception;
 
-    public List<UserEntity> getInactivatedCustomers() throws Exception;
+    public List<UserEntity> getInactivatedCustomers(Page page) throws Exception;
+
+    public Integer getTotalNumberInactiveCustomers() throws Exception;
 
 }

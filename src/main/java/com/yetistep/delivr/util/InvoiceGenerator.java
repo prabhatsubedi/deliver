@@ -51,8 +51,7 @@ public class InvoiceGenerator {
                 int noOfRetry = 3;
                 for (int i = 0; i < noOfRetry; i++) {//retry three time, if exception occurs
                     try {
-                        String dir = getInvoiceDir(merchant, store, "/");
-
+                        String dir = getInvoiceDir(merchant, store, File.separator);
                         String bucketUrl = AmazonUtil.uploadFileToS3(invoiceFile, dir, invoiceFile.getName(), true);
                         invoicePath = AmazonUtil.cacheImage(bucketUrl);
                         break;
@@ -67,22 +66,22 @@ public class InvoiceGenerator {
 
 
     public String generateBillAndReceipt(OrderEntity order, BillEntity bill, ReceiptEntity receipt, String serverUrl) throws Exception{
-        File invoiceFile = generateBillAndReceiptPDF(order, bill, receipt, serverUrl);
+        File billFile = generateBillAndReceiptPDF(order, bill, receipt, serverUrl);
 
-        if (invoiceFile == null)
+        if (billFile == null)
             return null;
 
-        String invoicePath = invoiceFile.getPath();
+        String billPath = billFile.getPath();
 
         //upload invoice to S3 Bucket
         if (!MessageBundle.isLocalHost()) {
             int noOfRetry = 3;
             for (int i = 0; i < noOfRetry; i++) {//retry three time, if exception occurs
                 try {
-                    String dir = getBillAndReiceptDir(order.getStore().getStoresBrand().getMerchant(), order, "/");
+                    String dir = getBillAndReiceptDir(order.getStore().getStoresBrand().getMerchant(), order, File.separator);
 
-                    String bucketUrl = AmazonUtil.uploadFileToS3(invoiceFile, dir, invoiceFile.getName(), true);
-                    invoicePath = AmazonUtil.cacheImage(bucketUrl);
+                    String bucketUrl = AmazonUtil.uploadFileToS3(billFile, dir, billFile.getName(), true);
+                    billPath = AmazonUtil.cacheImage(bucketUrl);
                     break;
                 } catch (Exception e) {
                     if (i == (noOfRetry - 1)) throw e;
@@ -90,7 +89,7 @@ public class InvoiceGenerator {
                 }
             }
         }
-        return invoicePath;
+        return billPath;
     }
 
     private File generateBillAndReceiptPDF(OrderEntity order, BillEntity bill, ReceiptEntity receipt, String serverUrl) throws Exception{

@@ -4,6 +4,7 @@ import com.yetistep.delivr.model.Page;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,6 +21,7 @@ public class HibernateUtil {
      * @param criteria
      * @param page
      */
+
     public static void fillPaginationCriteria(Criteria criteria, Page page, Class clazz) throws Exception{
         if (page != null) {
             if(page.getTotalRows() > 0){
@@ -31,14 +33,35 @@ public class HibernateUtil {
                 if (page.getSortOrder() != null && page.getSortBy() != null) {
                 /* Throws NoSuchFieldException if field doesn't exist. */
                     try{
-                        clazz.getDeclaredField(page.getSortBy());
+                        String[] sortingInfo = page.getSortBy().split("#");
+                        if(sortingInfo.length>1){
+                            String classString = sortingInfo[0];
+                            String fieldString = sortingInfo[1];
+
+                            Class sortingClass =  clazz.getDeclaredField(classString).getType();
+
+                            sortingClass.getDeclaredField(fieldString);
+
+                            criteria.createAlias(classString, classString);
+                            if (page.getSortOrder().equalsIgnoreCase("asc")) {
+                                criteria.addOrder(Order.asc(classString+"."+fieldString));
+                            } else if (page.getSortOrder().equalsIgnoreCase("desc"))  {
+                                criteria.addOrder(Order.desc(classString+"."+fieldString));
+                            }
+                        }else{
+                            String fieldString = sortingInfo[0];
+                            clazz.getDeclaredField(fieldString);
+
+                            if (page.getSortOrder().equalsIgnoreCase("asc")) {
+                                criteria.addOrder(Order.asc(fieldString));
+                            } else if (page.getSortOrder().equalsIgnoreCase("desc"))  {
+                                criteria.addOrder(Order.desc(fieldString));
+                            }
+                        }
                     } catch(NoSuchFieldException e){
                         throw new YSException("JSN005");
-                    }
-                    if (page.getSortOrder().equalsIgnoreCase("asc")) {
-                        criteria.addOrder(Order.asc(page.getSortBy()));
-                    } else if (page.getSortOrder().equalsIgnoreCase("desc"))  {
-                        criteria.addOrder(Order.desc(page.getSortBy()));
+                    }  catch (Exception e){
+                        throw new YSException("JSN005");
                     }
                 }
             }

@@ -4,12 +4,11 @@ import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
+import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
-import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import com.yetistep.delivr.util.HibernateUtil;
+import org.hibernate.*;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -229,7 +228,7 @@ public class UserDaoServiceImpl implements UserDaoService {
     }
 
     @Override
-    public List<UserEntity> getInactivatedCustomers() throws Exception {
+    public List<UserEntity> getInactivatedCustomers(Page page) throws Exception {
         ProjectionList projectionList = Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("emailAddress"), "emailAddress")
@@ -249,9 +248,20 @@ public class UserDaoServiceImpl implements UserDaoService {
         criteria.add(Restrictions.eq("status", Status.INACTIVE));
         criteria.add(Restrictions.eq("role.id", Role.ROLE_CUSTOMER.toInt()));
 
+        HibernateUtil.fillPaginationCriteria(criteria, page, UserEntity.class);
         List<UserEntity> users = criteria.list();
         return users;
+    }
 
 
+    @Override
+    public Integer getTotalNumberInactiveCustomers() throws Exception{
+        String sqQuery =    "SELECT COUNT(u.id) FROM users u WHERE u.role_id =:roleId AND u.status =:status";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("roleId", Role.ROLE_CUSTOMER.toInt());
+        query.setParameter("status", Status.INACTIVE.ordinal());
+
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
     }
 }

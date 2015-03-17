@@ -470,12 +470,12 @@ public class ManagerController {
         }
     }
 
-    @RequestMapping(value="/deactivated_customers", method = RequestMethod.GET)
+    @RequestMapping(value="/deactivated_customers", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getInactivatedCustomers(){
+    public ResponseEntity<ServiceResponse> getInactivatedCustomers(RequestJsonDto requestJsonDto){
         try{
 
-            List<UserEntity> users = managerService.getInactivatedCustomers();
+            PaginationDto users = managerService.getInactivatedCustomers(requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("Inactivated Customers Retrieved Successfully");
             serviceResponse.addParam("users", users);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

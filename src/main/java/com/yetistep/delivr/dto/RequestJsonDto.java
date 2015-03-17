@@ -69,8 +69,7 @@ public class RequestJsonDto {
     private Integer orderId;
     private String className;
     private Integer statusId;
-
-
+    private List<String> searchColumns;
 
 
     /*web search properties
@@ -345,6 +344,8 @@ public class RequestJsonDto {
     public void setStatusId(Integer statusId) {
         this.statusId = statusId;
     }
+
+
 
     public String getSearchString() {
         return searchString;

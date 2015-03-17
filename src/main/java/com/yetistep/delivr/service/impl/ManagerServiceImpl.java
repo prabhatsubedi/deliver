@@ -589,10 +589,24 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     }
 
     @Override
-    public List<UserEntity> getInactivatedCustomers() throws Exception {
+    public PaginationDto getInactivatedCustomers(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++++++ Getting Inactivated Customers ++++++++++");
-        List<UserEntity> users = userDaoService.getInactivatedCustomers();
-        return users;
+
+        Page page = requestJsonDto.getPage();
+
+
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  userDaoService.getTotalNumberInactiveCustomers();
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+
+        List<UserEntity> users = userDaoService.getInactivatedCustomers(page);
+        paginationDto.setData(users);
+        return paginationDto;
     }
 
     @Override

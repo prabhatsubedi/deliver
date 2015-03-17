@@ -150,4 +150,16 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
         List<String> deviceTokens = sqlQuery.list();
         return deviceTokens;
     }
+
+    @Override
+    public List<String> getAllDeviceTokensForFamilyAndRole(Role role, String family) throws Exception {
+        String sql = "SELECT ud.device_token FROM user_device ud INNER JOIN users u " +
+                "ON (u.id = ud.user_id) AND u.role_id = :roleId AND ud.device_token IS NOT NULL " +
+                "AND family LIKE :family";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("roleId", role.toInt());
+        sqlQuery.setParameter("family", "%"+family+"%");
+        List<String> deviceTokens = sqlQuery.list();
+        return deviceTokens;
+    }
 }

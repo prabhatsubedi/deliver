@@ -165,8 +165,12 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
 
     @Override
     public Boolean canStartJob(Integer orderId, Integer deliveryBoyId) throws Exception {
-        String sqlQuery = "SELECT count(id) FROM orders WHERE delivery_boy_id = :deliveryBoyId " +
-                "AND order_status IN(:runningOrderList) AND id < :orderId";
+//        String sqlQuery = "SELECT count(id) FROM orders WHERE delivery_boy_id = :deliveryBoyId " +
+//                "AND order_status IN(:runningOrderList) AND id < :orderId";
+        String sqlQuery = "SELECT count(o.id) FROM orders o INNER JOIN dboy_order_history dbh on (dbh.order_id = o.id) " +
+                "WHERE o.delivery_boy_id = :deliveryBoyId AND o.order_status IN(:runningOrderList) AND " +
+                "dbh.order_accepted_at < (SELECT order_accepted_at FROM dboy_order_history WHERE order_id = :orderId " +
+                "AND dboy_id = :deliveryBoyId)";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
         List<Integer> runningOrderList = new ArrayList<Integer>();
         runningOrderList.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());

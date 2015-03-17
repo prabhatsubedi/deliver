@@ -19,34 +19,19 @@ import java.net.URLEncoder;
  * To change this template use File | Settings | File Templates.
  */
 public class SparrowSMSUtil {
-    private static final String SMS_TOKEN = "2L9pXlF2vCSXE4MwNHVP1"; //Valid For March 11, 2016
-    private static final String SMS_FROM = "5455";
+    private static final String SMS_TOKEN = "2L9pXlF2vCSXE4MwNHVP"; //Valid For March 11, 2016
+    private static final String SMS_FROM = "Demo";
     private static final String PUSH_SMS_URL = "http://api.sparrowsms.com/v2/sms/";
 
     public static SparrowResultModel getSendSMS(String to, String text) {
         try{
-//        RestTemplate restTemplate = new RestTemplate();
-        //SparrowResultModel sparrowResultModel = restTemplate.getForObject(PUSH_SMS_URL + prepareParameter(to, text), SparrowResultModel.class);
-        HttpClient client = HttpClientBuilder.create().build();
-        String url = PUSH_SMS_URL;
-        url = url+ (URLEncoder.encode(prepareParameter(to, text), "UTF-8").replace("+", "%20"));
+        RestTemplate restTemplate = new RestTemplate();
 
-        HttpGet request = new HttpGet(url);
+        String url = PUSH_SMS_URL + prepareParameter(to, text);
+        SparrowResultModel sparrowResultModel = restTemplate.getForObject(url, SparrowResultModel.class);
+        System.out.println("Successfully send sms");
 
-        HttpResponse response = client.execute(request);
 
-            System.out.println("Response Code : "
-                    + response.getStatusLine().getStatusCode());
-
-            BufferedReader rd = new BufferedReader(
-                    new InputStreamReader(response.getEntity().getContent()));
-
-            StringBuffer result = new StringBuffer();
-            String line = "";
-            while ((line = rd.readLine()) != null) {
-                result.append(line);
-            }
-//        System.out.println(body);
         } catch (Exception e){
             e.printStackTrace();
         }

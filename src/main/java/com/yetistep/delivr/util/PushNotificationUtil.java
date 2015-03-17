@@ -26,6 +26,8 @@ public class PushNotificationUtil {
 
     private static final String DBOY_API_KEY = "AIzaSyBp36qfwThBp57gVjC0dOA4qf3vTv3gHCA";
     private static final String CUSTOMER_API_KEY = "AIzaSyCXcn_iKKSCnBnYbrinDFCmTdt6xyPcbTI";
+    public static final String CERTIFICATE_IOS = "iDelivr_dev.p12";
+    public static final String PASSWORD_IOS = "password";
 
 
     public static void sendPushNotification(UserDeviceEntity userDevice, String message, NotifyTo notifyTo, PushNotificationRedirect pushNotificationRedirect, String extraDetail) {
@@ -43,17 +45,9 @@ public class PushNotificationUtil {
             log.warn("Missing information of user device");
         }
     }
-//
-//    public static void main(String args[]){
-//        UserDeviceEntity userDeviceEntity = new UserDeviceEntity();
-//        userDeviceEntity.setFamily("ANDROID");
-//        userDeviceEntity.setDeviceToken("APA91bFS5GhVWFr2wpvjsUIS43CeXDn3J7ZvO5olQ-tC-mVQYzWopOu_dfiv1c08DXLo2rRiu-vtugjZwWJzYbNqTxQ65DZR86rS0aXeBRhAeacOm0VCXKxTWoP-QXeQnmBzg3W7hB1OT7GC9eBt-khyu5Z9rye7Qo16vW2OtOkgQ06UVpU9w-c");
-//
-//        sendPushNotification(userDeviceEntity, "Demo try", "extra info");
-//    }
 
     public static void sendNotification(PushNotification pushNotification, String deviceFamily) {
-        if (deviceFamily.equalsIgnoreCase("IOS"))//send to ios
+        if (deviceFamily.equalsIgnoreCase("IOS") || deviceFamily.equalsIgnoreCase("MAC_OS_X"))//send to ios
             sendNotificationToiOSDevice(pushNotification);
         else//send to android
             sendNotificationToAndroidDevice(pushNotification);
@@ -117,16 +111,14 @@ public class PushNotificationUtil {
             if (pushNotification.getExtraDetail() != null)
                 message += "/" + pushNotification.getExtraDetail();
 
-
-            //InputStream inputStream = classLoader.getResourceAsStream(MessageBundle.getMessage("iphone_client_app_cert","constants.properties"));
-            InputStream inputStream = classLoader.getResourceAsStream("ios_server.pem");
+            InputStream inputStream = classLoader.getResourceAsStream(CERTIFICATE_IOS);
             PayloadBuilder payloadBuilder = APNS.newPayload();
            /* payloadBuilder = payloadBuilder.badge(pushNotification.getBadge());
             payloadBuilder = payloadBuilder.sound(pushNotification.getSound());*/
             payloadBuilder = payloadBuilder.alertBody(message);
             String payload = payloadBuilder.build();
 
-            ApnsService service = APNS.newService().withCert(inputStream, "nepstar123").withSandboxDestination().build();
+            ApnsService service = APNS.newService().withCert(inputStream, PASSWORD_IOS).withSandboxDestination().build();
             service.push(pushNotification.getTokens(), payload);
 
         } catch (Exception e) {

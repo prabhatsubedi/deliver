@@ -534,6 +534,16 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                     PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
                 }
 
+                List<DeliveryBoySelectionEntity> deliveryBoySelectionEntityList = deliveryBoySelectionDaoService.getAllSelectionDetails(orderId, deliveryBoyId);
+                for(DeliveryBoySelectionEntity dBoySelection: deliveryBoySelectionEntityList){
+                    if(deliveryBoySelectionDaoService.getCountOfDeliveryBoyForOrder(dBoySelection.getOrder().getId(), deliveryBoyId) == 0){
+                        customerService.reprocessOrder(dBoySelection.getOrder().getId());
+                    }else{
+                        dBoySelection.setRejected(true);
+                        deliveryBoySelectionDaoService.update(dBoySelection);
+                    }
+                }
+
                 /*
                 * if email subscription is set true
                 * send the email containing order detail to the contact person of the store

@@ -162,7 +162,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }
 
 
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude,order";
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,previousDue,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude,order";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

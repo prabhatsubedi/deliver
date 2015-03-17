@@ -55,7 +55,7 @@ public class ValidateMobileDaoServiceImpl implements ValidateMobileDaoService{
 
     @Override
     public ValidateMobileEntity getMobileCode(Integer userId, String mobileNo) throws Exception {
-        String sql = "SELECT id, verification_code as verificationCode, verified_by_user as verifiedByUser FROM validate_mobile " +
+        String sql = "SELECT id, verification_code as verificationCode, verified_by_user as verifiedByUser, total_sms_send as totalSmsSend FROM validate_mobile " +
                 "WHERE user_id = :userId AND mobile_no = :mobileNo";
 
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
@@ -71,6 +71,16 @@ public class ValidateMobileDaoServiceImpl implements ValidateMobileDaoService{
         String sqlAtt = "UPDATE validate_mobile SET verified_by_user = :status WHERE id = :mobId";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sqlAtt);
         sqlQuery.setParameter("status", true);
+        sqlQuery.setParameter("mobId", id);
+
+        sqlQuery.executeUpdate();
+        return true;
+    }
+
+    @Override
+    public Boolean updateNoOfSMSSend(Integer id) throws Exception {
+        String sqlAtt = "UPDATE validate_mobile SET total_sms_send = total_sms_send+1 WHERE id = :mobId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sqlAtt);
         sqlQuery.setParameter("mobId", id);
 
         sqlQuery.executeUpdate();

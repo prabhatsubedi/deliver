@@ -536,4 +536,20 @@ public class ManagerController {
         }
     }
 
+    @RequestMapping(value = "/sms_credits", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getSMSCredits() {
+        try{
+            ServiceResponse serviceResponse = new ServiceResponse("SMS credit retrieved successfully");
+            serviceResponse.addParam("credit", adminService.getSMSCredits());
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting SMS credits", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
+
 }

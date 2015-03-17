@@ -359,17 +359,25 @@ public class CustomerServiceImpl implements CustomerService {
             UserEntity userEntity = new UserEntity();
             userEntity.setId(customerEntity.getUser().getId());
             validateMobileEntity.setUser(userEntity);
+            validateMobileEntity.setTotalSmsSend(1);
             //Now save mobile and other detail
             validateMobileDaoService.save(validateMobileEntity);
             //userDaoService.updateDeliveryContact(customerEntity.getUser().getId(), mobile, verificationCode);
 
         } else {
+
             if(validMobile.getVerifiedByUser() == null) {
+
+                if(validMobile.getTotalSmsSend()!=null && validMobile.getTotalSmsSend() > 2)
+                    throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+
                 //Send SMS Only
                 verificationCode = String.valueOf(validMobile.getVerificationCode());
 
                 //Now Send SMS
                 SparrowSMSUtil.sendSMS(message + verificationCode + ".", mobile);
+
+                validateMobileDaoService.updateNoOfSMSSend(validMobile.getId());
 
                 validatedByUser = false;
 

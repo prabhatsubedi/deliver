@@ -16,6 +16,7 @@ public class ValidateMobileEntity {
     private String mobileNo;
     private String verificationCode;
     private Boolean verifiedByUser;
+    private Integer totalSmsSend;
     private UserEntity user;
 
     @Id
@@ -54,6 +55,15 @@ public class ValidateMobileEntity {
 
     public void setVerifiedByUser(Boolean verifiedByUser) {
         this.verifiedByUser = verifiedByUser;
+    }
+
+    @Column(name = "total_sms_send")
+    public Integer getTotalSmsSend() {
+        return totalSmsSend;
+    }
+
+    public void setTotalSmsSend(Integer totalSmsSend) {
+        this.totalSmsSend = totalSmsSend;
     }
 
     @ManyToOne

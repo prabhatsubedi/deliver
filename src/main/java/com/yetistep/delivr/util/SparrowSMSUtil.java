@@ -1,15 +1,13 @@
 package com.yetistep.delivr.util;
 
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yetistep.delivr.model.mobile.SparrowResultModel;
+import org.apache.log4j.Logger;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URLEncoder;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,37 +17,99 @@ import java.net.URLEncoder;
  * To change this template use File | Settings | File Templates.
  */
 public class SparrowSMSUtil {
-    private static final String SMS_TOKEN = "2L9pXlF2vCSXE4MwNHVP"; //Valid For March 11, 2016
-    private static final String SMS_FROM = "Demo";
     private static final String PUSH_SMS_URL = "http://api.sparrowsms.com/v2/sms/";
 
-    public static SparrowResultModel getSendSMS(String to, String text) {
-        try{
-        RestTemplate restTemplate = new RestTemplate();
+    private static final String CREDITS_URL = "http://api.sparrowsms.com/v2/credit/";
 
+    private static final Logger log = Logger.getLogger(SparrowSMSUtil.class);
+
+
+    public static SparrowResultModel sendSMS(String text, String to) throws Exception {
+        log.info("++++++ Sending SMS to " + to + " +++++++++++");
+        //RestTemplate restTemplate = new RestTemplate();
         String url = PUSH_SMS_URL + prepareParameter(to, text);
-        SparrowResultModel sparrowResultModel = restTemplate.getForObject(url, SparrowResultModel.class);
-        System.out.println("Successfully send sms");
+        SparrowResultModel sparrowResultModel = new SparrowResultModel();
+        try{
 
+            RestTemplate restTemplate = new RestTemplate();
+            sparrowResultModel = restTemplate.getForObject(url, SparrowResultModel.class);
 
-        } catch (Exception e){
-            e.printStackTrace();
+        } catch (RestClientException re) {
+            if (re instanceof HttpClientErrorException) {
+                HttpClientErrorException he = (HttpClientErrorException) re;
+                log.info(he.getResponseBodyAsString());
+                ObjectMapper objectMapper  = new ObjectMapper();
+                sparrowResultModel = objectMapper.readValue(he.getResponseBodyAsString(), SparrowResultModel.class);
+                throw new RuntimeException(sparrowResultModel.getResponse());
+
+            } else if (re instanceof HttpServerErrorException) {
+                HttpServerErrorException he = (HttpServerErrorException) re;
+                ObjectMapper objectMapper  = new ObjectMapper();
+                sparrowResultModel = objectMapper.readValue(he.getResponseBodyAsString(), SparrowResultModel.class);
+                log.info(he.getResponseBodyAsString());
+                throw new RuntimeException(sparrowResultModel.getResponse());
+
+            }
+        } catch (Exception e) {
+
+            throw new YSException("SEC013");
         }
-        return new SparrowResultModel();
+
+
+        return sparrowResultModel;
     }
 
     private static String prepareParameter(String to, String text) {
         String param = "?";
-        param += "from=" + SMS_FROM;
+        param += "from=" + MessageBundle.getSMSFrom();
         param += "&to=" + to;
         param += "&text=" + text;
-        param += "&token=" + SMS_TOKEN;
+        param += "&token=" + MessageBundle.getSMSToken();
         return param;
     }
 
-    public static void main(String[] args) {
+    public static SparrowResultModel getSMSCredits() throws Exception{
+        log.info("++++++++ Getting Sparrow SMS Credits +++++++++");
+        //RestTemplate restTemplate = new RestTemplate();
+        String url = CREDITS_URL + "?token="+ MessageBundle.getSMSToken();
 
-        SparrowResultModel resultModel = getSendSMS("9841531001", "This Is Test SMS from Suren");
-        System.out.println(resultModel.getResponse());
+        SparrowResultModel sparrowResultModel = new SparrowResultModel();
+        try{
+            RestTemplate restTemplate = new RestTemplate();
+            sparrowResultModel = restTemplate.getForObject(url, SparrowResultModel.class);
+        } catch (RestClientException re) {
+            if (re instanceof HttpClientErrorException) {
+                HttpClientErrorException he = (HttpClientErrorException) re;
+                log.info(he.getResponseBodyAsString());
+                ObjectMapper objectMapper  = new ObjectMapper();
+                sparrowResultModel = objectMapper.readValue(he.getResponseBodyAsString(), SparrowResultModel.class);
+                throw new RuntimeException(sparrowResultModel.getResponse());
+
+            } else if (re instanceof HttpServerErrorException) {
+                HttpServerErrorException he = (HttpServerErrorException) re;
+                ObjectMapper objectMapper  = new ObjectMapper();
+                sparrowResultModel = objectMapper.readValue(he.getResponseBodyAsString(), SparrowResultModel.class);
+                log.info(he.getResponseBodyAsString());
+                throw new RuntimeException(sparrowResultModel.getResponse());
+
+            }
+        } catch (Exception e) {
+
+            throw new YSException("SEC013");
+        }
+        return sparrowResultModel;
+    }
+
+
+
+    public static void main(String[] args) {
+        try {
+            SparrowResultModel resultModel = sendSMS("9841531001", "This Is Test SMS from Suren");
+            System.out.println(resultModel.getResponse());
+
+        } catch (Exception e){
+             e.printStackTrace();
+        }
+
     }
 }

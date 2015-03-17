@@ -77,7 +77,7 @@ public class AddressDaoServiceImpl implements AddressDaoService{
     public List<AddressEntity> getDeliveredAddress(Integer userId) throws Exception {
         String sql = "SELECT " +
                 "id,city,country,country_code AS countryCode,latitude,longitude,state,street,full_name AS fullName,mobile_no AS mobileNumber,notes" +
-                " FROM address WHERE user_id = :userId AND verified = :verified AND (d_flag != :flag || d_flag IS NULL)";
+                " FROM address WHERE user_id = :userId AND verified = :verified AND (d_flag != :flag || d_flag IS NULL) ORDER BY id DESC";
 
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("userId", userId);

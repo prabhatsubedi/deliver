@@ -10,6 +10,7 @@ import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.PageInfo;
+import com.yetistep.delivr.model.mobile.SparrowResultModel;
 import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
@@ -1153,7 +1154,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
     @Override
     public SparrowResultModel getSmsResult() throws Exception {
-        SparrowResultModel sparrowResultModel = SparrowSMSUtil.getSendSMS("9841531001", "Hello Bro!!!");
+        SparrowResultModel sparrowResultModel = SparrowSMSUtil.sendSMS("First Sparrow SMS from Yetistep.WOW!!!", "98415310011");
         return sparrowResultModel;
     }
 }

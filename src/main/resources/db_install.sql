@@ -175,4 +175,8 @@ ALTER TABLE `merchants`
 CHANGE COLUMN `commission_percentage` `commission_percentage` DECIMAL(6,2) NULL DEFAULT NULL ,
 CHANGE COLUMN `service_fee` `service_fee` DECIMAL(16,2) NULL DEFAULT NULL ;
 
+/*===================== Environment Variable for SMS 2015-03-16 =======================*/
+-DDELIVR_SMS_TOKEN=2L9pXlF2vCSXE4MwNHVP
+-DDELIVR_SMS_FROM=Demo
+
 

@@ -13,6 +13,7 @@ import com.yetistep.delivr.model.UserEntity;
 public class AddressDto {
     private Boolean mobileValidate;
     private String verificationCode;
+    private Boolean validatedByUser;
     private AddressEntity address;
     private UserEntity user;
 
@@ -34,6 +35,14 @@ public class AddressDto {
 
     public AddressEntity getAddress() {
         return address;
+    }
+
+    public Boolean getValidatedByUser() {
+        return validatedByUser;
+    }
+
+    public void setValidatedByUser(Boolean validatedByUser) {
+        this.validatedByUser = validatedByUser;
     }
 
     public void setAddress(AddressEntity address) {

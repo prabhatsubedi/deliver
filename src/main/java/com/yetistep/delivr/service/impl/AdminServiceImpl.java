@@ -9,7 +9,9 @@ import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.mobile.SparrowResultModel;
 import com.yetistep.delivr.service.inf.AdminService;
+import com.yetistep.delivr.util.SparrowSMSUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -344,5 +346,10 @@ public class AdminServiceImpl implements AdminService {
         graphData.put("onTimeDelivery", onTimeDelivery);
         graphData.put("exceededTimeDelivery", exceededTimeDelivery);
         return graphData;
+    }
+
+    @Override
+    public SparrowResultModel getSMSCredits() throws Exception {
+        return SparrowSMSUtil.getSMSCredits();
     }
 }

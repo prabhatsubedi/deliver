@@ -2058,30 +2058,32 @@ label.check_label .checkbox {
 /*date filter*/
 .date_filter {
     display: inline;
-    float: right;
 }
 .date_wrapper {
     float: left;
     margin-right: 10px;
+    position: relative;
 }
 .date_label {
     float: left;
+    line-height: 30px;
+    margin-right: 5px;
 }
 .date_input {
     border: 1px solid #ccc;
     border-radius: 5px;
     float: left;
     height: 30px;
-    min-width: 260px;
+    min-width: 210px;
+    padding-left: 5px;
 }
 .cal {
     float: left;
-    min-width: 260px;
-    position: relative;
-}
-.ui-datepicker{
+    min-width: 210px;
     position: absolute;
+    z-index: 10;
 }
+
 
 .ui-datepicker .ui-datepicker-title select {
     color: black;

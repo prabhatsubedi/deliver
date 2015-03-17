@@ -5,6 +5,7 @@ import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.NotifyTo;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
@@ -46,6 +47,8 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     @Autowired
     UserDaoService userDaoService;
 
+    @Autowired
+    UserDeviceDaoService userDeviceDaoService;
 
     @Override
     public void saveManagerOrAccountant(UserEntity user, HeaderDto headerDto) throws Exception {
@@ -614,5 +617,27 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         log.info("+++++++++++++++ Activating User +++++++++++++");
         userDaoService.activateUser(Integer.parseInt(headerDto.getId()));
         return true;
+    }
+
+    @Override
+    public Boolean sendPushMessageTo(List<NotifyTo> notifyToList, String message) throws Exception {
+        for(NotifyTo notifyTo: notifyToList){
+            if(notifyTo.equals(NotifyTo.DELIVERY_BOY))
+                sendNotification(Role.ROLE_DELIVERY_BOY, "ANDROID", notifyTo, message);
+            else if(notifyTo.equals(NotifyTo.CUSTOMER_ANDROID))
+                sendNotification(Role.ROLE_CUSTOMER, "ANDROID", NotifyTo.CUSTOMER, message);
+            else if(notifyTo.equals(NotifyTo.CUSTOMER_IOS))
+                sendNotification(Role.ROLE_CUSTOMER, "MAC_OS_X", notifyTo, message);
+        }
+        return true;
+    }
+
+    private void sendNotification(Role role, String family, NotifyTo notifyTo, String message) throws Exception{
+        List<String> deviceTokens = userDeviceDaoService.getAllDeviceTokensForFamilyAndRole(role, family);
+        PushNotification pushNotification = new PushNotification();
+        pushNotification.setTokens(deviceTokens);
+        pushNotification.setMessage(message);
+        pushNotification.setNotifyTo(notifyTo);
+        PushNotificationUtil.sendNotification(pushNotification, family);
     }
 }

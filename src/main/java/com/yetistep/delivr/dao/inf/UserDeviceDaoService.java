@@ -1,6 +1,7 @@
 package com.yetistep.delivr.dao.inf;
 
 import com.yetistep.delivr.abs.GenericDaoService;
+import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.UserDeviceEntity;
 
 import java.math.BigInteger;
@@ -29,4 +30,6 @@ public interface UserDeviceDaoService extends GenericDaoService<Integer, UserDev
     public List<String> getDeviceTokensExceptAcceptedDeliveryBoy(Integer orderId, Integer exceptDeliveryBoyId) throws Exception;
 
     public List<String> getDeviceTokensOfAssignedDeliveryBoy(Integer orderId) throws Exception;
+
+    public List<String> getAllDeviceTokensForFamilyAndRole(Role role, String family) throws Exception;
 }

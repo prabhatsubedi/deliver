@@ -61,7 +61,7 @@ public class PushNotificationUtil {
                 int retries = 3;
                 if(pushNotification.getNotifyTo().equals(NotifyTo.DELIVERY_BOY)){
                     sender = new Sender(DBOY_API_KEY);
-                }else if(pushNotification.getNotifyTo().equals(NotifyTo.CUSTOMER)){
+                }else if(pushNotification.getNotifyTo().equals(NotifyTo.CUSTOMER) || pushNotification.getNotifyTo().equals(NotifyTo.CUSTOMER_ANDROID)){
                     sender = new Sender(CUSTOMER_API_KEY);
                 }
 
@@ -120,7 +120,7 @@ public class PushNotificationUtil {
 
             ApnsService service = APNS.newService().withCert(inputStream, PASSWORD_IOS).withSandboxDestination().build();
             service.push(pushNotification.getTokens(), payload);
-
+            log.info("Notification sent successfully");
         } catch (Exception e) {
             log.error("Error occurred while sending push notification to ios device ", e);
         }

@@ -507,6 +507,18 @@ public class ManagerController {
         }
     }
 
-
+    @RequestMapping(value="/send_notification", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> sendPushNotification(@RequestBody RequestJsonDto requestJsonDto){
+        try{
+            managerService.sendPushMessageTo(requestJsonDto.getNotifyToList(), requestJsonDto.getPushMessage());
+            ServiceResponse serviceResponse = new ServiceResponse("Notification sent successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        }catch (Exception e){
+            GeneralUtil.logError(log, "Error occurred while sending push notification", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
 }

@@ -15,6 +15,7 @@ import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -231,6 +232,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
 
         dBoy.setPreviousDue(dBoy.getPreviousDue().subtract(requestJsonDto.getSubmittedAmount()));
+        dBoy.setWalletAmount(dBoy.getWalletAmount().subtract(requestJsonDto.getSubmittedAmount()));
         List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
         DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();
         dBoySubmittedAmount.setAmountReceived(requestJsonDto.getSubmittedAmount());
@@ -254,6 +256,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     public DeliveryBoyEntity walletSubmittedAmount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
         DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
 
+        dBoy.setPreviousDue(BigDecimal.ZERO);
         dBoy.setWalletAmount(dBoy.getWalletAmount().subtract(requestJsonDto.getSubmittedAmount()));
 
         List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();

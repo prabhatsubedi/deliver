@@ -166,6 +166,21 @@ public class ManagerController {
         }
     }
 
+    @RequestMapping(value = "/get_all_merchants", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getAllMerchants() {
+        try{
+            List<MerchantEntity> merchantEntities = merchantService.getAllMerchants();
+            ServiceResponse serviceResponse = new ServiceResponse("Merchant retrieved successfully");
+            serviceResponse.addParam("merchants", merchantEntities);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting merchants", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     @RequestMapping(value = "/change_user_status", method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<ServiceResponse> updateUserStatus(@RequestBody UserEntity userEntity) {

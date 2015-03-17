@@ -201,6 +201,25 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         return paginationDto;
     }
 
+    @Override
+    public List<MerchantEntity> getAllMerchants() throws Exception {
+        log.info("++++++++++++ Getting All Merchants +++++++++++++++");
+        List<MerchantEntity> merchantEntities = new ArrayList<>();
+
+
+        merchantEntities = merchantDaoService.findAll();
+
+        List<MerchantEntity> objects = new ArrayList<>();
+
+        String fields = "id,businessTitle,partnershipStatus,status";
+
+        for (MerchantEntity merchant:merchantEntities){
+            objects.add((MerchantEntity) ReturnJsonUtil.getJsonObject(merchant, fields));
+        }
+
+        return objects;
+    }
+
 
     private void checkUniqueBrand(String name) throws Exception{
         StoresBrandEntity brand = merchantDaoService.getBrandByBrandName(name);
@@ -594,6 +613,27 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
         paginationDto.setData(brandList);
         return paginationDto;
+    }
+
+    @Override
+    public List<StoresBrandEntity> findSearchBrands(HeaderDto headerDto) throws Exception {
+
+        List<StoresBrandEntity> storesBrands;
+        if (headerDto.getMerchantId() != null){
+            storesBrands = merchantDaoService.findBrandListByMerchant(headerDto.getMerchantId());
+        } else {
+            storesBrands = merchantDaoService.findBrandList();
+        }
+        List<StoresBrandEntity> brandList = new ArrayList<>();
+
+        String fields = "id,brandName";
+        if(storesBrands.size()>0){
+            for (StoresBrandEntity storesBrandEntity: storesBrands) {
+                StoresBrandEntity brand = (StoresBrandEntity) ReturnJsonUtil.getJsonObject(storesBrandEntity, fields);
+                brandList.add(brand);
+            }
+        }
+        return brandList;
     }
 
     @Override
@@ -1467,7 +1507,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         List<Object> objects = new ArrayList<>();
 
-        String fields = "id,orderName,orderStatus,deliveryStatus,customer,store,deliveryBoy,attachments,grandTotal,rating";
+        String fields = "id,orderName,orderStatus,deliveryStatus,customer,orderVerificationCode,store,deliveryBoy,attachments,grandTotal,rating";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -1525,7 +1565,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         List<Object> objects = new ArrayList<>();
 
-        String fields = "id,orderName,deliveryStatus,orderStatus,attachments,customer,store,deliveryBoy,grandTotal";
+        String fields = "id,orderName,deliveryStatus,orderStatus,attachments,orderDate,customer,store,deliveryBoy,grandTotal";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

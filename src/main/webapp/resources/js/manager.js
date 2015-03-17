@@ -16,7 +16,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 alert(data.message);
                 return;
             }
-            var users = data.params.users;
+            var users = data.params.users.data;
             var tdata = [];
 
             for (i = 0; i < users.length; i++) {
@@ -39,7 +39,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
         };
 
         callback.loaderDiv = "body";
-        callback.requestType = "GET";
+        callback.requestType = "POST";
 
         Main.request('/organizer/deactivated_customers', {}, callback);
 
@@ -388,7 +388,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 alert(data.message);
                 return;
             }
-            var brands = data.params.brands;
+            var brands = data.params.brands.data;
             var tdata = [];
 
             for (var i = 0; i < brands.length; i++) {
@@ -409,7 +409,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
         };
-        callback.requestType = "GET";
+        callback.requestType = "POST";
         callback.loaderDiv = 'body';
 
         Main.request('/merchant/get_brands', {}, callback);

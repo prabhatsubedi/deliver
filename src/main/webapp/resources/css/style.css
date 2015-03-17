@@ -2055,4 +2055,36 @@ label.check_label .checkbox {
     padding: 10px;
 }
 
+/*date filter*/
+.date_filter {
+    display: inline;
+    float: right;
+}
+.date_wrapper {
+    float: left;
+    margin-right: 10px;
+}
+.date_label {
+    float: left;
+}
+.date_input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    float: left;
+    height: 30px;
+    min-width: 260px;
+}
+.cal {
+    float: left;
+    min-width: 260px;
+    position: relative;
+}
+.ui-datepicker{
+    position: absolute;
+}
+
+.ui-datepicker .ui-datepicker-title select {
+    color: black;
+}
+
 

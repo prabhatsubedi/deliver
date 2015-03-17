@@ -159,7 +159,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
         if(sess_merchants == undefined) {
             callback.requestType = "GET";
-            Main.request('/organizer/get_merchants', {}, callback);
+            Main.request('/organizer/get_all_merchants', {}, callback);
         } else {
             callback('', {params: {merchants: sess_merchants}, success: true});
         }

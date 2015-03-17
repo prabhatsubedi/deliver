@@ -33,7 +33,7 @@ var Search = function() {
                 var header = {};
                 if(Main.getURLvalue(0) == 'merchant' && Main.getFromLocalStorage('mid') != undefined)
                     header.merchantId = Main.getFromLocalStorage('mid');
-                Main.request('/merchant/get_brands', {}, callback, header);
+                Main.request('/merchant/get_search_brands', {}, callback, header);
             }
 
         },

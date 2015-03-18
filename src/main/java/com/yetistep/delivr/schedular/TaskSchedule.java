@@ -47,7 +47,7 @@ public class TaskSchedule {
 
     }
 
-    @Scheduled(cron="0 32 15 * * FRI")
+    @Scheduled(cron="0 22 17 * * TUE")
     public void generateInvoice() throws Exception{
         log.info("Generating invoice:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

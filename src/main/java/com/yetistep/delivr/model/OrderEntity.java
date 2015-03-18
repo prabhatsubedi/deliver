@@ -33,11 +33,6 @@ public class OrderEntity implements Serializable {
     private DeliveryStatus deliveryStatus;
     private JobOrderStatus orderStatus;
     //private ItemEntity item;
-    private List<ItemsOrderEntity> itemsOrder;
-    private AddressEntity address;
-    private DeliveryBoyEntity deliveryBoy;
-    private CustomerEntity customer;
-    private StoreEntity store;
     private BigDecimal customerChargeableDistance; //Paid by customer
     private BigDecimal systemChargeableDistance; //Paid by system
     //private BigDecimal itemTotal;
@@ -49,8 +44,6 @@ public class OrderEntity implements Serializable {
     private BigDecimal deliveryBoyShare;
     private BigDecimal systemShare;
     private Timestamp orderDate;
-    private List<DBoyOrderHistoryEntity> dBoyOrderHistories;
-    private List<DeliveryBoySelectionEntity> deliveryBoySelections;
     private Integer assignedTime;
     private Integer remainingTime;
     private Integer elapsedTime;
@@ -62,6 +55,14 @@ public class OrderEntity implements Serializable {
     private BigDecimal itemServiceAndVatCharge;
     private InvoiceEntity invoice;
     private Integer reprocessTime;
+    private Boolean dBoyPaid;
+    private List<ItemsOrderEntity> itemsOrder;
+    private AddressEntity address;
+    private DeliveryBoyEntity deliveryBoy;
+    private CustomerEntity customer;
+    private StoreEntity store;
+    private List<DBoyOrderHistoryEntity> dBoyOrderHistories;
+    private List<DeliveryBoySelectionEntity> deliveryBoySelections;
     private BillEntity bill;
     private ReceiptEntity receipt;
 
@@ -400,6 +401,15 @@ public class OrderEntity implements Serializable {
 
     public void setReprocessTime(Integer reprocessTime) {
         this.reprocessTime = reprocessTime;
+    }
+
+    @Column(name = "dboy_paid")
+    public Boolean getdBoyPaid() {
+        return dBoyPaid;
+    }
+
+    public void setdBoyPaid(Boolean dBoyPaid) {
+        this.dBoyPaid = dBoyPaid;
     }
 
     @OneToOne(mappedBy = "order", fetch = FetchType.LAZY)

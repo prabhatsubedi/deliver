@@ -1596,14 +1596,14 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         List<Object> objects = new ArrayList<>();
 
-        String fields = "id,orderName,deliveryStatus,assignedTime,customer,deliveryBoy,grandTotal,orderDate,dBoyOrderHistories,rating";
+        String fields = "id,orderName,deliveryStatus,assignedTime,customer,deliveryBoy,grandTotal,orderDate,dBoyOrderHistories,rating,dBoyPaid";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("customer", "id,user");
         assoc.put("deliveryBoy", "id,averageRating,user");
-        assoc.put("dBoyOrderHistories", "id,amountEarned,orderAcceptedAt,orderCompletedAt,distanceTravelled,dBoyPaid");
+        assoc.put("dBoyOrderHistories", "id,amountEarned,orderAcceptedAt,orderCompletedAt,distanceTravelled");
         assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
 
         subAssoc.put("user", "id,fullName");

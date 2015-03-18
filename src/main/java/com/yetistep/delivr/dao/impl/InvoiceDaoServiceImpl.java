@@ -31,7 +31,7 @@ public class InvoiceDaoServiceImpl implements InvoiceDaoService {
 
     @Override
     public InvoiceEntity find(Integer id) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return (InvoiceEntity) getCurrentSession().get(InvoiceEntity.class, id);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class InvoiceDaoServiceImpl implements InvoiceDaoService {
     public List<InvoiceEntity> findInvoicesByMerchant(Integer merchantId, Page page, Date fromDate, Date toDate) throws Exception {
         List<InvoiceEntity> invoiceEntities = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(InvoiceEntity.class);
-        criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId), Restrictions.ge("generatedDate", fromDate), Restrictions.lt("generatedDate", toDate)));
+        criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId), Restrictions.between("generatedDate", fromDate, toDate)));
         HibernateUtil.fillPaginationCriteria(criteria, page, InvoiceEntity.class);
         invoiceEntities = criteria.list();
         return invoiceEntities;

@@ -154,16 +154,35 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
     @Override
     public void payDboy(HeaderDto headerDto) throws Exception {
-        String orderHistoryId = headerDto.getId();
-        String[] orderHistoryIds =  orderHistoryId.split(",");
-        List<DBoyOrderHistoryEntity> orderHistoryEntities = new ArrayList<>();
+        String orderId = headerDto.getId();
+        String[] orderIds =  orderId.split(",");
+        List<OrderEntity> orders = new ArrayList<>();
 
-        for (String id: orderHistoryIds )
-            orderHistoryEntities.add(dBoyOrderHistoryDaoService.find(Integer.parseInt(id)));
+        for (String id: orderIds ) {
+            if(id != "")
+                orders.add(orderDaoService.find(Integer.parseInt(id)));
+        }
 
-        for (DBoyOrderHistoryEntity orderHistory: orderHistoryEntities){
-            orderHistory.setdBoyPaid(true);
-            dBoyOrderHistoryDaoService.update(orderHistory);
+        for (OrderEntity order: orders){
+            order.setdBoyPaid(true);
+            orderDaoService.update(order);
+        }
+    }
+
+    @Override
+    public void payInvoice(HeaderDto headerDto) throws Exception {
+        String invoiceId = headerDto.getId();
+        String[] invoiceIds =  invoiceId.split(",");
+        List<InvoiceEntity> invoiceEntities = new ArrayList<>();
+
+        for (String id: invoiceIds ) {
+            if(id != "")
+                invoiceEntities.add(invoiceDaoService.find(Integer.parseInt(id)));
+        }
+
+        for (InvoiceEntity invoice: invoiceEntities){
+            invoice.setInvoicePaid(true);
+            invoiceDaoService.update(invoice);
         }
     }
 }

@@ -8,7 +8,12 @@
     <%@include file="../includes/head.jsp" %>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.dataTables.min.js"></script>
     <link href="${pageContext.request.contextPath}/resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="${pageContext.request.contextPath}/resources/css/jquery-ui.css" rel="stylesheet" type="text/css"
+          media="screen"/>
+    <link href="${pageContext.request.contextPath}/resources/css/jquery.ui.datepicker.css" rel="stylesheet" type="text/css"
+          media="screen"/>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/orders.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.ui.datepicker.js"></script>
 
 </head>
 <script>
@@ -25,7 +30,8 @@
                 $( "#to_date" ).datepicker( "option", "minDate", selectedDate );
                 $("#from_date_val").val(selectedDate);
                 $(this).addClass("hidden");
-                Order.courierBoyOrderHistory();
+                if($("#to_date_val").val() != null && $("#to_date_val").val() != '')
+                    Order.courierBoyOrderHistory();
             }
         });
 
@@ -40,7 +46,8 @@
                 $( "#from_date, #selected-days" ).datepicker( "option", "maxDate", selectedDate );
                 $("#to_date_val").val(selectedDate);
                 $(this).addClass("hidden");
-                Order.courierBoyOrderHistory();
+                if($("#from_date_val").val() != null && $("#from_date_val").val() != '')
+                    Order.courierBoyOrderHistory();
             }
         });
 
@@ -50,6 +57,40 @@
 
         $("#to_date_val").focus(function(){
             $("#to_date").removeClass("hidden");
+        });
+
+        $("#selectAllToPay").change(function() {
+            var ischecked= $(this).is(':checked');
+            if(!ischecked)
+                $(".pay_row").prop("checked", false);
+            else
+                $(".pay_row").prop("checked", true);
+        });
+
+        $("#pay_button").click(function(){
+            var idString = "";
+            $(".pay_row").each(function(){
+                if($(this).prop("checked"))
+                    idString+=$(this).data("id")+",";
+            });
+            if(idString == ""){
+                alert("Please select order(s) to pay the shopper");
+            }else{
+                var pay = confirm("Are you sure you want to pay the shopper");
+                if(pay){
+                    var callback = function(success, data){
+                        alert(data.message);
+                        return;
+                    }
+
+                    callback.loaderDiv = "#payLoader";
+                    callback.requestType = "POST";
+                    var header = {};
+                    header.id = idString;
+
+                    Main.request('/accountant/pay_dboy', {}, callback, header);
+                }
+            }
         });
     });
 </script>
@@ -62,6 +103,15 @@
     <div class="body">
         <div class="heading clearfix">
             <h1 class="pull-left"><span class="courier_name"></span> Order History</h1>
+            <div class="ratings pull-right">
+                <ul class="nav">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
             <div class="date_filter pull-right">
                 <div class="date_wrapper">
                     <div class="date_label">From:</div>
@@ -73,15 +123,6 @@
                     <input type="text" id="to_date_val" name="to_date" class="date_input">
                     <div id="to_date" class="cal hidden"></div>
                 </div>
-            </div>
-            <div class="ratings pull-right">
-                <ul class="nav">
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                </ul>
             </div>
         </div>
         <div class="main_content">
@@ -102,6 +143,8 @@
                         <th rowspan="2">Time Taken</th>
                         <th colspan="2">Feedback By Customer</th>
                         <th colspan="2">Feedback By Shopper</th>
+                        <th rowspan="2">Select All<span style="margin-left: 10px;"><input type="checkbox" id="selectAllToPay"
+                                                                              name="selectAllToPay"/></span></th>
                     </tr>
                         <tr>
                             <th>Rating</th>
@@ -113,6 +156,10 @@
                     <tbody>
                     </tbody>
                 </table>
+                <button type="submit" id="pay_button" class="btn btn-primary clearfix action_button pull-right">
+                    <span class="pull-left">Pay Shopper</span>
+                    <span class="pull-right" id="payLoader"></span>
+                </button>
             </div>
         </div>
     </div>

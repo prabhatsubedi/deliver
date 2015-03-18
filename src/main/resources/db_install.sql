@@ -176,3 +176,5 @@ CHANGE COLUMN `commission_percentage` `commission_percentage` DECIMAL(6,2) NULL 
 CHANGE COLUMN `service_fee` `service_fee` DECIMAL(16,2) NULL DEFAULT NULL ;
 
 
+/*2015-03-18*/
+ALTER TABLE dboy_order_history DROP COLUMN dboy_paid;

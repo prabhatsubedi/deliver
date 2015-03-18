@@ -2058,6 +2058,7 @@ label.check_label .checkbox {
 /*date filter*/
 .date_filter {
     display: inline;
+    margin-top: 5px;
 }
 .date_wrapper {
     float: left;

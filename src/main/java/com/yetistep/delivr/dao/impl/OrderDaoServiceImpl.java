@@ -218,7 +218,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         List<JobOrderStatus> orderStatuses = new ArrayList<>();
         orderStatuses.add(JobOrderStatus.DELIVERED);
         orderStatuses.add(JobOrderStatus.CANCELLED);
-        criteria.add(Restrictions.and(Restrictions.in("orderStatus", orderStatuses), Restrictions.eq("deliveryBoy.id", dBoyId), Restrictions.lt("orderDate", toDate), Restrictions.ge("orderDate", fromDate)));
+        criteria.add(Restrictions.and(Restrictions.in("orderStatus", orderStatuses), Restrictions.eq("deliveryBoy.id", dBoyId), Restrictions.between("orderDate", fromDate, toDate)));
 
         List<Object>  orderEntities = criteria.list();
         return orderEntities;

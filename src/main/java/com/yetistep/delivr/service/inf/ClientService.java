@@ -10,7 +10,7 @@ import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
-import com.yetistep.delivr.util.SparrowResultModel;
+import com.yetistep.delivr.model.mobile.SparrowResultModel;
 
 import java.util.ArrayList;
 import java.util.List;

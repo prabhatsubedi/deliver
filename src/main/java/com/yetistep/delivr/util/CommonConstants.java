@@ -18,4 +18,6 @@ public class CommonConstants {
     public static final Integer MAX_SEARCH_DATA = MAX_SEARCH_ITEM + MAX_SEARCH_STORE;
 
     public static final String UNKNOWN_LOCATION = "Unknown Location";
+
+    public static final String SMS_PRE_TEXT = "iDelivr: Your verification code for iDelivr is ";
 }

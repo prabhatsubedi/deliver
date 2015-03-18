@@ -111,6 +111,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     DBoyOrderHistoryDaoService dBoyOrderHistoryDaoService;
+
+    @Autowired
+    ValidateMobileDaoService validateMobileDaoService;
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
         log.info("++++++++++++++ Logging Customer ++++++++++++++++");
@@ -263,31 +266,42 @@ public class CustomerServiceImpl implements CustomerService {
         if (user.getLastAddressMobile() == null)
             throw new YSException("JSN001");
 
+        if(user.getLastAddressMobile().length() !=10)
+            throw new YSException("VLD004");
+
         /* Check Customer Existence */
         CustomerEntity customerEntity = customerDaoService.findUser(user.getCustomer().getFacebookId());
         if (customerEntity == null)
             throw new YSException("VLD011");
 
-        /* Check Valid Mobile and Mobile Code */
-        if (user.getLastAddressMobile().equals(customerEntity.getUser().getLastAddressMobile())) {
-            if (user.getVerificationCode() != null) {
-                if (!user.getVerificationCode().equals(customerEntity.getUser().getVerificationCode()))
-                    throw new YSException("SEC011");
-            } else {
-                String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), user.getLastAddressMobile());
-                if (mobCode == null)
-                    throw new YSException("SEC010");
-                else
-                    user.setVerificationCode(mobCode);
-            }
+        ValidateMobileEntity validateMobileEntity = validateMobileDaoService.getMobileCode(customerEntity.getUser().getId(), user.getLastAddressMobile());
+        if(validateMobileEntity == null)
+              throw new YSException("SEC010");
 
-        } else {
-            String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), user.getLastAddressMobile());
-            if (mobCode == null)
-                throw new YSException("SEC010");
-            else
-                user.setVerificationCode(mobCode);
-        }
+        if(validateMobileEntity.getVerificationCode()!=null && !validateMobileEntity.getVerificationCode().equals(user.getVerificationCode()))
+              throw new YSException("SEC011");
+
+
+        /* Check Valid Mobile and Mobile Code */
+//        if (user.getLastAddressMobile().equals(customerEntity.getUser().getLastAddressMobile())) {
+//            if (user.getVerificationCode() != null) {
+//                if (!user.getVerificationCode().equals(customerEntity.getUser().getVerificationCode()))
+//                    throw new YSException("SEC011");
+//            } else {
+//                String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), user.getLastAddressMobile());
+//                if (mobCode == null)
+//                    throw new YSException("SEC010");
+//                else
+//                    user.setVerificationCode(mobCode);
+//            }
+//
+//        } else {
+//            String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), user.getLastAddressMobile());
+//            if (mobCode == null)
+//                throw new YSException("SEC010");
+//            else
+//                user.setVerificationCode(mobCode);
+//        }
         //Update Customer
         if(address.getLatitude()!=null && address.getLongitude()!=null){
             customerDaoService.updateLatLong(address.getLatitude(), address.getLongitude(), user.getCustomer().getFacebookId());
@@ -308,31 +322,76 @@ public class CustomerServiceImpl implements CustomerService {
         //customerEntity.getUser().setAddresses(addressEntities);
         //customerDaoService.save(customerEntity);
         addressDaoService.save(address);
+
+        // Now Update Validate Mobile after successfully saved the database
+        validateMobileDaoService.updateVerifiedByUser(validateMobileEntity.getId());
+
         return address.getId();
     }
 
     @Override
     public AddressDto verifyMobile(String mobile, Long facebookId) throws Exception {
         log.info("++++++++ Verifying mobile " + mobile + " +++++++++++");
+
         CustomerEntity customerEntity  = customerDaoService.findUser(facebookId);
         if(customerEntity == null)
             throw new Exception("VLD011");
 
-        String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), mobile);
+        if(mobile.length()!=10)
+            throw new YSException("VLD004");
+
+        ValidateMobileEntity validMobile = validateMobileDaoService.getMobileCode(customerEntity.getUser().getId(), mobile);
+
+        //String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), mobile);
+       // String message = "iDelivr: Your verification code for iDelivr is ";
         String verificationCode = null;
-        Boolean isValid = false;
-        if(mobCode == null) {
+        Boolean validatedByUser = false;
+        if(validMobile == null) {
             log.debug("++++++ Updating Mobile No and Validation Code");
             verificationCode = GeneralUtil.generateMobileCode();
-            userDaoService.updateDeliveryContact(customerEntity.getUser().getId(), mobile, verificationCode);
+
+            //Now Send SMS
+            SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
+
+            ValidateMobileEntity validateMobileEntity = new ValidateMobileEntity();
+            validateMobileEntity.setMobileNo(mobile);
+            validateMobileEntity.setVerificationCode(verificationCode);
+            UserEntity userEntity = new UserEntity();
+            userEntity.setId(customerEntity.getUser().getId());
+            validateMobileEntity.setUser(userEntity);
+            validateMobileEntity.setTotalSmsSend(1);
+            //Now save mobile and other detail
+            validateMobileDaoService.save(validateMobileEntity);
+            //userDaoService.updateDeliveryContact(customerEntity.getUser().getId(), mobile, verificationCode);
+
         } else {
-            verificationCode = String.valueOf(mobCode);
-            isValid = true;
+
+            if(validMobile.getVerifiedByUser() == null) {
+
+                if(validMobile.getTotalSmsSend()!=null && validMobile.getTotalSmsSend() > 2)
+                    throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+
+                //Send SMS Only
+                verificationCode = String.valueOf(validMobile.getVerificationCode());
+
+                //Now Send SMS
+                SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
+
+                validateMobileDaoService.updateNoOfSMSSend(validMobile.getId());
+
+                validatedByUser = false;
+
+            } else {
+                verificationCode = String.valueOf(validMobile.getVerificationCode());
+                validatedByUser = validMobile.getVerifiedByUser()!=null ? validMobile.getVerifiedByUser() : false;
+            }
+
         }
 
         AddressDto address = new AddressDto();
         address.setVerificationCode(verificationCode);
-        address.setMobileValidate(isValid);
+        address.setMobileValidate(true);
+        address.setValidatedByUser(validatedByUser);
 
         return address;
 
@@ -436,7 +495,9 @@ public class CustomerServiceImpl implements CustomerService {
 
         /* Customer Reward Money */
 
-        BigDecimal customerBalanceBeforeDiscount = customerDaoService.getRewardsPoint(facebookId);
+        //BigDecimal customerBalanceBeforeDiscount = customerDaoService.getRewardsPoint(facebookId);
+        /* Set this to zero since no discount in this phase */
+        BigDecimal customerBalanceBeforeDiscount = BigDecimal.ZERO;
 
         /* Now Algorithm */
         // ==== Discount on delivery to customer =======

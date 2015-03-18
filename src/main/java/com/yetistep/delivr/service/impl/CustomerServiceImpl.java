@@ -495,7 +495,9 @@ public class CustomerServiceImpl implements CustomerService {
 
         /* Customer Reward Money */
 
-        BigDecimal customerBalanceBeforeDiscount = customerDaoService.getRewardsPoint(facebookId);
+        //BigDecimal customerBalanceBeforeDiscount = customerDaoService.getRewardsPoint(facebookId);
+        /* Set this to zero since no discount in this phase */
+        BigDecimal customerBalanceBeforeDiscount = BigDecimal.ZERO;
 
         /* Now Algorithm */
         // ==== Discount on delivery to customer =======

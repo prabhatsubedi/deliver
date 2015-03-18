@@ -34,6 +34,6 @@ public interface AdminService {
 
     public List<SMSDto> customerSendableSMSList() throws Exception;
 
-    public Boolean sendSMS(String mobileNo, Integer validateMobileId) throws Exception;
+    public Boolean sendSMS(SMSDto smsDto) throws Exception;
 
 }

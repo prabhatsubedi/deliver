@@ -13,6 +13,7 @@ import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.SparrowResultModel;
 import com.yetistep.delivr.model.mobile.dto.SMSDto;
 import com.yetistep.delivr.service.inf.AdminService;
+import com.yetistep.delivr.util.CommonConstants;
 import com.yetistep.delivr.util.SparrowSMSUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -367,7 +368,12 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Boolean sendSMS(String mobileNo, Integer validateMobileId) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public Boolean sendSMS(SMSDto smsDto) throws Exception {
+        log.info("+++++++++ Sending SMS to " + smsDto.getMobileNo() + " ++++++++++++++++");
+        String verificationCode = validateMobileDaoService.getVerificationCode(smsDto.getId());
+
+        SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", smsDto.getMobileNo());
+
+        return true;
     }
 }

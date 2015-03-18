@@ -570,5 +570,22 @@ public class ManagerController {
         }
     }
 
+    @RequestMapping(value = "/send_sms", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> sendSMS(@RequestBody SMSDto smsDto) {
+        try {
+            adminService.sendSMS(smsDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("SMS send successfully");
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while sending SMS", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
 
 }

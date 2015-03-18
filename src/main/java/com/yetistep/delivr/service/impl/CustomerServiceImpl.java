@@ -343,7 +343,7 @@ public class CustomerServiceImpl implements CustomerService {
         ValidateMobileEntity validMobile = validateMobileDaoService.getMobileCode(customerEntity.getUser().getId(), mobile);
 
         //String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), mobile);
-        String message = "iDelivr: Your verification code for iDelivr is ";
+       // String message = "iDelivr: Your verification code for iDelivr is ";
         String verificationCode = null;
         Boolean validatedByUser = false;
         if(validMobile == null) {
@@ -351,7 +351,7 @@ public class CustomerServiceImpl implements CustomerService {
             verificationCode = GeneralUtil.generateMobileCode();
 
             //Now Send SMS
-            SparrowSMSUtil.sendSMS(message + verificationCode + ".", mobile);
+            SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
 
             ValidateMobileEntity validateMobileEntity = new ValidateMobileEntity();
             validateMobileEntity.setMobileNo(mobile);
@@ -375,7 +375,7 @@ public class CustomerServiceImpl implements CustomerService {
                 verificationCode = String.valueOf(validMobile.getVerificationCode());
 
                 //Now Send SMS
-                SparrowSMSUtil.sendSMS(message + verificationCode + ".", mobile);
+                SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
 
                 validateMobileDaoService.updateNoOfSMSSend(validMobile.getId());
 

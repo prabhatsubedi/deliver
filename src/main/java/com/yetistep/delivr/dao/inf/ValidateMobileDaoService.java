@@ -22,4 +22,6 @@ public interface ValidateMobileDaoService  extends GenericDaoService<Integer, Va
     public Boolean updateNoOfSMSSend(Integer id) throws Exception;
 
     public List<SMSDto> getMaxReachedUsers() throws Exception;
+
+    public String getVerificationCode(Integer id) throws Exception;
 }

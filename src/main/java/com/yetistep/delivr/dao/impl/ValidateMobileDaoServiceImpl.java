@@ -99,4 +99,14 @@ public class ValidateMobileDaoServiceImpl implements ValidateMobileDaoService{
         List<SMSDto> smsDtos = sqlQuery.list();
         return smsDtos;
     }
+
+    @Override
+    public String getVerificationCode(Integer id) throws Exception {
+        String sql = "SELECT verification_code as verificationCode FROM validate_mobile WHERE id = :id";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("id", id);
+
+        String verificationCode = sqlQuery.uniqueResult().toString();
+        return verificationCode;
+    }
 }

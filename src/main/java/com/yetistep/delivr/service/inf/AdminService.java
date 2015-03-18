@@ -3,6 +3,7 @@ package com.yetistep.delivr.service.inf;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.model.CountryEntity;
 import com.yetistep.delivr.model.mobile.SparrowResultModel;
+import com.yetistep.delivr.model.mobile.dto.SMSDto;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
@@ -30,5 +31,9 @@ public interface AdminService {
     public Map<String, Map<String, Integer>> getOnTimeDeliveryGraph(HeaderDto headerDto) throws Exception;
 
     public SparrowResultModel getSMSCredits() throws Exception;
+
+    public List<SMSDto> customerSendableSMSList() throws Exception;
+
+    public Boolean sendSMS(String mobileNo, Integer validateMobileId) throws Exception;
 
 }

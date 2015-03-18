@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.ValidateMobileDaoService;
 import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
 import com.yetistep.delivr.model.ValidateMobileEntity;
+import com.yetistep.delivr.model.mobile.dto.SMSDto;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -85,5 +86,17 @@ public class ValidateMobileDaoServiceImpl implements ValidateMobileDaoService{
 
         sqlQuery.executeUpdate();
         return true;
+    }
+
+    @Override
+    public List<SMSDto> getMaxReachedUsers() throws Exception {
+        String sql = "SELECT v.id, v.mobile_no AS mobileNo, v.total_sms_send AS totalSmsSend, u.full_name AS fullName, u.email FROM validate_mobile v " +
+                "INNER JOIN users u ON (u.id = v.user_id) " +
+                "WHERE total_sms_send > 2";
+
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setResultTransformer(new AliasToBeanNestedResultTransformer(SMSDto.class));
+        List<SMSDto> smsDtos = sqlQuery.list();
+        return smsDtos;
     }
 }

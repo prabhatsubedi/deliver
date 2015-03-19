@@ -9,13 +9,14 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.getCustomers = function () {
 
-        var callback = function (status, data) {
+        var dataFilter = function (data, type) {
 
             console.log(data);
             if (!data.success) {
                 alert(data.message);
                 return;
             }
+            var responseRows = data.params.users.numberOfRows;
             var users = data.params.users.data;
             var tdata = [];
 
@@ -29,19 +30,23 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var inactivatedCount = !user.inactivatedCount ? '0' : user.inactivatedCount;
 
                 var row = [id, fullName, emailAddress, mobileNumber, inactivatedCount, '<a class="trigger_activation" href="#" data-id="' + id + '" >Activate</a>'];
+                row = $.extend({}, row);
                 tdata.push(row);
             }
 
-            Main.createDataTable("#customers_table", tdata);
+            var response = {};
+            response.data = tdata;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
 
-            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+            return response;
 
         };
 
-        callback.loaderDiv = "body";
-        callback.requestType = "POST";
+        dataFilter.url = "/organizer/deactivated_customers";
+        Main.createDataTable("#customers_table", dataFilter);
 
-        Main.request('/organizer/deactivated_customers', {}, callback);
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     };
 
@@ -68,12 +73,14 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.getMerchants = function () {
 
-        var callback = function (status, data) {
+        var dataFilter = function (data, type) {
+
             console.log(data);
             if (!data.success) {
                 alert(data.message);
                 return;
             }
+            var responseRows = data.params.merchants.numberOfRows;
             var merchants = data.params.merchants.data;
             var tdata = [];
 
@@ -99,26 +106,25 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
                 sess_merchants[merchantId] = {id: merchantId, businessTitle: merchant.businessTitle, status: status};
                 var row = [merchantId, link_merchant, merchant.partnershipStatus ? 'Partner' : 'Non Partner', merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
+                row = $.extend({}, row);
                 tdata.push(row);
             }
 
             Main.saveMerchants(sess_merchants);
 
-            Main.createDataTable("#merchants_table", tdata);
+            var response = {};
+            response.data = tdata;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
 
-            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
-//            Main.createDataTable();
+            return response;
 
         };
 
-        callback.loaderDiv = "body";
-        callback.requestType = "POST";
-      /*  var data = {};
-        data.page = page = {};
-        page.pageNumber = 1;
-        page.pageSize = 30;*/
+        dataFilter.url = "/organizer/get_merchants";
+        Main.createDataTable("#merchants_table", dataFilter);
 
-        Main.request('/organizer/get_merchants', {}, callback);
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     };
 
@@ -381,13 +387,14 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.listStores = function() {
 
-        var callback = function (status, data) {
+        var dataFilter = function (data, type) {
 
             console.log(data);
             if (!data.success) {
                 alert(data.message);
                 return;
             }
+            var responseRows = data.params.brands.numberOfRows;
             var brands = data.params.brands.data;
             var tdata = [];
 
@@ -401,28 +408,34 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var actions = '<div class="action_links">' + viewStore + viewItem + '</div>';
 
                 var row = [brandId, brandName, brand.countStore, brand.featured ? "Featured" : "None", !brand.priority ? "None" : brand.priority, Main.ucfirst(brand.status), actions];
+                row = $.extend({}, row);
                 tdata.push(row);
             }
 
-            Main.createDataTable("#stores_table", tdata);
+            var response = {};
+            response.data = tdata;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
 
-            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+            return response;
 
         };
-        callback.requestType = "POST";
-        callback.loaderDiv = 'body';
 
-        Main.request('/merchant/get_brands', {}, callback);
+        dataFilter.url = "/merchant/get_brands";
+        Main.createDataTable("#stores_table", dataFilter);
+
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     };
 
     Manager.getCourierStaffs = function () {
 
-        var callback = function (status, data) {
+        var dataFilter = function (data, type) {
             if (!data.success) {
                 alert(data.message);
                 return;
             }
+            var responseRows = data.params.deliveryBoys.numberOfRows;
             var courierStaffs = data.params.deliveryBoys.data;
             var tdata = [];
 
@@ -473,22 +486,23 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     '</div>';
 
                 var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, Main.ucfirst(user_status), Main.getFromLocalStorage("currency")+balance, action];
+                row = $.extend({}, row);
                 tdata.push(row);
             }
 
-            Main.createDataTable("#courier_staff_table", tdata, function(){
-                $('.dataTable .elem_tooltip:not([data-original-title])').tooltip();
-            });
+            var response = {};
+            response.data = tdata;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
 
-            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
-
+            return response;
 
         };
 
-        callback.loaderDiv = "body";
-        callback.requestType = "POST";
+        dataFilter.url = "/organizer/get_dboys";
+        Main.createDataTable("#courier_staff_table", dataFilter);
 
-        Main.request('/organizer/get_dboys', {}, callback);
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     };
 

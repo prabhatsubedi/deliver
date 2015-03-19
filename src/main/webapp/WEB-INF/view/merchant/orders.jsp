@@ -32,13 +32,13 @@
         </div>
         <div class="main_tabs">
             <ul class="nav nav-pills">
-                <li class="col-xs-4 active" data-ref="inroute"><a href="#">Live</a></li>
-                <li class="col-xs-4" data-ref="successful"><a href="#">Successful</a></li>
-                <li class="col-xs-4" data-ref="canceled"><a href="#">Cancelled</a></li>
+                <li class="col-xs-4"><a href="#tab_inroute" data-status="PENDING" data-id="order_inroute_table" data-toggle="tab">Live</a></li>
+                <li class="col-xs-4"><a href="#tab_success" data-status="SUCCESSFUL" data-id="order_successful_table" data-toggle="tab">Successful</a></li>
+                <li class="col-xs-4"><a href="#tab_cancelled" data-status="CANCELLED" data-id="order_canceled_table" data-toggle="tab">Cancelled</a></li>
             </ul>
         </div>
-        <div class="main_content">
-            <div class="table-view order_table inroute">
+        <div class="main_content tab-content">
+            <div class="table-view order_table inroute tab-pane" id="tab_inroute">
                 <table id="order_inroute_table">
                     <thead>
                         <tr>
@@ -58,7 +58,7 @@
                     </tbody>
                 </table>
               </div>
-            <div class="table-view order_table successful hidden">
+            <div class="table-view order_table successful tab-pane" id="tab_success">
                 <table id="order_successful_table">
                     <thead>
                     <tr>
@@ -84,7 +84,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="table-view order_table canceled hidden">
+            <div class="table-view order_table canceled tab-pane" id="tab_cancelled">
                 <table id="order_canceled_table">
                     <thead>
                     <tr>

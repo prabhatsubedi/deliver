@@ -9,22 +9,14 @@ if(typeof(Order) == "undefined") var Order = {};
 
 Order.getOrders = function(){
 
-    $(".main_tabs li").click(function(){
-        $(".main_tabs li").removeClass("active");
-        $(this).addClass("active");
-        $(".table-view").addClass("hidden");
-        $(".table-view."+$(this).data("ref")).removeClass("hidden");
-    });
-
-    var callback = function(success, data){
+    var dataFilter = function (data, type) {
         if (!data.success) {
             alert(data.message);
             return;
         }
+        var responseRows = data.params.orders.numberOfRows;
         var orders = data.params.orders.data;
-        var tdataInRoute = [];
-        var tdataSuccessful = [];
-        var tdataCanceled = [];
+        var tdata = [];
 
         for (var i = 0; i < orders.length; i++) {
             var order = orders[i];
@@ -78,23 +70,38 @@ Order.getOrders = function(){
                     }
                 }
 
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderVerificationCode?order.orderVerificationCode:'', order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason];
-                tdataCanceled.push(row);
+                row = [i+1, order.customer.user.fullName, storeInfo, id, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason];
             } else if(order.orderStatus == "DELIVERED") {
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderVerificationCode?order.orderVerificationCode:'', order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
-                tdataSuccessful.push(row)
+                row = [i+1, order.customer.user.fullName, storeInfo, id, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
             } else if($.inArray(order.orderStaus, activeStatus)) {
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderVerificationCode?order.orderVerificationCode:'', order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), view_items];
-                tdataInRoute.push(row)
+                row = [i+1, order.customer.user.fullName, storeInfo, id, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), view_items];
             }
+            row = $.extend({}, row);
+            tdata.push(row)
         }
 
-        Main.createDataTable("#order_inroute_table", tdataInRoute);
-        Main.createDataTable("#order_canceled_table", tdataCanceled);
-        Main.createDataTable("#order_successful_table", tdataSuccessful);
-        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+        var response = {};
+        response.data = tdata;
+        response.recordsTotal = responseRows;
+        response.recordsFiltered = responseRows;
+
+        return response;
     }
-    callback.loaderDiv = "body";
+
+
+    $('.main_tabs a[data-toggle="tab"]:not(".loaded")').on('shown.bs.tab', function() {
+
+        $(this).addClass('loaded');
+        dataFilter.url = "/merchant/get_orders";
+        dataFilter.params = {deliveryStatus: $(this).attr('data-status')};
+        Main.createDataTable("#" + $(this).attr('data-id'), dataFilter);
+
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+
+    });
+    $('.main_tabs a[data-toggle="tab"]').eq(0).tab('show');
+
+
     var postData = {};
     //postData.page = {pageNumber: 1, pageSize: 20, sortOrder: 'desc'};
 
@@ -146,8 +153,6 @@ Order.getOrders = function(){
             $('.shopper_preview_container').html('').addClass('hidden');
         }
     });
-
-    Main.request('/merchant/get_orders', postData, callback);
 }
 
 
@@ -282,12 +287,14 @@ Order.getOrdersItems = function(){
 
 
 Order.courierBoyOrderHistory = function(){
-    var callback = function(success, data){
+
+    var dataFilter = function (data, type) {
         if (!data.success) {
             alert(data.message);
             return;
         }
-        var orders = data.params.orders;
+        var responseRows = data.params.numberOfRows;
+        var orders = data.params.orders.data;
 
         var tableData = [];
         if(orders.length > 0) {
@@ -320,13 +327,22 @@ Order.courierBoyOrderHistory = function(){
         for(var i = 0; i < rating; i++) {
             $(".heading .ratings ul li").eq(i).addClass('active');
         }
-        Main.createDataTable("#courier_history_table", tableData);
-    }
-    callback.loaderDiv = "body";
-    var header = {};
-    header.id = Main.getURLvalue(3);
 
-    Main.request('/dboy/get_dBoy_order_history', {}, callback, header);
+        var response = {};
+        response.data = tableData;
+        response.recordsTotal = responseRows;
+        response.recordsFiltered = responseRows;
+
+        return response;
+    }
+    var headers = {};
+    headers.id = Main.getURLvalue(3);
+
+    dataFilter.url = "/dboy/get_dBoy_order_history";
+    dataFilter.headers = headers;
+    Main.createDataTable("#courier_history_table", dataFilter);
+
+    $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
 }
 
@@ -339,7 +355,6 @@ Order.getInvoices = function(){
         var invoices = data.params.invoices.data;
 
         var tableData = [];
-        //tableData.push(['', '', '', "<div class='page_total_amount'></div>", '', '', '', '', '']);
         for (var i = 0; i < invoices.length; i++) {
             var invoice = invoices[i];
             var link = '<a target="_blank" href="'+invoice.path+'">View Invoice</a>';

@@ -311,7 +311,7 @@ Order.courierBoyOrderHistory = function(){
             alert(data.message);
             return;
         }
-        var responseRows = data.params.numberOfRows;
+        var responseRows = data.params.orders.numberOfRows;
         var orders = data.params.orders.data;
 
         var tableData = [];

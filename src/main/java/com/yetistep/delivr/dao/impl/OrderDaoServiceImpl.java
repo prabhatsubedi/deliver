@@ -3,9 +3,11 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 import com.yetistep.delivr.util.DateUtil;
+import com.yetistep.delivr.util.HibernateUtil;
 import org.hibernate.*;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -15,6 +17,7 @@ import org.hibernate.transform.Transformers;
 import org.hibernate.type.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -201,27 +204,51 @@ public class OrderDaoServiceImpl implements OrderDaoService {
     Created by Sagar Sapkota
     * */
     @Override
-    public List<Object> get_dBoy_order_history(Integer dBoyId) throws Exception {
+    public List<Object> get_dBoy_order_history(Integer dBoyId, Page page) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class, "order");
         List<JobOrderStatus> orderStatuses = new ArrayList<>();
         orderStatuses.add(JobOrderStatus.DELIVERED);
         orderStatuses.add(JobOrderStatus.CANCELLED);
         criteria.add(Restrictions.and(Restrictions.in("orderStatus", orderStatuses), Restrictions.eq("deliveryBoy.id", dBoyId)));
-
+        HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
         List<Object>  orderEntities = criteria.list();
         return orderEntities;
     }
 
     @Override
-    public List<Object> get_dBoy_order_history(Integer dBoyId, Date fromDate, Date toDate) throws Exception {
+    public List<Object> get_dBoy_order_history(Integer dBoyId, Date fromDate, Date toDate, Page page) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class, "order");
         List<JobOrderStatus> orderStatuses = new ArrayList<>();
         orderStatuses.add(JobOrderStatus.DELIVERED);
         orderStatuses.add(JobOrderStatus.CANCELLED);
         criteria.add(Restrictions.and(Restrictions.in("orderStatus", orderStatuses), Restrictions.eq("deliveryBoy.id", dBoyId), Restrictions.between("orderDate", fromDate, toDate)));
-
+        HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
         List<Object>  orderEntities = criteria.list();
         return orderEntities;
+    }
+
+    @Override
+    public Integer getTotalNumberOrderHostory(Integer dBoyId, Date fromDate, Date toDate) {
+        String sqQuery;
+        if(fromDate != null && toDate != null){
+            sqQuery =    "SELECT COUNT(o.id) FROM orders o WHERE  o.delivery_boy_id =:dBoyId && o.order_date >:fromDate && o.order_date <=:toDate && o.order_status in(:orderStatus) ";
+        }else{
+            sqQuery =    "SELECT COUNT(o.id) FROM orders o WHERE  o.delivery_boy_id =:dBoyId && o.order_status in(:orderStatus) ";
+        }
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        List<Integer> orderStatuses = new ArrayList<>();
+        orderStatuses.add(JobOrderStatus.DELIVERED.ordinal());
+        orderStatuses.add(JobOrderStatus.CANCELLED.ordinal());
+        query.setParameter("dBoyId", dBoyId);
+
+        if(fromDate != null && toDate != null){
+            query.setParameter("fromDate", fromDate);
+            query.setParameter("toDate", toDate);
+        }
+
+        query.setParameterList("orderStatus", orderStatuses);
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
     }
 
     @Override

@@ -1593,8 +1593,18 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<Object> getOrderItems(HeaderDto headerDto) throws Exception {
-           List<ItemsOrderEntity> items = merchantDaoService.getOrdersItems(Integer.parseInt(headerDto.getId()));
+    public PaginationDto getOrderItems(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
+        Page page = requestJsonDto.getPage();
+
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  merchantDaoService.getTotalNumbersItems(Integer.parseInt(headerDto.getId()));
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+        List<ItemsOrderEntity> items = merchantDaoService.getOrdersItems(Integer.parseInt(headerDto.getId()), page);
 
         List<Object> objects = new ArrayList<>();
 
@@ -1608,8 +1618,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             objects.add(ReturnJsonUtil.getJsonObject(item, fields, assoc));
         }
 
-        return objects;
+        paginationDto.setData(objects);
+        return paginationDto;
     }
+
+
 
     @Override
     public void addItemsImages(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{

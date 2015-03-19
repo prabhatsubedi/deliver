@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.inf;
 import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.model.RatingEntity;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
@@ -31,9 +32,11 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
 
     public OrderEntity getNextPendingOrder() throws Exception;
 
-    public List<Object> get_dBoy_order_history(Integer dBoyId) throws Exception;
+    public List<Object> get_dBoy_order_history(Integer dBoyId, Page page) throws Exception;
 
-    public List<Object> get_dBoy_order_history(Integer dBoyId, Date fromDate, Date toDate) throws Exception;
+    public List<Object> get_dBoy_order_history(Integer dBoyId, Date fromDate, Date toDate, Page page) throws Exception;
+
+    public Integer getTotalNumberOrderHostory(Integer dBoyId, Date fromDate, Date toDate);
 
     public TrackOrderDto getTrackOrderInfo(Integer orderId) throws Exception;
 

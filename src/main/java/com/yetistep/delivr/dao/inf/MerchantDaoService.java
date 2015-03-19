@@ -122,7 +122,7 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public Integer getTotalNumbersOfPurchases(List<Integer> storeId) throws Exception;
 
-    public List<ItemsOrderEntity> getOrdersItems(Integer orderId) throws Exception;
+    public List<ItemsOrderEntity> getOrdersItems(Integer orderId, Page page) throws Exception;
 
     public Boolean checkEmailExistence(String email) throws Exception;
 
@@ -133,5 +133,7 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
     public Integer getTotalNumberOfBrandByMerchant(Integer merchantId) throws Exception;
 
     public Integer getTotalNumberOfBrand() throws Exception;
+
+    public Integer getTotalNumbersItems(Integer orderId) throws Exception;
 
 }

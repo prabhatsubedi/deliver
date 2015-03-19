@@ -128,7 +128,7 @@ public class MerchantController {
 
     @RequestMapping(value = "/get_brands", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> findAllBrands(@RequestHeader HttpHeaders headers, RequestJsonDto requestJsonDto) {
+    public ResponseEntity<ServiceResponse> findAllBrands(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try {
             HeaderDto headerDto = new HeaderDto();
             List<String> hd = headers.get("merchantId");
@@ -520,14 +520,14 @@ public class MerchantController {
         }
     }
 
-    @RequestMapping(value = "/get_orders_items", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_orders_items", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getOrdersItems(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> getOrdersItems(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
 
-             List<Object> items = merchantService.getOrderItems(headerDto);
+             PaginationDto items = merchantService.getOrderItems(headerDto, requestJsonDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Purchase History retrieved successfully with Merchant ID: "+headerDto.getMerchantId());
             serviceResponse.addParam("items", items);

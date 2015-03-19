@@ -714,7 +714,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         purchaseOrders.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
         purchaseOrders.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
         purchaseOrders.add(JobOrderStatus.AT_STORE.ordinal());
-        String sqQuery =    "SELECT COUNT(o.id) FROM orders o INNER JOIN order_cancel oc on(o.id = oc.order_id)  WHERE o.store_id IN(:storeId) AND o.order_status IN(:purchaseOrders)";
+        String sqQuery =    "SELECT COUNT(o.id) FROM orders o  WHERE o.store_id IN(:storeId) AND o.order_status IN(:purchaseOrders)";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
         query.setParameterList("storeId", storeId);
         query.setParameterList("purchaseOrders", purchaseOrders);
@@ -723,12 +723,22 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public List<ItemsOrderEntity> getOrdersItems(Integer orderId) throws Exception {
+    public List<ItemsOrderEntity> getOrdersItems(Integer orderId, Page page) throws Exception {
         List<ItemsOrderEntity> orders = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemsOrderEntity.class);
         criteria.add(Restrictions.and(Restrictions.eq("order.id", orderId)));
+        HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
         orders = criteria.list();
         return orders;
+    }
+
+    @Override
+    public Integer getTotalNumbersItems(Integer orderId) throws Exception {
+        String sqQuery =    "SELECT COUNT(io.id) FROM items_orders io  WHERE io.order_id =:orderId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("orderId", orderId);
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
     }
 
     @Override

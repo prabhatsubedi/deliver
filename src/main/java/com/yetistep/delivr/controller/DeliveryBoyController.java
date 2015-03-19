@@ -128,7 +128,7 @@ public class DeliveryBoyController extends AbstractManager{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
 
-            List <Object> orders = deliveryBoyService.get_order_history(Integer.parseInt(headerDto.getId()), requestJsonDto);
+            PaginationDto orders = deliveryBoyService.get_order_history(Integer.parseInt(headerDto.getId()), requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("List of past deliveries retrieved successfully");
             serviceResponse.addParam("orders", orders);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

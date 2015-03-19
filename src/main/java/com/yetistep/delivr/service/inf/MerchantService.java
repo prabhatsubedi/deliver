@@ -70,7 +70,7 @@ public interface MerchantService {
 
     public PaginationDto getPurchaseHistory(HeaderDto headerDto, RequestJsonDto requestJson) throws Exception;
 
-    public List<Object> getOrderItems(HeaderDto headerDto) throws Exception;
+    public PaginationDto getOrderItems(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 
     public void addItemsImages(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 

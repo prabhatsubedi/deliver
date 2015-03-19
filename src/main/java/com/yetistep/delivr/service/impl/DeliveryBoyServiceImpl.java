@@ -1573,7 +1573,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     }
 
     @Override
-    public List<Object> get_order_history(Integer dBoyId, RequestJsonDto requestJsonDto) throws Exception {
+    public PaginationDto get_order_history(Integer dBoyId, RequestJsonDto requestJsonDto) throws Exception {
+        PaginationDto paginationDto = new PaginationDto();
         Map<String, Date> dateRange = requestJsonDto.getDateRange();
         Date fromDate = null;
         Date toDate = null;
@@ -1586,12 +1587,22 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
         }
 
+        Page page = requestJsonDto.getPage();
+
+        Integer  totalRows =  orderDaoService.getTotalNumberOrderHostory(dBoyId, fromDate, toDate);
+
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
         List<Object> orders = new ArrayList<>();
 
         if(fromDate != null && toDate != null){
-            orders = orderDaoService.get_dBoy_order_history(dBoyId, fromDate, toDate);
+            orders = orderDaoService.get_dBoy_order_history(dBoyId, fromDate, toDate, page);
         } else {
-            orders = orderDaoService.get_dBoy_order_history(dBoyId);
+            orders = orderDaoService.get_dBoy_order_history(dBoyId, page);
         }
 
         List<Object> objects = new ArrayList<>();
@@ -1611,8 +1622,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         for (Object order:orders){
             objects.add(ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
         }
-
-        return objects;
+        paginationDto.setData(objects);
+        return paginationDto;
     }
 
     @Override

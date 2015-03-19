@@ -289,9 +289,9 @@ Order.getOrdersItems = function(){
             response.recordsTotal = responseRows;
             response.recordsFiltered = responseRows;
 
+            $("#order_items_modal").modal("show");
             return response;
 
-            $("#order_items_modal").modal("show");
         }
 
         dataFilter.url = "/merchant/get_orders_items";

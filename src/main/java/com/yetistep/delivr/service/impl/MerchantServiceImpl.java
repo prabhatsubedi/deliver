@@ -1606,6 +1606,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         List<ItemsOrderEntity> items = merchantDaoService.getOrdersItems(Integer.parseInt(headerDto.getId()), page);
 
+        for(ItemsOrderEntity item: items){
+            if(item.getItem() == null && item.getCustomItem() != null){
+                CustomItemEntity customItem = item.getCustomItem();
+                ItemEntity new_item = new ItemEntity();
+                new_item.setName(customItem.getName());
+                item.setItem(new_item);
+            }
+        }
+
         List<Object> objects = new ArrayList<>();
 
         String fields = "id,quantity,itemTotal,availabilityStatus,serviceCharge,vat,item,order";

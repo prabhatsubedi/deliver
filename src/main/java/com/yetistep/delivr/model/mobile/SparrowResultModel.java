@@ -1,6 +1,8 @@
 package com.yetistep.delivr.model.mobile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,14 +13,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class SparrowResultModel {
     private String count;
-    @JsonProperty("response_code")
     private String responseCode;
     private String response;
-
-    //For Credit
-    @JsonProperty("credits_available")
-    private String creditsAvailable;
-    @JsonProperty("credits_consumed")
+    private Integer creditsAvailable;
     private String creditsConsumed;
 
     public String getCount() {
@@ -29,13 +26,19 @@ public class SparrowResultModel {
         this.count = count;
     }
 
-
+    @JsonIgnore
     public String getResponseCode() {
         return responseCode;
     }
 
+    @JsonProperty("response_code")
     public void setResponseCode(String responseCode) {
         this.responseCode = responseCode;
+    }
+
+    @JsonProperty("responseCode")
+    public String getResponseCd() {
+        return responseCode;
     }
 
     public String getResponse() {
@@ -46,18 +49,28 @@ public class SparrowResultModel {
         this.response = response;
     }
 
-    public String getCreditsAvailable() {
+    @JsonIgnore
+    public Integer getCreditsAvailable() {
+        return creditsAvailable;
+    }
+    @JsonProperty("credits_available")
+    public void setCreditsAvailable(Integer creditsAvailable) {
+        this.creditsAvailable = creditsAvailable;
+    }
+    @JsonProperty("creditsAvailable")
+    public Integer getCreditsAvl() {
         return creditsAvailable;
     }
 
-    public void setCreditsAvailable(String creditsAvailable) {
-        this.creditsAvailable = creditsAvailable;
-    }
-
+    @JsonIgnore
     public String getCreditsConsumed() {
         return creditsConsumed;
     }
-
+    @JsonProperty("creditsConsumed")
+    public String getCreditsCons() {
+        return creditsConsumed;
+    }
+    @JsonProperty("credits_consumed")
     public void setCreditsConsumed(String creditsConsumed) {
         this.creditsConsumed = creditsConsumed;
     }

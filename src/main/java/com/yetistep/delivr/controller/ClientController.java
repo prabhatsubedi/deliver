@@ -934,7 +934,7 @@ public class ClientController extends AbstractManager{
 
             SparrowResultModel sparrowResultModel = clientService.getSmsResult();
             ServiceResponse serviceResponse = new ServiceResponse("Succesully Tested");
-            //serviceResponse.addParam("helplineInfo", helplineInfo);
+            serviceResponse.addParam("helplineInfo", sparrowResultModel);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while Testing on Sending SMS", e);

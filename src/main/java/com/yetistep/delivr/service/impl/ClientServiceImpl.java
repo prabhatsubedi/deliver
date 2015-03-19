@@ -1154,7 +1154,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
     @Override
     public SparrowResultModel getSmsResult() throws Exception {
-        SparrowResultModel sparrowResultModel = SparrowSMSUtil.sendSMS("First Sparrow SMS from Yetistep.WOW!!!", "98415310011");
+        SparrowResultModel sparrowResultModel = SparrowSMSUtil.sendSMS("First Sparrow SMS from Yetistep.WOW!!!", "984153100111");
         return sparrowResultModel;
     }
 }

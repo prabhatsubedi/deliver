@@ -84,7 +84,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var merchants = data.params.merchants.data;
             var tdata = [];
 
-            var sess_merchants = {};
             for (i = 0; i < merchants.length; i++) {
                 var merchant = merchants[i];
 
@@ -104,13 +103,10 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
                 var link_merchant = '<a href="' + Main.modifyURL('/merchant/store/list/' + merchantId) + '">' + merchant.businessTitle + '</a>';
 
-                sess_merchants[merchantId] = {id: merchantId, businessTitle: merchant.businessTitle, status: status};
                 var row = [merchantId, link_merchant, merchant.partnershipStatus ? 'Partner' : 'Non Partner', merchant.user.fullName, merchant.user.emailAddress, merchant.user.mobileNumber, Main.ucfirst(status), action];
                 row = $.extend({}, row);
                 tdata.push(row);
             }
-
-            Main.saveMerchants(sess_merchants);
 
             var response = {};
             response.data = tdata;

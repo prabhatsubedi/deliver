@@ -440,6 +440,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
     @Override
     public OrderSummaryDto getOrderSummaryById(Integer orderId, Long facebookId) throws Exception {
+        log.info("Getting order summary of order ID:"+orderId);
         OrderEntity order = orderDaoService.find(orderId);
         if (order == null) {
             throw new YSException("VLD017");

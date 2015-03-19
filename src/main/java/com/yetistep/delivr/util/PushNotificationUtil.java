@@ -105,17 +105,19 @@ public class PushNotificationUtil {
 
             String message = pushNotification.getMessage();
 
+            String customMessage = "";
             if(pushNotification.getPushNotificationRedirect() != null){
-                message += pushNotification.getPushNotificationRedirect().toString();
+                customMessage += pushNotification.getPushNotificationRedirect().toString();
             }
             if (pushNotification.getExtraDetail() != null)
-                message += "/" + pushNotification.getExtraDetail();
+                customMessage += "/" + pushNotification.getExtraDetail();
 
             InputStream inputStream = classLoader.getResourceAsStream(CERTIFICATE_IOS);
             PayloadBuilder payloadBuilder = APNS.newPayload();
-           /* payloadBuilder = payloadBuilder.badge(pushNotification.getBadge());
-            payloadBuilder = payloadBuilder.sound(pushNotification.getSound());*/
+           /* payloadBuilder = payloadBuilder.badge(pushNotification.getBadge());*/
+            payloadBuilder = payloadBuilder.sound("default");
             payloadBuilder = payloadBuilder.alertBody(message);
+            payloadBuilder = payloadBuilder.customField("customMessage",customMessage);
             String payload = payloadBuilder.build();
 
             ApnsService service = APNS.newService().withCert(inputStream, PASSWORD_IOS).withSandboxDestination().build();

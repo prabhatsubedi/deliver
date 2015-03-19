@@ -24,7 +24,8 @@ public class ThreadPoolManager {
     }
 
     public static void runAsynchJob(Runnable job){
-        pool.execute(job);
+       init();
+       pool.execute(job);
     }
 
     public static void shutdownAndAwaitTermination() {

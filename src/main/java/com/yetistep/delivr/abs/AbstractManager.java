@@ -53,13 +53,13 @@ public abstract class AbstractManager {
 
     private boolean sendCommonMail(EmailUtil.Email mail) throws Exception {
         EmailUtil email = new EmailUtil(mail);
-        email.sendMail();
+        email.sendAsynchMail();
         return true;
     }
 
     private boolean sendMailWithAttachments(EmailUtil.Email mail, EmailUtil.Attachment attachment) throws Exception {
         EmailUtil email = new EmailUtil(mail);
-        email.sendMailWithAttachment(attachment);
+        email.sendAsynchMail(attachment);
         return true;
     }
 

@@ -56,7 +56,7 @@ Order.getOrders = function(){
 
             storeInfo += "<div class='store_info hidden'><div class='contact_person'>Contact Person: "+contactPerson+"</div><div class='contact_no'>Contact No: "+contactNo+"</div></div></div>";
 
-            var view_items = '<span class="item_list" data-id="'+id+'">View Item List</span>';
+            var view_items = '<span class="item_list" data-id="'+id+'" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
             var activeStatus = ["ORDER_PLACED", "ORDER_ACCEPTED", "IN_ROUTE_TO_PICK_UP", "AT_STORE", "IN_ROUTE_TO_DELIVERY"];
 
             var row;
@@ -158,9 +158,7 @@ Order.getOrders = function(){
 
 Order.getPurchaseHistory = function(){
 
-
     var dataFilter = function (data, type) {
-
         if (!data.success) {
             alert(data.message);
             return;
@@ -183,7 +181,7 @@ Order.getPurchaseHistory = function(){
                 link_attachments += '</div></div>';
             }
             var deliveryBoy = typeof(order.deliveryBoy) != 'undefined'?"<div class='db_td'><span class='show_db_info'>"+order.deliveryBoy.user.fullName+"</span>":'';
-            var view_items = '<span class="item_list" data-id="'+id+'">View Item List</span>';
+            var view_items = '<span class="item_list" data-id="'+id+'" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
 
             if(typeof(order.deliveryBoy) != 'undefined') {
                 deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>"+order.deliveryBoy.user.mobileNumber+"</div>";
@@ -265,42 +263,43 @@ Order.getPurchaseHistory = function(){
 
 
 Order.getOrdersItems = function(){
-    $("body").delegate(".item_list", "click", function(){
 
-        var dataFilter = function (data, type) {
-            if (!data.success) {
-                alert(data.message);
-                return;
-            }
-            var responseRows = data.params.items.numberOfRows;
-            var items = data.params.items.data;
-            var tableData = [];
-            for (var i = 0; i < items.length; i++) {
-                var item = items[i];
+    var dataFilter = function (data, type) {
 
-                var row = [i+1, item.item.name, item.quantity, item.serviceCharge, item.vat, item.itemTotal];
-                row = $.extend({}, row);
-                tableData.push(row);
+        if (!data.success) {
+            alert(data.message);
+            return;
+        }
+        var responseRows = data.params.items.numberOfRows;
+        var items = data.params.items.data;
+        var tableData = [];
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
 
-            }
-
-            var response = {};
-            response.data = tableData;
-            response.recordsTotal = responseRows;
-            response.recordsFiltered = responseRows;
-
-            $("#order_items_modal").modal("show");
-            return response;
+            var row = [i+1, item.item.name, item.quantity, item.serviceCharge, item.vat, item.itemTotal];
+            row = $.extend({}, row);
+            tableData.push(row);
 
         }
 
+        var response = {};
+        response.data = tableData;
+        response.recordsTotal = responseRows;
+        response.recordsFiltered = responseRows;
+
+        return response;
+    };
+
+    $("#order_items_modal").on('show.bs.modal', function(e){
+
         dataFilter.url = "/merchant/get_orders_items";
-        dataFilter.headers = {id:$(this).data('id')};
+        dataFilter.headers = {id:$(e.relatedTarget).data('id')};
         Main.createDataTable("#orders_items_table", dataFilter);
 
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     });
+
 }
 
 
@@ -371,6 +370,7 @@ Order.getInvoices = function(){
             alert(data.message);
             return;
         }
+
         var responseRows = data.params.invoices.numberOfRows;
         var invoices = data.params.invoices.data;
 

@@ -31,7 +31,7 @@
 
 
     <task:annotation-driven />
-    <task:scheduler id="scheduler" />
+    <task:scheduler id="scheduler" pool-size="50" />
 
     <!-- ========= This Interceptor Will be used to check request =================== -->
 
@@ -48,7 +48,7 @@
                 <property name="targetMethod" value="process" />
             </bean>
         </constructor-arg>
-        <constructor-arg value="30000" />
+        <constructor-arg value="3000" />
     </bean>
 
     <context:component-scan base-package="com.yetistep.delivr.*" />

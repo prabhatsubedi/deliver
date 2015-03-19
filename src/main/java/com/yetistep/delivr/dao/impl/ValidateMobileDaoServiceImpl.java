@@ -92,7 +92,7 @@ public class ValidateMobileDaoServiceImpl implements ValidateMobileDaoService{
     public List<SMSDto> getMaxReachedUsers() throws Exception {
         String sql = "SELECT v.id, v.mobile_no AS mobileNo, v.total_sms_send AS totalSmsSend, u.full_name AS fullName, u.email FROM validate_mobile v " +
                 "INNER JOIN users u ON (u.id = v.user_id) " +
-                "WHERE total_sms_send > 2";
+                "WHERE total_sms_send > 2 AND verified_by_user IS NULL";
 
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setResultTransformer(new AliasToBeanNestedResultTransformer(SMSDto.class));

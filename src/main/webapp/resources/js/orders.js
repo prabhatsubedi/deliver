@@ -158,9 +158,7 @@ Order.getOrders = function(){
 
 Order.getPurchaseHistory = function(){
 
-
     var dataFilter = function (data, type) {
-
         if (!data.success) {
             alert(data.message);
             return;
@@ -268,6 +266,7 @@ Order.getOrdersItems = function(){
     $("body").delegate(".item_list", "click", function(){
 
         var dataFilter = function (data, type) {
+
             if (!data.success) {
                 alert(data.message);
                 return;
@@ -291,7 +290,6 @@ Order.getOrdersItems = function(){
 
             $("#order_items_modal").modal("show");
             return response;
-
         }
 
         dataFilter.url = "/merchant/get_orders_items";
@@ -371,6 +369,7 @@ Order.getInvoices = function(){
             alert(data.message);
             return;
         }
+
         var responseRows = data.params.invoices.numberOfRows;
         var invoices = data.params.invoices.data;
 

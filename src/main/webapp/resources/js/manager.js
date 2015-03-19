@@ -325,7 +325,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
                             $('.add_items', elem).remove();
                         else
                             $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
-                        console.log(storeBrand.merchantId);
 
                         if(sess_merchants[storeBrand.merchantId].status == "INACTIVE") $('.add_items', elem).addClass('disabled');
 

@@ -216,8 +216,38 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         merchantEntities = merchantDaoService.findAll();
 
-        List<MerchantEntity> objects = new ArrayList<>();
+        for(MerchantEntity merchantEntity: merchantEntities){
+            /*
+            * If password is empty, then our assumption is merchant has not clicked the verification link
+            * and hence status is UNVERIFIED.
+            * If password is not empty and commission percentage is null, our assumption is merchant has clicked
+            * on the verification link but not activated by admin/manager. Hence status is VERIFIED only.
+            * If password is not empty and commission percentage is not null, then verification status checked and
+            * user status is updated based on verified status(true ==> ACTIVE, false ==> INACTIVE).
+            */
+            if(merchantEntity.getUser().getPassword().isEmpty()){
+                if(merchantEntity.getUser().getVerifiedStatus() != null && merchantEntity.getCommissionPercentage()!=null){
+                    if (merchantEntity.getUser().getVerifiedStatus()) {
+                        merchantEntity.setStatus(Status.ACTIVE);
+                    }else{
+                        merchantEntity.setStatus(Status.INACTIVE);
+                    }
+                }else {
+                    merchantEntity.setStatus(Status.UNVERIFIED);
+                }
+            }else if(merchantEntity.getCommissionPercentage() == null){
+                merchantEntity.setStatus(Status.VERIFIED);
+            }else{
+                if(merchantEntity.getUser().getVerifiedStatus()){
+                    merchantEntity.setStatus(Status.ACTIVE);
+                }else{
+                    merchantEntity.setStatus(Status.INACTIVE);
+                }
+            }
+            merchantEntity.getUser().setRole(null);
+        }
 
+        List<MerchantEntity> objects = new ArrayList<>();
         String fields = "id,businessTitle,partnershipStatus,status";
 
         for (MerchantEntity merchant:merchantEntities){

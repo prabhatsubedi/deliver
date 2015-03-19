@@ -162,7 +162,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }
 
 
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude,order";
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,previousDue,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude,order";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -719,7 +719,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         boolean status = orderDaoService.update(order);
         if(status){
             /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
-            //accountService.generateBillAndReceiptAndSendEmail(order);
+            accountService.generateBillAndReceiptAndSendEmail(order);
 
 
             /*=========== Calculate Average Rating For Customer ================ (Appended By Surendra) */
@@ -1596,14 +1596,14 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         List<Object> objects = new ArrayList<>();
 
-        String fields = "id,orderName,deliveryStatus,assignedTime,customer,deliveryBoy,grandTotal,orderDate,dBoyOrderHistories,rating";
+        String fields = "id,orderName,deliveryStatus,assignedTime,customer,deliveryBoy,grandTotal,orderDate,dBoyOrderHistories,rating,dBoyPaid";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("customer", "id,user");
         assoc.put("deliveryBoy", "id,averageRating,user");
-        assoc.put("dBoyOrderHistories", "id,amountEarned,orderAcceptedAt,orderCompletedAt,distanceTravelled,dBoyPaid");
+        assoc.put("dBoyOrderHistories", "id,amountEarned,orderAcceptedAt,orderCompletedAt,distanceTravelled");
         assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
 
         subAssoc.put("user", "id,fullName");

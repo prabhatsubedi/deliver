@@ -4,6 +4,7 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.mobile.dto.SMSDto;
 import com.yetistep.delivr.service.inf.*;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
@@ -156,6 +157,21 @@ public class ManagerController {
     public ResponseEntity<ServiceResponse> getMerchants(@RequestBody RequestJsonDto requestJsonDto) {
         try{
             PaginationDto merchantEntities = merchantService.getMerchants(requestJsonDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Merchant retrieved successfully");
+            serviceResponse.addParam("merchants", merchantEntities);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting merchants", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_all_merchants", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getAllMerchants() {
+        try{
+            List<MerchantEntity> merchantEntities = merchantService.getAllMerchants();
             ServiceResponse serviceResponse = new ServiceResponse("Merchant retrieved successfully");
             serviceResponse.addParam("merchants", merchantEntities);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -470,12 +486,12 @@ public class ManagerController {
         }
     }
 
-    @RequestMapping(value="/deactivated_customers", method = RequestMethod.GET)
+    @RequestMapping(value="/deactivated_customers", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getInactivatedCustomers(){
+    public ResponseEntity<ServiceResponse> getInactivatedCustomers(RequestJsonDto requestJsonDto){
         try{
 
-            List<UserEntity> users = managerService.getInactivatedCustomers();
+            PaginationDto users = managerService.getInactivatedCustomers(requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("Inactivated Customers Retrieved Successfully");
             serviceResponse.addParam("users", users);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -507,6 +523,69 @@ public class ManagerController {
         }
     }
 
+    @RequestMapping(value="/send_notification", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> sendPushNotification(@RequestBody RequestJsonDto requestJsonDto){
+        try{
+            managerService.sendPushMessageTo(requestJsonDto.getNotifyToList(), requestJsonDto.getPushMessage());
+            ServiceResponse serviceResponse = new ServiceResponse("Notification sent successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        }catch (Exception e){
+            GeneralUtil.logError(log, "Error occurred while sending push notification", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/sms_credits", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getSMSCredits() {
+        try{
+            ServiceResponse serviceResponse = new ServiceResponse("SMS credit retrieved successfully");
+            serviceResponse.addParam("credit", adminService.getSMSCredits());
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting SMS credits", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
+    @RequestMapping(value = "/send_sms_customer_list", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> sendSmsCustomerList() {
+        try {
+            List<SMSDto> smsDtos = adminService.customerSendableSMSList();
+
+            ServiceResponse serviceResponse = new ServiceResponse("Sendable sms customer list fetched successfully");
+            serviceResponse.addParam("sendableSMSList", smsDtos);
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting Sendable sms customer list", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
+    @RequestMapping(value = "/send_sms", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> sendSMS(@RequestBody SMSDto smsDto) {
+        try {
+            adminService.sendSMS(smsDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("SMS send successfully");
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while sending SMS", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
 
 
 }

@@ -4,12 +4,17 @@ import com.amazonaws.util.json.JSONArray;
 import com.amazonaws.util.json.JSONObject;
 import com.yetistep.delivr.dao.inf.AdminDaoService;
 import com.yetistep.delivr.dao.inf.CountryDaoService;
+import com.yetistep.delivr.dao.inf.ValidateMobileDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.mobile.SparrowResultModel;
+import com.yetistep.delivr.model.mobile.dto.SMSDto;
 import com.yetistep.delivr.service.inf.AdminService;
+import com.yetistep.delivr.util.CommonConstants;
+import com.yetistep.delivr.util.SparrowSMSUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +36,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     AdminDaoService adminDaoService;
+
+    @Autowired
+    ValidateMobileDaoService validateMobileDaoService;
 
     @Override
     public List<CountryEntity> findAllCountries() throws Exception {
@@ -344,5 +352,28 @@ public class AdminServiceImpl implements AdminService {
         graphData.put("onTimeDelivery", onTimeDelivery);
         graphData.put("exceededTimeDelivery", exceededTimeDelivery);
         return graphData;
+    }
+
+    @Override
+    public SparrowResultModel getSMSCredits() throws Exception {
+        return SparrowSMSUtil.getSMSCredits();
+    }
+
+    @Override
+    public List<SMSDto> customerSendableSMSList() throws Exception {
+        log.info("++++++++++ Getting Max Reached Sendable Customer List ++++++++++++");
+
+        List<SMSDto> smsDtos = validateMobileDaoService.getMaxReachedUsers();
+        return smsDtos;
+    }
+
+    @Override
+    public Boolean sendSMS(SMSDto smsDto) throws Exception {
+        log.info("+++++++++ Sending SMS to " + smsDto.getMobileNo() + " ++++++++++++++++");
+        String verificationCode = validateMobileDaoService.getVerificationCode(smsDto.getId());
+
+        SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", smsDto.getMobileNo());
+
+        return true;
     }
 }

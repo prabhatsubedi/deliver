@@ -5,6 +5,7 @@ import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.NotifyTo;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
@@ -14,6 +15,7 @@ import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -46,6 +48,8 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     @Autowired
     UserDaoService userDaoService;
 
+    @Autowired
+    UserDeviceDaoService userDeviceDaoService;
 
     @Override
     public void saveManagerOrAccountant(UserEntity user, HeaderDto headerDto) throws Exception {
@@ -228,6 +232,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
 
         dBoy.setPreviousDue(dBoy.getPreviousDue().subtract(requestJsonDto.getSubmittedAmount()));
+        dBoy.setWalletAmount(dBoy.getWalletAmount().subtract(requestJsonDto.getSubmittedAmount()));
         List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
         DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();
         dBoySubmittedAmount.setAmountReceived(requestJsonDto.getSubmittedAmount());
@@ -251,6 +256,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     public DeliveryBoyEntity walletSubmittedAmount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
         DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
 
+        dBoy.setPreviousDue(BigDecimal.ZERO);
         dBoy.setWalletAmount(dBoy.getWalletAmount().subtract(requestJsonDto.getSubmittedAmount()));
 
         List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
@@ -589,10 +595,24 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     }
 
     @Override
-    public List<UserEntity> getInactivatedCustomers() throws Exception {
+    public PaginationDto getInactivatedCustomers(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++++++ Getting Inactivated Customers ++++++++++");
-        List<UserEntity> users = userDaoService.getInactivatedCustomers();
-        return users;
+
+        Page page = requestJsonDto.getPage();
+
+
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  userDaoService.getTotalNumberInactiveCustomers();
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+
+        List<UserEntity> users = userDaoService.getInactivatedCustomers(page);
+        paginationDto.setData(users);
+        return paginationDto;
     }
 
     @Override
@@ -600,5 +620,27 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         log.info("+++++++++++++++ Activating User +++++++++++++");
         userDaoService.activateUser(Integer.parseInt(headerDto.getId()));
         return true;
+    }
+
+    @Override
+    public Boolean sendPushMessageTo(List<NotifyTo> notifyToList, String message) throws Exception {
+        for(NotifyTo notifyTo: notifyToList){
+            if(notifyTo.equals(NotifyTo.DELIVERY_BOY))
+                sendNotification(Role.ROLE_DELIVERY_BOY, "ANDROID", notifyTo, message);
+            else if(notifyTo.equals(NotifyTo.CUSTOMER_ANDROID))
+                sendNotification(Role.ROLE_CUSTOMER, "ANDROID", NotifyTo.CUSTOMER, message);
+            else if(notifyTo.equals(NotifyTo.CUSTOMER_IOS))
+                sendNotification(Role.ROLE_CUSTOMER, "MAC_OS_X", notifyTo, message);
+        }
+        return true;
+    }
+
+    private void sendNotification(Role role, String family, NotifyTo notifyTo, String message) throws Exception{
+        List<String> deviceTokens = userDeviceDaoService.getAllDeviceTokensForFamilyAndRole(role, family);
+        PushNotification pushNotification = new PushNotification();
+        pushNotification.setTokens(deviceTokens);
+        pushNotification.setMessage(message);
+        pushNotification.setNotifyTo(notifyTo);
+        PushNotificationUtil.sendNotification(pushNotification, family);
     }
 }

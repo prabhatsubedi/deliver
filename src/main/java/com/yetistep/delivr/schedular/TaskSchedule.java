@@ -1,16 +1,18 @@
 package com.yetistep.delivr.schedular;
 
+import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
 import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.service.inf.AccountService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,19 +25,31 @@ import java.util.List;
 @Service
 @Component
 public class TaskSchedule {
+    private static final Logger log = Logger.getLogger(TaskSchedule.class);
 
     @Autowired
     AccountService accountService;
 
+    @Autowired
+    DeliveryBoyDaoService deliveryBoyDaoService;
+
     /* second(0-59)  minute(0-59)   hour(0-23)  Day of month(1-31)  month(0-11 or JAN-DEC)  Day of week(1-7 or SUN-SAT) */
-    @Scheduled(cron="0 0 12 * * ?")
+    @Scheduled(cron="0 0 0 * * ?")
+    @Transactional
     public void deliveryBoyStatus() {
-        System.out.println("Updating Status of shopper:");
+        log.info("Updating Previous Day Due Transaction of shopper:");
+        try {
+            deliveryBoyDaoService.updatePreviousDayDueAmount();
+            log.info("Previous Day Due Transaction of shopper updated successfully");
+        } catch (Exception e) {
+            log.error("Error occurred while updating previous day due amount",e);
+        }
+
     }
 
-    @Scheduled(cron="0 30 18 * * FRI")
+    @Scheduled(cron="0 0 0 * * WED")
     public void generateInvoice() throws Exception{
-        System.out.println("Generating invoice:");
+        log.info("Generating invoice:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 0);
@@ -50,7 +64,7 @@ public class TaskSchedule {
                 accountService.generateInvoice(store.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()), "http://test.idelivr.com/");
             }
         } else {
-            System.out.println("no stores found. ");
+            log.info("no stores found. ");
         }
     }
 }

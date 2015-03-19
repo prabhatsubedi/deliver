@@ -56,6 +56,7 @@ public class UserEntity implements Serializable {
     private UserDeviceEntity userDevice;
     private List<OrderCancelEntity> orderCancelEntities;
     private List<AddressEntity> addresses;
+    private List<ValidateMobileEntity> validateMobiles;
     private List<ActionLogEntity> actionLogEntities;
 
     @Id
@@ -313,6 +314,16 @@ public class UserEntity implements Serializable {
 
     public void setAddresses(List<AddressEntity> addresses) {
         this.addresses = addresses;
+    }
+
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonProperty
+    public List<ValidateMobileEntity> getValidateMobiles() {
+        return validateMobiles;
+    }
+
+    public void setValidateMobiles(List<ValidateMobileEntity> validateMobiles) {
+        this.validateMobiles = validateMobiles;
     }
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

@@ -1,6 +1,7 @@
 package com.yetistep.delivr.dto;
 
 import com.yetistep.delivr.enums.DeliveryStatus;
+import com.yetistep.delivr.enums.NotifyTo;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.CustomerInfo;
@@ -69,8 +70,7 @@ public class RequestJsonDto {
     private Integer orderId;
     private String className;
     private Integer statusId;
-
-
+    private List<String> searchColumns;
 
 
     /*web search properties
@@ -87,6 +87,9 @@ public class RequestJsonDto {
     /*Get orders properties*/
     private DeliveryStatus deliveryStatus;
 
+    /* Push notification service */
+    private String pushMessage;
+    private List<NotifyTo> notifyToList;
 
 
     /*=================================================================== */
@@ -346,6 +349,8 @@ public class RequestJsonDto {
         this.statusId = statusId;
     }
 
+
+
     public String getSearchString() {
         return searchString;
     }
@@ -392,5 +397,21 @@ public class RequestJsonDto {
 
     public void setDateRange(Map<String, Date> dateRange) {
         this.dateRange = dateRange;
+    }
+
+    public String getPushMessage() {
+        return pushMessage;
+    }
+
+    public void setPushMessage(String pushMessage) {
+        this.pushMessage = pushMessage;
+    }
+
+    public List<NotifyTo> getNotifyToList() {
+        return notifyToList;
+    }
+
+    public void setNotifyToList(List<NotifyTo> notifyToList) {
+        this.notifyToList = notifyToList;
     }
 }

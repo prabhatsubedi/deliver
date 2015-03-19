@@ -41,6 +41,8 @@ public class AdminController {
     SystemPropertyService systemPropertyService;
     @Autowired
     ManagerService managerService;
+    @Autowired
+    AdminService adminService;
 
     private static final Logger log = Logger.getLogger(AdminController.class);
 
@@ -209,7 +211,8 @@ public class AdminController {
     }
 
 
-
-
-
 }
+
+
+
+

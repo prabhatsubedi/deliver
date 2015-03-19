@@ -25,4 +25,6 @@ public interface AccountService {
 
     public void payDboy(HeaderDto headerDto) throws Exception;
 
+    public void payInvoice(HeaderDto headerDto) throws Exception;
+
 }

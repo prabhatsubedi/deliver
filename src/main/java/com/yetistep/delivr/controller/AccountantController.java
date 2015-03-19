@@ -137,10 +137,27 @@ public class AccountantController {
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             accountService.payDboy(headerDto);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Invoice has been generated successfully: "+headerDto.getId());
+            ServiceResponse serviceResponse = new ServiceResponse("Shopper has been paid successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while generating invoice: ", e);
+            GeneralUtil.logError(log, "Error Occurred while paying Shopper: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/pay_invoice", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> payInvoice(@RequestHeader HttpHeaders headers) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            accountService.payInvoice(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Invoice(s) has been paid successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while paying invoice: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

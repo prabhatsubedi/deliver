@@ -97,6 +97,14 @@ public class MessageBundle {
         return System.getProperty("DELIVR_SECRET_KEY");
     }
 
+    public static String getSMSToken(){
+        return System.getProperty("DELIVR_SMS_TOKEN");
+    }
+
+    public static String getSMSFrom(){
+        return System.getProperty("DELIVR_SMS_FROM");
+    }
+
 
     public static String getPropertyKey(String key, File file){
         try {

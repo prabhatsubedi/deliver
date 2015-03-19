@@ -365,7 +365,9 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         }
 
         /* 12. ======= Customer Available balance before discount ====== */
-        BigDecimal customerBalanceBeforeDiscount = BigDecimalUtil.checkNull(order.getCustomer().getRewardsEarned());
+        //  BigDecimal customerBalanceBeforeDiscount = BigDecimalUtil.checkNull(order.getCustomer().getRewardsEarned());
+        /* Set this to zero since no discount in this phase */
+        BigDecimal customerBalanceBeforeDiscount = BigDecimal.ZERO;
 
         /* 13. ======== Delivery charged to customer After Discount with VAT ====== */
         BigDecimal deliveryChargedAfterDiscount = ZERO;

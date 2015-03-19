@@ -31,7 +31,7 @@ public class InvoiceEntity {
     private Boolean invoicePaid;
     private List<OrderEntity> orders;
     private MerchantEntity merchant;
-    private  StoreEntity store;
+    private StoreEntity store;
 
 
     @Id

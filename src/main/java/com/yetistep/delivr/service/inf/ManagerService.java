@@ -3,6 +3,7 @@ package com.yetistep.delivr.service.inf;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.NotifyTo;
 import com.yetistep.delivr.model.*;
 
 import java.util.List;
@@ -51,7 +52,9 @@ public interface ManagerService {
 
     public Boolean changeOrderSettlement(HeaderDto headerDto) throws Exception;
 
-    public List<UserEntity> getInactivatedCustomers() throws Exception;
+    public PaginationDto getInactivatedCustomers(RequestJsonDto requestJsonDto) throws Exception;
 
     public Boolean activateUser(HeaderDto headerDto) throws Exception;
+
+    public Boolean sendPushMessageTo(List<NotifyTo> notifyToList, String message) throws Exception;
 }

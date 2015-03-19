@@ -201,6 +201,25 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         return paginationDto;
     }
 
+    @Override
+    public List<MerchantEntity> getAllMerchants() throws Exception {
+        log.info("++++++++++++ Getting All Merchants +++++++++++++++");
+        List<MerchantEntity> merchantEntities = new ArrayList<>();
+
+
+        merchantEntities = merchantDaoService.findAll();
+
+        List<MerchantEntity> objects = new ArrayList<>();
+
+        String fields = "id,businessTitle,partnershipStatus,status";
+
+        for (MerchantEntity merchant:merchantEntities){
+            objects.add((MerchantEntity) ReturnJsonUtil.getJsonObject(merchant, fields));
+        }
+
+        return objects;
+    }
+
 
     private void checkUniqueBrand(String name) throws Exception{
         StoresBrandEntity brand = merchantDaoService.getBrandByBrandName(name);
@@ -549,14 +568,29 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     @Override
-    public List<StoresBrandEntity> findBrands(HeaderDto headerDto) throws Exception {
+    public PaginationDto findBrands(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
 
         List<StoresBrandEntity> storesBrands;
+        PaginationDto paginationDto = new PaginationDto();
+
+        Page page = requestJsonDto.getPage();
+
+        Integer totalRows;
+        if (headerDto.getMerchantId() != null){
+             totalRows =  merchantDaoService.getTotalNumberOfBrandByMerchant(headerDto.getMerchantId());
+        }else{
+             totalRows =  merchantDaoService.getTotalNumberOfBrand();
+        }
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
 
         if (headerDto.getMerchantId() != null){
-            storesBrands = merchantDaoService.findBrandListByMerchant(headerDto.getMerchantId());
+            storesBrands = merchantDaoService.findBrandListByMerchant(headerDto.getMerchantId(), page);
         } else {
-            storesBrands = merchantDaoService.findBrandList();
+            storesBrands = merchantDaoService.findBrandList(page);
         }
 
         List<StoresBrandEntity> brandList = new ArrayList<>();
@@ -575,6 +609,28 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 brand.setStore(null);
                 brand.setMerchant(null);
                 brandList.add (brand);
+            }
+        }
+        paginationDto.setData(brandList);
+        return paginationDto;
+    }
+
+    @Override
+    public List<StoresBrandEntity> findSearchBrands(HeaderDto headerDto) throws Exception {
+
+        List<StoresBrandEntity> storesBrands;
+        if (headerDto.getMerchantId() != null){
+            storesBrands = merchantDaoService.findBrandListByMerchant(headerDto.getMerchantId());
+        } else {
+            storesBrands = merchantDaoService.findBrandList();
+        }
+        List<StoresBrandEntity> brandList = new ArrayList<>();
+
+        String fields = "id,brandName";
+        if(storesBrands.size()>0){
+            for (StoresBrandEntity storesBrandEntity: storesBrands) {
+                StoresBrandEntity brand = (StoresBrandEntity) ReturnJsonUtil.getJsonObject(storesBrandEntity, fields);
+                brandList.add(brand);
             }
         }
         return brandList;
@@ -1451,7 +1507,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         List<Object> objects = new ArrayList<>();
 
-        String fields = "id,orderName,orderStatus,deliveryStatus,customer,store,deliveryBoy,attachments,grandTotal,rating";
+        String fields = "id,orderName,orderStatus,deliveryStatus,customer,orderVerificationCode,store,deliveryBoy,attachments,grandTotal,rating";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -1509,7 +1565,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         List<Object> objects = new ArrayList<>();
 
-        String fields = "id,orderName,deliveryStatus,orderStatus,attachments,customer,store,deliveryBoy,grandTotal";
+        String fields = "id,orderName,deliveryStatus,orderStatus,attachments,orderDate,customer,store,deliveryBoy,grandTotal";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

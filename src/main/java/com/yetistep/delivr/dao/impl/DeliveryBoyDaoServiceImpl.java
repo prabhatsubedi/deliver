@@ -206,4 +206,12 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         BigInteger count = (BigInteger) sqlQuery.uniqueResult();
         return (count.intValue() > 0) ? true : false;
     }
+
+    @Override
+    public Boolean updatePreviousDayDueAmount() throws Exception {
+        String sql = "UPDATE delivery_boys SET previous_due = wallet_amount";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.executeUpdate();
+        return true;
+    }
 }

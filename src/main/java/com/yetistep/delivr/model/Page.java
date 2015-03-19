@@ -2,6 +2,8 @@ package com.yetistep.delivr.model;
 
 import com.yetistep.delivr.util.YSException;
 
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Chandra Prakash Panday
@@ -16,6 +18,8 @@ public class Page {
     private String sortOrder;
     private Integer rowNumber;
     private Integer totalRows;
+    private String searchFor;
+    private Map<String, String> searchFields;
 
     public Integer getPageNumber() {
         return pageNumber;
@@ -63,6 +67,22 @@ public class Page {
 
     public void setTotalRows(Integer totalRows) {
         this.totalRows = totalRows;
+    }
+
+    public String getSearchFor() {
+        return searchFor;
+    }
+
+    public void setSearchFor(String searchFor) {
+        this.searchFor = searchFor;
+    }
+
+    public Map<String, String> getSearchFields() {
+        return searchFields;
+    }
+
+    public void setSearchFields(Map<String, String> searchFields) {
+        this.searchFields = searchFields;
     }
 
     public Integer getValidRowNumber(){

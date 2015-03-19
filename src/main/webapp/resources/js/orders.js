@@ -197,7 +197,7 @@ Order.getPurchaseHistory = function(){
 
 
 
-            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, view_items, ''];
+            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.orderDate, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, view_items, ''];
             tableData.push(row);
 
         }
@@ -311,7 +311,13 @@ Order.courierBoyOrderHistory = function(){
                     time_taken = ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt)/1000/60).toFixed(0);
                 }
 
-                var row = [i+1, order.deliveryBoy.user.fullName, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, order.dBoyOrderHistories[orderHistoryLength-1].amountEarned, order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
+                if(order.dBoyPaid != undefined){
+                    var checkBox = '<input type="checkbox" checked data-id="'+order.id+'" class="pay_row">';
+                }else{
+                    var checkBox = '<input type="checkbox" data-id="'+order.id+'" class="pay_row">';
+                }
+
+                var row = [i+1, order.deliveryBoy.user.fullName, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, order.dBoyOrderHistories[orderHistoryLength-1].amountEarned, order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:'', checkBox];
                 tableData.push(row);
             }
         } else {
@@ -346,22 +352,21 @@ Order.getInvoices = function(){
             alert(data.message);
             return;
         }
-        var invoices = data.params.invoices;
+        var invoices = data.params.invoices.data;
 
         var tableData = [];
         for (var i = 0; i < invoices.length; i++) {
             var invoice = invoices[i];
             var link = '<a target="_blank" href="'+invoice.path+'">View Invoice</a>';
             if(invoice.invoicePaid != undefined){
-                var checkBox = '<input type="checkbox" checked data-id="'+invoice.id+'" class="pay_invoice">';
+                var checkBox = '<input type="checkbox" checked data-id="'+invoice.id+'" class="pay_row">';
             }else{
-                var checkBox = '<input type="checkbox" data-id="'+invoice.id+'" class="pay_invoice">';
+                var checkBox = '<input type="checkbox" data-id="'+invoice.id+'" class="pay_row">';
             }
 
-            var row = [invoice.id, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", invoice.generatedDate, invoice.fromDate, invoice.toDate, invoice.paidDate!=undefined?invoice.paidDate:'', link, checkBox];
+            var row = [invoice.id, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", invoice.generatedDate, invoice.amount, invoice.fromDate, invoice.toDate, invoice.paidDate!=undefined?invoice.paidDate:'', link, checkBox];
             tableData.push(row);
         }
-
         Main.createDataTable("#invoices_table", tableData);
     }
     callback.loaderDiv = ".main_content";

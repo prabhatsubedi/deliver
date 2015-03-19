@@ -15,7 +15,7 @@ import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
-import com.yetistep.delivr.util.SparrowResultModel;
+import com.yetistep.delivr.model.mobile.SparrowResultModel;
 import com.yetistep.delivr.util.YSException;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.log4j.Logger;

@@ -36,6 +36,7 @@
                             <th>Customer Name</th>
                             <th>Store Name & Address</th>
                             <th>Order No</th>
+                            <th>Order Date</th>
                             <th>Total Bill Amount</th>
                             <th>Shopper</th>
                             <th>Bill</th>

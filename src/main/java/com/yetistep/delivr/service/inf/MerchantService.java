@@ -32,7 +32,7 @@ public interface MerchantService {
 
     public List<Object> findBrandList(HeaderDto headerDto) throws Exception;
 
-    public List<StoresBrandEntity> findBrands(HeaderDto headerDto) throws Exception;
+    public PaginationDto findBrands(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 
     public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception;
 
@@ -75,4 +75,8 @@ public interface MerchantService {
     public void addItemsImages(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 
     public PaginationDto getInvoices(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
+
+    public List<StoresBrandEntity> findSearchBrands(HeaderDto headerDto) throws Exception;
+
+    public List<MerchantEntity> getAllMerchants() throws Exception;
 }

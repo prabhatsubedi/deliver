@@ -126,9 +126,9 @@ public class MerchantController {
         }
     }
 
-    @RequestMapping(value = "/get_brands", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_brands", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> findAllBrands(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> findAllBrands(@RequestHeader HttpHeaders headers, RequestJsonDto requestJsonDto) {
         try {
             HeaderDto headerDto = new HeaderDto();
             List<String> hd = headers.get("merchantId");
@@ -141,7 +141,33 @@ public class MerchantController {
                     headerDto.setMerchantId(null);
                 }
             }
-            List<StoresBrandEntity> brands = merchantService.findBrands(headerDto);
+            PaginationDto brands = merchantService.findBrands(headerDto, requestJsonDto);
+            ServiceResponse serviceResponse = new ServiceResponse("brands has been retrieved successfully");
+            serviceResponse.addParam("brands", brands);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while fetching stores", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_search_brands", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> findSearchBrands(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            List<String> hd = headers.get("merchantId");
+            if (hd != null && hd.size() > 0)
+                headerDto.setMerchantId(Integer.parseInt( hd.get(0)));
+            else {
+                if(SessionManager.getRole().toString().equals(Role.ROLE_MERCHANT.toString())){
+                    headerDto.setMerchantId(SessionManager.getMerchantId());
+                } else {
+                    headerDto.setMerchantId(null);
+                }
+            }
+            List<StoresBrandEntity> brands = merchantService.findSearchBrands(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("brands has been retrieved successfully");
             serviceResponse.addParam("brands", brands);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

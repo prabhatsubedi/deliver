@@ -119,7 +119,6 @@
                     <thead>
                     <tr>
                         <th rowspan="2">SN</th>
-                        <th rowspan="2">Shopper</th>
                         <th rowspan="2">Date</th>
                         <th rowspan="2">Order No</th>
                         <th rowspan="2">Customer Name</th>

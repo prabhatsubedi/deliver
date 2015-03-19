@@ -46,6 +46,7 @@
                     <tr>
                         <th>ID</th>
                         <th><div class="width_150"> Store Name </div></th>
+                        <th><div class="width_150"> Merchant Name </div></th>
                         <th> No. of Stores </th>
                         <th> Featured </th>
                         <th> Priority </th>

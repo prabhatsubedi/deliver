@@ -234,9 +234,7 @@ var Search = function() {
 
 $(document).ready(function(){
 
-    $('#item_search').submit(function(e){
-        e.preventDefault();
-        e.stopPropagation();
+    $('#item_search').submit(function(){
         if($("#item_name").val() == "" && $("#item_stores").val() == "All" && $("#item_categories").val() == "All") {
             alert('Blank search is not allowed with both all stores and all categories selected.');
             return false;

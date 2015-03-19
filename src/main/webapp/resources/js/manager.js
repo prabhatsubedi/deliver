@@ -392,17 +392,19 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var responseRows = data.params.brands.numberOfRows;
             var brands = data.params.brands.data;
             var tdata = [];
+            var sessMerchants = JSON.parse(Main.getFromLocalStorage('merchants'));
 
             for (var i = 0; i < brands.length; i++) {
                 var brand = brands[i];
 
                 var brandId = brand.id;
                 var brandName = '<a href="' + Main.modifyURL('/merchant/item/list/' + brandId) + '" data-mid="' + brand.merchantId + '">' + brand.brandName + '</a>';
+                var merchantName = sessMerchants[brand.merchantId].businessTitle;
                 var viewStore = '<a href="' + Main.modifyURL('/merchant/store/view/' + brandId) + '" data-mid="' + brand.merchantId + '">View Store</a>';
                 var viewItem = '<a href="' + Main.modifyURL('/merchant/item/form/create/' + brandId) + '" data-mid="' + brand.merchantId + '">Add Item</a>';
                 var actions = '<div class="action_links">' + viewStore + viewItem + '</div>';
 
-                var row = [brandId, brandName, brand.countStore, brand.featured ? "Featured" : "None", !brand.priority ? "None" : brand.priority, Main.ucfirst(brand.status), actions];
+                var row = [brandId, brandName, merchantName, brand.countStore, brand.featured ? "Featured" : "None", !brand.priority ? "None" : brand.priority, Main.ucfirst(brand.status), actions];
                 row = $.extend({}, row);
                 tdata.push(row);
             }

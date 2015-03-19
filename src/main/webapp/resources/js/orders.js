@@ -70,11 +70,11 @@ Order.getOrders = function(){
                     }
                 }
 
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason];
+                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason];
             } else if(order.orderStatus == "DELIVERED") {
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
+                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
             } else if($.inArray(order.orderStaus, activeStatus)) {
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), view_items];
+                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), view_items];
             }
             row = $.extend({}, row);
             tdata.push(row)
@@ -157,12 +157,16 @@ Order.getOrders = function(){
 
 
 Order.getPurchaseHistory = function(){
-    var callback = function(success, data){
+
+
+    var dataFilter = function (data, type) {
+
         if (!data.success) {
             alert(data.message);
             return;
         }
 
+        var responseRows = data.params.orders.numberOfRows;
         var orders = data.params.orders.data;
         var tableData = [];
 
@@ -198,22 +202,25 @@ Order.getPurchaseHistory = function(){
 
 
             var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.orderDate, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, view_items, ''];
+            row = $.extend({}, row);
             tableData.push(row);
 
         }
 
-        Main.createDataTable("#purchase_history_table", tableData);
+        var response = {};
+        response.data = tableData;
+        response.recordsTotal = responseRows;
+        response.recordsFiltered = responseRows;
 
-        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+        return response;
 
     }
-    callback.loaderDiv = "body";
 
-    var postData = {};
-    //postData.page = {pageNumber: 1, pageSize: 20, sortOrder: 'desc'};
-    Main.request('/merchant/get_purchase_history', postData, callback, {merchantId:Main.getFromLocalStorage('mid')});
+    dataFilter.url = "/merchant/get_purchase_history";
+    dataFilter.headers = {merchantId:Main.getFromLocalStorage('mid')};
+    Main.createDataTable("#purchase_history_table", dataFilter);
 
-
+    $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
 /*   $("body").delegate("span.show_db_info", "mouseover", function(){
          $(this).siblings(".db_info").removeClass("hidden");
@@ -259,29 +266,40 @@ Order.getPurchaseHistory = function(){
 
 Order.getOrdersItems = function(){
     $("body").delegate(".item_list", "click", function(){
-        var callback = function(success, data){
+
+        var dataFilter = function (data, type) {
             if (!data.success) {
                 alert(data.message);
                 return;
             }
-            var items = data.params.items;
+            var responseRows = data.params.items.numberOfRows;
+            var items = data.params.items.data;
             var tableData = [];
             for (var i = 0; i < items.length; i++) {
                 var item = items[i];
 
                 var row = [i+1, item.item.name, item.quantity, item.serviceCharge, item.vat, item.itemTotal];
+                row = $.extend({}, row);
                 tableData.push(row);
 
             }
 
-            Main.createDataTable("#orders_items_table", tableData);
-            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+            var response = {};
+            response.data = tableData;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
+
+            return response;
+
             $("#order_items_modal").modal("show");
         }
 
-        callback.requestType = "GET";
+        dataFilter.url = "/merchant/get_orders_items";
+        dataFilter.headers = {id:$(this).data('id')};
+        Main.createDataTable("#orders_items_table", dataFilter);
 
-        Main.request('/merchant/get_orders_items', {}, callback, {id:$(this).data('id')});
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+
     });
 }
 
@@ -347,11 +365,13 @@ Order.courierBoyOrderHistory = function(){
 }
 
 Order.getInvoices = function(){
-    var callback = function(success, data){
+
+    var dataFilter = function (data, type) {
         if (!data.success) {
             alert(data.message);
             return;
         }
+        var responseRows = data.params.invoices.numberOfRows;
         var invoices = data.params.invoices.data;
 
         var tableData = [];
@@ -365,14 +385,23 @@ Order.getInvoices = function(){
             }
 
             var row = [invoice.id, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", invoice.generatedDate, invoice.amount, invoice.fromDate, invoice.toDate, invoice.paidDate!=undefined?invoice.paidDate:'', link, checkBox];
+            row = $.extend({}, row);
             tableData.push(row);
         }
-        Main.createDataTable("#invoices_table", tableData);
+
+        var response = {};
+        response.data = tableData;
+        response.recordsTotal = responseRows;
+        response.recordsFiltered = responseRows;
+
+        return response;
     }
-    callback.loaderDiv = ".main_content";
-    callback.requestType = "POST";
+
     var header = {};
     header.merchantId = Main.getFromLocalStorage('mid');
+    dataFilter.url = "/merchant/get_invoices";
+    dataFilter.headers = header;
+    Main.createDataTable("#invoices_table", dataFilter);
 
-    Main.request('/merchant/get_invoices', {}, callback, header);
+    $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 }

@@ -146,6 +146,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<MerchantEntity> merchantEntities = new ArrayList<>();
         Page page = requestJsonDto.getPage();
 
+        if(page != null && page.getSearchFor() != null){
+            Map<String, String> fieldsMap = new HashMap<>();
+            fieldsMap.put("self", "businessTitle");
+            fieldsMap.put("user", "fullName,emailAddress,mobileNumber");
+            page.setSearchFields(fieldsMap);
+        }
+
         PaginationDto paginationDto = new PaginationDto();
         Integer totalRows =  merchantDaoService.getTotalNumberOfMerchants();
         paginationDto.setNumberOfRows(totalRows);

@@ -232,6 +232,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
 
         dBoy.setPreviousDue(dBoy.getPreviousDue().subtract(requestJsonDto.getSubmittedAmount()));
+        dBoy.setAvailableAmount(dBoy.getAvailableAmount().subtract(requestJsonDto.getSubmittedAmount()));
         dBoy.setWalletAmount(dBoy.getWalletAmount().subtract(requestJsonDto.getSubmittedAmount()));
         List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
         DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();
@@ -258,6 +259,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
         dBoy.setPreviousDue(BigDecimal.ZERO);
         dBoy.setWalletAmount(dBoy.getWalletAmount().subtract(requestJsonDto.getSubmittedAmount()));
+        dBoy.setAvailableAmount(dBoy.getAvailableAmount().subtract(requestJsonDto.getSubmittedAmount()));
 
         List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
         DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();

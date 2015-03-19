@@ -48,6 +48,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public List<MerchantEntity> findAll(Page page) throws Exception {
         List<MerchantEntity> merchants  = new ArrayList<MerchantEntity>();
         Criteria criteria  = getCurrentSession().createCriteria(MerchantEntity.class, "merchant");
+        //Long totalNumberOfRows = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+        //page.setTotalRows(totalNumberOfRows);
         HibernateUtil.fillPaginationCriteria(criteria, page, MerchantEntity.class);
         merchants = criteria.list();
         return merchants;

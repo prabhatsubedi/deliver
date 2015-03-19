@@ -303,7 +303,7 @@ Order.getOrdersItems = function(){
 }
 
 
-Order.courierBoyOrderHistory = function(){
+Order.courierBoyOrderHistory = function(params){
 
     var dataFilter = function (data, type) {
         if (!data.success) {
@@ -357,13 +357,15 @@ Order.courierBoyOrderHistory = function(){
 
     dataFilter.url = "/dboy/get_dBoy_order_history";
     dataFilter.headers = headers;
+    if(params != undefined)
+        dataFilter.params = {dateRange: params};
     Main.createDataTable("#courier_history_table", dataFilter);
 
     $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
 }
 
-Order.getInvoices = function(){
+Order.getInvoices = function(params){
 
     var dataFilter = function (data, type) {
         if (!data.success) {
@@ -401,6 +403,8 @@ Order.getInvoices = function(){
     header.merchantId = Main.getFromLocalStorage('mid');
     dataFilter.url = "/merchant/get_invoices";
     dataFilter.headers = header;
+    if(params != undefined)
+        dataFilter.params = {dateRange: params};
     Main.createDataTable("#invoices_table", dataFilter);
 
     $('.dataTables_length select').attr('data-width', 'auto').selectpicker();

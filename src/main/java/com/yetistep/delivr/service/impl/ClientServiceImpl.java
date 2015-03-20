@@ -1155,6 +1155,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     public Boolean saveTimeStamp(TestEntity testEntity) throws Exception {
         log.info("++++++++++ Saving Test Entity +++++++++++++++");
         customerDaoService.saveTest(testEntity);
+        return true;
     }
 
 

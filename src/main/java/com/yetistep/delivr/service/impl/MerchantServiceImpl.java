@@ -1,10 +1,7 @@
 package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.abs.AbstractManager;
-import com.yetistep.delivr.dao.inf.InvoiceDaoService;
-import com.yetistep.delivr.dao.inf.MerchantDaoService;
-import com.yetistep.delivr.dao.inf.StoreDaoService;
-import com.yetistep.delivr.dao.inf.UserDaoService;
+import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
@@ -42,6 +39,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Autowired
     HttpServletRequest httpServletRequest;
+
+    @Autowired
+    CategoryDaoService categoryDaoService;
 
     @Override
     public void saveMerchant(MerchantEntity merchant, HeaderDto headerDto) throws Exception {
@@ -753,9 +753,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             CategoryEntity parentCategory = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
             if(parentCategory.getItem().size() > 0)
                 throw new YSException("VLD031");
-
             int i;
             for(i = 1; i<itemCategories.size(); i++){
+               //if category with same same and same parent exists then just update the category
+               CategoryEntity catExist = categoryDaoService.getCategory(itemCategories.get(i).getName(), itemCategories.get(i - 1).getId());
+               if(catExist != null){
+                    itemCategories.get(i).setId(catExist.getId());
+               }
                itemCategories.get(i).setParent(itemCategories.get(i-1));
                itemCategories.get(i).setFeatured(false);
                itemCategories.get(i).setStoresBrand(storesBrand);
@@ -1274,6 +1278,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         //add final categories as the childs of the child category
+        Integer childCnt = finalCategories.size();
         for (CategoryEntity finalCategory: finalCategories){
 
            CategoryEntity finalCat = finalCategory;
@@ -1292,8 +1297,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                    finalCategory.getParent().setChild(parentsChild);
                }
            }
-
-       }
+        }
 
         //get items for each child category
         for (CategoryEntity childCategory: childCategories){
@@ -1310,23 +1314,23 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
              */
             if(childsChildId.size() > 0){
                 List<ItemEntity> categoriesItems = merchantDaoService.findItemByCategory(childsChildId, storeId, itemCount);
-                if(categoriesItems.size() > 0){
+                /*if(categoriesItems.size() > 0){
                     for(ItemEntity item: categoriesItems){
                         item.setCategory(null);
                         item.setStoresBrand(null);
                         item.setItemsStores(null);
                     }
-                }
+                }*/
                 childCategory.setItem(categoriesItems);
             }else{
                 List<ItemEntity> categoriesItems = merchantDaoService.getCategoriesItems(childCategory.getId(), storeId, itemCount);
-                if(categoriesItems.size() > 0){
+               /* if(categoriesItems.size() > 0){
                     for(ItemEntity item: categoriesItems){
                         item.setCategory(null);
                         item.setStoresBrand(null);
                         item.setItemsStores(null);
                     }
-                }
+                }*/
                 childCategory.setItem(categoriesItems);
             }
 

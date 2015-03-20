@@ -399,7 +399,9 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public void saveCategories(List<CategoryEntity> categories) throws Exception {
         Integer i = 0;
         for (CategoryEntity value: categories) {
-            getCurrentSession().save(value);
+            if(value.getId() == null && value.getName() !=null){
+                getCurrentSession().save(value);
+            }
             if ( i % 20 == 0 ) { //20, same as the JDBC batch size
                 //flush a batch of inserts and release memory:
                 getCurrentSession().flush();

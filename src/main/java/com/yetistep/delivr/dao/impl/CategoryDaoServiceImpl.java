@@ -3,12 +3,16 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.CategoryDaoService;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.CategoryEntity;
+import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +34,18 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
     @Override
     public List<CategoryEntity> findAll() throws Exception {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
+    @Override
+    public CategoryEntity getCategory(String categoryName, Integer parentId) throws Exception {
+        List<CategoryEntity> categories = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
+        criteria.add(Restrictions.eq("name", categoryName));
+        criteria.add(Restrictions.eq("parent.id", parentId));
+        categories = criteria.list();
+
+        return categories.size() > 0 ? categories.get(0) : null;
     }
 
     @Override

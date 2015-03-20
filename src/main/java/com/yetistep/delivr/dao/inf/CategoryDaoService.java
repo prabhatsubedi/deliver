@@ -16,4 +16,6 @@ public interface CategoryDaoService extends GenericDaoService<Integer, CategoryE
     public CategoryEntity findCategory(Integer categoryId) throws Exception;
 
     List<CategoryEntity> findDefaultCategories() throws Exception;
+
+    public CategoryEntity getCategory(String categoryName, Integer parentId) throws Exception;
 }

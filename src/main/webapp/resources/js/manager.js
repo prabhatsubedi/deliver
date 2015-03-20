@@ -1342,4 +1342,92 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     };
 
+    Manager.loadNotification = function() {
+
+        $('label.check_label .checkbox').removeAttr("checked");
+
+        $('label.check_label.disabled').live('click', function(e){
+            e.preventDefault();
+        });
+
+        $('label.check_label .checkbox').live('click', function(){
+            if($(this).prop('checked')) {
+                $(this).siblings('.check_span').addClass("icon_full");
+            } else {
+                $(this).siblings('.check_span').removeClass("icon_full");
+            }
+        });
+
+        $("label.check_label").live('mouseover', function ( event ) {
+            $('.check_span', this).addClass("icon_semi");
+        });
+
+        $("label.check_label").live('mouseout', function ( event ) {
+            $('.check_span', this).removeClass("icon_semi");
+        });
+
+        $('#form_notification input[type="checkbox"]').click(function(){
+
+            console.log($(this).prop('checked'));
+            if($(this).prop('checked')) {
+                if($(this).val() == 'DELIVERY_BOY') {
+                    $('.check_customer').removeAttr('checked').siblings('.icon_full').removeClass('icon_full');
+                } else {
+                    $('.check_shopper').removeAttr('checked').siblings('.icon_full').removeClass('icon_full');
+                }
+            }
+
+        });
+
+        $.validator.setDefaults({
+            errorPlacement : function(error, element){
+                $('#error_container').html(error);
+            },
+            ignore: []
+        });
+        $('#form_notification').validate({
+            submitHandler: function(form) {
+
+                var checked = false;
+                var notifyList = [];
+
+                $('#form_notification input[type="checkbox"]').each(function(){
+                    if($(this).prop('checked')) {
+                        checked = true;
+                        notifyList.push($(this).val());
+                    }
+                });
+
+                if(!checked) {
+                    alert('Please check shopper or customer.');
+                    return false;
+                }
+
+                var chk_confirm = confirm('Are you sure you want to send notification?');
+                if(!chk_confirm) return false;
+
+                var callback = function (status, data) {
+
+                    alert(data.message);
+                    if (data.success == true) {
+                        $('.check_customer, .check_shopper').removeAttr('checked').siblings('.icon_full').removeClass('icon_full');
+                        $('#form_notification')[0].reset();
+                    }
+                };
+                callback.loaderDiv = "body";
+
+                var params = {};
+                params.pushMessage = $('#message').val();
+                params.notifyToList = notifyList;
+
+                Main.request('/organizer/send_notification', params, callback);
+                return false;
+
+            }
+        });
+
+        $('#message').rules('add', {required: true});
+
+    };
+
 })(jQuery);

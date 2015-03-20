@@ -1277,4 +1277,69 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     }
 
+    Manager.getSmsCustomers = function () {
+
+        var dataFilter = function (data, type) {
+
+            console.log(data);
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+            var users = data.params.sendableSMSList;
+            var responseRows = users.length;
+            var tdata = [];
+
+            for (i = 0; i < users.length; i++) {
+                var user = users[i];
+
+                var id = user.id;
+                var fullName = user.fullName;
+                var mobileNumber = user.mobileNo;
+                var sentCount = user.totalSmsSend;
+                var action = '<a class="trigger_activation" href="#" data-id="' + id + '"  data-mobile="' + mobileNumber + '" >Resend SMS</a>';
+
+                var row = [id, fullName, mobileNumber, sentCount, action];
+                row = $.extend({}, row);
+                tdata.push(row);
+            }
+
+            var response = {};
+            response.data = tdata;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
+
+            return response;
+
+        };
+
+        dataFilter.url = "/organizer/send_sms_customer_list";
+        dataFilter.requestType = "GET";
+        Main.createDataTable("#customers_table", dataFilter);
+
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+
+    };
+
+    Manager.loadSmsFunctions = function() {
+
+        var callback = function (status, data) {
+
+            alert(data.message);
+            if (data.success == true) {
+                Manager.getSmsCustomers();
+            }
+        };
+
+        $('.trigger_activation').live('click', function(){
+
+            var chk_confirm = confirm('Are you sure you want to resend SMS?');
+            if (!chk_confirm) return false;
+            callback.loaderDiv = "body";
+            Main.request('/organizer/send_sms', {id: $(this).attr('data-id'), mobileNo: $(this).attr('data-mobile')}, callback);
+
+        });
+
+    };
+
 })(jQuery);

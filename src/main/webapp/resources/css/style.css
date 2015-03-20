@@ -56,6 +56,9 @@
 .delivricon-remove:before {
     content: "\E80C";
 }
+.delivricon-message:before {
+    content: "\E80D";
+}
 
 *, *:focus, *:active {
     outline: none !important;

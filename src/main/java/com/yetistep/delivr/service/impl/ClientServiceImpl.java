@@ -1151,11 +1151,12 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         return preferenceDto;
     }
 
-
-
     @Override
-    public SparrowResultModel getSmsResult() throws Exception {
-        SparrowResultModel sparrowResultModel = SparrowSMSUtil.sendSMS("First Sparrow SMS from Yetistep.WOW!!!", "984153100111");
-        return sparrowResultModel;
+    public Boolean saveTimeStamp(TestEntity testEntity) throws Exception {
+        log.info("++++++++++ Saving Test Entity +++++++++++++++");
+        customerDaoService.saveTest(testEntity);
+        return true;
     }
+
+
 }

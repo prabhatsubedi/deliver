@@ -3,10 +3,7 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.CustomerDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
-import com.yetistep.delivr.model.CustomerEntity;
-import com.yetistep.delivr.model.OrderEntity;
-import com.yetistep.delivr.model.Page;
-import com.yetistep.delivr.model.UserEntity;
+import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
 import com.yetistep.delivr.util.HibernateUtil;
 import org.hibernate.*;
@@ -250,6 +247,12 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         criteria.add(Restrictions.eq("facebookId", facebookId));
         CustomerEntity customerEntity = criteria.list().size() > 0 ? (CustomerEntity) criteria.list().get(0) : null;
         return customerEntity;
+    }
+
+    @Override
+    public Boolean saveTest(TestEntity testEntity) throws Exception {
+        getCurrentSession().persist(testEntity);
+        return true;
     }
 }
 

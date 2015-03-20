@@ -374,6 +374,9 @@ public class AdminServiceImpl implements AdminService {
 
         SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", smsDto.getMobileNo());
 
+        //Now Update Total SMS Count
+        validateMobileDaoService.updateNoOfSMSSend(smsDto.getId());
+
         return true;
     }
 }

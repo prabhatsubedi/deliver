@@ -303,7 +303,7 @@ Order.getOrdersItems = function(){
 }
 
 
-Order.courierBoyOrderHistory = function(){
+Order.courierBoyOrderHistory = function(params){
 
     var dataFilter = function (data, type) {
         if (!data.success) {
@@ -334,7 +334,7 @@ Order.courierBoyOrderHistory = function(){
                     var checkBox = '<input type="checkbox" data-id="'+order.id+'" class="pay_row">';
                 }
 
-                var row = [i+1, order.deliveryBoy.user.fullName, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, order.dBoyOrderHistories[orderHistoryLength-1].amountEarned, order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:'', checkBox];
+                var row = [i+1, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, order.dBoyOrderHistories[orderHistoryLength-1].amountEarned, order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:'', checkBox];
                 tableData.push(row);
             }
         } else {
@@ -357,13 +357,15 @@ Order.courierBoyOrderHistory = function(){
 
     dataFilter.url = "/dboy/get_dBoy_order_history";
     dataFilter.headers = headers;
+    if(params != undefined)
+        dataFilter.params = {dateRange: params};
     Main.createDataTable("#courier_history_table", dataFilter);
 
     $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
 }
 
-Order.getInvoices = function(){
+Order.getInvoices = function(params){
 
     var dataFilter = function (data, type) {
         if (!data.success) {
@@ -401,6 +403,8 @@ Order.getInvoices = function(){
     header.merchantId = Main.getFromLocalStorage('mid');
     dataFilter.url = "/merchant/get_invoices";
     dataFilter.headers = header;
+    if(params != undefined)
+        dataFilter.params = {dateRange: params};
     Main.createDataTable("#invoices_table", dataFilter);
 
     $('.dataTables_length select').attr('data-width', 'auto').selectpicker();

@@ -927,17 +927,15 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/get_sms", method = RequestMethod.GET)
+    @RequestMapping(value = "/test_timestamp", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getSms() {
+    public ResponseEntity<ServiceResponse> getSms(@RequestBody TestEntity testEntity) {
         try{
-
-            SparrowResultModel sparrowResultModel = clientService.getSmsResult();
+            clientService.saveTimeStamp(testEntity);
             ServiceResponse serviceResponse = new ServiceResponse("Succesully Tested");
-            serviceResponse.addParam("helplineInfo", sparrowResultModel);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while Testing on Sending SMS", e);
+            GeneralUtil.logError(log, "Error Occurred while testing time stamp", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

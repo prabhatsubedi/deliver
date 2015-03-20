@@ -392,17 +392,19 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var responseRows = data.params.brands.numberOfRows;
             var brands = data.params.brands.data;
             var tdata = [];
+            var sessMerchants = JSON.parse(Main.getFromLocalStorage('merchants'));
 
             for (var i = 0; i < brands.length; i++) {
                 var brand = brands[i];
 
                 var brandId = brand.id;
                 var brandName = '<a href="' + Main.modifyURL('/merchant/item/list/' + brandId) + '" data-mid="' + brand.merchantId + '">' + brand.brandName + '</a>';
+                var merchantName = sessMerchants[brand.merchantId].businessTitle;
                 var viewStore = '<a href="' + Main.modifyURL('/merchant/store/view/' + brandId) + '" data-mid="' + brand.merchantId + '">View Store</a>';
                 var viewItem = '<a href="' + Main.modifyURL('/merchant/item/form/create/' + brandId) + '" data-mid="' + brand.merchantId + '">Add Item</a>';
                 var actions = '<div class="action_links">' + viewStore + viewItem + '</div>';
 
-                var row = [brandId, brandName, brand.countStore, brand.featured ? "Featured" : "None", !brand.priority ? "None" : brand.priority, Main.ucfirst(brand.status), actions];
+                var row = [brandId, brandName, merchantName, brand.countStore, brand.featured ? "Featured" : "None", !brand.priority ? "None" : brand.priority, Main.ucfirst(brand.status), actions];
                 row = $.extend({}, row);
                 tdata.push(row);
             }
@@ -1274,5 +1276,158 @@ if (typeof(Manager) == "undefined") var Manager = {};
         Main.request("/organizer/" + action, {}, callback, {id: period});
 
     }
+
+    Manager.getSmsCustomers = function () {
+
+        var dataFilter = function (data, type) {
+
+            console.log(data);
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+            var users = data.params.sendableSMSList;
+            var responseRows = users.length;
+            var tdata = [];
+
+            for (i = 0; i < users.length; i++) {
+                var user = users[i];
+
+                var id = user.id;
+                var fullName = user.fullName;
+                var mobileNumber = user.mobileNo;
+                var sentCount = user.totalSmsSend;
+                var action = '<a class="trigger_activation" href="#" data-id="' + id + '"  data-mobile="' + mobileNumber + '" >Resend SMS</a>';
+
+                var row = [id, fullName, mobileNumber, sentCount, action];
+                row = $.extend({}, row);
+                tdata.push(row);
+            }
+
+            var response = {};
+            response.data = tdata;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
+
+            return response;
+
+        };
+
+        dataFilter.url = "/organizer/send_sms_customer_list";
+        dataFilter.requestType = "GET";
+        Main.createDataTable("#customers_table", dataFilter);
+
+        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+
+    };
+
+    Manager.loadSmsFunctions = function() {
+
+        var callback = function (status, data) {
+
+            alert(data.message);
+            if (data.success == true) {
+                Manager.getSmsCustomers();
+            }
+        };
+
+        $('.trigger_activation').live('click', function(){
+
+            var chk_confirm = confirm('Are you sure you want to resend SMS?');
+            if (!chk_confirm) return false;
+            callback.loaderDiv = "body";
+            Main.request('/organizer/send_sms', {id: $(this).attr('data-id'), mobileNo: $(this).attr('data-mobile')}, callback);
+
+        });
+
+    };
+
+    Manager.loadNotification = function() {
+
+        $('label.check_label .checkbox').removeAttr("checked");
+
+        $('label.check_label.disabled').live('click', function(e){
+            e.preventDefault();
+        });
+
+        $('label.check_label .checkbox').live('click', function(){
+            if($(this).prop('checked')) {
+                $(this).siblings('.check_span').addClass("icon_full");
+            } else {
+                $(this).siblings('.check_span').removeClass("icon_full");
+            }
+        });
+
+        $("label.check_label").live('mouseover', function ( event ) {
+            $('.check_span', this).addClass("icon_semi");
+        });
+
+        $("label.check_label").live('mouseout', function ( event ) {
+            $('.check_span', this).removeClass("icon_semi");
+        });
+
+        $('#form_notification input[type="checkbox"]').click(function(){
+
+            console.log($(this).prop('checked'));
+            if($(this).prop('checked')) {
+                if($(this).val() == 'DELIVERY_BOY') {
+                    $('.check_customer').removeAttr('checked').siblings('.icon_full').removeClass('icon_full');
+                } else {
+                    $('.check_shopper').removeAttr('checked').siblings('.icon_full').removeClass('icon_full');
+                }
+            }
+
+        });
+
+        $.validator.setDefaults({
+            errorPlacement : function(error, element){
+                $('#error_container').html(error);
+            },
+            ignore: []
+        });
+        $('#form_notification').validate({
+            submitHandler: function(form) {
+
+                var checked = false;
+                var notifyList = [];
+
+                $('#form_notification input[type="checkbox"]').each(function(){
+                    if($(this).prop('checked')) {
+                        checked = true;
+                        notifyList.push($(this).val());
+                    }
+                });
+
+                if(!checked) {
+                    alert('Please check shopper or customer.');
+                    return false;
+                }
+
+                var chk_confirm = confirm('Are you sure you want to send notification?');
+                if(!chk_confirm) return false;
+
+                var callback = function (status, data) {
+
+                    alert(data.message);
+                    if (data.success == true) {
+                        $('.check_customer, .check_shopper').removeAttr('checked').siblings('.icon_full').removeClass('icon_full');
+                        $('#form_notification')[0].reset();
+                    }
+                };
+                callback.loaderDiv = "body";
+
+                var params = {};
+                params.pushMessage = $('#message').val();
+                params.notifyToList = notifyList;
+
+                Main.request('/organizer/send_notification', params, callback);
+                return false;
+
+            }
+        });
+
+        $('#message').rules('add', {required: true});
+
+    };
 
 })(jQuery);

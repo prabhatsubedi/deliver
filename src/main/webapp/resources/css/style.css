@@ -56,6 +56,12 @@
 .delivricon-remove:before {
     content: "\E80C";
 }
+.delivricon-message:before {
+    content: "\E80D";
+}
+.delivricon-notification:before {
+    content: "\E80E";
+}
 
 *, *:focus, *:active {
     outline: none !important;
@@ -166,7 +172,6 @@ body.loader_div > .loader {
 .modal-body {
     width: 100%;
 }
-
 .bootstrap-select {
     margin: 0px;
 }
@@ -795,6 +800,12 @@ body.assistance_page {
     line-height: 40px;
     margin: 0px;
 }
+.main_container .body .heading .date_filter .form-control {
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
 .btn_green, .btn_green:focus, .btn_green:hover {
     background-color: #19bc15;
     border: none;
@@ -830,6 +841,11 @@ body.assistance_page {
     line-height: 50px;
     padding: 0px 20px;
     font-size: 14px;
+}
+.form_container textarea.form-control {
+    height: auto;
+    line-height: normal;
+    padding: 10px 20px;
 }
 .form_container .form-control:focus {
     border: 1px solid #66afe9 !important;

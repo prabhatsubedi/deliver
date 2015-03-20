@@ -801,7 +801,7 @@ body.assistance_page {
     line-height: 40px;
     margin: 0px;
 }
-.main_container .body .heading .form-control {
+.main_container .body .heading .date_filter .form-control {
     height: 30px;
     line-height: 30px;
     padding-left: 10px;

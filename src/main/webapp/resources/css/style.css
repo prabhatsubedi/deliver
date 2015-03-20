@@ -59,6 +59,9 @@
 .delivricon-message:before {
     content: "\E80D";
 }
+.delivricon-notification:before {
+    content: "\E80D";
+}
 
 *, *:focus, *:active {
     outline: none !important;

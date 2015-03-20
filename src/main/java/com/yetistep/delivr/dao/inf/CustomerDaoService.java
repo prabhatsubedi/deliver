@@ -4,6 +4,7 @@ import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.Page;
+import com.yetistep.delivr.model.TestEntity;
 import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
 
 import java.math.BigDecimal;
@@ -43,4 +44,6 @@ public interface CustomerDaoService extends GenericDaoService<Integer, CustomerE
     public Boolean updateAverageRating(BigDecimal averageRating, Integer customerId) throws Exception;
 
     public CustomerEntity getCustomerStatus(Long facebookId) throws Exception;
+
+    public Boolean saveTest(TestEntity testEntity) throws Exception;
 }

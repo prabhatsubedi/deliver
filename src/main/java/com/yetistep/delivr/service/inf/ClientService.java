@@ -6,6 +6,7 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.CartEntity;
 import com.yetistep.delivr.model.ItemEntity;
 import com.yetistep.delivr.model.OrderCancelEntity;
+import com.yetistep.delivr.model.TestEntity;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
@@ -66,5 +67,6 @@ public interface ClientService {
 
     public PreferenceDto getHelpLineDetails() throws Exception;
 
-    public SparrowResultModel getSmsResult() throws Exception;
+    public Boolean saveTimeStamp(TestEntity testEntity) throws Exception;
+
 }

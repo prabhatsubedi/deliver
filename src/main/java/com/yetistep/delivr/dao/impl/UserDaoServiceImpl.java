@@ -65,11 +65,12 @@ public class UserDaoServiceImpl implements UserDaoService {
     }
 
     @Override
-    public List<UserEntity> findManagers() throws Exception {
+    public List<UserEntity> findManagers(Page page) throws Exception {
         List<UserEntity> usersList = new ArrayList<>();
         try {
             Criteria criteria = sessionFactory.getCurrentSession().createCriteria(UserEntity.class);
-            criteria.add(Restrictions.eq("role.id", 2));
+            criteria.add(Restrictions.eq("role.id", Role.ROLE_MANAGER.ordinal()));
+            HibernateUtil.fillPaginationCriteria(criteria, page, UserEntity.class);
             usersList = criteria.list();
         } catch (Exception e) {
             throw e;
@@ -79,17 +80,37 @@ public class UserDaoServiceImpl implements UserDaoService {
     }
 
     @Override
-    public List<UserEntity> findAccountants() throws Exception {
+    public List<UserEntity> findAccountants(Page page) throws Exception {
         List<UserEntity> usersList = new ArrayList<>();
         try {
             Criteria criteria = sessionFactory.getCurrentSession().createCriteria(UserEntity.class);
-            criteria.add(Restrictions.eq("role.id", 3));
+            criteria.add(Restrictions.eq("role.id", Role.ROLE_ACCOUNTANT.ordinal()));
+            HibernateUtil.fillPaginationCriteria(criteria, page, UserEntity.class);
             usersList = criteria.list();
         } catch (Exception e) {
             throw e;
         }
 
         return usersList;
+    }
+
+
+    @Override
+    public Integer getTotalNumberManagers()throws Exception{
+        String sqQuery =    "SELECT COUNT(u.id) FROM users u WHERE  u.role_id =:roleId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("roleId", Role.ROLE_MANAGER.ordinal());
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
+    }
+
+    @Override
+    public Integer getTotalNumberAccountants()throws Exception{
+        String sqQuery =    "SELECT COUNT(u.id) FROM users u WHERE  u.role_id =:roleId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("roleId", Role.ROLE_ACCOUNTANT.ordinal());
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
     }
 
     @Override

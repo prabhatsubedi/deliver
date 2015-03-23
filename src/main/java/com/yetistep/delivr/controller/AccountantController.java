@@ -1,10 +1,14 @@
 package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
+import com.yetistep.delivr.model.MerchantEntity;
 import com.yetistep.delivr.service.inf.AccountService;
+import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.ManagerService;
+import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
 import org.apache.log4j.Logger;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,6 +41,78 @@ public class AccountantController {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    DeliveryBoyService deliveryBoyService;
+
+    @Autowired
+    MerchantService merchantService;
+
+
+    @RequestMapping(value = "/get_all_merchants", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getAllMerchants() {
+        try{
+            List<MerchantEntity> merchantEntities = merchantService.getAllMerchants();
+            ServiceResponse serviceResponse = new ServiceResponse("Merchant retrieved successfully");
+            serviceResponse.addParam("merchants", merchantEntities);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting merchants", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_merchants", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getMerchants(@RequestBody RequestJsonDto requestJsonDto) {
+        try{
+            PaginationDto merchantEntities = merchantService.getMerchants(requestJsonDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Merchant retrieved successfully");
+            serviceResponse.addParam("merchants", merchantEntities);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting merchants", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
+    @RequestMapping(value = "/get_dboy", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getDeliveryBoy(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            DeliveryBoyEntity deliveryBoy = deliveryBoyService.findDeliveryBoyById(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Details of shopper with ID: "+headerDto.getId());
+            serviceResponse.addParam("deliveryBoy", deliveryBoy);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving shopper: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_dboys", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getAllDeliveryBoy(@RequestBody RequestJsonDto requestJsonDto) {
+        try {
+            PaginationDto deliveryBoyEntities = deliveryBoyService.findAllDeliverBoy(requestJsonDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("List of shoppers");
+            serviceResponse.addParam("deliveryBoys", deliveryBoyEntities);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving shoppers", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
     @RequestMapping(value = "/update_dboy_account", method = RequestMethod.POST)
     @ResponseBody

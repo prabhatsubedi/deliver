@@ -117,7 +117,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         };
 
-        dataFilter.url = "/organizer/get_merchants";
+        dataFilter.url = "/accountant/get_merchants";
         Main.createDataTable("#merchants_table", dataFilter);
 
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
@@ -496,7 +496,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         };
 
-        dataFilter.url = "/organizer/get_dboys";
+        dataFilter.url = "/accountant/get_dboys";
         Main.createDataTable("#courier_staff_table", dataFilter);
 
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
@@ -622,7 +622,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 callback.requestType = "GET";
                 var headers = {};
                 headers.id = id;
-                Main.request('/organizer/get_dboy', {}, callback, headers);
+                Main.request('/accountant/get_dboy', {}, callback, headers);
             }, 300);
         });
     }
@@ -650,7 +650,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             callback.requestType = "GET";
             var headers = {};
             headers.id = id;
-            Main.request('/organizer/get_dboy', {}, callback, headers);
+            Main.request('/accountant/get_dboy', {}, callback, headers);
         });
     }
 

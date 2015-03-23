@@ -477,9 +477,21 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     }
 
     @Override
-    public List<UserEntity> findAllManagers() throws Exception {
+    public PaginationDto findAllManagers(RequestJsonDto requestJsonDto) throws Exception {
         log.info("Retrieving list of Deliver Boys");
-        List<UserEntity> userEntities = userDaoService.findManagers();
+        PaginationDto paginationDto = new PaginationDto();
+
+
+        Page page = requestJsonDto.getPage();
+
+        Integer totalRows =  userDaoService.getTotalNumberManagers();
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+        List<UserEntity> userEntities = userDaoService.findManagers(page);
         List<UserEntity> users = new ArrayList<>();
 
         String fields = "id,fullName,mobileNumber,emailAddress,status,verifiedStatus,addresses";
@@ -494,14 +506,25 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
             users.add(user);
         }
 
-
-        return users;
+        paginationDto.setData(users);
+        return paginationDto;
     }
 
     @Override
-    public List<UserEntity> findAllAccountants() throws Exception {
+    public PaginationDto findAllAccountants(RequestJsonDto requestJsonDto) throws Exception {
         log.info("Retrieving list of Deliver Boys");
-        List<UserEntity> userEntities = userDaoService.findAccountants();
+        PaginationDto paginationDto = new PaginationDto();
+
+        Page page = requestJsonDto.getPage();
+
+        Integer totalRows =  userDaoService.getTotalNumberAccountants();
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+        List<UserEntity> userEntities = userDaoService.findAccountants(page);
         List<UserEntity> users = new ArrayList<>();
 
         String fields = "id,fullName,mobileNumber,emailAddress,status,addresses";
@@ -515,7 +538,8 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
             users.add(user);
         }
 
-        return users;
+        paginationDto.setData(users);
+        return paginationDto;
     }
 
 

@@ -23,7 +23,18 @@
 </head>
 <body>
 
-<%@include file="../includes/sidebar.jsp" %>
+<sec:authorize ifAnyGranted="ROLE_ACCOUNTANT">
+    <%@include file="../includes/sidebar_accountant.jsp" %>
+</sec:authorize>
+<sec:authorize ifAnyGranted="ROLE_MERCHANT">
+    <%@include file="../includes/sidebar_merchant.jsp" %>
+</sec:authorize>
+<sec:authorize ifAnyGranted="ROLE_ADMIN">
+    <%@include file="../includes/sidebar.jsp" %>
+</sec:authorize>
+<sec:authorize ifAnyGranted="ROLE_MANAGER">
+    <%@include file="../includes/sidebar.jsp" %>
+</sec:authorize>
 
 <div class="main_container">
 

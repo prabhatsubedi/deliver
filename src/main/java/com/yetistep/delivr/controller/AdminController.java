@@ -1,6 +1,7 @@
 package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.PreferencesEntity;
@@ -103,11 +104,11 @@ public class AdminController {
         }
     }
 
-    @RequestMapping(value = "/get_managers", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_managers", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getManagers() {
+    public ResponseEntity<ServiceResponse> getManagers(@RequestBody RequestJsonDto requestJsonDto) {
         try {
-            List<UserEntity> managers = managerService.findAllManagers();
+            PaginationDto managers = managerService.findAllManagers(requestJsonDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("List of managers");
             serviceResponse.addParam("managers", managers);
@@ -119,11 +120,11 @@ public class AdminController {
         }
     }
 
-    @RequestMapping(value = "/get_accountants", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_accountants", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getAccountants() {
+    public ResponseEntity<ServiceResponse> getAccountants(@RequestBody RequestJsonDto requestJsonDto) {
         try {
-            List<UserEntity> allAccountants = managerService.findAllAccountants();
+            PaginationDto allAccountants = managerService.findAllAccountants(requestJsonDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("List of accountants");
             serviceResponse.addParam("accountants", allAccountants);

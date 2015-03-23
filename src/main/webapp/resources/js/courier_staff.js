@@ -221,7 +221,7 @@ var courierProfile;
         var headers = {};
         headers.id = id;
         if(courier_profile == undefined)
-            Main.request('/organizer/get_dboy', {}, callback, headers);
+            Main.request('/accountant/get_dboy', {}, callback, headers);
         else
             callback('', courier_profile);
     }

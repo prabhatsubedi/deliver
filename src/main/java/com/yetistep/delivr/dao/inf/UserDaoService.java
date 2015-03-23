@@ -21,9 +21,9 @@ public interface UserDaoService extends GenericDaoService<Integer, UserEntity>{
 
     public List<RoleEntity> findAllRoles() throws Exception;
 
-    public List<UserEntity> findManagers() throws Exception;
+    public List<UserEntity> findManagers(Page page) throws Exception;
 
-    public List<UserEntity> findAccountants() throws Exception;
+    public List<UserEntity> findAccountants(Page page) throws Exception;
 
     //Spring Authentication Only
     public UserEntity findByUserName(String userName);
@@ -47,5 +47,9 @@ public interface UserDaoService extends GenericDaoService<Integer, UserEntity>{
     public List<UserEntity> getInactivatedCustomers(Page page) throws Exception;
 
     public Integer getTotalNumberInactiveCustomers() throws Exception;
+
+    public Integer getTotalNumberManagers()throws Exception;
+
+    public Integer getTotalNumberAccountants()throws Exception;
 
 }

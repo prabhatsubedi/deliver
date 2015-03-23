@@ -62,7 +62,7 @@ public class ManagerController {
         }
     }
 
-    @RequestMapping(value = "/get_dboy", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/get_dboy", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> getDeliveryBoy(@RequestHeader HttpHeaders headers) {
         try {
@@ -94,7 +94,7 @@ public class ManagerController {
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
-    }
+    }*/
 
     @RequestMapping(value = "/update_dboy_status", method = RequestMethod.PUT)
     @ResponseBody
@@ -152,7 +152,7 @@ public class ManagerController {
 
     }
 
-    @RequestMapping(value = "/get_merchants", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/get_merchants", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> getMerchants(@RequestBody RequestJsonDto requestJsonDto) {
         try{
@@ -180,7 +180,7 @@ public class ManagerController {
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
-    }
+    }*/
 
     @RequestMapping(value = "/change_user_status", method = RequestMethod.PUT)
     @ResponseBody

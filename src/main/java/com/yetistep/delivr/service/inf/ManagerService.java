@@ -24,9 +24,9 @@ public interface ManagerService {
 
     public UserEntity findUserById(HeaderDto headerDto) throws Exception;
 
-    public List<UserEntity> findAllManagers() throws Exception;
+    public PaginationDto findAllManagers(RequestJsonDto requestJsonDto) throws Exception;
 
-    public List<UserEntity> findAllAccountants() throws Exception;
+    public PaginationDto findAllAccountants(RequestJsonDto requestJsonDto) throws Exception;
 
     public DeliveryBoyEntity updateDboyAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 

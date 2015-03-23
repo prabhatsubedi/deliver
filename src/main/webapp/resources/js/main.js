@@ -220,8 +220,10 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             sDom: '<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
             columnDefs: [
                 {
-                    targets: hideCols,
-                    visible: false
+//                    targets: hideCols,
+//                    visible: false,
+                    bSortable: false,
+                    aTargets: ['no_sort']
                 }
             ],
             language: {

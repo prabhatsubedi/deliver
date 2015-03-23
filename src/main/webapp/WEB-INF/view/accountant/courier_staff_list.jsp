@@ -33,10 +33,7 @@
 <sec:authorize ifAnyGranted="ROLE_ACCOUNTANT">
     <%@include file="../includes/sidebar_accountant.jsp" %>
 </sec:authorize>
-<sec:authorize ifAnyGranted="ROLE_ADMIN">
-    <%@include file="../includes/sidebar.jsp" %>
-</sec:authorize>
-<sec:authorize ifAnyGranted="ROLE_MANAGER">
+<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
     <%@include file="../includes/sidebar.jsp" %>
 </sec:authorize>
 

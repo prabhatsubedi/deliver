@@ -38,29 +38,26 @@
 .delivricon-store:before {
     content: "\E806";
 }
-.delivricon-orders:before {
+.delivricon-ok:before {
     content: "\E807";
 }
-.delivricon-ok:before {
+.delivricon-map:before {
     content: "\E808";
 }
-.delivricon-map:before {
+.delivricon-user:before {
     content: "\E809";
 }
-.delivricon-user:before {
+.delivricon-wallet:before {
     content: "\E80A";
 }
-.delivricon-wallet:before {
+.delivricon-remove:before {
     content: "\E80B";
 }
-.delivricon-remove:before {
+.delivricon-message:before {
     content: "\E80C";
 }
-.delivricon-message:before {
-    content: "\E80D";
-}
 .delivricon-notification:before {
-    content: "\E80E";
+    content: "\E80D";
 }
 
 *, *:focus, *:active {

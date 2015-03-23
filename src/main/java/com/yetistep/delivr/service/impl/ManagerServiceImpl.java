@@ -638,6 +638,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     }
 
     private void sendNotification(Role role, String family, NotifyTo notifyTo, String message) throws Exception{
+        message += ":info";
         List<String> deviceTokens = userDeviceDaoService.getAllDeviceTokensForFamilyAndRole(role, family);
         PushNotification pushNotification = new PushNotification();
         pushNotification.setTokens(deviceTokens);

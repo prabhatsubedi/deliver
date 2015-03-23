@@ -460,8 +460,15 @@ if (typeof(Manager) == "undefined") var Manager = {};
                      job_status += "<li>"+Main.ucfirst((order[cntOrder].orderStatus).split('_').join(' ').toLowerCase())+"</li>";
                  }
 
-                if(job_status == '<ul>'){
-                    job_status = courierStaff.availabilityStatus+'</ol>';
+                if(job_status == '<ul class="current_order_attrs">'){
+
+                    var arr_avail = courierStaff.availabilityStatus.split('_');
+                    var new_arr_avail = [];
+                    for(var j in arr_avail) {
+                        new_arr_avail.push(Main.ucfirst(arr_avail[j]));
+                    }
+
+                    job_status = new_arr_avail.join(' ')+'</ul>';
                 } else {
                     job_status+="</ul>";
                 }

@@ -147,7 +147,14 @@ var courierProfile;
             $(".profile_header_image #profile_image").html('<img src="' + courierStaff.user.profileImage + '" class="img-responsive" style="height: 100%;" />');
 
             $(".profile_header_info .info1").html(courierStaff.user.fullName);
-            $(".profile_header_info .info2").html((courierStaff.availabilityStatus).replace(/\_/g, ' '));
+
+            var arr_avail = courierStaff.availabilityStatus.split('_');
+            var new_arr_avail = [];
+            for(var j in arr_avail) {
+                new_arr_avail.push(Main.ucfirst(arr_avail[j]));
+            }
+
+            $(".profile_header_info .info2").html(new_arr_avail.join(' '));
             var rating = parseInt(courierStaff.averageRating);
             for(var i = 0; i < rating; i++) {
                 $(".profile_header_info .ratings ul li").eq(i).addClass('active');

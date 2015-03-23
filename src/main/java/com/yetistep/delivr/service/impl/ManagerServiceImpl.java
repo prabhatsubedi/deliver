@@ -6,6 +6,7 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.NotifyTo;
+import com.yetistep.delivr.enums.PushNotificationRedirect;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
@@ -662,11 +663,11 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     }
 
     private void sendNotification(Role role, String family, NotifyTo notifyTo, String message) throws Exception{
-        message += ":info";
         List<String> deviceTokens = userDeviceDaoService.getAllDeviceTokensForFamilyAndRole(role, family);
         PushNotification pushNotification = new PushNotification();
         pushNotification.setTokens(deviceTokens);
         pushNotification.setMessage(message);
+        pushNotification.setPushNotificationRedirect(PushNotificationRedirect.INFO);
         pushNotification.setNotifyTo(notifyTo);
         PushNotificationUtil.sendNotification(pushNotification, family);
     }

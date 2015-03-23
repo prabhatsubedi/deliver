@@ -185,14 +185,15 @@ var Admin = function() {
         },
         getManagers: function() {
 
-            var callback = function (status, data) {
+            var dataFilter = function (data, type) {
 
                 console.log(data);
                 if (!data.success) {
                     alert(data.message);
                     return;
                 }
-                var managers = data.params.managers;
+                var responseRows = data.params.managers.numberOfRows;
+                var managers = data.params.managers.data;
                 var tdata = [];
 
                 for (var i = 0; i < managers.length; i++) {
@@ -205,24 +206,28 @@ var Admin = function() {
                     actions += '</div>';
 
                     var row = [id, manager.fullName, manager.emailAddress, manager.mobileNumber, manager.status == undefined ? 'Unverified' : Main.ucfirst(manager.status), actions];
+                    row = $.extend({}, row);
                     tdata.push(row);
                 }
 
-                Main.createDataTable("#manager_table", tdata);
+                var response = {};
+                response.data = tdata;
+                response.recordsTotal = responseRows;
+                response.recordsFiltered = responseRows;
 
-                $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+                return response;
 
             };
 
-            callback.loaderDiv = "body";
-            callback.requestType = "GET";
+            dataFilter.url = "/admin/get_managers";
+            Main.createDataTable("#manager_table", dataFilter);
 
-            Main.request('/admin/get_managers', {}, callback);
+            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
         },
         getAccountants: function() {
 
-            var callback = function (status, data) {
+            var dataFilter = function (data, type) {
 
                 console.log(data);
                 if (!data.success) {
@@ -230,7 +235,8 @@ var Admin = function() {
                     return;
                 }
 
-                var accountants = data.params.accountants;
+                var responseRows = data.params.accountants.numberOfRows;
+                var accountants = data.params.accountants.data;
                 var tdata = [];
 
                 for (var i = 0; i < accountants.length; i++) {
@@ -243,19 +249,23 @@ var Admin = function() {
                     actions += '</div>';
 
                     var row = [id, accountant.fullName, accountant.emailAddress, accountant.mobileNumber, accountant.status == undefined ? 'Unverified' : Main.ucfirst(accountant.status), actions];
+                    row = $.extend({}, row);
                     tdata.push(row);
                 }
 
-                Main.createDataTable("#accountant_table", tdata);
+                var response = {};
+                response.data = tdata;
+                response.recordsTotal = responseRows;
+                response.recordsFiltered = responseRows;
 
-                $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+                return response;
 
             };
 
-            callback.loaderDiv = "body";
-            callback.requestType = "GET";
+            dataFilter.url = "/admin/get_accountants";
+            Main.createDataTable("#accountant_table", dataFilter);
 
-            Main.request('/admin/get_accountants', {}, callback);
+            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
         },
         saveUser: function(params, headers) {

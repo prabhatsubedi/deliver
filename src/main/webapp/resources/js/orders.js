@@ -7,7 +7,78 @@
  */
 if(typeof(Order) == "undefined") var Order = {};
 
-Order.getOrders = function(){
+Order.loadOrderFn = function(){
+
+    $('.refresh_orders').live('click', function(){
+        $('.main_tabs .loaded').removeClass('loaded');
+        var activeElem = $('.main_tabs .active a');
+        activeElem.addClass('loaded');
+        Order.getOrders("#" + activeElem.attr('data-id'), "/merchant/get_orders", {deliveryStatus: activeElem.attr('data-status')});
+    });
+
+    $('.main_tabs a[data-toggle="tab"]:not(".loaded")').on('shown.bs.tab', function() {
+
+        $(this).addClass('loaded');
+        Order.getOrders("#" + $(this).attr('data-id'), "/merchant/get_orders", {deliveryStatus: $(this).attr('data-status')});
+
+    });
+    $('.main_tabs a[data-toggle="tab"]').eq(0).tab('show');
+
+
+    var postData = {};
+    //postData.page = {pageNumber: 1, pageSize: 20, sortOrder: 'desc'};
+
+/*    $("body").delegate("span.show_db_info", "mouseover", function(){
+        $(this).siblings(".db_info").removeClass("hidden");
+    });
+
+    $("body").delegate(".db_td", "mouseleave", function(){
+        $(this).find(".db_info").addClass("hidden");
+    });
+ */
+    $("body").delegate("span.show_store_info", "mouseover", function(){
+        $(this).siblings(".store_info").removeClass("hidden");
+    });
+
+    $("body").delegate(".store_info_td", "mouseleave", function(){
+        $(this).find(".store_info").addClass("hidden");
+    });
+
+    $("body").delegate("span.view_bills", "mouseover", function(){
+        $(this).siblings(".bill_list").removeClass("hidden");
+    });
+
+    $("body").delegate(".bill_td", "mouseleave", function(){
+        $(this).find(".bill_list").addClass("hidden");
+    });
+
+
+    $('.db_td').live('mouseover', function(){
+        $(this).addClass('currentPreview');
+        var left = $(this).offset().left - 230;
+        var top = $(this).offset().top - 130;
+        var maxTop = ($(this).parents('.dataTable').eq(0).offset().top + $(this).parents('.dataTable').eq(0).height()) - 320;
+        if(top > maxTop) top = maxTop;
+        if($('.shopper_preview_container').css('top') == 'auto')
+            $('.shopper_preview_container').css({left: left, top: top}).html($('.db_info', this).clone().html()).removeClass('hidden');
+        else
+            $('.shopper_preview_container').stop(false, false).animate({left: left, top: top}).html($('.db_info', this).clone().html()).removeClass('hidden');
+    });
+    $('.db_td').live('mouseout', function(e){
+        if(!$(e.relatedTarget).hasClass('shopper_preview_container') && $(e.relatedTarget).parents('.shopper_preview_container').length == 0) {
+            $('.currentPreview').removeClass('currentPreview');
+            $('.shopper_preview_container').html('').addClass('hidden');
+        }
+    });
+    $('.shopper_preview_container').live('mouseout', function(e){
+        if(!$(e.relatedTarget).hasClass('currentPreview') && $(e.relatedTarget).parents('.shopper_preview_container').length == 0) {
+            $('.currentPreview').removeClass('currentPreview');
+            $('.shopper_preview_container').html('').addClass('hidden');
+        }
+    });
+};
+
+Order.getOrders = function(elemId, url, params){
 
     var dataFilter = function (data, type) {
         if (!data.success) {
@@ -88,72 +159,15 @@ Order.getOrders = function(){
         return response;
     }
 
+    dataFilter.url = url;
+    dataFilter.params = params;
+    Main.createDataTable(elemId, dataFilter);
 
-    $('.main_tabs a[data-toggle="tab"]:not(".loaded")').on('shown.bs.tab', function() {
+    $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+    if(elemId == '#order_inroute_table')
+        $('#order_inroute_table_length').after('<button class="btn btn_green pull-right refresh_orders" style="line-height: 34px; padding: 0px 10px;">Refresh</button>');
 
-        $(this).addClass('loaded');
-        dataFilter.url = "/merchant/get_orders";
-        dataFilter.params = {deliveryStatus: $(this).attr('data-status')};
-        Main.createDataTable("#" + $(this).attr('data-id'), dataFilter);
-
-        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
-
-    });
-    $('.main_tabs a[data-toggle="tab"]').eq(0).tab('show');
-
-
-    var postData = {};
-    //postData.page = {pageNumber: 1, pageSize: 20, sortOrder: 'desc'};
-
-/*    $("body").delegate("span.show_db_info", "mouseover", function(){
-        $(this).siblings(".db_info").removeClass("hidden");
-    });
-
-    $("body").delegate(".db_td", "mouseleave", function(){
-        $(this).find(".db_info").addClass("hidden");
-    });
- */
-    $("body").delegate("span.show_store_info", "mouseover", function(){
-        $(this).siblings(".store_info").removeClass("hidden");
-    });
-
-    $("body").delegate(".store_info_td", "mouseleave", function(){
-        $(this).find(".store_info").addClass("hidden");
-    });
-
-    $("body").delegate("span.view_bills", "mouseover", function(){
-        $(this).siblings(".bill_list").removeClass("hidden");
-    });
-
-    $("body").delegate(".bill_td", "mouseleave", function(){
-        $(this).find(".bill_list").addClass("hidden");
-    });
-
-
-    $('.db_td').live('mouseover', function(){
-        $(this).addClass('currentPreview');
-        var left = $(this).offset().left - 230;
-        var top = $(this).offset().top - 130;
-        var maxTop = ($(this).parents('.dataTable').eq(0).offset().top + $(this).parents('.dataTable').eq(0).height()) - 320;
-        if(top > maxTop) top = maxTop;
-        if($('.shopper_preview_container').css('top') == 'auto')
-            $('.shopper_preview_container').css({left: left, top: top}).html($('.db_info', this).clone().html()).removeClass('hidden');
-        else
-            $('.shopper_preview_container').stop(false, false).animate({left: left, top: top}).html($('.db_info', this).clone().html()).removeClass('hidden');
-    });
-    $('.db_td').live('mouseout', function(e){
-        if(!$(e.relatedTarget).hasClass('shopper_preview_container') && $(e.relatedTarget).parents('.shopper_preview_container').length == 0) {
-            $('.currentPreview').removeClass('currentPreview');
-            $('.shopper_preview_container').html('').addClass('hidden');
-        }
-    });
-    $('.shopper_preview_container').live('mouseout', function(e){
-        if(!$(e.relatedTarget).hasClass('currentPreview') && $(e.relatedTarget).parents('.shopper_preview_container').length == 0) {
-            $('.currentPreview').removeClass('currentPreview');
-            $('.shopper_preview_container').html('').addClass('hidden');
-        }
-    });
-}
+};
 
 
 Order.getPurchaseHistory = function(){

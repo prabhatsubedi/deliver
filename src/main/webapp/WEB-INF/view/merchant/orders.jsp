@@ -13,7 +13,7 @@
 </head>
 <script>
     $(document).ready(function () {
-        Order.getOrders();
+        Order.loadOrderFn();
         //setInterval(Order.getOrders, 60000);
         Order.getOrdersItems();
     });

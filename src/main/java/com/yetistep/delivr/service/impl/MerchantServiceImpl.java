@@ -71,6 +71,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         user.setVerifiedStatus(false);
         user.setSubscribeNewsletter(false);
         user.setCreatedDate(DateUtil.getCurrentTimestampSQL());
+        user.setLastActivityDate(null);
         merchant.setPartnershipStatus(false);
         merchant.setUser(user);
         /*By default set to null during sign up*/

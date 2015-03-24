@@ -355,6 +355,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             userDeviceEntity.setDpi(userDevice.getDpi());
             userDeviceEntity.setHeight(userDevice.getHeight());
             userDeviceEntity.setWidth(userDevice.getWidth());
+            userDeviceEntity.setLastLogin(DateUtil.getCurrentTimestampSQL());
             userDaoService.update(userEntity);
         }
         String fields = "id,availabilityStatus,averageRating,totalOrderTaken,totalOrderDelivered,totalOrderUndelivered,totalEarnings," +

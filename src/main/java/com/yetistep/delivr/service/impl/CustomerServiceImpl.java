@@ -710,6 +710,7 @@ public class CustomerServiceImpl implements CustomerService {
         order.setDeliveryStatus(DeliveryStatus.PENDING);
         order.setOrderStatus(JobOrderStatus.ORDER_PLACED);
         order.setReprocessTime(0);
+        order.setOrderDate(DateUtil.getCurrentTimestampSQL());
 
         /* Transferring data of cart to order and calculating price */
         BigDecimal itemTotalCost = BigDecimal.ZERO;
@@ -1037,6 +1038,7 @@ public class CustomerServiceImpl implements CustomerService {
         user.getCustomer().setReferredBy(Long.parseLong(headerDto.getId()));
         user.getCustomer().setFbToken(headerDto.getAccessToken());
         user.getCustomer().setUser(user);
+        user.setCreatedDate(DateUtil.getCurrentTimestampSQL());
         //user.getCustomer().setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
         userDaoService.save(user);
     }
@@ -1566,6 +1568,7 @@ public class CustomerServiceImpl implements CustomerService {
         orderCancel.setJobOrderStatus(order.getOrderStatus());
         orderCancel.setReason(CANCEL_REASON);
         orderCancel.setOrder(order);
+        orderCancel.setCancelledDate(DateUtil.getCurrentTimestampSQL());
         order.setOrderCancel(orderCancel);
         order.setOrderStatus(JobOrderStatus.CANCELLED);
         order.setDeliveryStatus(DeliveryStatus.CANCELLED);

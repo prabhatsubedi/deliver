@@ -80,6 +80,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         user.setVerificationCode(code);
         user.setSubscribeNewsletter(false);
         user.setStatus(Status.ACTIVE);
+        user.setCreatedDate(DateUtil.getCurrentTimestampSQL());
         if(user.getEmailAddress().isEmpty()){
             user.setEmailAddress(null);
         }

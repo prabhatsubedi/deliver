@@ -7,6 +7,7 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.InvoiceStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.AccountService;
+import com.yetistep.delivr.util.DateUtil;
 import com.yetistep.delivr.util.EmailMsg;
 import com.yetistep.delivr.util.InvoiceGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,8 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             invoice.setMerchant(merchant);
             invoice.setStore(store);
             invoice.setOrders(orders);
+            invoice.setGeneratedDate(new Date(System.currentTimeMillis()));
+
             for (OrderEntity orderEntity: orders){
                 orderEntity.setInvoice(invoice);
             }
@@ -118,6 +121,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         bill.setVat(totalCharge.multiply(vatPcn).divide(new BigDecimal(100)));
         BigDecimal totalAmount = totalCharge.add(totalCharge.multiply(vatPcn).divide(new BigDecimal(100)));
         bill.setBillAmount(totalAmount);
+        bill.setGeneratedDate(new Date(System.currentTimeMillis()));
 
         ReceiptEntity receipt = new ReceiptEntity();
         receipt.setReceiptAmount(totalAmount);
@@ -132,6 +136,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         String billAndReceiptPath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt, getServerUrl());
         bill.setPath(billAndReceiptPath);
         receipt.setPath(billAndReceiptPath);
+        receipt.setGeneratedDate(new Date(System.currentTimeMillis()));
 
 
         billDaoService.update(bill);
@@ -165,6 +170,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
         for (OrderEntity order: orders){
             order.setdBoyPaid(true);
+            order.setdBoyPaidDate(new Date(System.currentTimeMillis()));
             orderDaoService.update(order);
         }
     }
@@ -182,6 +188,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
         for (InvoiceEntity invoice: invoiceEntities){
             invoice.setInvoicePaid(true);
+            invoice.setPaidDate(new Date(System.currentTimeMillis()));
             invoiceDaoService.update(invoice);
         }
     }

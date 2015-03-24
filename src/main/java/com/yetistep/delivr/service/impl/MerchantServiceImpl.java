@@ -282,7 +282,28 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         String brandLogo = storesBrand.getBrandLogo();
         String brandImage = storesBrand.getBrandImage();
 
-        for (StoreEntity store: stores){
+        List<BrandsCategoryEntity> brandsCategories = new ArrayList<BrandsCategoryEntity>();
+        for (Integer categoryId: categories){
+            BrandsCategoryEntity newBrandsCategory = new BrandsCategoryEntity();
+            CategoryEntity category = new CategoryEntity();
+            category.setId(categoryId);
+            newBrandsCategory.setCategory(category);
+            newBrandsCategory.setStoresBrand(storesBrand);
+            brandsCategories.add(newBrandsCategory);
+        }
+
+        for (StoreEntity store: stores) {
+            store.setStoresBrand(storesBrand);
+            store.setCreatedDate(DateUtil.getCurrentTimestampSQL());
+        }
+
+
+        storesBrand.setBrandsCategory(brandsCategories);
+        storesBrand.setMerchant(dbMerchant);
+        storesBrand.setBrandLogo(null);
+        storesBrand.setBrandImage(null);
+
+        /*for (StoreEntity store: stores){
             store.setStoresBrand(storesBrand);
             List<BrandsCategoryEntity> brandsCategories = new ArrayList<BrandsCategoryEntity>();
             for (Integer categoryId: categories){
@@ -297,12 +318,12 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             store.getStoresBrand().setMerchant(dbMerchant);
             store.getStoresBrand().setBrandLogo(null);
             store.getStoresBrand().setBrandImage(null);
-        }
+        }*/
         storesBrand.setStore(stores);
 
         merchantDaoService.saveStoresBrand(storesBrand);
 
-        StoresBrandEntity brand = stores.get(0).getStoresBrand();
+        StoresBrandEntity brand = storesBrand;
 
         if (brandLogo != null && !brandLogo.isEmpty() && brandImage != null && !brandImage.isEmpty()) {
             log.info("Uploading brand logo and image to S3 Bucket ");
@@ -763,6 +784,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                itemCategories.get(i).setParent(itemCategories.get(i-1));
                itemCategories.get(i).setFeatured(false);
                itemCategories.get(i).setStoresBrand(storesBrand);
+               itemCategories.get(i).setCreatedDate(DateUtil.getCurrentTimestampSQL());
             }
             itemCategories.set(0, parentCategory);
             merchantDaoService.saveCategories(itemCategories);
@@ -777,6 +799,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         item.setCategory(category);
         item.setStoresBrand(storesBrand);
+        item.setCreatedDate(DateUtil.getCurrentTimestampSQL());
+        item.setModifiedDate(DateUtil.getCurrentTimestampSQL());
 
         List<ItemsStoreEntity> itemsStoreEntities = new ArrayList<>();
         for(Integer itemsStore: itemStores){
@@ -857,6 +881,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         dbItem.setVat(item.getVat());
         dbItem.setServiceCharge(item.getServiceCharge());
         dbItem.setUnitPrice(item.getUnitPrice());
+        dbItem.setModifiedDate(DateUtil.getCurrentTimestampSQL());
 
 
         StoresBrandEntity storesBrand = dbItem.getStoresBrand();
@@ -949,6 +974,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 itemCategories.get(i).setParent(itemCategories.get(i-1));
                 itemCategories.get(i).setFeatured(false);
                 itemCategories.get(i).setStoresBrand(storesBrand);
+                itemCategories.get(i).setCreatedDate(DateUtil.getCurrentTimestampSQL());
             }
             itemCategories.set(0, parentCategory);
             merchantDaoService.saveCategories(itemCategories);
@@ -1548,7 +1574,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         List<Object> objects = new ArrayList<>();
 
-        String fields = "id,orderName,orderStatus,deliveryStatus,customer,orderVerificationCode,store,deliveryBoy,attachments,grandTotal,rating";
+        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,attachments,grandTotal,rating";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

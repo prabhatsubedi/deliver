@@ -476,7 +476,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 order_name+="</ul>";
 
                 var user_status = courierStaff.user.status;
-                var balance = courierStaff.walletAmount + courierStaff.bankAmount;
+                var balance = courierStaff.availableAmount;
                 var status_link = '';
                 if(user_status == 'ACTIVE')
                     status_link = '<a class="change_status elem_tooltip delivricon delivricon-remove" href="javascript:;" data-id="' + courierStaff.user.id + '" data-status="' + user_status + '" data-placement="left" title="Deactivate"></a>';
@@ -489,7 +489,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     '<a class="elem_tooltip delivricon delivricon-user" href="' + Main.modifyURL('/organizer/courier_staff/profile/' + id) + '" data-placement="left"  title="View Profile"></a>' + status_link
                     '</div>';
 
-                var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, Main.ucfirst(user_status), Main.getFromLocalStorage("currency")+balance, action];
+                var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, Main.ucfirst(user_status), Main.getFromLocalStorage("currency")+' '+balance, action];
                 row = $.extend({}, row);
                 tdata.push(row);
             }

@@ -113,6 +113,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         user.setVerifiedStatus(true);
         user.setSubscribeNewsletter(false);
         user.setStatus(Status.ACTIVE);
+        user.setCreatedDate(DateUtil.getCurrentTimestampSQL());
         if(user.getEmailAddress().isEmpty()){
             user.setEmailAddress(null);
         }
@@ -213,7 +214,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         List<DeliveryBoyEntity> objects = new ArrayList<>();
 
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,user,order,latitude,longitude";
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,availableAmount,advanceAmount,user,order,latitude,longitude";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

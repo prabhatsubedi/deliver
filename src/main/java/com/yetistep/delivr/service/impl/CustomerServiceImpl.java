@@ -1031,7 +1031,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(referrer == null)
             throw new YSException("VLD011");
 
-        if(referrer.getReferredFriendsCount() != null && referrer.getReferredFriendsCount() >= Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.MAX_REFERRED_FRIENDS_COUNT)))
+        if(!referrer.getDefault() && referrer.getReferredFriendsCount() != null && referrer.getReferredFriendsCount() >= Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.MAX_REFERRED_FRIENDS_COUNT)))
             throw new YSException("VLD021");
 
         user.getCustomer().setReferredBy(Long.parseLong(headerDto.getId()));

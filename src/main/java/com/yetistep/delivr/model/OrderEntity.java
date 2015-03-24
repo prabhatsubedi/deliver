@@ -11,6 +11,7 @@ import com.yetistep.delivr.util.JsonDateSerializer;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -56,6 +57,7 @@ public class OrderEntity implements Serializable {
     private InvoiceEntity invoice;
     private Integer reprocessTime;
     private Boolean dBoyPaid;
+    private Date dBoyPaidDate;
     private List<ItemsOrderEntity> itemsOrder;
     private AddressEntity address;
     private DeliveryBoyEntity deliveryBoy;
@@ -410,6 +412,15 @@ public class OrderEntity implements Serializable {
 
     public void setdBoyPaid(Boolean dBoyPaid) {
         this.dBoyPaid = dBoyPaid;
+    }
+
+    @Column(name = "dboy_paid_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
+    public Date getdBoyPaidDate() {
+        return dBoyPaidDate;
+    }
+
+    public void setdBoyPaidDate(Date dBoyPaidDate) {
+        this.dBoyPaidDate = dBoyPaidDate;
     }
 
     @OneToOne(mappedBy = "order", fetch = FetchType.LAZY)

@@ -286,7 +286,7 @@ public class ManagerController {
                 headerDto.setId(hd.get(0));
             else
                 headerDto.setId(null);
-
+            category.setCreatedDate(new java.sql.Timestamp(System.currentTimeMillis()));
             Object newCategory = managerService.saveCategory(category, headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Category has been saved successfully");

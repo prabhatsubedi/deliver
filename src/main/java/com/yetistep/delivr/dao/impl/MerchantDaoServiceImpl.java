@@ -201,7 +201,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         criteria.addOrder(Order.desc("id"));
         brandsCategories = criteria.list();
 
-        return brandsCategories.size() > 0 ? brandsCategories : null;
+        return brandsCategories;
     }
 
     @Override
@@ -211,7 +211,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         criteria.add(Restrictions.in("storesBrand.id", brandId));
         brandsCategories = criteria.list();
 
-        return brandsCategories.size() > 0 ? brandsCategories : null;
+        return brandsCategories;
     }
 
     @Override
@@ -222,7 +222,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Query query = sessionFactory.getCurrentSession().createQuery(hqlQuery);
         query.setParameter("brandId", brandId);
         List<CategoryEntity> categories = query.list();
-        return categories.size() > 0 ? categories : null;
+        return categories;
     }
 
     @Override
@@ -233,7 +233,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Query query = sessionFactory.getCurrentSession().createQuery(hqlQuery);
         //query.setParameter("brandId", brandId);
         List<CategoryEntity> categories = query.list();
-        return categories.size() > 0 ? categories : null;
+        return categories;
     }
 
 
@@ -391,7 +391,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Criterion rest2 = Restrictions.and(Restrictions.eq("storesBrand.id", storeId), Restrictions.eq("parent.id", parentId));
         criteria.add(Restrictions.or(rest1, rest2));
         categories = criteria.list();
-        return categories.size() > 0 ? categories : null;
+        return categories;
     }
 
 

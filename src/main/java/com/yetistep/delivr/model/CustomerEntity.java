@@ -39,6 +39,7 @@ public class CustomerEntity implements Serializable {
     private String creditCardId;
     private String latitude;
     private String longitude;
+    private Boolean isDefault;
     private List<CartEntity> carts;
     private String currency;//Transient Variable
     private List<BillEntity> bill;
@@ -185,6 +186,16 @@ public class CustomerEntity implements Serializable {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    @Column (name = "is_default", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @JsonProperty
+    public Boolean getDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(Boolean aDefault) {
+        isDefault = aDefault;
     }
 
     @Column (name = "facebook_id", unique = true)

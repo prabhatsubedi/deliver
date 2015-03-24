@@ -206,7 +206,7 @@ public class UserEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_date", nullable = true)
     @JsonProperty
     public Timestamp getCreatedDate() {
         return createdDate;

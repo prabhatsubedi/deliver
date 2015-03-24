@@ -452,7 +452,6 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 })(jQuery);
 
 $(document).ready(function(){
-
     var preventCustomTab = false;
     $(document).keyup(function(e){
         var target = $(e.target);

@@ -141,11 +141,11 @@ Order.getOrders = function(elemId, url, params){
                     }
                 }
 
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason];
+                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderDate, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason];
             } else if(order.orderStatus == "DELIVERED") {
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
+                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderDate, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:''];
             } else if($.inArray(order.orderStaus, activeStatus)) {
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), view_items];
+                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderDate, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), view_items];
             }
             row = $.extend({}, row);
             tdata.push(row)

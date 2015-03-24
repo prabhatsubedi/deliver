@@ -210,6 +210,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         DBoyAdvanceAmountEntity dBoyAdvanceAmount = new DBoyAdvanceAmountEntity();
         dBoyAdvanceAmount.setAmountAdvance(requestJsonDto.getAdvanceAmount());
         dBoyAdvanceAmount.setDeliveryBoy(dBoy);
+        dBoyAdvanceAmount.setAdvanceDate(DateUtil.getCurrentTimestampSQL());
         dBoyAdvanceAmounts.add(dBoyAdvanceAmount);
 
         dBoy.setdBoyAdvanceAmounts(dBoyAdvanceAmounts);
@@ -238,6 +239,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();
         dBoySubmittedAmount.setAmountReceived(requestJsonDto.getSubmittedAmount());
         dBoySubmittedAmount.setDeliveryBoy(dBoy);
+        dBoySubmittedAmount.setAckDate(DateUtil.getCurrentTimestampSQL());
         dBoySubmittedAmounts.add(dBoySubmittedAmount);
         dBoy.setdBoySubmittedAmount(dBoySubmittedAmounts);
 
@@ -263,7 +265,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
         List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
         DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();
-
+        dBoySubmittedAmount.setAckDate(DateUtil.getCurrentTimestampSQL());
         dBoySubmittedAmount.setAmountReceived(requestJsonDto.getSubmittedAmount());
         dBoySubmittedAmount.setDeliveryBoy(dBoy);
         dBoySubmittedAmounts.add(dBoySubmittedAmount);
@@ -372,6 +374,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
         String categoryImage = category.getImageUrl();
         category.setImageUrl(null);
+        category.setCreatedDate(DateUtil.getCurrentTimestampSQL());
         if (category.getFeatured() == null) {
             category.setFeatured(false);
         }

@@ -70,6 +70,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         user.setBlacklistStatus(false);
         user.setVerifiedStatus(false);
         user.setSubscribeNewsletter(false);
+        user.setCreatedDate(DateUtil.getCurrentTimestampSQL());
         merchant.setPartnershipStatus(false);
         merchant.setUser(user);
         /*By default set to null during sign up*/
@@ -93,7 +94,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             merchant.setBusinessLogo(s3Path);
 
              /* Update S3 Location to the Database */
-            merchant.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
+            //merchant.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
             merchantDaoService.update(merchant);
         }
 
@@ -300,6 +301,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         storesBrand.setBrandsCategory(brandsCategories);
         storesBrand.setMerchant(dbMerchant);
+        storesBrand.setCreatedDate(DateUtil.getCurrentTimestampSQL());
         storesBrand.setBrandLogo(null);
         storesBrand.setBrandImage(null);
 
@@ -570,7 +572,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             merchant.getUser().setProfileImage(s3Path);
         }*/
 
-        merchant.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
+        //merchant.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
         merchant.getUser().setMerchant(merchant);
         merchantDaoService.update(merchant);
 
@@ -587,7 +589,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             merchant.setBusinessLogo(s3Path);
 
              /* Update S3 Location to the Database */
-            merchant.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
+            //merchant.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
             merchantDaoService.update(merchant);
         }
         return true;
@@ -1416,7 +1418,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             for(String id: ids) {
                 UserEntity user =   userDaoService.find(Integer.parseInt(id));
                 user.setStatus(Status.fromInt(statusId));
-                user.setLastActivityDate(DateUtil.getCurrentTimestampSQL());
+                //user.setLastActivityDate(DateUtil.getCurrentTimestampSQL());
                 userDaoService.update(user);
             }
         }else if(type.equals("Brand")) {

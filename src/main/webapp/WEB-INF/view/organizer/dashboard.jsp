@@ -127,6 +127,11 @@
                         <span class="count_span td_div count_red" data-get="offDutyDeliveryBoy">0</span> <span class="count_label td_div">Off Duty Shopper</span>
                     </div>
                 </div>
+                <div class="col-sm-3 count_block_cont">
+                    <div class="count_cont table_div">
+                        <span class="td_div remaining_balance">0</span> <span class="count_label td_div">Remaining Balance</span>
+                    </div>
+                </div>
             </div>
             <div class="top_blur"></div>
             <div class="bottom_blur"></div>

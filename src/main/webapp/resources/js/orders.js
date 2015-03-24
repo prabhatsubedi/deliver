@@ -328,6 +328,7 @@ Order.courierBoyOrderHistory = function(params){
         var orders = data.params.orders.data;
 
         var tableData = [];
+        var unpaid_total = 0;
         if(orders.length > 0) {
             var rating = parseInt(orders[0].deliveryBoy.averageRating);
 
@@ -337,20 +338,24 @@ Order.courierBoyOrderHistory = function(params){
 
                 var action = '';
                 var orderHistoryLength =  order.dBoyOrderHistories.length;
+                var earned_amount = order.dBoyOrderHistories[orderHistoryLength-1].amountEarned;
                 var time_taken;
                 if(order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt != undefined && order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt != undefined){
                     time_taken = ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt)/1000/60).toFixed(0);
                 }
 
                 if(order.dBoyPaid != undefined){
-                    var checkBox = '<input type="checkbox" checked data-id="'+order.id+'" class="pay_row">';
+                    var checkBox = '';
+//                    var checkBox = '<input type="checkbox" checked data-id="'+order.id+'" class="pay_row">';
                 }else{
                     var checkBox = '<input type="checkbox" data-id="'+order.id+'" class="pay_row">';
+                    unpaid_total += earned_amount;
                 }
 
-                var row = [i+1, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, order.dBoyOrderHistories[orderHistoryLength-1].amountEarned, order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:'', checkBox];
+                var row = [i+1, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, '<span class="' + (order.dBoyPaid == undefined ? "paid_status unpaid_amount" : '') + '">' + earned_amount + '</span>', order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:'', order.dBoyPaidDate, checkBox];
                 tableData.push(row);
             }
+            $('.unpaid_total').html(unpaid_total.toFixed(2));
         } else {
             var rating = 0;
         }

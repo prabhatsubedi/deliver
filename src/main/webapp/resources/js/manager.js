@@ -1138,6 +1138,18 @@ if (typeof(Manager) == "undefined") var Manager = {};
         callback.requestType = "GET";
         Main.request('/organizer/gods_view', {}, callback);
 
+        var bcallback = function(success, data){
+            console.log(data);
+
+            if(data.success && data.params.credit.creditsAvailable != undefined) {
+                $('.remaining_balance').html(data.params.credit.creditsAvailable);
+            }
+
+
+        }
+        callback.requestType = "GET";
+        Main.request('/organizer/sms_credits', {}, bcallback);
+
         $('.toggle_map_view').click(function(){
             if($(this).hasClass('glyphicon-resize-full')) {
                 $('body').addClass('menu_opened');

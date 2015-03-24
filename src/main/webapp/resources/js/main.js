@@ -258,7 +258,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         });
 
         if($.fn.dataTable.fnIsDataTable(selector))
-            $(selector).DataTable().destroy();
+            $(selector).DataTable().clear().destroy();
         $(selector).dataTable();
 
 /*

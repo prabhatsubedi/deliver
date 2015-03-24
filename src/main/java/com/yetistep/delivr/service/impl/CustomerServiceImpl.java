@@ -189,7 +189,8 @@ public class CustomerServiceImpl implements CustomerService {
             RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_CUSTOMER);
             customerEntity.getUser().setRole(userRole);
             customerEntity.getUser().getUserDevice().setUser(customerEntity.getUser());
-
+            customerEntity.getUser().setCreatedDate(DateUtil.getCurrentTimestampSQL());
+            customerEntity.getUser().setLastActivityDate(null);
 //            if (customerEntity.getLatitude() != null) {
 //                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
 //                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());

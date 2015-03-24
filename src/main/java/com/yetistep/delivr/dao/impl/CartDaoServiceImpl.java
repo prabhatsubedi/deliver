@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.CartDaoService;
 import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
 import com.yetistep.delivr.model.CartEntity;
+import com.yetistep.delivr.util.DateUtil;
 import org.hibernate.*;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
@@ -41,12 +42,12 @@ public class CartDaoServiceImpl implements CartDaoService{
 
     @Override
     public Boolean update(CartEntity value) throws Exception {
-        String sql = "UPDATE cart SET note = :note, order_quantity = :quantity WHERE id = :cartId";
+        String sql = "UPDATE cart SET note = :note, order_quantity = :quantity, modified_date = :modifiedDate WHERE id = :cartId";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("note", value.getNote()!=null ? value.getNote() : null);
         sqlQuery.setParameter("quantity", value.getOrderQuantity());
         sqlQuery.setParameter("cartId", value.getId());
-
+        sqlQuery.setParameter("modifiedDate", DateUtil.getCurrentTimestampSQL());
         sqlQuery.executeUpdate();
         return true;
     }
@@ -145,11 +146,11 @@ public class CartDaoServiceImpl implements CartDaoService{
 
     @Override
     public Boolean updateOrderQuantity(Integer cartId, Integer additionalQuantity) throws Exception {
-        String sql = "UPDATE cart SET order_quantity = order_quantity + :additionalQuantity WHERE id = :cartId";
+        String sql = "UPDATE cart SET order_quantity = order_quantity + :additionalQuantity,modified_date = :modifiedDate WHERE id = :cartId";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("additionalQuantity", additionalQuantity);
         sqlQuery.setParameter("cartId", cartId);
-
+        sqlQuery.setParameter("modifiedDate", DateUtil.getCurrentTimestampSQL());
         sqlQuery.executeUpdate();
         return true;
     }
@@ -160,7 +161,7 @@ public class CartDaoServiceImpl implements CartDaoService{
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("minQn", minQn);
         sqlQuery.setParameter("cartId", cartId);
-
+        sqlQuery.setParameter("modifiedDate", DateUtil.getCurrentTimestampSQL());
         sqlQuery.executeUpdate();
         return true;
     }

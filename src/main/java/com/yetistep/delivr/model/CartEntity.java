@@ -25,6 +25,7 @@ public class CartEntity {
     private Integer id;
     private Integer orderQuantity;
     private String note;
+    private Timestamp createdDate;
     private Timestamp modifiedDate;
     private ItemEntity item;
     private StoresBrandEntity storesBrand;
@@ -70,6 +71,16 @@ public class CartEntity {
 
     public void setItem(ItemEntity item) {
         this.item = item;
+    }
+
+    @JsonSerialize(using = JsonDateSerializer.class)
+    @Column(name = "created_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
+    public Timestamp getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)

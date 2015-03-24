@@ -10,6 +10,8 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/map.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/maps.css" type="text/css" />
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/dataTables.tableTools.js"></script>
+    <link href="${pageContext.request.contextPath}/resources/css/dataTables.tableTools.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="${pageContext.request.contextPath}/resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="${pageContext.request.contextPath}/resources/css/maps.css" rel="stylesheet" type="text/css" media="screen"/>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/manager.js"></script>

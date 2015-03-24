@@ -375,7 +375,7 @@ table.dataTable thead td:active {
     /*margin: 10px 0px !important;*/
     font-size: 14px;
 }
-.table-view table thead th {
+.table-view table thead th, .table-view table tfoot th {
     font-weight: bold;
     cursor: pointer;
     text-align: center;
@@ -383,9 +383,15 @@ table.dataTable thead td:active {
     background-color: #FFFFFF;
     padding: 14px 20px 14px 14px;
 }
+.table-view table tfoot th {
+    cursor: auto;
+}
+.table-view table tfoot th. button.btn {
+    margin: -10px;
+}
 .table-view table td, .table-view table th {
     padding: 8px;
-    border: 1px solid #CCCCCC;
+    border: 1px solid #f58220;
 }
 .table-view table tr.odd{
     background-color: #F9F9F9;

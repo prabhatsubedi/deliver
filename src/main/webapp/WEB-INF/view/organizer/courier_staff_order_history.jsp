@@ -7,6 +7,8 @@
 
     <%@include file="../includes/head.jsp" %>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/dataTables.tableTools.js"></script>
+    <link href="${pageContext.request.contextPath}/resources/css/dataTables.tableTools.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="${pageContext.request.contextPath}/resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="${pageContext.request.contextPath}/resources/css/jquery-ui.css" rel="stylesheet" type="text/css"
           media="screen"/>
@@ -145,11 +147,19 @@
                     </thead>
                     <tbody>
                     </tbody>
+                    <tfoot>
+                    <tr>
+                        <th colspan="7">Total</th>
+                        <th class="unpaid_total"></th>
+                        <th colspan="7">
+                            <button type="submit" id="pay_button" class="btn btn-primary clearfix action_button pull-right">
+                                <span class="pull-left">Pay Shopper</span>
+                                <span class="pull-right" id="payLoader"></span>
+                            </button>
+                        </th>
+                    </tr>
+                    </tfoot>
                 </table>
-                <button type="submit" id="pay_button" class="btn btn-primary clearfix action_button pull-right">
-                    <span class="pull-left">Pay Shopper</span>
-                    <span class="pull-right" id="payLoader"></span>
-                </button>
             </div>
         </div>
     </div>

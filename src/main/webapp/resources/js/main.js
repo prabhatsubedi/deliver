@@ -216,8 +216,12 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
         headers['Content-Type'] = 'application/json';
 
+        if(typeof TableTools != "undefined") {
+            TableTools.DEFAULTS.sSwfPath = Main.modifyURL("/resources/js/copy_csv_xls_pdf.swf");
+            TableTools.DEFAULTS.aButtons = [ "csv" ];
+        }
         $.extend($.fn.dataTable.defaults, {
-            sDom: '<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
+            sDom: 'T<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
             columnDefs: [
                 {
 //                    targets: hideCols,

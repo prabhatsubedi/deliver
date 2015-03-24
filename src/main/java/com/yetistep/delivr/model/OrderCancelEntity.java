@@ -55,7 +55,7 @@ public class OrderCancelEntity {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "cancelled_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "cancelled_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     public Timestamp getCancelledDate() {
         return cancelledDate;
     }

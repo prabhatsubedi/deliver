@@ -100,7 +100,7 @@ public class ActionLogEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "date_time", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "date_time", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     public Timestamp getDateTime() {
         return dateTime;
     }

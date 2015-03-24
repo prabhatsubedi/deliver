@@ -13,17 +13,17 @@ import java.sql.Timestamp;
  * Created with IntelliJ IDEA.
  * User: Sagar
  * Date: 12/24/14
- * Time: 11:36 AM
+ * Time: 11:34 AM
  * To change this template use File | Settings | File Templates.
  */
-@Entity(name="DBoyAdvanceAmountEntity")
-@Table(name = "dboy_advance_amounts")
-public class DBoyAdvanceAmountEntity implements Serializable {
+@Entity(name = "DBoySubmittedAmountEntity")
+@Table(name = "dboy_submitted_amounts")
+public class DBoySubmittedAmountEntity implements Serializable {
 
     private Integer id;
-    private Timestamp advanceDate;
     private DeliveryBoyEntity deliveryBoy;
-    private BigDecimal amountAdvance;
+    private BigDecimal amountReceived;
+    private Timestamp ackDate;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,16 +34,6 @@ public class DBoyAdvanceAmountEntity implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "advance_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    public Timestamp getAdvanceDate() {
-        return advanceDate;
-    }
-
-    public void setAdvanceDate(Timestamp advanceDate) {
-        this.advanceDate = advanceDate;
     }
 
     @JsonIgnore
@@ -57,13 +47,22 @@ public class DBoyAdvanceAmountEntity implements Serializable {
         this.deliveryBoy = deliveryBoy;
     }
 
-    @Column(name = "advance_amount")
-    public BigDecimal getAmountAdvance() {
-        return amountAdvance;
+    @Column(name = "amount_received")
+    public BigDecimal getAmountReceived() {
+        return amountReceived;
     }
 
-    public void setAmountAdvance(BigDecimal amountAdvance) {
-        this.amountAdvance = amountAdvance;
+    public void setAmountReceived(BigDecimal amountReceived) {
+        this.amountReceived = amountReceived;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
+    @Column(name = "ack_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
+    public Timestamp getAckDate() {
+        return ackDate;
+    }
+
+    public void setAckDate(Timestamp ackDate) {
+        this.ackDate = ackDate;
+    }
 }

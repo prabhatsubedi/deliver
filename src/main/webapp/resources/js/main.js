@@ -220,8 +220,10 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             sDom: '<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
             columnDefs: [
                 {
-                    targets: hideCols,
-                    visible: false
+//                    targets: hideCols,
+//                    visible: false,
+                    bSortable: false,
+                    aTargets: ['no_sort']
                 }
             ],
             language: {
@@ -256,7 +258,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         });
 
         if($.fn.dataTable.fnIsDataTable(selector))
-            $(selector).DataTable().destroy();
+            $(selector).DataTable().clear().destroy();
         $(selector).dataTable();
 
 /*

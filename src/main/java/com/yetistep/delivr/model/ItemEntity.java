@@ -221,7 +221,7 @@ public class ItemEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     public Timestamp getCreatedDate() {
         return createdDate;
     }

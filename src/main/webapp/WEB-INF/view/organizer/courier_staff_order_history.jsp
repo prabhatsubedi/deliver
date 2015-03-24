@@ -47,7 +47,7 @@
             }
         });
 
-        $("#selectAllToPay").change(function() {
+        $("#selectAllToPay").change(function(e) {
             var ischecked= $(this).is(':checked');
             if(!ischecked)
                 $(".pay_row").prop("checked", false);
@@ -130,8 +130,11 @@
                         <th rowspan="2">Time Taken</th>
                         <th colspan="2">Feedback By Customer</th>
                         <th colspan="2">Feedback By Shopper</th>
-                        <th rowspan="2">Select All<span style="margin-left: 10px;"><input type="checkbox" id="selectAllToPay"
-                                                                              name="selectAllToPay"/></span></th>
+                        <th rowspan="2" class="no_sort">Select All
+                            <span style="margin-left: 10px;">
+                                <input type="checkbox" id="selectAllToPay" name="selectAllToPay"/>
+                            </span>
+                        </th>
                     </tr>
                         <tr>
                             <th>Rating</th>

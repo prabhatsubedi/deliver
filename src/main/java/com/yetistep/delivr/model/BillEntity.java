@@ -43,7 +43,7 @@ public class BillEntity {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "generated_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "generated_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     public Date getGeneratedDate() {
         return generatedDate;
     }

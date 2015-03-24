@@ -51,7 +51,7 @@ public class UserDeviceEntity {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "last_login", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "last_login", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     public Timestamp getLastLogin() {
         return lastLogin;
     }

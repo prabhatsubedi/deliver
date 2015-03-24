@@ -273,7 +273,7 @@ public class OrderEntity implements Serializable {
 
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "order_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "order_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     public Timestamp getOrderDate() {
         return orderDate;
     }

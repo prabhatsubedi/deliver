@@ -254,6 +254,11 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         getCurrentSession().persist(testEntity);
         return true;
     }
+
+    @Override
+    public TestEntity findTest(Integer id) throws Exception {
+        return (TestEntity) getCurrentSession().get(TestEntity.class, id);
+    }
 }
 
 

@@ -73,7 +73,7 @@ public class CartEntity {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "modified_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "modified_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     public Timestamp getModifiedDate() {
         return modifiedDate;
     }

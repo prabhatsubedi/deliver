@@ -194,7 +194,7 @@ public class StoresBrandEntity implements Serializable {
         this.priority = priority;
     }
 
-    @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     @JsonSerialize(using = JsonDateSerializer.class)
     public Timestamp getCreatedDate() {
         return createdDate;

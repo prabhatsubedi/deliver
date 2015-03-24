@@ -181,7 +181,7 @@ public class StoreEntity implements Serializable {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "created_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     @JsonProperty
     public Timestamp getCreatedDate() {
         return createdDate;

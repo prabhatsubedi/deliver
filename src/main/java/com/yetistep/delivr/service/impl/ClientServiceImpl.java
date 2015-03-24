@@ -1154,7 +1154,17 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     @Override
     public Boolean saveTimeStamp(TestEntity testEntity) throws Exception {
         log.info("++++++++++ Saving Test Entity +++++++++++++++");
-        customerDaoService.saveTest(testEntity);
+        if(testEntity.getId() == null) {
+            testEntity.setAnotherDate(DateUtil.getCurrentTimestampSQL());
+            customerDaoService.saveTest(testEntity);
+        } else {
+            TestEntity testEntity1 = customerDaoService.findTest(testEntity.getId());
+            testEntity1.setTest(testEntity.getTest());
+            testEntity1.setLastActivityDate(DateUtil.getCurrentTimestampSQL());
+            customerDaoService.saveTest(testEntity1);
+        }
+
+
         return true;
     }
 

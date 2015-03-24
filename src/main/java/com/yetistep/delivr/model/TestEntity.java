@@ -1,5 +1,6 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
 
@@ -18,7 +19,8 @@ import java.sql.Timestamp;
 public class TestEntity {
     private Integer id;
     private String test;
-    private Timestamp createdDate;
+    private Timestamp anotherDate;
+    private Timestamp lastActivityDate;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,14 +43,26 @@ public class TestEntity {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(name = "created_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    public Timestamp getCreatedDate() {
-        return createdDate;
+    @Column(name = "another_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
+    @JsonProperty
+
+    public Timestamp getAnotherDate() {
+        return anotherDate;
     }
 
-    public void setCreatedDate(Timestamp createdDate) {
-        this.createdDate = createdDate;
+    public void setAnotherDate(Timestamp anotherDate) {
+        this.anotherDate = anotherDate;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
+    @Column(name = "last_activity_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
+    @JsonProperty
+    public Timestamp getLastActivityDate() {
+        return lastActivityDate;
+    }
+
+    public void setLastActivityDate(Timestamp lastActivityDate) {
+        this.lastActivityDate = lastActivityDate;
+    }
 
 }

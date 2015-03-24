@@ -49,12 +49,34 @@
             }
         });
 
+        function calcUnpaid() {
+            var unpaid_total = 0;
+            $('.unpaid_amount').each(function(){
+                unpaid_total += parseFloat($(this).html());
+            });
+            $('.unpaid_total').html(unpaid_total.toFixed(2));
+        }
+
         $("#selectAllToPay").change(function(e) {
             var ischecked= $(this).is(':checked');
-            if(!ischecked)
+            if(!ischecked) {
                 $(".pay_row").prop("checked", false);
-            else
+                $('.paid_status').addClass('unpaid_amount');
+            } else {
                 $(".pay_row").prop("checked", true);
+                $('.paid_status').removeClass('unpaid_amount');
+            }
+            calcUnpaid();
+        });
+
+        $('.pay_row').live('change', function(){
+            var this_amount = $('.paid_status', $(this).parents('tr').eq(0));
+            if($(this).prop('checked')) {
+                this_amount.removeClass('unpaid_amount');
+            } else {
+                this_amount.addClass('unpaid_amount');
+            }
+            calcUnpaid();
         });
 
         $("#pay_button").click(function(){
@@ -132,6 +154,7 @@
                         <th rowspan="2">Time Taken</th>
                         <th colspan="2">Feedback By Customer</th>
                         <th colspan="2">Feedback By Shopper</th>
+                        <th rowspan="2">Paid Date</th>
                         <th rowspan="2" class="no_sort">Select All
                             <span style="margin-left: 10px;">
                                 <input type="checkbox" id="selectAllToPay" name="selectAllToPay"/>
@@ -151,7 +174,7 @@
                     <tr>
                         <th colspan="7">Total</th>
                         <th class="unpaid_total"></th>
-                        <th colspan="7">
+                        <th colspan="8">
                             <button type="submit" id="pay_button" class="btn btn-primary clearfix action_button pull-right">
                                 <span class="pull-left">Pay Shopper</span>
                                 <span class="pull-right" id="payLoader"></span>

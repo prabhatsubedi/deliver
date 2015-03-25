@@ -4,11 +4,11 @@ import com.yetistep.delivr.model.Page;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -69,7 +69,7 @@ public class HibernateUtil {
                 /* Throws NoSuchFieldException if field doesn't exist. */
                     try{
                         String[] sortingInfo = page.getSortBy().split("#");
-                        if(sortingInfo.length>1){
+                        if(sortingInfo.length==2){
                             String classString = sortingInfo[0];
                             String fieldString = sortingInfo[1];
 
@@ -83,6 +83,43 @@ public class HibernateUtil {
                             } else if (page.getSortOrder().equalsIgnoreCase("desc"))  {
                                 criteria.addOrder(Order.desc(classString+"."+fieldString));
                             }
+                        }else if(sortingInfo.length>2){
+                            /*Integer i = 0;
+                            String prevModel = "";
+                            Class parentClass = clazz;
+                            for (String key: sortingInfo){
+                                if(i!=0 && i != (sortingInfo.length-1)){
+                                    criteria.createAlias(prevModel+'.'+sortingInfo[i], sortingInfo[i]);
+                                }
+                                if(i != (sortingInfo.length-1)) {
+                                    if(prevModel != "") {
+                                        if(parentClass.getDeclaredField(prevModel).getType().toString().contains("com.yetistep.delivr")) {
+                                            parentClass =  parentClass.getDeclaredField(prevModel).getType();
+                                        }else{
+                                            String genericString = parentClass.getDeclaredField(prevModel).getGenericType().toString();
+                                            parentClass = Class.forName(genericString.split("<")[1].split(">")[0]);
+                                        }
+                                    }
+                                    prevModel = sortingInfo[i];
+                                }
+                                i++;
+                            }
+                            Class sortingClass = null;
+
+                            if(parentClass.getDeclaredField(prevModel).getType().toString().contains("com.yetistep.delivr.model")) {
+                                sortingClass =  parentClass.getDeclaredField(prevModel).getType();
+                            }else{
+                                String genericString = parentClass.getDeclaredField(prevModel).getGenericType().toString();
+                                sortingClass = Class.forName(genericString.split("<")[1].split(">")[0]);
+                            }
+
+                            sortingClass.getDeclaredField(sortingInfo[sortingInfo.length-1]);
+
+                            if (page.getSortOrder().equalsIgnoreCase("asc")) {
+                                criteria.addOrder(Order.asc(prevModel+"."+sortingInfo[sortingInfo.length-1]));
+                            } else if (page.getSortOrder().equalsIgnoreCase("desc"))  {
+                                criteria.addOrder(Order.desc("merchant.user."+prevModel+"."+sortingInfo[sortingInfo.length-1]));
+                            }*/
                         }else{
                             String fieldString = sortingInfo[0];
                             clazz.getDeclaredField(fieldString);

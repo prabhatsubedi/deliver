@@ -26,7 +26,7 @@ import java.util.List;
  * Time: 3:23 PM
  * To change this template use File | Settings | File Templates.
  */
-@Controller
+@RestController
 @RequestMapping(value = "/merchant")
 public class MerchantController {
     @Autowired
@@ -35,7 +35,6 @@ public class MerchantController {
     private static final Logger log = Logger.getLogger(ManagerController.class);
 
     @RequestMapping(value = "/save_store", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> saveStore(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -52,7 +51,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/update_store", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> updateStore(@RequestBody RequestJsonDto requestJson) {
         try {
             merchantService.updateStore(requestJson);
@@ -66,7 +64,6 @@ public class MerchantController {
         }
     }
 
-    @ResponseBody
     @RequestMapping(value = "/get_parent_categories", method = RequestMethod.GET)
     public ResponseEntity<ServiceResponse> getParentCategories(){
         try {
@@ -85,7 +82,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/update_merchant", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> updateMerchant(@RequestHeader HttpHeaders headers, @RequestBody MerchantEntity merchantEntity) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -110,7 +106,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/get_stores", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findStoreList(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -127,7 +122,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/get_brands", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findAllBrands(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -153,7 +147,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/get_search_brands", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findSearchBrands(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -179,7 +172,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/get_store_detail", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findStoreDetail(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -196,7 +188,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/save_item", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> saveItem(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -212,7 +203,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/update_item", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> updateItem(@RequestBody RequestJsonDto requestJson) {
         try {
             merchantService.updateItem(requestJson);
@@ -227,7 +217,6 @@ public class MerchantController {
 
     /*store list is required on item create*/
     @RequestMapping(value = "/get_brands_stores", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findBrandsStores(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -245,7 +234,6 @@ public class MerchantController {
 
     /*store list is required on item create*/
     @RequestMapping(value = "/get_brands_categories", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findBrandsCategories(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -262,7 +250,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/get_search_categories", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findSearchCategories(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -286,7 +273,6 @@ public class MerchantController {
 
     /*store list is required on item create*/
     @RequestMapping(value = "/get_child_categories", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findChildCategories(@RequestBody RequestJsonDto requestJson) {
         try {
             List<CategoryEntity> categories = merchantService.findChildCategories(requestJson);
@@ -301,7 +287,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/get_stores_items", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findStoresItems(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -319,7 +304,6 @@ public class MerchantController {
 
 
     @RequestMapping(value = "/get_categories_items", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findCategoriesItems(@RequestBody RequestJsonDto requestJson) {
         try {
             PaginationDto items = merchantService.findCategoriesItems(requestJson);
@@ -335,7 +319,6 @@ public class MerchantController {
 
 
     @RequestMapping(value = "/get_items_detail", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getItemDetail(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -352,7 +335,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/get_merchants_categories", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findMerchantsCategories(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -370,7 +352,6 @@ public class MerchantController {
 
 
     @RequestMapping(value = "/get_parent_categories_items", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findParentCategoriesItems(@RequestBody RequestJsonDto requestJson) {
         try {
             List<CategoryEntity> categories = merchantService.findParentCategoriesItems(requestJson);
@@ -385,7 +366,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/get_merchant", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getMerchantById(@RequestHeader HttpHeaders headers) {
         try{
             HeaderDto headerDto = new HeaderDto();
@@ -403,7 +383,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/get_brands_parent_categories", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> findBrandsParentCategories(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -420,7 +399,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/change_status", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> changeStatus(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -436,7 +414,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/search_item", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getWebSearchItem(@RequestBody RequestJsonDto requestJsonDto) {
         try {
             PaginationDto paginationDto = merchantService.getWebItemSearch(requestJsonDto);
@@ -451,7 +428,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/get_orders", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getOrders(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try{
             HeaderDto headerDto = new HeaderDto();
@@ -477,7 +453,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/get_purchase_history", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getPurchaseHistory(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try{
             HeaderDto headerDto = new HeaderDto();
@@ -504,7 +479,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/add_items_images", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> addItemsImages(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try{
             HeaderDto headerDto = new HeaderDto();
@@ -521,7 +495,6 @@ public class MerchantController {
     }
 
     @RequestMapping(value = "/get_orders_items", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getOrdersItems(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();
@@ -541,7 +514,6 @@ public class MerchantController {
 
 
     @RequestMapping(value = "/get_invoices", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getInvoices(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();

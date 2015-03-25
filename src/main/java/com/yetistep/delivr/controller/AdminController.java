@@ -29,7 +29,7 @@ import java.util.Map;
  * Time: 11:54 AM
  * To change this template use File | Settings | File Templates.
  */
-@Controller
+@RestController
 @RequestMapping(value = "/admin")
 public class AdminController {
     @Autowired
@@ -51,7 +51,6 @@ public class AdminController {
     * save manager or accountant
     * */
     @RequestMapping(value = "/save_user", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> saveUser(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
 
         try {
@@ -69,7 +68,6 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/update_user", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> updateDeliveryBoy(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -87,7 +85,6 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/get_user", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getUser(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -105,7 +102,6 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/get_managers", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getManagers(@RequestBody RequestJsonDto requestJsonDto) {
         try {
             PaginationDto managers = managerService.findAllManagers(requestJsonDto);
@@ -121,7 +117,6 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/get_accountants", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getAccountants(@RequestBody RequestJsonDto requestJsonDto) {
         try {
             PaginationDto allAccountants = managerService.findAllAccountants(requestJsonDto);
@@ -137,7 +132,6 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/get_users", method = RequestMethod.GET)
-    @ResponseBody
     public ServiceResponse get_users() {
         List<UserEntity> users = new ArrayList<>();
 
@@ -155,7 +149,6 @@ public class AdminController {
 
     //@unused
     @RequestMapping(value = "/save_role", method = RequestMethod.POST)
-    @ResponseBody
     public ServiceResponse processRegistration() {
 
         try {
@@ -176,7 +169,6 @@ public class AdminController {
     }
 
     @RequestMapping(value="/get_preferences", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getPreferences(){
         try{
             List<PreferencesEntity> preferencesEntities = systemPropertyService.getAllPreferences();
@@ -195,7 +187,6 @@ public class AdminController {
     }
 
     @RequestMapping(value="/update_preferences", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> updatePreferences(@RequestBody RequestJsonDto requestJsonDto){
         try{
             systemPropertyService.updateSystemPreferences(requestJsonDto.getPreferences());

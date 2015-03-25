@@ -30,7 +30,7 @@ import java.util.List;
  * Time: 3:26 PM
  * To change this template use File | Settings | File Templates.
  */
-@Controller
+@RestController
 @RequestMapping(value = "accountant")
 public class AccountantController {
 
@@ -50,7 +50,6 @@ public class AccountantController {
 
 
     @RequestMapping(value = "/get_all_merchants", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getAllMerchants() {
         try{
             List<MerchantEntity> merchantEntities = merchantService.getAllMerchants();
@@ -65,7 +64,6 @@ public class AccountantController {
     }
 
     @RequestMapping(value = "/get_merchants", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getMerchants(@RequestBody RequestJsonDto requestJsonDto) {
         try{
             PaginationDto merchantEntities = merchantService.getMerchants(requestJsonDto);
@@ -81,7 +79,6 @@ public class AccountantController {
 
 
     @RequestMapping(value = "/get_dboy", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getDeliveryBoy(@RequestHeader HttpHeaders headers) {
         try {
             HeaderDto headerDto = new HeaderDto();
@@ -99,7 +96,6 @@ public class AccountantController {
     }
 
     @RequestMapping(value = "/get_dboys", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getAllDeliveryBoy(@RequestBody RequestJsonDto requestJsonDto) {
         try {
             PaginationDto deliveryBoyEntities = deliveryBoyService.findAllDeliverBoy(requestJsonDto);
@@ -115,7 +111,6 @@ public class AccountantController {
     }
 
     @RequestMapping(value = "/update_dboy_account", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> updateDboyAccount(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();
@@ -133,7 +128,6 @@ public class AccountantController {
     }
 
     @RequestMapping(value = "/dboy_ack_payment", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> dBoyAckPayment(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();
@@ -152,7 +146,6 @@ public class AccountantController {
 
 
     @RequestMapping(value = "/dboy_wallet_payment", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> dBoyWalletPayment(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();
@@ -170,7 +163,6 @@ public class AccountantController {
     }
 
     @RequestMapping(value = "/generate_invoice", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> getGenerateInvoice(@RequestHeader HttpHeaders headers) {
         try{
             HeaderDto headerDto = new HeaderDto();
@@ -189,7 +181,6 @@ public class AccountantController {
 
 
     @RequestMapping(value = "/send_bill_and_receipt", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> sendBillAndReceipt(@RequestHeader HttpHeaders headers) {
         try{
             HeaderDto headerDto = new HeaderDto();
@@ -207,7 +198,6 @@ public class AccountantController {
     }
 
     @RequestMapping(value = "/pay_dboy", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> payDboy(@RequestHeader HttpHeaders headers) {
         try{
             HeaderDto headerDto = new HeaderDto();
@@ -224,7 +214,6 @@ public class AccountantController {
     }
 
     @RequestMapping(value = "/pay_invoice", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<ServiceResponse> payInvoice(@RequestHeader HttpHeaders headers) {
         try{
             HeaderDto headerDto = new HeaderDto();

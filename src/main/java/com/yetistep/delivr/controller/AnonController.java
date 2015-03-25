@@ -150,7 +150,6 @@ public class AnonController {
     }
 
     @RequestMapping(value = "/referral/{referral_id}", method = RequestMethod.GET)
-    @ResponseBody
     public ModelAndView referral(@PathVariable String referral_id){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("referral");

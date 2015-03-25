@@ -175,31 +175,32 @@ public class CustomerServiceImpl implements CustomerService {
             customerDaoService.update(registeredCustomer);
 
         } else {
-            /* Check User Email */
-           if(customerEntity.getUser().getEmailAddress()!=null && !customerEntity.getUser().getEmailAddress().isEmpty()) {
-               if(userDaoService.checkIfEmailExists(customerEntity.getUser().getEmailAddress(), Role.ROLE_CUSTOMER.toInt()))
-                   throw new YSException("VLD026");
-           }
+           if(systemPropertyService.readPrefValue(PreferenceType.ENABLE_FREE_REGISTER) == "1"){
+               /* Check User Email */
+               if(customerEntity.getUser().getEmailAddress()!=null && !customerEntity.getUser().getEmailAddress().isEmpty()) {
+                   if(userDaoService.checkIfEmailExists(customerEntity.getUser().getEmailAddress(), Role.ROLE_CUSTOMER.toInt()))
+                       throw new YSException("VLD026");
+               }
 
-            validateUserDevice(customerEntity.getUser().getUserDevice());
-            customerEntity.setRewardsEarned(BigDecimal.ZERO);
-            customerEntity.setTotalOrderPlaced(0);
-            customerEntity.setTotalOrderDelivered(0);
+                validateUserDevice(customerEntity.getUser().getUserDevice());
+                customerEntity.setRewardsEarned(BigDecimal.ZERO);
+                customerEntity.setTotalOrderPlaced(0);
+                customerEntity.setTotalOrderDelivered(0);
 
-            RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_CUSTOMER);
-            customerEntity.getUser().setRole(userRole);
-            customerEntity.getUser().getUserDevice().setUser(customerEntity.getUser());
-            customerEntity.getUser().setCreatedDate(DateUtil.getCurrentTimestampSQL());
-            customerEntity.getUser().setLastActivityDate(null);
-//            if (customerEntity.getLatitude() != null) {
-//                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
-//                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());
-//            }
-            //if(registeredCustomer.getUser().getLastActivityDate().equals(null)) {
-            customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
-           // }
-            customerDaoService.save(customerEntity);
-
+                RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_CUSTOMER);
+                customerEntity.getUser().setRole(userRole);
+                customerEntity.getUser().getUserDevice().setUser(customerEntity.getUser());
+                customerEntity.getUser().setCreatedDate(DateUtil.getCurrentTimestampSQL());
+                customerEntity.getUser().setLastActivityDate(null);
+    //            if (customerEntity.getLatitude() != null) {
+    //                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
+    //                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());
+    //            }
+                //if(registeredCustomer.getUser().getLastActivityDate().equals(null)) {
+                customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
+               // }
+                customerDaoService.save(customerEntity);
+            }
         }
     }
 

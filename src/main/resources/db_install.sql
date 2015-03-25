@@ -163,6 +163,8 @@ INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('PROFIT_CHECK_FLAG', '0'
 /*##########################2015-03-11###########################*/
 INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('LOCATION_UPDATE_TIMEOUT_IN_MIN', '10');
 
+INSERT INTO `preferences` (`pref_key`, `value`) VALUES ('ENABLE_FREE_REGISTER', FALSE );
+
 ALTER TABLE `delivery_boys`
 CHANGE COLUMN `advance_amount` `advance_amount` DECIMAL(16,2) NULL DEFAULT NULL ,
 CHANGE COLUMN `available_amount` `available_amount` DECIMAL(16,2) NULL DEFAULT NULL ,

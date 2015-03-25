@@ -52,12 +52,34 @@
             }
         });
 
+        function calcUnpaid() {
+            var unpaid_total = 0;
+            $('.unpaid_amount').each(function(){
+                unpaid_total += parseFloat($(this).html());
+            });
+            $('.unpaid_total').html(unpaid_total.toFixed(2));
+        }
+
         $("#selectAllToPay").change(function() {
             var ischecked= $(this).is(':checked');
-            if(!ischecked)
+            if(!ischecked) {
                 $(".pay_row").prop("checked", false);
-            else
+                $('.paid_status').addClass('unpaid_amount');
+            } else {
                 $(".pay_row").prop("checked", true);
+                $('.paid_status').removeClass('unpaid_amount');
+            }
+            calcUnpaid();
+        });
+
+        $('.pay_row').live('change', function(){
+            var this_amount = $('.paid_status', $(this).parents('tr').eq(0));
+            if($(this).prop('checked')) {
+                this_amount.removeClass('unpaid_amount');
+            } else {
+                this_amount.addClass('unpaid_amount');
+            }
+            calcUnpaid();
         });
 
         $("#pay_button").click(function(){
@@ -115,24 +137,32 @@
                     <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Store Name & Address</th>
-                        <th>Generated Date</th>
+                        <th><div class="width_150">Store Name & Address</div></th>
+                        <th><div class="width_120">Generated Date</div></th>
                         <th>Invoice Amount</th>
-                        <th>From Date</th>
-                        <th>To Date</th>
-                        <th>Paid Date</th>
-                        <th>Invoice</th>
-                        <th>Select All<span style="margin-left: 10px;"><input type="checkbox" id="selectAllToPay"
+                        <th><div class="width_80">From Date</div></th>
+                        <th><div class="width_80">To Date</div></th>
+                        <th><div class="width_120">Paid Date</div></th>
+                        <th><div class="width_80">Invoice</div></th>
+                        <th class="no_sort">Select All<span style="margin-left: 10px;"><input type="checkbox" id="selectAllToPay"
                                                                               name="selectAllToPay"/></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     </tbody>
+                    <tfoot>
+                    <tr>
+                        <th colspan="3">Total</th>
+                        <th class="unpaid_total"></th>
+                        <th colspan="5">
+                            <button type="submit" id="pay_button" class="btn btn-primary clearfix action_button pull-right">
+                                <span class="pull-left">Pay Invoice</span>
+                                <span class="pull-right" id="payLoader"></span>
+                            </button>
+                        </th>
+                    </tr>
+                    </tfoot>
                 </table>
-                <button type="submit" id="pay_button" class="btn btn-primary clearfix action_button pull-right">
-                    <span class="pull-left">Pay Invoice</span>
-                    <span class="pull-right" id="payLoader"></span>
-                </button>
             </div>
         </div>
     </div>

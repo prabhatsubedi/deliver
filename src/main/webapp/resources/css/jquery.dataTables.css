@@ -386,7 +386,7 @@ table.dataTable thead td:active {
 .table-view table tfoot th {
     cursor: auto;
 }
-.table-view table tfoot th. button.btn {
+.table-view table tfoot th button.btn {
     margin: -10px;
 }
 .table-view table td, .table-view table th {

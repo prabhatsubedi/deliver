@@ -48,9 +48,9 @@
                             <th><div class="width_150">Customer Name</div></th>
                             <th><div class="width_200">Store Name & Address</div></th>
                             <th><div class="width_80">Order No</div></th>
-                            <th><div class="width_80">Order Date</div></th>
+                            <th><div class="width_120">Order Date</div></th>
                             <th><div class="width_80">Verification Code</div></th>
-                            <th>Total Bill Amount</th>
+                            <th><div class="width_100">Total Bill Amount</div></th>
                             <th><div class="width_150">Shopper</div></th>
                             <th><div class="width_80">Bill</div></th>
                             <th><div class="width_100">Status</div></th>
@@ -69,9 +69,9 @@
                         <th rowspan="2"><div class="width_150">Customer Name</div></th>
                         <th rowspan="2"><div class="width_200">Store Name & Address</div></th>
                         <th rowspan="2"><div class="width_80">Order No</div></th>
-                        <th rowspan="2"><div class="width_80">Order Date</div></th>
+                        <th rowspan="2"><div class="width_120">Order Date</div></th>
                         <th rowspan="2"><div class="width_80">Verification Code</div></th>
-                        <th rowspan="2">Total Bill Amount</th>
+                        <th rowspan="2"><div class="width_100">Total Bill Amount</div></th>
                         <th rowspan="2"><div class="width_150">Shopper</div></th>
                         <th rowspan="2"><div class="width_80">Bill</div></th>
                         <th colspan="2">Customer Feedback</th>
@@ -93,13 +93,13 @@
                     <thead>
                     <tr>
                         <th rowspan="2">SN</th>
-                        <th rowspan="2">Customer Name</th>
-                        <th rowspan="2">Store Name & Address</th>
-                        <th rowspan="2">Order No</th>
-                        <th rowspan="2">Order Date</th>
+                        <th rowspan="2"><div class="width_150">Customer Name</div></th>
+                        <th rowspan="2"><div class="width_200">Store Name & Address</div></th>
+                        <th rowspan="2"><div class="width_80">Order No</div></th>
+                        <th rowspan="2"><div class="width_120">Order Date</div></th>
                         <th rowspan="2"><div class="width_80">Verification Code</div></th>
-                        <th rowspan="2">Total Bill Amount</th>
-                        <th rowspan="2">Shopper</th>
+                        <th rowspan="2"><div class="width_100">Total Bill Amount</div></th>
+                        <th rowspan="2"><div class="width_150">Shopper</div></th>
                         <th rowspan="2"><div class="width_80">Bill</div></th>
                         <th colspan="2">Shopper Feedback</th>
                         <th rowspan="2">Cancel Reason</th>

@@ -143,18 +143,18 @@
                     <thead>
                     <tr>
                         <th rowspan="2">SN</th>
-                        <th rowspan="2">Date</th>
+                        <th rowspan="2"><div class="width_120">Date</div></th>
                         <th rowspan="2">Order No</th>
-                        <th rowspan="2">Customer Name</th>
-                        <th rowspan="2">Order Name</th>
+                        <th rowspan="2"><div class="width_150">Customer Name</div></th>
+                        <th rowspan="2"><div class="width_150">Order Name</div></th>
                         <th rowspan="2">Distance Traveled</th>
-                        <th rowspan="2">Delivery status</th>
+                        <th rowspan="2"><div class="width_80">Delivery status</div></th>
                         <th rowspan="2">Amount Earned</th>
                         <th rowspan="2">Time Assigned</th>
                         <th rowspan="2">Time Taken</th>
                         <th colspan="2">Feedback By Customer</th>
                         <th colspan="2">Feedback By Shopper</th>
-                        <th rowspan="2">Paid Date</th>
+                        <th rowspan="2"><div class="width_80">Paid Date</div></th>
                         <th rowspan="2" class="no_sort">Select All
                             <span style="margin-left: 10px;">
                                 <input type="checkbox" id="selectAllToPay" name="selectAllToPay"/>

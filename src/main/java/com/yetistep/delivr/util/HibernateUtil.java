@@ -84,16 +84,16 @@ public class HibernateUtil {
                                 criteria.addOrder(Order.desc(classString+"."+fieldString));
                             }
                         }else if(sortingInfo.length>2){
-                            /*Integer i = 0;
+                            Integer i = 0;
                             String prevModel = "";
                             Class parentClass = clazz;
+                            String aliasPath = criteria.getAlias();
                             for (String key: sortingInfo){
-                                if(i!=0 && i != (sortingInfo.length-1)){
-                                    criteria.createAlias(prevModel+'.'+sortingInfo[i], sortingInfo[i]);
-                                }
-                                if(i != (sortingInfo.length-1)) {
+                                if(i != (sortingInfo.length-1)){
+                                    criteria.createAlias(aliasPath+'.'+sortingInfo[i], sortingInfo[i]);
+
                                     if(prevModel != "") {
-                                        if(parentClass.getDeclaredField(prevModel).getType().toString().contains("com.yetistep.delivr")) {
+                                        if(parentClass.getDeclaredField(prevModel).getType().toString().contains("com.yetistep.delivr.model")) {
                                             parentClass =  parentClass.getDeclaredField(prevModel).getType();
                                         }else{
                                             String genericString = parentClass.getDeclaredField(prevModel).getGenericType().toString();
@@ -101,6 +101,7 @@ public class HibernateUtil {
                                         }
                                     }
                                     prevModel = sortingInfo[i];
+                                    aliasPath += "."+prevModel;
                                 }
                                 i++;
                             }
@@ -118,8 +119,8 @@ public class HibernateUtil {
                             if (page.getSortOrder().equalsIgnoreCase("asc")) {
                                 criteria.addOrder(Order.asc(prevModel+"."+sortingInfo[sortingInfo.length-1]));
                             } else if (page.getSortOrder().equalsIgnoreCase("desc"))  {
-                                criteria.addOrder(Order.desc("merchant.user."+prevModel+"."+sortingInfo[sortingInfo.length-1]));
-                            }*/
+                                criteria.addOrder(Order.desc(prevModel+"."+sortingInfo[sortingInfo.length-1]));
+                            }
                         }else{
                             String fieldString = sortingInfo[0];
                             clazz.getDeclaredField(fieldString);

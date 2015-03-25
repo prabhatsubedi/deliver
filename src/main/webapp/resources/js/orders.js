@@ -352,7 +352,7 @@ Order.courierBoyOrderHistory = function(params){
                     unpaid_total += earned_amount;
                 }
 
-                var row = [i+1, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', order.deliveryStatus, '<span class="' + (order.dBoyPaid == undefined ? "paid_status unpaid_amount" : '') + '">' + earned_amount + '</span>', order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:'', order.dBoyPaidDate, checkBox];
+                var row = [i+1, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', Main.ucfirst(order.deliveryStatus), '<span class="' + (order.dBoyPaid == undefined ? "paid_status unpaid_amount" : '') + '">' + earned_amount + '</span>', order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:'', order.dBoyPaidDate, checkBox];
                 tableData.push(row);
             }
             $('.unpaid_total').html(unpaid_total.toFixed(2));
@@ -394,21 +394,26 @@ Order.getInvoices = function(params){
 
         var responseRows = data.params.invoices.numberOfRows;
         var invoices = data.params.invoices.data;
+        var unpaid_total = 0;
 
         var tableData = [];
         for (var i = 0; i < invoices.length; i++) {
             var invoice = invoices[i];
+            var invoice_amount = invoice.amount;
             var link = '<a target="_blank" href="'+invoice.path+'">View Invoice</a>';
             if(invoice.invoicePaid != undefined){
-                var checkBox = '<input type="checkbox" checked data-id="'+invoice.id+'" class="pay_row">';
+                var checkBox = '';
+//                var checkBox = '<input type="checkbox" checked data-id="'+invoice.id+'" class="pay_row">';
             }else{
                 var checkBox = '<input type="checkbox" data-id="'+invoice.id+'" class="pay_row">';
+                unpaid_total += invoice_amount;
             }
 
-            var row = [invoice.id, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", invoice.generatedDate, invoice.amount, invoice.fromDate, invoice.toDate, invoice.paidDate!=undefined?invoice.paidDate:'', link, checkBox];
+            var row = [invoice.id, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", invoice.generatedDate, '<span class="' + (invoice.invoicePaid == undefined ? "paid_status unpaid_amount" : '') + '">' + invoice_amount + '</span>', invoice.fromDate, invoice.toDate, invoice.paidDate!=undefined?invoice.paidDate:'', link, checkBox];
             row = $.extend({}, row);
             tableData.push(row);
         }
+        $('.unpaid_total').html(unpaid_total.toFixed(2));
 
         var response = {};
         response.data = tableData;

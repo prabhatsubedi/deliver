@@ -4,13 +4,11 @@ import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.Page;
-import com.yetistep.delivr.model.RatingEntity;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.

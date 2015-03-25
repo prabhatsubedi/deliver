@@ -13,7 +13,6 @@ import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
 import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
 import com.yetistep.delivr.model.mobile.dto.SearchDto;
 import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
-import com.yetistep.delivr.schedular.ScheduleChanger;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
@@ -84,9 +83,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     StoresBrandDaoService storesBrandDaoService;
-
-    @Autowired
-    private ScheduleChanger scheduleChanger;
 
     @Autowired
     private CategoryDaoService categoryDaoService;
@@ -829,9 +825,9 @@ public class CustomerServiceImpl implements CustomerService {
         pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
         PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
 
-        Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
-        Integer timeOut = timeInSeconds.intValue();
-        scheduleChanger.scheduleTask(DateUtil.findDelayDifference(DateUtil.getCurrentTimestampSQL(), timeOut));
+//        Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
+//        Integer timeOut = timeInSeconds.intValue();
+//        scheduleChanger.scheduleTask(DateUtil.findDelayDifference(DateUtil.getCurrentTimestampSQL(), timeOut));
     }
 
     private  List<Integer> getIdOfDeliveryBoys(List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities){
@@ -1551,9 +1547,9 @@ public class CustomerServiceImpl implements CustomerService {
                 pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
                 PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
 
-                Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
-                Integer timeOut = timeInSeconds.intValue();
-                scheduleChanger.scheduleTask(DateUtil.findDelayDifference(DateUtil.getCurrentTimestampSQL(), timeOut));
+//                Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
+//                Integer timeOut = timeInSeconds.intValue();
+//                scheduleChanger.scheduleTask(DateUtil.findDelayDifference(DateUtil.getCurrentTimestampSQL(), timeOut));
             }else{
                 log.warn("Only order with Order Placed status can be reprocessed."+orderId);
             }
@@ -1565,13 +1561,15 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Boolean cancelOrder(OrderEntity order) throws Exception {
-        String CANCEL_REASON = "Unable to process your order";
-        OrderCancelEntity orderCancel = new OrderCancelEntity();
-        orderCancel.setJobOrderStatus(order.getOrderStatus());
-        orderCancel.setReason(CANCEL_REASON);
-        orderCancel.setOrder(order);
-        orderCancel.setCancelledDate(DateUtil.getCurrentTimestampSQL());
-        order.setOrderCancel(orderCancel);
+        if(order.getOrderCancel() == null){
+            String CANCEL_REASON = "Unable to process your order";
+            OrderCancelEntity orderCancel = new OrderCancelEntity();
+            orderCancel.setJobOrderStatus(order.getOrderStatus());
+            orderCancel.setReason(CANCEL_REASON);
+            orderCancel.setOrder(order);
+            orderCancel.setCancelledDate(DateUtil.getCurrentTimestampSQL());
+            order.setOrderCancel(orderCancel);
+        }
         order.setOrderStatus(JobOrderStatus.CANCELLED);
         order.setDeliveryStatus(DeliveryStatus.CANCELLED);
         boolean status = orderDaoService.update(order);

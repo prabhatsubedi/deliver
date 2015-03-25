@@ -175,10 +175,18 @@ public class OrderDaoServiceImpl implements OrderDaoService {
 
     @Override
     public List<OrderEntity> getElapsedOrders(Integer timeDuration) throws Exception {
-        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
-        criteria.add(Restrictions.eq("orderStatus", JobOrderStatus.ORDER_PLACED))
-        .add(Restrictions.le("orderDate", DateUtil.subtractSeconds(DateUtil.getCurrentTimestampSQL(), timeDuration)));
-        List<OrderEntity>  orderEntities = criteria.list();
+//        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
+//        criteria.add(Restrictions.eq("orderStatus", JobOrderStatus.ORDER_PLACED))
+//        .add(Restrictions.le("orderDate", DateUtil.subtractSeconds(DateUtil.getCurrentTimestampSQL(), timeDuration)));
+//        List<OrderEntity>  orderEntities = criteria.list();
+
+        String sql = "SELECT id, order_date as orderDate, reprocess_time as reprocessTime FROM orders " +
+                "WHERE order_status = :orderPlaced AND order_date <= :orderDate";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        query.setParameter("orderPlaced", JobOrderStatus.ORDER_PLACED.ordinal());
+        query.setParameter("orderDate", DateUtil.subtractSeconds(DateUtil.getCurrentTimestampSQL(), timeDuration));
+        query.setResultTransformer(Transformers.aliasToBean(OrderEntity.class));
+        List<OrderEntity> orderEntities =  query.list();
         return orderEntities;
     }
 

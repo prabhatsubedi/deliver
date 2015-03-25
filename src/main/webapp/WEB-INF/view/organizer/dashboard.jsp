@@ -129,7 +129,7 @@
                 </div>
                 <div class="col-sm-3 count_block_cont">
                     <div class="count_cont table_div">
-                        <span class="td_div remaining_balance">0</span> <span class="count_label td_div">Remaining Balance</span>
+                        <span class="td_div remaining_balance">0</span> <span class="count_label td_div">Remaining SMS Balance</span>
                     </div>
                 </div>
             </div>

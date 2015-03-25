@@ -1147,7 +1147,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
 
         }
-        callback.requestType = "GET";
+        bcallback.requestType = "GET";
         Main.request('/organizer/sms_credits', {}, bcallback);
 
         $('.toggle_map_view').click(function(){

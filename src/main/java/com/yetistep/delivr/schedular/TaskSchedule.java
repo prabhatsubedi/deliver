@@ -1,8 +1,13 @@
 package com.yetistep.delivr.schedular;
 
 import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
+import com.yetistep.delivr.dao.inf.OrderDaoService;
+import com.yetistep.delivr.enums.PreferenceType;
+import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.service.inf.AccountService;
+import com.yetistep.delivr.service.inf.CustomerService;
+import com.yetistep.delivr.service.inf.SystemPropertyService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,6 +37,15 @@ public class TaskSchedule {
 
     @Autowired
     DeliveryBoyDaoService deliveryBoyDaoService;
+
+    @Autowired
+    CustomerService customerService;
+
+    @Autowired
+    OrderDaoService orderDaoService;
+
+    @Autowired
+    SystemPropertyService systemPropertyService;
 
     /* second(0-59)  minute(0-59)   hour(0-23)  Day of month(1-31)  month(0-11 or JAN-DEC)  Day of week(1-7 or SUN-SAT) */
     @Scheduled(cron="0 0 0 * * ?")
@@ -65,6 +79,22 @@ public class TaskSchedule {
             }
         } else {
             log.info("no stores found. ");
+        }
+    }
+
+    @Scheduled(cron="0 * * * * ?")
+    @Transactional
+    public void processOrder() {
+        try {
+            log.info("Looking for elapsed orders");
+            Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
+            Integer timeOut = timeInSeconds.intValue();
+            List<OrderEntity> elapsedOrders = orderDaoService.getElapsedOrders(timeOut);
+            for (OrderEntity order : elapsedOrders) {
+                customerService.reprocessOrder(order.getId());
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
     }
 }

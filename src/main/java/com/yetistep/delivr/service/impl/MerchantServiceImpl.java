@@ -164,15 +164,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         merchantEntities = merchantDaoService.findAll(page);
-        for(MerchantEntity merchantEntity: merchantEntities){
-            /*
+        /*for(MerchantEntity merchantEntity: merchantEntities){
+            *//*
             * If password is empty, then our assumption is merchant has not clicked the verification link
             * and hence status is UNVERIFIED.
             * If password is not empty and commission percentage is null, our assumption is merchant has clicked
             * on the verification link but not activated by admin/manager. Hence status is VERIFIED only.
             * If password is not empty and commission percentage is not null, then verification status checked and
             * user status is updated based on verified status(true ==> ACTIVE, false ==> INACTIVE).
-            */
+            *//*
             if(merchantEntity.getUser().getPassword().isEmpty()){
                 if(merchantEntity.getUser().getVerifiedStatus() != null && merchantEntity.getCommissionPercentage()!=null){
                     if (merchantEntity.getUser().getVerifiedStatus()) {
@@ -193,14 +193,14 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 }
             }
             merchantEntity.getUser().setRole(null);
-        }
+        }*/
         List<MerchantEntity> objects = new ArrayList<>();
 
         String fields = "id,businessTitle,partnershipStatus,status,user";
 
         Map<String, String> assoc = new HashMap<>();
 
-        assoc.put("user", "id,fullName,emailAddress,mobileNumber");
+        assoc.put("user", "id,fullName,emailAddress,mobileNumber,status");
 
         for (MerchantEntity merchant:merchantEntities){
             objects.add((MerchantEntity) ReturnJsonUtil.getJsonObject(merchant, fields, assoc));

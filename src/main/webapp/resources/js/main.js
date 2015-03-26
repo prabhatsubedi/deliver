@@ -220,6 +220,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             TableTools.DEFAULTS.sSwfPath = Main.modifyURL("/resources/js/copy_csv_xls_pdf.swf");
             TableTools.DEFAULTS.aButtons = [ "csv" ];
         }
+
         $.extend($.fn.dataTable.defaults, {
             sDom: 'T<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
             columnDefs: [
@@ -230,6 +231,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                     aTargets: ['no_sort']
                 }
             ],
+            columns: dataFilter.columns,
             language: {
                 paginate: {
                     next: '&raquo;',
@@ -250,6 +252,12 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                     if(typeof(dataFilter.params) == "object") request = dataFilter.params;
                     page.pageNumber = parseInt((data.start/data.length) + 1);
                     page.pageSize = data.length;
+                    page.searchFor = data.search.value;
+                    var sortColName = data.columns[data.order[0].column].name;
+                    if(sortColName != "") {
+                        page.sortBy = sortColName;
+                        page.sortOrder = data.order[0].dir;
+                    }
                     request.page = page;
                     return JSON.stringify(request);
                 },

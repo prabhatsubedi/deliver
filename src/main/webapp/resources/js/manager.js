@@ -89,15 +89,16 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
                 var merchantId = merchant.id;
                 var userId = merchant.user.id;
-                var status = merchant.status;
+                var status = merchant.user.status;
+                if(!status) status = 'INACTIVE';
                 var link_activation = "", link_profile = "";
 
                 if (status == "VERIFIED" || status == "UNVERIFIED") {
                     link_activation = '<a href="#" data-id="' + merchantId + '"  data-status="' + status + '"  data-toggle="modal" data-target="#modal_activation">Activate</a>';
                 } else if (status == "ACTIVE") {
-                    link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '"  data-status="' + status + '" >Deactivate</a>';
+                    link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '"  data-status="INACTIVE" >Deactivate</a>';
                 } else if (status == "INACTIVE") {
-                    link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '" data-status="' + status + '" >Activate</a>';
+                    link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '" data-status="ACTIVE" >Activate</a>';
                 }
                 link_profile = '<a href="' + Main.modifyURL('/merchant/profile/' + merchantId) + '">Profile</a>';
                 var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
@@ -113,11 +114,22 @@ if (typeof(Manager) == "undefined") var Manager = {};
             response.recordsTotal = responseRows;
             response.recordsFiltered = responseRows;
 
+            Main.saveMerchants();
             return response;
 
         };
 
         dataFilter.url = "/accountant/get_merchants";
+        dataFilter.columns = [
+            { "name": "id" },
+            { "name": "businessTitle" },
+            { "name": "partnershipStatus" },
+            { "name": "user#fullName" },
+            { "name": "user#emailAddress" },
+            { "name": "user#mobileNumber" },
+            { "name": "user#status" },
+            { "name": "" }
+        ];
         Main.createDataTable("#merchants_table", dataFilter);
 
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
@@ -180,14 +192,14 @@ if (typeof(Manager) == "undefined") var Manager = {};
         $('#service_fee').rules('add', {required: true, number: true, min: 0});
 
         $('.trigger_activation').live('click', function () {
-            var statusCheck = $(this).attr('data-status') == 'INACTIVE';
+            var statusCheck = $(this).attr('data-status');
 
             var chk_confirm = confirm('Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?');
             if (!chk_confirm) return false;
 
             var data = {};
             data.id = $(this).attr('data-id');
-            data.verifiedStatus = "" + statusCheck;
+            data.status = "" + statusCheck;
             Manager.changeUserStatus(data);
         });
 

@@ -8,6 +8,7 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
+import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
@@ -42,6 +43,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Autowired
     CategoryDaoService categoryDaoService;
+
+    @Autowired
+    ItemDaoService itemDaoService;
 
     @Override
     public void saveMerchant(MerchantEntity merchant, HeaderDto headerDto) throws Exception {
@@ -805,6 +809,12 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         item.setCategory(category);
         item.setStoresBrand(storesBrand);
+
+        List<ItemEntity> itemExists =  itemDaoService.findItems(item.getStoresBrand().getId(), item.getCategory().getId(), item.getName());
+        if(itemExists.size()>0){
+            throw new YSException("ITM005");
+        }
+
         item.setCreatedDate(DateUtil.getCurrentTimestampSQL());
         item.setModifiedDate(DateUtil.getCurrentTimestampSQL());
 

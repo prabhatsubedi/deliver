@@ -15,6 +15,7 @@ public class PreferencesEntity {
     private Integer id;
     private String prefKey;
     private String value;
+    private PreferenceSectionEntity section;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,5 +44,14 @@ public class PreferencesEntity {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    public PreferenceSectionEntity getSection() {
+        return section;
+    }
+
+    public void setSection(PreferenceSectionEntity section) {
+        this.section = section;
     }
 }

@@ -33,6 +33,14 @@ public class PreferencesDaoServiceImpl implements PreferencesDaoService{
     }
 
     @Override
+    public List<PreferencesEntity> findAll(Integer groupId) throws Exception {
+
+        return (List<PreferencesEntity>) getCurrentSession().get(PreferencesEntity.class, groupId);
+    }
+
+
+
+    @Override
     public Boolean save(PreferencesEntity value) throws Exception {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }

@@ -208,6 +208,16 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
     }
 
     @Override
+    public Boolean checkIfLicenseNumberExists(String licenseNumber, Integer dBoyId) throws Exception {
+        String sql = "SELECT count(id) FROM delivery_boys WHERE license_number = :licenseNumber AND id !=:dBoyId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("licenseNumber", licenseNumber);
+        sqlQuery.setParameter("dBoyId", dBoyId);
+        BigInteger count = (BigInteger) sqlQuery.uniqueResult();
+        return (count.intValue() > 0) ? true : false;
+    }
+
+    @Override
     public Boolean updatePreviousDayDueAmount() throws Exception {
         String sql = "UPDATE delivery_boys SET previous_due = wallet_amount";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);

@@ -212,11 +212,33 @@ public class UserDaoServiceImpl implements UserDaoService {
     }
 
     @Override
+    public Boolean checkIfMobileNumberExists(String mobileNumber, Integer userId) throws Exception {
+        String sql = "SELECT count(u.id) FROM users u WHERE u.mobile_number = :mobileNumber && u.id !=:userId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("mobileNumber", mobileNumber);
+        sqlQuery.setParameter("userId", userId);
+        BigInteger count = (BigInteger) sqlQuery.uniqueResult();
+        return (count.intValue() > 0) ? true : false;
+    }
+
+    @Override
     public Boolean checkIfEmailExists(String emailAddress, Integer roleId) throws Exception {
         String sql = "SELECT count(id) FROM users WHERE email = :email AND role_id = :roleId";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("email", emailAddress);
         sqlQuery.setParameter("roleId", roleId);
+
+        BigInteger count = (BigInteger) sqlQuery.uniqueResult();
+        return (count.intValue() > 0) ? true : false;
+    }
+
+    @Override
+    public Boolean checkIfEmailExists(String emailAddress, Integer roleId, Integer userId) throws Exception {
+        String sql = "SELECT count(id) FROM users WHERE email = :email AND role_id = :roleId AND id!=:userId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("email", emailAddress);
+        sqlQuery.setParameter("roleId", roleId);
+        sqlQuery.setParameter("userId", userId);
 
         BigInteger count = (BigInteger) sqlQuery.uniqueResult();
         return (count.intValue() > 0) ? true : false;

@@ -11,6 +11,7 @@ import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -153,5 +154,14 @@ public class ItemDaoServiceImpl implements ItemDaoService{
         sqlQuery.setResultTransformer(Transformers.aliasToBean(ItemEntity.class));
         List<ItemEntity> itemEntities = sqlQuery.list();
         return itemEntities;
+    }
+
+    @Override
+    public List<ItemEntity> findItems(Integer storeId, Integer categoryId, String name) throws Exception{
+        List<ItemEntity> merchants  = new ArrayList<ItemEntity>();
+        Criteria criteria  = getCurrentSession().createCriteria(ItemEntity.class, "item");
+        criteria.add(Restrictions.and(Restrictions.eq("storesBrand.id", storeId), Restrictions.eq("category.id", categoryId), Restrictions.eq("name", name)));
+        merchants = criteria.list();
+        return merchants;
     }
 }

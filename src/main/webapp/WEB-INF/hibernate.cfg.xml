@@ -43,6 +43,8 @@
        <mapping class="com.yetistep.delivr.model.AddressEntity" />
        <mapping class="com.yetistep.delivr.model.ItemsOrderEntity" />
        <mapping class="com.yetistep.delivr.model.DBoyOrderHistoryEntity" />
+       <mapping class="com.yetistep.delivr.model.PreferenceTypeEntity" />
+       <mapping class="com.yetistep.delivr.model.PreferenceSectionEntity" />
        <mapping class="com.yetistep.delivr.model.PreferencesEntity"/>
        <mapping class="com.yetistep.delivr.model.DBoyAdvanceAmountEntity"/>
        <mapping class="com.yetistep.delivr.model.DBoySubmittedAmountEntity"/>

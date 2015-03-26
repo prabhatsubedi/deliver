@@ -184,3 +184,10 @@ CHANGE COLUMN `service_fee` `service_fee` DECIMAL(16,2) NULL DEFAULT NULL ;
 
 /*2015-03-18*/
 ALTER TABLE dboy_order_history DROP COLUMN dboy_paid;
+
+/*2015/3/26*/
+INSERT INTO preferences_types (group_name) VALUE ("General Setting"), ("Algorithm Setting");
+INSERT INTO preferences_sections (section, group_id) VALUES ("Currency & Tax", 1),("Reward Configuration", 1),("Rating Configuration", 1),("Support Configuration", 1),("Company Information", 1),("Version Configuration", 1),("Default Image", 1);
+INSERT INTO preferences_sections (section, group_id) VALUES ("Distance Selection", 2),("Time, Distance and Charge Configuration", 2),("Order Processing Configuration", 2),("Profit and Commission Configuration", 2);
+
+

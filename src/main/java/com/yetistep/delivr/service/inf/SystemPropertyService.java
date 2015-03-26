@@ -1,5 +1,6 @@
 package com.yetistep.delivr.service.inf;
 
+import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.PreferencesEntity;
 
@@ -16,6 +17,8 @@ public interface SystemPropertyService {
     public void init();
 
     public List<PreferencesEntity> getAllPreferences() throws Exception;
+
+    public List<PreferencesEntity> getAllPreferences(HeaderDto headerDto) throws Exception;
 
     public Boolean updateSystemPreferences(List<PreferencesEntity> preferencesEntities) throws Exception;
 

@@ -186,6 +186,28 @@ public class AdminController {
         }
     }
 
+
+    @RequestMapping(value="/get_group_preferences", method = RequestMethod.GET)
+    public ResponseEntity<ServiceResponse> getGroupPreferences(HttpHeaders headers){
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+
+            List<PreferencesEntity> preferencesEntities = systemPropertyService.getAllPreferences(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Preferences retrieved successfully");
+            serviceResponse.addParam("preferences", preferencesEntities);
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        }catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting system preferences", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
     @RequestMapping(value="/update_preferences", method = RequestMethod.POST)
     public ResponseEntity<ServiceResponse> updatePreferences(@RequestBody RequestJsonDto requestJsonDto){
         try{

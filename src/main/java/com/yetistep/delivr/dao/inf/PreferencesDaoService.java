@@ -15,5 +15,7 @@ import java.util.List;
 public interface PreferencesDaoService extends GenericDaoService<Integer, PreferencesEntity>{
     public PreferencesEntity find(String key) throws Exception;
 
+    public List<PreferencesEntity> findAll(Integer groupId) throws Exception;
+
     public void updatePreferences(List<PreferencesEntity> preferencesEntities) throws Exception;
 }

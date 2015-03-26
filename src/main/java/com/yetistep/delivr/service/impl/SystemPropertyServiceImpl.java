@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.dao.impl.PreferencesDaoServiceImpl;
 import com.yetistep.delivr.dao.inf.PreferencesDaoService;
+import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.PreferencesEntity;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
@@ -64,6 +65,13 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
     public List<PreferencesEntity> getAllPreferences() throws Exception {
         log.info("---------------------Fetching All Preferences--------------------------");
         List<PreferencesEntity> allPreferences = preferencesDaoService.findAll();
+        return allPreferences;
+    }
+
+    @Override
+    public List<PreferencesEntity> getAllPreferences(HeaderDto headerDto) throws Exception {
+        log.info("---------------------Fetching All Preferences--------------------------");
+        List<PreferencesEntity> allPreferences = preferencesDaoService.findAll(Integer.parseInt(headerDto.getId()));
         return allPreferences;
     }
 

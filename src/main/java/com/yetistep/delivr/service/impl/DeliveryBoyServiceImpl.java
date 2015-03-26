@@ -255,6 +255,21 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if (dBoyEntity == null) {
             throw new YSException("VLD011");
         }
+
+        if(userDaoService.checkIfEmailExists(deliveryBoyEntity.getUser().getEmailAddress(), Role.ROLE_DELIVERY_BOY.toInt(), dBoyEntity.getUser().getId())){
+            throw new YSException("VLD026");
+        }
+
+        if(userDaoService.checkIfMobileNumberExists(deliveryBoyEntity.getUser().getMobileNumber(), dBoyEntity.getUser().getId())){
+            throw new YSException("VLD027");
+        }
+
+        if(deliveryBoyDaoService.checkIfLicenseNumberExists(deliveryBoyEntity.getLicenseNumber(), dBoyEntity.getUser().getId())){
+            throw new YSException("VLD034");
+        }
+
+
+
         dBoyEntity.getUser().setUsername(headerDto.getUsername());
         if(headerDto.getPassword() != null)
         dBoyEntity.getUser().setPassword(GeneralUtil.encryptPassword(headerDto.getPassword()));

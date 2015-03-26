@@ -52,4 +52,8 @@ public interface UserDaoService extends GenericDaoService<Integer, UserEntity>{
 
     public Integer getTotalNumberAccountants()throws Exception;
 
+    public Boolean checkIfMobileNumberExists(String mobileNumber, Integer userId) throws Exception;
+
+    public Boolean checkIfEmailExists(String emailAddress, Integer roleId, Integer userId) throws Exception;
+
 }

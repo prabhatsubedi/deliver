@@ -1,6 +1,7 @@
 package com.yetistep.delivr.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -120,7 +121,7 @@ public class BigDecimalUtil {
 
     public static BigDecimal getUnitPrice(BigDecimal itemTotal, Integer quantity){
        if(itemTotal != null && quantity != null){
-            return itemTotal.divide(new BigDecimal(quantity));
+            return itemTotal.divide(new BigDecimal(quantity), RoundingMode.HALF_UP);
        }
        return null;
     }

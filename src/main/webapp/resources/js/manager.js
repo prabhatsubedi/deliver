@@ -89,15 +89,16 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
                 var merchantId = merchant.id;
                 var userId = merchant.user.id;
-                var status = merchant.status;
+                var status = merchant.user.status;
+                if(!status) status = 'INACTIVE';
                 var link_activation = "", link_profile = "";
 
                 if (status == "VERIFIED" || status == "UNVERIFIED") {
                     link_activation = '<a href="#" data-id="' + merchantId + '"  data-status="' + status + '"  data-toggle="modal" data-target="#modal_activation">Activate</a>';
                 } else if (status == "ACTIVE") {
-                    link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '"  data-status="' + status + '" >Deactivate</a>';
+                    link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '"  data-status="INACTIVE" >Deactivate</a>';
                 } else if (status == "INACTIVE") {
-                    link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '" data-status="' + status + '" >Activate</a>';
+                    link_activation = '<a class="trigger_activation" href="#" data-id="' + userId + '" data-status="ACTIVE" >Activate</a>';
                 }
                 link_profile = '<a href="' + Main.modifyURL('/merchant/profile/' + merchantId) + '">Profile</a>';
                 var action = '<div class="action_links">' + link_profile + link_activation + "</div>";
@@ -118,6 +119,16 @@ if (typeof(Manager) == "undefined") var Manager = {};
         };
 
         dataFilter.url = "/accountant/get_merchants";
+        dataFilter.columns = [
+            { "name": "id" },
+            { "name": "businessTitle" },
+            { "name": "partnershipStatus" },
+            { "name": "user#fullName" },
+            { "name": "user#emailAddress" },
+            { "name": "user#mobileNumber" },
+            { "name": "user#status" },
+            { "name": "" }
+        ];
         Main.createDataTable("#merchants_table", dataFilter);
 
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
@@ -180,14 +191,14 @@ if (typeof(Manager) == "undefined") var Manager = {};
         $('#service_fee').rules('add', {required: true, number: true, min: 0});
 
         $('.trigger_activation').live('click', function () {
-            var statusCheck = $(this).attr('data-status') == 'INACTIVE';
+            var statusCheck = $(this).attr('data-status');
 
             var chk_confirm = confirm('Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?');
             if (!chk_confirm) return false;
 
             var data = {};
             data.id = $(this).attr('data-id');
-            data.verifiedStatus = "" + statusCheck;
+            data.status = "" + statusCheck;
             Manager.changeUserStatus(data);
         });
 
@@ -399,7 +410,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
                 var brandId = brand.id;
                 var brandName = '<a href="' + Main.modifyURL('/merchant/item/list/' + brandId) + '" data-mid="' + brand.merchantId + '">' + brand.brandName + '</a>';
-                var merchantName = sessMerchants[brand.merchantId].businessTitle;
+                var merchantName = brand.merchant.user.fullName;
                 var viewStore = '<a href="' + Main.modifyURL('/merchant/store/view/' + brandId) + '" data-mid="' + brand.merchantId + '">View Store</a>';
                 var viewItem = '<a href="' + Main.modifyURL('/merchant/item/form/create/' + brandId) + '" data-mid="' + brand.merchantId + '">Add Item</a>';
                 var actions = '<div class="action_links">' + viewStore + viewItem + '</div>';
@@ -419,6 +430,16 @@ if (typeof(Manager) == "undefined") var Manager = {};
         };
 
         dataFilter.url = "/merchant/get_brands";
+        dataFilter.columns = [
+            { "name": "id" },
+            { "name": "brandName" },
+            { "name": "merchant#user#fullName" },
+            { "name": "" },
+            { "name": "featured" },
+            { "name": "priority" },
+            { "name": "status" },
+            { "name": "" }
+        ];
         Main.createDataTable("#stores_table", dataFilter);
 
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
@@ -504,6 +525,19 @@ if (typeof(Manager) == "undefined") var Manager = {};
         };
 
         dataFilter.url = "/accountant/get_dboys";
+        dataFilter.columns = [
+            { "name": "id" },
+            { "name": "user#fullName" },
+            { "name": "user#mobileNumber" },
+            { "name": "order#id" },
+            { "name": "order#orderName" },
+            { "name": "order#orderStatus" },
+            { "name": "order#assignedTime" },
+            { "name": "order#elapsedTime" },
+            { "name": "user#status" },
+            { "name": "availableAmount" },
+            { "name": "" }
+        ];
         Main.createDataTable("#courier_staff_table", dataFilter);
 
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();

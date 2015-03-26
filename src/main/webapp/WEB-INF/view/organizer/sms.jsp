@@ -48,7 +48,7 @@
                         <th><div class="width_150"> Customer Name </div></th>
                         <th><div class="width_150"> Phone No. </div></th>
                         <th>Total SMS sent</th>
-                        <th><div class="width_100"> Action </div></th>
+                        <th class="no_sort"><div class="width_100"> Action </div></th>
                     </tr>
                     </thead>
                     <tbody>

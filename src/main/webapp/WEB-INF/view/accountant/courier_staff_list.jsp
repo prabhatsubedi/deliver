@@ -77,7 +77,7 @@
                             <th>SN</th>
                             <th>Title</th>
                             <th>Amount</th>
-                            <th>Action</th>
+                            <th class="no_sort">Action</th>
                         </tr>
                         <tr>
                             <th>1</th>
@@ -137,7 +137,7 @@
                         <th rowspan="2">
                             <div class="width_100"> Current Balance</div>
                         </th>
-                        <th rowspan="2">
+                        <th rowspan="2" class="no_sort">
                             <div class="width_150"> Action</div>
                         </th>
                     </tr>

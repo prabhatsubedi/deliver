@@ -193,7 +193,7 @@ public class UserServiceImpl extends AbstractManager implements UserService{
         if( user == null){
             throw new YSException("VLD011");
         }
-        user.setVerifiedStatus(userEntity.getVerifiedStatus());
+        user.setStatus(userEntity.getStatus());
 
 
         userDaoService.update(user);

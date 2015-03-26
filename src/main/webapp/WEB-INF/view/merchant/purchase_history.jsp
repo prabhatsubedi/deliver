@@ -43,7 +43,7 @@
                             <th>Shopper</th>
                             <th>Bill</th>
                             <th>Items</th>
-                            <th>Action</th>
+                            <th class="no_sort">Action</th>
                         </tr>
                     </thead>
                     <tbody>

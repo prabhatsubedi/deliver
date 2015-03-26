@@ -53,7 +53,7 @@
                         <th> Featured </th>
                         <th> Priority </th>
                         <th> Status </th>
-                        <th><div class="width_150"> Action </div></th>
+                        <th class="no_sort"><div class="width_150"> Action </div></th>
                     </tr>
                     </thead>
                     <tbody>

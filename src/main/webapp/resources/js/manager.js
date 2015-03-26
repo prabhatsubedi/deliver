@@ -114,7 +114,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
             response.recordsTotal = responseRows;
             response.recordsFiltered = responseRows;
 
-            Main.saveMerchants();
             return response;
 
         };
@@ -411,7 +410,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
                 var brandId = brand.id;
                 var brandName = '<a href="' + Main.modifyURL('/merchant/item/list/' + brandId) + '" data-mid="' + brand.merchantId + '">' + brand.brandName + '</a>';
-                var merchantName = sessMerchants[brand.merchantId].businessTitle;
+                var merchantName = brand.merchant.user.fullName;
                 var viewStore = '<a href="' + Main.modifyURL('/merchant/store/view/' + brandId) + '" data-mid="' + brand.merchantId + '">View Store</a>';
                 var viewItem = '<a href="' + Main.modifyURL('/merchant/item/form/create/' + brandId) + '" data-mid="' + brand.merchantId + '">Add Item</a>';
                 var actions = '<div class="action_links">' + viewStore + viewItem + '</div>';
@@ -431,6 +430,16 @@ if (typeof(Manager) == "undefined") var Manager = {};
         };
 
         dataFilter.url = "/merchant/get_brands";
+        dataFilter.columns = [
+            { "name": "id" },
+            { "name": "brandName" },
+            { "name": "merchant#user#fullName" },
+            { "name": "" },
+            { "name": "featured" },
+            { "name": "priority" },
+            { "name": "status" },
+            { "name": "" }
+        ];
         Main.createDataTable("#stores_table", dataFilter);
 
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
@@ -516,6 +525,19 @@ if (typeof(Manager) == "undefined") var Manager = {};
         };
 
         dataFilter.url = "/accountant/get_dboys";
+        dataFilter.columns = [
+            { "name": "id" },
+            { "name": "user#fullName" },
+            { "name": "user#mobileNumber" },
+            { "name": "order#id" },
+            { "name": "order#orderName" },
+            { "name": "order#orderStatus" },
+            { "name": "order#assignedTime" },
+            { "name": "order#elapsedTime" },
+            { "name": "user#status" },
+            { "name": "availableAmount" },
+            { "name": "" }
+        ];
         Main.createDataTable("#courier_staff_table", dataFilter);
 
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();

@@ -54,7 +54,7 @@
                             <th><div class="width_150">Shopper</div></th>
                             <th><div class="width_80">Bill</div></th>
                             <th><div class="width_100">Status</div></th>
-                            <th><div class="width_100">Action</div></th>
+                            <th class="no_sort"><div class="width_100">Action</div></th>
                         </tr>
                     </thead>
                     <tbody>

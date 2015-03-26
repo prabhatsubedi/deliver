@@ -54,7 +54,7 @@
                                 <th><div class="width_150"> Email </div></th>
                                 <th><div class="width_100"> Phone </div></th>
                                 <th> Status </th>
-                                <th><div class="width_150"> Actions </div></th>
+                                <th class="no_sort"><div class="width_150"> Actions </div></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -72,7 +72,7 @@
                                 <th><div class="width_150"> Email </div></th>
                                 <th><div class="width_100"> Phone </div></th>
                                 <th> Status </th>
-                                <th><div class="width_150"> Actions </div></th>
+                                <th class="no_sort"><div class="width_150"> Actions </div></th>
                             </tr>
                             </thead>
                             <tbody>

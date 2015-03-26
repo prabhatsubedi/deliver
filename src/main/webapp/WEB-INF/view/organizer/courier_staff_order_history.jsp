@@ -142,7 +142,7 @@
                 <table id="courier_history_table">
                     <thead>
                     <tr>
-                        <th rowspan="2">SN</th>
+                        <th rowspan="2" class="no_sort">SN</th>
                         <th rowspan="2"><div class="width_120">Date</div></th>
                         <th rowspan="2">Order No</th>
                         <th rowspan="2"><div class="width_150">Customer Name</div></th>
@@ -151,7 +151,7 @@
                         <th rowspan="2"><div class="width_80">Delivery status</div></th>
                         <th rowspan="2">Amount Earned</th>
                         <th rowspan="2">Time Assigned</th>
-                        <th rowspan="2">Time Taken</th>
+                        <th rowspan="2" class="no_sort">Time Taken</th>
                         <th colspan="2">Feedback By Customer</th>
                         <th colspan="2">Feedback By Shopper</th>
                         <th rowspan="2"><div class="width_80">Paid Date</div></th>
@@ -162,10 +162,10 @@
                         </th>
                     </tr>
                         <tr>
-                            <th>Rating</th>
-                            <th>Comment</th>
-                            <th>Rating</th>
-                            <th>Comment</th>
+                            <th class="no_sort">Rating</th>
+                            <th class="no_sort">Comment</th>
+                            <th class="no_sort">Rating</th>
+                            <th class="no_sort">Comment</th>
                         </tr>
                     </thead>
                     <tbody>

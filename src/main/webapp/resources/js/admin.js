@@ -220,6 +220,14 @@ var Admin = function() {
             };
 
             dataFilter.url = "/admin/get_managers";
+            dataFilter.columns = [
+                { "name": "id" },
+                { "name": "fullName" },
+                { "name": "emailAddress" },
+                { "name": "mobileNumber" },
+                { "name": "verifiedStatus" },
+                { "name": "" }
+            ];
             Main.createDataTable("#manager_table", dataFilter);
 
             $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
@@ -263,6 +271,14 @@ var Admin = function() {
             };
 
             dataFilter.url = "/admin/get_accountants";
+            dataFilter.columns = [
+                { "name": "id" },
+                { "name": "fullName" },
+                { "name": "emailAddress" },
+                { "name": "mobileNumber" },
+                { "name": "verifiedStatus" },
+                { "name": "" }
+            ];
             Main.createDataTable("#accountant_table", dataFilter);
 
             $('.dataTables_length select').attr('data-width', 'auto').selectpicker();

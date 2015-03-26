@@ -52,7 +52,7 @@
                             <th><div class="width_80">Verification Code</div></th>
                             <th><div class="width_100">Total Bill Amount</div></th>
                             <th><div class="width_150">Shopper</div></th>
-                            <th><div class="width_80">Bill</div></th>
+                            <th class="no_sort"><div class="width_80">Bill</div></th>
                             <th><div class="width_100">Status</div></th>
                             <th class="no_sort"><div class="width_100">Action</div></th>
                         </tr>
@@ -73,15 +73,15 @@
                         <th rowspan="2"><div class="width_80">Verification Code</div></th>
                         <th rowspan="2"><div class="width_100">Total Bill Amount</div></th>
                         <th rowspan="2"><div class="width_150">Shopper</div></th>
-                        <th rowspan="2"><div class="width_80">Bill</div></th>
+                        <th rowspan="2" class="no_sort"><div class="width_80">Bill</div></th>
                         <th colspan="2">Customer Feedback</th>
                         <th colspan="2">Shopper Feedback</th>
                     </tr>
                     <tr>
-                        <th>Rating</th>
-                        <th><div class="width_150">Comment</div></th>
-                        <th>rating</th>
-                        <th><div class="width_150">Comment</div></th>
+                        <th class="no_sort">Rating</th>
+                        <th class="no_sort"><div class="width_150">Comment</div></th>
+                        <th class="no_sort">rating</th>
+                        <th class="no_sort"><div class="width_150">Comment</div></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -100,13 +100,13 @@
                         <th rowspan="2"><div class="width_80">Verification Code</div></th>
                         <th rowspan="2"><div class="width_100">Total Bill Amount</div></th>
                         <th rowspan="2"><div class="width_150">Shopper</div></th>
-                        <th rowspan="2"><div class="width_80">Bill</div></th>
+                        <th rowspan="2" class="no_sort"><div class="width_80">Bill</div></th>
                         <th colspan="2">Shopper Feedback</th>
-                        <th rowspan="2">Cancel Reason</th>
+                        <th rowspan="2" class="no_sort">Cancel Reason</th>
                     </tr>
                     <tr>
-                        <th>rating</th>
-                        <th>Comment</th>
+                        <th class="no_sort">rating</th>
+                        <th class="no_sort">Comment</th>
                     </tr>
                     </thead>
                     <tbody>

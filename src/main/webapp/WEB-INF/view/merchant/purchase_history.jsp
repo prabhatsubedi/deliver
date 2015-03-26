@@ -41,8 +41,8 @@
                             <th>Order Date</th>
                             <th>Total Bill Amount</th>
                             <th>Shopper</th>
-                            <th>Bill</th>
-                            <th>Items</th>
+                            <th class="no_sort">Bill</th>
+                            <th class="no_sort">Items</th>
                             <th class="no_sort">Action</th>
                         </tr>
                     </thead>

@@ -659,16 +659,19 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,featured,priority,store,merchant";
 
         Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("store", "id");
-        assoc.put("merchant", "id");
+        assoc.put("merchant", "id,user");
+        subAssoc.put("user", "fullName");
+
+
         if(storesBrands.size()>0){
             for (StoresBrandEntity storesBrandEntity: storesBrands) {
-                StoresBrandEntity brand = (StoresBrandEntity) ReturnJsonUtil.getJsonObject(storesBrandEntity, fields, assoc);
+                StoresBrandEntity brand = (StoresBrandEntity) ReturnJsonUtil.getJsonObject(storesBrandEntity, fields, assoc, subAssoc);
                 brand.setCountStore(brand.getStore().size());
                 brand.setMerchantId(brand.getMerchant().getId());
                 brand.setStore(null);
-                brand.setMerchant(null);
                 brandList.add (brand);
             }
         }
@@ -1297,9 +1300,18 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             itemCount = 4;
         }
 
-        List<CategoryEntity> childCategories =  merchantDaoService.findChildCategories(parentId, storeId);
-        List<CategoryEntity> finalCategories =  merchantDaoService.findFinalCategoryList(storeId);
+        Page page = requestJson.getPage();
 
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  merchantDaoService.getTotalNumberOfChildCategory(parentId, storeId);
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+        List<CategoryEntity> childCategories =  merchantDaoService.findChildCategories(parentId, storeId, page);
+        List<CategoryEntity> finalCategories =  merchantDaoService.findFinalCategoryList(storeId);
 
         //set child of each childCategory empty so that final categories can be added as the childs of the child category
         for (CategoryEntity childCategory: childCategories){

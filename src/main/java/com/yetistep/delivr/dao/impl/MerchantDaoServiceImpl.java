@@ -396,6 +396,30 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
 
     @Override
+    public List<CategoryEntity> findChildCategories(Integer parentId, Integer storeId, Page page) throws Exception {
+        List<CategoryEntity> categories = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
+        Criterion rest1 = Restrictions.and(Restrictions.isNull("storesBrand"), Restrictions.eq("parent.id", parentId));
+        Criterion rest2 = Restrictions.and(Restrictions.eq("storesBrand.id", storeId), Restrictions.eq("parent.id", parentId));
+        criteria.add(Restrictions.or(rest1, rest2));
+        HibernateUtil.fillPaginationCriteria(criteria, page, CategoryEntity.class);
+        categories = criteria.list();
+        return categories;
+    }
+
+
+    @Override
+    public Integer getTotalNumberOfChildCategory(Integer parentId, Integer storeId) throws Exception {
+        String sqQuery =    "SELECT COUNT(c.id) FROM categories c WHERE c.parent_id =:parentId AND c.brand_id =:storeId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("parentId", parentId);
+        query.setParameter("storeId", storeId);
+
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
+    }
+
+    @Override
     public void saveCategories(List<CategoryEntity> categories) throws Exception {
         Integer i = 0;
         for (CategoryEntity value: categories) {

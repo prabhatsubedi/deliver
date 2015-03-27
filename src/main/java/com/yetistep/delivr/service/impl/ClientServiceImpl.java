@@ -187,7 +187,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
              } else {
                  List<StoreEntity> storeEntities = storeDaoService.findStores(featureBrand.getId());
 
-                 sortStoreByLocation(lat, lon, storeEntities);
+                 if((lat!=null && !lat.isEmpty()) && (lon!=null && !lon.isEmpty())) //If and only if lat, lon exist of customer then sort
+                    sortStoreByLocation(lat, lon, storeEntities);
 
                  if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
                      featureBrand.setNearestStoreLocation(storeEntities.get(0).getStreet());

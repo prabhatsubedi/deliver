@@ -103,7 +103,7 @@ public class DeliveryBoyController extends AbstractManager{
 
     @RequestMapping(value = "/past_deliveries", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getCurrentDeliveries(@RequestHeader HttpHeaders headers, @RequestBody(required = false) Page page) {
+    public ResponseEntity<ServiceResponse> getPastDeliveries(@RequestHeader HttpHeaders headers, @RequestBody(required = false) Page page) {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID, GeneralUtil.ACCESS_TOKEN);

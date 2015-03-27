@@ -24,6 +24,7 @@ public class PastDeliveriesDto {
     private Timestamp jobStartedAt;
     private Timestamp completedAt;
     private Integer timeTaken;
+    private BigDecimal paidFromCOD;
 
     public Integer getId() {
         return id;
@@ -106,5 +107,13 @@ public class PastDeliveriesDto {
             Double minuteDiff = DateUtil.getMinDiff(getCompletedAt().getTime(), getJobStartedAt().getTime());
             this.timeTaken = minuteDiff.intValue();
         }
+    }
+
+    public BigDecimal getPaidFromCOD() {
+        return paidFromCOD;
+    }
+
+    public void setPaidFromCOD(BigDecimal paidFromCOD) {
+        this.paidFromCOD = paidFromCOD;
     }
 }

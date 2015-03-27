@@ -47,14 +47,11 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
 
     @Override
     public List<DeliveryBoyEntity> findAll(Page page) throws Exception {
-        //return (List<DeliveryBoyEntity>) getCurrentSession().createCriteria(DeliveryBoyEntity.class).list();
-
-        List<DeliveryBoyEntity> merchants  = new ArrayList<DeliveryBoyEntity>();
+        List<DeliveryBoyEntity> deliveryBoys  = new ArrayList<DeliveryBoyEntity>();
         Criteria criteria  = getCurrentSession().createCriteria(DeliveryBoyEntity.class);
-        criteria.addOrder(Order.desc("id"));
         HibernateUtil.fillPaginationCriteria(criteria, page, DeliveryBoyEntity.class);
-        merchants = criteria.list();
-        return merchants;
+        deliveryBoys = criteria.list();
+        return deliveryBoys;
     }
 
     @Override

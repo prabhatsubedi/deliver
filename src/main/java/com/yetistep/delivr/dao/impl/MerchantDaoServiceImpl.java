@@ -47,9 +47,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Override
     public List<MerchantEntity> findAll(Page page) throws Exception {
         List<MerchantEntity> merchants  = new ArrayList<MerchantEntity>();
-        Criteria criteria  = getCurrentSession().createCriteria(MerchantEntity.class, "merchant");
-        //Long totalNumberOfRows = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
-        //page.setTotalRows(totalNumberOfRows);
+        Criteria criteria  = getCurrentSession().createCriteria(MerchantEntity.class);
         HibernateUtil.fillPaginationCriteria(criteria, page, MerchantEntity.class);
         merchants = criteria.list();
         return merchants;
@@ -300,9 +298,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     @Override
     public List<StoresBrandEntity> findBrandListByMerchant(Integer merchantId, Page page) throws Exception {
         List<StoresBrandEntity> stores = new ArrayList<>();
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class, "brand");
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
         criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId))) ;
-        criteria.addOrder(Order.desc("id"));
         HibernateUtil.fillPaginationCriteria(criteria, page, StoresBrandEntity.class);
         stores = criteria.list();
         return stores;
@@ -363,7 +360,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     public List<StoresBrandEntity> findBrandList(Page page) throws Exception {
         List<StoresBrandEntity> stores = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
-        criteria.addOrder(Order.desc("id"));
         HibernateUtil.fillPaginationCriteria(criteria, page, StoresBrandEntity.class);
         stores = criteria.list();
         return stores;
@@ -679,7 +675,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<OrderEntity> orders = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.and(Restrictions.in("store.id", storeId)));
-        criteria.addOrder(Order.desc("id"));
         HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
         orders = criteria.list();
         return orders;
@@ -690,7 +685,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<OrderEntity> orders = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.and(Restrictions.in("store.id", storeId), Restrictions.eq("deliveryStatus", status)));
-        criteria.addOrder(Order.desc("id"));
         HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
         orders = criteria.list();
         return orders;
@@ -717,7 +711,6 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         purchaseOrders.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         purchaseOrders.add(JobOrderStatus.DELIVERED);
         criteria.add(Restrictions.and(Restrictions.in("store.id", storeId), Restrictions.in("orderStatus", purchaseOrders)));
-        criteria.addOrder(Order.desc("id"));
         HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
         orders = criteria.list();
         return orders;

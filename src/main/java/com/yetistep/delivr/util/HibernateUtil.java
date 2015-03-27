@@ -36,7 +36,7 @@ public class HibernateUtil {
                     criteria.setFirstResult(page.getValidRowNumber()).setMaxResults(page.getPageSize());
                 }
                 /*search implementation*/
-                if(page.getSearchFor() != null && page.getSearchFields() != null) {
+                if(page.getSearchFor() != null && page.getSearchFor() != "" && page.getSearchFields() != null) {
                     Iterator itS = page.getSearchFields().entrySet().iterator();
                     Criterion criterion = null;
                     Integer cnt = 0;
@@ -73,11 +73,18 @@ public class HibernateUtil {
                             String classString = sortingInfo[0];
                             String fieldString = sortingInfo[1];
 
-                            Class sortingClass =  clazz.getDeclaredField(classString).getType();
+                            Class sortingClass =  null;
+
+                            if(clazz.getDeclaredField(classString).getType().toString().contains("com.yetistep.delivr.model")) {
+                                sortingClass =  clazz.getDeclaredField(classString).getType();
+                            }else{
+                                String genericString = clazz.getDeclaredField(classString).getGenericType().toString();
+                                sortingClass = Class.forName(genericString.split("<")[1].split(">")[0]);
+                            }
 
                             sortingClass.getDeclaredField(fieldString);
 
-                            //criteria.createAlias(classString, classString);
+                            criteria.createAlias(classString, classString);
                             if (page.getSortOrder().equalsIgnoreCase("asc")) {
                                 criteria.addOrder(Order.asc(classString+"."+fieldString));
                             } else if (page.getSortOrder().equalsIgnoreCase("desc"))  {

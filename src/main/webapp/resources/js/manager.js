@@ -687,11 +687,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 }
                 var courierStaff = data.params.deliveryBoy;
                 console.log(courierStaff);
-                $(".due_amount").text(courierStaff.previousDue);
+                /*$(".due_amount").text(courierStaff.previousDue);
                 $("#due_amount_val").val(courierStaff.previousDue)
                 $(".available_balance").text(courierStaff.walletAmount + courierStaff.bankAmount);
                 $(".to_be_submitted").text(courierStaff.walletAmount);
-                $("#to_be_submitted_val").val(courierStaff.walletAmount);
+                $("#to_be_submitted_val").val(courierStaff.walletAmount);*/
+                Manager.fillDboyAccount(courierStaff);
                 $('#modal_account').data('cbname', courierStaff.user.fullName);
 
             }
@@ -731,11 +732,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         return;
                     }
                     var courierStaff = data.params.deliveryBoy;
-                    $(".due_amount").text(courierStaff.previousDue);
-                    $("#due_amount_val").val(courierStaff.previousDue)
-                    $(".available_balance").text(courierStaff.walletAmount + courierStaff.bankAmount);
-                    $(".to_be_submitted").text(courierStaff.walletAmount);
-                    $("#to_be_submitted_val").val(courierStaff.walletAmount);
+                    /*$(".due_amount").text((courierStaff.previousDue).toFixed(2));
+                    $("#due_amount_val").val((courierStaff.previousDue).toFixed(2))
+                    $(".available_balance").text((courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2));
+                    $(".to_be_submitted").text((courierStaff.walletAmount).toFixed(2));
+                    $("#to_be_submitted_val").val((courierStaff.walletAmount).toFixed(2));*/
+                    Manager.fillDboyAccount(courierStaff);
                     $('#advance_amount_val').val('');
                 }
                 callback.loaderDiv = "body";
@@ -769,11 +771,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         return;
                     }
                     var courierStaff = data.params.deliveryBoy;
-                    $(".due_amount").text(courierStaff.previousDue);
-                    $("#due_amount_val").val(courierStaff.previousDue)
-                    $(".available_balance").text(courierStaff.walletAmount + courierStaff.bankAmount);
-                    $(".to_be_submitted").text(courierStaff.walletAmount);
-                    $("#to_be_submitted_val").val(courierStaff.walletAmount);
+                    /*$(".due_amount").text((courierStaff.previousDue).toFixed(2));
+                    $("#due_amount_val").val((courierStaff.previousDue).toFixed(2))
+                    $(".available_balance").text((courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2));
+                    $(".to_be_submitted").text((courierStaff.walletAmount).toFixed(2));
+                    $("#to_be_submitted_val").val((courierStaff.walletAmount).toFixed(2));*/
+                    Manager.fillDboyAccount(courierStaff)
                     $(this).prop("checked", false);
                 }
                 callback.loaderDiv = "body";
@@ -807,11 +810,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         return;
                     }
                     var courierStaff = data.params.deliveryBoy;
-                    $(".due_amount").text(courierStaff.previousDue);
-                    $("#due_amount_val").val(courierStaff.previousDue)
+                    /*$(".due_amount").text(courierStaff.previousDue).toFixed(2));
+                    $("#due_amount_val").val(courierStaff.previousDue).toFixed(2))
                     $(".available_balance").text(courierStaff.walletAmount + courierStaff.bankAmount);
                     $(".to_be_submitted").text(courierStaff.walletAmount);
-                    $("#to_be_submitted_val").val(courierStaff.walletAmount);
+                    $("#to_be_submitted_val").val(courierStaff.walletAmount);*/
+                    Manager.fillDboyAccount(courierStaff);
                     $('#submit').prop("checked", false);
                 }
                 callback.loaderDiv = "body";
@@ -822,6 +826,15 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
             }
         });
+    }
+
+    Manager.fillDboyAccount = function(courierStaff){
+        $(".due_amount").text((courierStaff.previousDue).toFixed(2));
+        $("#due_amount_val").val((courierStaff.previousDue).toFixed(2))
+        $(".available_balance").text((courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2));
+        $(".to_be_submitted").text((courierStaff.walletAmount).toFixed(2));
+        $("#to_be_submitted_val").val((courierStaff.walletAmount).toFixed(2));
+
     }
 
     Manager.getCategories = function(){

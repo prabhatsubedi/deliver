@@ -4,6 +4,7 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.model.PreferenceTypeEntity;
 import com.yetistep.delivr.model.PreferencesEntity;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
@@ -188,18 +189,15 @@ public class AdminController {
 
 
     @RequestMapping(value="/get_group_preferences", method = RequestMethod.GET)
-    public ResponseEntity<ServiceResponse> getGroupPreferences(HttpHeaders headers){
+    public ResponseEntity<ServiceResponse> getGroupPreferences(@RequestHeader HttpHeaders headers){
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-
-            List<PreferencesEntity> preferencesEntities = systemPropertyService.getAllPreferences(headerDto);
+            PreferenceTypeEntity preferences = systemPropertyService.getAllPreferences(headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Preferences retrieved successfully");
-            serviceResponse.addParam("preferences", preferencesEntities);
-
+            serviceResponse.addParam("preferences", preferences);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
-
         }catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while getting system preferences", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);

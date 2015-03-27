@@ -1631,7 +1631,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         assoc.put("customer", "id,user");
         assoc.put("deliveryBoy", "id,averageRating,user");
-        assoc.put("dBoyOrderHistories", "id,amountEarned,orderAcceptedAt,orderCompletedAt,distanceTravelled");
+        assoc.put("dBoyOrderHistories", "id,amountEarned,jobStartedAt,orderCompletedAt,distanceTravelled");
         assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
 
         subAssoc.put("user", "id,fullName");

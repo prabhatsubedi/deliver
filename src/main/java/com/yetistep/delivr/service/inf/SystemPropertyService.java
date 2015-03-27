@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.PreferenceType;
+import com.yetistep.delivr.model.PreferenceTypeEntity;
 import com.yetistep.delivr.model.PreferencesEntity;
 
 import java.util.List;
@@ -18,9 +19,11 @@ public interface SystemPropertyService {
 
     public List<PreferencesEntity> getAllPreferences() throws Exception;
 
-    public List<PreferencesEntity> getAllPreferences(HeaderDto headerDto) throws Exception;
+    public PreferenceTypeEntity getAllPreferences(HeaderDto headerDto) throws Exception;
 
     public Boolean updateSystemPreferences(List<PreferencesEntity> preferencesEntities) throws Exception;
+
+    public Boolean updateSystemPreferencesType(PreferenceTypeEntity preferenceType) throws Exception;
 
     public String readPrefValue(PreferenceType preferenceType) throws Exception;
 

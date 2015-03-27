@@ -66,7 +66,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
         String code = MessageBundle.generateTokenString() + "_" + System.currentTimeMillis();
-
+        user.setStatus(Status.INACTIVE);
         user.setUsername(headerDto.getUsername());
         user.setPassword("");
         user.setVerificationCode(code);
@@ -280,7 +280,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<Integer> categories = requestJson.getCategories();
 
         MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
-        if((dbMerchant == null) || (!dbMerchant.getUser().getVerifiedStatus()))
+        if((dbMerchant == null) || (dbMerchant.getUser().getStatus() != Status.ACTIVE))
             throw new YSException("VLD011");
 
         checkUniqueBrand( storesBrand.getBrandName().trim());

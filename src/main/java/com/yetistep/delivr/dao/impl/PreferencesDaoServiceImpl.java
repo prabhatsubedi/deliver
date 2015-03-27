@@ -1,6 +1,8 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.PreferencesDaoService;
+import com.yetistep.delivr.model.PreferenceSectionEntity;
+import com.yetistep.delivr.model.PreferenceTypeEntity;
 import com.yetistep.delivr.model.PreferencesEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -33,9 +35,9 @@ public class PreferencesDaoServiceImpl implements PreferencesDaoService{
     }
 
     @Override
-    public List<PreferencesEntity> findAll(Integer groupId) throws Exception {
+    public PreferenceTypeEntity findAll(Integer groupId) throws Exception {
 
-        return (List<PreferencesEntity>) getCurrentSession().get(PreferencesEntity.class, groupId);
+        return (PreferenceTypeEntity) getCurrentSession().get(PreferenceTypeEntity.class, groupId);
     }
 
     @Override
@@ -51,6 +53,25 @@ public class PreferencesDaoServiceImpl implements PreferencesDaoService{
         query.executeUpdate();
 
         return true;
+    }
+
+
+    @Override
+    public void updatePreferenceType(PreferenceTypeEntity value) throws Exception {
+
+        for (PreferenceSectionEntity section: value.getSection()){
+
+            for (PreferencesEntity preference: section.getPreference()){
+
+                Query query = getCurrentSession().createQuery("update PreferencesEntity set value = :value, section_id =:sectionId where prefKey = :prefKey");
+                query.setParameter("value", preference.getValue());
+                query.setParameter("prefKey", preference.getPrefKey());
+                query.setParameter("sectionId", preference.getSection().getId());
+                query.executeUpdate();
+
+            }
+
+        }
     }
 
     @Override

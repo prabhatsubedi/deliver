@@ -15,6 +15,7 @@ public class PreferencesEntity {
     private Integer id;
     private String prefKey;
     private String value;
+    private String prefTitle;
     private PreferenceSectionEntity section;
 
     @Id
@@ -44,6 +45,15 @@ public class PreferencesEntity {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Column(name = "pref_title")
+    public String getPrefTitle() {
+        return prefTitle;
+    }
+
+    public void setPrefTitle(String prefTitle) {
+        this.prefTitle = prefTitle;
     }
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

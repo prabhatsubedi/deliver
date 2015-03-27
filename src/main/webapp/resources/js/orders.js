@@ -406,8 +406,8 @@ Order.courierBoyOrderHistory = function(params){
                 var orderHistoryLength =  order.dBoyOrderHistories.length;
                 var earned_amount = order.dBoyOrderHistories[orderHistoryLength-1].amountEarned;
                 var time_taken;
-                if(order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt != undefined && order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt != undefined){
-                    time_taken = ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].orderAcceptedAt)/1000/60).toFixed(0);
+                if(order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt != undefined && order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt != undefined){
+                    time_taken = ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt)/1000/60).toFixed(0);
                 }
 
                 if(order.dBoyPaid != undefined){

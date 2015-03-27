@@ -48,4 +48,6 @@ public interface CustomerDaoService extends GenericDaoService<Integer, CustomerE
     public Boolean saveTest(TestEntity testEntity) throws Exception;
 
     public TestEntity findTest(Integer id) throws Exception;
+
+    public Boolean updateTestEntity(Integer id) throws Exception;
 }

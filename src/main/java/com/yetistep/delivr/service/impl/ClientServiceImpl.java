@@ -5,6 +5,7 @@ import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.ActionType;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
@@ -72,6 +73,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     @Autowired
     OrderCancelDaoService orderCancelDaoService;
 
+    @Autowired
+    ActionLogDaoService actionLogDaoService;
+
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++ Getting all brands +++++++++++++++");
@@ -105,6 +109,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             lon = requestJsonDto.getGpsInfo().getLongitude();
         }
 
+
+        log.info(" Customer lat, lon ==== " + lat + " ::::: " + lon);
         /* Add Both Brand in One List */
         List<StoresBrandEntity> storeBrandResult = new ArrayList<>();
 
@@ -140,7 +146,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             List<StoreEntity> storeEntities = storeDaoService.findStores(ignoreList);
 
                  /* Extract Latitude and Longitude */
-            sortStoreByLocation(lat, lon, storeEntities);
+            if((lat!=null && !lat.isEmpty()) && (lon!=null && !lon.isEmpty())) //If and only if lat, lon exist of customer then sort
+                sortStoreByLocation(lat, lon, storeEntities);
 
 
             //Now Combine all brand in one list
@@ -242,7 +249,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     @Override
     public List<CategoryDto> getParentCategory(Integer brandId) throws Exception {
         log.info("++++++++++ Getting Parent Category and list cat id +++++++++++++");
-        /* Code to display category by skipping main parent code */
+        /* [Category Listing Without Main Root Category] */
 
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         CategoryDto categoryDto = null;
@@ -284,8 +291,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         }
         return categoryDtoList;
 
-        //TODO: Below Logic Removed temporary (It will revoked later) [Show with main parent category]
-
+        //TODO: Below Logic Removed temporary (It might be revoked later) [Show with main parent category]
+        /* [Category Listing With Root Category ] */
         /* Below Commented Code Used to showing with main parent category */
 
 //        log.info("++++++++++ Getting Parent Category and list cat id +++++++++++++");
@@ -1158,15 +1165,24 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     @Override
     public Boolean saveTimeStamp(TestEntity testEntity) throws Exception {
         log.info("++++++++++ Saving Test Entity +++++++++++++++");
-        if(testEntity.getId() == null) {
-            testEntity.setAnotherDate(DateUtil.getCurrentTimestampSQL());
-            customerDaoService.saveTest(testEntity);
-        } else {
-            TestEntity testEntity1 = customerDaoService.findTest(testEntity.getId());
-            testEntity1.setTest(testEntity.getTest());
-            testEntity1.setLastActivityDate(DateUtil.getCurrentTimestampSQL());
-            customerDaoService.saveTest(testEntity1);
-        }
+//        testEntity.setTest("First Test");
+//        testEntity.setAnotherDate(DateUtil.getCurrentTimestampSQL());
+//        customerDaoService.saveTest(testEntity);
+
+        /* Now Perform Rollback Operation */
+
+
+        ActionLogEntity actionLogEntity = new ActionLogEntity();
+        actionLogEntity.setActionType(ActionType.CREATE);
+        actionLogEntity.setDescription("hello");
+        actionLogDaoService.save(actionLogEntity);
+
+
+        //Now Update Test Entity
+        customerDaoService.updateTestEntity(3);
+
+
+
 
 
         return true;

@@ -259,6 +259,16 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
     public TestEntity findTest(Integer id) throws Exception {
         return (TestEntity) getCurrentSession().get(TestEntity.class, id);
     }
+
+    @Override
+    public Boolean updateTestEntity(Integer id) throws Exception {
+        String sql = "update timestamp_test set test1 = :test where id=:id";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("test", "This is Update");
+        sqlQuery.setParameter("id", id);
+        sqlQuery.executeUpdate();
+        return true;
+    }
 }
 
 

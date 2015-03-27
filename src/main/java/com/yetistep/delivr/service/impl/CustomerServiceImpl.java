@@ -39,7 +39,7 @@ import java.util.*;
 public class CustomerServiceImpl implements CustomerService {
     private static final Logger log = Logger.getLogger(CustomerServiceImpl.class);
     private static final Integer ON_TIME_DELIVERY = 0;
-    private static final Integer DELAYED_DELIVERY = -1;
+    private static final Integer DELAYED_DELIVERY = 1;
 
 
     @Autowired

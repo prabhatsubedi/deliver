@@ -85,6 +85,7 @@ public class HibernateUtil {
                             sortingClass.getDeclaredField(fieldString);
 
                             criteria.createAlias(classString, classString);
+
                             if (page.getSortOrder().equalsIgnoreCase("asc")) {
                                 criteria.addOrder(Order.asc(classString+"."+fieldString));
                             } else if (page.getSortOrder().equalsIgnoreCase("desc"))  {

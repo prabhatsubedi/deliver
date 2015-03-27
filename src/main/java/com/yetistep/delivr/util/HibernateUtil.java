@@ -84,7 +84,10 @@ public class HibernateUtil {
 
                             sortingClass.getDeclaredField(fieldString);
 
-                            criteria.createAlias(classString, classString);
+                            //if alias do not exists create it
+                            if(!criteria.toString().contains("Subcriteria("+classString+":"+classString+")")) {
+                                criteria.createAlias(classString, classString);
+                            }
 
                             if (page.getSortOrder().equalsIgnoreCase("asc")) {
                                 criteria.addOrder(Order.asc(classString+"."+fieldString));
@@ -98,7 +101,10 @@ public class HibernateUtil {
                             String aliasPath = criteria.getAlias();
                             for (String key: sortingInfo){
                                 if(i != (sortingInfo.length-1)){
-                                    criteria.createAlias(aliasPath+'.'+sortingInfo[i], sortingInfo[i]);
+                                    //if alias do not exists create it
+                                    if(!criteria.toString().contains("Subcriteria("+aliasPath+"."+sortingInfo[i]+":"+sortingInfo[i]+")")){
+                                        criteria.createAlias(aliasPath+"."+sortingInfo[i], sortingInfo[i]);
+                                    }
 
                                     if(prevModel != "") {
                                         if(parentClass.getDeclaredField(prevModel).getType().toString().contains("com.yetistep.delivr.model")) {

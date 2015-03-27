@@ -44,6 +44,14 @@ if (typeof(Manager) == "undefined") var Manager = {};
         };
 
         dataFilter.url = "/organizer/deactivated_customers";
+        dataFilter.columns = [
+            { "name": "id" },
+            { "name": "fullName" },
+            { "name": "emailAddress" },
+            { "name": "mobileNumber" },
+            { "name": "inactivatedCount" },
+            { "name": "" }
+        ];
         Main.createDataTable("#customers_table", dataFilter);
 
         $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
@@ -1367,6 +1375,13 @@ if (typeof(Manager) == "undefined") var Manager = {};
         };
 
         dataFilter.url = "/organizer/send_sms_customer_list";
+        dataFilter.columns = [
+            { "name": "id" },
+            { "name": "fullName" },
+            { "name": "mobileNo" },
+            { "name": "totalSmsSend" },
+            { "name": "" }
+        ];
         dataFilter.requestType = "GET";
         Main.createDataTable("#customers_table", dataFilter);
 

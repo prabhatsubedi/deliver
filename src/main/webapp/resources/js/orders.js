@@ -161,6 +161,52 @@ Order.getOrders = function(elemId, url, params){
 
     dataFilter.url = url;
     dataFilter.params = params;
+    if(elemId == '#order_inroute_table') {
+        dataFilter.columns = [
+            { "name": "" },
+            { "name": "customer#user#fullName" },
+            { "name": "store#name" },
+            { "name": "id" },
+            { "name": "orderDate" },
+            { "name": "orderVerificationCode" },
+            { "name": "grandTotal" },
+            { "name": "deliveryBoy#user#fullName" },
+            { "name": "" },
+            { "name": "orderStatus" },
+            { "name": "" }
+        ];
+    } else if(elemId == '#order_successful_table') {
+        dataFilter.columns = [
+            { "name": "" },
+            { "name": "customer#user#fullName" },
+            { "name": "store#name" },
+            { "name": "id" },
+            { "name": "orderDate" },
+            { "name": "orderVerificationCode" },
+            { "name": "grandTotal" },
+            { "name": "deliveryBoy#user#fullName" },
+            { "name": "" },
+            { "name": "" },
+            { "name": "" },
+            { "name": "" },
+            { "name": "" }
+        ];
+    } else {
+        dataFilter.columns = [
+            { "name": "" },
+            { "name": "customer#user#fullName" },
+            { "name": "store#name" },
+            { "name": "id" },
+            { "name": "orderDate" },
+            { "name": "orderVerificationCode" },
+            { "name": "grandTotal" },
+            { "name": "deliveryBoy#user#fullName" },
+            { "name": "" },
+            { "name": "" },
+            { "name": "" },
+            { "name": "" }
+        ];
+    }
     Main.createDataTable(elemId, dataFilter);
 
     $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
@@ -229,6 +275,18 @@ Order.getPurchaseHistory = function(){
     }
 
     dataFilter.url = "/merchant/get_purchase_history";
+    dataFilter.columns = [
+        { "name": "" },
+        { "name": "customer#user#fullName" },
+        { "name": "store#name" },
+        { "name": "id" },
+        { "name": "orderDate" },
+        { "name": "grandTotal" },
+        { "name": "deliveryBoy#user#fullName" },
+        { "name": "" },
+        { "name": "" },
+        { "name": "" }
+    ];
     dataFilter.headers = {merchantId:Main.getFromLocalStorage('mid')};
     Main.createDataTable("#purchase_history_table", dataFilter);
 
@@ -307,6 +365,14 @@ Order.getOrdersItems = function(){
     $("#order_items_modal").on('show.bs.modal', function(e){
 
         dataFilter.url = "/merchant/get_orders_items";
+        dataFilter.columns = [
+            { "name": "" },
+            { "name": "item.name" },
+            { "name": "quantity" },
+            { "name": "serviceCharge" },
+            { "name": "vat" },
+            { "name": "itemTotal" }
+        ];
         dataFilter.headers = {id:$(e.relatedTarget).data('id')};
         Main.createDataTable("#orders_items_table", dataFilter);
 
@@ -375,6 +441,24 @@ Order.courierBoyOrderHistory = function(params){
     headers.id = Main.getURLvalue(3);
 
     dataFilter.url = "/dboy/get_dBoy_order_history";
+    dataFilter.columns = [
+        { "name": "" },
+        { "name": "orderDate" },
+        { "name": "id" },
+        { "name": "customer#user#fullName" },
+        { "name": "orderName" },
+        { "name": "dBoyOrderHistories#distanceTravelled" },
+        { "name": "deliveryStatus" },
+        { "name": "dBoyOrderHistories#amountEarned" },
+        { "name": "assignedTime" },
+        { "name": "" },
+        { "name": "" },
+        { "name": "" },
+        { "name": "" },
+        { "name": "" },
+        { "name": "dBoyPaidDate" },
+        { "name": "" }
+    ];
     dataFilter.headers = headers;
     if(params != undefined)
         dataFilter.params = {dateRange: params};
@@ -426,6 +510,17 @@ Order.getInvoices = function(params){
     var header = {};
     header.merchantId = Main.getFromLocalStorage('mid');
     dataFilter.url = "/merchant/get_invoices";
+    dataFilter.columns = [
+        { "name": "id" },
+        { "name": "store#storesBrand#brandName" },
+        { "name": "generatedDate" },
+        { "name": "amount" },
+        { "name": "fromDate" },
+        { "name": "toDate" },
+        { "name": "paidDate" },
+        { "name": "" },
+        { "name": "" }
+    ];
     dataFilter.headers = header;
     if(params != undefined)
         dataFilter.params = {dateRange: params};

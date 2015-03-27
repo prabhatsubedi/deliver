@@ -90,6 +90,7 @@ public class DBoyOrderHistoryDaoServiceImpl implements DBoyOrderHistoryDaoServic
                 .add(Projections.property("orderCompletedAt"), "completedAt")
                 .add(Projections.property("jobStartedAt"), "jobStartedAt")
                 .add(Projections.property("amountEarned"), "amountEarned")
+                .add(Projections.property("o.grandTotal"), "paidFromCOD")
         ).setResultTransformer(Transformers.aliasToBean(PastDeliveriesDto.class));
         criteria.add(Restrictions.eq("deliveryBoy.id", deliveryBoyId))
                 .add(Restrictions.in("deliveryStatus", deliveryStatus))

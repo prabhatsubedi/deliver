@@ -269,6 +269,14 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         sqlQuery.executeUpdate();
         return true;
     }
+
+    @Override
+    public List<TestEntity> findTest() throws Exception {
+        String sql = "SELECT * FROM timestamp_test";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        List<TestEntity> testEntities = sqlQuery.list();
+        return testEntities;
+    }
 }
 
 

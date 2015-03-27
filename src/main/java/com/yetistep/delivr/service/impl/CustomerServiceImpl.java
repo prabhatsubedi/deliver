@@ -171,7 +171,7 @@ public class CustomerServiceImpl implements CustomerService {
             customerDaoService.update(registeredCustomer);
 
         } else {
-           if(systemPropertyService.readPrefValue(PreferenceType.ENABLE_FREE_REGISTER) == "1"){
+           if(systemPropertyService.readPrefValue(PreferenceType.ENABLE_FREE_REGISTER).equals("1")){
                /* Check User Email */
                if(customerEntity.getUser().getEmailAddress()!=null && !customerEntity.getUser().getEmailAddress().isEmpty()) {
                    if(userDaoService.checkIfEmailExists(customerEntity.getUser().getEmailAddress(), Role.ROLE_CUSTOMER.toInt()))
@@ -196,7 +196,9 @@ public class CustomerServiceImpl implements CustomerService {
                 customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
                // }
                 customerDaoService.save(customerEntity);
-            }
+            } else {
+                throw new YSException("SEC014");
+           }
         }
     }
 

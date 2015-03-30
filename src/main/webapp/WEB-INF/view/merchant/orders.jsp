@@ -76,6 +76,7 @@
                         <th rowspan="2" class="no_sort"><div class="width_80">Bill</div></th>
                         <th colspan="2">Customer Feedback</th>
                         <th colspan="2">Shopper Feedback</th>
+                        <th rowspan="2" class="no_sort"><div class="width_100">Action</div></th>
                     </tr>
                     <tr>
                         <th class="no_sort">Rating</th>
@@ -103,6 +104,7 @@
                         <th rowspan="2" class="no_sort"><div class="width_80">Bill</div></th>
                         <th colspan="2">Shopper Feedback</th>
                         <th rowspan="2" class="no_sort">Cancel Reason</th>
+                        <th rowspan="2" class="no_sort"><div class="width_100">Action</div></th>
                     </tr>
                     <tr>
                         <th class="no_sort">rating</th>

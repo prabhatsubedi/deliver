@@ -9,13 +9,13 @@ window.fbAsyncInit = function() {
     var hostName = window.location.hostname;
     //set the FB AppId
     if(hostName=="localhost")
-         apId = "938896656121323";
-    else if(hostName=="delivr.com" || hostName=="www.delivr.com")
+         apId = "979998678677787";
+    else if(hostName=="idelivr.com" || hostName=="www.idelivr.com")
         apId = "910783542265968";
     else if(hostName=="test.idelivr.com" || hostName=="www.test.idelivr.com")
-         apId = "942608175750171";
+         apId = "979999898677665";
     else if(hostName=="test1.idelivr.com" || hostName=="www.test1.idelivr.com")
-        apId = "969692939708361";
+        apId = "978523412158647";
 
 
     // init the FB JS SDK                                                            n

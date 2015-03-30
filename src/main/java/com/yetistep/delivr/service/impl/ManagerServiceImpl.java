@@ -327,7 +327,6 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         subAssoc.put("user", "id,fullName,status");
 
         List<StoresBrandEntity> brandEntities = new ArrayList<>();
-        List<StoresBrandEntity> brands = storesBrandDaoService.findFeaturedAndPriorityBrands();
         for (StoresBrandEntity brand: storesBrandEntities){
             brandEntities.add((StoresBrandEntity) ReturnJsonUtil.getJsonObject(brand, fields, assoc, subAssoc));
         }
@@ -357,7 +356,6 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         subAssoc.put("user", "id,fullName,status");
 
         List<StoresBrandEntity> brandEntities = new ArrayList<>();
-        List<StoresBrandEntity> brands = storesBrandDaoService.findFeaturedAndPriorityBrands();
         for (StoresBrandEntity brand: storesBrandEntities){
             brandEntities.add((StoresBrandEntity) ReturnJsonUtil.getJsonObject(brand, fields, assoc, subAssoc));
         }

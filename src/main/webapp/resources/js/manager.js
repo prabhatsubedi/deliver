@@ -280,7 +280,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
         }
         var callback = function (status, data) {
 
-            var sess_merchants = JSON.parse(Main.getFromLocalStorage('merchants'));
             var featured_count = 0;
             var prioritized_count = 0;
             if (data.success == true) {
@@ -345,7 +344,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         else
                             $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
 
-                        if(sess_merchants[storeBrand.merchant.id].status == "INACTIVE") $('.add_items', elem).addClass('disabled');
+                        if(storeBrand.merchant.user.status == "INACTIVE") $('.add_items', elem).addClass('disabled');
 
                         $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
                         store_list += elem.html();

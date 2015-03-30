@@ -66,7 +66,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
         String code = MessageBundle.generateTokenString() + "_" + System.currentTimeMillis();
-        user.setStatus(Status.INACTIVE);
+        user.setStatus(Status.UNVERIFIED);
         user.setUsername(headerDto.getUsername());
         user.setPassword("");
         user.setVerificationCode(code);
@@ -133,7 +133,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
               throw new YSException("MRC002");
 
         UserEntity user = dbMerchant.getUser();
-        user.setVerifiedStatus(true);
+        //user.setVerifiedStatus(true);
+        user.setStatus(Status.ACTIVE);
         dbMerchant.setCommissionPercentage(merchantEntity.getCommissionPercentage());
         dbMerchant.setPartnershipStatus(merchantEntity.getPartnershipStatus());
         dbMerchant.setServiceFee(merchantEntity.getServiceFee());
@@ -231,7 +232,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             * If password is not empty and commission percentage is not null, then verification status checked and
             * user status is updated based on verified status(true ==> ACTIVE, false ==> INACTIVE).
             */
-            if(merchantEntity.getUser().getPassword().isEmpty()){
+           /* if(merchantEntity.getUser().getPassword().isEmpty()){
                 if(merchantEntity.getUser().getVerifiedStatus() != null && merchantEntity.getCommissionPercentage()!=null){
                     if (merchantEntity.getUser().getVerifiedStatus()) {
                         merchantEntity.setStatus(Status.ACTIVE);
@@ -250,7 +251,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                     merchantEntity.setStatus(Status.INACTIVE);
                 }
             }
-            merchantEntity.getUser().setRole(null);
+            merchantEntity.getUser().setRole(null);*/
+
+            merchantEntity.setStatus(merchantEntity.getUser().getStatus());
         }
 
         List<MerchantEntity> objects = new ArrayList<>();
@@ -480,7 +483,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             * If password is not empty and commission percentage is not null, then verification status checked and
             * user status is updated based on verified status(true ==> ACTIVE, false ==> INACTIVE).
             */
-        if(merchantEntity.getUser().getPassword().isEmpty()){
+        /*if(merchantEntity.getUser().getPassword().isEmpty()){
             if(merchantEntity.getUser().getVerifiedStatus() != null  && merchantEntity.getCommissionPercentage()!=null){
                 if (merchantEntity.getUser().getVerifiedStatus()) {
                     merchantEntity.setStatus(Status.ACTIVE);
@@ -498,7 +501,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             }else{
                 merchantEntity.setStatus(Status.INACTIVE);
             }
-        }
+        }*/
 
 
         String fields = "id,partnershipStatus,commissionPercentage,serviceFee,website,agreementDetail,businessTitle,businessLogo,companyRegistrationNo,vatNo,panNo,status,user";
@@ -506,7 +509,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,addresses,status");
+        assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,addresses,verifiedStatus,status");
         subAssoc.put("addresses", "id,street,city,state,country,latitude,longitude");
 
         return ((MerchantEntity) ReturnJsonUtil.getJsonObject(merchantEntity, fields, assoc, subAssoc));

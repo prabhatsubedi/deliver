@@ -65,7 +65,7 @@ var merchantProfile;
                 $('.val_partnership').html(merchant.partnershipStatus ? 'Partner' : 'Non Partner');
                 $('.val_commission').html(merchant.commissionPercentage);
                 $('.val_service_fee').html(merchant.serviceFee);
-                $('.val_status').html(Main.ucfirst(merchant.status));
+                $('.val_status').html(Main.ucfirst(merchant.user.status));
 
                 $('#business_name').val(merchant.businessTitle);
                 $('#url').val(merchant.website);

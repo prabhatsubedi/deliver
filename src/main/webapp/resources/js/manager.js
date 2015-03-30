@@ -337,7 +337,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         var elem = $('.block_store_template').clone();
                         var storeBrand = stores[i];
                         $('.item_container', elem).attr('data-id', storeBrand.id);
-                        $('.item_container', elem).attr('data-mid', storeBrand.merchantId);
+                        $('.item_container', elem).attr('data-mid', storeBrand.merchant.id);
                         $('.item_image img', elem).attr('src', storeBrand.brandImage);
                         $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
                         if(prioritized == 'inactive')
@@ -345,7 +345,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         else
                             $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));
 
-                        if(sess_merchants[storeBrand.merchantId].status == "INACTIVE") $('.add_items', elem).addClass('disabled');
+                        if(sess_merchants[storeBrand.merchant.id].status == "INACTIVE") $('.add_items', elem).addClass('disabled');
 
                         $('.view_store', elem).attr('href', Main.modifyURL('/merchant/store/view/' + storeBrand.id));
                         store_list += elem.html();
@@ -366,7 +366,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         storeBrand.featured ? featured_count++ : prioritized_count++;
                         var elem = $('.block_store_template').clone();
                         $('.item_container', elem).attr('data-id', storeBrand.id);
-                        $('.item_container', elem).attr('data-mid', storeBrand.merchantId);
+                        $('.item_container', elem).attr('data-mid', storeBrand.merchant.id);
                         $('.item_image img', elem).attr('src', storeBrand.brandImage);
                         $('.item_name', elem).html('<a href="' + Main.modifyURL('/merchant/item/list/' + storeBrand.id) + '">' + storeBrand.brandName + '</a>');
                         $('.add_items', elem).attr('href', Main.modifyURL('/merchant/item/form/create/' + storeBrand.id));

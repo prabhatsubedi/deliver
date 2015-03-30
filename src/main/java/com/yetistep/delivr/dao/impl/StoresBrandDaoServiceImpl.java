@@ -118,7 +118,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
     @Override
     public List<StoresBrandEntity> findFeaturedAndPriorityBrands() throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(StoresBrandEntity.class);
-        criteria.setProjection(Projections.projectionList()
+        /*criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("brandName"), "brandName")
                 .add(Projections.property("brandLogo"), "brandLogo")
@@ -127,7 +127,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
                 .add(Projections.property("merchant.id"),"merchantId")
-        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
+        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));*/
         criteria.add(Restrictions.or(Restrictions.eq("featured", true), Restrictions.gt("priority", 0)))
                 .add(Restrictions.eq("status", Status.ACTIVE))
                     .addOrder(Order.asc("priority"));
@@ -149,7 +149,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
     @Override
     public List<StoresBrandEntity> findExceptFeaturedAndPriorityBrands(Page page) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(StoresBrandEntity.class);
-        criteria.setProjection(Projections.projectionList()
+        /*criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("brandName"), "brandName")
                 .add(Projections.property("brandLogo"), "brandLogo")
@@ -158,7 +158,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
                 .add(Projections.property("merchant.id"),"merchantId")
-        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
+        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));*/
         criteria.add(Restrictions.and(Restrictions.isNull("priority"),
                 Restrictions.or(Restrictions.eq("featured", false), Restrictions.isNull("featured"))))
                 .add(Restrictions.eq("status", Status.ACTIVE));
@@ -180,7 +180,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
     @Override
     public List<StoresBrandEntity> findInactiveStoreBrands(Page page) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(StoresBrandEntity.class);
-        criteria.setProjection(Projections.projectionList()
+        /*criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
                 .add(Projections.property("brandName"), "brandName")
                 .add(Projections.property("brandLogo"), "brandLogo")
@@ -189,7 +189,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
                 .add(Projections.property("merchant.id"),"merchantId")
-        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
+        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));*/
         criteria.add(Restrictions.eq("status", Status.INACTIVE));
         HibernateUtil.fillPaginationCriteria(criteria, page, StoresBrandEntity.class);
 

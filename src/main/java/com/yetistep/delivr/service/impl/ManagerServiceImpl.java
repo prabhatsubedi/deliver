@@ -288,7 +288,22 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
     @Override
     public List<StoresBrandEntity> findFeaturedAndPrioritizedStoreBrands() throws Exception {
-        return storesBrandDaoService.findFeaturedAndPriorityBrands();
+
+        String fields = "id,brandName,brandLogo,brandImage,brandUrl,featured,priority,merchant";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("merchant", "id,businessTitle,user");
+        subAssoc.put("user", "id,fullName,status");
+
+        List<StoresBrandEntity> brandEntities = new ArrayList<>();
+        List<StoresBrandEntity> brands = storesBrandDaoService.findFeaturedAndPriorityBrands();
+        for (StoresBrandEntity brand: brands){
+            brandEntities.add((StoresBrandEntity) ReturnJsonUtil.getJsonObject(brand, fields, assoc, subAssoc));
+        }
+        return brandEntities;
+
     }
 
     @Override
@@ -302,7 +317,22 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
             page.setTotalRows(totalRows);
         }
         storesBrandEntities = storesBrandDaoService.findExceptFeaturedAndPriorityBrands(page);
-        paginationDto.setData(storesBrandEntities);
+
+        String fields = "id,brandName,brandLogo,brandImage,brandUrl,featured,priority,merchant";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("merchant", "id,businessTitle,user");
+        subAssoc.put("user", "id,fullName,status");
+
+        List<StoresBrandEntity> brandEntities = new ArrayList<>();
+        List<StoresBrandEntity> brands = storesBrandDaoService.findFeaturedAndPriorityBrands();
+        for (StoresBrandEntity brand: storesBrandEntities){
+            brandEntities.add((StoresBrandEntity) ReturnJsonUtil.getJsonObject(brand, fields, assoc, subAssoc));
+        }
+
+        paginationDto.setData(brandEntities);
         return paginationDto;
     }
 
@@ -317,7 +347,22 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
             page.setTotalRows(totalRows);
         }
         storesBrandEntities = storesBrandDaoService.findInactiveStoreBrands(page);
-        paginationDto.setData(storesBrandEntities);
+
+        String fields = "id,brandName,brandLogo,brandImage,brandUrl,featured,priority,merchant";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("merchant", "id,businessTitle,user");
+        subAssoc.put("user", "id,fullName,status");
+
+        List<StoresBrandEntity> brandEntities = new ArrayList<>();
+        List<StoresBrandEntity> brands = storesBrandDaoService.findFeaturedAndPriorityBrands();
+        for (StoresBrandEntity brand: storesBrandEntities){
+            brandEntities.add((StoresBrandEntity) ReturnJsonUtil.getJsonObject(brand, fields, assoc, subAssoc));
+        }
+
+        paginationDto.setData(brandEntities);
         return paginationDto;
     }
 

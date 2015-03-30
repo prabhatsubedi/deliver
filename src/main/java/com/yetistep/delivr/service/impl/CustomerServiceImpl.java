@@ -1092,7 +1092,7 @@ public class CustomerServiceImpl implements CustomerService {
             lon = requestJsonDto.getGpsInfo().getLongitude();
         }
 
-
+        /* Item Search Algorithm Starts */
         List<ItemEntity> items = itemDaoService.searchItems(word);
         if(items !=null && items.size() > 0){
             searchResult = new ArrayList<>();
@@ -1147,7 +1147,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         Integer totalItemSize = searchResult==null ? 0 : searchResult.size();
 
-        //Now Goes To Search Brand
+        /* Store Search Algorithm Starts */
         Integer limit = 0;
         if(totalItemSize > CommonConstants.MAX_SEARCH_ITEM)
             limit = CommonConstants.MAX_SEARCH_STORE;
@@ -1215,6 +1215,7 @@ public class CustomerServiceImpl implements CustomerService {
                     tempBrand.setBrandUrl(storeEntity.getStoresBrand().getBrandUrl());
                     tempBrand.setItem(false);
                     tempBrand.setStoreStreet(storeEntity.getStreet());
+                    tempBrand.setMinOrderAmount(storeEntity.getStoresBrand().getMinOrderAmount());
                     searchResult.add(tempBrand);
                     storeList.add(tempBrand);
                 }

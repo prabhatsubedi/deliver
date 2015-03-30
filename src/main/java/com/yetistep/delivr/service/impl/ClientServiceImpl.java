@@ -167,6 +167,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                     tempBrand.setBrandUrl(storeEntity.getStoresBrand().getBrandUrl());
                     tempBrand.setFeatured(storeEntity.getStoresBrand().getFeatured());
                     tempBrand.setPriority(storeEntity.getStoresBrand().getPriority());
+                    tempBrand.setMinOrderAmount(storeEntity.getStoresBrand().getMinOrderAmount());
+
                     //Nearest Location
                     if(storeEntity.getStreet() !=null && !storeEntity.getStreet().isEmpty())
                         tempBrand.setNearestStoreLocation(storeEntity.getStreet());
@@ -767,6 +769,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
            store.setClosingTime(storesBrandEntity.getClosingTime());
            store.setBrandLogo(storesBrandEntity.getBrandLogo());
            store.setBrandImage(storesBrandEntity.getBrandImage());
+           store.setMinOrderAmount(storesBrandEntity.getMinOrderAmount());
            store.setOpenStatus(isOpen);
 
            if(lat!=null && lon != null){

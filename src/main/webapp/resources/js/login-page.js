@@ -1,5 +1,12 @@
 $(document).ready(function(){
 
+    if(window.location.hostname == "test.idelivr.com") {
+
+        $('#login_form #email').val('admin@yetistep.com');
+        $('#login_form #password').val('password');
+
+    }
+
     Image.dropZone('#logo_input');
 
     $.validator.addMethod("contactNumber", function(value, element, arg){

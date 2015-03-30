@@ -1552,6 +1552,7 @@ label.check_label .checkbox {
     border-top: 1px solid transparent !important;*/
     border: 1px solid #EEEEEE !important;
     box-shadow: none;
+    overflow: hidden;
 }
 /*Profile Css End*/
 

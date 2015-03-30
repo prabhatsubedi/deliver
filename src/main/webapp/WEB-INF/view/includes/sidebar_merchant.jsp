@@ -65,8 +65,13 @@
 
         var sess_merchants = JSON.parse(Main.getFromLocalStorage('merchants'));
         if(Main.getFromLocalStorage('mid') != undefined) {
-            $('.sidebar .merchant_name').html(sess_merchants[Main.getFromLocalStorage('mid')].businessTitle);
-            $(".sidebar .merchant_title").attr({"data-original-title": sess_merchants[Main.getFromLocalStorage('mid')].businessTitle});
+            if(!sess_merchants[Main.getFromLocalStorage('mid')]) {
+                Main.clearLocalStorage('merchants');
+                window.location.reload();
+            }
+            var btitile = sess_merchants[Main.getFromLocalStorage('mid')].businessTitle;
+            $('.sidebar .merchant_name').html(btitile);
+            $(".sidebar .merchant_title").attr({"data-original-title": btitile});
 
             Main.saveInLocalStorage('userStatus', sess_merchants[Main.getFromLocalStorage('mid')].status)
 

@@ -59,18 +59,20 @@ public class PreferencesDaoServiceImpl implements PreferencesDaoService{
     @Override
     public void updatePreferenceType(PreferenceTypeEntity value) throws Exception {
 
-        for (PreferenceSectionEntity section: value.getSection()){
+        if(value.getSection().size() > 0){
+            for (PreferenceSectionEntity section: value.getSection()){
+                if(section.getPreference().size() > 0){
+                    for (PreferencesEntity preference: section.getPreference()){
 
-            for (PreferencesEntity preference: section.getPreference()){
-
-                Query query = getCurrentSession().createQuery("update PreferencesEntity set value = :value, section_id =:sectionId where prefKey = :prefKey");
-                query.setParameter("value", preference.getValue());
-                query.setParameter("prefKey", preference.getPrefKey());
-                query.setParameter("sectionId", preference.getSection().getId());
-                query.executeUpdate();
-
+                        String sqQuery =    "update preferences set value = :value, section_id =:sectionId where pref_key = :prefKey";
+                        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+                        query.setParameter("value", preference.getValue());
+                        query.setParameter("prefKey", preference.getPrefKey());
+                        query.setParameter("sectionId", section.getId());
+                        query.executeUpdate();
+                    }
+                }
             }
-
         }
     }
 

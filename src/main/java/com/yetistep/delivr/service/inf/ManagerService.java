@@ -57,4 +57,6 @@ public interface ManagerService {
     public Boolean activateUser(HeaderDto headerDto) throws Exception;
 
     public Boolean sendPushMessageTo(List<NotifyTo> notifyToList, String message) throws Exception;
+
+    public void updateCategoryPriority(RequestJsonDto requestJsonDto) throws Exception;
 }

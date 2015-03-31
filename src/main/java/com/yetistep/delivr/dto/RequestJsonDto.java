@@ -33,6 +33,11 @@ public class RequestJsonDto {
     private List<StoresBrandEntity> storesBrandEntities;
     private List<Integer> categories;
     private List<PreferencesEntity> preferences;
+    private PreferenceTypeEntity preferenceType;
+
+    /*update categories*/
+    private List<CategoryEntity> categoryList;
+
 
     /*Add item properties*/
     private ItemEntity item;
@@ -139,6 +144,22 @@ public class RequestJsonDto {
 
     public void setPreferences(List<PreferencesEntity> preferences) {
         this.preferences = preferences;
+    }
+
+    public PreferenceTypeEntity getPreferenceType() {
+        return preferenceType;
+    }
+
+    public void setPreferenceType(PreferenceTypeEntity preferenceType) {
+        this.preferenceType = preferenceType;
+    }
+
+    public List<CategoryEntity> getCategoryList() {
+        return categoryList;
+    }
+
+    public void setCategoryList(List<CategoryEntity> categoryList) {
+        this.categoryList = categoryList;
     }
 
     public ItemEntity getItem() {

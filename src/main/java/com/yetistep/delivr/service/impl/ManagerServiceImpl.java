@@ -718,4 +718,14 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         pushNotification.setNotifyTo(notifyTo);
         PushNotificationUtil.sendNotification(pushNotification, family);
     }
+
+
+    @Override
+    public void updateCategoryPriority(RequestJsonDto requestJsonDto) throws Exception{
+         List<CategoryEntity> categoryEntities = requestJsonDto.getCategoryList();
+        for (CategoryEntity categoryEntity: categoryEntities){
+            categoryDaoService.update(categoryEntity);
+        }
+    }
+
 }

@@ -222,6 +222,22 @@ public class AdminController {
         }
     }
 
+    @RequestMapping(value="/update_preferences_type", method = RequestMethod.POST)
+    public ResponseEntity<ServiceResponse> updatePreferencesType(@RequestBody RequestJsonDto requestJsonDto){
+        try{
+            systemPropertyService.updateSystemPreferencesType(requestJsonDto.getPreferenceType());
+
+            ServiceResponse serviceResponse = new ServiceResponse("Preferences updated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        }catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while updating system preferences", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
 
 }
 

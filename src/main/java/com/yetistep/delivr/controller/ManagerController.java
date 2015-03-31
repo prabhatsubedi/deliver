@@ -588,4 +588,22 @@ public class ManagerController {
     }
 
 
+    @RequestMapping(value = "/change_category_priority", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> changeCategoryPriority(@RequestBody RequestJsonDto requestJsonDto) {
+        try {
+
+            managerService.updateCategoryPriority(requestJsonDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Category priority has been changes successfully");
+
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred changing priority", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
+
 }

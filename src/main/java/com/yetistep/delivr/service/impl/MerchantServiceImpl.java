@@ -201,11 +201,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }*/
         List<MerchantEntity> objects = new ArrayList<>();
 
-        String fields = "id,businessTitle,partnershipStatus,status,user";
+        String fields = "id,businessTitle,partnershipStatus,user";
 
         Map<String, String> assoc = new HashMap<>();
 
-        assoc.put("user", "id,fullName,emailAddress,mobileNumber,status");
+        assoc.put("user", "id,fullName,emailAddress,mobileNumber,verifiedStatus,status");
 
         for (MerchantEntity merchant:merchantEntities){
             objects.add((MerchantEntity) ReturnJsonUtil.getJsonObject(merchant, fields, assoc));
@@ -1263,7 +1263,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         assoc.put("category", "id,name,child");
         assoc.put("storesBrand", "id,brandName");
-        assoc.put("itemsImage", "url");
+        assoc.put("itemsImage", "id,url");
         assoc.put("itemsStores", "id,store");
         assoc.put("attributesTypes", "id,type,multiSelect,itemsAttribute");
 

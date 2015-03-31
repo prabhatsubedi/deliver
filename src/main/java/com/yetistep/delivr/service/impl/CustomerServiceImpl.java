@@ -696,6 +696,11 @@ public class CustomerServiceImpl implements CustomerService {
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
         Long customerId = requestJson.getOrdersCustomerId();
         Integer addressId = requestJson.getOrdersAddressId();
+        PaymentMode paymentMode = PaymentMode.CASH_ON_DELIVERY;
+        if(requestJson.getPaymentMode() != null){
+            paymentMode = requestJson.getPaymentMode();
+        }
+
         CustomerEntity customer = customerDaoService.find(customerId);
         AddressEntity address = addressDaoService.getMyAddress(addressId);
         if(address == null)
@@ -807,6 +812,19 @@ public class CustomerServiceImpl implements CustomerService {
         courierTransaction.setPaidToCourier(null);
         courierTransaction.setProfit(null);
         order.setCourierTransaction(courierTransaction);
+
+        order.setPaymentMode(paymentMode);
+        if(paymentMode.equals(PaymentMode.WALLET)){
+            if(BigDecimalUtil.isLessThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+                throw new YSException("ORD020");
+            }
+            order.setPaidFromWallet(order.getGrandTotal());
+            order.setPaidFromCOD(BigDecimal.ZERO);
+            order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(order.getGrandTotal()));
+        }else{
+            order.setPaidFromWallet(BigDecimal.ZERO);
+            order.setPaidFromCOD(order.getGrandTotal());
+        }
 
         if(order.getCustomer().getTotalOrderPlaced() == null){
             order.getCustomer().setTotalOrderPlaced(1);

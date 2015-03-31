@@ -219,7 +219,7 @@ public class CustomerEntity implements Serializable {
         this.referredBy = referredBy;
     }
 
-    @Column(name ="fb_token", columnDefinition="LONGTEXT")
+    @Column(name ="fb_token", columnDefinition="LONGTEXT NULL DEFAULT NULL")
     @JsonProperty
     public String getFbToken() {
         return fbToken;

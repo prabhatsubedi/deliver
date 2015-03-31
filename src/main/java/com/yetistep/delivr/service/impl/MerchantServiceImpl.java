@@ -1030,7 +1030,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             log.info("Uploading item images to S3 Bucket ");
             String dir = MessageBundle.separateString("/", "Merchant_"+storesBrand.getMerchant().getId(), "Brand_"+ storesBrand.getId(), "item" + dbItem.getId());
             boolean isLocal = MessageBundle.isLocalHost();
-            if(dbImages.size() > 0) {
                 int i = 0;
                 for(ItemsImageEntity image: dbImages){
                     image.setItem(dbItem);
@@ -1040,22 +1039,24 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                                 AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(dbItemsImagesUrlMap.get(image.getId())));
                             }
 
-                            String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();
-                            String s3PathImage = GeneralUtil.saveImageToBucket(image.getUrl(), itemImageUrl, dir, true);
-                            image.setUrl(s3PathImage);
-                            image.setItem(dbItem);
-                            i++;
-
+                            if(image.getUrl() != null){
+                                String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();
+                                String s3PathImage = GeneralUtil.saveImageToBucket(image.getUrl(), itemImageUrl, dir, true);
+                                image.setUrl(s3PathImage);
+                                image.setItem(dbItem);
+                                i++;
+                            }
                         }else if(image.getId() == null){
-                            String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();
-                            String s3PathImage = GeneralUtil.saveImageToBucket(image.getUrl(), itemImageUrl, dir, true);
-                            image.setUrl(s3PathImage);
-                            image.setItem(dbItem);
-                            i++;
+                            if(image.getUrl()!=null){
+                                String itemImageUrl = "itemsImage"+ i + (isLocal ? "_tmp_" : "_") + item.getId()+System.currentTimeMillis();
+                                String s3PathImage = GeneralUtil.saveImageToBucket(image.getUrl(), itemImageUrl, dir, true);
+                                image.setUrl(s3PathImage);
+                                image.setItem(dbItem);
+                                i++;
+                            }
                         }
                 }
                 merchantDaoService.updateItemImages(dbImages);
-            }
         }
 
     }

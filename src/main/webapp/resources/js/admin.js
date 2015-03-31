@@ -8,94 +8,87 @@ var Admin = function() {
 
     return {
 
-        preferences: undefined,
-        loadSettings : function(preferences){
+        secSettings: undefined,
+        secId: undefined,
+        loadSettings : function(secSettings){
 
             var callback = function(status, data) {
 
-                console.log(data);
-                var preferences = Admin.preferences = data.params.preferences;
-                var form_fields = '';
-                for(var i = 0; i < preferences.length; i++) {
-                    var pref = preferences[i];
-                    var elem = $('.form_field_template').clone();
-                    var label = pref.prefKey;
-                    var arr_label = label.split('_');
-                    var new_arr_label = [];
-                    for(var j in arr_label) {
-                        new_arr_label.push(Main.ucfirst(arr_label[j]));
-                    }
-                    $('label', elem).attr('for', pref.prefKey).html(new_arr_label.join(' '));
-                    $('.info_display', elem).html(pref.value);
-                    $('input.form-control', elem).attr({id: pref.prefKey, name: pref.prefKey, value: pref.value});
-                    form_fields += elem.html();
-                }
-                $('.display_settings').html(form_fields);
+                Admin.secSettings = data;
 
-/*                $('#currency').val(settings.CURRENCY);
-                $('#system_vat').val(settings.DELIVERY_FEE_VAT);
-                $('#signup_reward').val(settings.abc);
-                $('#reward_first_user').val(settings.abc);
-                $('#reward_second_user').val(settings.abc);
-                $('#referral_limit').val(settings.abc);
-                $('#admin_email').val(settings.abc);
-                $('#account_email').val(settings.abc);
-                $('#support_email').val(settings.abc);
-                $('#company_name').val(settings.abc);
-                $('#address').val(settings.abc);
-                $('#contact_no').val(settings.abc);
-                $('#email').val(settings.abc);
-                $('#url').val(settings.abc);
-                $('#vat_no').val(settings.MERCHANT_VAT);
-                $('#reg_no').val(settings.abc);
-                $('#support_phone').val(settings.abc);
-                $('#web_version').val(settings.abc);
-                $('#android_version').val(settings.abc);*/
+                var form_sections = '';
+                var sections = data.params.preferences.section;
+                for(var j = 0; j < sections.length; j++) {
+
+                    var section = sections[j];
+                    var sectionName = section.section;
+                    var preferences = section.preference;
+                    if(preferences.length <= 0) continue;
+                    var form_fields = '';
+                    for(var i = 0; i < preferences.length; i++) {
+                        var pref = preferences[i];
+                        var elem = $('.form_field_template').clone();
+                        $('label', elem).attr('for', pref.prefKey).html(pref.prefTitle);
+                        $('.info_display', elem).html(pref.value);
+                        $('input.form-control', elem).attr({id: pref.prefKey, name: pref.prefKey, value: pref.value});
+                        form_fields += elem.html();
+                    }
+                    var elem_section = $('.form_section_template').clone();
+                    $('.form_head .section_title', elem_section).html(sectionName);
+                    $('.form_content .row', elem_section).html(form_fields);
+                    form_sections += elem_section.html();
+
+                }
+                $('.display_settings').html(form_sections);
 
             };
-            if(preferences == undefined) {
+            if(typeof secSettings != 'object') {
                 callback.requestType = "GET";
                 callback.loaderDiv = "body";
-                Main.request('/admin/get_preferences', {}, callback);
+                Admin.secId = secSettings;
+                Main.request('/admin/get_group_preferences', {}, callback, {id: secSettings});
             } else {
-                callback('', {params: {preferences: preferences}});
+                callback('', secSettings);
             }
 
         },
         loadEditSettings: function() {
 
-            $('.edit_btn').click(function () {
-                $(".editable").removeClass('hidden');
-                $(".none_editable").addClass('hidden');
+            $('.edit_btn').live('click', function () {
+                var parent = $(this).parents('.form_group').eq(0);
+                $(".editable", parent).removeClass('hidden');
+                $(".none_editable", parent).addClass('hidden');
             });
 
-            $('.cancel_btn').click(function () {
-                $(".none_editable").removeClass('hidden');
-                $(".editable").addClass('hidden');
-                Admin.loadSettings(Admin.preferences);
+            $('.cancel_btn').live('click', function () {
+                var parent = $(this).parents('.form_group').eq(0);
+                $(".none_editable", parent).removeClass('hidden');
+                $(".editable", parent).addClass('hidden');
+                Admin.loadSettings(Admin.secSettings);
             });
 
-            $('.save_btn').click(function () {
+            $('.save_btn').live('click', function () {
                 var chk_confirm = confirm('Are you sure you want to update Settings?');
                 if (!chk_confirm) return false;
+                var parent = $(this).parents('.form_group').eq(0);
                 var preferences = [];
-                $('.display_settings input.form-control').each(function(){
+                $('input.form-control', parent).each(function(){
                     var data = {prefKey: $(this).attr('id'), value: $(this).val()};
                     preferences.push(data);
                 });
-                Admin.updateSettings({preferences: preferences});
+                Admin.updateSettings({preferences: preferences}, parent);
             });
 
         },
-        updateSettings: function(updatedData) {
+        updateSettings: function(updatedData, parent) {
 
             var callback = function(status, data) {
 
                 alert(data.message);
                 if(data.success) {
-                    $(".none_editable").removeClass('hidden');
-                    $(".editable").addClass('hidden');
-                    Admin.loadSettings();
+                    $(".none_editable", parent).removeClass('hidden');
+                    $(".editable", parent).addClass('hidden');
+                    Admin.loadSettings(Admin.secId);
                 }
 
             };

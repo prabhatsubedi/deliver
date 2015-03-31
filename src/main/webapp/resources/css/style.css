@@ -904,6 +904,9 @@ body.assistance_page {
 .form_section .form_content:last-child {
     margin-bottom: 0px;
 }
+.form_section .form_group:not(:last-child) {
+    margin-bottom: 15px;
+}
 
 .map-container {
     border: 1px solid #cbcaca;

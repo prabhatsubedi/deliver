@@ -167,6 +167,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                     tempBrand.setBrandUrl(storeEntity.getStoresBrand().getBrandUrl());
                     tempBrand.setFeatured(storeEntity.getStoresBrand().getFeatured());
                     tempBrand.setPriority(storeEntity.getStoresBrand().getPriority());
+                    tempBrand.setMinOrderAmount(storeEntity.getStoresBrand().getMinOrderAmount());
+
                     //Nearest Location
                     if(storeEntity.getStreet() !=null && !storeEntity.getStreet().isEmpty())
                         tempBrand.setNearestStoreLocation(storeEntity.getStreet());
@@ -767,6 +769,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
            store.setClosingTime(storesBrandEntity.getClosingTime());
            store.setBrandLogo(storesBrandEntity.getBrandLogo());
            store.setBrandImage(storesBrandEntity.getBrandImage());
+           store.setMinOrderAmount(storesBrandEntity.getMinOrderAmount());
            store.setOpenStatus(isOpen);
 
            if(lat!=null && lon != null){
@@ -1166,21 +1169,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
     @Override
     public Boolean saveTimeStamp(TestEntity testEntity) throws Exception {
-        log.info("++++++++++ Saving Test Entity +++++++++++++++");
-        TestEntity test = new TestEntity();
-        test.setTest("First Test1111");
-        test.setId(3);
-        test.setLastActivityDate(DateUtil.getCurrentTimestampSQL());
-        customerDaoService.saveTest(test);
-
-        /* Now Perform Rollback Operation */
-        List<TestEntity> testEntities = customerDaoService.findTest();
-        System.out.println(testEntities.size());
-
-
-
-
-
+        List<RatingEntity> rates = new ArrayList<>();
+        rates = orderDaoService.getDboyRatingDetails(6);
 
         return true;
     }

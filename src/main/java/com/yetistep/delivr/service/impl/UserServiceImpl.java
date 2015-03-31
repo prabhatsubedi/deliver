@@ -152,7 +152,7 @@ public class UserServiceImpl extends AbstractManager implements UserService{
         userDaoService.update(userEntity);
 
          /* Send Email */
-        if (userEntity.getRole().toString().equals(Role.ROLE_MERCHANT.toString())) {
+        if (userEntity.getRole().getRole().toString().equals(Role.ROLE_MERCHANT.toString())) {
             String hostName = getServerUrl();
             String url = hostName + "/assistance/create_password/" + verificationCode;
             log.debug("Re-sending mail to " + userName + " with verify_url: " + url);

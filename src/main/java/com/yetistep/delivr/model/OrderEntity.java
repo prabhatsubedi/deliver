@@ -1,11 +1,11 @@
 package com.yetistep.delivr.model;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.enums.PaymentMode;
 import com.yetistep.delivr.util.JsonDateSerializer;
 
 import javax.persistence.*;
@@ -58,6 +58,9 @@ public class OrderEntity implements Serializable {
     private Integer reprocessTime;
     private Boolean dBoyPaid;
     private Date dBoyPaidDate;
+    private PaymentMode paymentMode;
+    private BigDecimal paidFromWallet;
+    private BigDecimal paidFromCOD;
     private List<ItemsOrderEntity> itemsOrder;
     private AddressEntity address;
     private DeliveryBoyEntity deliveryBoy;
@@ -282,6 +285,34 @@ public class OrderEntity implements Serializable {
 
     public void setOrderDate(Timestamp orderDate) {
         this.orderDate = orderDate;
+    }
+
+    @Column(name = "payment_mode")
+    @Enumerated(EnumType.ORDINAL)
+    public PaymentMode getPaymentMode() {
+        return paymentMode;
+    }
+
+    public void setPaymentMode(PaymentMode paymentMode) {
+        this.paymentMode = paymentMode;
+    }
+
+    @Column(name = "paid_from_wallet", precision = 19, scale = 2)
+    public BigDecimal getPaidFromWallet() {
+        return paidFromWallet;
+    }
+
+    public void setPaidFromWallet(BigDecimal paidFromWallet) {
+        this.paidFromWallet = paidFromWallet;
+    }
+
+    @Column(name = "paid_from_cod", precision = 19, scale = 2)
+    public BigDecimal getPaidFromCOD() {
+        return paidFromCOD;
+    }
+
+    public void setPaidFromCOD(BigDecimal paidFromCOD) {
+        this.paidFromCOD = paidFromCOD;
     }
 
     @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )

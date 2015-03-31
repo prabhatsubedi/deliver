@@ -32,6 +32,8 @@ public class RatingEntity {
     /*Transient field to send all rating issues */
     private List<RatingReason> allRatingIssues;
 
+    private Integer orderId; //Transient Variable
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -111,4 +113,11 @@ public class RatingEntity {
         this.allRatingIssues = allRatingIssues;
     }
 
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
 }

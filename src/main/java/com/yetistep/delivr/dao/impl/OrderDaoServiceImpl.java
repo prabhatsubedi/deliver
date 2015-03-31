@@ -2,8 +2,10 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.enums.PaymentMode;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.Page;
+import com.yetistep.delivr.model.RatingEntity;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 import com.yetistep.delivr.util.DateUtil;
@@ -17,6 +19,7 @@ import org.hibernate.transform.Transformers;
 import org.hibernate.type.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -347,6 +350,20 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         return list;
     }
 
+    public List<RatingEntity> getDboyRatingDetails(Integer dboyId) throws Exception {
+
+        String sql = "SELECT r.dboy_rating AS deliveryBoyRating, r.order_id AS orderId FROM orders o " +
+                "INNER JOIN ratings r ON(r.order_id = o.id AND r.dboy_rating IS NOT NULL) " +
+                "WHERE o.delivery_boy_id =:dboyId " +
+                "ORDER BY o.order_date DESC LIMIT 10";
+
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("dboyId", dboyId);
+        query.setResultTransformer(Transformers.aliasToBean(RatingEntity.class));
+        List<RatingEntity> list = query.list();
+        return list;
+    }
+
     @Override
     public Integer hasCustomerRunningOrders(Integer customerId) throws Exception {
            return hasRunningOrders(customerId, null);
@@ -378,5 +395,24 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         query.setParameterList("jobOrderList", jobOrderList);
         Integer count = ((Number) query.uniqueResult()).intValue();
         return count;
+    }
+
+    @Override
+    public List<OrderEntity> getWalletUnpaidOrders(Integer customerId, Integer orderId) throws Exception {
+        List<JobOrderStatus> jobOrderStatusList = new ArrayList<JobOrderStatus>();
+        jobOrderStatusList.add(JobOrderStatus.ORDER_PLACED);
+        jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED);
+        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
+        jobOrderStatusList.add(JobOrderStatus.AT_STORE);
+        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.add(Restrictions.in("orderStatus", jobOrderStatusList))
+                .add(Restrictions.eq("paymentMode", PaymentMode.WALLET))
+                .add(Restrictions.gt("paidFromCOD", BigDecimal.ZERO))
+                .add(Restrictions.eq("customer.id", customerId))
+                .add(Restrictions.not(Restrictions.eq("id", orderId)));
+        List<OrderEntity>  orderEntities = criteria.list();
+        return orderEntities;
     }
 }

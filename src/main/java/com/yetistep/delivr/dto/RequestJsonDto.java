@@ -3,6 +3,7 @@ package com.yetistep.delivr.dto;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.NotifyTo;
 import com.yetistep.delivr.enums.PasswordActionType;
+import com.yetistep.delivr.enums.PaymentMode;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.CustomerInfo;
 import com.yetistep.delivr.model.mobile.DeviceInfo;
@@ -96,6 +97,8 @@ public class RequestJsonDto {
     private String pushMessage;
     private List<NotifyTo> notifyToList;
 
+    /* Payment mode */
+    private PaymentMode paymentMode;
 
     /*=================================================================== */
     public PasswordActionType getActionType() {
@@ -434,5 +437,13 @@ public class RequestJsonDto {
 
     public void setNotifyToList(List<NotifyTo> notifyToList) {
         this.notifyToList = notifyToList;
+    }
+
+    public PaymentMode getPaymentMode() {
+        return paymentMode;
+    }
+
+    public void setPaymentMode(PaymentMode paymentMode) {
+        this.paymentMode = paymentMode;
     }
 }

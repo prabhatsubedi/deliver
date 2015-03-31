@@ -9,6 +9,7 @@ package com.yetistep.delivr.service.impl;
  */
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.enums.Role;
+import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.AuthenticatedUser;
 import com.yetistep.delivr.model.RoleEntity;
 import com.yetistep.delivr.model.UserEntity;
@@ -52,9 +53,11 @@ public class SpringUserDetailsServiceImpl implements UserDetailsService {
             businessLogo = user.getMerchant().getBusinessLogo();
         }
 
+        Boolean enabled = false;
+        if(user.getVerifiedStatus() && user.getStatus().toString().equals(Status.ACTIVE.toString()))
+            enabled = true;
         AuthenticatedUser authenticatedUser = new AuthenticatedUser(user.getUsername(),
-                user.getPassword(), user.getVerifiedStatus(),
-                true, true, true, authorities);
+                user.getPassword(), enabled, true, true, true, authorities);
 
         authenticatedUser.setUserId(user.getId());
         authenticatedUser.setFullName(user.getFullName());

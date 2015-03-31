@@ -696,6 +696,11 @@ public class CustomerServiceImpl implements CustomerService {
     public void saveOrder(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
         Long customerId = requestJson.getOrdersCustomerId();
         Integer addressId = requestJson.getOrdersAddressId();
+        PaymentMode paymentMode = PaymentMode.CASH_ON_DELIVERY;
+        if(requestJson.getPaymentMode() != null){
+            paymentMode = requestJson.getPaymentMode();
+        }
+
         CustomerEntity customer = customerDaoService.find(customerId);
         AddressEntity address = addressDaoService.getMyAddress(addressId);
         if(address == null)
@@ -807,6 +812,19 @@ public class CustomerServiceImpl implements CustomerService {
         courierTransaction.setPaidToCourier(null);
         courierTransaction.setProfit(null);
         order.setCourierTransaction(courierTransaction);
+
+        order.setPaymentMode(paymentMode);
+        if(paymentMode.equals(PaymentMode.WALLET)){
+            if(BigDecimalUtil.isLessThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+                throw new YSException("ORD020");
+            }
+            order.setPaidFromWallet(order.getGrandTotal());
+            order.setPaidFromCOD(BigDecimal.ZERO);
+            order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(order.getGrandTotal()));
+        }else{
+            order.setPaidFromWallet(BigDecimal.ZERO);
+            order.setPaidFromCOD(order.getGrandTotal());
+        }
 
         if(order.getCustomer().getTotalOrderPlaced() == null){
             order.getCustomer().setTotalOrderPlaced(1);
@@ -1092,7 +1110,7 @@ public class CustomerServiceImpl implements CustomerService {
             lon = requestJsonDto.getGpsInfo().getLongitude();
         }
 
-
+        /* Item Search Algorithm Starts */
         List<ItemEntity> items = itemDaoService.searchItems(word);
         if(items !=null && items.size() > 0){
             searchResult = new ArrayList<>();
@@ -1147,7 +1165,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         Integer totalItemSize = searchResult==null ? 0 : searchResult.size();
 
-        //Now Goes To Search Brand
+        /* Store Search Algorithm Starts */
         Integer limit = 0;
         if(totalItemSize > CommonConstants.MAX_SEARCH_ITEM)
             limit = CommonConstants.MAX_SEARCH_STORE;
@@ -1215,6 +1233,7 @@ public class CustomerServiceImpl implements CustomerService {
                     tempBrand.setBrandUrl(storeEntity.getStoresBrand().getBrandUrl());
                     tempBrand.setItem(false);
                     tempBrand.setStoreStreet(storeEntity.getStreet());
+                    tempBrand.setMinOrderAmount(storeEntity.getStoresBrand().getMinOrderAmount());
                     searchResult.add(tempBrand);
                     storeList.add(tempBrand);
                 }
@@ -1425,40 +1444,76 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         // IF Delayed In Deliver Then Rating Will be Decreased (Appended By Surendra)
-        DBoyOrderHistoryEntity dBoyOrderHistoryEntity = dBoyOrderHistoryDaoService.getOrderHistory(orderId, order.getDeliveryBoy().getId());
-        Integer assignedTime = order.getAssignedTime();
-        Double deliveredTime = DateUtil.getMinDiff(dBoyOrderHistoryEntity.getOrderAcceptedAt().getTime(), dBoyOrderHistoryEntity.getOrderCompletedAt().getTime());
-        Integer remainingTime = (assignedTime + Integer.valueOf(systemPropertyService.readPrefValue(PreferenceType.DBOY_GRESS_TIME))) - deliveredTime.intValue();
-        log.info("+++++++ Assigned Time " + assignedTime + " & Delivered Time " + deliveredTime + " +++++++++");
-        Integer dboyRating = rating.getDeliveryBoyRating();
-        if(remainingTime < 0)
-            dboyRating = dboyRating - DELAYED_DELIVERY;
+//        DBoyOrderHistoryEntity dBoyOrderHistoryEntity = dBoyOrderHistoryDaoService.getOrderHistory(orderId, order.getDeliveryBoy().getId());
+//        Integer assignedTime = order.getAssignedTime();
+//        Double deliveredTime = DateUtil.getMinDiff(dBoyOrderHistoryEntity.getOrderAcceptedAt().getTime(), dBoyOrderHistoryEntity.getOrderCompletedAt().getTime());
+//        Integer remainingTime = (assignedTime + Integer.valueOf(systemPropertyService.readPrefValue(PreferenceType.DBOY_GRESS_TIME))) - deliveredTime.intValue();
+//        log.info("+++++++ Assigned Time " + assignedTime + " & Delivered Time " + deliveredTime + " +++++++++");
+//        Integer dboyRating = rating.getDeliveryBoyRating();
+//        if(remainingTime < 0)
+//            dboyRating = dboyRating - DELAYED_DELIVERY;
 
         // Ended By Surendra
 
         ratingEntity.setCustomerComment(rating.getCustomerComment());
-        ratingEntity.setDeliveryBoyRating(dboyRating);
+        ratingEntity.setDeliveryBoyRating(rating.getDeliveryBoyRating());
         ratingEntity.setRatingIssues(rating.getRatingIssues());
         orderDaoService.update(order);
 
         /* Now Calculate Average Rating (Appended By Surendra) */
 //        DeliveryBoyEntity deliveryBoy = order.getDeliveryBoy();
-        List<Integer> ratings = orderDaoService.getDboyRatings(order.getDeliveryBoy().getId());
+//        List<Integer> ratings = orderDaoService.getDboyRatings(order.getDeliveryBoy().getId());
+//        if(ratings !=null && ratings.size()> 0){
+//            BigDecimal totalRate = BigDecimal.ZERO;
+//
+//            for(Integer rate : ratings){
+//                totalRate = totalRate.add(new BigDecimal(rate));
+//            }
+//
+//            BigDecimal averageRating = getAverageRating(ratings.size(), totalRate);
+//            deliveryBoyDaoService.updateAverageRating(averageRating, order.getDeliveryBoy().getId());
+//
+//        /* Less then or equal 1 means Current Delivery Also In Session (That has not completed) */
+//            if(orderDaoService.hasDboyRunningOrders(order.getDeliveryBoy().getId()) <= 1){
+//                if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)))) {
+//                    //Deactivate User
+//                    log.info("Deactivating Shopper id : " + order.getDeliveryBoy().getId());
+//                    userDaoService.deactivateUser(order.getDeliveryBoy().getUser().getId());
+//                }
+//
+//            }
+//
+//        }
+
+        Integer deliveryBoyId = order.getDeliveryBoy().getId();
+        List<RatingEntity> ratings = orderDaoService.getDboyRatingDetails(deliveryBoyId);
+        Integer gressTime = Integer.valueOf(systemPropertyService.readPrefValue(PreferenceType.DBOY_GRESS_TIME));
         if(ratings !=null && ratings.size()> 0){
             BigDecimal totalRate = BigDecimal.ZERO;
+            for(RatingEntity rate : ratings){
 
-            for(Integer rate : ratings){
-                totalRate = totalRate.add(new BigDecimal(rate));
+                /* IF Delayed In Deliver Then Rating Will be Decreased during Calculate Average Rating */
+                DBoyOrderHistoryEntity dBoyOrderHistoryEntity = dBoyOrderHistoryDaoService.getOrderHistory(rate.getOrderId(), deliveryBoyId);
+                Integer assignedTime = order.getAssignedTime();
+                Double deliveredTime = DateUtil.getMinDiff(dBoyOrderHistoryEntity.getOrderAcceptedAt().getTime(), dBoyOrderHistoryEntity.getOrderCompletedAt().getTime());
+                Integer remainingTime = (assignedTime + gressTime) - deliveredTime.intValue();
+                log.info("+++++++ Assigned Time " + assignedTime + " & Delivered Time " + deliveredTime + " +++++++++");
+                Integer dboyRating = rate.getDeliveryBoyRating();
+
+                if(remainingTime < 0)
+                    dboyRating = dboyRating - DELAYED_DELIVERY;
+
+                totalRate = totalRate.add(new BigDecimal(dboyRating));
             }
 
             BigDecimal averageRating = getAverageRating(ratings.size(), totalRate);
-            deliveryBoyDaoService.updateAverageRating(averageRating, order.getDeliveryBoy().getId());
+            deliveryBoyDaoService.updateAverageRating(averageRating, deliveryBoyId);
 
         /* Less then or equal 1 means Current Delivery Also In Session (That has not completed) */
-            if(orderDaoService.hasDboyRunningOrders(order.getDeliveryBoy().getId()) <= 1){
+            if(orderDaoService.hasDboyRunningOrders(deliveryBoyId) <= 1){
                 if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)))) {
                     //Deactivate User
-                    log.info("Deactivating Shopper id : " + order.getDeliveryBoy().getId());
+                    log.info("Deactivating Shopper id : " + deliveryBoyId);
                     userDaoService.deactivateUser(order.getDeliveryBoy().getUser().getId());
                 }
 
@@ -1466,19 +1521,20 @@ public class CustomerServiceImpl implements CustomerService {
 
         }
 
-        /* Ended By Surendra */
-
         return true;
     }
 
-    private BigDecimal getAverageRating(Integer totalRate, BigDecimal totalRateSum) throws Exception {
+    private BigDecimal getAverageRating(Integer totalSize, BigDecimal totalRateSum) throws Exception {
         BigDecimal averageRating;
-        if(totalRate<= 10 && totalRate > 0){
-            Integer rate = Integer.valueOf(totalRateSum.intValue()) + Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)) * (10-totalRate);
+        /* This Code Perform for all order  All But.....
+            Being Requirement Changed Only 10 data retrieved, Code is as it is */
+
+        if(totalSize<= 10 && totalSize > 0){
+            Integer rate = Integer.valueOf(totalRateSum.intValue()) + Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DBOY_DEFAULT_RATING)) * (10-totalSize);
             averageRating = new BigDecimal(rate).divide(new BigDecimal(10), MathContext.DECIMAL128);
             averageRating = averageRating.setScale(0, BigDecimal.ROUND_HALF_UP);
         } else {
-            averageRating = totalRateSum.divide(new BigDecimal(totalRate), MathContext.DECIMAL128);
+            averageRating = totalRateSum.divide(new BigDecimal(totalSize), MathContext.DECIMAL128);
             averageRating = averageRating.setScale(0, BigDecimal.ROUND_HALF_UP);
         }
         return averageRating;

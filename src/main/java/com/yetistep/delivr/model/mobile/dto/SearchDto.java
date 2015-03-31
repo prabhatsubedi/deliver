@@ -40,6 +40,7 @@ public class SearchDto {
     private String brandImage;
     private String brandUrl;
     private Boolean openStatus;
+    private BigDecimal minOrderAmount;
 
     // ========= Search Object ==========================//
     private PageInfo pageInfo;
@@ -205,5 +206,13 @@ public class SearchDto {
 
     public void setTotalStoreSize(Integer totalStoreSize) {
         this.totalStoreSize = totalStoreSize;
+    }
+
+    public BigDecimal getMinOrderAmount() {
+        return minOrderAmount;
+    }
+
+    public void setMinOrderAmount(BigDecimal minOrderAmount) {
+        this.minOrderAmount = minOrderAmount;
     }
 }

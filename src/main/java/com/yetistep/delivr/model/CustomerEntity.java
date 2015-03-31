@@ -40,6 +40,7 @@ public class CustomerEntity implements Serializable {
     private String latitude;
     private String longitude;
     private Boolean isDefault;
+    private BigDecimal walletAmount;
     private List<CartEntity> carts;
     private String currency;//Transient Variable
     private List<BillEntity> bill;
@@ -218,7 +219,7 @@ public class CustomerEntity implements Serializable {
         this.referredBy = referredBy;
     }
 
-    @Column(name ="fb_token")
+    @Column(name ="fb_token", columnDefinition="LONGTEXT NULL DEFAULT NULL")
     @JsonProperty
     public String getFbToken() {
         return fbToken;
@@ -246,6 +247,15 @@ public class CustomerEntity implements Serializable {
 
     public void setAllowShare(Boolean allowShare) {
         this.allowShare = allowShare;
+    }
+
+    @Column(name = "wallet_amount", precision =  19, scale = 2)
+    public BigDecimal getWalletAmount() {
+        return walletAmount;
+    }
+
+    public void setWalletAmount(BigDecimal walletAmount) {
+        this.walletAmount = walletAmount;
     }
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.PERSIST)

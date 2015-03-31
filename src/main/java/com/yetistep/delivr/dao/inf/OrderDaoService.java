@@ -4,6 +4,7 @@ import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.Page;
+import com.yetistep.delivr.model.RatingEntity;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 
@@ -53,6 +54,8 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
     public List<OrderEntity> getCustomersOrders(Integer customerId) throws Exception;
 
     public List<OrderEntity> find(List<Integer> id) throws Exception;
+
+    public List<RatingEntity> getDboyRatingDetails(Integer dboyId) throws Exception;
 
     public List<OrderEntity> getWalletUnpaidOrders(Integer customerId, Integer orderId) throws Exception;
 

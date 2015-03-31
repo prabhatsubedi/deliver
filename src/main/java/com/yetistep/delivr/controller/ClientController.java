@@ -212,6 +212,7 @@ public class ClientController extends AbstractManager{
             Map<String, Object> map = clientService.getBrands(requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("Brands fetched successfully");
             if(requestJsonDto.getPageInfo()== null) {
+                serviceResponse.addParam("currency", map.get("currency"));
                 serviceResponse.addParam("featuredBrands", map.get("featured"));
                 serviceResponse.addParam("pageInfo", map.get("page"));
             }
@@ -573,6 +574,7 @@ public class ClientController extends AbstractManager{
 
             ServiceResponse serviceResponse = new ServiceResponse("Brands fetched successfully");
             if(pageNo!=null && pageNo.equals(1)) {
+                serviceResponse.addParam("currency", map.get("currency"));
                 serviceResponse.addParam("pageInfo", map.get("page"));
                 serviceResponse.addParam("featuredBrands", map.get("featured"));
             }
@@ -595,6 +597,7 @@ public class ClientController extends AbstractManager{
 
             ServiceResponse serviceResponse = new ServiceResponse("Brands fetched successfully");
             if(pageNo!=null && pageNo.equals(1)) {
+                serviceResponse.addParam("currency", map.get("currency"));
                 serviceResponse.addParam("pageInfo", map.get("page"));
                 serviceResponse.addParam("featuredBrands", map.get("featured"));
             }

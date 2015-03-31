@@ -227,7 +227,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         map.put("featured", featuredBrands);
         map.put("all", sortedList);
         map.put("page", pageInfo);
-
+        map.put("currency", getCurrencyType());
         return map;
     }
 

@@ -213,6 +213,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("brandUrl"), "brandUrl")
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
+                .add(Projections.property("minOrderAmount"), "minOrderAmount")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.in("id", brandId));
         if(isPriority)

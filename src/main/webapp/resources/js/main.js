@@ -238,6 +238,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                     previous: '&laquo'
                 }
             },
+            order: dataFilter.order == undefined ? [[ 0, 'desc' ]] : dataFilter.order,
             fnDrawCallback: typeof(colindex) == 'function' ? colindex : null,
             processing: true,
             serverSide: true,
@@ -246,6 +247,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 type: dataFilter.requestType == undefined ? "POST" : dataFilter.requestType,
                 headers: headers,
                 data: function(data){
+                    $('body').addClass('loader_div').append('<div class="loader"></div>');
                     console.log(data);
                     var request = {}
                     var page = {};
@@ -262,6 +264,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                     return JSON.stringify(request);
                 },
                 dataFilter : function(data, type) {
+                    $('body').removeClass('loader_div').children('.loader').hide().remove();
                     var jsonData = dataFilter(JSON.parse(data), type);
                     console.log(jsonData);
                     return JSON.stringify(jsonData);

@@ -161,6 +161,7 @@ Order.getOrders = function(elemId, url, params){
 
     dataFilter.url = url;
     dataFilter.params = params;
+    dataFilter.order = [[ 3, 'desc' ]];
     if(elemId == '#order_inroute_table') {
         dataFilter.columns = [
             { "name": "" },

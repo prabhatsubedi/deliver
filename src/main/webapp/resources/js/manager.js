@@ -425,7 +425,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
                 var brandId = brand.id;
                 var brandName = '<a href="' + Main.modifyURL('/merchant/item/list/' + brandId) + '" data-mid="' + brand.merchantId + '">' + brand.brandName + '</a>';
-                var merchantName = brand.merchant.user.fullName;
+                var merchantName = brand.merchant.businessTitle;
                 var viewStore = '<a href="' + Main.modifyURL('/merchant/store/view/' + brandId) + '" data-mid="' + brand.merchantId + '">View Store</a>';
                 var viewItem = '<a href="' + Main.modifyURL('/merchant/item/form/create/' + brandId) + '" data-mid="' + brand.merchantId + '">Add Item</a>';
                 var actions = '<div class="action_links">' + viewStore + viewItem + '</div>';

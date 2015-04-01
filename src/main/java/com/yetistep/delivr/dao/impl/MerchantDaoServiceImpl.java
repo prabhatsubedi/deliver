@@ -152,7 +152,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<CategoryEntity> categories = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
         criteria.add(Restrictions.and(Restrictions.isNotNull("parent.id"), Restrictions.isNull("storesBrand.id")));
-        criteria.addOrder(Order.desc("id"));
+        criteria.addOrder(Order.asc("priority"));
         categories = criteria.list();
 
         return categories;
@@ -247,6 +247,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
                 .add(Projections.property("imageUrl"), "imageUrl"))
                 .setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
         criteria.add(Restrictions.isNull("parent")) ;
+        criteria.addOrder(Order.asc("priority"));
         categories = criteria.list();
 
         return categories;

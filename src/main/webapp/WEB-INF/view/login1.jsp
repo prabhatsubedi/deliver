@@ -25,7 +25,7 @@
 <body>
 
 <div class="logo_container">
-    <img src="${pageContext.request.contextPath}/resources/images/login-logo.png" class="img-responsive">
+    <img src="${pageContext.request.contextPath}/resources/images/delivr-logo.png" class="img-responsive">
 </div>
 
 <div class="delivr_info container">
@@ -58,7 +58,7 @@
 </div>
 
 <div class="login_foot">
-    <div class="foot_logo"><img src="${pageContext.request.contextPath}/resources/images/login-logo.png" class="img-responsive"></div>
+    <div class="foot_logo"><img src="${pageContext.request.contextPath}/resources/images/delivr-logo.png" class="img-responsive"></div>
     <div class="foot_links">
         <ul class="nav nav-pills text-center">
             <li><a href="#">Delivr</a></li>

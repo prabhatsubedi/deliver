@@ -115,5 +115,16 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
         return categories;
     }
 
+    @Override
+    public void updatePriority(List<CategoryEntity> categoryEntities) throws Exception{
+        for (CategoryEntity categoryEntity:categoryEntities){
+          String sql = "update categories set priority=:priority where id=:categoryId ";
+          SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+          sqlQuery.setParameter("priority", categoryEntity.getPriority());
+          sqlQuery.setParameter("categoryId", categoryEntity.getId());
+          sqlQuery.executeUpdate();
+        }
+    }
+
 
 }

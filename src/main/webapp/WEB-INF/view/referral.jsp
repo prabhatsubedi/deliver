@@ -75,7 +75,7 @@
     <div class=row>
         <div class="col-md-2 col-sm-1"></div>
         <div class="span12">
-            <center><img src="${pageContext.request.contextPath}/resources/images/login-logo.png" width="20%"/></center>
+            <center><img src="${pageContext.request.contextPath}/resources/images/delivr-logo.png" width="20%"/></center>
         </div>
     </div>
     <div class="hero-unit">

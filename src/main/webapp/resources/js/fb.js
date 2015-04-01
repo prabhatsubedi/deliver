@@ -10,12 +10,10 @@ window.fbAsyncInit = function() {
     //set the FB AppId
     if(hostName=="localhost")
          apId = "979998678677787";
-    else if(hostName=="idelivr.com" || hostName=="www.idelivr.com")
-        apId = "910783542265968";
     else if(hostName=="test.idelivr.com" || hostName=="www.test.idelivr.com")
          apId = "979999898677665";
     else if(hostName=="test1.idelivr.com" || hostName=="www.test1.idelivr.com")
-        apId = "978523412158647";
+        apId = "910783542265968";
 
 
     // init the FB JS SDK                                                            n

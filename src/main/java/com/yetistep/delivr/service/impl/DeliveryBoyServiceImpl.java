@@ -83,6 +83,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     @Autowired
     AccountService accountService;
 
+    @Autowired
+    DBoyAdvanceAmountDaoService dBoyAdvanceAmountDaoService;
+
+    @Autowired
+    DBoySubmittedAmountDaoService dBoySubmittedAmountDaoService;
+
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Shopper +++++++++++++++++");
@@ -1759,34 +1765,29 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         Page page = requestJsonDto.getPage();
 
         PaginationDto paginationDto = new PaginationDto();
-        /*Integer totalRows =  dBoySubmittedAmountDaoService.getTotalNumbersAcknowledgements(Integer.parseInt(headerDto.getId()));
+        Integer totalRows =  dBoySubmittedAmountDaoService.getTotalNumbersAcknowledgements(Integer.parseInt(headerDto.getId()));
         paginationDto.setNumberOfRows(totalRows);
 
         if(page != null){
             page.setTotalRows(totalRows);
         }
 
-        List<OrderEntity> orders = dBoySubmittedAmountDaoService.getcknowledgements(Integer.parseInt(headerDto.getId()), page);
+        List<DBoySubmittedAmountEntity> acknowledgements = dBoySubmittedAmountDaoService.getcknowledgements(Integer.parseInt(headerDto.getId()), page);
 
         List<Object> objects = new ArrayList<>();
-
-        String fields = "id,orderName,deliveryStatus,orderStatus,attachments,orderDate,customer,store,deliveryBoy,grandTotal";
+        String fields = "id,ackDate,amountReceived,deliveryBoy";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("customer", "id,user");
-        assoc.put("deliveryBoy", "id,user,averageRating");
-        assoc.put("store", "id,name,street,contactPerson,contactNo");
-        assoc.put("attachments", "url");
-
+        assoc.put("deliveryBoy", "id,user");
         subAssoc.put("user", "id,fullName,mobileNumber,profileImage");
 
-        for (OrderEntity order:orders){
-            objects.add(ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
+        for (DBoySubmittedAmountEntity acknowledgement:acknowledgements){
+            objects.add(ReturnJsonUtil.getJsonObject(acknowledgement, fields, assoc, subAssoc));
         }
 
-        paginationDto.setData(objects);*/
+        paginationDto.setData(objects);
         return paginationDto;
     }
 
@@ -1795,34 +1796,30 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         Page page = requestJsonDto.getPage();
 
         PaginationDto paginationDto = new PaginationDto();
-        /*Integer totalRows =  dBoyAdvanceAmountDaoService.getTotalNumbersOfAdvanceAmounts(storeIdList);
+        Integer totalRows =  dBoyAdvanceAmountDaoService.getTotalNumbersOfAdvanceAmounts(Integer.parseInt(headerDto.getId()));
         paginationDto.setNumberOfRows(totalRows);
 
         if(page != null){
             page.setTotalRows(totalRows);
         }
 
-        List<OrderEntity> orders = dBoyAdvanceAmountDaoService.getAdvanceAmounts(storeIdList, page);
+        List<DBoyAdvanceAmountEntity> advanceAmounts = dBoyAdvanceAmountDaoService.getAdvanceAmounts(Integer.parseInt(headerDto.getId()), page);
 
         List<Object> objects = new ArrayList<>();
 
-        String fields = "id,orderName,deliveryStatus,orderStatus,attachments,orderDate,customer,store,deliveryBoy,grandTotal";
+        String fields = "id,advanceDate,amountAdvance,deliveryBoy";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("customer", "id,user");
-        assoc.put("deliveryBoy", "id,user,averageRating");
-        assoc.put("store", "id,name,street,contactPerson,contactNo");
-        assoc.put("attachments", "url");
-
+        assoc.put("deliveryBoy", "id,user");
         subAssoc.put("user", "id,fullName,mobileNumber,profileImage");
 
-        for (OrderEntity order:orders){
-            objects.add(ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
+        for (DBoyAdvanceAmountEntity advanceAmount:advanceAmounts){
+            objects.add(ReturnJsonUtil.getJsonObject(advanceAmount, fields, assoc, subAssoc));
         }
 
-        paginationDto.setData(objects);*/
+        paginationDto.setData(objects);
         return paginationDto;
     }
 

@@ -828,11 +828,17 @@ if (typeof(Manager) == "undefined") var Manager = {};
     }
 
     Manager.fillDboyAccount = function(courierStaff){
-        $(".due_amount").text((courierStaff.previousDue).toFixed(2));
-        $("#due_amount_val").val((courierStaff.previousDue).toFixed(2))
-        $(".available_balance").text((courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2));
-        $(".to_be_submitted").text((courierStaff.walletAmount).toFixed(2));
-        $("#to_be_submitted_val").val((courierStaff.walletAmount).toFixed(2));
+        if(typeof courierStaff.previousDue != "undefined"){
+            $(".due_amount").text(parseFloat(courierStaff.previousDue).toFixed(2));
+            $("#due_amount_val").val(parseFloat(courierStaff.previousDue).toFixed(2));
+        }
+        if(typeof courierStaff.walletAmount != "undefined" && typeof courierStaff.bankAmount != "undefined"){
+            $(".available_balance").text(parseFloat(courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2));
+        }
+        if(typeof courierStaff.walletAmount != "undefined"){
+            $(".to_be_submitted").text(parseFloat(courierStaff.walletAmount).toFixed(2));
+            $("#to_be_submitted_val").val(parseFloat(courierStaff.walletAmount).toFixed(2));
+        }
 
     }
 

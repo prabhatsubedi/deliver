@@ -236,10 +236,11 @@ public class AccountantController {
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             PaginationDto acknowledgedAmounts = deliveryBoyService.getAcknowledgements(headerDto, requestJsonDto);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Invoice(s) has been paid successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Acknowledgements retrieved successfully");
+            serviceResponse.addParam("acknowledgedAmounts", acknowledgedAmounts);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while paying invoice: ", e);
+            GeneralUtil.logError(log, "Error Occurred retrieving acknowledgements: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
@@ -251,11 +252,11 @@ public class AccountantController {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             PaginationDto advanceAmounts = deliveryBoyService.getAdvanceAmounts(headerDto, requestJsonDto);
-
-            ServiceResponse serviceResponse = new ServiceResponse("Invoice(s) has been paid successfully");
+            ServiceResponse serviceResponse = new ServiceResponse("Advance amounts retrieved successfully");
+            serviceResponse.addParam("advanceAmounts", advanceAmounts);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while paying invoice: ", e);
+            GeneralUtil.logError(log, "Error Occurred while retrieving advance amounts: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

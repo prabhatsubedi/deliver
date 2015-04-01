@@ -1255,7 +1255,7 @@ label.check_label .checkbox {
 .items_container .item_container {
     padding: 15px;
 }
-.items_container .ui-sortable .item_container {
+.items_container .ui-sortable .item_container, .items_container.ui-sortable .item_container {
     cursor: move;
 }
 .items_container .view_more {

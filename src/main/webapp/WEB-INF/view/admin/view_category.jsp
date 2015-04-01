@@ -42,7 +42,7 @@
                                 <div class="profile_header clearfix">
                                     <div class="profile_header_image col-lg-5 pull-left">
                                         <div id="category_image"
-                                             class="drop_zone user_image disabled unselectable text-center maintain_ratio"
+                                             class="drop_zone disabled unselectable text-center maintain_ratio"
                                              mr-width="720" mr-height="160">
                                             <div class="drop_info">Drop image file <br/> (or click to browse) <br /> Min Size: 720x160</div>
                                                 <div class="drop_title">Category Image</div>
@@ -82,7 +82,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="parent_category_list items_container col-lg-12 td_div">
+                    <div class="parent_category_list items_container col-lg-12 td_div" id="parent_category_list">
 
                     </div>
                 </div>

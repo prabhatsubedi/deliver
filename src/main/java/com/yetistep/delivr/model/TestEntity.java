@@ -21,6 +21,7 @@ public class TestEntity {
     private String test;
     private Timestamp anotherDate;
     private Timestamp lastActivityDate;
+    private Boolean test_boolean;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -65,4 +66,12 @@ public class TestEntity {
         this.lastActivityDate = lastActivityDate;
     }
 
+    @Column(name = "test_boolean", columnDefinition = "TINYINT(1) DEFAULT 0")
+    public Boolean getTest_boolean() {
+        return test_boolean;
+    }
+
+    public void setTest_boolean(Boolean test_boolean) {
+        this.test_boolean = test_boolean;
+    }
 }

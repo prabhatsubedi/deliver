@@ -189,7 +189,7 @@ public class CustomerEntity implements Serializable {
         this.longitude = longitude;
     }
 
-    @Column (name = "is_default", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column (name = "is_default", columnDefinition = "TINYINT(1) DEFAULT 0")
     @JsonProperty
     public Boolean getDefault() {
         return isDefault;

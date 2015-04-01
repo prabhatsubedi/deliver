@@ -571,7 +571,11 @@ $(document).ready(function(){
     });*/
 
     $('#popDialog .modal-footer button').live('click', function() {
-        window.dialogButtons[$(this).index()]();
+        var btnFn = window.dialogButtons[$(this).index()];
+        if(btnFn.toString().indexOf('close()') > -1)
+            $('#popDialog').modal('hide');
+        else
+            btnFn();
     });
 
 });

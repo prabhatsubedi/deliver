@@ -466,6 +466,52 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
     }
 
+    Main.popDialog = function (title, content, buttons) {
+
+/*      usage
+        var button1 = function() {
+            alert('you clicked button 1');
+        };
+        button1.text = "Test Button1";
+        var button2 = function() {
+            alert('you clicked button 2');
+        };
+        button2.text = "Test Button2";
+        var buttons = [button1, button2];
+        Main.popDialog("Test Title", "Test content", buttons);
+        */
+
+        if($('#popDialog').length == 0) {
+            $('body').append('\
+                <div class="modal fade" id="popDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">\
+                    <div class="modal-dialog">\
+                        <div class="modal-content">\
+                            <div class="modal-header">\
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
+                                <h4 class="modal-title" id="myModalLabel"></h4>\
+                            </div>\
+                            <div class="modal-body">\
+                            </div>\
+                            <div class="modal-footer">\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>');
+        }
+
+        window.dialogButtons = buttons;
+        var popElem = $('#popDialog');
+        var buttonsElem = '';
+        for(var i = 0; i < buttons.length; i++) {
+            var button = '<button class="btn btn-primary" type="button">' + buttons[i].text + '</button>';
+            buttonsElem += button;
+        }
+        $('.modal-title', popElem).html(title);
+        $('.modal-body', popElem).html(content);
+        $('.modal-footer', popElem).html(buttonsElem);
+        popElem.modal('show');
+    };
+
 })(jQuery);
 
 $(document).ready(function(){
@@ -514,6 +560,10 @@ $(document).ready(function(){
     hammertime.on('pan', function(ev) {
         console.log(ev);
     });*/
+
+    $('#popDialog .modal-footer button').live('click', function() {
+        window.dialogButtons[$(this).index()]();
+    });
 
 });
 $(window).resize(function(){

@@ -229,6 +229,38 @@ public class AccountantController {
         }
     }
 
+    @RequestMapping(value = "/get_acknowledgements", method = RequestMethod.POST)
+    public ResponseEntity<ServiceResponse> getAcknowledgements(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            PaginationDto acknowledgedAmounts = deliveryBoyService.getAcknowledgements(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Invoice(s) has been paid successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while paying invoice: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_advance_amounts", method = RequestMethod.POST)
+    public ResponseEntity<ServiceResponse> getAdvanceAmounts(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            PaginationDto advanceAmounts = deliveryBoyService.getAdvanceAmounts(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Invoice(s) has been paid successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while paying invoice: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
 
 

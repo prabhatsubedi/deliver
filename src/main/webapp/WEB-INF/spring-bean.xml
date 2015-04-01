@@ -51,4 +51,6 @@
     <bean id = "billDaoService" class="com.yetistep.delivr.dao.impl.BillDaoServiceImpl" />
     <bean id = "receiptDaoService" class="com.yetistep.delivr.dao.impl.ReceiptDaoServiceImpl" />
     <bean id = "validateMobileDaoService" class = "com.yetistep.delivr.dao.impl.ValidateMobileDaoServiceImpl" />
+    <bean id = "dBoySubmittedAmountDaoService" class = "com.yetistep.delivr.dao.impl.DBoySubmittedAmountDaoServiceImpl" />
+    <bean id = "dBoyAdvanceAmountDaoService" class = "com.yetistep.delivr.dao.impl.DBoyAdvanceAmountDaoServiceImpl" />
  </beans>

@@ -268,6 +268,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
     private void checkUniqueBrand(String name) throws Exception{
+        log.info("++++++++++++ checking unique brands +++++++++++++++");
         StoresBrandEntity brand = merchantDaoService.getBrandByBrandName(name);
         if (brand != null)
             throw new YSException("VLD023");
@@ -351,6 +352,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public void updateStore(RequestJsonDto requestJson) throws Exception {
+        log.info("++++++++++++ updating store +++++++++++++++");
         List<StoreEntity> stores = requestJson.getStores();
         StoresBrandEntity storesBrand = requestJson.getStoresBrand();
         List<Integer> categories = requestJson.getCategories();
@@ -472,6 +474,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public MerchantEntity getMerchantById(HeaderDto headerDto) throws Exception {
+        log.info("++++++++++++ getting merchant +++++++++++++++");
         MerchantEntity merchantEntity = merchantDaoService.find(headerDto.getMerchantId());
         if(merchantEntity == null)
             throw new YSException("VLD011");
@@ -605,6 +608,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public List<CategoryEntity> getParentCategories() throws Exception {
+        log.info("++++++++++++ getting parent categories +++++++++++++++");
         List<CategoryEntity> categories = merchantDaoService.findParentCategories();
         return categories;
     }
@@ -612,6 +616,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public List<Object> findBrandList(HeaderDto headerDto) throws Exception {
+        log.info("++++++++++++ finding brand list +++++++++++++++");
         MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
         if(dbMerchant == null)
             throw new YSException("VLD011");
@@ -637,7 +642,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public PaginationDto findBrands(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
-
+        log.info("++++++++++++ finding brands +++++++++++++++");
         List<StoresBrandEntity> storesBrands;
         PaginationDto paginationDto = new PaginationDto();
 
@@ -688,7 +693,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public List<StoresBrandEntity> findSearchBrands(HeaderDto headerDto) throws Exception {
-
+        log.info("++++++++++++ find search brands +++++++++++++++");
         List<StoresBrandEntity> storesBrands;
         if (headerDto.getMerchantId() != null){
             storesBrands = merchantDaoService.findBrandListByMerchant(headerDto.getMerchantId());
@@ -709,6 +714,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception {
+        log.info("++++++++++++ getting brand detail +++++++++++++++");
         StoresBrandEntity storesBrandEntity =  merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
 
         String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount";
@@ -725,7 +731,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         //return getStoreBrandForJson(storesBrandEntity);
     }
 
-    private StoresBrandEntity getStoreBrandForJson(StoresBrandEntity storesBrandEntity){
+    /*private StoresBrandEntity getStoreBrandForJson(StoresBrandEntity storesBrandEntity){
         StoresBrandEntity storesBrand = new StoresBrandEntity();
         storesBrand.setId(storesBrandEntity.getId());
         storesBrand.setBrandName(storesBrandEntity.getBrandName());
@@ -766,7 +772,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         storesBrand.setStore(stores);
         return storesBrand;
     }
-
+*/
     @Override
     public void saveItem(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++ Saving Item +++++++++++++++");
@@ -874,7 +880,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public void updateItem(RequestJsonDto requestJson) throws Exception {
-        log.info("++++++++++++ Saving Item +++++++++++++++");
+        log.info("++++++++++++ updating Item +++++++++++++++");
 
         ItemEntity item = requestJson.getItem();
         List<CategoryEntity> itemCategories = requestJson.getItemCategories();
@@ -1063,11 +1069,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public List<StoreEntity> findStoresByBrand(HeaderDto headerDto) throws Exception {
+        log.info("++++++++++++ getting stores of the brand +++++++++++++++");
         return merchantDaoService.findStoreByBrand(Integer.parseInt(headerDto.getId()));
     }
 
     @Override
     public List<CategoryEntity> findCategoriesByBrand(HeaderDto headerDto) throws Exception {
+        log.info("++++++++++++ getting categories of brand +++++++++++++++");
         List<BrandsCategoryEntity> brandsCategories =  merchantDaoService.getBrandsCategory(Integer.parseInt(headerDto.getId()));
         List<CategoryEntity> categories = new ArrayList<>();
         List<CategoryEntity> allCategories;
@@ -1111,6 +1119,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public List<CategoryEntity> findBrandCategoryList(HeaderDto headerDto) throws Exception {
+        log.info("++++++++++++ getting brand category list +++++++++++++++");
         List<Integer> brandId = new ArrayList<Integer>();
         List<CategoryEntity> categories = new ArrayList<>();
         if(headerDto.getId() != null){
@@ -1139,6 +1148,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     public List<CategoryEntity> getCategoryTree(List<CategoryEntity> categories, Integer parent_id, Integer storeId){
+        log.info("++++++++++++ getting category tree +++++++++++++++");
           List<CategoryEntity> newCategories = new ArrayList<CategoryEntity>();
           for(CategoryEntity newCategory:  categories)
           {
@@ -1161,6 +1171,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     //findChildCategories
     @Override
     public List<CategoryEntity> findChildCategories(RequestJsonDto requestJson) throws Exception {
+        log.info("++++++++++++ getting child categories +++++++++++++++");
         Integer parentId = requestJson.getParentCategoryId();
         Integer storeId = requestJson.getCategoryStoreId();
         List<CategoryEntity> categories;
@@ -1194,6 +1205,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public PaginationDto findCategoriesItems(RequestJsonDto requestJson) throws Exception {
+        log.info("++++++++++++ finding items of the categories +++++++++++++++");
         Integer categoryId = requestJson.getParentCategoryId();
         Integer brandId = requestJson.getCategoryStoreId();
         Page page = requestJson.getPage();
@@ -1238,6 +1250,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public ItemEntity getItemDetail(HeaderDto headerDto) throws Exception {
+        log.info("++++++++++++ getting item detail +++++++++++++++");
         ItemEntity item = merchantDaoService.getItemDetail(Integer.parseInt(headerDto.getId()));
         CategoryEntity category = item.getCategory();
         category.setItem(null);
@@ -1278,6 +1291,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public List<ItemEntity> findStoresItems(HeaderDto headerDto) throws Exception {
+        log.info("++++++++++++ find stores items +++++++++++++++");
         List<ItemsStoreEntity> itemsStores = merchantDaoService.findItemsStores(Integer.parseInt(headerDto.getId()));
         if(itemsStores.size() == 0)
             throw new YSException("VLD016");
@@ -1292,7 +1306,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public List<CategoryEntity> findMerchantsDefaultCategory(HeaderDto headerDto) throws Exception {
-
+        log.info("++++++++++++ getting default categories of the merchant +++++++++++++++");
         List<StoresBrandEntity> storesBrands = merchantDaoService.findBrandListByMerchant(headerDto.getMerchantId());
         List<BrandsCategoryEntity> brandsCategories =  merchantDaoService.getBrandsCategory(storesBrands.get(0).getId());
         List<CategoryEntity> categories = new ArrayList<>();
@@ -1307,6 +1321,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public List<CategoryEntity> findParentCategoriesItems(RequestJsonDto requestJson) throws Exception {
+        log.info("++++++++++++ getting items of the parent categories +++++++++++++++");
         Integer parentId = requestJson.getParentCategoryId();
         Integer storeId = requestJson.getCategoryStoreId();
         Integer itemCount = requestJson.getParentCategoriesItemsCount();
@@ -1416,6 +1431,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public List<CategoryEntity> findParentCategoriesByBrand(HeaderDto headerDto) throws Exception {
+        log.info("++++++++++++ getting parent categories of the brand +++++++++++++++");
         List<BrandsCategoryEntity> brandsCategories =  merchantDaoService.getBrandsCategory(Integer.parseInt(headerDto.getId()));
         List<CategoryEntity> categories = new ArrayList<>();
 
@@ -1437,6 +1453,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public boolean changeStatus(RequestJsonDto requestJsonDto, HeaderDto headerDto) throws Exception{
+        log.info("++++++++++++ changing status of "+requestJsonDto.getClassName()+" +++++++++++++++");
         String type = requestJsonDto.getClassName();
         Integer statusId = requestJsonDto.getStatusId();
         String[] ids =  headerDto.getId().split(",");
@@ -1479,6 +1496,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public PaginationDto getWebItemSearch(RequestJsonDto requestJsonDto) throws Exception{
+        log.info("++++++++++++ getting search items +++++++++++++++");
         List<Integer> parentCategoryId = requestJsonDto.getCategories();
         List<Integer> storeId = requestJsonDto.getBrands();
 
@@ -1559,6 +1577,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public PaginationDto getOrders(HeaderDto headerDto, RequestJsonDto requestJson) throws Exception {
+        log.info("++++++++++++ getting orders +++++++++++++++");
         Page page = requestJson.getPage();
         List<Integer> storeIdList = new ArrayList<Integer>();
         if(headerDto.getMerchantId() == null){
@@ -1628,6 +1647,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public PaginationDto getPurchaseHistory(HeaderDto headerDto, RequestJsonDto requestJson) throws Exception {
+        log.info("++++++++++++ getting purchase history +++++++++++++++");
         Page page = requestJson.getPage();
         List<Integer> storeIdList = new ArrayList<Integer>();
         if(headerDto.getMerchantId() == null){
@@ -1683,6 +1703,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public PaginationDto getOrderItems(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
+        log.info("++++++++++++ getting items of order: "+headerDto.getId()+" +++++++++++++++");
         Page page = requestJsonDto.getPage();
 
         PaginationDto paginationDto = new PaginationDto();
@@ -1724,7 +1745,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public void addItemsImages(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
-
+        log.info("++++++++++++ saving items image +++++++++++++++");
         Integer itemId = Integer.parseInt(headerDto.getId());
         List<String> itemsImages = requestJsonDto.getItemImages();
         ItemEntity item = merchantDaoService.getItemDetail(itemId);
@@ -1770,7 +1791,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Override
     public PaginationDto getInvoices(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
-
+        log.info("++++++++++++ getting invoices +++++++++++++++");
         Map<String, Date> dateRange = requestJsonDto.getDateRange();
         Date fromDate = null;
         Date toDate = null;

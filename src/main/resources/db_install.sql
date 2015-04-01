@@ -190,4 +190,8 @@ INSERT INTO preferences_types (group_name) VALUE ("General Setting"), ("Algorith
 INSERT INTO preferences_sections (section, group_id) VALUES ("Currency & Tax", 1),("Reward Configuration", 1),("Rating Configuration", 1),("Support Configuration", 1),("Company Information", 1),("Version Configuration", 1),("Default Image", 1);
 INSERT INTO preferences_sections (section, group_id) VALUES ("Distance Selection", 2),("Time, Distance and Charge Configuration", 2),("Order Processing Configuration", 2),("Profit and Commission Configuration", 2);
 
-
+/*4/1/2015*/
+update dboy_advance_amounts set type = "advanceAmount";
+INSERT INTO dboy_advance_amounts (advance_date, advance_amount, dboy_id) SELECT ack_date, amount_received, dboy_id, "acknowledgeAmount" FROM dboy_submitted_amounts;
+DROP TABLE dboy_submitted_amounts;
+/*remember the */

@@ -48,7 +48,7 @@ public class DeliveryBoyEntity implements Serializable {
     private List<DBoyOrderHistoryEntity> dBoyOrderHistories;
     private List<DeliveryBoySelectionEntity> deliveryBoySelections;
     private List<DBoyAdvanceAmountEntity> dBoyAdvanceAmounts;
-    private List<DBoySubmittedAmountEntity> dBoySubmittedAmount;
+    //private List<DBoySubmittedAmountEntity> dBoySubmittedAmount;
     private String latitude;
     private String longitude;
     private Timestamp lastLocationUpdate;
@@ -268,7 +268,7 @@ public class DeliveryBoyEntity implements Serializable {
         this.dBoyAdvanceAmounts = dBoyAdvanceAmounts;
     }
 
-    @JsonIgnore
+    /*@JsonIgnore
     @OneToMany(mappedBy = "deliveryBoy", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )
     public List<DBoySubmittedAmountEntity> getdBoySubmittedAmount() {
         return dBoySubmittedAmount;
@@ -276,7 +276,7 @@ public class DeliveryBoyEntity implements Serializable {
 
     public void setdBoySubmittedAmount(List<DBoySubmittedAmountEntity> dBoySubmittedAmount) {
         this.dBoySubmittedAmount = dBoySubmittedAmount;
-    }
+    }*/
 
     @Column(name = "latitude")
     @JsonProperty

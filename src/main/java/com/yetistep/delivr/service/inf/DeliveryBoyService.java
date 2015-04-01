@@ -71,7 +71,5 @@ public interface DeliveryBoyService {
 
     public PreferenceDto getAcceptanceDetails() throws Exception;
 
-    public PaginationDto getAcknowledgements(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
-
     public PaginationDto getAdvanceAmounts(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 }

@@ -229,7 +229,7 @@ public class AccountantController {
         }
     }
 
-    @RequestMapping(value = "/get_acknowledgements", method = RequestMethod.POST)
+   /* @RequestMapping(value = "/get_acknowledgements", method = RequestMethod.POST)
     public ResponseEntity<ServiceResponse> getAcknowledgements(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();
@@ -244,7 +244,7 @@ public class AccountantController {
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
-    }
+    }*/
 
     @RequestMapping(value = "/get_advance_amounts", method = RequestMethod.POST)
     public ResponseEntity<ServiceResponse> getAdvanceAmounts(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {

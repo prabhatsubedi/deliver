@@ -24,6 +24,7 @@ public class DBoyAdvanceAmountEntity implements Serializable {
     private Timestamp advanceDate;
     private DeliveryBoyEntity deliveryBoy;
     private BigDecimal amountAdvance;
+    private String type;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,7 +47,6 @@ public class DBoyAdvanceAmountEntity implements Serializable {
         this.advanceDate = advanceDate;
     }
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "dboy_id")
     public DeliveryBoyEntity getDeliveryBoy() {
@@ -66,4 +66,12 @@ public class DBoyAdvanceAmountEntity implements Serializable {
         this.amountAdvance = amountAdvance;
     }
 
+    @Column(name = "type")
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

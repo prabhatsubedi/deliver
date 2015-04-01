@@ -47,7 +47,6 @@
        <mapping class="com.yetistep.delivr.model.PreferenceSectionEntity" />
        <mapping class="com.yetistep.delivr.model.PreferencesEntity"/>
        <mapping class="com.yetistep.delivr.model.DBoyAdvanceAmountEntity"/>
-       <mapping class="com.yetistep.delivr.model.DBoySubmittedAmountEntity"/>
        <mapping class="com.yetistep.delivr.model.DeliveryBoySelectionEntity"/>
        <mapping class="com.yetistep.delivr.model.UserDeviceEntity"/>
        <mapping class="com.yetistep.delivr.model.RatingEntity"/>

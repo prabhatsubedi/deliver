@@ -211,6 +211,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         List<DBoyAdvanceAmountEntity> dBoyAdvanceAmounts = new ArrayList<DBoyAdvanceAmountEntity>();
         DBoyAdvanceAmountEntity dBoyAdvanceAmount = new DBoyAdvanceAmountEntity();
         dBoyAdvanceAmount.setAmountAdvance(requestJsonDto.getAdvanceAmount());
+        dBoyAdvanceAmount.setType("advanceAmount");
         dBoyAdvanceAmount.setDeliveryBoy(dBoy);
         dBoyAdvanceAmount.setAdvanceDate(DateUtil.getCurrentTimestampSQL());
         dBoyAdvanceAmounts.add(dBoyAdvanceAmount);
@@ -237,13 +238,14 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         dBoy.setPreviousDue(dBoy.getPreviousDue().subtract(requestJsonDto.getSubmittedAmount()));
         dBoy.setAvailableAmount(dBoy.getAvailableAmount().subtract(requestJsonDto.getSubmittedAmount()));
         dBoy.setWalletAmount(dBoy.getWalletAmount().subtract(requestJsonDto.getSubmittedAmount()));
-        List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
-        DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();
-        dBoySubmittedAmount.setAmountReceived(requestJsonDto.getSubmittedAmount());
+        List<DBoyAdvanceAmountEntity> dBoySubmittedAmounts = new ArrayList<>();
+        DBoyAdvanceAmountEntity dBoySubmittedAmount = new DBoyAdvanceAmountEntity();
+        dBoySubmittedAmount.setAmountAdvance(requestJsonDto.getSubmittedAmount());
+        dBoySubmittedAmount.setType("acknowledgeAmount");
         dBoySubmittedAmount.setDeliveryBoy(dBoy);
-        dBoySubmittedAmount.setAckDate(DateUtil.getCurrentTimestampSQL());
+        dBoySubmittedAmount.setAdvanceDate(DateUtil.getCurrentTimestampSQL());
         dBoySubmittedAmounts.add(dBoySubmittedAmount);
-        dBoy.setdBoySubmittedAmount(dBoySubmittedAmounts);
+        dBoy.setdBoyAdvanceAmounts(dBoySubmittedAmounts);
 
         deliveryBoyDaoService.update(dBoy);
         String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
@@ -265,13 +267,14 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         dBoy.setWalletAmount(dBoy.getWalletAmount().subtract(requestJsonDto.getSubmittedAmount()));
         dBoy.setAvailableAmount(dBoy.getAvailableAmount().subtract(requestJsonDto.getSubmittedAmount()));
 
-        List<DBoySubmittedAmountEntity> dBoySubmittedAmounts = new ArrayList<DBoySubmittedAmountEntity>();
-        DBoySubmittedAmountEntity dBoySubmittedAmount = new DBoySubmittedAmountEntity();
-        dBoySubmittedAmount.setAckDate(DateUtil.getCurrentTimestampSQL());
-        dBoySubmittedAmount.setAmountReceived(requestJsonDto.getSubmittedAmount());
+        List<DBoyAdvanceAmountEntity> dBoySubmittedAmounts = new ArrayList<>();
+        DBoyAdvanceAmountEntity dBoySubmittedAmount = new DBoyAdvanceAmountEntity();
+        dBoySubmittedAmount.setAdvanceDate(DateUtil.getCurrentTimestampSQL());
+        dBoySubmittedAmount.setAmountAdvance(requestJsonDto.getSubmittedAmount());
         dBoySubmittedAmount.setDeliveryBoy(dBoy);
+        dBoySubmittedAmount.setType("acknowledgeAmount");
         dBoySubmittedAmounts.add(dBoySubmittedAmount);
-        dBoy.setdBoySubmittedAmount(dBoySubmittedAmounts);
+        dBoy.setdBoyAdvanceAmounts(dBoySubmittedAmounts);
 
         deliveryBoyDaoService.update(dBoy);
 

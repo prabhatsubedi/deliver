@@ -86,9 +86,6 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     @Autowired
     DBoyAdvanceAmountDaoService dBoyAdvanceAmountDaoService;
 
-    @Autowired
-    DBoySubmittedAmountDaoService dBoySubmittedAmountDaoService;
-
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Shopper +++++++++++++++++");
@@ -1760,7 +1757,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         return preferenceDto;
     }
 
-    @Override
+    /*@Override
     public PaginationDto getAcknowledgements(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
         Page page = requestJsonDto.getPage();
 
@@ -1789,7 +1786,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         paginationDto.setData(objects);
         return paginationDto;
-    }
+    }*/
 
     @Override
     public PaginationDto getAdvanceAmounts(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
@@ -1807,7 +1804,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         List<Object> objects = new ArrayList<>();
 
-        String fields = "id,advanceDate,amountAdvance,deliveryBoy";
+        String fields = "id,advanceDate,amountAdvance,type,deliveryBoy";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

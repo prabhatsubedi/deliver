@@ -201,13 +201,20 @@ if (typeof(Manager) == "undefined") var Manager = {};
         $('.trigger_activation').live('click', function () {
             var statusCheck = $(this).attr('data-status');
 
-            var chk_confirm = confirm('Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?');
-            if (!chk_confirm) return false;
-
+//            var chk_confirm = confirm('Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?');
+//            if (!chk_confirm) return false;
             var data = {};
             data.id = $(this).attr('data-id');
             data.status = "" + statusCheck;
-            Manager.changeUserStatus(data);
+            var button1 = function() {
+                Manager.changeUserStatus(data);
+            };
+
+            button1.text = "Yes";
+            var button2 = "No";
+
+            var buttons = [button1, button2];
+            Main.popDialog('Merchant Activation', 'Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?', buttons);
         });
 
     };
@@ -235,7 +242,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.changeUserStatus = function (data, fnCallback) {
 
         var callback = function (status, data) {
-            alert(data.message);
+//            alert(data.message);
+            Main.popDialog('Merchant Activation', data.message, ['Close']);
             if (data.success == true) {
                 Manager.getMerchants();
             }
@@ -843,11 +851,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
     }
 
     Manager.getCategories = function(){
-        $("a.view_home").click(function(){
-            $(".parent_category_list").removeClass("hidden");
-            $(".category_detail").addClass("hidden");
-            Main.elemRatio();
-        });
         var callback = function (status, data) {
             if (!data.success) {
                 alert(data.message);
@@ -915,6 +918,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             for(var j = 0; j < categories.length; j++) {
                 var category = categories[j];
                 var elem = $('.item_container_template').clone();
+                $('.item_container', elem).attr('data-id', category.id);
                 $('.item_image img', elem).attr('src', category.imageUrl);
                 $('.item_name a', elem).html(category.name);
                 item_list += elem.html();
@@ -960,6 +964,49 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
 
     Manager.loadEditCategory = function(){
+
+        var re_calculate_width = true;
+        $('.item_container').live('mouseover', function(){
+            if(re_calculate_width == true) {
+                var elem = $('.items_container .item_container');
+                elem.width(elem.eq(0).width() - 1);
+                elem.height(elem.eq(0).height());
+                re_calculate_width = false;
+            }
+        });
+        $(window).resize(function() {
+            $('.items_container .item_container').removeAttr('style');
+            $('.items_container .item_container .item_image').removeAttr('style');
+            re_calculate_width = true;
+        });
+
+        $('.menu_toggle').click(function(){
+            $('.items_container .item_container').removeAttr('style');
+            $('.items_container .item_container .item_image').removeAttr('style');
+            re_calculate_width = true;
+        });
+
+        var sortableParam = {
+            revert: true,
+            tolerance: 'pointer',
+            containment: 'parent',
+            stop: function( event, ui ) {
+                var arrdata = [];
+                $('#parent_category_list .item_container').each(function(){
+                    arrdata.push({id: $(this).attr('data-id'), priority: $(this).index() + 1});
+                });
+                Main.request('/organizer/change_category_priority', {categoryList: arrdata});
+            }
+        };
+
+        $('#parent_category_list').sortable(sortableParam);
+
+        $("a.view_home").click(function(){
+            $(".parent_category_list").removeClass("hidden");
+            $(".category_detail").addClass("hidden");
+            Main.elemRatio();
+        });
+
         Image.dropZone('#category_image_input', '#category_image');
         $("#category_image").addClass('disabled');
         $('.edit_btn').click(function () {

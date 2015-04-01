@@ -504,7 +504,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         var popElem = $('#popDialog');
         var buttonsElem = '';
         for(var i = 0; i < buttons.length; i++) {
-            var button = '<button class="btn btn-primary" type="button">' + buttons[i].text + '</button>';
+            var button = '<button class="btn btn-primary" type="button">' + (typeof buttons[i] == 'string' ? buttons[i] : buttons[i].text) + '</button>';
             buttonsElem += button;
         }
         if(title == '')
@@ -572,10 +572,8 @@ $(document).ready(function(){
 
     $('#popDialog .modal-footer button').live('click', function() {
         var btnFn = window.dialogButtons[$(this).index()];
-        if(btnFn.toString().indexOf('close()') > -1)
-            $('#popDialog').modal('hide');
-        else
-            btnFn();
+        if(typeof btnFn == 'function') btnFn();
+        $('#popDialog').modal('hide');
     });
 
 });

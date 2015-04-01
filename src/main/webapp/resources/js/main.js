@@ -481,13 +481,14 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         Main.popDialog("Test Title", "Test content", buttons);
         */
 
+        if(!buttons) buttons = [];
         if($('#popDialog').length == 0) {
             $('body').append('\
                 <div class="modal fade" id="popDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">\
                     <div class="modal-dialog">\
                         <div class="modal-content">\
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute; right: 15px; top: 12px; z-index: 1;"><span aria-hidden="true">&times;</span></button>\
                             <div class="modal-header">\
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
                                 <h4 class="modal-title" id="myModalLabel"></h4>\
                             </div>\
                             <div class="modal-body">\
@@ -506,9 +507,17 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             var button = '<button class="btn btn-primary" type="button">' + buttons[i].text + '</button>';
             buttonsElem += button;
         }
-        $('.modal-title', popElem).html(title);
+        if(title == '')
+            $('.modal-header', popElem).addClass('hidden').children('.modal-title').html('');
+        else
+            $('.modal-header', popElem).removeClass('hidden').children('.modal-title').html(title);
+
         $('.modal-body', popElem).html(content);
-        $('.modal-footer', popElem).html(buttonsElem);
+
+        if(buttons.length == 0)
+            $('.modal-footer', popElem).addClass('hidden').html('');
+        else
+            $('.modal-footer', popElem).removeClass('hidden').html(buttonsElem);
         popElem.modal('show');
     };
 

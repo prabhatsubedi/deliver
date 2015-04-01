@@ -670,6 +670,7 @@ public class CustomerServiceImpl implements CustomerService {
         map.put("featured", featuredBrands);
         map.put("page", pageInfo);
         map.put("all", sortedList);
+        map.put("currency", systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         return map;
     }
 

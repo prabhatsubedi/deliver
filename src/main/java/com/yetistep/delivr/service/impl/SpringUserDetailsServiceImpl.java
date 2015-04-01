@@ -56,6 +56,7 @@ public class SpringUserDetailsServiceImpl implements UserDetailsService {
         Boolean enabled = false;
         if(user.getVerifiedStatus() && user.getStatus().toString().equals(Status.ACTIVE.toString()))
             enabled = true;
+
         AuthenticatedUser authenticatedUser = new AuthenticatedUser(user.getUsername(),
                 user.getPassword(), enabled, true, true, true, authorities);
 

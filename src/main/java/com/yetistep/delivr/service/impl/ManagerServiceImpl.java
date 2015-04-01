@@ -726,6 +726,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
     public void updateCategoryPriority(RequestJsonDto requestJsonDto) throws Exception{
             log.info("+++++++++++++++ updating category priority +++++++++++++");
          List<CategoryEntity> categoryEntities = requestJsonDto.getCategoryList();
+
          categoryDaoService.updatePriority(categoryEntities);
     }
 

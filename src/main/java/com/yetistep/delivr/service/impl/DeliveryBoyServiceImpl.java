@@ -83,12 +83,6 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     @Autowired
     AccountService accountService;
 
-    @Autowired
-    DBoySubmittedAmountDaoService dBoySubmittedAmountDaoService;
-
-    @Autowired
-    DBoyAdvanceAmountDaoService dBoyAdvanceAmountDaoService;
-
     @Override
     public void saveDeliveryBoy(DeliveryBoyEntity deliveryBoy, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++++++++ Creating Shopper +++++++++++++++++");

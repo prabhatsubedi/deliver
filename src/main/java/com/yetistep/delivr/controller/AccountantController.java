@@ -234,7 +234,7 @@ public class AccountantController {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            PaginationDto acknowledgedAmounts = deliveryBoyService.getAcknowledgements(headerDto);
+            PaginationDto acknowledgedAmounts = deliveryBoyService.getAcknowledgements(headerDto, requestJsonDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Invoice(s) has been paid successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
@@ -250,7 +250,7 @@ public class AccountantController {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            PaginationDto advanceAmounts = deliveryBoyService.getAdvanceAmounts(headerDto);
+            PaginationDto advanceAmounts = deliveryBoyService.getAdvanceAmounts(headerDto, requestJsonDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Invoice(s) has been paid successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

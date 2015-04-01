@@ -113,7 +113,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         String body = EmailMsg.createPasswordForNewUser(url, user.getFullName(), user.getUsername(), getServerUrl());
         String subject = "Delivr: You have been added as Merchant ";
         sendMail(user.getUsername(), body, subject);
-
         log.info("+++++++ Merchant Created Successfully ++++++");
 
     }

@@ -1022,19 +1022,16 @@ public class CustomerServiceImpl implements CustomerService {
         return surgeFactor;
     }
 
-    public CustomerEntity getCustomerByFbId(Long facebook_id) throws Exception{
-        CustomerEntity customer = customerDaoService.find(facebook_id);
-        return customer;
-    }
-
-
     /* Used For Only Manager and Account Registration */
     public void registerCustomer(UserEntity user, HeaderDto headerDto) throws Exception{
 
         RoleEntity userRole = userDaoService.getRoleByRole(user.getRole().getRole());
         user.setRole(userRole);
 
-        CustomerEntity referrer = getCustomerByFbId(Long.parseLong(headerDto.getId()));
+        CustomerEntity referrer = customerDaoService.find(Long.parseLong(headerDto.getId()));
+
+        if(referrer == null)
+            throw new YSException("VLD011");
 
         Integer referred_friends_count = referrer.getReferredFriendsCount();
         if(referred_friends_count == null){
@@ -1044,16 +1041,10 @@ public class CustomerServiceImpl implements CustomerService {
         }
         referrer.setReferredFriendsCount(referred_friends_count);
         referrer.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
-        //referrer.setRewardsEarned(referrer.getRewardsEarned().add(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT))));
         customerDaoService.update(referrer);
-
-        CustomerEntity cUser = getCustomerByFbId(user.getCustomer().getFacebookId());
-
+        CustomerEntity cUser = customerDaoService.find(user.getCustomer().getFacebookId());
         if(cUser != null)
             throw new YSException("VLD010");
-
-        if(referrer == null)
-            throw new YSException("VLD011");
 
         if(!referrer.getDefault() && referrer.getReferredFriendsCount() != null && referrer.getReferredFriendsCount() >= Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.MAX_REFERRED_FRIENDS_COUNT)))
             throw new YSException("VLD021");
@@ -1062,7 +1053,6 @@ public class CustomerServiceImpl implements CustomerService {
         user.getCustomer().setFbToken(headerDto.getAccessToken());
         user.getCustomer().setUser(user);
         user.setCreatedDate(DateUtil.getCurrentTimestampSQL());
-        //user.getCustomer().setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
         userDaoService.save(user);
     }
 

@@ -63,8 +63,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             address.setUser(user);
         }
 
-
-
         String code = MessageBundle.generateTokenString() + "_" + System.currentTimeMillis();
         user.setStatus(Status.UNVERIFIED);
         user.setUsername(headerDto.getUsername());
@@ -809,7 +807,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             category = itemCategories.get(i-1);
         }else{
             category = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
-            if (category.getChild().size() > 0){
+            if (!category.getChild().isEmpty()){
                 throw new YSException("VLD032");
             }
         }

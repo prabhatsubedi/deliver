@@ -31,14 +31,16 @@ public class PushNotificationUtil {
 
 
     public static void sendPushNotification(UserDeviceEntity userDevice, String message, NotifyTo notifyTo, PushNotificationRedirect pushNotificationRedirect, String extraDetail) {
-        if (userDevice != null && userDevice.getFamily() != null && userDevice.getDeviceToken() != null) {
-            PushNotification pushNotification = new PushNotification();
-            pushNotification.setTokens(Collections.singletonList(userDevice.getDeviceToken()));
-            pushNotification.setMessage(message);
-            pushNotification.setNotifyTo(notifyTo);
-            pushNotification.setPushNotificationRedirect(pushNotificationRedirect);
-            pushNotification.setExtraDetail(extraDetail);
-            PushNotificationUtil.sendNotification(pushNotification, userDevice.getFamily());
+        if (userDevice != null) {
+            if(userDevice.getFamily() != null && userDevice.getDeviceToken() != null) {
+                PushNotification pushNotification = new PushNotification();
+                pushNotification.setTokens(Collections.singletonList(userDevice.getDeviceToken()));
+                pushNotification.setMessage(message);
+                pushNotification.setNotifyTo(notifyTo);
+                pushNotification.setPushNotificationRedirect(pushNotificationRedirect);
+                pushNotification.setExtraDetail(extraDetail);
+                PushNotificationUtil.sendNotification(pushNotification, userDevice.getFamily());
+            }
         }else{
             log.warn("Missing information of user device");
         }

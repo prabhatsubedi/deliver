@@ -49,6 +49,18 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
     }
 
     @Override
+    public CategoryEntity getCategory(String categoryName, Integer parentId, Integer storeId) throws Exception {
+        List<CategoryEntity> categories = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
+        criteria.add(Restrictions.eq("name", categoryName));
+        criteria.add(Restrictions.eq("parent.id", parentId));
+        criteria.add(Restrictions.eq("storesBrand.id", storeId));
+        categories = criteria.list();
+
+        return categories.size() > 0 ? categories.get(0) : null;
+    }
+
+    @Override
     public Boolean save(CategoryEntity value) throws Exception {
         if(value.getName().contains("#")) {
             String[] arrCat = value.getName().split("#");

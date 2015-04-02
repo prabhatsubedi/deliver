@@ -775,7 +775,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     @Override
     public void saveItem(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++ Saving Item +++++++++++++++");
-
         ItemEntity item = requestJson.getItem();
         List<CategoryEntity> itemCategories = requestJson.getItemCategories();
         List<Integer> itemStores = requestJson.getItemStores();
@@ -795,7 +794,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             int i;
             for(i = 1; i<itemCategories.size(); i++){
                //if category with same same and same parent exists then just update the category
-               CategoryEntity catExist = categoryDaoService.getCategory(itemCategories.get(i).getName(), itemCategories.get(i - 1).getId());
+               CategoryEntity catExist = categoryDaoService.getCategory(itemCategories.get(i).getName(), itemCategories.get(i - 1).getId(), storesBrand.getId());
                if(catExist != null){
                     itemCategories.get(i).setId(catExist.getId());
                }

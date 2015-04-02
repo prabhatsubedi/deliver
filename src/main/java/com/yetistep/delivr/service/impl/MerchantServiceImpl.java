@@ -804,10 +804,10 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                itemCategories.get(i).setStoresBrand(storesBrand);
                itemCategories.get(i).setCreatedDate(DateUtil.getCurrentTimestampSQL());
             }
-            itemCategories.set(0, parentCategory);
+            //itemCategories.set(0, parentCategory);
             merchantDaoService.saveCategories(itemCategories);
             //get items category
-            category = itemCategories.get(itemCategories.size()-1);
+            category = itemCategories.get(i-1);
         }else{
             category = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
             if (category.getChild().size() > 0){

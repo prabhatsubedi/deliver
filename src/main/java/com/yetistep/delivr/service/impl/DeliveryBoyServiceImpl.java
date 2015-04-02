@@ -267,7 +267,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             throw new YSException("VLD027");
         }
 
-        if(deliveryBoyDaoService.checkIfLicenseNumberExists(deliveryBoyEntity.getLicenseNumber(), dBoyEntity.getUser().getId())){
+        if(deliveryBoyDaoService.checkIfLicenseNumberExists(deliveryBoyEntity.getLicenseNumber(), dBoyEntity.getId())){
             throw new YSException("VLD034");
         }
 

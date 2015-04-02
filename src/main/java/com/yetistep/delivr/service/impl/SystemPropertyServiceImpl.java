@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 
@@ -92,9 +89,14 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
         Resource resource = new ClassPathResource(SYSTEM_PREF_FILE);
         File file = resource.getFile();
 
+        FileInputStream in = new FileInputStream(file);
+        Properties prop = new Properties();
+        prop.load(in);
+        in.close();
+
         FileOutputStream outputStream = new FileOutputStream(file);
 
-        Properties prop = new Properties();
+        //Properties prop = new Properties();
         for (PreferencesEntity preferences : allPreferences) {
             prop.setProperty(preferences.getPrefKey().toString(), preferences.getValue());
         }

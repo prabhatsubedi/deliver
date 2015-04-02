@@ -245,7 +245,8 @@ if (typeof(Manager) == "undefined") var Manager = {};
 //            alert(data.message);
             Main.popDialog('Merchant Activation', data.message, ['Close']);
             if (data.success == true) {
-                Manager.getMerchants();
+                window.location.reload();
+//                Manager.getMerchants();
             }
         };
 

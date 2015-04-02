@@ -192,6 +192,6 @@ INSERT INTO preferences_sections (section, group_id) VALUES ("Distance Selection
 
 /*4/1/2015*/
 update dboy_advance_amounts set type = "advanceAmount";
-INSERT INTO dboy_advance_amounts (advance_date, advance_amount, dboy_id) SELECT ack_date, amount_received, dboy_id, "acknowledgeAmount" FROM dboy_submitted_amounts;
+INSERT INTO dboy_advance_amounts (advance_date, advance_amount, dboy_id, type) SELECT ack_date, amount_received, dboy_id, "acknowledgeAmount" FROM dboy_submitted_amounts;
 DROP TABLE dboy_submitted_amounts;
 /*remember the */

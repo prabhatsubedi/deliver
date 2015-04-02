@@ -229,6 +229,23 @@ public class AccountantController {
         }
     }
 
+
+    @RequestMapping(value = "/settle_merchants_order", method = RequestMethod.POST)
+    public ResponseEntity<ServiceResponse> settleMerchantsOrder(@RequestHeader HttpHeaders headers) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            accountService.settleMerchantsOrder(headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Shopper has been paid successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while paying Shopper: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
    /* @RequestMapping(value = "/get_acknowledgements", method = RequestMethod.POST)
     public ResponseEntity<ServiceResponse> getAcknowledgements(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
         try{

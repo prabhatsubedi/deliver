@@ -462,7 +462,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
     };
 
     Manager.getCourierStaffs = function () {
-
         var dataFilter = function (data, type) {
             if (!data.success) {
                 alert(data.message);

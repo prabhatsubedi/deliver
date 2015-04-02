@@ -192,4 +192,23 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             invoiceDaoService.update(invoice);
         }
     }
+
+
+    @Override
+    public void settleMerchantsOrder(HeaderDto headerDto) throws Exception {
+        String orderId = headerDto.getId();
+        String[] orderIds =  orderId.split(",");
+        List<OrderEntity> orders = new ArrayList<>();
+
+        for (String id: orderIds ) {
+            if(id != "")
+                orders.add(orderDaoService.find(Integer.parseInt(id)));
+        }
+
+        for (OrderEntity order: orders){
+            order.setSettled(true);
+            order.setSettledDate(new Date(System.currentTimeMillis()));
+            orderDaoService.update(order);
+        }
+    }
 }

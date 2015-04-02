@@ -70,6 +70,9 @@ public class OrderEntity implements Serializable {
     private List<DeliveryBoySelectionEntity> deliveryBoySelections;
     private BillEntity bill;
     private ReceiptEntity receipt;
+    //for merchant settlement
+    private Boolean settled;
+    private Date settledDate;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -470,5 +473,24 @@ public class OrderEntity implements Serializable {
 
     public void setReceipt(ReceiptEntity receipt) {
         this.receipt = receipt;
+    }
+
+    @Column(name = "settled", columnDefinition = "TINYINT(1) DEFAULT 0")
+    public Boolean getSettled() {
+        return settled;
+    }
+
+    public void setSettled(Boolean settled) {
+        this.settled = settled;
+    }
+
+
+    @Column(name = "settled_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
+    public Date getSettledDate() {
+        return settledDate;
+    }
+
+    public void setSettledDate(Date settledDate) {
+        this.settledDate = settledDate;
     }
 }

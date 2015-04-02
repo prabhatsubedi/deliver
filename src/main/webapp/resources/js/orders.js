@@ -262,7 +262,7 @@ Order.getPurchaseHistory = function(){
 
 
 
-            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.orderDate, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, view_items, ''];
+            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.orderDate, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', deliveryBoy, link_attachments, view_items, ''];
             row = $.extend({}, row);
             tableData.push(row);
 

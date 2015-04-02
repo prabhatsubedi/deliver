@@ -27,4 +27,6 @@ public interface AccountService {
 
     public void payInvoice(HeaderDto headerDto) throws Exception;
 
+    public void settleMerchantsOrder(HeaderDto headerDto) throws Exception;
+
 }

@@ -11,22 +11,24 @@ var merchantProfile;
         var callback = function (status, data) {
             $("button[type='submit']","#signup_form").removeAttr("disabled");
 
-            if (data.success == true) {
-                alert(data.message);
-                $('#signup_form').trigger('reset');
-                $('#drop_zone').html('');
-                $('#signup_form .nav li').eq(0).children('a').tab('show');
-                $("#signup_form .nav li").removeClass('passed_tab');
-                $("#signup_form .nav li").eq(0).nextAll('li').addClass('disabled_tab');
-                $('#modal_signup').modal('hide');
-                deleteMarkers();
-            } else {
-                alert(data.message);
-                if(data.code == "VLD026") {
-                    $('#signup_form .nav li').eq(1).children('a').tab('show');
-                    $('#contact_email').addClass('error');
+            Main.popDialog('', data.message, function () {
+
+                if (data.success == true) {
+                    $('#signup_form').trigger('reset');
+                    $('#drop_zone').html('');
+                    $('#signup_form .nav li').eq(0).children('a').tab('show');
+                    $("#signup_form .nav li").removeClass('passed_tab');
+                    $("#signup_form .nav li").eq(0).nextAll('li').addClass('disabled_tab');
+                    $('#modal_signup').modal('hide');
+                    deleteMarkers();
+                } else {
+                    if(data.code == "VLD026") {
+                        $('#signup_form .nav li').eq(1).children('a').tab('show');
+                        $('#contact_email').addClass('error');
+                    }
                 }
-            }
+
+            });
         };
 
         callback.loaderDiv = "#modal_signup .modal-dialog";
@@ -101,7 +103,7 @@ var merchantProfile;
                 disableMapEdit = true;
 
             } else {
-                alert(data.message);
+                Main.popDialog('', data.message);
             }
         };
 
@@ -158,50 +160,56 @@ var merchantProfile;
             if ($('#merchant_form').valid()) {
 
                 if($('#commission').val() == 0 && $('#service_fee').val() == 0) {
-                    alert('Both commission percent and service fee cannot be 0.');
+                    Main.popDialog('', 'Both commission percent and service fee cannot be 0.');
                     return false;
                 }
 
                 var address = arrGeoPoints[Object.keys(arrGeoPoints)[0]];
                 if(address == undefined) {
-                    alert("Please add a marker to set address.");
+                    Main.popDialog('', "Please add a marker to set address.");
                 } else if(address.name == "" || address.street == "" || address.city == "" || address.state == "") {
-                    alert("Please fill up all fields of info window and save.");
+                    Main.popDialog('', "Please fill up all fields of info window and save.");
                 } else {
 
-                    var chk_confirm = confirm('Are you sure you want to update Merchant?');
-                    if (!chk_confirm) return false;
+                    var button1 = function() {
 
-                    var data = {};
-                    var user = {};
-                    var objAddress = {};
+                        var data = {};
+                        var user = {};
+                        var objAddress = {};
 
-                    objAddress.id = address.id;
-                    objAddress.street = address.street;
-                    objAddress.city = address.city;
-                    objAddress.state = address.state;
-                    objAddress.country = address.country;
-                    objAddress.countryCode = "00977";
-                    objAddress.latitude = address.latitude;
-                    objAddress.longitude = address.longitude;
+                        objAddress.id = address.id;
+                        objAddress.street = address.street;
+                        objAddress.city = address.city;
+                        objAddress.state = address.state;
+                        objAddress.country = address.country;
+                        objAddress.countryCode = "00977";
+                        objAddress.latitude = address.latitude;
+                        objAddress.longitude = address.longitude;
 
-                    data.website = $('#url').val();
-                    data.companyRegistrationNo = $('#registration_no').val();
-                    data.vatNo = $('#vat').val();
-                    data.panNo = $('#pan').val();
-                    if(merchantRole != true) {
-                        data.partnershipStatus = $('#partnership').val();
-                        data.commissionPercentage = $('#commission').val();
-                        data.serviceFee = $('#service_fee').val();
-                    }
+                        data.website = $('#url').val();
+                        data.companyRegistrationNo = $('#registration_no').val();
+                        data.vatNo = $('#vat').val();
+                        data.panNo = $('#pan').val();
+                        if(merchantRole != true) {
+                            data.partnershipStatus = $('#partnership').val();
+                            data.commissionPercentage = $('#commission').val();
+                            data.serviceFee = $('#service_fee').val();
+                        }
 
-                    user.fullName = $('#contact_person').val();
-                    user.mobileNumber = $('#contact_no').val();
-                    user.addresses = [objAddress];
+                        user.fullName = $('#contact_person').val();
+                        user.mobileNumber = $('#contact_no').val();
+                        user.addresses = [objAddress];
 
-                    data.user = user;
+                        data.user = user;
 
-                    Merchant.updateMerchant(data, {merchantId: Main.getURLvalue(2)});
+                        Merchant.updateMerchant(data, {merchantId: Main.getURLvalue(2)});
+                    };
+
+                    button1.text = "Yes";
+                    var button2 = "No";
+
+                    var buttons = [button1, button2];
+                    Main.popDialog('', 'Are you sure you want to update Merchant?', buttons);
 
                 }
 
@@ -215,15 +223,16 @@ var merchantProfile;
         var callback = function (status, data) {
             $("a.save_btn").removeAttr("disabled");
 
-            alert(data.message);
-            if (data.success == true) {
-                $(".none_editable").removeClass('hidden');
-                $(".editable").addClass('hidden');
-                Merchant.loadMerchant();
-                for(var i in markers) {
-                    markers[i].setDraggable(false);
+            Main.popDialog('', data.message, function () {
+                if (data.success == true) {
+                    $(".none_editable").removeClass('hidden');
+                    $(".editable").addClass('hidden');
+                    Merchant.loadMerchant();
+                    for(var i in markers) {
+                        markers[i].setDraggable(false);
+                    }
                 }
-            }
+            });
         };
         callback.loaderDiv = "body";
         Main.request('/merchant/update_merchant', data, callback, headers);

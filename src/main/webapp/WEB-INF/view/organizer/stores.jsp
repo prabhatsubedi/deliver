@@ -46,9 +46,9 @@
                 <table id="stores_table">
                     <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>SN</th>
                         <th><div class="width_150"> Store Name </div></th>
-                        <th><div class="width_150"> Merchant Name </div></th>
+                        <th><div class="width_150"> Business Name </div></th>
                         <th> No. of Stores </th>
                         <th> Featured </th>
                         <th> Priority </th>

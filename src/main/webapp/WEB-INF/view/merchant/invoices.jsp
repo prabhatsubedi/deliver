@@ -89,12 +89,12 @@
                     idString+=$(this).data("id")+",";
             });
             if(idString == ""){
-                alert("Please select invoice(s) to pay");
+                Main.popDialog('Invoice Payment', 'Please select invoice(s) to pay');
             }else{
-                var pay = confirm("Are you sure you want to pay the invoice(s)");
-                if(pay){
+                var button1 = function() {
+
                     var callback = function(success, data){
-                        alert(data.message);
+                        Main.popDialog('Invoice Payment', data.message);
                         return;
                     }
 
@@ -104,7 +104,14 @@
                     header.id = idString;
 
                     Main.request('/accountant/pay_invoice', {}, callback, header);
-                }
+                };
+
+                button1.text = "Yes";
+                var button2 = "No";
+
+                var buttons = [button1, button2];
+                Main.popDialog('', "Are you sure you want to pay the invoice(s)", buttons);
+
             }
         });
     });
@@ -136,7 +143,7 @@
                 <table id="invoices_table">
                     <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>SN</th>
                         <th><div class="width_150">Store Name & Address</div></th>
                         <th><div class="width_120">Generated Date</div></th>
                         <th>Invoice Amount</th>

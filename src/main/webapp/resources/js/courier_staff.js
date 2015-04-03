@@ -54,36 +54,41 @@ var courierProfile;
         $('#courier_boy_form').validate({
             submitHandler: function () {
 
-                var chk_confirm = confirm('Are you sure you want to add shopper?');
-                if (!chk_confirm) return false;
+                var button1 = function() {
 
-                var data = {};
-                var user = {};
-                var address = {};
+                    var data = {};
+                    var user = {};
+                    var address = {};
 
-                address.street = $('#street').val();
-                address.city = $('#city').val();
-                address.state = $('#state').val();
-                address.country = $('#country').val();
-                address.countryCode = "00977";
+                    address.street = $('#street').val();
+                    address.city = $('#city').val();
+                    address.state = $('#state').val();
+                    address.country = $('#country').val();
+                    address.countryCode = "00977";
 
-                user.fullName = $('#full_name').val();
-                user.emailAddress = $('#email').val();
-                user.mobileNumber = $('#mobile').val();
-                user.gender = $('#gender').val();
-                user.profileImage = $('#profile_image img').attr('src');
-                user.addresses = [address];
+                    user.fullName = $('#full_name').val();
+                    user.emailAddress = $('#email').val();
+                    user.mobileNumber = $('#mobile').val();
+                    user.gender = $('#gender').val();
+                    user.profileImage = $('#profile_image img').attr('src');
+                    user.addresses = [address];
 
-                data.vehicleType = $('#vehicle_type').val();
-                data.vehicleNumber = $('#vehicle_no').val();
-                data.licenseNumber = $('#license_no').val();
-                data.user = user;
+                    data.vehicleType = $('#vehicle_type').val();
+                    data.vehicleNumber = $('#vehicle_no').val();
+                    data.licenseNumber = $('#license_no').val();
+                    data.user = user;
 
-                var headers = {};
-                headers.username = $('#mobile').val();
-                headers.password = $('#password').val();
+                    var headers = {};
+                    headers.username = $('#mobile').val();
+                    headers.password = $('#password').val();
+                    CourierStaff.addCourierStaff(data, headers);
+                };
 
-                CourierStaff.addCourierStaff(data, headers);
+                button1.text = "Yes";
+                var button2 = "No";
+
+                var buttons = [button1, button2];
+                Main.popDialog('', 'Are you sure you want to add shopper?', buttons);
 
                 return false;
 
@@ -112,13 +117,12 @@ var courierProfile;
         var callback = function (status, data) {
             $("button[type='submit']").removeAttr("disabled");
 
-            if (data.success == true) {
-                alert(data.message);
-                $('#courier_boy_form').trigger('reset');
-                $('#profile_image').html('<div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 200x200</div><div class="drop_title">Profile Picture</div>');
-            } else {
-                alert(data.message);
-            }
+            Main.popDialog('Add Shopper', data.message, function() {
+                if (data.success == true) {
+                    $('#courier_boy_form').trigger('reset');
+                    $('#profile_image').html('<div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 200x200</div><div class="drop_title">Profile Picture</div>');
+                }
+            });
         };
 
         callback.loaderDiv = ".main_content";
@@ -139,7 +143,7 @@ var courierProfile;
         var callback = function (status, data) {
             courierProfile = data;
             if (!data.success) {
-                alert(data.message);
+                Main.popDialog('Shopper Profile', data.message);
                 return;
             }
             var courierStaff = data.params.deliveryBoy;
@@ -305,42 +309,49 @@ var courierProfile;
 
         $('.save_btn').click(function () {
             if ($('#courier_boy_form').valid()) {
-                var chk_confirm = confirm('Are you sure you want to update shopper?');
-                if (!chk_confirm) return false;
 
-                var data = {};
-                var user = {};
-                var address = {};
+                var button1 = function() {
 
-                address.id = $('#street').attr('data-id');
-                address.street = $('#street').val();
-                address.city = $('#city').val();
-                address.state = $('#state').val();
-                address.country = $('#country').val();
-                address.countryCode = "00977";
+                    var data = {};
+                    var user = {};
+                    var address = {};
 
-                user.fullName = $('#full_name').val();
-                user.emailAddress = $('#email').val();
-                user.mobileNumber = $('#mobile').val();
-                user.gender = $('#gender').val();
-                user.status = $("#status").val();
-                elem_image = $('#profile_image img');
+                    address.id = $('#street').attr('data-id');
+                    address.street = $('#street').val();
+                    address.city = $('#city').val();
+                    address.state = $('#state').val();
+                    address.country = $('#country').val();
+                    address.countryCode = "00977";
 
-                if (elem_image.attr('data-new') == 'true') {
-                    user.profileImage = elem_image.attr('src');
-                }
-                user.addresses = [address];
+                    user.fullName = $('#full_name').val();
+                    user.emailAddress = $('#email').val();
+                    user.mobileNumber = $('#mobile').val();
+                    user.gender = $('#gender').val();
+                    user.status = $("#status").val();
+                    elem_image = $('#profile_image img');
 
-                data.id = Main.getURLvalue(3);
-                data.vehicleType = $('#vehicle_type').val();
-                data.vehicleNumber = $('#vehicle_no').val();
-                data.licenseNumber = $('#license_no').val();
-                data.user = user;
+                    if (elem_image.attr('data-new') == 'true') {
+                        user.profileImage = elem_image.attr('src');
+                    }
+                    user.addresses = [address];
 
-                var headers = {};
-                headers.username = $('#mobile').val();
-                headers.password = $('#password').val();
-                CourierStaff.editCourierStaff(data, headers);
+                    data.id = Main.getURLvalue(3);
+                    data.vehicleType = $('#vehicle_type').val();
+                    data.vehicleNumber = $('#vehicle_no').val();
+                    data.licenseNumber = $('#license_no').val();
+                    data.user = user;
+
+                    var headers = {};
+                    headers.username = $('#mobile').val();
+                    headers.password = $('#password').val();
+                    CourierStaff.editCourierStaff(data, headers);
+                };
+
+                button1.text = "Yes";
+                var button2 = "No";
+
+                var buttons = [button1, button2];
+                Main.popDialog('', 'Are you sure you want to update shopper?', buttons);
                 return false;
             }
         });
@@ -352,13 +363,14 @@ var courierProfile;
         var callback = function (status, data) {
             $("a.save_btn").removeAttr("disabled");
 
-            alert(data.message);
-            if (data.success == true) {
-                $(".none_editable").removeClass('hidden');
-                $(".editable").addClass('hidden');
-                $("#profile_image").addClass('disabled');
-                CourierStaff.getCourierStaffProfile();
-            }
+            Main.popDialog('Shopper Update', data.message, function() {
+                if (data.success == true) {
+                    $(".none_editable").removeClass('hidden');
+                    $(".editable").addClass('hidden');
+                    $("#profile_image").addClass('disabled');
+                    CourierStaff.getCourierStaffProfile();
+                }
+            });
         };
         callback.loaderDiv = "body";
         callback.requestType = 'PUT';

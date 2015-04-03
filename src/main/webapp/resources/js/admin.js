@@ -68,15 +68,26 @@ var Admin = function() {
             });
 
             $('.save_btn').live('click', function () {
-                var chk_confirm = confirm('Are you sure you want to update Settings?');
-                if (!chk_confirm) return false;
-                var parent = $(this).parents('.form_group').eq(0);
-                var preferences = [];
-                $('input.form-control', parent).each(function(){
-                    var data = {prefKey: $(this).attr('id'), value: $(this).val()};
-                    preferences.push(data);
-                });
-                Admin.updateSettings({preferences: preferences}, parent);
+
+                var __this = $(this);
+
+                var button1 = function() {
+
+                    var parent = __this.parents('.form_group').eq(0);
+                    var preferences = [];
+                    $('input.form-control', parent).each(function(){
+                        var data = {prefKey: $(this).attr('id'), value: $(this).val()};
+                        preferences.push(data);
+                    });
+                    Admin.updateSettings({preferences: preferences}, parent);
+                };
+
+                button1.text = "Yes";
+                var button2 = "No";
+
+                var buttons = [button1, button2];
+                Main.popDialog('Settings', 'Are you sure you want to update Settings?', buttons);
+
             });
 
         },
@@ -84,12 +95,13 @@ var Admin = function() {
 
             var callback = function(status, data) {
 
-                alert(data.message);
-                if(data.success) {
-                    $(".none_editable", parent).removeClass('hidden');
-                    $(".editable", parent).addClass('hidden');
-                    Admin.loadSettings(Admin.secId);
-                }
+                Main.popDialog('Settings', data.message, function() {
+                    if(data.success) {
+                        $(".none_editable", parent).removeClass('hidden');
+                        $(".editable", parent).addClass('hidden');
+                        Admin.loadSettings(Admin.secId);
+                    }
+                });
 
             };
             callback.loaderDiv = "body";
@@ -142,25 +154,30 @@ var Admin = function() {
             $('#form_user').validate({
                 submitHandler: function (form) {
 
-                    var chk_confirm = confirm('Are you sure you want to ' + $('#modal_user .modal-header').html().toLowerCase() + '?');
-                    if (!chk_confirm) return false;
+                    var button1 = function() {
 
-                    var data = {};
+                        var data = {};
 
-                    data.fullName = $('#name').val();
-                    data.emailAddress = $('#email').val();
-                    data.mobileNumber = $('#phone').val();
+                        data.fullName = $('#name').val();
+                        data.emailAddress = $('#email').val();
+                        data.mobileNumber = $('#phone').val();
 
-                    var header = {};
-                    data.role = {role: $('#modal_user .modal-header').attr('data-role')};
-                    if($('#modal_user .modal-header').attr('data-id') == undefined) {
-                        header.username = $('#email').val();
-                    } else {
-                        header.id = $('#modal_user .modal-header').attr('data-id');
-                        data.status = $('#status').val();
-                    }
+                        var header = {};
+                        data.role = {role: $('#modal_user .modal-header').attr('data-role')};
+                        if($('#modal_user .modal-header').attr('data-id') == undefined) {
+                            header.username = $('#email').val();
+                        } else {
+                            header.id = $('#modal_user .modal-header').attr('data-id');
+                            data.status = $('#status').val();
+                        }
+                        Admin.saveUser(data, header);
+                    };
 
-                    Admin.saveUser(data, header);
+                    button1.text = "Yes";
+                    var button2 = "No";
+
+                    var buttons = [button1, button2];
+                    Main.popDialog('User Management', 'Are you sure you want to ' + $('#modal_user .modal-header').html().toLowerCase() + '?', buttons);
 
                     return false;
 
@@ -182,7 +199,7 @@ var Admin = function() {
 
                 console.log(data);
                 if (!data.success) {
-                    alert(data.message);
+                    Main.popDialog('User Management', data.message);
                     return;
                 }
                 var responseRows = data.params.managers.numberOfRows;
@@ -232,7 +249,7 @@ var Admin = function() {
 
                 console.log(data);
                 if (!data.success) {
-                    alert(data.message);
+                    Main.popDialog('User Management', data.message);
                     return;
                 }
 
@@ -284,14 +301,15 @@ var Admin = function() {
             var callback = function (status, data) {
                 $("button[type='submit']").removeAttr("disabled");
 
-                alert(data.message);
-                if (data.success == true) {
-                    $('#modal_user').modal('hide');
-                    if(params.role.role == 'ROLE_MANAGER')
-                        Admin.getManagers();
-                    else
-                        Admin.getAccountants();
-                }
+                Main.popDialog('User Management', data.message, function() {
+                    if (data.success == true) {
+                        $('#modal_user').modal('hide');
+                        if(params.role.role == 'ROLE_MANAGER')
+                            Admin.getManagers();
+                        else
+                            Admin.getAccountants();
+                    }
+                });
             };
 
             callback.loaderDiv = ".modal-dialog";

@@ -133,7 +133,7 @@
                             <div class="width_100"> Contact No.</div>
                         </th>
                         <th colspan="5"> Current Job</th>
-                        <th rowspan="2"> Status</th>
+                        <th rowspan="2"> Account Status</th>
                         <th rowspan="2">
                             <div class="width_100"> Current Balance</div>
                         </th>

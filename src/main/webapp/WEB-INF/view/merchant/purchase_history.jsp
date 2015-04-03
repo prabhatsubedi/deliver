@@ -37,7 +37,7 @@
                             <th>Customer Name</th>
                             <th>Store Name & Address</th>
                             <th>Order No</th>
-                            <th>Order Date</th>
+                            <th>Order Date & Time</th>
                             <th>Total Bill Amount</th>
                             <th>Shopper</th>
                             <th class="no_sort">Bill</th>

@@ -35,10 +35,18 @@ if(typeof(Store) == "undefined") var Store = {};
             $('#form_brand').submit();
         });
         $('.cancel_edit').click(function(){
-            var chk_confirm = confirm('Are you sure you want to cancel updates?');
-            if (!chk_confirm) return false;
-            form_submit = true;
-            window.location = Main.modifyURL('/merchant/store/view/' + Main.getURLvalue(4));
+
+            var button1 = function() {
+                form_submit = true;
+                window.location = Main.modifyURL('/merchant/store/view/' + Main.getURLvalue(4));
+            };
+
+            button1.text = "Yes";
+            var button2 = "No";
+
+            var buttons = [button1, button2];
+            Main.popDialog('', 'Are you sure you want to cancel updates?', buttons);
+
         });
 
         var cat_callback = function (status, data) {
@@ -173,17 +181,23 @@ if(typeof(Store) == "undefined") var Store = {};
                 }
 
                 if(!location_valid) {
-                    if(showAlert != false) alert('All fields of all store locations are required.');
-                    var current_index = Object.keys(arrGeoPoints).indexOf(geoKey);
-                    google.maps.event.trigger(markers[current_index], 'click');
-                    map.panTo(markers[current_index].position);
+                    var smCallback = function () {
+                        var current_index = Object.keys(arrGeoPoints).indexOf(geoKey);
+                        google.maps.event.trigger(markers[current_index], 'click');
+                        map.panTo(markers[current_index].position);
+                    };
+                    if(showAlert != false)
+                        Main.popDialog('', 'All fields of all store locations are required.', smCallback);
+                    else
+                        smCallback();
                 }
 
                 return {valid: location_valid, stores: stores};
 
             } else {
-                alert("Please add at least 1 store location.");
-                return {valid: false};
+                Main.popDialog('', "Please add at least 1 store location.", function () {
+                    return {valid: false};
+                });
             }
 
         };
@@ -268,36 +282,41 @@ if(typeof(Store) == "undefined") var Store = {};
                 console.log(geoPoints);
                 if(geoPoints.valid) {
 
-                    var chk_confirm = confirm('Are you sure you want to ' + (action == 'edit' ? 'update' : 'add') + ' store?');
-                    if (!chk_confirm) return false;
+                    var button1 = function() {
 
-                    var data = {};
-                    var stores_brand = {};
+                        var data = {};
+                        var stores_brand = {};
 
-                    stores_brand.id = $('.submit_store').attr('data-id');
-                    stores_brand.brandName = $('#brand_name').val();
-                    stores_brand.minOrderAmount = $('#min_amount').val();
-                    stores_brand.openingTime = $('#open_time').val();
-                    stores_brand.closingTime = $('#close_time').val();
-                    stores_brand.brandLogo = $('#brand_logo img').attr('data-new') ? $('#brand_logo img').attr('src') : undefined;
-                    stores_brand.brandImage = $('#brand_image img').attr('data-new') ? $('#brand_image img').attr('src') : undefined;
-                    stores_brand.brandUrl = $('#brand_url').val();
-                    stores_brand.status = "ACTIVE";
+                        stores_brand.id = $('.submit_store').attr('data-id');
+                        stores_brand.brandName = $('#brand_name').val();
+                        stores_brand.minOrderAmount = $('#min_amount').val();
+                        stores_brand.openingTime = $('#open_time').val();
+                        stores_brand.closingTime = $('#close_time').val();
+                        stores_brand.brandLogo = $('#brand_logo img').attr('data-new') ? $('#brand_logo img').attr('src') : undefined;
+                        stores_brand.brandImage = $('#brand_image img').attr('data-new') ? $('#brand_image img').attr('src') : undefined;
+                        stores_brand.brandUrl = $('#brand_url').val();
+                        stores_brand.status = "ACTIVE";
 
 
-                    var categories = $('#store_categories').val();
-                    var arr_categories = [];
-                    if(categories == "All") {
-                        $('#store_categories option').not('option[value="All"]').each(function(){
-                            arr_categories.push($(this).val());
-                        });
-                        categories = arr_categories;
-                    }
-                    data.stores = geoPoints.stores;
-                    data.storesBrand = stores_brand;
-                    data.categories = categories;
+                        var categories = $('#store_categories').val();
+                        var arr_categories = [];
+                        if(categories == "All") {
+                            $('#store_categories option').not('option[value="All"]').each(function(){
+                                arr_categories.push($(this).val());
+                            });
+                            categories = arr_categories;
+                        }
+                        data.stores = geoPoints.stores;
+                        data.storesBrand = stores_brand;
+                        data.categories = categories;
+                        Store.addStore(data, {merchantId: Main.getFromLocalStorage('mid')}, $('.submit_store').attr('data-action'));
+                    };
 
-                    Store.addStore(data, {merchantId: Main.getFromLocalStorage('mid')}, $('.submit_store').attr('data-action'));
+                    button1.text = "Yes";
+                    var button2 = "No";
+
+                    var buttons = [button1, button2];
+                    Main.popDialog('', 'Are you sure you want to ' + (action == 'edit' ? 'update' : 'add') + ' store?', buttons);
 
                 };
                 return false;
@@ -406,7 +425,8 @@ if(typeof(Store) == "undefined") var Store = {};
                         }
 
                     } else {
-                        alert(data.message);
+
+                        Main.popDialog('', data.message);
                     }
 
                 };
@@ -429,16 +449,15 @@ if(typeof(Store) == "undefined") var Store = {};
         var callback = function (status, data) {
             $("button[type='submit']").removeAttr("disabled");
 
-            if (data.success == true) {
-                alert(data.message);
-                form_submit = true;
-                if(data_action == 'update')
-                    window.location = Main.modifyURL('/merchant/store/view/' + Main.getURLvalue(4));
-                else
-                    window.location = Main.modifyURL("/merchant/store/list");
-            } else {
-                alert(data.message);
-            }
+            Main.popDialog('', data.message, function () {
+                if (data.success == true) {
+                    form_submit = true;
+                    if(data_action == 'update')
+                        window.location = Main.modifyURL('/merchant/store/view/' + Main.getURLvalue(4));
+                    else
+                        window.location = Main.modifyURL("/merchant/store/list");
+                }
+            });
         };
 
         callback.loaderDiv = "body";
@@ -506,7 +525,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
 
             } else {
-                alert(data.message);
+                Main.popDialog('', data.message);
             }
 
         };
@@ -603,17 +622,15 @@ if(typeof(Store) == "undefined") var Store = {};
 
             var chk_confirm = false;
             if(!cancel_drag) {
-                var chk_confirm = confirm('Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' store?');
 
-                if (!chk_confirm) {
-                    value = value == 'on' ? 'off' : 'on';
-                } else {
+                var button1 = function() {
 
                     var callback = function (status, data) {
-                        alert(data.message);
-                        if (data.success != true) {
-                            toggleSwitch(value == 'on' ? 'off' : 'on', elem);
-                        }
+                        Main.popDialog('', data.message, function () {
+                            if (data.success != true) {
+                                toggleSwitch(value == 'on' ? 'off' : 'on', elem);
+                            }
+                        });
                     };
 
                     callback.loaderDiv = "body";
@@ -621,7 +638,17 @@ if(typeof(Store) == "undefined") var Store = {};
 
                     Main.request('/merchant/change_status', {className:"Brand", statusId: value == 'on' ? 2 : 3}, callback, {id: Main.getURLvalue(3)});
 
-                }
+                };
+                var button2 = function() {
+                    value = value == 'on' ? 'off' : 'on';
+                };
+
+                button1.text = "Yes";
+                button2.text = "No";
+
+                var buttons = [button1, button2];
+                Main.popDialog('', 'Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' store?', buttons);
+
             }
 
             if(value == 'on') {
@@ -708,7 +735,7 @@ if(typeof(Store) == "undefined") var Store = {};
                 });
 
             } else {
-                alert(data.message);
+                Main.popDialog('', data.message);
             }
 
             var cat_callback = function (status, data) {
@@ -777,7 +804,7 @@ if(typeof(Store) == "undefined") var Store = {};
                     }
 
                 } else {
-                    alert(data.message);
+                    Main.popDialog('', data.message);
                 }
 
             };

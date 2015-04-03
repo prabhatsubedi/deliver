@@ -106,15 +106,20 @@
             $('#form_password').validate({
                 submitHandler: function(form) {
 
-                    var chk_confirm = confirm('Are you sure you want to change password?');
-                    if(!chk_confirm) return false;
+                    var button1 = function() {
 
-                    var headers = {};
+                        var headers = {};
+                        headers.password = $('#change_old_password').val();
+                        headers.newPassword = $('#change_password').val();
 
-                    headers.password = $('#change_old_password').val();
-                    headers.newPassword = $('#change_password').val();
+                        Main.changePassword(headers);
+                    };
 
-                    Main.changePassword(headers);
+                    button1.text = "Yes";
+                    var button2 = "No";
+
+                    var buttons = [button1, button2];
+                    Main.popDialog('Change Password', 'Are you sure you want to change password?', buttons);
 
                     return false;
 

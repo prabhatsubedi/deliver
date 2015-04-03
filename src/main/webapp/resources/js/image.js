@@ -32,7 +32,7 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
                 var file = e.originalEvent.dataTransfer.files[0];
                 var isValid = /\.(jpg|jpeg|png)$/i.test(file.name);
                 if(!isValid) {
-                    alert('Only PNG, JPG and JPEG files are supported.');
+                    Main.popDialog('Image Cropper', 'Only PNG, JPG and JPEG files are supported.');
                     return false;
                 } else {
                     Image.readFile(file, target_input);
@@ -99,7 +99,7 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
             var isValid = /\.(jpg|jpeg|png)$/i.test(input.value);
             input.value == '';
             if(!isValid) {
-                alert('Only PNG, JPG and JPEG files are supported.');
+                Main.popDialog('Image Cropper', 'Only PNG, JPG and JPEG files are supported.');
                 return false;
             } else {
                 Image.readFile(tempInput.files[0], '#' + $(input).attr('id'));
@@ -217,7 +217,7 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
                         };
 
                     } else {
-                        alert("Please upload an image of size greater than " + chk_w + "px X " + chk_h + "px.");
+                        Main.popDialog('Image Cropper', 'Please upload an image of size greater than ' + chk_w + 'px X ' + chk_h + 'px.');
                         return false;
                     }
                 } else {
@@ -229,7 +229,7 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
                         var callback = function (status, data) {
 
                             if (data.success == false) {
-                                alert(data.message);
+                                Main.popDialog('Image Cropper', data.message);
                             } else {
                                 $('.active_img_container').eq(0).children('img').attr('src', src_url);
                             }
@@ -265,7 +265,7 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
                         var callback = function (status, data) {
 
                             if (data.success == false) {
-                                alert(data.message);
+                                Main.popDialog('Image Cropper', data.message);
                             } else {
                                 $('.active_img_container').eq(0).children('img').attr('src', strImage);
                             }

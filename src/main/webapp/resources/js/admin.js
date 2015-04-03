@@ -86,7 +86,7 @@ var Admin = function() {
                 var button2 = "No";
 
                 var buttons = [button1, button2];
-                Main.popDialog('Settings', 'Are you sure you want to update Settings?', buttons);
+                Main.popDialog('', 'Are you sure you want to update Settings?', buttons);
 
             });
 
@@ -177,7 +177,7 @@ var Admin = function() {
                     var button2 = "No";
 
                     var buttons = [button1, button2];
-                    Main.popDialog('User Management', 'Are you sure you want to ' + $('#modal_user .modal-header').html().toLowerCase() + '?', buttons);
+                    Main.popDialog('', 'Are you sure you want to ' + $('#modal_user .modal-header').html().toLowerCase() + '?', buttons);
 
                     return false;
 

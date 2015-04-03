@@ -119,7 +119,7 @@
                     var button2 = "No";
 
                     var buttons = [button1, button2];
-                    Main.popDialog('Change Password', 'Are you sure you want to change password?', buttons);
+                    Main.popDialog('', 'Are you sure you want to change password?', buttons);
 
                     return false;
 

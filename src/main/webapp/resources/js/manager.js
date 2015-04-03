@@ -204,7 +204,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var button2 = "No";
 
                 var buttons = [button1, button2];
-                Main.popDialog('Merchant Activation', 'Are you sure you want to activate this merchant?', buttons);
+                Main.popDialog('', 'Are you sure you want to activate this merchant?', buttons);
 
                 return false;
 
@@ -233,7 +233,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var button2 = "No";
 
             var buttons = [button1, button2];
-            Main.popDialog('Merchant Activation', 'Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?', buttons);
+            Main.popDialog('', 'Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?', buttons);
         });
 
     };
@@ -602,7 +602,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var button2 = "No";
 
             var buttons = [button1, button2];
-            Main.popDialog('Merchant Activation', 'Are you sure you want to ' + (__this.attr('data-status') == 'ACTIVE' ? "deactivate" : "activate") + ' shopper?', buttons);
+            Main.popDialog('', 'Are you sure you want to ' + (__this.attr('data-status') == 'ACTIVE' ? "deactivate" : "activate") + ' shopper?', buttons);
 
         });
 

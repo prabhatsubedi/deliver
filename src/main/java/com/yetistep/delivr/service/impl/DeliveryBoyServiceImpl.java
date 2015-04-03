@@ -363,7 +363,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
             userDeviceDaoService.removeInformationForSameDevice(userDevice.getUuid(), userEntity.getId());
             userDeviceEntity.setUuid(userDevice.getUuid());
-            userDeviceEntity.setDeviceToken(userDevice.getDeviceToken());
+            if(userDevice.getDeviceToken() != null && !userDevice.getDeviceToken().isEmpty())
+                userDeviceEntity.setDeviceToken(userDevice.getDeviceToken());
             /* TODO Family for family, familyName, name */
             userDeviceEntity.setFamily(family);
             userDeviceEntity.setFamilyName(family);
@@ -743,6 +744,11 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     private Boolean deliverOrder(OrderEntity orderEntityJson, OrderEntity order, Integer deliveryBoyId) throws Exception {
         if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
             throw new YSException("ORD003");
+        }
+
+        if(order.getAttachments() != null){
+            if(order.getAttachments().size() == 0)
+                throw new YSException("ORD021");
         }
 
         if(!orderEntityJson.getOrderVerificationCode().equals(order.getOrderVerificationCode()) || !orderEntityJson.getId().equals(order.getId())){

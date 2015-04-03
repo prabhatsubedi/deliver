@@ -86,12 +86,12 @@
                     idString+=$(this).data("id")+",";
             });
             if(idString == ""){
-                Main.popDialog('Payment to Shopper', 'Please select order(s) to pay the shopper');
+                Main.popDialog('', 'Please select order(s) to pay the shopper');
             }else{
                 var button1 = function() {
 
                     var callback = function(success, data){
-                        Main.popDialog('Payment to Shopper', data.message);
+                        Main.popDialog('', data.message);
                         return;
                     }
 

@@ -117,7 +117,7 @@ var courierProfile;
         var callback = function (status, data) {
             $("button[type='submit']").removeAttr("disabled");
 
-            Main.popDialog('Add Shopper', data.message, function() {
+            Main.popDialog('', data.message, function() {
                 if (data.success == true) {
                     $('#courier_boy_form').trigger('reset');
                     $('#profile_image').html('<div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 200x200</div><div class="drop_title">Profile Picture</div>');
@@ -143,7 +143,7 @@ var courierProfile;
         var callback = function (status, data) {
             courierProfile = data;
             if (!data.success) {
-                Main.popDialog('Shopper Profile', data.message);
+                Main.popDialog('', data.message);
                 return;
             }
             var courierStaff = data.params.deliveryBoy;
@@ -363,7 +363,7 @@ var courierProfile;
         var callback = function (status, data) {
             $("a.save_btn").removeAttr("disabled");
 
-            Main.popDialog('Shopper Update', data.message, function() {
+            Main.popDialog('', data.message, function() {
                 if (data.success == true) {
                     $(".none_editable").removeClass('hidden');
                     $(".editable").addClass('hidden');

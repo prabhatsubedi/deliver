@@ -95,7 +95,7 @@ var Admin = function() {
 
             var callback = function(status, data) {
 
-                Main.popDialog('Settings', data.message, function() {
+                Main.popDialog('', data.message, function() {
                     if(data.success) {
                         $(".none_editable", parent).removeClass('hidden');
                         $(".editable", parent).addClass('hidden');
@@ -199,7 +199,7 @@ var Admin = function() {
 
                 console.log(data);
                 if (!data.success) {
-                    Main.popDialog('User Management', data.message);
+                    Main.popDialog('', data.message);
                     return;
                 }
                 var responseRows = data.params.managers.numberOfRows;
@@ -249,7 +249,7 @@ var Admin = function() {
 
                 console.log(data);
                 if (!data.success) {
-                    Main.popDialog('User Management', data.message);
+                    Main.popDialog('', data.message);
                     return;
                 }
 
@@ -301,7 +301,7 @@ var Admin = function() {
             var callback = function (status, data) {
                 $("button[type='submit']").removeAttr("disabled");
 
-                Main.popDialog('User Management', data.message, function() {
+                Main.popDialog('', data.message, function() {
                     if (data.success == true) {
                         $('#modal_user').modal('hide');
                         if(params.role.role == 'ROLE_MANAGER')

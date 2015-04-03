@@ -262,7 +262,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.changeUserStatus = function (data, fnCallback) {
 
         var callback = function (status, data) {
-            Main.popDialog('Merchant Activation', data.message, function () {
+            Main.popDialog('', data.message, function () {
                 if (data.success == true) {
                     Manager.getMerchants();
                 }

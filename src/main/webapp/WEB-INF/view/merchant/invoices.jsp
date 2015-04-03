@@ -89,7 +89,7 @@
                     idString+=$(this).data("id")+",";
             });
             if(idString == ""){
-                Main.popDialog('Invoice Payment', 'Please select invoice(s) to pay');
+                Main.popDialog('', 'Please select invoice(s) to pay');
             }else{
                 var button1 = function() {
 

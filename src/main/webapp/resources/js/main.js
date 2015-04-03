@@ -5,6 +5,7 @@
 if(typeof(Main) == "undefined") var Main = {};
 
 var dialogCallback;
+var dialogTimeout;
 var form_submit = true;
 $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data will not be saved. Are you sure to continue?'; });
 
@@ -195,7 +196,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         var callback = function (status, data) {
             $("button[type='submit']").removeAttr("disabled");
 
-            Main.popDialog('Change Password', data.message, function() {
+            Main.popDialog('', data.message, function() {
                 if (data.success == true) {
                     $('#modal_password').modal('hide');
                 }
@@ -511,6 +512,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 </div>');
 
             $('#popDialog').on('hidden.bs.modal', function(){
+                clearTimeout(dialogTimeout);
                 if(typeof dialogCallback == 'function') dialogCallback();
             });
         }
@@ -536,7 +538,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         popElem.modal('show');
 
         if(buttons[0] == 'Close') {
-            setTimeout(function() {
+            dialogTimeout = setTimeout(function() {
                 popElem.modal('hide');
             }, 5000);
         }

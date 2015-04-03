@@ -76,7 +76,7 @@ public class AddressDaoServiceImpl implements AddressDaoService{
     @Override
     public List<AddressEntity> getDeliveredAddress(Integer userId) throws Exception {
         String sql = "SELECT " +
-                "id,city,country,country_code AS countryCode,latitude,longitude,state,street,full_name AS fullName,mobile_no AS mobileNumber,notes" +
+                "id,city,country,country_code AS countryCode,latitude,longitude,state,street,given_location AS givenLocation, full_name AS fullName,mobile_no AS mobileNumber,notes" +
                 " FROM address WHERE user_id = :userId AND verified = :verified AND (d_flag != :flag || d_flag IS NULL) ORDER BY id DESC";
 
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
@@ -92,7 +92,7 @@ public class AddressDaoServiceImpl implements AddressDaoService{
     @Override
     public AddressEntity getMyAddress(Integer addressId) throws Exception {
         String sql = "SELECT id, city, country, full_name AS fullName,  latitude, longitude, " +
-                "mobile_no AS mobileNumber, notes, state, street FROM address WHERE id = :addressId";
+                "mobile_no AS mobileNumber, notes, state, street, given_location AS givenLocation FROM address WHERE id = :addressId";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("addressId", addressId);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(AddressEntity.class));

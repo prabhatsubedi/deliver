@@ -1623,6 +1623,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         address.setLongitude(order.getAddress().getLongitude());
         address.setMobileNumber(order.getAddress().getMobileNumber());
         address.setNotes(order.getAddress().getNotes());
+        address.setGivenLocation(order.getAddress().getGivenLocation());
         responseOrder.setAddress(address);
 
         StoreEntity store = new StoreEntity();

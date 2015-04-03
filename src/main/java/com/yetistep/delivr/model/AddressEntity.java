@@ -18,6 +18,7 @@ import java.util.List;
 @Table(name = "address")
 public class AddressEntity implements Serializable {
     private Integer id;
+    private String givenLocation;
     private String street;
     private String city;
     private String state;
@@ -43,6 +44,15 @@ public class AddressEntity implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Column(name = "given_location")
+    public String getGivenLocation() {
+        return givenLocation;
+    }
+
+    public void setGivenLocation(String givenLocation) {
+        this.givenLocation = givenLocation;
     }
 
     @Column(name = "street")

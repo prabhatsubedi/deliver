@@ -70,6 +70,7 @@ public class OrderEntity implements Serializable {
     private List<DeliveryBoySelectionEntity> deliveryBoySelections;
     private BillEntity bill;
     private ReceiptEntity receipt;
+    private List<WalletTransactionEntity> walletTransactions;
     //for merchant settlement
     private Boolean settled;
     private Date settledDate;
@@ -473,6 +474,15 @@ public class OrderEntity implements Serializable {
 
     public void setReceipt(ReceiptEntity receipt) {
         this.receipt = receipt;
+    }
+
+    @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )
+    public List<WalletTransactionEntity> getWalletTransactions() {
+        return walletTransactions;
+    }
+
+    public void setWalletTransactions(List<WalletTransactionEntity> walletTransactions) {
+        this.walletTransactions = walletTransactions;
     }
 
     @Column(name = "settled", columnDefinition = "TINYINT(1) DEFAULT 0")

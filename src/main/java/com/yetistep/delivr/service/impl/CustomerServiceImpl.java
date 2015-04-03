@@ -826,6 +826,20 @@ public class CustomerServiceImpl implements CustomerService {
             order.setPaidFromWallet(order.getGrandTotal());
             order.setPaidFromCOD(BigDecimal.ZERO);
             order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(order.getGrandTotal()));
+
+            /*Setting data for wallet transaction entity*/
+            List<WalletTransactionEntity> walletTransactionEntities = new ArrayList<WalletTransactionEntity>();
+            WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
+            walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+            walletTransactionEntity.setAccountType(AccountType.DEBIT);
+            String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
+            walletTransactionEntity.setRemarks(String.format(remarks, order.getStore().getName()));
+            walletTransactionEntity.setTransactionAmount(order.getGrandTotal());
+            walletTransactionEntity.setOrder(order);
+            walletTransactionEntity.setCustomer(order.getCustomer());
+            systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
+            walletTransactionEntities.add(walletTransactionEntity);
+            order.setWalletTransactions(walletTransactionEntities);
         }else{
             order.setPaidFromWallet(BigDecimal.ZERO);
             order.setPaidFromCOD(order.getGrandTotal());
@@ -902,7 +916,7 @@ public class CustomerServiceImpl implements CustomerService {
             String finalStore[] = {GeoCodingUtil.getLatLong(nearestStore.getLatitude(), nearestStore.getLongitude())};
             actualDistance =  GeoCodingUtil.getListOfDistances(orderAddress, finalStore).get(0);
         }
-        order.setCustomerChargeableDistance(BigDecimalUtil.getDistanceInKiloMeters(actualDistance));
+        order.setCustomerChargeableDistance(BigDecimalUtil.getDistanceInKiloMeters(actualDistance).setScale(2, RoundingMode.HALF_UP));
         return nearestStore;
     }
 
@@ -937,13 +951,13 @@ public class CustomerServiceImpl implements CustomerService {
 
         for (int i = 0; i < distanceList.size(); i++) {
             DeliveryBoySelectionEntity deliveryBoySelectionEntity = new DeliveryBoySelectionEntity();
-            deliveryBoySelectionEntity.setDistanceToStore(BigDecimalUtil.getDistanceInKiloMeters(distanceList.get(i)));
+            deliveryBoySelectionEntity.setDistanceToStore(BigDecimalUtil.getDistanceInKiloMeters(distanceList.get(i)).setScale(2, RoundingMode.HALF_UP));
             deliveryBoySelectionEntity.setDeliveryBoy(capableDeliveryBoys.get(i));
             deliveryBoySelectionEntity.setStoreToCustomerDistance(order.getCustomerChargeableDistance());
             deliveryBoySelectionEntity.setOrder(order);
             int timeFactor = Integer.parseInt(systemPropertyService.readPrefValue(GeneralUtil.getTimeTakenFor(capableDeliveryBoys.get(i).getVehicleType())));
 
-            BigDecimal totalDistance = BigDecimalUtil.getDistanceInKiloMeters(distanceList.get(i)).add(order.getCustomerChargeableDistance());
+            BigDecimal totalDistance = BigDecimalUtil.getDistanceInKiloMeters(distanceList.get(i)).add(order.getCustomerChargeableDistance().setScale(2, RoundingMode.HALF_UP));
             Integer timeRequired = totalDistance.multiply(new BigDecimal(timeFactor)).setScale(0, RoundingMode.HALF_UP).intValue();
 
             deliveryBoySelectionEntity.setTimeRequired(timeRequired + timeAtStore);

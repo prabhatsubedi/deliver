@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -315,7 +317,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         BigDecimal ZERO = BigDecimal.ZERO;
 
          /* 1. ===== Order Total ======= */
-        BigDecimal totalOrder = order.getTotalCost();
+        BigDecimal totalOrder = order.getTotalCost().setScale(2, RoundingMode.HALF_UP);
 
         /* 2. ======= Commission Percent ====== */
         BigDecimal commissionPct = BigDecimalUtil.checkNull(merchantCommission);
@@ -382,6 +384,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
 
         /* 14. ====== Customer Pays ========*/
         BigDecimal customerPays = order.getTotalCost().add(serviceFeeAmt).add(deliveryChargedAfterDiscount).add(order.getItemServiceAndVatCharge());
+        customerPays = customerPays.setScale(2, RoundingMode.HALF_UP);
         order.setGrandTotal(customerPays);
         order.setDeliveryCharge(deliveryChargedAfterDiscount);
         order.setSystemServiceCharge(serviceFeeAmt);
@@ -424,5 +427,43 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         courierTransactionEntity.setPaidToCourier(paidToCourier);
         courierTransactionEntity.setProfit(profit);
         return courierTransactionEntity;
+    }
+
+    @Override
+    public void encodeWalletTransaction(WalletTransactionEntity walletTransactionEntity) throws Exception {
+        BigDecimal value = walletTransactionEntity.getTransactionAmount();
+        System.out.println("Transaction Amount:"+value);
+        System.out.println("Current Milliseconds:"+walletTransactionEntity.getTransactionDate().getTime());
+        value = value.add(new BigDecimal(walletTransactionEntity.getTransactionDate().getTime()));
+        value = value.multiply(new BigDecimal(walletTransactionEntity.getCustomer().getId()));
+        String[] encode = value.toString().split(Pattern.quote("."));
+        String signature = "";
+        for(int i=0; i<encode.length; i++){
+            if(signature.equals("")){
+                Long l = Long.parseLong(encode[i]);
+                signature = Long.toHexString(l)+"-";
+            }else
+                signature += encode[i];
+        }
+        walletTransactionEntity.setSignature(signature);
+    }
+
+    @Override
+    public void decodeWalletTransaction(WalletTransactionEntity walletTransactionEntity) throws Exception {
+        String[] decode = walletTransactionEntity.getSignature().split("-");
+        String parsedResult = "";
+        for(int i=0; i<decode.length; i++){
+            if(parsedResult.equals(""))
+                parsedResult = Long.parseLong(decode[i], 16) + ".";
+            else
+                parsedResult += decode[i].toString();
+        }
+        BigDecimal decodedData = new BigDecimal(parsedResult);
+        decodedData = decodedData.divide(new BigDecimal(walletTransactionEntity.getCustomer().getId()));
+        decodedData = decodedData.subtract(new BigDecimal(walletTransactionEntity.getTransactionDate().getTime()));
+        if(BigDecimalUtil.isEqualTo(decodedData, walletTransactionEntity.getTransactionAmount()))
+            walletTransactionEntity.setFlag(true);
+        else
+            walletTransactionEntity.setFlag(false);
     }
 }

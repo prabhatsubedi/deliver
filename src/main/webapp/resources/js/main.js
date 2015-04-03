@@ -535,6 +535,12 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             $('.modal-footer', popElem).removeClass('hidden').html(buttonsElem);
         popElem.modal('show');
 
+        if(buttons[0] == 'Close') {
+            setTimeout(function() {
+                popElem.modal('hide');
+            }, 5000);
+        }
+
     };
 
 })(jQuery);

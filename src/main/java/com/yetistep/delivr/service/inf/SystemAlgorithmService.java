@@ -17,4 +17,8 @@ public interface SystemAlgorithmService {
     public void courierBoyAccounting(DeliveryBoyEntity deliveryBoy, OrderEntity order) throws Exception;
 
     public CourierTransactionEntity getCourierTransaction(OrderEntity order, DeliveryBoySelectionEntity dBoySelection, BigDecimal merchantCommission, BigDecimal merchantServiceFee)throws Exception;
+
+    public void encodeWalletTransaction(WalletTransactionEntity walletTransactionEntity) throws Exception;
+
+    public void decodeWalletTransaction(WalletTransactionEntity walletTransactionEntity) throws Exception;
 }

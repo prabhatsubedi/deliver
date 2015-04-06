@@ -39,46 +39,51 @@ $(document).ready(function(){
 
             var address = arrGeoPoints[Object.keys(arrGeoPoints)[0]];
             if(address == undefined) {
-                alert("Please add a marker to set address.");
+                Main.popDialog('', 'Please add a marker to set address.');
             } else if(address.name == "" || address.street == "" || address.city == "" || address.state == "") {
-                alert("Please fill up all fields of info window and save.");
+                Main.popDialog('', 'Please fill up all fields of info window and save.');
             } else {
 
-                var chk_confirm = confirm('Are you sure you want to Sign up?');
-                if(!chk_confirm) return false;
+                var button1 = function() {
 
-                var data = {};
-                var user = {};
-                var objAddress = {};
+                    var data = {};
+                    var user = {};
+                    var objAddress = {};
 
-                objAddress.street = address.street;
-                objAddress.city = address.city;
-                objAddress.state = address.state;
-                objAddress.country = address.country;
-                objAddress.latitude = address.latitude;
-                objAddress.longitude = address.longitude;
-                objAddress.countryCode = "00977";
+                    objAddress.street = address.street;
+                    objAddress.city = address.city;
+                    objAddress.state = address.state;
+                    objAddress.country = address.country;
+                    objAddress.latitude = address.latitude;
+                    objAddress.longitude = address.longitude;
+                    objAddress.countryCode = "00977";
 
-                data.website = $('#url').val();
-                data.businessTitle = $('#business_name').val();
-                data.businessLogo = $('#drop_zone img').attr('src');
-                data.companyRegistrationNo = $('#registration_no').val();
-                data.vatNo = $('#vat').val();
-                data.panNo = $('#pan').val();
+                    data.website = $('#url').val();
+                    data.businessTitle = $('#business_name').val();
+                    data.businessLogo = $('#drop_zone img').attr('src');
+                    data.companyRegistrationNo = $('#registration_no').val();
+                    data.vatNo = $('#vat').val();
+                    data.panNo = $('#pan').val();
 
-                user.status = 'ACTIVE';
-                user.fullName = $('#contact_person').val();
-                user.mobileNumber = $('#contact_no').val();
-                user.emailAddress = $('#contact_email').val();
-                user.addresses = [objAddress];
+                    user.status = 'ACTIVE';
+                    user.fullName = $('#contact_person').val();
+                    user.mobileNumber = $('#contact_no').val();
+                    user.emailAddress = $('#contact_email').val();
+                    user.addresses = [objAddress];
 
-                data.user = user;
+                    data.user = user;
 
-                var headers = {};
-                headers.username = $('#contact_email').val();
+                    var headers = {};
+                    headers.username = $('#contact_email').val();
 
-                Merchant.signUp(data, headers);
+                    Merchant.signUp(data, headers);
+                };
 
+                button1.text = "Yes";
+                var button2 = "No";
+
+                var buttons = [button1, button2];
+                Main.popDialog('', 'Are you sure you want to Sign up?', buttons);
             }
             return false;
 

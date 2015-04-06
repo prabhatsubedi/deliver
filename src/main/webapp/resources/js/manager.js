@@ -13,7 +13,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
             console.log(data);
             if (!data.success) {
-                alert(data.message);
+                Main.popDialog('', data.message);
                 return;
             }
             var responseRows = data.params.users.numberOfRows;
@@ -62,18 +62,27 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         var callback = function (status, data) {
 
-            alert(data.message);
-            if (data.success == true) {
-                Manager.getCustomers();
-            }
+            Main.popDialog('', data.message, function () {
+                if (data.success == true) {
+                    Manager.getCustomers();
+                }
+            });
         };
+        callback.loaderDiv = "body";
 
         $('.trigger_activation').live('click', function(){
 
-            var chk_confirm = confirm('Are you sure you want to activate this customer?');
-            if (!chk_confirm) return false;
-            callback.loaderDiv = "body";
-            Main.request('/organizer/activate_user', {}, callback, {id: $(this).attr('data-id')});
+            var __this = $(this);
+
+            var button1 = function() {
+                Main.request('/organizer/activate_user', {}, callback, {id: __this.attr('data-id')});
+            };
+
+            button1.text = "Yes";
+            var button2 = "No";
+
+            var buttons = [button1, button2];
+            Main.popDialog('', 'Are you sure you want to activate this customer?', buttons);
 
         });
 
@@ -85,7 +94,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
             console.log(data);
             if (!data.success) {
-                alert(data.message);
+                Main.popDialog('', data.message);
                 return;
             }
             var responseRows = data.params.merchants.numberOfRows;
@@ -174,21 +183,28 @@ if (typeof(Manager) == "undefined") var Manager = {};
             submitHandler: function (form) {
 
                 if($('#commission').val() == 0 && $('#service_fee').val() == 0) {
-                    alert('Both commission percent and service fee cannot be 0.');
+                    Main.popDialog('', 'Both commission percent and service fee cannot be 0.');
                     return false;
                 }
 
-                var chk_confirm = confirm('Are you sure you want to activate this merchant?');
-                if (!chk_confirm) return false;
+                var button1 = function() {
 
-                var data = {};
+                    var data = {};
 
-                data.id = $(form).attr('data-id');
-                data.partnershipStatus = $('#partnership').val();
-                data.commissionPercentage = $('#commission').val();
-                data.serviceFee = $('#service_fee').val();
+                    data.id = $(form).attr('data-id');
+                    data.partnershipStatus = $('#partnership').val();
+                    data.commissionPercentage = $('#commission').val();
+                    data.serviceFee = $('#service_fee').val();
 
-                Manager.merchantActivation(data);
+                    Manager.merchantActivation(data);
+
+                };
+
+                button1.text = "Yes";
+                var button2 = "No";
+
+                var buttons = [button1, button2];
+                Main.popDialog('', 'Are you sure you want to activate this merchant?', buttons);
 
                 return false;
 
@@ -199,14 +215,17 @@ if (typeof(Manager) == "undefined") var Manager = {};
         $('#service_fee').rules('add', {required: true, number: true, min: 0});
 
         $('.trigger_activation').live('click', function () {
-            var statusCheck = $(this).attr('data-status');
 
-//            var chk_confirm = confirm('Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?');
-//            if (!chk_confirm) return false;
-            var data = {};
-            data.id = $(this).attr('data-id');
-            data.status = "" + statusCheck;
+            var __this = $(this);
+
+            var statusCheck = __this.attr('data-status');
+
             var button1 = function() {
+
+                var data = {};
+                data.id = __this.attr('data-id');
+                data.status = "" + statusCheck;
+
                 Manager.changeUserStatus(data);
             };
 
@@ -214,7 +233,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var button2 = "No";
 
             var buttons = [button1, button2];
-            Main.popDialog('Merchant Activation', 'Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?', buttons);
+            Main.popDialog('', 'Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?', buttons);
         });
 
     };
@@ -226,11 +245,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
         var callback = function (status, data) {
             $("button[type='submit']").removeAttr("disabled");
 
-            alert(data.message);
-            if (data.success == true) {
-                $('#modal_activation').modal('hide');
-                Manager.getMerchants();
-            }
+            Main.popDialog('', data.message, function () {
+                if (data.success == true) {
+                    $('#modal_activation').modal('hide');
+                    Manager.getMerchants();
+                }
+            });
         };
 
         callback.loaderDiv = ".modal-dialog";
@@ -242,12 +262,11 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.changeUserStatus = function (data, fnCallback) {
 
         var callback = function (status, data) {
-//            alert(data.message);
-            Main.popDialog('Merchant Activation', data.message, ['Close']);
-            if (data.success == true) {
-                window.location.reload();
-//                Manager.getMerchants();
-            }
+            Main.popDialog('', data.message, function () {
+                if (data.success == true) {
+                    Manager.getMerchants();
+                }
+            });
         };
 
         callback.loaderDiv = "body";
@@ -413,7 +432,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
             console.log(data);
             if (!data.success) {
-                alert(data.message);
+                Main.popDialog('', data.message);
                 return;
             }
             var responseRows = data.params.brands.numberOfRows;
@@ -465,7 +484,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.getCourierStaffs = function () {
         var dataFilter = function (data, type) {
             if (!data.success) {
-                alert(data.message);
+                Main.popDialog('', data.message);
                 return;
             }
             var responseRows = data.params.deliveryBoys.numberOfRows;
@@ -563,18 +582,27 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         $('.change_status').live('click', function(){
 
-            var chk_confirm = confirm('Are you sure you want to ' + ($(this).attr('data-status') == 'ACTIVE' ? "deactivate" : "activate") + ' shopper?');
-            if (!chk_confirm) return false;
+            var __this = $(this);
 
-            var callback = function(status, data) {
-                if(data.success) Manager.getCourierStaffs();
+            var button1 = function() {
+
+                var callback = function(status, data) {
+                    if(data.success) Manager.getCourierStaffs();
+                };
+
+                var data = {};
+                data.className = 'User';
+                data.statusId = __this.attr('data-status') == 'ACTIVE' ? '3' : '2';
+
+                Main.request('/merchant/change_status', data, callback, {id: __this.attr('data-id')});
+
             };
 
-            var data = {};
-            data.className = 'User';
-            data.statusId = $(this).attr('data-status') == 'ACTIVE' ? '3' : '2';
+            button1.text = "Yes";
+            var button2 = "No";
 
-            Main.request('/merchant/change_status', data, callback, {id: $(this).attr('data-id')});
+            var buttons = [button1, button2];
+            Main.popDialog('', 'Are you sure you want to ' + (__this.attr('data-status') == 'ACTIVE' ? "deactivate" : "activate") + ' shopper?', buttons);
 
         });
 
@@ -598,7 +626,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 //if(!noEditInitialised) noEditInitialise(); else google.maps.event.trigger(map, 'resize');
                 var callback = function (status, data) {
                     if (!data.success) {
-                        alert(data.message);
+                        Main.popDialog('', data.message);
                         return;
                     }
  /*                   var courierStaff = data.params.deliveryBoy;
@@ -689,7 +717,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             $('#modal_account').data('cbid', id);
             var callback = function (status, data) {
                 if (!data.success) {
-                    alert(data.message);
+                    Main.popDialog('', data.message);
                     return;
                 }
                 var courierStaff = data.params.deliveryBoy;
@@ -719,7 +747,10 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var cbid = $('#modal_account').data('cbid');
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if (keycode == '13') {
-                if ($(this).val() == null)
+
+                var __this = $(this);
+
+                if (__this.val() == null)
                     return;
 
                 if (isNaN($('#advance_amount_val').val())) {
@@ -727,31 +758,40 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     return;
                 }
 
-                var conf = confirm("Are you sure you want to add advance amount for '" + $('#modal_account').data('cbname') + "'?");
-                if (!conf) {
+                var button1 = function() {
+
+                    var callback = function (status, data) {
+                        if (!data.success) {
+                            Main.popDialog('', data.message);
+                            return;
+                        }
+                        var courierStaff = data.params.deliveryBoy;
+                        /*$(".due_amount").text((courierStaff.previousDue).toFixed(2));
+                         $("#due_amount_val").val((courierStaff.previousDue).toFixed(2))
+                         $(".available_balance").text((courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2));
+                         $(".to_be_submitted").text((courierStaff.walletAmount).toFixed(2));
+                         $("#to_be_submitted_val").val((courierStaff.walletAmount).toFixed(2));*/
+                        Manager.fillDboyAccount(courierStaff);
+                        $('#advance_amount_val').val('');
+                    }
+                    callback.loaderDiv = "body";
+                    callback.requestType = "POST";
+                    var headers = {};
+                    headers.id = cbid;
+
+                    Main.request('/accountant/update_dboy_account', {advanceAmount: __this.val()}, callback, headers);
+                };
+                var button2 = function() {
                     $('#advance_amount_val').val('');
                     return;
-                }
+                };
 
-                var callback = function (status, data) {
-                    if (!data.success) {
-                        alert(data.message);
-                        return;
-                    }
-                    var courierStaff = data.params.deliveryBoy;
-                    /*$(".due_amount").text((courierStaff.previousDue).toFixed(2));
-                    $("#due_amount_val").val((courierStaff.previousDue).toFixed(2))
-                    $(".available_balance").text((courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2));
-                    $(".to_be_submitted").text((courierStaff.walletAmount).toFixed(2));
-                    $("#to_be_submitted_val").val((courierStaff.walletAmount).toFixed(2));*/
-                    Manager.fillDboyAccount(courierStaff);
-                    $('#advance_amount_val').val('');
-                }
-                callback.loaderDiv = "body";
-                callback.requestType = "POST";
-                var headers = {};
-                headers.id = cbid;
-                Main.request('/accountant/update_dboy_account', {advanceAmount: $(this).val()}, callback, headers);
+                button1.text = "Yes";
+                button2.text = "No";
+
+                var buttons = [button1, button2];
+                Main.popDialog('', "Are you sure you want to add advance amount for '" + $('#modal_account').data('cbname') + "'?", buttons);
+
             }
 
         });
@@ -760,37 +800,49 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.submitCourierBoyPreviousAmount = function () {
         $('body').delegate('#ack', 'click', function () {
             var cbid = $('#modal_account').data('cbid');
-            if ($(this).prop("checked")) {
-                var conf = confirm("Are you sure you want to acknowledge  RS." + $("#due_amount_val").val() + " from '" + $('#modal_account').data('cbname') + "'?");
-                if (!conf) {
-                    $(this).prop("checked", false);
-                    return;
-                }
 
-                if ($("#due_amount_val").val() == 0 || $("#due_amount_val").val() == null) {
-                    $(this).prop("checked", false);
-                    return;
-                }
+            var __this = $(this);
 
-                var callback = function (status, data) {
-                    if (!data.success) {
-                        alert(data.message);
+            if (__this.prop("checked")) {
+
+                var button1 = function() {
+
+                    if ($("#due_amount_val").val() == 0 || $("#due_amount_val").val() == null) {
+                        __this.prop("checked", false);
                         return;
                     }
-                    var courierStaff = data.params.deliveryBoy;
-                    /*$(".due_amount").text((courierStaff.previousDue).toFixed(2));
-                    $("#due_amount_val").val((courierStaff.previousDue).toFixed(2))
-                    $(".available_balance").text((courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2));
-                    $(".to_be_submitted").text((courierStaff.walletAmount).toFixed(2));
-                    $("#to_be_submitted_val").val((courierStaff.walletAmount).toFixed(2));*/
-                    Manager.fillDboyAccount(courierStaff)
-                    $(this).prop("checked", false);
-                }
-                callback.loaderDiv = "body";
-                callback.requestType = "POST";
-                var headers = {};
-                headers.id = cbid;
-                Main.request('/accountant/dboy_ack_payment', {submittedAmount: $("#due_amount_val").val()}, callback, headers);
+
+                    var callback = function (status, data) {
+                        if (!data.success) {
+                            Main.popDialog('', data.message);
+                            return;
+                        }
+                        var courierStaff = data.params.deliveryBoy;
+                        /*$(".due_amount").text((courierStaff.previousDue).toFixed(2));
+                         $("#due_amount_val").val((courierStaff.previousDue).toFixed(2))
+                         $(".available_balance").text((courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2));
+                         $(".to_be_submitted").text((courierStaff.walletAmount).toFixed(2));
+                         $("#to_be_submitted_val").val((courierStaff.walletAmount).toFixed(2));*/
+                        Manager.fillDboyAccount(courierStaff)
+                        __this.prop("checked", false);
+                    }
+                    callback.loaderDiv = "body";
+                    callback.requestType = "POST";
+                    var headers = {};
+                    headers.id = cbid;
+
+                    Main.request('/accountant/dboy_ack_payment', {submittedAmount: $("#due_amount_val").val()}, callback, headers);
+                };
+                var button2 = function() {
+                    __this.prop("checked", false);
+                    return;
+                };
+
+                button1.text = "Yes";
+                button2.text = "No";
+
+                var buttons = [button1, button2];
+                Main.popDialog('', "Are you sure you want to acknowledge  RS." + $("#due_amount_val").val() + " from '" + $('#modal_account').data('cbname') + "'?", buttons);
 
             }
         });
@@ -799,37 +851,49 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.submitCourierBoyWalletAmount = function () {
         $('body').delegate('#submit', 'click', function () {
             var cbid = $('#modal_account').data('cbid');
-            if ($(this).prop("checked")) {
-                var conf = confirm("Are you sure you want to submit RS." + $("#to_be_submitted_val").val() + " from '" + $('#modal_account').data('cbname') + "'?");
-                if (!conf) {
-                    $(this).prop("checked", false);
-                    return;
-                }
 
-                if ($("#to_be_submitted_val").val() == 0 || $("#to_be_submitted_val").val() == null) {
-                    $('#submit').prop("checked", false);
-                    return;
-                }
+            var __this = $(this);
 
-                var callback = function (status, data) {
-                    if (!data.success) {
-                        alert(data.message);
+            if (__this.prop("checked")) {
+
+                var button1 = function() {
+
+                    if ($("#to_be_submitted_val").val() == 0 || $("#to_be_submitted_val").val() == null) {
+                        $('#submit').prop("checked", false);
                         return;
                     }
-                    var courierStaff = data.params.deliveryBoy;
-                    /*$(".due_amount").text(courierStaff.previousDue).toFixed(2));
-                    $("#due_amount_val").val(courierStaff.previousDue).toFixed(2))
-                    $(".available_balance").text(courierStaff.walletAmount + courierStaff.bankAmount);
-                    $(".to_be_submitted").text(courierStaff.walletAmount);
-                    $("#to_be_submitted_val").val(courierStaff.walletAmount);*/
-                    Manager.fillDboyAccount(courierStaff);
-                    $('#submit').prop("checked", false);
-                }
-                callback.loaderDiv = "body";
-                callback.requestType = "POST";
-                var headers = {};
-                headers.id = cbid;
-                Main.request('/accountant/dboy_wallet_payment', {submittedAmount: $("#to_be_submitted_val").val()}, callback, headers);
+
+                    var callback = function (status, data) {
+                        if (!data.success) {
+                            Main.popDialog('', data.message);
+                            return;
+                        }
+                        var courierStaff = data.params.deliveryBoy;
+                        /*$(".due_amount").text(courierStaff.previousDue).toFixed(2));
+                         $("#due_amount_val").val(courierStaff.previousDue).toFixed(2))
+                         $(".available_balance").text(courierStaff.walletAmount + courierStaff.bankAmount);
+                         $(".to_be_submitted").text(courierStaff.walletAmount);
+                         $("#to_be_submitted_val").val(courierStaff.walletAmount);*/
+                        Manager.fillDboyAccount(courierStaff);
+                        $('#submit').prop("checked", false);
+                    }
+                    callback.loaderDiv = "body";
+                    callback.requestType = "POST";
+                    var headers = {};
+                    headers.id = cbid;
+
+                    Main.request('/accountant/dboy_wallet_payment', {submittedAmount: $("#to_be_submitted_val").val()}, callback, headers);
+                };
+                var button2 = function() {
+                    __this.prop("checked", false);
+                    return;
+                };
+
+                button1.text = "Yes";
+                button2.text = "No";
+
+                var buttons = [button1, button2];
+                Main.popDialog('', "Are you sure you want to submit RS." + $("#to_be_submitted_val").val() + " from '" + $('#modal_account').data('cbname') + "'?", buttons);
 
             }
         });
@@ -853,7 +917,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.getCategories = function(){
         var callback = function (status, data) {
             if (!data.success) {
-                alert(data.message);
+                Main.popDialog('', data.message);
                 return;
             }
             var categories = data.params.categories;
@@ -936,7 +1000,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.getCategory = function(id){
         var callback = function(success, data){
             if(!data.success) {
-                alert(data.message);
+                Main.popDialog('', data.message);
                 return;
             }
             $('.add_child_btn').removeClass('hidden');
@@ -1056,91 +1120,112 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         $('.save_btn').click(function () {
             if ($('#category_form').valid()) {
-               if($(this).hasClass('edit')){
-                    var id = $('#category_id').val();
-                    var chk_confirm = confirm('Are you sure you want to update Category?');
-                    if (!chk_confirm) return false;
 
-                    var data = {};
-                    var callback = function(success, data){
-                        console.log(data);
-                        if (!data.success) {
-                            alert(data.message);
-                            return;
-                        }
-                        var category = data.params.category;
+                var __this = $(this);
 
-                        $('.category_detail #category_id').val(category.id);
-                        //$('.category_detail #category_parent_id').val(category.id);
-                        $(".category_detail .name").html(category.name);
-                        $(".category_detail #name").val(category.name);
-                        if(category.imageUrl != null)
-                            $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
+               if(__this.hasClass('edit')){
 
-                        $(".none_editable").removeClass('hidden');
-                        $(".editable").addClass('hidden');
-                        $("#category_image").addClass('disabled');
+                   var button1 = function() {
+                       var id = $('#category_id').val();
 
-                    }
-                    var headers = {};
-                    headers.id = id;
-                    data.name = $('#name').val();
-                    if(typeof $('#category_image').find('img').attr('src') != "undefined" &&  $('#category_image').find('img').attr('src').indexOf('https://') == -1)
-                        data.imageUrl = $('#category_image').find('img').attr('src');
-                    callback.loaderDiv = "body";
-                    callback.requestType = "PUT";
-                    Main.request('/organizer/update_category', data, callback, headers);
-                }else if($(this).hasClass('add')){
-                    var parent_id = $('#category_parent_id').val();
-                    var chk_confirm = confirm('Are you sure you want to Add New Category?');
-                    if (!chk_confirm) return false;
+                       var data = {};
+                       var callback = function(success, data){
+                           console.log(data);
+                           if (!data.success) {
+                               Main.popDialog('', data.message);
+                               return;
+                           }
+                           var category = data.params.category;
 
-                    var data = {};
-                    var callback = function(success, data){
-                        if (!data.success) {
-                            alert(data.message);
-                            return;
-                        }
-                        //Manager.getCategories();
-                        var category = data.params.category;
+                           $('.category_detail #category_id').val(category.id);
+                           //$('.category_detail #category_parent_id').val(category.id);
+                           $(".category_detail .name").html(category.name);
+                           $(".category_detail #name").val(category.name);
+                           if(category.imageUrl != null)
+                               $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
 
-                        $('.cateogry_list a').removeClass("current_category");
-                        $('.cateogry_list a[data-id='+category.id+']').addClass('current_category');
-                        $('.category_detail #category_id').val(category.id);
-                        $('.category_detail #category_parent_id').val(category.id);
-                        $(".category_detail .name").html(category.name);
-                        $(".category_detail #name").val(category.name);
-                        if(category.imageUrl != null)
-                            $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
+                           $(".none_editable").removeClass('hidden');
+                           $(".editable").addClass('hidden');
+                           $("#category_image").addClass('disabled');
 
-                        $(".none_editable").removeClass('hidden');
-                        $(".editable").addClass('hidden');
-                        $("#category_image").addClass('disabled');
+                       }
+                       var headers = {};
+                       headers.id = id;
+                       data.name = $('#name').val();
+                       if(typeof $('#category_image').find('img').attr('src') != "undefined" &&  $('#category_image').find('img').attr('src').indexOf('https://') == -1)
+                           data.imageUrl = $('#category_image').find('img').attr('src');
+                       callback.loaderDiv = "body";
+                       callback.requestType = "PUT";
 
-                        /*if(parent_id != ''){
+                       Main.request('/organizer/update_category', data, callback, headers);
+                   };
+
+                   button1.text = "Yes";
+                   var button2 = "No";
+
+                   var buttons = [button1, button2];
+                   Main.popDialog('', 'Are you sure you want to update Category?', buttons);
+
+               } else if(__this.hasClass('add')){
+
+                   var button1 = function() {
+                       var parent_id = $('#category_parent_id').val();
+
+                       var data = {};
+                       var callback = function(success, data){
+                           if (!data.success) {
+                               Main.popDialog('', data.message);
+                               return;
+                           }
+                           //Manager.getCategories();
+                           var category = data.params.category;
+
+                           $('.cateogry_list a').removeClass("current_category");
+                           $('.cateogry_list a[data-id='+category.id+']').addClass('current_category');
+                           $('.category_detail #category_id').val(category.id);
+                           $('.category_detail #category_parent_id').val(category.id);
+                           $(".category_detail .name").html(category.name);
+                           $(".category_detail #name").val(category.name);
+                           if(category.imageUrl != null)
+                               $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
+
+                           $(".none_editable").removeClass('hidden');
+                           $(".editable").addClass('hidden');
+                           $("#category_image").addClass('disabled');
+
+                           /*if(parent_id != ''){
                             $('.cateogry_list a[data-id='+parent_id+']').siblings('ul').removeClass('hidden');
                             $('.cateogry_list a[data-id='+parent_id+']').removeClass('glyphicon-plus').addClass('glyphicon-minus');
                             $('.glyphicon-minus',$('.cateogry_list a[data-id='+parent_id+']').parent('li').siblings('li')).removeClass('glyphicon-minus').addClass('glyphicon-plus');
                             $('ul', $('.cateogry_list a[data-id='+parent_id+']').parent('li').siblings('li')).addClass('hidden');
-                        }else{
+                            }else{
                             $('.cateogry_list a[data-id='+category.id+']').siblings('ul').removeClass('hidden');
                             $('.cateogry_list a[data-id='+category.id+']').removeClass('glyphicon-plus').addClass('glyphicon-minus');
                             $('.glyphicon-minus',$('.cateogry_list a[data-id='+category.id+']').parent('li').siblings('li')).removeClass('glyphicon-minus').addClass('glyphicon-plus');
                             $('ul', $('.cateogry_list a[data-id='+category.id+']').parent('li').siblings('li')).addClass('hidden');
-                        }*/
+                            }*/
 
-                        $('.cateogry_list a').removeClass("current_category");
-                        $('.cateogry_list a[data-id='+category.id+']').addClass('current_category');
-                    }
-                    var headers = {};
-                    headers.id = parent_id;
-                    data.name = $('#name').val();
-                    if(typeof $('#category_image').find('img').attr('src') != "undefined")
-                    data.imageUrl = $('#category_image').find('img').attr('src');
+                           $('.cateogry_list a').removeClass("current_category");
+                           $('.cateogry_list a[data-id='+category.id+']').addClass('current_category');
+                       }
+                       var headers = {};
+                       headers.id = parent_id;
+                       data.name = $('#name').val();
+                       if(typeof $('#category_image').find('img').attr('src') != "undefined")
+                           data.imageUrl = $('#category_image').find('img').attr('src');
 
-                    callback.loaderDiv = "body";
-                    Main.request('/organizer/save_category', data, callback, headers);
-                }
+                       callback.loaderDiv = "body";
+
+                       Main.request('/organizer/save_category', data, callback, headers);
+                   };
+
+                   button1.text = "Yes";
+                   var button2 = "No";
+
+                   var buttons = [button1, button2];
+                   Main.popDialog('', 'Are you sure you want to Add New Category?', buttons);
+
+               }
             }
         });
     }
@@ -1201,7 +1286,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             console.log(data);
 
             if(!data.success) {
-                alert(data.message);
+                Main.popDialog('', data.message);
                 return;
             }
 
@@ -1332,7 +1417,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
         var callback = function (status, jsondata){
 
             if(!jsondata.success){
-                alert(jsondata.message)
+                Main.popDialog('', jsondata.message);
                 return false;
             }
 
@@ -1409,7 +1494,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
             console.log(data);
             if (!data.success) {
-                alert(data.message);
+                Main.popDialog('', data.message);
                 return;
             }
             var users = data.params.sendableSMSList;
@@ -1458,18 +1543,27 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         var callback = function (status, data) {
 
-            alert(data.message);
-            if (data.success == true) {
-                Manager.getSmsCustomers();
-            }
+            Main.popDialog('', data.message, function () {
+                if (data.success == true) {
+                    Manager.getSmsCustomers();
+                }
+            });
         };
+        callback.loaderDiv = "body";
 
         $('.trigger_activation').live('click', function(){
 
-            var chk_confirm = confirm('Are you sure you want to resend SMS?');
-            if (!chk_confirm) return false;
-            callback.loaderDiv = "body";
-            Main.request('/organizer/send_sms', {id: $(this).attr('data-id'), mobileNo: $(this).attr('data-mobile')}, callback);
+            var __this = $(this);
+
+            var button1 = function() {
+                Main.request('/organizer/send_sms', {id: __this.attr('data-id'), mobileNo: __this.attr('data-mobile')}, callback);
+            };
+
+            button1.text = "Yes";
+            var button2 = "No";
+
+            var buttons = [button1, button2];
+            Main.popDialog('', 'Are you sure you want to resend SMS?', buttons);
 
         });
 
@@ -1532,28 +1626,36 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 });
 
                 if(!checked) {
-                    alert('Please check shopper or customer.');
+                    Main.popDialog('', 'Please check shopper or customer.');
                     return false;
                 }
 
-                var chk_confirm = confirm('Are you sure you want to send notification?');
-                if(!chk_confirm) return false;
+                var button1 = function() {
 
-                var callback = function (status, data) {
+                    var callback = function (status, data) {
 
-                    alert(data.message);
-                    if (data.success == true) {
-                        $('.check_customer, .check_shopper').removeAttr('checked').siblings('.icon_full').removeClass('icon_full');
-                        $('#form_notification')[0].reset();
-                    }
+                        Main.popDialog('', data.message, function () {
+                            if (data.success == true) {
+                                $('.check_customer, .check_shopper').removeAttr('checked').siblings('.icon_full').removeClass('icon_full');
+                                $('#form_notification')[0].reset();
+                            }
+                        });
+                    };
+                    callback.loaderDiv = "body";
+
+                    var params = {};
+                    params.pushMessage = $('#message').val();
+                    params.notifyToList = notifyList;
+
+                    Main.request('/organizer/send_notification', params, callback);
                 };
-                callback.loaderDiv = "body";
 
-                var params = {};
-                params.pushMessage = $('#message').val();
-                params.notifyToList = notifyList;
+                button1.text = "Yes";
+                var button2 = "No";
 
-                Main.request('/organizer/send_notification', params, callback);
+                var buttons = [button1, button2];
+                Main.popDialog('', 'Are you sure you want to send notification?', buttons);
+
                 return false;
 
             }

@@ -77,7 +77,7 @@ if( typeof (Fb) == "undefined"){
             FB.login(fbResponse, {scope: appPermissions});
             fbResponse.loaderDiv = '*';
         }else{
-            alert('Internet connection problem.');
+            Main.popDialog('', 'Internet connection problem.');
             return false;
         }
 
@@ -94,7 +94,7 @@ if( typeof (Fb) == "undefined"){
                 var href =  window.location.href;
                 var referred_by = href.split("/").reverse()[0];
                 if(!referred_by) {
-                    alert('Invalid referral.');
+                    Main.popDialog('', 'Invalid referral.');
                     return false;
                 }
                 console.log(user);
@@ -122,7 +122,7 @@ if( typeof (Fb) == "undefined"){
                             $('#fbLoginBtn').css({'display':'none'});
                             $('#old_account_msg').css({'display':'block'});
                         } else{
-                            alert(data.message);
+                            Main.popDialog('', data.message);
                         }
                     }
                 };

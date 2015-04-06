@@ -62,6 +62,7 @@
        <mapping class="com.yetistep.delivr.model.ReceiptEntity" />
        <mapping class="com.yetistep.delivr.model.ValidateMobileEntity" />
        <mapping class="com.yetistep.delivr.model.TestEntity" />
+       <mapping class="com.yetistep.delivr.model.WalletTransactionEntity" />
 
     </session-factory>
 </hibernate-configuration>

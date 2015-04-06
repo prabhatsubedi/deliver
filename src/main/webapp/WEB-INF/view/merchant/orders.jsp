@@ -74,15 +74,15 @@
                         <th rowspan="2"><div class="width_100">Total Bill Amount</div></th>
                         <th rowspan="2"><div class="width_150">Shopper</div></th>
                         <th rowspan="2" class="no_sort"><div class="width_80">Bill</div></th>
-                        <th colspan="2">Customer Feedback</th>
-                        <th colspan="2">Shopper Feedback</th>
+                        <th colspan="2">Customer To Feedback</th>
+                        <th colspan="2">Shopper To Feedback</th>
                         <th rowspan="2" class="no_sort"><div class="width_100">Action</div></th>
                     </tr>
                     <tr>
                         <th class="no_sort">Rating</th>
-                        <th class="no_sort"><div class="width_150">Comment</div></th>
-                        <th class="no_sort">rating</th>
-                        <th class="no_sort"><div class="width_150">Comment</div></th>
+                        <th class="no_sort"><div class="width_150">Issue | Comment</div></th>
+                        <th class="no_sort">Rating</th>
+                        <th class="no_sort"><div class="width_150">Issue | Comment</div></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -102,13 +102,13 @@
                         <th rowspan="2"><div class="width_100">Total Bill Amount</div></th>
                         <th rowspan="2"><div class="width_150">Shopper</div></th>
                         <th rowspan="2" class="no_sort"><div class="width_80">Bill</div></th>
-                        <th colspan="2">Shopper Feedback</th>
+                        <th colspan="2">Feedback To Customer</th>
                         <th rowspan="2" class="no_sort">Cancel Reason</th>
                         <th rowspan="2" class="no_sort"><div class="width_100">Action</div></th>
                     </tr>
                     <tr>
-                        <th class="no_sort">rating</th>
-                        <th class="no_sort">Comment</th>
+                        <th class="no_sort">Rating</th>
+                        <th class="no_sort">Issue | Comment</th>
                     </tr>
                     </thead>
                     <tbody>

@@ -195,3 +195,7 @@ update dboy_advance_amounts set type = "advanceAmount";
 INSERT INTO dboy_advance_amounts (advance_date, advance_amount, dboy_id, type) SELECT ack_date, amount_received, dboy_id, "acknowledgeAmount" FROM dboy_submitted_amounts;
 DROP TABLE dboy_submitted_amounts;
 /*remember the */
+
+
+/* old orders are from Cash on delivery 2015-04-03*/
+UPDATE orders SET payment_mode = 0;

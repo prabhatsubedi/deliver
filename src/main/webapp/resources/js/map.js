@@ -68,7 +68,7 @@ $(document).ready(function(){
                         map.fitBounds(results[0].geometry.bounds);
                 }
             } else {
-                alert("Geocode was not successful for the following reason: " + status);
+                Main.popDialog('', "Geocode was not successful for the following reason: " + status);
             }
         });
     }
@@ -481,9 +481,10 @@ $(document).ready(function(){
                                             }
 
                                             if(country != selectedCountry) {
-                                                alert('Marker location doesn\'t lie within selected country boundary.');
-                                                addMarker(lastPosition);
-                                                google.maps.event.trigger(currentMarker, 'rightclick');
+                                                Main.popDialog('', 'Marker location doesn\'t lie within selected country boundary.', function () {
+                                                    addMarker(lastPosition);
+                                                    google.maps.event.trigger(currentMarker, 'rightclick');
+                                                });
                                             }
 
                                         }
@@ -495,15 +496,14 @@ $(document).ready(function(){
                         }
                         else
                         {
-                            alert('Marker location doesn\'t lie within selected country boundary.');
+                            Main.popDialog('', 'Marker location doesn\'t lie within selected country boundary.');
                             return false;
                         }
                     } else {
-                        alert('No results found');
+                        Main.popDialog('', 'No results found');
                     }
                 } else {
                     setTimeout(function(){ addMarker(location, name); }, 500);
-//                    alert("Marker placing failed. Please click again to place marker.");
                 }
             });
         }
@@ -825,11 +825,12 @@ $(document).ready(function(){
                                             }
 
                                             if(country != selectedCountry) {
-                                                alert('Marker location doesn\'t lie within selected country boundary.');
-                                                lastPosition.dataId = infoWindowData.id;
-                                                addStoreMarker(lastPosition);
-                                                delete infoWindowData.id;
-                                                google.maps.event.trigger(currentMarker, 'rightclick');
+                                                Main.popDialog('', 'Marker location doesn\'t lie within selected country boundary.', function () {
+                                                    lastPosition.dataId = infoWindowData.id;
+                                                    addStoreMarker(lastPosition);
+                                                    delete infoWindowData.id;
+                                                    google.maps.event.trigger(currentMarker, 'rightclick');
+                                                });
                                             }
 
                                         }
@@ -869,15 +870,13 @@ $(document).ready(function(){
                         }
                         else
                         {
-                            alert('Marker location doesn\'t lie within selected country boundary.');
+                            Main.popDialog('', 'Marker location doesn\'t lie within selected country boundary.');
                         }
                     } else {
-                        alert('No results found');
+                        Main.popDialog('', 'No results found');
                     }
                 } else {
                     setTimeout(function(){ addStoreMarker(location, name); }, 500);
-
-//                    alert("Marker placing failed. Please click again to place marker.");
                 }
             });
         }

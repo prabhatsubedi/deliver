@@ -4,6 +4,8 @@
 
 if(typeof(Main) == "undefined") var Main = {};
 
+var dialogCallback;
+var dialogTimeout;
 var form_submit = true;
 $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data will not be saved. Are you sure to continue?'; });
 
@@ -100,6 +102,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 if (callback != undefined) return callback("success", data);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0) return;
                 if (callback != undefined && errorThrown != "abort") return callback("error", {success: false, message: XMLHttpRequest.getResponseHeader("errorMessage"), code: XMLHttpRequest.getResponseHeader("errorCode")});
             },
             complete: function() {
@@ -121,7 +124,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 Main.saveInLocalStorage('currency', data.params.currency);
                 window.location = Main.modifyURL(data.params.url);
             } else {
-                alert(data.message);
+                Main.popDialog('', data.message);
             }
         };
 
@@ -173,12 +176,11 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         var callback = function (status, data) {
             $("button[type='submit']").removeAttr("disabled");
 
-            if (data.success == true) {
-                alert(data.message);
-                window.location = Main.modifyURL("/");
-            } else {
-                alert(data.message);
-            }
+            Main.popDialog('', data.message, function() {
+                if (data.success == true) {
+                    window.location = Main.modifyURL("/");
+                }
+            });
         };
 
         callback.loaderDiv = ".assist_containers";
@@ -194,12 +196,11 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         var callback = function (status, data) {
             $("button[type='submit']").removeAttr("disabled");
 
-            if (data.success == true) {
-                alert(data.message);
-                $('#modal_password').modal('hide');
-            } else {
-                alert(data.message);
-            }
+            Main.popDialog('', data.message, function() {
+                if (data.success == true) {
+                    $('#modal_password').modal('hide');
+                }
+            });
         };
 
         callback.loaderDiv = "#modal_password .modal-content";
@@ -468,26 +469,37 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
     Main.popDialog = function (title, content, buttons) {
 
-/*      usage
-        var button1 = function() {
-            alert('you clicked button 1');
-        };
-        button1.text = "Test Button1";
-        var button2 = function() {
-            alert('you clicked button 2');
-        };
-        button2.text = "Test Button2";
-        var buttons = [button1, button2];
-        Main.popDialog("Test Title", "Test content", buttons);
-        */
+//        usage for alert box
+//        params values: first can be empty string, second is message, third can be function or undefined
+//        Main.popDialog("Test Title", "Test content", function() {
+//            alert('you clicked button 1');
+//        });
 
-        if(!buttons) buttons = [];
+//        usage for confirmation box
+//        params values: first can be empty string, second is message, third can be list of button(button function with button text or button text string only) or undefined(will add a close button)
+//        var button1 = function() {
+//            alert('you clicked button 1');
+//        };
+//        button1.text = "Test Button1";
+//        var button2 = function() {
+//            alert('you clicked button 2');
+//        };
+//        button2.text = "Test Button2";
+//        var buttons = [button1, button2];
+//        Main.popDialog("Test Title", "Test content", buttons);
+
+        dialogCallback = '';
+        if(typeof buttons == 'function') {
+            dialogCallback = buttons;
+            buttons = undefined;
+        }
+
+        if(!buttons) buttons = ['Close'];
         if($('#popDialog').length == 0) {
             $('body').append('\
-                <div class="modal fade" id="popDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">\
+                <div class="modal" id="popDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="z-index: 9999">\
                     <div class="modal-dialog">\
                         <div class="modal-content">\
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute; right: 15px; top: 12px; z-index: 1;"><span aria-hidden="true">&times;</span></button>\
                             <div class="modal-header">\
                                 <h4 class="modal-title" id="myModalLabel"></h4>\
                             </div>\
@@ -498,6 +510,11 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                         </div>\
                     </div>\
                 </div>');
+
+            $('#popDialog').on('hidden.bs.modal', function(){
+                clearTimeout(dialogTimeout);
+                if(typeof dialogCallback == 'function') dialogCallback();
+            });
         }
 
         window.dialogButtons = buttons;
@@ -519,6 +536,13 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         else
             $('.modal-footer', popElem).removeClass('hidden').html(buttonsElem);
         popElem.modal('show');
+
+        if(buttons[0] == 'Close') {
+            dialogTimeout = setTimeout(function() {
+                popElem.modal('hide');
+            }, 5000);
+        }
+
     };
 
 })(jQuery);

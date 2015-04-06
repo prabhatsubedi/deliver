@@ -49,7 +49,7 @@
                 <table id="merchants_table">
                     <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>SN</th>
                         <th><div class="width_150"> Merchant Name </div></th>
                         <th><div class="width_100"> Type </div></th>
                         <th><div class="width_150"> Contact Person </div></th>

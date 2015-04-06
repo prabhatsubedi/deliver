@@ -363,7 +363,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
             userDeviceDaoService.removeInformationForSameDevice(userDevice.getUuid(), userEntity.getId());
             userDeviceEntity.setUuid(userDevice.getUuid());
-            userDeviceEntity.setDeviceToken(userDevice.getDeviceToken());
+            if(userDevice.getDeviceToken() != null && !userDevice.getDeviceToken().isEmpty())
+                userDeviceEntity.setDeviceToken(userDevice.getDeviceToken());
             /* TODO Family for family, familyName, name */
             userDeviceEntity.setFamily(family);
             userDeviceEntity.setFamilyName(family);
@@ -669,13 +670,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         courierBoyAccountingsAfterTakingOrder(order.getDeliveryBoy(), order, partnerShipStatus);
         List<OrderEntity> orderEntities = new ArrayList<OrderEntity>();
         /* Wallet Integration */
+        boolean status = false;
         if(order.getPaymentMode().equals(PaymentMode.WALLET)){
             BigDecimal customerWalletAmount = order.getCustomer().getWalletAmount();
-            /* if customerWalletAmount is zero or less than zero, then only look for next orders */
-            Boolean lookForNextOrders = false;
-            if(BigDecimalUtil.isLessThenOrEqualTo(customerWalletAmount, BigDecimal.ZERO)){
-                lookForNextOrders = true;
-            }
             BigDecimal paidFromWallet = order.getPaidFromWallet();
             /* Taking reference for difference in price from paidFromCOD */
             BigDecimal paidFromCOD = order.getPaidFromCOD();
@@ -686,17 +683,33 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 /*Customer wallet is greater than or equal to paidFromCOD */
                 log.info("Increase in item price for order ID:"+order.getId());
                 if(BigDecimalUtil.isGreaterThenOrEqualTo(customerWalletAmount, paidFromCOD)){
+                    log.info("customerWalletAmount is greater:"+customerWalletAmount+" Paid from COD:"+paidFromCOD);
+                    String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
+                    remarks = String.format(remarks, "Rs", paidFromCOD, order.getId());
+                    this.setWalletTransaction(order, paidFromCOD, AccountType.DEBIT, remarks);
+
                     customerWalletAmount = customerWalletAmount.subtract(paidFromCOD);
                     paidFromWallet = paidFromWallet.add(paidFromCOD);
                     paidFromCOD = BigDecimal.ZERO;
                 }else{
                     /* Customer Wallet is not enough to pay */
-                    paidFromCOD = paidFromCOD.subtract(customerWalletAmount);
-                    paidFromWallet = paidFromWallet.add(customerWalletAmount);
-                    customerWalletAmount = BigDecimal.ZERO;
+                    if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
+                        log.info("customerWalletAmount is lesser:"+customerWalletAmount+" Paid from COD:"+paidFromCOD);
+                        String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
+                        remarks = String.format(remarks, "Rs", customerWalletAmount, order.getId());
+                        this.setWalletTransaction(order, customerWalletAmount, AccountType.DEBIT, remarks);
+
+                        paidFromCOD = paidFromCOD.subtract(customerWalletAmount);
+                        paidFromWallet = paidFromWallet.add(customerWalletAmount);
+                        customerWalletAmount = BigDecimal.ZERO;
+                    }
                 }
             }else if(BigDecimalUtil.isLessThen(paidFromCOD, BigDecimal.ZERO)){
                 log.info("Decrease in item price for order ID:"+order.getId());
+                String remarks = MessageBundle.getMessage("WTM002", "push_notification.properties");
+                remarks = String.format(remarks, "Rs", paidFromCOD.abs(), order.getId());
+                this.setWalletTransaction(order, paidFromCOD.abs(), AccountType.CREDIT, remarks);
+
                 paidFromWallet = paidFromWallet.subtract(paidFromCOD.abs());
                 customerWalletAmount = customerWalletAmount.add(paidFromCOD.abs());
                 paidFromCOD = BigDecimal.ZERO;
@@ -704,33 +717,46 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
             order.setPaidFromCOD(paidFromCOD);
             order.setPaidFromWallet(paidFromWallet);
-
-            /* Look for next orders only if previous customer wallet amount is less than 0,
-            *  i.e. lookForNextOrders is true and new Customer Wallet Amount is greater than zero. */
-            if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO) && lookForNextOrders){
+            order.getCustomer().setWalletAmount(customerWalletAmount);
+            status = orderDaoService.update(order);
+            /* Look for next orders only if Customer Wallet Amount is greater than zero. */
+            if(status && BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
                 log.info("looking for next orders whose paidToCOD > 0 and paymentMode is wallet for customer with ID:"+order.getCustomer().getId());
                 List<OrderEntity> orderList = orderDaoService.getWalletUnpaidOrders(order.getCustomer().getId(), order.getId());
                 for(OrderEntity o: orderList){
                     if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
                         /* Customer wallet amount is less than order amount to be paid at customer during cash on delivery */
                         if(BigDecimalUtil.isGreaterThenOrEqualTo(o.getPaidFromCOD(), customerWalletAmount)){
+                            log.info("Customer wallet amount is less than order amount to be paid at customer during cash on delivery order ID:"+o.getId()+"Wallet Amount:"+customerWalletAmount+" Paid from COD:"+o.getPaidFromCOD());
+                            String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
+                            remarks = String.format(remarks, "Rs", customerWalletAmount, o.getId());
+                            this.setWalletTransaction(o, customerWalletAmount, AccountType.DEBIT, remarks);
+
                             o.setPaidFromCOD(o.getPaidFromCOD().subtract(customerWalletAmount));
                             o.setPaidFromWallet(o.getPaidFromWallet().add(customerWalletAmount));
                             customerWalletAmount = BigDecimal.ZERO;
+                            o.getCustomer().setWalletAmount(customerWalletAmount);
                         }else{
+                            log.info("Customer wallet amount is greater than order amount to be paid at customer during cash on delivery order ID:"+o.getId()+"Wallet Amount:"+customerWalletAmount+" Paid from COD:"+o.getPaidFromCOD());
+                            String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
+                            remarks = String.format(remarks, "Rs", o.getPaidFromCOD(), o.getId());
+                            this.setWalletTransaction(o, o.getPaidFromCOD(), AccountType.DEBIT, remarks);
+
                             o.setPaidFromWallet(o.getPaidFromWallet().add(o.getPaidFromCOD()));
                             customerWalletAmount = customerWalletAmount.subtract(o.getPaidFromCOD());
                             o.setPaidFromCOD(BigDecimal.ZERO);
+                            o.getCustomer().setWalletAmount(customerWalletAmount);
                         }
                         orderDaoService.update(o);
                     }else
                         break;
                 }
             }
-            order.getCustomer().setWalletAmount(customerWalletAmount);
+
+        }else{
+           status = orderDaoService.update(order);
         }
         /* Wallet Integration completed*/
-        boolean status = orderDaoService.update(order);
         if(status){
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN004","push_notification.properties");
@@ -740,9 +766,29 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         return status;
     }
 
+    private void setWalletTransaction(OrderEntity order, BigDecimal amount, AccountType accountType, String remarks) throws Exception{
+        log.info("Setting wallet transaction info for order:"+order.getId()+" Amount:"+amount+" Account type:"+accountType+" Remarks:"+remarks);
+        List<WalletTransactionEntity> walletTransactionEntities = order.getWalletTransactions();
+        WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
+        walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+        walletTransactionEntity.setAccountType(accountType);
+        walletTransactionEntity.setRemarks(remarks);
+        walletTransactionEntity.setTransactionAmount(amount);
+        walletTransactionEntity.setOrder(order);
+        walletTransactionEntity.setCustomer(order.getCustomer());
+        systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
+        walletTransactionEntities.add(walletTransactionEntity);
+        order.setWalletTransactions(walletTransactionEntities);
+    }
+
     private Boolean deliverOrder(OrderEntity orderEntityJson, OrderEntity order, Integer deliveryBoyId) throws Exception {
         if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
             throw new YSException("ORD003");
+        }
+
+        if(order.getAttachments() != null){
+            if(order.getAttachments().size() == 0)
+                throw new YSException("ORD021");
         }
 
         if(!orderEntityJson.getOrderVerificationCode().equals(order.getOrderVerificationCode()) || !orderEntityJson.getId().equals(order.getId())){
@@ -1577,6 +1623,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         address.setLongitude(order.getAddress().getLongitude());
         address.setMobileNumber(order.getAddress().getMobileNumber());
         address.setNotes(order.getAddress().getNotes());
+        address.setGivenLocation(order.getAddress().getGivenLocation());
         responseOrder.setAddress(address);
 
         StoreEntity store = new StoreEntity();

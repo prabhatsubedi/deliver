@@ -45,6 +45,7 @@ public class CustomerEntity implements Serializable {
     private String currency;//Transient Variable
     private List<BillEntity> bill;
     private List<ReceiptEntity> receipt;
+    private List<WalletTransactionEntity> walletTransactions;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -294,5 +295,14 @@ public class CustomerEntity implements Serializable {
 
     public void setReceipt(List<ReceiptEntity> receipt) {
         this.receipt = receipt;
+    }
+
+    @OneToMany(mappedBy = "customer", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )
+    public List<WalletTransactionEntity> getWalletTransactions() {
+        return walletTransactions;
+    }
+
+    public void setWalletTransactions(List<WalletTransactionEntity> walletTransactions) {
+        this.walletTransactions = walletTransactions;
     }
 }

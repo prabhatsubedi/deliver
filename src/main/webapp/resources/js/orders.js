@@ -82,7 +82,7 @@ Order.getOrders = function(elemId, url, params){
 
     var dataFilter = function (data, type) {
         if (!data.success) {
-            alert(data.message);
+            Main.popDialog('', data.message);
             return;
         }
         var responseRows = data.params.orders.numberOfRows;
@@ -223,7 +223,7 @@ Order.getPurchaseHistory = function(){
 
     var dataFilter = function (data, type) {
         if (!data.success) {
-            alert(data.message);
+            Main.popDialog('', data.message);
             return;
         }
 
@@ -342,7 +342,7 @@ Order.getOrdersItems = function(){
     var dataFilter = function (data, type) {
 
         if (!data.success) {
-            alert(data.message);
+            Main.popDialog('', data.message);
             return;
         }
         var responseRows = data.params.items.numberOfRows;
@@ -390,7 +390,7 @@ Order.courierBoyOrderHistory = function(params){
 
     var dataFilter = function (data, type) {
         if (!data.success) {
-            alert(data.message);
+            Main.popDialog('', data.message);
             return;
         }
         var responseRows = data.params.orders.numberOfRows;
@@ -475,7 +475,7 @@ Order.getInvoices = function(params){
 
     var dataFilter = function (data, type) {
         if (!data.success) {
-            alert(data.message);
+            Main.popDialog('', data.message);
             return;
         }
 
@@ -496,7 +496,7 @@ Order.getInvoices = function(params){
                 unpaid_total += invoice_amount;
             }
 
-            var row = [invoice.id, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", invoice.generatedDate, '<span class="' + (invoice.invoicePaid == undefined ? "paid_status unpaid_amount" : '') + '">' + invoice_amount + '</span>', invoice.fromDate, invoice.toDate, invoice.paidDate!=undefined?invoice.paidDate:'', link, checkBox];
+            var row = [invoice.id, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", invoice.generatedDate, 'Rs. <span class="' + (invoice.invoicePaid == undefined ? "paid_status unpaid_amount" : '') + '">' + invoice_amount + '</span>', invoice.fromDate, invoice.toDate, invoice.paidDate!=undefined?invoice.paidDate:'', link, checkBox];
             row = $.extend({}, row);
             tableData.push(row);
         }

@@ -86,12 +86,12 @@
                     idString+=$(this).data("id")+",";
             });
             if(idString == ""){
-                alert("Please select order(s) to pay the shopper");
+                Main.popDialog('', 'Please select order(s) to pay the shopper');
             }else{
-                var pay = confirm("Are you sure you want to pay the shopper");
-                if(pay){
+                var button1 = function() {
+
                     var callback = function(success, data){
-                        alert(data.message);
+                        Main.popDialog('', data.message);
                         return;
                     }
 
@@ -101,7 +101,14 @@
                     header.id = idString;
 
                     Main.request('/accountant/pay_dboy', {}, callback, header);
-                }
+                };
+
+                button1.text = "Yes";
+                var button2 = "No";
+
+                var buttons = [button1, button2];
+                Main.popDialog('', 'Are you sure you want to pay the shopper', buttons);
+
             }
         });
     });
@@ -143,18 +150,18 @@
                     <thead>
                     <tr>
                         <th rowspan="2" class="no_sort">SN</th>
-                        <th rowspan="2"><div class="width_120">Date</div></th>
+                        <th rowspan="2"><div class="width_120">Date & Time</div></th>
                         <th rowspan="2">Order No</th>
                         <th rowspan="2"><div class="width_150">Customer Name</div></th>
                         <th rowspan="2"><div class="width_150">Order Name</div></th>
                         <th rowspan="2">Distance Traveled</th>
-                        <th rowspan="2"><div class="width_80">Delivery status</div></th>
+                        <th rowspan="2"><div class="width_80">Order status</div></th>
                         <th rowspan="2">Amount Earned</th>
                         <th rowspan="2">Time Assigned</th>
                         <th rowspan="2" class="no_sort">Time Taken</th>
-                        <th colspan="2">Feedback By Customer</th>
-                        <th colspan="2">Feedback By Shopper</th>
-                        <th rowspan="2"><div class="width_80">Paid Date</div></th>
+                        <th colspan="2">Feedback To Customer</th>
+                        <th colspan="2">Feedback To Shopper</th>
+                        <th rowspan="2"><div class="width_80">Paid Date & Time</div></th>
                         <th rowspan="2" class="no_sort">Select All
                             <span style="margin-left: 10px;">
                                 <input type="checkbox" id="selectAllToPay" name="selectAllToPay"/>

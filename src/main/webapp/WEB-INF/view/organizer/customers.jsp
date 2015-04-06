@@ -44,7 +44,7 @@
                 <table id="customers_table">
                     <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>SN</th>
                         <th><div class="width_150"> Customer Name </div></th>
                         <th><div class="width_150"> Email </div></th>
                         <th><div class="width_150"> Contact No. </div></th>

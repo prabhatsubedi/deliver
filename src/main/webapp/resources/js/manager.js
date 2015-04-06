@@ -911,7 +911,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
             $(".to_be_submitted").text(parseFloat(courierStaff.walletAmount).toFixed(2));
             $("#to_be_submitted_val").val(parseFloat(courierStaff.walletAmount).toFixed(2));
         }
-
     }
 
     Manager.getCategories = function(){

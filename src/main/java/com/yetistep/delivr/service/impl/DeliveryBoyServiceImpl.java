@@ -804,7 +804,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         boolean status = orderDaoService.update(order);
         if(status){
             /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
-            accountService.generateBillAndReceiptAndSendEmail(order);
+            //accountService.generateBillAndReceiptAndSendEmail(order);
 
 
             /*=========== Calculate Average Rating For Customer ================ (Appended By Surendra) */

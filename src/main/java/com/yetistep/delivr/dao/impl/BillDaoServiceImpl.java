@@ -2,10 +2,13 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.BillDaoService;
 import com.yetistep.delivr.model.BillEntity;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,4 +54,14 @@ public class BillDaoServiceImpl implements BillDaoService {
     public Session getCurrentSession() throws Exception {
         return sessionFactory.getCurrentSession();
     }
+
+    @Override
+    public List<BillEntity> getBillByOrder(Integer orderId) throws Exception {
+        List<BillEntity> bills = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BillEntity.class);
+        criteria.add(Restrictions.eq("order.id", orderId));
+        bills = criteria.list();
+        return bills;
+    }
+
 }

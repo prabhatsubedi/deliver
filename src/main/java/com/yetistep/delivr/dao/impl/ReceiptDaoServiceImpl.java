@@ -2,10 +2,13 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.ReceiptDaoService;
 import com.yetistep.delivr.model.ReceiptEntity;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,5 +53,14 @@ public class ReceiptDaoServiceImpl implements ReceiptDaoService {
     @Override
     public Session getCurrentSession() throws Exception {
         return sessionFactory.getCurrentSession();
+    }
+
+    @Override
+    public List<ReceiptEntity> getBillByOrder(Integer orderId) throws Exception {
+        List<ReceiptEntity> receipts = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ReceiptEntity.class);
+        criteria.add(Restrictions.eq("order.id", orderId));
+        receipts = criteria.list();
+        return receipts;
     }
 }

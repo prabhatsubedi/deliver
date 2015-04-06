@@ -4,6 +4,8 @@ import com.yetistep.delivr.abs.GenericDaoService;
 import com.yetistep.delivr.model.InvoiceEntity;
 import com.yetistep.delivr.model.ReceiptEntity;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Sagar
@@ -12,5 +14,5 @@ import com.yetistep.delivr.model.ReceiptEntity;
  * To change this template use File | Settings | File Templates.
  */
 public interface ReceiptDaoService  extends GenericDaoService<Integer, ReceiptEntity> {
-
+    public List<ReceiptEntity> getBillByOrder(Integer orderId) throws Exception;
 }

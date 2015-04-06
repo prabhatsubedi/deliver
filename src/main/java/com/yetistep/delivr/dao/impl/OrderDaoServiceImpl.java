@@ -44,6 +44,15 @@ public class OrderDaoServiceImpl implements OrderDaoService {
     }
 
     @Override
+    public OrderEntity findOrderById(Integer id) throws Exception {
+        List<OrderEntity> orders = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.add(Restrictions.eq("id", id));
+        orders = criteria.list();
+        return orders.size() > 0 ? orders.get(0) : null;
+    }
+
+    @Override
     public List<OrderEntity> find(List<Integer> id) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.in("id", id));

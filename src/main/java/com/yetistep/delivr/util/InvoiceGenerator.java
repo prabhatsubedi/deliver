@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,8 +39,8 @@ public class InvoiceGenerator {
     private static final String HOME_DIR = System.getProperty("catalina.home");
     private static final String INVOICE_URL = "http://www.iDeliver.com";
 
-    public String generateInvoice(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store, String serverUrl) throws Exception {
-            File invoiceFile = generateInvoicePDF(orders, merchant, invoice, store, serverUrl);
+    public String generateInvoice(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store, String serverUrl, Map<String, String> preferences) throws Exception {
+            File invoiceFile = generateInvoicePDF(orders, merchant, invoice, store, serverUrl, preferences);
 
             if (invoiceFile == null)
                 return null;
@@ -65,8 +66,8 @@ public class InvoiceGenerator {
     }
 
 
-    public String generateBillAndReceipt(OrderEntity order, BillEntity bill, ReceiptEntity receipt, String serverUrl) throws Exception{
-        File billFile = generateBillAndReceiptPDF(order, bill, receipt, serverUrl);
+    public String generateBillAndReceipt(OrderEntity order, BillEntity bill, ReceiptEntity receipt, String serverUrl, Map<String, String> preferences) throws Exception{
+        File billFile = generateBillAndReceiptPDF(order, bill, receipt, serverUrl, preferences);
 
         if (billFile == null)
             return null;
@@ -92,7 +93,7 @@ public class InvoiceGenerator {
         return billPath;
     }
 
-    private File generateBillAndReceiptPDF(OrderEntity order, BillEntity bill, ReceiptEntity receipt, String serverUrl) throws Exception{
+    private File generateBillAndReceiptPDF(OrderEntity order, BillEntity bill, ReceiptEntity receipt, String serverUrl, Map<String, String> preferences) throws Exception{
         FileOutputStream stream = null;
         File billAndReceiptFile = null;
 
@@ -105,14 +106,14 @@ public class InvoiceGenerator {
             document.open();
             document.setMargins(20, 20, 20, 20);
             //add bill header
-            addPdfHeader(document, serverUrl);
+            addPdfHeader(document, serverUrl, preferences);
 
             addBillBody(document, order, bill);
 
             document.newPage();
 
             //add receipt header
-            addPdfHeader(document, serverUrl);
+            addPdfHeader(document, serverUrl, preferences);
 
             addReceiptBody(document, order, receipt, bill);
 
@@ -135,7 +136,7 @@ public class InvoiceGenerator {
         return billAndReceiptFile;
     }
 
-    private File generateInvoicePDF(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store, String serverUrl) throws Exception {
+    private File generateInvoicePDF(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store, String serverUrl, Map<String, String> preferences) throws Exception {
 
         FileOutputStream stream = null;
         File invoiceFile = null;
@@ -151,7 +152,7 @@ public class InvoiceGenerator {
             document.open();
             document.setMargins(20, 20, 20, 20);
             //add doc header
-            addPdfHeader(document, serverUrl);
+            addPdfHeader(document, serverUrl, preferences);
 
             addInvoiceDetail(document, merchant, invoice, store);
             //document.newPage();
@@ -232,17 +233,19 @@ public class InvoiceGenerator {
 //    }
 
     //create a header for the company
-    private void addPdfHeader(Document document, String serverUrl) throws Exception {
+    private void addPdfHeader(Document document, String serverUrl, Map<String, String> preferences) throws Exception {
         int bottomPadding = 35;
 
         //address cell
         PdfPCell addressCell = new PdfPCell();
         PdfUtil.setPadding(addressCell, 0, 0, bottomPadding, 0);
 
-        String name = "Deliver Private Limited";
-        String street = "Charkhal Road, Dillibazar";
-        String city = "Kathmandu, Nepal";
-        String reg = "258956555";
+        String name = preferences.get("COMPANY_NAME");
+        String address = preferences.get("COMPANY_ADDRESS");
+        String[] addressInArray = address.split(",");
+        String street = addressInArray[0]+","+addressInArray[1];
+        String city = addressInArray[2]+","+addressInArray[3];
+        String reg = preferences.get("REGISTRATION_NO");
 
         String imageUrl = serverUrl+"/resources/images/delivr-logo.png";
 
@@ -258,11 +261,11 @@ public class InvoiceGenerator {
         PdfPCell billingCell = new PdfPCell();
 
         Paragraph paragraph1 = new Paragraph();
-        paragraph1.add(PdfUtil.getPhrase("iDelivr Customer Care : 1800 208 9898", PdfUtil.largeBold));
+        paragraph1.add(PdfUtil.getPhrase(name+" Customer Care : "+preferences.get("HELPLINE_NUMBER"), PdfUtil.largeBold));
         paragraph1.setAlignment(Element.ALIGN_RIGHT);
 
         Paragraph paragraph2 = new Paragraph();
-        paragraph2.add(PdfUtil.getPhrase("cs@idelivr.com", PdfUtil.largeBold));
+        paragraph2.add(PdfUtil.getPhrase(preferences.get("SUPPORT_EMAIL"), PdfUtil.largeBold));
         paragraph2.setAlignment(Element.ALIGN_RIGHT);
 
         PdfUtil.setPadding(billingCell, 0, 0, bottomPadding, 0);
@@ -374,20 +377,11 @@ public class InvoiceGenerator {
 
         PdfPCell addressCell = new PdfPCell();
         PdfUtil.setPadding(addressCell, 0, 0, 10, 10);
-        String street = "";
-        String city = "";
-        String state = "";
-        String country = "";
-        String mobile = "";
-        for (AddressEntity address: order.getCustomer().getUser().getAddresses()){
-            if (address.getdFlag() != null && address.getdFlag().equals("D")){
-                street = address.getStreet();
-                city = address.getCity();
-                state = address.getState();
-                country = address.getCountry();
-                mobile = address.getMobileNumber();
-            }
-        }
+        String street = order.getAddress().getStreet();
+        String city = order.getAddress().getCity();
+        String state = order.getAddress().getState();
+        String country = order.getAddress().getCountry();
+        String mobile = order.getAddress().getMobileNumber();
 
         Paragraph addressInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Billing Address", street+", "+city, state+", "+country, "Phone: "+mobile);
         addressInfo.setAlignment(Element.ALIGN_RIGHT);
@@ -412,7 +406,6 @@ public class InvoiceGenerator {
         billingTable.setWidthPercentage(100);
         billingTable.setWidths(new float[]{45, 45});
 
-
         String currency = "NRS";
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Title", PdfUtil.smallBold), PdfUtil.getPhrase("Amount ("+currency+")", PdfUtil.smallBold));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("iDelivr Fee"),
@@ -427,7 +420,6 @@ public class InvoiceGenerator {
                 PdfUtil.getPhrase(bill.getDeliveryCharge().add(bill.getSystemServiceCharge()).add(bill.getVat()), PdfUtil.smallBold));
 
         document.add(billingTable);
-
     }
 
 

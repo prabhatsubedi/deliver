@@ -98,7 +98,6 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
         for (PreferencesEntity preferences : allPreferences) {
             prop.setProperty(preferences.getPrefKey().toString(), preferences.getValue());
         }
-
         prop.store(outputStream, null);
         outputStream.close();
     }

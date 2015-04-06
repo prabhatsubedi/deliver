@@ -220,7 +220,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
         deliveryBoyDaoService.update(dBoy);
 
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
+        String fields = "id,availabilityStatus,averageRating,previousDue,availableAmount,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -248,7 +248,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         dBoy.setdBoyAdvanceAmounts(dBoySubmittedAmounts);
 
         deliveryBoyDaoService.update(dBoy);
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
+        String fields = "id,availabilityStatus,averageRating,previousDue,availableAmount,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -278,7 +278,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
         deliveryBoyDaoService.update(dBoy);
 
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
+        String fields = "id,availabilityStatus,averageRating,previousDue,availableAmount,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

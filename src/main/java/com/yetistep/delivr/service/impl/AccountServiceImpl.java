@@ -5,11 +5,14 @@ import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.InvoiceStatus;
+import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.AccountService;
+import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.DateUtil;
 import com.yetistep.delivr.util.EmailMsg;
 import com.yetistep.delivr.util.InvoiceGenerator;
+import com.yetistep.delivr.util.YSException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +21,9 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,6 +54,9 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
     @Autowired
     HttpServletRequest httpServletRequest;
+
+    @Autowired
+    SystemPropertyService systemPropertyService;
 
     @Override
     public String generateInvoice(Integer storeId, String fromDate, String toDate, String serverUrl) throws Exception {
@@ -85,7 +93,15 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             invoice.setAmount(totalPayableAmount);
             invoiceDaoService.save(invoice);
 
-            invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice, store, serverUrl);
+            Map<String, String> preferences = new HashMap<>();
+            preferences.put("HELPLINE_NUMBER", systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+            preferences.put("SUPPORT_EMAIL", systemPropertyService.readPrefValue(PreferenceType.SUPPORT_EMAIL));
+            preferences.put("COMPANY_NAME", systemPropertyService.readPrefValue(PreferenceType.COMPANY_NAME));
+            preferences.put("COMPANY_ADDRESS", systemPropertyService.readPrefValue(PreferenceType.COMPANY_ADDRESS));
+            preferences.put("REGISTRATION_NO", systemPropertyService.readPrefValue(PreferenceType.REGISTRATION_NO));
+
+            invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice, store, serverUrl, preferences);
+
             invoice.setPath(invoicePath);
             invoiceDaoService.update(invoice);
 
@@ -102,52 +118,63 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     }
 
     @Override
-    public String generateBillAndReceiptAndSendEmail(OrderEntity order) throws Exception{
-        //Integer orderId = Integer.parseInt(headerDto.getId());
-        //OrderEntity order = orderDaoService.find(orderId);
-        InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
-        BillEntity bill = new BillEntity();
-        bill.setOrder(order);
-        bill.setCustomer(order.getCustomer());
-        BigDecimal vat = order.getItemsOrder().get(0).getVat();
-        bill.setVat(vat);
-        bill.setDeliveryCharge(order.getDeliveryCharge());
-        bill.setSystemServiceCharge(order.getSystemServiceCharge());
+    public String generateBillAndReceiptAndSendEmail(HeaderDto headerDto) throws Exception{
+        Integer orderId = Integer.parseInt(headerDto.getId());
+        OrderEntity order = orderDaoService.find(orderId);
+        String billAndReceiptPath = "";
 
-        bill.setGeneratedDate(new Date(System.currentTimeMillis()));
-        bill.setPath("path");
-        BigDecimal vatPcn = order.getItemsOrder().get(0).getVat();
-        BigDecimal totalCharge = order.getDeliveryCharge().add(order.getSystemServiceCharge());
-        bill.setVat(totalCharge.multiply(vatPcn).divide(new BigDecimal(100)));
-        BigDecimal totalAmount = totalCharge.add(totalCharge.multiply(vatPcn).divide(new BigDecimal(100)));
-        bill.setBillAmount(totalAmount);
-        bill.setGeneratedDate(new Date(System.currentTimeMillis()));
-
-        ReceiptEntity receipt = new ReceiptEntity();
-        receipt.setReceiptAmount(totalAmount);
-        receipt.setGeneratedDate(new Date(System.currentTimeMillis()));
-
-        receipt.setOrder(order);
-        receipt.setCustomer(order.getCustomer());
-
-        billDaoService.save(bill);
-        receiptDaoService.save(receipt);
-
-        String billAndReceiptPath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt, getServerUrl());
-        bill.setPath(billAndReceiptPath);
-        receipt.setPath(billAndReceiptPath);
-        receipt.setGeneratedDate(new Date(System.currentTimeMillis()));
-
-
-        billDaoService.update(bill);
-        receiptDaoService.update(receipt);
-
-        String email = order.getCustomer().getUser().getEmailAddress();
-        if(email != null && !email.equals("")) {
-            String message = EmailMsg.sendBillAndReceipt(order, order.getCustomer().getUser().getFullName(), order.getCustomer().getUser().getEmailAddress(), getServerUrl());
-            sendAttachmentEmail(order.getCustomer().getUser().getEmailAddress(),  message, "Bill and Receipt", billAndReceiptPath);
+        List<BillEntity> billExists = billDaoService.getBillByOrder(orderId);
+        List<ReceiptEntity> receiptsExists = receiptDaoService.getBillByOrder(orderId);
+        if(billExists.size()>0 || receiptsExists.size()>0){
+            throw new YSException("INV006");
         }
 
+        if(order != null) {
+            InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
+            BillEntity bill = new BillEntity();
+            bill.setOrder(order);
+            bill.setCustomer(order.getCustomer());
+
+            bill.setDeliveryCharge(order.getDeliveryCharge());
+            bill.setSystemServiceCharge(order.getSystemServiceCharge());
+            BigDecimal vatPcn = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
+            BigDecimal totalCharge = order.getDeliveryCharge().add(order.getSystemServiceCharge());
+            bill.setVat(totalCharge.multiply(vatPcn).divide(new BigDecimal(100)));
+            BigDecimal totalAmount = totalCharge.add(totalCharge.multiply(vatPcn).divide(new BigDecimal(100)));
+            bill.setBillAmount(totalAmount);
+            bill.setGeneratedDate(new Date(System.currentTimeMillis()));
+
+            ReceiptEntity receipt = new ReceiptEntity();
+            receipt.setReceiptAmount(totalAmount);
+            receipt.setGeneratedDate(new Date(System.currentTimeMillis()));
+
+            receipt.setOrder(order);
+            receipt.setCustomer(order.getCustomer());
+
+            billDaoService.save(bill);
+            receiptDaoService.save(receipt);
+
+            Map<String, String> preferences = new HashMap<>();
+            preferences.put("HELPLINE_NUMBER", systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+            preferences.put("SUPPORT_EMAIL", systemPropertyService.readPrefValue(PreferenceType.SUPPORT_EMAIL));
+            preferences.put("COMPANY_NAME", systemPropertyService.readPrefValue(PreferenceType.COMPANY_NAME));
+            preferences.put("COMPANY_ADDRESS", systemPropertyService.readPrefValue(PreferenceType.COMPANY_ADDRESS));
+            preferences.put("REGISTRATION_NO", systemPropertyService.readPrefValue(PreferenceType.REGISTRATION_NO));
+
+            billAndReceiptPath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt, getServerUrl(), preferences);
+            bill.setPath(billAndReceiptPath);
+            receipt.setPath(billAndReceiptPath);
+            receipt.setGeneratedDate(new Date(System.currentTimeMillis()));
+
+            billDaoService.update(bill);
+            receiptDaoService.update(receipt);
+
+            String email = order.getCustomer().getUser().getEmailAddress();
+            if(email != null && !email.equals("")) {
+                String message = EmailMsg.sendBillAndReceipt(order, order.getCustomer().getUser().getFullName(), email, getServerUrl());
+                sendAttachmentEmail(email,  message, "Bill and Receipt", billAndReceiptPath);
+            }
+        }
         return billAndReceiptPath;
     }
 

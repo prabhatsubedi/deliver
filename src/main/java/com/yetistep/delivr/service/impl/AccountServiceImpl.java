@@ -118,18 +118,20 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     }
 
     @Override
-    public String generateBillAndReceiptAndSendEmail(HeaderDto headerDto) throws Exception{
-        Integer orderId = Integer.parseInt(headerDto.getId());
-        OrderEntity order = orderDaoService.find(orderId);
+    public String generateBillAndReceiptAndSendEmail(OrderEntity order) throws Exception{
+        //Integer orderId = Integer.parseInt(headerDto.getId());
+        //OrderEntity order = orderDaoService.find(orderId);
         String billAndReceiptPath = "";
-
-        List<BillEntity> billExists = billDaoService.getBillByOrder(orderId);
-        List<ReceiptEntity> receiptsExists = receiptDaoService.getBillByOrder(orderId);
-        if(billExists.size()>0 || receiptsExists.size()>0){
-            throw new YSException("INV006");
-        }
-
         if(order != null) {
+            Integer orderId = order.getId();
+
+            List<BillEntity> billExists = billDaoService.getBillByOrder(orderId);
+            List<ReceiptEntity> receiptsExists = receiptDaoService.getBillByOrder(orderId);
+            if(billExists.size()>0 || receiptsExists.size()>0){
+                throw new YSException("INV006");
+            }
+
+
             InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
             BillEntity bill = new BillEntity();
             bill.setOrder(order);

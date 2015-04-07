@@ -672,6 +672,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         /* Wallet Integration */
         boolean status = false;
         if(order.getPaymentMode().equals(PaymentMode.WALLET)){
+            String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
             BigDecimal customerWalletAmount = order.getCustomer().getWalletAmount();
             BigDecimal paidFromWallet = order.getPaidFromWallet();
             /* Taking reference for difference in price from paidFromCOD */
@@ -685,7 +686,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 if(BigDecimalUtil.isGreaterThenOrEqualTo(customerWalletAmount, paidFromCOD)){
                     log.info("customerWalletAmount is greater:"+customerWalletAmount+" Paid from COD:"+paidFromCOD);
                     String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
-                    remarks = String.format(remarks, "Rs", paidFromCOD, order.getId());
+                    remarks = String.format(remarks, currency, paidFromCOD, order.getId());
                     this.setWalletTransaction(order, paidFromCOD, AccountType.DEBIT, remarks);
 
                     customerWalletAmount = customerWalletAmount.subtract(paidFromCOD);
@@ -696,7 +697,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                     if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
                         log.info("customerWalletAmount is lesser:"+customerWalletAmount+" Paid from COD:"+paidFromCOD);
                         String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
-                        remarks = String.format(remarks, "Rs", customerWalletAmount, order.getId());
+                        remarks = String.format(remarks, currency, customerWalletAmount, order.getId());
                         this.setWalletTransaction(order, customerWalletAmount, AccountType.DEBIT, remarks);
 
                         paidFromCOD = paidFromCOD.subtract(customerWalletAmount);
@@ -707,7 +708,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }else if(BigDecimalUtil.isLessThen(paidFromCOD, BigDecimal.ZERO)){
                 log.info("Decrease in item price for order ID:"+order.getId());
                 String remarks = MessageBundle.getMessage("WTM002", "push_notification.properties");
-                remarks = String.format(remarks, "Rs", paidFromCOD.abs(), order.getId());
+                remarks = String.format(remarks, currency, paidFromCOD.abs(), order.getId());
                 this.setWalletTransaction(order, paidFromCOD.abs(), AccountType.CREDIT, remarks);
 
                 paidFromWallet = paidFromWallet.subtract(paidFromCOD.abs());
@@ -729,7 +730,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                         if(BigDecimalUtil.isGreaterThenOrEqualTo(o.getPaidFromCOD(), customerWalletAmount)){
                             log.info("Customer wallet amount is less than order amount to be paid at customer during cash on delivery order ID:"+o.getId()+"Wallet Amount:"+customerWalletAmount+" Paid from COD:"+o.getPaidFromCOD());
                             String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
-                            remarks = String.format(remarks, "Rs", customerWalletAmount, o.getId());
+                            remarks = String.format(remarks, currency, customerWalletAmount, o.getId());
                             this.setWalletTransaction(o, customerWalletAmount, AccountType.DEBIT, remarks);
 
                             o.setPaidFromCOD(o.getPaidFromCOD().subtract(customerWalletAmount));
@@ -739,7 +740,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                         }else{
                             log.info("Customer wallet amount is greater than order amount to be paid at customer during cash on delivery order ID:"+o.getId()+"Wallet Amount:"+customerWalletAmount+" Paid from COD:"+o.getPaidFromCOD());
                             String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
-                            remarks = String.format(remarks, "Rs", o.getPaidFromCOD(), o.getId());
+                            remarks = String.format(remarks, currency, o.getPaidFromCOD(), o.getId());
                             this.setWalletTransaction(o, o.getPaidFromCOD(), AccountType.DEBIT, remarks);
 
                             o.setPaidFromWallet(o.getPaidFromWallet().add(o.getPaidFromCOD()));
@@ -779,6 +780,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
         walletTransactionEntities.add(walletTransactionEntity);
         order.setWalletTransactions(walletTransactionEntities);
+
+        UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+        String extraDetail = order.getId().toString();
+        PushNotificationUtil.sendPushNotification(userDevice, remarks, NotifyTo.CUSTOMER, PushNotificationRedirect.TRANSACTION, extraDetail);
     }
 
     private Boolean deliverOrder(OrderEntity orderEntityJson, OrderEntity order, Integer deliveryBoyId) throws Exception {

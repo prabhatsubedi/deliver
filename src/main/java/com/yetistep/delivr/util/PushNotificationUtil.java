@@ -82,7 +82,7 @@ public class PushNotificationUtil {
                 MulticastResult result = sender.send(message, pushNotification.getTokens(), retries);
 
 
-                log.info(result.toString());
+                log.info("Message:"+msg+" Result:"+result.toString());
                 if (result.getResults() != null) {
                     int canonicalRegId = result.getCanonicalIds();
                     if (canonicalRegId != 0) {

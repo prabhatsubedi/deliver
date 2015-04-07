@@ -1659,4 +1659,57 @@ public class CustomerServiceImpl implements CustomerService {
         }
         return status;
     }
+
+    private void adjustWalletBalanceForPendingOrders(BigDecimal customerWalletAmount, Integer customerId) throws Exception{
+        log.info("looking for next orders whose paidToCOD > 0 and paymentMode is wallet for customer with ID:"+customerId);
+        List<OrderEntity> orderList = orderDaoService.getAllWalletUnpaidOrdersOfCustomer(customerId);
+        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+        for(OrderEntity o: orderList){
+            if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
+                        /* Customer wallet amount is less than order amount to be paid at customer during cash on delivery */
+                if(BigDecimalUtil.isGreaterThenOrEqualTo(o.getPaidFromCOD(), customerWalletAmount)){
+                    log.info("Customer wallet amount is less than order amount to be paid at customer during cash on delivery order ID:"+o.getId()+"Wallet Amount:"+customerWalletAmount+" Paid from COD:"+o.getPaidFromCOD());
+                    String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
+                    remarks = String.format(remarks, currency, customerWalletAmount, o.getId());
+                    this.setWalletTransaction(o, customerWalletAmount, AccountType.DEBIT, remarks);
+
+                    o.setPaidFromCOD(o.getPaidFromCOD().subtract(customerWalletAmount));
+                    o.setPaidFromWallet(o.getPaidFromWallet().add(customerWalletAmount));
+                    customerWalletAmount = BigDecimal.ZERO;
+                    o.getCustomer().setWalletAmount(customerWalletAmount);
+                }else{
+                    log.info("Customer wallet amount is greater than order amount to be paid at customer during cash on delivery order ID:"+o.getId()+"Wallet Amount:"+customerWalletAmount+" Paid from COD:"+o.getPaidFromCOD());
+                    String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
+                    remarks = String.format(remarks, currency, o.getPaidFromCOD(), o.getId());
+                    this.setWalletTransaction(o, o.getPaidFromCOD(), AccountType.DEBIT, remarks);
+
+                    o.setPaidFromWallet(o.getPaidFromWallet().add(o.getPaidFromCOD()));
+                    customerWalletAmount = customerWalletAmount.subtract(o.getPaidFromCOD());
+                    o.setPaidFromCOD(BigDecimal.ZERO);
+                    o.getCustomer().setWalletAmount(customerWalletAmount);
+                }
+                orderDaoService.update(o);
+            }else
+                break;
+        }
+    }
+
+    private void setWalletTransaction(OrderEntity order, BigDecimal amount, AccountType accountType, String remarks) throws Exception{
+        log.info("Setting wallet transaction info for order:"+order.getId()+" Amount:"+amount+" Account type:"+accountType+" Remarks:"+remarks);
+        List<WalletTransactionEntity> walletTransactionEntities = order.getWalletTransactions();
+        WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
+        walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+        walletTransactionEntity.setAccountType(accountType);
+        walletTransactionEntity.setRemarks(remarks);
+        walletTransactionEntity.setTransactionAmount(amount);
+        walletTransactionEntity.setOrder(order);
+        walletTransactionEntity.setCustomer(order.getCustomer());
+        systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
+        walletTransactionEntities.add(walletTransactionEntity);
+        order.setWalletTransactions(walletTransactionEntities);
+
+        UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+        String extraDetail = order.getId().toString();
+        PushNotificationUtil.sendPushNotification(userDevice, remarks, NotifyTo.CUSTOMER, PushNotificationRedirect.TRANSACTION, extraDetail);
+    }
 }

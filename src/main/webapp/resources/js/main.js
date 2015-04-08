@@ -240,7 +240,11 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 }
             },
             order: dataFilter.order == undefined ? [[ 0, 'desc' ]] : dataFilter.order,
-            fnDrawCallback: typeof(colindex) == 'function' ? colindex : null,
+            fnDrawCallback: typeof dataFilter.callback == 'function' ? dataFilter.callback : null,
+            fnInitComplete: function(){
+                $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+                $('body').removeClass('loader_div').children('.loader').hide().remove();
+            },
             processing: true,
             serverSide: true,
             ajax: {

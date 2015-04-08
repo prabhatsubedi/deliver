@@ -54,8 +54,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
         ];
         Main.createDataTable("#customers_table", dataFilter);
 
-        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
-
     };
 
     Manager.loadActivateCustomers = function() {
@@ -147,8 +145,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
             { "name": "" }
         ];
         Main.createDataTable("#merchants_table", dataFilter);
-
-        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     };
 
@@ -477,8 +473,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
         ];
         Main.createDataTable("#stores_table", dataFilter);
 
-        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
-
     };
 
     Manager.getCourierStaffs = function () {
@@ -557,6 +551,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
             return response;
 
         };
+        dataFilter.callback = function(){
+            $('.dataTable .elem_tooltip:not([data-original-title])').tooltip();
+        };
 
         dataFilter.url = "/accountant/get_dboys";
         dataFilter.columns = [
@@ -573,8 +570,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
             { "name": "" }
         ];
         Main.createDataTable("#courier_staff_table", dataFilter);
-
-        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     };
 
@@ -1533,8 +1528,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
         ];
         dataFilter.requestType = "GET";
         Main.createDataTable("#customers_table", dataFilter);
-
-        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     };
 

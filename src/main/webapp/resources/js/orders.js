@@ -212,7 +212,6 @@ Order.getOrders = function(elemId, url, params){
     }
     Main.createDataTable(elemId, dataFilter);
 
-    $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
     if(elemId == '#order_inroute_table')
         $('#order_inroute_table_length').after('<button class="btn btn_green pull-right refresh_orders" style="line-height: 34px; padding: 0px 10px;">Refresh</button>');
 
@@ -292,8 +291,6 @@ Order.getPurchaseHistory = function(){
     ];
     dataFilter.headers = {merchantId:Main.getFromLocalStorage('mid')};
     Main.createDataTable("#purchase_history_table", dataFilter);
-
-    $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
 /*   $("body").delegate("span.show_db_info", "mouseover", function(){
          $(this).siblings(".db_info").removeClass("hidden");
@@ -378,8 +375,6 @@ Order.getOrdersItems = function(){
         ];
         dataFilter.headers = {id:$(e.relatedTarget).data('id')};
         Main.createDataTable("#orders_items_table", dataFilter);
-
-        $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
     });
 
@@ -467,8 +462,6 @@ Order.courierBoyOrderHistory = function(params){
         dataFilter.params = {dateRange: params};
     Main.createDataTable("#courier_history_table", dataFilter);
 
-    $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
-
 }
 
 Order.getInvoices = function(params){
@@ -528,6 +521,4 @@ Order.getInvoices = function(params){
     if(params != undefined)
         dataFilter.params = {dateRange: params};
     Main.createDataTable("#invoices_table", dataFilter);
-
-    $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 }

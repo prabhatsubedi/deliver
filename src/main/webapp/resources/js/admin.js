@@ -240,8 +240,6 @@ var Admin = function() {
             ];
             Main.createDataTable("#manager_table", dataFilter);
 
-            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
-
         },
         getAccountants: function() {
 
@@ -290,8 +288,6 @@ var Admin = function() {
                 { "name": "" }
             ];
             Main.createDataTable("#accountant_table", dataFilter);
-
-            $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
 
         },
         saveUser: function(params, headers) {

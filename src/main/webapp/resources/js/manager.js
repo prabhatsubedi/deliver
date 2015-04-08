@@ -535,6 +535,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var action = '<div class="action_links">' +
                     '<a href="#" data-toggle="modal" class="view_courier_boy_map elem_tooltip delivricon delivricon-map " data-cbid = "' + id + '" data-placement="left" title="View on Map"></a>' +
                     '<a href="#" data-toggle="modal" class="update_courier_boy_account elem_tooltip delivricon delivricon-wallet"  data-cbid = "' + id + '" data-target="#modal_account" data-placement="left" title="Update Accounts"></a>' +
+                    '<a href="#" class="view_transactions elem_tooltip glyphicon glyphicon-book"  data-cbid = "' + id + '" data-placement="left" title="Shopper\'s Transactions"></a>' +
                     '<a class="elem_tooltip delivricon delivricon-user" href="' + Main.modifyURL('/organizer/courier_staff/profile/' + id) + '" data-placement="left"  title="View Profile"></a>' + status_link
                     '</div>';
 
@@ -707,6 +708,59 @@ if (typeof(Manager) == "undefined") var Manager = {};
     }
 
     Manager.getCourierBoyAccount = function () {
+
+        $('.view_transactions').live('click', function() {
+
+            $('#modal_account_detail').modal('show');
+            var id = $(this).data("cbid");
+            var dataFilter = function (data, type) {
+                if (!data.success) {
+                    Main.popDialog('', data.message);
+                    return;
+                }
+                var responseRows = data.params.advanceAmounts.numberOfRows;
+                var advanceAmounts = data.params.advanceAmounts.data;
+                var tdata = [];
+
+                if(advanceAmounts.length > 0) {
+                    $('#modal_account_detail .modal-title span').html('(' + advanceAmounts[0].deliveryBoy.user.fullName + ')');
+
+                    for(i = 0; i < advanceAmounts.length; i++) {
+
+                        var advanceAmount = advanceAmounts[i];
+
+                        var row = [advanceAmount.id, advanceAmount.advanceDate, advanceAmount.amountAdvance];
+                        row = $.extend({}, row);
+                        tdata.push(row);
+
+                    }
+
+                }
+
+                var response = {};
+                response.data = tdata;
+                response.recordsTotal = responseRows;
+                response.recordsFiltered = responseRows;
+
+                return response;
+
+            };
+
+            var headers = {};
+            headers.id = id;
+
+            dataFilter.url = "/accountant/get_advance_amounts";
+            dataFilter.columns = [
+                { "name": "id" },
+                { "name": "advanceDate" },
+                { "name": "amountAdvance" }
+            ];
+            dataFilter.headers = headers;
+
+            Main.createDataTable("#detail_account_table", dataFilter);
+
+        });
+
         $('body').delegate('.update_courier_boy_account', 'click', function () {
             var id = $(this).data("cbid");
             $('#modal_account').data('cbid', id);

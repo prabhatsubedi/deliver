@@ -873,7 +873,7 @@ function toggleSwitch(value, elem) {
             allowPageScroll: 'vertical'
         });*/
 
-        Image.dropZone('#item_image_input', '.item_image');
+        Image.dropZone('#item_image_input', '.item_drop_zone');
 
         Main.resizableCatMenu();
 

@@ -56,8 +56,10 @@
 <div class="item_container_template hidden">
     <div class="item_container items_list col-lg-3 col-xs-6 invisible">
         <div class="block_item">
-            <div class="item_image drop_zone unselectable maintain_ratio" mr-height="400" mr-width="400">
-                <img class="img-responsive no_image">
+            <div class="item_image">
+                <div class="item_drop_zone drop_zone unselectable maintain_ratio" mr-height="400" mr-width="400">
+                    <img class="img-responsive no_image">
+                </div>
                 <div class="switch_container hidden">
                     <div class="switch switch_activation">
                         <div class="btn_switch on"></div>

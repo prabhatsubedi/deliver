@@ -113,6 +113,7 @@ public class RatingEntity {
         this.allRatingIssues = allRatingIssues;
     }
 
+    @Transient
     public Integer getOrderId() {
         return orderId;
     }

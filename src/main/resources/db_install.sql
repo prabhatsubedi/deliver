@@ -199,3 +199,6 @@ DROP TABLE dboy_submitted_amounts;
 
 /* old orders are from Cash on delivery 2015-04-03*/
 UPDATE orders SET payment_mode = 0;
+
+/*Transient field in database deleted 2015-04-08*/
+ALTER TABLE `delivr_db`.`ratings` DROP COLUMN `orderId`;

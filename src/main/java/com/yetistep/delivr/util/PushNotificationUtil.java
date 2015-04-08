@@ -26,8 +26,8 @@ public class PushNotificationUtil {
 
     private static final String DBOY_API_KEY = "AIzaSyBp36qfwThBp57gVjC0dOA4qf3vTv3gHCA";
     private static final String CUSTOMER_API_KEY = "AIzaSyCXcn_iKKSCnBnYbrinDFCmTdt6xyPcbTI";
-    public static final String CERTIFICATE_IOS = "iDelivr_dev.p12";
-    public static final String PASSWORD_IOS = "password";
+    public static final String CERTIFICATE_IOS = "iphone_dev.p12";
+    public static final String PASSWORD_IOS = "password123";
 
 
     public static void sendPushNotification(UserDeviceEntity userDevice, String message, NotifyTo notifyTo, PushNotificationRedirect pushNotificationRedirect, String extraDetail) {
@@ -82,7 +82,7 @@ public class PushNotificationUtil {
                 MulticastResult result = sender.send(message, pushNotification.getTokens(), retries);
 
 
-                log.info(result.toString());
+                log.info("Message:"+msg+" Result:"+result.toString());
                 if (result.getResults() != null) {
                     int canonicalRegId = result.getCanonicalIds();
                     if (canonicalRegId != 0) {

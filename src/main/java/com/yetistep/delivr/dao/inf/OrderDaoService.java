@@ -59,6 +59,8 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
 
     public List<OrderEntity> getWalletUnpaidOrders(Integer customerId, Integer orderId) throws Exception;
 
+    public List<OrderEntity> getAllWalletUnpaidOrdersOfCustomer(Integer customerId) throws Exception;
+
     public OrderEntity findOrderById(Integer id) throws Exception;
 
 }

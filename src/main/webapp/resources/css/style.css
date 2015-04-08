@@ -1293,6 +1293,11 @@ label.check_label .checkbox {
 .items_container .block_item:hover .item_buttons {
     display: block;
 }
+.items_container .block_item .item_image .item_drop_zone {
+    border: none;
+    padding: 0px;
+    min-height: 50px;
+}
 .item_buttons .add_items.disabled {
     background-color: #ff9235;
     opacity: 0.9;

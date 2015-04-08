@@ -110,6 +110,31 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal_account_detail" tabindex="-1" role="dialog" aria-labelledby="accountLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Shopper's Transactions <span></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-view">
+                    <table id="detail_account_table">
+                        <thead>
+                        <tr>
+                            <th>SN</th>
+                            <th>Issued Date</th>
+                            <th>Advance Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="main_container">
 
     <%@include file="../includes/header.jsp" %>

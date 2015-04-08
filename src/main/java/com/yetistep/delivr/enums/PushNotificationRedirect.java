@@ -34,5 +34,10 @@ public enum PushNotificationRedirect {
         public String toString() {
             return ":info";
         }
+    }, TRANSACTION{
+        @Override
+        public String toString() {
+            return ":transaction";
+        }
     };
 }

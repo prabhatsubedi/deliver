@@ -424,4 +424,22 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         List<OrderEntity>  orderEntities = criteria.list();
         return orderEntities;
     }
+
+    @Override
+    public List<OrderEntity> getAllWalletUnpaidOrdersOfCustomer(Integer customerId) throws Exception {
+        List<JobOrderStatus> jobOrderStatusList = new ArrayList<JobOrderStatus>();
+        jobOrderStatusList.add(JobOrderStatus.ORDER_PLACED);
+        jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED);
+        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
+        jobOrderStatusList.add(JobOrderStatus.AT_STORE);
+        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.add(Restrictions.in("orderStatus", jobOrderStatusList))
+                .add(Restrictions.eq("paymentMode", PaymentMode.WALLET))
+                .add(Restrictions.gt("paidFromCOD", BigDecimal.ZERO))
+                .add(Restrictions.eq("customer.id", customerId));
+        List<OrderEntity>  orderEntities = criteria.list();
+        return orderEntities;
+    }
 }

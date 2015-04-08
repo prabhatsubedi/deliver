@@ -389,15 +389,15 @@ public class InvoiceGenerator {
 
         PdfUtil.setBorder(0, orderCell, addressCell);
         //add cells to table
-        PdfPTable invoiceTable = new PdfPTable(2);
-        invoiceTable.setWidthPercentage(100);
-        invoiceTable.addCell(orderCell);
-        invoiceTable.addCell(addressCell);
+        PdfPTable billTable = new PdfPTable(2);
+        billTable.setWidthPercentage(100);
+        billTable.addCell(orderCell);
+        billTable.addCell(addressCell);
 
 
-        invoiceTable.getDefaultCell().setBorder(0);
+        billTable.getDefaultCell().setBorder(0);
 
-        document.add(invoiceTable);
+        document.add(billTable);
 
         PdfUtil.addEmptyLine(document, 2);//add empty line
 

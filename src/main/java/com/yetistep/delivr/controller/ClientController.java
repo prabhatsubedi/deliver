@@ -170,7 +170,7 @@ public class ClientController extends AbstractManager{
 
     @RequestMapping(value = "/reg_mobile_code", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> setMobileCode(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
+    public ResponseEntity<ServiceResponse> verifyMobileCode(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
         try {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);

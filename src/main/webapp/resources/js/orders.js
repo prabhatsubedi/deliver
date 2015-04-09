@@ -126,7 +126,7 @@ Order.getOrders = function(elemId, url, params){
             var contactPerson = order.store.contactPerson != undefined?order.store.contactPerson:'';
             var contactNo = order.store.contactNo != undefined?order.store.contactNo:'';
 
-            storeInfo += "<div class='store_info hidden'><div class='contact_person'>Contact Person: "+contactPerson+"</div><div class='contact_no'>Contact No: "+contactNo+"</div></div></div>";
+            storeInfo += "<div class='store_info hidden'><div class='contact_person'><strong>"+contactPerson+"</strong></div><div class='contact_no'>"+contactNo+"</div></div></div>";
 
             var view_items = '<span class="item_list" data-id="'+id+'" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
             var activeStatus = ["ORDER_PLACED", "ORDER_ACCEPTED", "IN_ROUTE_TO_PICK_UP", "AT_STORE", "IN_ROUTE_TO_DELIVERY"];

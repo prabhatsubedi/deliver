@@ -202,3 +202,6 @@ UPDATE orders SET payment_mode = 0;
 
 /*Transient field in database deleted 2015-04-08*/
 ALTER TABLE `delivr_db`.`ratings` DROP COLUMN `orderId`;
+
+/* ========= 2015-04-09 ===================== */
+INSERT INTO `preferences` (`id`, `pref_key`, `value`, `section_id`, `pref_title`) VALUES (NULL, 'DEFAULT_IMG_SEARCH', 'https://delivrtest.s3.amazonaws.com/default/search/def_search.jpg', '7', 'Default Search Image');

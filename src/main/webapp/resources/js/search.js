@@ -31,8 +31,8 @@ var Search = function() {
                 callback('', JSON.parse(Main.getFromLocalStorage('stores')))
             } else {
                 var header = {};
-                if(Main.getURLvalue(0) == 'merchant' && Main.getFromLocalStorage('mid') != undefined)
-                    header.merchantId = Main.getFromLocalStorage('mid');
+//                if(Main.getURLvalue(0) == 'merchant' && Main.getFromLocalStorage('mid') != undefined)
+//                    header.merchantId = Main.getFromLocalStorage('mid');
                 Main.request('/merchant/get_search_brands', {}, callback, header);
             }
 

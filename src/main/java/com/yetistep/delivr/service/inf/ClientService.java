@@ -9,6 +9,7 @@ import com.yetistep.delivr.model.OrderCancelEntity;
 import com.yetistep.delivr.model.TestEntity;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
+import com.yetistep.delivr.model.mobile.dto.DefaultInfoDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
 import com.yetistep.delivr.model.mobile.SparrowResultModel;
@@ -68,5 +69,7 @@ public interface ClientService {
     public PreferenceDto getHelpLineDetails() throws Exception;
 
     public Boolean saveTimeStamp(TestEntity testEntity) throws Exception;
+
+    public DefaultInfoDto getDefaultInfo() throws Exception;
 
 }

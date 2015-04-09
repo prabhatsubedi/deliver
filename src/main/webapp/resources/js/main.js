@@ -102,7 +102,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 if (callback != undefined) return callback("success", data);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                if(xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0) return;
+                if(typeof xmlHttpRequest != "undefined" && (xmlHttpRequest.readyState == 0 || xmlHttpRequest.status == 0)) return;
                 if (callback != undefined && errorThrown != "abort") return callback("error", {success: false, message: XMLHttpRequest.getResponseHeader("errorMessage"), code: XMLHttpRequest.getResponseHeader("errorCode")});
             },
             complete: function() {

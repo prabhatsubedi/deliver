@@ -2062,6 +2062,11 @@ label.check_label .checkbox {
     padding: 10px;
     background-color: #FFF;
 }
+.table-view .bill_list, .table-view .store_info {
+    width: 200px;
+    right: -200px;
+    bottom: -10px;
+}
 
 .table-view .show_db_info, .table-view .view_bills, .table-view .show_store_info{
     color: #64A4EA;

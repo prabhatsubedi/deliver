@@ -14,6 +14,7 @@ import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.SparrowResultModel;
 import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
+import com.yetistep.delivr.model.mobile.dto.DefaultInfoDto;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
 import com.yetistep.delivr.service.inf.ClientService;
@@ -227,7 +228,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         map.put("featured", featuredBrands);
         map.put("all", sortedList);
         map.put("page", pageInfo);
-        map.put("currency", getCurrencyType());
+        //map.put("currency", getCurrencyType());
+        map.put("defaultInfo", getDefaultInfo());
         return map;
     }
 
@@ -1173,6 +1175,14 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         rates = orderDaoService.getDboyRatingDetails(6);
 
         return true;
+    }
+
+    @Override
+    public DefaultInfoDto getDefaultInfo() throws Exception {
+        DefaultInfoDto defaultInfoDto = new DefaultInfoDto();
+        defaultInfoDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+        defaultInfoDto.setSearchImage(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_SEARCH));
+        return defaultInfoDto;
     }
 
 

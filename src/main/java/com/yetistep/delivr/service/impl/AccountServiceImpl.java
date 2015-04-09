@@ -140,10 +140,10 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
             Integer vat = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
             //extract vat from delivery charge  and system charge
-            BigDecimal deliveryCharge = order.getDeliveryCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2);
+            BigDecimal deliveryCharge = order.getDeliveryCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2, BigDecimal.ROUND_DOWN);
             bill.setDeliveryCharge(deliveryCharge);
             //bill.setDeliveryCharge(order.getDeliveryCharge());
-            bill.setSystemServiceCharge(order.getSystemServiceCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2));
+            bill.setSystemServiceCharge(order.getSystemServiceCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2, BigDecimal.ROUND_DOWN));
             BigDecimal vatPcn = new BigDecimal(vat);
             BigDecimal totalCharge = order.getDeliveryCharge().add(order.getSystemServiceCharge());
             bill.setVat(totalCharge.multiply(vatPcn).divide(new BigDecimal(100)));

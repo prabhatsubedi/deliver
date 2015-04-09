@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -139,10 +140,10 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
             Integer vat = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
             //extract vat from delivery charge  and system charge
-            BigDecimal deliveryCharge = order.getDeliveryCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100));
+            BigDecimal deliveryCharge = order.getDeliveryCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2);
             bill.setDeliveryCharge(deliveryCharge);
             //bill.setDeliveryCharge(order.getDeliveryCharge());
-            bill.setSystemServiceCharge(order.getSystemServiceCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100)));
+            bill.setSystemServiceCharge(order.getSystemServiceCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2));
             BigDecimal vatPcn = new BigDecimal(vat);
             BigDecimal totalCharge = order.getDeliveryCharge().add(order.getSystemServiceCharge());
             bill.setVat(totalCharge.multiply(vatPcn).divide(new BigDecimal(100)));

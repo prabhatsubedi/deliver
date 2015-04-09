@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -264,12 +265,12 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
 
-    private void checkUniqueBrand(String name) throws Exception{
+    /*private void checkUniqueBrand(String name) throws Exception{
         log.info("++++++++++++ checking unique brands +++++++++++++++");
         StoresBrandEntity brand = merchantDaoService.getBrandByBrandName(name);
         if (brand != null)
             throw new YSException("VLD023");
-    }
+    }*/
 
 
     @Override
@@ -284,7 +285,14 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         if((dbMerchant == null) || (dbMerchant.getUser().getStatus() != Status.ACTIVE))
             throw new YSException("VLD011");
 
-        checkUniqueBrand( storesBrand.getBrandName().trim());
+        //checkUniqueBrand( storesBrand.getBrandName().trim());
+
+        log.info("++++++++++++ checking unique brands +++++++++++++++");
+        StoresBrandEntity brandExists = merchantDaoService.getBrandByBrandName(storesBrand.getBrandName().trim());
+        if (brandExists != null)
+            throw new YSException("VLD023");
+
+        //merchantDaoService.getCurrentSession().evict(brandExists);
 
         String brandLogo = storesBrand.getBrandLogo();
         String brandImage = storesBrand.getBrandImage();
@@ -1616,9 +1624,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             orders = merchantDaoService.getOrders(storeIdList, page);
         }
 
-        List<Object> objects = new ArrayList<>();
-
-        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,attachments,grandTotal,rating";
+        List<OrderEntity> orderList = new ArrayList<>();
+        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,assignedTime,attachments,grandTotal,rating,deliveryCharge,systemServiceCharge,transportationCharge";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -1629,15 +1636,32 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         assoc.put("attachments", "url");
         assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
         assoc.put("orderCancel", "id,reasonDetails,reason");
+        assoc.put("dBoyOrderHistories", "id,distanceTravelled,amountEarned,jobStartedAt,orderCompletedAt");
 
         subAssoc.put("user", "id,fullName,mobileNumber,profileImage");
         subAssoc.put("reasonDetails", "id,cancelReason");
 
         for (OrderEntity order:orders){
-            objects.add(ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
+            orderList.add((OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
         }
 
-        paginationDto.setData(objects);
+        for (OrderEntity orderEntity: orderList){
+            BigDecimal grandTotal = orderEntity.getGrandTotal();
+            if(orderEntity.getDeliveryCharge() != null){
+                grandTotal = grandTotal.add(orderEntity.getDeliveryCharge());
+            }
+
+            if(orderEntity.getSystemServiceCharge() != null){
+                grandTotal = grandTotal.add(orderEntity.getSystemServiceCharge());
+            }
+
+            if(orderEntity.getTransportationCharge() != null){
+                grandTotal = grandTotal.add(orderEntity.getTransportationCharge());
+            }
+            orderEntity.setGrandTotal(grandTotal);
+        }
+
+        paginationDto.setData(orderList);
         return paginationDto;
     }
 
@@ -1675,9 +1699,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         List<OrderEntity> orders = merchantDaoService.getPurchaseHistory(storeIdList, page);
 
-        List<Object> objects = new ArrayList<>();
+        List<OrderEntity> ordersList = new ArrayList<>();
 
-        String fields = "id,orderName,deliveryStatus,orderStatus,attachments,orderDate,customer,store,deliveryBoy,totalCost";
+        String fields = "id,orderName,deliveryStatus,orderStatus,attachments,orderDate,customer,store,deliveryBoy,grandTotal";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -1690,10 +1714,10 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         subAssoc.put("user", "id,fullName,mobileNumber,profileImage");
 
         for (OrderEntity order:orders){
-            objects.add(ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
+            ordersList.add((OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
         }
 
-        paginationDto.setData(objects);
+        paginationDto.setData(ordersList);
         return paginationDto;
     }
 

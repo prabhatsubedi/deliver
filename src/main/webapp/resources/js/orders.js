@@ -88,7 +88,8 @@ Order.getOrders = function(elemId, url, params){
         var responseRows = data.params.orders.numberOfRows;
         var orders = data.params.orders.data;
         var tdata = [];
-
+        var d = new Date();
+        var n = d.getTime();
         for (var i = 0; i < orders.length; i++) {
             var order = orders[i];
 
@@ -129,6 +130,16 @@ Order.getOrders = function(elemId, url, params){
 
             var view_items = '<span class="item_list" data-id="'+id+'" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
             var activeStatus = ["ORDER_PLACED", "ORDER_ACCEPTED", "IN_ROUTE_TO_PICK_UP", "AT_STORE", "IN_ROUTE_TO_DELIVERY"];
+            var orderHistoryLength = order.dBoyOrderHistories.length;
+            var time_taken = 0;
+
+            if(orderHistoryLength > 0){
+                if(order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt != undefined && order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt != undefined){
+                    time_taken = ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt)/1000/60).toFixed(0);
+                }else if(order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt != undefined){
+                    time_taken = ((n-order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt)/1000/60).toFixed(0);
+                }
+            }
 
             var row;
             if(order.orderStatus == "CANCELLED"){
@@ -141,11 +152,11 @@ Order.getOrders = function(elemId, url, params){
                     }
                 }
 
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderDate, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason, view_items];
+                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderDate, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, order.assignedTime != undefined?order.assignedTime:'', time_taken, link_attachments, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason, view_items];
             } else if(order.orderStatus == "DELIVERED") {
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderDate, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:'', view_items];
+                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderDate, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, order.assignedTime != undefined?order.assignedTime:'', time_taken, link_attachments, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', (order.rating != undefined && order.rating.customerRating != undefined)?order.rating.customerRating:'', (order.rating != undefined && order.rating.customerComment != undefined)?order.rating.customerComment:'', view_items];
             } else if($.inArray(order.orderStaus, activeStatus)) {
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderDate, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), view_items];
+                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderDate, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, order.assignedTime != undefined?order.assignedTime:'', time_taken, link_attachments, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), view_items];
             }
             row = $.extend({}, row);
             tdata.push(row)
@@ -172,6 +183,8 @@ Order.getOrders = function(elemId, url, params){
             { "name": "orderVerificationCode" },
             { "name": "grandTotal" },
             { "name": "deliveryBoy#user#fullName" },
+            { "name": "deliveryBoy#user#fullName" },
+            { "name": "assignedTime" },
             { "name": "" },
             { "name": "orderStatus" },
             { "name": "" }
@@ -183,9 +196,10 @@ Order.getOrders = function(elemId, url, params){
             { "name": "store#name" },
             { "name": "id" },
             { "name": "orderDate" },
-            { "name": "orderVerificationCode" },
             { "name": "grandTotal" },
             { "name": "deliveryBoy#user#fullName" },
+            { "name": "assignedTime" },
+            { "name": "" },
             { "name": "" },
             { "name": "" },
             { "name": "" },
@@ -200,9 +214,10 @@ Order.getOrders = function(elemId, url, params){
             { "name": "store#name" },
             { "name": "id" },
             { "name": "orderDate" },
-            { "name": "orderVerificationCode" },
             { "name": "grandTotal" },
             { "name": "deliveryBoy#user#fullName" },
+            { "name": "assignedTime" },
+            { "name": "" },
             { "name": "" },
             { "name": "" },
             { "name": "" },
@@ -261,7 +276,7 @@ Order.getPurchaseHistory = function(){
 
 
 
-            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.orderDate, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', deliveryBoy, link_attachments, view_items, ''];
+            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.orderDate, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, link_attachments, view_items];
             row = $.extend({}, row);
             tableData.push(row);
 
@@ -285,7 +300,6 @@ Order.getPurchaseHistory = function(){
         { "name": "orderDate" },
         { "name": "grandTotal" },
         { "name": "deliveryBoy#user#fullName" },
-        { "name": "" },
         { "name": "" },
         { "name": "" }
     ];

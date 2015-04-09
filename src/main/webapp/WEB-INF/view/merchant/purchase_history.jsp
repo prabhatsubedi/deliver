@@ -38,11 +38,10 @@
                             <th>Store Name & Address</th>
                             <th>Order No</th>
                             <th>Order Date & Time</th>
-                            <th>Total Bill Amount</th>
+                            <th>Paid to Merchant</th>
                             <th>Shopper</th>
                             <th class="no_sort">Bill</th>
                             <th class="no_sort">Items</th>
-                            <th class="no_sort">Action</th>
                         </tr>
                     </thead>
                     <tbody>

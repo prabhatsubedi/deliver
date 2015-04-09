@@ -50,8 +50,10 @@
                             <th><div class="width_80">Order No</div></th>
                             <th><div class="width_120">Order Date</div></th>
                             <th><div class="width_80">Verification Code</div></th>
-                            <th><div class="width_100">Total Bill Amount</div></th>
+                            <th><div class="width_100">Paid by Customer</div></th>
                             <th><div class="width_150">Shopper</div></th>
+                            <th><div class="width_150">Time Assigned</div></th>
+                            <th><div class="width_150">Time Taken</div></th>
                             <th class="no_sort"><div class="width_80">Bill</div></th>
                             <th><div class="width_100">Status</div></th>
                             <th class="no_sort"><div class="width_100">Action</div></th>
@@ -70,12 +72,13 @@
                         <th rowspan="2"><div class="width_200">Store Name & Address</div></th>
                         <th rowspan="2"><div class="width_80">Order No</div></th>
                         <th rowspan="2"><div class="width_120">Order Date</div></th>
-                        <th rowspan="2"><div class="width_80">Verification Code</div></th>
-                        <th rowspan="2"><div class="width_100">Total Bill Amount</div></th>
+                        <th rowspan="2"><div class="width_100">Paid by Customer</div></th>
                         <th rowspan="2"><div class="width_150">Shopper</div></th>
+                        <th rowspan="2"><div class="width_150">Time Assigned</div></th>
+                        <th rowspan="2"><div class="width_150">Time Taken</div></th>
                         <th rowspan="2" class="no_sort"><div class="width_80">Bill</div></th>
-                        <th colspan="2">Customer To Feedback</th>
-                        <th colspan="2">Shopper To Feedback</th>
+                        <th colspan="2">Feedback To Customer</th>
+                        <th colspan="2">Feedback To Shopper</th>
                         <th rowspan="2" class="no_sort"><div class="width_100">Action</div></th>
                     </tr>
                     <tr>
@@ -98,9 +101,10 @@
                         <th rowspan="2"><div class="width_200">Store Name & Address</div></th>
                         <th rowspan="2"><div class="width_80">Order No</div></th>
                         <th rowspan="2"><div class="width_120">Order Date</div></th>
-                        <th rowspan="2"><div class="width_80">Verification Code</div></th>
-                        <th rowspan="2"><div class="width_100">Total Bill Amount</div></th>
+                        <th rowspan="2"><div class="width_100">Paid by Customer</div></th>
                         <th rowspan="2"><div class="width_150">Shopper</div></th>
+                        <th rowspan="2"><div class="width_150">Time Assigned</div></th>
+                        <th rowspan="2"><div class="width_150">Time Taken</div></th>
                         <th rowspan="2" class="no_sort"><div class="width_80">Bill</div></th>
                         <th colspan="2">Feedback To Customer</th>
                         <th rowspan="2" class="no_sort">Cancel Reason</th>

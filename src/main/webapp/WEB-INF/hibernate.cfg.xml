@@ -18,9 +18,8 @@
         <property name="hibernate.order_inserts">true</property>
         <property name="hibernate.order_updates">true</property>
         <property name="hibernate.jdbc.batch_size">20</property>
-
-
         <!-- Drop and re-create the database schema on startup -->
+
         <property name="hbm2ddl.auto">update</property>
 
        <mapping class="com.yetistep.delivr.model.UserEntity" />
@@ -56,6 +55,7 @@
        <mapping class="com.yetistep.delivr.model.CourierTransactionEntity" />
        <mapping class="com.yetistep.delivr.model.ItemsOrderAttributeEntity" />
        <mapping class="com.yetistep.delivr.model.CustomItemEntity" />
+       <mapping class="com.yetistep.delivr.model.CartCustomItemEntity" />
        <mapping class="com.yetistep.delivr.model.ReasonDetailsEntity" />
        <mapping class="com.yetistep.delivr.model.InvoiceEntity" />
        <mapping class="com.yetistep.delivr.model.BillEntity" />

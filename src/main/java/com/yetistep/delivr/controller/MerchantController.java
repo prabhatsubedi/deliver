@@ -42,11 +42,11 @@ public class MerchantController {
             merchantService.saveStore(requestJson, headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Store(Stores) has been saved successfully");
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while adding store", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
 
@@ -56,11 +56,11 @@ public class MerchantController {
             merchantService.updateStore(requestJson);
 
             ServiceResponse serviceResponse = new ServiceResponse("Store(Stores) has been updated successfully");
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while adding store", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
 
@@ -72,12 +72,12 @@ public class MerchantController {
 
             ServiceResponse serviceResponse = new ServiceResponse("Categories retrieved successfully");
             serviceResponse.addParam("categories", categories);
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while retrieving categories", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
 

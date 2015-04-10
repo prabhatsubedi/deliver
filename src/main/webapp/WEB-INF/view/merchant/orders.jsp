@@ -16,7 +16,6 @@
 <script>
     $(document).ready(function () {
         Order.loadOrderFn();
-        //setInterval(Order.getOrders, 60000);
         Order.getOrdersItems();
     });
 </script>

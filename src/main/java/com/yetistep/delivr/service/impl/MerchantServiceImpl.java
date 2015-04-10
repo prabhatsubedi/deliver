@@ -1625,7 +1625,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         List<OrderEntity> orderList = new ArrayList<>();
-        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,assignedTime,attachments,grandTotal,rating,deliveryCharge,systemServiceCharge,transportationCharge";
+        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,assignedTime,attachments,grandTotal,rating";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -1643,22 +1643,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         for (OrderEntity order:orders){
             orderList.add((OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
-        }
-
-        for (OrderEntity orderEntity: orderList){
-            BigDecimal grandTotal = orderEntity.getGrandTotal();
-            if(orderEntity.getDeliveryCharge() != null){
-                grandTotal = grandTotal.add(orderEntity.getDeliveryCharge());
-            }
-
-            if(orderEntity.getSystemServiceCharge() != null){
-                grandTotal = grandTotal.add(orderEntity.getSystemServiceCharge());
-            }
-
-            if(orderEntity.getTransportationCharge() != null){
-                grandTotal = grandTotal.add(orderEntity.getTransportationCharge());
-            }
-            orderEntity.setGrandTotal(grandTotal);
         }
 
         paginationDto.setData(orderList);
@@ -1701,7 +1685,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         List<OrderEntity> ordersList = new ArrayList<>();
 
-        String fields = "id,orderName,deliveryStatus,orderStatus,attachments,orderDate,customer,store,deliveryBoy,grandTotal";
+        String fields = "id,orderName,deliveryStatus,orderStatus,attachments,orderDate,customer,store,deliveryBoy,totalCost";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -1715,6 +1699,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         for (OrderEntity order:orders){
             ordersList.add((OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
+        }
+
+
+        for (OrderEntity orderEntity: ordersList){
+            BigDecimal totalCost = orderEntity.getTotalCost();
+            if(orderEntity.getItemServiceAndVatCharge() != null){
+                totalCost = totalCost.add(orderEntity.getItemServiceAndVatCharge());
+            }
+            orderEntity.setGrandTotal(totalCost);
         }
 
         paginationDto.setData(ordersList);

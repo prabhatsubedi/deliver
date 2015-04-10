@@ -271,6 +271,14 @@
             <artifactId>httpclient</artifactId>
             <version>4.3.5</version>
         </dependency>
+
+        <!--junit-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>
@@ -292,7 +300,6 @@
             <name>Spring Milestone Repository</name>
             <url>http://repo.spring.io/milestone</url>
         </repository>
-
     </repositories>
 
     <build>

@@ -205,3 +205,9 @@ ALTER TABLE `delivr_db`.`ratings` DROP COLUMN `orderId`;
 
 /* ========= 2015-04-09 ===================== */
 INSERT INTO `preferences` (`id`, `pref_key`, `value`, `section_id`, `pref_title`) VALUES (NULL, 'DEFAULT_IMG_SEARCH', 'https://delivrtest.s3.amazonaws.com/default/search/def_search.jpg', '7', 'Default Search Image');
+
+
+/* ========= delete unused fields from orders table 2015-04-11 ===================== */
+ALTER TABLE orders DROP COLUMN transportation_charge;
+ALTER TABLE orders DROP COLUMN delivery_boy_share;
+ALTER TABLE orders DROP COLUMN system_share;

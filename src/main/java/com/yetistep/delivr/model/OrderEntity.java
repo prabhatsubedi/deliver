@@ -38,12 +38,12 @@ public class OrderEntity implements Serializable {
     private BigDecimal systemChargeableDistance; //Paid by system
     //private BigDecimal itemTotal;
     private BigDecimal totalCost;
-    private BigDecimal transportationCharge;
+    //private BigDecimal transportationCharge;
     private BigDecimal systemServiceCharge;
     private BigDecimal deliveryCharge;
     private BigDecimal grandTotal;
-    private BigDecimal deliveryBoyShare;
-    private BigDecimal systemShare;
+   /* private BigDecimal deliveryBoyShare;
+    private BigDecimal systemShare;*/
     private Timestamp orderDate;
     private Integer assignedTime;
     private Integer remainingTime;
@@ -226,14 +226,14 @@ public class OrderEntity implements Serializable {
         this.totalCost = totalCost;
     }
 
-    @Column(name = "transportation_charge", precision = 19, scale = 2)
+    /*@Column(name = "transportation_charge", precision = 19, scale = 2)
     public BigDecimal getTransportationCharge() {
         return transportationCharge;
     }
 
     public void setTransportationCharge(BigDecimal transportationCharge) {
         this.transportationCharge = transportationCharge;
-    }
+    }*/
 
     @Column(name = "system_service_charge", precision = 19, scale = 2)
     public BigDecimal getSystemServiceCharge() {
@@ -262,7 +262,7 @@ public class OrderEntity implements Serializable {
         this.grandTotal = grandTotal;
     }
 
-    @Column(name = "delivery_boy_share", precision = 19, scale = 2)
+    /*@Column(name = "delivery_boy_share", precision = 19, scale = 2)
     public BigDecimal getDeliveryBoyShare() {
         return deliveryBoyShare;
     }
@@ -279,7 +279,7 @@ public class OrderEntity implements Serializable {
     public void setSystemShare(BigDecimal systemShare) {
         this.systemShare = systemShare;
     }
-
+*/
 
     @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "order_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")

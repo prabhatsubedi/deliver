@@ -393,14 +393,14 @@ table.dataTable thead td:active {
     padding: 8px;
     border: 1px solid #f58220;
 }
-.table-view table tr.odd{
-    background-color: #F9F9F9;
+.table-view table tr.odd {
+    background-color: #fef8f3;
 }
 .table-view table tr.even {
     background-color: #FFFFFF;
 }
 .table-view table tr:hover {
-    background-color: #F5F5F5;
+    background-color: #fef1e7;
 }
 .data-display .block-view .caption a.btn-sm {
     text-decoration: none;

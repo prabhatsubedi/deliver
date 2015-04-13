@@ -26,19 +26,11 @@ public class AccountantViewController {
         return modelAndView;
     }
 
-    @RequestMapping(value = {"/merchants"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/{page}/**", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView getmerchants(){
+    public ModelAndView accountantPage(@PathVariable String page){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("accountant/merchants");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = {"/dashboard"}, method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView addDeliveryBoy(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("accountant/dashboard");
+        modelAndView.setViewName("accountant/" + page);
         return modelAndView;
     }
 

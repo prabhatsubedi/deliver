@@ -21,10 +21,6 @@
         $(document).ready(function () {
             Manager.getCourierStaffs();
             Manager.getCourierBoyMap();
-            Manager.getCourierBoyAccount();
-            Manager.updateCourierBoyAccount();
-            Manager.submitCourierBoyPreviousAmount();
-            Manager.submitCourierBoyWalletAmount();
         });
     </script>
 

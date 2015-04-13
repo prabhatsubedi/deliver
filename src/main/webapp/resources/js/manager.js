@@ -534,8 +534,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
                 var action = '<div class="action_links">' +
                     '<a href="#" data-toggle="modal" class="view_courier_boy_map elem_tooltip delivricon delivricon-map " data-cbid = "' + id + '" data-placement="left" title="View on Map"></a>' +
-                    '<a href="#" data-toggle="modal" class="update_courier_boy_account elem_tooltip delivricon delivricon-wallet"  data-cbid = "' + id + '" data-target="#modal_account" data-placement="left" title="Update Accounts"></a>' +
-                    '<a href="#" class="view_transactions elem_tooltip glyphicon glyphicon-book"  data-cbid = "' + id + '" data-placement="left" title="Shopper\'s Transactions"></a>' +
+                    '<a href="' + Main.modifyURL('accountant/transactions/' + id) + '" class="elem_tooltip delivricon delivricon-wallet" data-placement="left" title="Shopper\'s Transactions"></a>' +
+//                    '<a href="#" data-toggle="modal" class="update_courier_boy_account elem_tooltip delivricon delivricon-wallet"  data-cbid = "' + id + '" data-target="#modal_account" data-placement="left" title="Update Accounts"></a>' +
+//                    '<a href="#" class="view_transactions elem_tooltip glyphicon glyphicon-book"  data-cbid = "' + id + '" data-placement="left" title="Shopper\'s Transactions"></a>' +
                     '<a class="elem_tooltip delivricon delivricon-user" href="' + Main.modifyURL('/organizer/courier_staff/profile/' + id) + '" data-placement="left"  title="View Profile"></a>' + status_link
                     '</div>';
 
@@ -709,83 +710,75 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.getCourierBoyAccount = function () {
 
-        $('.view_transactions').live('click', function() {
+        var dataFilter = function (data, type) {
+            if (!data.success) {
+                Main.popDialog('', data.message);
+                return;
+            }
+            var responseRows = data.params.advanceAmounts.numberOfRows;
+            var advanceAmounts = data.params.advanceAmounts.data;
+            var tdata = [];
 
-            $('#modal_account_detail').modal('show');
-            var id = $(this).data("cbid");
-            var dataFilter = function (data, type) {
-                if (!data.success) {
-                    Main.popDialog('', data.message);
-                    return;
-                }
-                var responseRows = data.params.advanceAmounts.numberOfRows;
-                var advanceAmounts = data.params.advanceAmounts.data;
-                var tdata = [];
+            if(advanceAmounts.length > 0) {
+                $('#modal_account_detail .modal-title span').html('(' + advanceAmounts[0].deliveryBoy.user.fullName + ')');
 
-                if(advanceAmounts.length > 0) {
-                    $('#modal_account_detail .modal-title span').html('(' + advanceAmounts[0].deliveryBoy.user.fullName + ')');
+                for(i = 0; i < advanceAmounts.length; i++) {
 
-                    for(i = 0; i < advanceAmounts.length; i++) {
+                    var advanceAmount = advanceAmounts[i];
 
-                        var advanceAmount = advanceAmounts[i];
-
-                        var row = [advanceAmount.id, advanceAmount.advanceDate, advanceAmount.amountAdvance];
-                        row = $.extend({}, row);
-                        tdata.push(row);
-
-                    }
+                    var row = [advanceAmount.id, advanceAmount.advanceDate, (advanceAmount.type == 'acknowledgeAmount' ? 'Acknowledge' : 'Advance'), advanceAmount.amountAdvance];
+                    row = $.extend({}, row);
+                    tdata.push(row);
 
                 }
-
-                var response = {};
-                response.data = tdata;
-                response.recordsTotal = responseRows;
-                response.recordsFiltered = responseRows;
-
-                return response;
-
-            };
-
-            var headers = {};
-            headers.id = id;
-
-            dataFilter.url = "/accountant/get_advance_amounts";
-            dataFilter.columns = [
-                { "name": "id" },
-                { "name": "advanceDate" },
-                { "name": "amountAdvance" }
-            ];
-            dataFilter.headers = headers;
-
-            Main.createDataTable("#detail_account_table", dataFilter);
-
-        });
-
-        $('body').delegate('.update_courier_boy_account', 'click', function () {
-            var id = $(this).data("cbid");
-            $('#modal_account').data('cbid', id);
-            var callback = function (status, data) {
-                if (!data.success) {
-                    Main.popDialog('', data.message);
-                    return;
-                }
-                var courierStaff = data.params.deliveryBoy;
-                console.log(courierStaff);
-                /*$(".due_amount").text(courierStaff.previousDue);
-                $("#due_amount_val").val(courierStaff.previousDue)
-                $(".available_balance").text(courierStaff.walletAmount + courierStaff.bankAmount);
-                $(".to_be_submitted").text(courierStaff.walletAmount);
-                $("#to_be_submitted_val").val(courierStaff.walletAmount);*/
-                Manager.fillDboyAccount(courierStaff);
-                $('#modal_account').data('cbname', courierStaff.user.fullName);
 
             }
-            callback.loaderDiv = ".update_courier_boy_account";
-            callback.requestType = "GET";
-            var headers = {};
-            headers.id = id;
-            Main.request('/accountant/get_dboy', {}, callback, headers);
-        });
+
+            var response = {};
+            response.data = tdata;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
+
+            return response;
+
+        };
+
+        var headers = {};
+        headers.id = cbid;
+
+        dataFilter.url = "/accountant/get_advance_amounts";
+        dataFilter.columns = [
+            { "name": "id" },
+            { "name": "advanceDate" },
+            { "name": "type" },
+            { "name": "amountAdvance" }
+        ];
+        dataFilter.headers = headers;
+
+        Main.createDataTable("#detail_account_table", dataFilter);
+
+        var callback = function (status, data) {
+            if (!data.success) {
+                Main.popDialog('', data.message);
+                return;
+            }
+            var courierStaff = data.params.deliveryBoy;
+            console.log(courierStaff);
+            /*$(".due_amount").text(courierStaff.previousDue);
+            $("#due_amount_val").val(courierStaff.previousDue)
+            $(".available_balance").text(courierStaff.walletAmount + courierStaff.bankAmount);
+            $(".to_be_submitted").text(courierStaff.walletAmount);
+            $("#to_be_submitted_val").val(courierStaff.walletAmount);*/
+            Manager.fillDboyAccount(courierStaff);
+            $('.cbname').html(courierStaff.user.fullName);
+
+        }
+        callback.loaderDiv = ".update_courier_boy_account";
+        callback.requestType = "GET";
+        var headers = {};
+        headers.id = cbid;
+        Main.request('/accountant/get_dboy', {}, callback, headers);
+
     }
 
     Manager.updateCourierBoyAccount = function () {
@@ -793,7 +786,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
             if ($('#advance_amount_val').hasClass('error')) {
                 $('#advance_amount_val').removeClass('error');
             }
-            var cbid = $('#modal_account').data('cbid');
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if (keycode == '13') {
 
@@ -839,7 +831,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 button2.text = "No";
 
                 var buttons = [button1, button2];
-                Main.popDialog('', "Are you sure you want to add advance amount for '" + $('#modal_account').data('cbname') + "'?", buttons);
+                Main.popDialog('', "Are you sure you want to add advance amount for '" + $('.cbname').html() + "'?", buttons);
 
             }
 
@@ -848,7 +840,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.submitCourierBoyPreviousAmount = function () {
         $('body').delegate('#ack', 'click', function () {
-            var cbid = $('#modal_account').data('cbid');
 
             var __this = $(this);
 
@@ -891,7 +882,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 button2.text = "No";
 
                 var buttons = [button1, button2];
-                Main.popDialog('', "Are you sure you want to acknowledge  RS." + $("#due_amount_val").val() + " from '" + $('#modal_account').data('cbname') + "'?", buttons);
+                Main.popDialog('', "Are you sure you want to acknowledge  RS." + $("#due_amount_val").val() + " from '" + $('.cbname').html() + "'?", buttons);
 
             }
         });
@@ -899,7 +890,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.submitCourierBoyWalletAmount = function () {
         $('body').delegate('#submit', 'click', function () {
-            var cbid = $('#modal_account').data('cbid');
 
             var __this = $(this);
 
@@ -942,7 +932,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 button2.text = "No";
 
                 var buttons = [button1, button2];
-                Main.popDialog('', "Are you sure you want to submit RS." + $("#to_be_submitted_val").val() + " from '" + $('#modal_account').data('cbname') + "'?", buttons);
+                Main.popDialog('', "Are you sure you want to submit RS." + $("#to_be_submitted_val").val() + " from '" + $('.cbname').html() + "'?", buttons);
 
             }
         });

@@ -436,6 +436,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
         System.out.println("Current Milliseconds:"+walletTransactionEntity.getTransactionDate().getTime());
         value = value.add(new BigDecimal(walletTransactionEntity.getTransactionDate().getTime()));
         value = value.multiply(new BigDecimal(walletTransactionEntity.getCustomer().getId()));
+        value = value.add(walletTransactionEntity.getAvailableWalletAmount());
         String[] encode = value.toString().split(Pattern.quote("."));
         String signature = "";
         for(int i=0; i<encode.length; i++){
@@ -459,6 +460,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
                 parsedResult += decode[i].toString();
         }
         BigDecimal decodedData = new BigDecimal(parsedResult);
+        decodedData = decodedData.subtract(walletTransactionEntity.getAvailableWalletAmount());
         decodedData = decodedData.divide(new BigDecimal(walletTransactionEntity.getCustomer().getId()));
         decodedData = decodedData.subtract(new BigDecimal(walletTransactionEntity.getTransactionDate().getTime()));
         if(BigDecimalUtil.isEqualTo(decodedData, walletTransactionEntity.getTransactionAmount()))

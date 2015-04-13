@@ -687,7 +687,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                     log.info("customerWalletAmount is greater:"+customerWalletAmount+" Paid from COD:"+paidFromCOD);
                     String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
                     remarks = String.format(remarks, currency, paidFromCOD, order.getId());
-                    this.setWalletTransaction(order, paidFromCOD, AccountType.DEBIT, remarks);
+                    this.setWalletTransaction(order, paidFromCOD, AccountType.DEBIT, PaymentMode.WALLET, remarks, customerWalletAmount.subtract(paidFromCOD));
 
                     customerWalletAmount = customerWalletAmount.subtract(paidFromCOD);
                     paidFromWallet = paidFromWallet.add(paidFromCOD);
@@ -698,7 +698,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                         log.info("customerWalletAmount is lesser:"+customerWalletAmount+" Paid from COD:"+paidFromCOD);
                         String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
                         remarks = String.format(remarks, currency, customerWalletAmount, order.getId());
-                        this.setWalletTransaction(order, customerWalletAmount, AccountType.DEBIT, remarks);
+                        this.setWalletTransaction(order, customerWalletAmount, AccountType.DEBIT, PaymentMode.WALLET, remarks, BigDecimal.ZERO);
 
                         paidFromCOD = paidFromCOD.subtract(customerWalletAmount);
                         paidFromWallet = paidFromWallet.add(customerWalletAmount);
@@ -709,7 +709,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 log.info("Decrease in item price for order ID:"+order.getId());
                 String remarks = MessageBundle.getMessage("WTM002", "push_notification.properties");
                 remarks = String.format(remarks, currency, paidFromCOD.abs(), order.getId());
-                this.setWalletTransaction(order, paidFromCOD.abs(), AccountType.CREDIT, remarks);
+                this.setWalletTransaction(order, paidFromCOD.abs(), AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount.add(paidFromCOD.abs()));
 
                 paidFromWallet = paidFromWallet.subtract(paidFromCOD.abs());
                 customerWalletAmount = customerWalletAmount.add(paidFromCOD.abs());
@@ -722,36 +722,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             status = orderDaoService.update(order);
             /* Look for next orders only if Customer Wallet Amount is greater than zero. */
             if(status && BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
-                log.info("looking for next orders whose paidToCOD > 0 and paymentMode is wallet for customer with ID:"+order.getCustomer().getId());
-                List<OrderEntity> orderList = orderDaoService.getWalletUnpaidOrders(order.getCustomer().getId(), order.getId());
-                for(OrderEntity o: orderList){
-                    if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
-                        /* Customer wallet amount is less than order amount to be paid at customer during cash on delivery */
-                        if(BigDecimalUtil.isGreaterThenOrEqualTo(o.getPaidFromCOD(), customerWalletAmount)){
-                            log.info("Customer wallet amount is less than order amount to be paid at customer during cash on delivery order ID:"+o.getId()+"Wallet Amount:"+customerWalletAmount+" Paid from COD:"+o.getPaidFromCOD());
-                            String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
-                            remarks = String.format(remarks, currency, customerWalletAmount, o.getId());
-                            this.setWalletTransaction(o, customerWalletAmount, AccountType.DEBIT, remarks);
-
-                            o.setPaidFromCOD(o.getPaidFromCOD().subtract(customerWalletAmount));
-                            o.setPaidFromWallet(o.getPaidFromWallet().add(customerWalletAmount));
-                            customerWalletAmount = BigDecimal.ZERO;
-                            o.getCustomer().setWalletAmount(customerWalletAmount);
-                        }else{
-                            log.info("Customer wallet amount is greater than order amount to be paid at customer during cash on delivery order ID:"+o.getId()+"Wallet Amount:"+customerWalletAmount+" Paid from COD:"+o.getPaidFromCOD());
-                            String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
-                            remarks = String.format(remarks, currency, o.getPaidFromCOD(), o.getId());
-                            this.setWalletTransaction(o, o.getPaidFromCOD(), AccountType.DEBIT, remarks);
-
-                            o.setPaidFromWallet(o.getPaidFromWallet().add(o.getPaidFromCOD()));
-                            customerWalletAmount = customerWalletAmount.subtract(o.getPaidFromCOD());
-                            o.setPaidFromCOD(BigDecimal.ZERO);
-                            o.getCustomer().setWalletAmount(customerWalletAmount);
-                        }
-                        orderDaoService.update(o);
-                    }else
-                        break;
-                }
+                adjustBalanceOfOtherOrders(order, customerWalletAmount);
             }
 
         }else{
@@ -767,7 +738,41 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         return status;
     }
 
-    private void setWalletTransaction(OrderEntity order, BigDecimal amount, AccountType accountType, String remarks) throws Exception{
+    private void adjustBalanceOfOtherOrders(OrderEntity order, BigDecimal customerWalletAmount) throws Exception{
+        log.info("looking for next orders whose paidToCOD > 0 and paymentMode is wallet for customer with ID:"+order.getCustomer().getId());
+        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+        List<OrderEntity> orderList = orderDaoService.getWalletUnpaidOrders(order.getCustomer().getId(), order.getId());
+        for(OrderEntity o: orderList){
+            if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
+                        /* Customer wallet amount is less than order amount to be paid at customer during cash on delivery */
+                if(BigDecimalUtil.isGreaterThenOrEqualTo(o.getPaidFromCOD(), customerWalletAmount)){
+                    log.info("Customer wallet amount is less than order amount to be paid at customer during cash on delivery order ID:"+o.getId()+"Wallet Amount:"+customerWalletAmount+" Paid from COD:"+o.getPaidFromCOD());
+                    String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
+                    remarks = String.format(remarks, currency, customerWalletAmount, o.getId());
+                    this.setWalletTransaction(o, customerWalletAmount, AccountType.DEBIT, PaymentMode.WALLET, remarks, BigDecimal.ZERO);
+
+                    o.setPaidFromCOD(o.getPaidFromCOD().subtract(customerWalletAmount));
+                    o.setPaidFromWallet(o.getPaidFromWallet().add(customerWalletAmount));
+                    customerWalletAmount = BigDecimal.ZERO;
+                    o.getCustomer().setWalletAmount(customerWalletAmount);
+                }else{
+                    log.info("Customer wallet amount is greater than order amount to be paid at customer during cash on delivery order ID:"+o.getId()+"Wallet Amount:"+customerWalletAmount+" Paid from COD:"+o.getPaidFromCOD());
+                    String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
+                    remarks = String.format(remarks, currency, o.getPaidFromCOD(), o.getId());
+                    this.setWalletTransaction(o, o.getPaidFromCOD(), AccountType.DEBIT, PaymentMode.WALLET, remarks, customerWalletAmount.subtract(o.getPaidFromCOD()));
+
+                    o.setPaidFromWallet(o.getPaidFromWallet().add(o.getPaidFromCOD()));
+                    customerWalletAmount = customerWalletAmount.subtract(o.getPaidFromCOD());
+                    o.setPaidFromCOD(BigDecimal.ZERO);
+                    o.getCustomer().setWalletAmount(customerWalletAmount);
+                }
+                orderDaoService.update(o);
+            }else
+                break;
+        }
+    }
+
+    private void setWalletTransaction(OrderEntity order, BigDecimal amount, AccountType accountType, PaymentMode paymentMode, String remarks, BigDecimal availableAmount) throws Exception{
         log.info("Setting wallet transaction info for order:"+order.getId()+" Amount:"+amount+" Account type:"+accountType+" Remarks:"+remarks);
         List<WalletTransactionEntity> walletTransactionEntities = order.getWalletTransactions();
         WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
@@ -777,6 +782,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         walletTransactionEntity.setTransactionAmount(amount);
         walletTransactionEntity.setOrder(order);
         walletTransactionEntity.setCustomer(order.getCustomer());
+        walletTransactionEntity.setPaymentMode(paymentMode);
+        walletTransactionEntity.setAvailableWalletAmount(availableAmount);
         systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
         walletTransactionEntities.add(walletTransactionEntity);
         order.setWalletTransactions(walletTransactionEntities);
@@ -852,6 +859,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         CustomerEntity customerEntity = order.getCustomer();
         customerEntity.setTotalOrderDelivered(GeneralUtil.ifNullToZero(customerEntity.getTotalOrderDelivered())+1);
         List<OrderEntity> customersOrders = orderDaoService.getCustomersOrders(order.getCustomer().getId());
+        if(BigDecimalUtil.isGreaterThen(order.getPaidFromCOD(), BigDecimal.ZERO)){
+            String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+            String remarks = MessageBundle.getMessage("TRN001", "push_notification.properties");
+            remarks = String.format(remarks, currency, order.getPaidFromCOD(), order.getId());
+            this.setWalletTransaction(order, order.getPaidFromCOD(), AccountType.DEBIT, PaymentMode.CASH_ON_DELIVERY, remarks, order.getCustomer().getWalletAmount());
+        }
         boolean status = orderDaoService.update(order);
         if(status){
             /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
@@ -1371,13 +1384,14 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
         }
 
+        this.walletAdjustmentAfterOrderCancel(orderEntity);
         orderEntity.setOrderCancel(orderCancelEntity);
         orderEntity.setOrderStatus(JobOrderStatus.CANCELLED);
         orderEntity.setDeliveryStatus(DeliveryStatus.CANCELLED);
-
-        //TODO dboy transaction implementation
         boolean status = orderDaoService.update(orderEntity);
-
+        if(status && BigDecimalUtil.isGreaterThen(orderEntity.getCustomer().getWalletAmount(), BigDecimal.ZERO)){
+            this.adjustBalanceOfOtherOrders(orderEntity, orderEntity.getCustomer().getWalletAmount());
+        }
         /* Now Calculate Average Rating for Customer (Appended By Surendra) */
         List<Integer> ratings = orderDaoService.getCustomerRatings(orderEntity.getCustomer().getId());
         if(ratings !=null && ratings.size()> 0){
@@ -1412,6 +1426,74 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
         }
         return status;
+    }
+
+    private void walletAdjustmentAfterOrderCancel(OrderEntity orderEntity) throws Exception {
+        JobOrderStatus orderStatus = orderEntity.getOrderStatus();
+        BigDecimal customerWalletAmount = BigDecimalUtil.checkNull(orderEntity.getCustomer().getWalletAmount());
+        BigDecimal paidFromWallet = orderEntity.getPaidFromWallet();
+        BigDecimal paidFromCOD = orderEntity.getPaidFromCOD();
+        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+        if (orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)) {
+            log.info("No Change in item price before cancelling for order ID:" + orderEntity.getId());
+            BigDecimal adjustAmount = paidFromWallet.subtract(orderEntity.getDeliveryCharge());
+            customerWalletAmount = customerWalletAmount.add(adjustAmount);
+            paidFromWallet = orderEntity.getDeliveryCharge();
+            String remarks = MessageBundle.getMessage("WTM006", "push_notification.properties");
+            remarks = String.format(remarks, currency, adjustAmount, orderEntity.getId());
+            this.setWalletTransaction(orderEntity, adjustAmount, AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
+        } else if (orderStatus.equals(JobOrderStatus.AT_STORE)) {
+            if (BigDecimalUtil.isEqualTo(paidFromCOD, BigDecimal.ZERO)) {
+                log.info("No Change in item price before cancelling for order ID:" + orderEntity.getId());
+            } else {
+                log.info("Change in item price before cancelling for order ID:" + orderEntity.getId());
+                if (BigDecimalUtil.isGreaterThen(paidFromCOD, BigDecimal.ZERO)) {
+                    String remarks = MessageBundle.getMessage("WTM008", "push_notification.properties");
+                    remarks = String.format(remarks, currency, paidFromCOD, orderEntity.getId());
+                    this.setWalletTransaction(orderEntity, paidFromCOD, AccountType.DEBIT, PaymentMode.WALLET, remarks, customerWalletAmount.subtract(paidFromCOD));
+
+                    paidFromWallet = orderEntity.getGrandTotal();
+                    customerWalletAmount = customerWalletAmount.subtract(paidFromCOD);
+                    paidFromCOD = BigDecimal.ZERO;
+                } else if (BigDecimalUtil.isLessThen(paidFromCOD, BigDecimal.ZERO)) {
+                    String remarks = MessageBundle.getMessage("WTM007", "push_notification.properties");
+                    remarks = String.format(remarks, currency, paidFromCOD.abs(), orderEntity.getId());
+                    this.setWalletTransaction(orderEntity, paidFromCOD.abs(), AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount.add(paidFromCOD.abs()));
+
+                    paidFromWallet = orderEntity.getGrandTotal();
+                    customerWalletAmount = customerWalletAmount.add(paidFromCOD.abs());
+                    paidFromCOD = BigDecimal.ZERO;
+                }
+            }
+
+        } else if (orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)) {
+            log.info("Cancelled order while in route to delivery");
+            if (BigDecimalUtil.isEqualTo(paidFromCOD, BigDecimal.ZERO)) {
+                log.info("No Change in item price before cancelling for order ID:" + orderEntity.getId());
+            } else {
+                log.info("Change in item price before cancelling for order ID:" + orderEntity.getId());
+                if (BigDecimalUtil.isGreaterThen(paidFromCOD, BigDecimal.ZERO)) {
+                    String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
+                    remarks = String.format(remarks, currency, paidFromCOD, orderEntity.getId());
+                    this.setWalletTransaction(orderEntity, paidFromCOD, AccountType.DEBIT, PaymentMode.WALLET, remarks, customerWalletAmount.subtract(paidFromCOD));
+
+                    paidFromWallet = orderEntity.getGrandTotal();
+                    customerWalletAmount = customerWalletAmount.subtract(paidFromCOD);
+                    paidFromCOD = BigDecimal.ZERO;
+                } else if (BigDecimalUtil.isLessThen(paidFromCOD, BigDecimal.ZERO)) {
+                    String remarks = MessageBundle.getMessage("WTM006", "push_notification.properties");
+                    remarks = String.format(remarks, currency, paidFromCOD.abs(), orderEntity.getId());
+                    this.setWalletTransaction(orderEntity, paidFromCOD.abs(), AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount.add(paidFromCOD.abs()));
+
+                    paidFromWallet = orderEntity.getGrandTotal();
+                    customerWalletAmount = customerWalletAmount.add(paidFromCOD.abs());
+                    paidFromCOD = BigDecimal.ZERO;
+                }
+            }
+        }
+        orderEntity.setPaidFromCOD(paidFromCOD);
+        orderEntity.setPaidFromWallet(paidFromWallet);
+        orderEntity.getCustomer().setWalletAmount(customerWalletAmount);
     }
 
     private BigDecimal getCourierBoyEarningAtAnyStage(DBoyOrderHistoryEntity dBoyOrderHistory, JobOrderStatus orderStatus) throws Exception {
@@ -1627,6 +1709,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         address.setLatitude(order.getAddress().getLatitude());
         address.setLongitude(order.getAddress().getLongitude());
         address.setMobileNumber(order.getAddress().getMobileNumber());
+        address.setFullName(order.getAddress().getFullName());
         address.setNotes(order.getAddress().getNotes());
         address.setGivenLocation(order.getAddress().getGivenLocation());
         responseOrder.setAddress(address);

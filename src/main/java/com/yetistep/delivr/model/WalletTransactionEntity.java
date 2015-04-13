@@ -1,6 +1,7 @@
 package com.yetistep.delivr.model;
 
 import com.yetistep.delivr.enums.AccountType;
+import com.yetistep.delivr.enums.PaymentMode;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -22,6 +23,8 @@ public class WalletTransactionEntity {
     private String remarks;
     private AccountType accountType;
     private String signature;
+    private BigDecimal availableWalletAmount;
+    private PaymentMode paymentMode;
     private CustomerEntity customer;
     private OrderEntity order;
     /* Transient variable to represent if transaction is fine or not. i.e. True for fine */
@@ -82,6 +85,25 @@ public class WalletTransactionEntity {
 
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    @Column(name = "available_amount", precision =  19, scale = 2)
+    public BigDecimal getAvailableWalletAmount() {
+        return availableWalletAmount;
+    }
+
+    public void setAvailableWalletAmount(BigDecimal availableWalletAmount) {
+        this.availableWalletAmount = availableWalletAmount;
+    }
+
+    @Column(name = "payment_mode")
+    @Enumerated(EnumType.ORDINAL)
+    public PaymentMode getPaymentMode() {
+        return paymentMode;
+    }
+
+    public void setPaymentMode(PaymentMode paymentMode) {
+        this.paymentMode = paymentMode;
     }
 
     @ManyToOne

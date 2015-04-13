@@ -837,6 +837,8 @@ public class CustomerServiceImpl implements CustomerService {
             walletTransactionEntity.setTransactionAmount(order.getGrandTotal());
             walletTransactionEntity.setOrder(order);
             walletTransactionEntity.setCustomer(order.getCustomer());
+            walletTransactionEntity.setPaymentMode(PaymentMode.WALLET);
+            walletTransactionEntity.setAvailableWalletAmount(order.getCustomer().getWalletAmount());
             systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
             walletTransactionEntities.add(walletTransactionEntity);
             order.setWalletTransactions(walletTransactionEntities);

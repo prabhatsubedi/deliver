@@ -79,7 +79,6 @@ Order.loadOrderFn = function(){
 };
 
 Order.getOrders = function(elemId, url, params){
-
     var dataFilter = function (data, type) {
         if (!data.success) {
             Main.popDialog('', data.message);
@@ -92,7 +91,6 @@ Order.getOrders = function(elemId, url, params){
         var n = d.getTime();
         for (var i = 0; i < orders.length; i++) {
             var order = orders[i];
-
             var id = order.id;
             var link_attachments = '';
             if(order.attachments.length > 0){
@@ -141,6 +139,10 @@ Order.getOrders = function(elemId, url, params){
                 }
             }
 
+            var drop_location = '';
+            order.address.street!="undefined"?drop_location+=order.address.street:'';
+            order.address.city!="undefined"?drop_location+=","+order.address.city:'';
+
             var row;
             if(order.orderStatus == "CANCELLED"){
                 var reason = '';
@@ -152,11 +154,11 @@ Order.getOrders = function(elemId, url, params){
                     }
                 }
 
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderDate, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, order.assignedTime != undefined?order.assignedTime:'', time_taken, link_attachments, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason, view_items];
+                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, order.deliveryCharge, order.assignedTime != undefined?order.assignedTime:'', time_taken, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason, view_items];
             } else if(order.orderStatus == "DELIVERED") {
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderDate, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, order.assignedTime != undefined?order.assignedTime:'', time_taken, link_attachments, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', (order.rating != undefined && order.rating.customerRating != undefined)?order.rating.customerRating:'', (order.rating != undefined && order.rating.customerComment != undefined)?order.rating.customerComment:'', view_items];
+                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, order.deliveryCharge, order.assignedTime != undefined?order.assignedTime:'', time_taken, (order.bill != "undefined" && order.bill.path!="undefined")?'<a href="'+order.bill.path+'">'+order.bill.path+'</a>':'', (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', (order.rating != undefined && order.rating.customerRating != undefined)?order.rating.customerRating:'', (order.rating != undefined && order.rating.customerComment != undefined)?order.rating.customerComment:'', view_items];
             } else if($.inArray(order.orderStaus, activeStatus)) {
-                row = [i+1, order.customer.user.fullName, storeInfo, id, order.orderDate, order.orderVerificationCode, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, order.assignedTime != undefined?order.assignedTime:'', time_taken, link_attachments, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), view_items];
+                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.orderVerificationCode, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, order.deliveryCharge, order.assignedTime != undefined?order.assignedTime:'', time_taken, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), '', view_items];
             }
             row = $.extend({}, row);
             tdata.push(row)
@@ -176,31 +178,39 @@ Order.getOrders = function(elemId, url, params){
     if(elemId == '#order_inroute_table') {
         dataFilter.columns = [
             { "name": "" },
+            { "name": "orderDate" },
+            { "name": "id" },
             { "name": "customer#user#fullName" },
             { "name": "store#name" },
-            { "name": "id" },
-            { "name": "orderDate" },
+            { "name": "customer#user#addresses#street" },
             { "name": "orderVerificationCode" },
+            { "name": "totalCost" },
+            { "name": "" },
             { "name": "grandTotal" },
             { "name": "deliveryBoy#user#fullName" },
-            { "name": "deliveryBoy#user#fullName" },
+            { "name": "deliveryCharge" },
             { "name": "assignedTime" },
             { "name": "" },
             { "name": "orderStatus" },
             { "name": "" }
+
         ];
     } else if(elemId == '#order_successful_table') {
         dataFilter.columns = [
             { "name": "" },
+            { "name": "orderDate" },
+            { "name": "id" },
             { "name": "customer#user#fullName" },
             { "name": "store#name" },
-            { "name": "id" },
-            { "name": "orderDate" },
+            { "name": "customer#user#addresses#street" },
+            { "name": "totalCost" },
+            { "name": "" },
             { "name": "grandTotal" },
             { "name": "deliveryBoy#user#fullName" },
+            { "name": "deliveryCharge" },
             { "name": "assignedTime" },
             { "name": "" },
-            { "name": "" },
+            { "name": "bill#path" },
             { "name": "" },
             { "name": "" },
             { "name": "" },
@@ -210,14 +220,17 @@ Order.getOrders = function(elemId, url, params){
     } else {
         dataFilter.columns = [
             { "name": "" },
+            { "name": "orderDate" },
+            { "name": "id" },
             { "name": "customer#user#fullName" },
             { "name": "store#name" },
-            { "name": "id" },
-            { "name": "orderDate" },
+            { "name": "customer#user#addresses#street" },
+            { "name": "totalCost" },
+            { "name": "" },
             { "name": "grandTotal" },
             { "name": "deliveryBoy#user#fullName" },
+            { "name": "deliveryCharge" },
             { "name": "assignedTime" },
-            { "name": "" },
             { "name": "" },
             { "name": "" },
             { "name": "" },
@@ -225,6 +238,7 @@ Order.getOrders = function(elemId, url, params){
             { "name": "" }
         ];
     }
+
     Main.createDataTable(elemId, dataFilter);
 
     if(elemId == '#order_inroute_table')

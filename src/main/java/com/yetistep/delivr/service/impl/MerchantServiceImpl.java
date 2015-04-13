@@ -1625,24 +1625,35 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         List<OrderEntity> orderList = new ArrayList<>();
-        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,assignedTime,attachments,grandTotal,rating";
+        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,assignedTime,attachments,grandTotal,totalCost,rating,deliveryCharge,bill";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("customer", "id,user");
+        assoc.put("customer", "id,user,bill");
         assoc.put("deliveryBoy", "id,user,averageRating");
         assoc.put("store", "id,name,street,contactPerson,contactNo");
+        assoc.put("address", "id,street,city,state,country");
         assoc.put("attachments", "url");
         assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
         assoc.put("orderCancel", "id,reasonDetails,reason");
         assoc.put("dBoyOrderHistories", "id,distanceTravelled,amountEarned,jobStartedAt,orderCompletedAt");
+        assoc.put("bill", "id,path");
 
-        subAssoc.put("user", "id,fullName,mobileNumber,profileImage");
+        subAssoc.put("user", "id,fullName,mobileNumber,profileImage,addresses");
         subAssoc.put("reasonDetails", "id,cancelReason");
+        subAssoc.put("addresses", "id,street,city,state,country");
 
         for (OrderEntity order:orders){
             orderList.add((OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
+        }
+
+        for (OrderEntity orderEntity: orderList){
+            BigDecimal totalCost = orderEntity.getTotalCost();
+            if(orderEntity.getItemServiceAndVatCharge() != null){
+                totalCost = totalCost.add(orderEntity.getItemServiceAndVatCharge());
+            }
+            orderEntity.setGrandTotal(totalCost);
         }
 
         paginationDto.setData(orderList);
@@ -1700,7 +1711,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         for (OrderEntity order:orders){
             ordersList.add((OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
         }
-
 
         for (OrderEntity orderEntity: ordersList){
             BigDecimal totalCost = orderEntity.getTotalCost();

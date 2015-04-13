@@ -45,18 +45,21 @@
                     <thead>
                         <tr>
                             <th>SN</th>
-                            <th><div class="width_150">Customer Name</div></th>
+                            <th><div class="width_150">Order Date & Time</div></th>
+                            <th><div class="width_50">Order No.</div></th>
+                            <th><div class="width_120">Customer Name</div></th>
                             <th><div class="width_200">Store Name & Address</div></th>
-                            <th><div class="width_80">Order No</div></th>
-                            <th><div class="width_120">Order Date</div></th>
-                            <th><div class="width_80">Verification Code</div></th>
-                            <th><div class="width_100">Paid by Customer</div></th>
-                            <th><div class="width_150">Shopper</div></th>
-                            <th><div class="width_150">Time Assigned</div></th>
-                            <th><div class="width_150">Time Taken</div></th>
-                            <th class="no_sort"><div class="width_80">Bill</div></th>
+                            <th><div class="width_120">Drop of Location</div></th>
+                            <th><div class="width_100">Verification Code</div></th>
+                            <th><div class="width_80">Paid to Merchant</div></th>
+                            <th><div class="width_150">Merchant Bill</div></th>
+                            <th><div class="width_80">Received From Customer</div></th>
+                            <th><div class="width_120">Shopper</div></th>
+                            <th><div class="width_80">Shopper Earning</div></th>
+                            <th><div class="width_100">Time Assigned</div></th>
+                            <th><div class="width_100">Time Taken</div></th>
                             <th><div class="width_100">Status</div></th>
-                            <th class="no_sort"><div class="width_100">Action</div></th>
+                            <th><div class="width_100">Location</div></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,16 +70,21 @@
                 <table id="order_successful_table">
                     <thead>
                     <tr>
+
                         <th rowspan="2">SN</th>
-                        <th rowspan="2"><div class="width_150">Customer Name</div></th>
+                        <th rowspan="2"><div class="width_150">Order Date & Time</div></th>
+                        <th rowspan="2"><div class="width_50">Order No.</div></th>
+                        <th rowspan="2"><div class="width_120">Customer Name</div></th>
                         <th rowspan="2"><div class="width_200">Store Name & Address</div></th>
-                        <th rowspan="2"><div class="width_80">Order No</div></th>
-                        <th rowspan="2"><div class="width_120">Order Date</div></th>
-                        <th rowspan="2"><div class="width_100">Paid by Customer</div></th>
-                        <th rowspan="2"><div class="width_150">Shopper</div></th>
-                        <th rowspan="2"><div class="width_150">Time Assigned</div></th>
-                        <th rowspan="2"><div class="width_150">Time Taken</div></th>
-                        <th rowspan="2" class="no_sort"><div class="width_80">Bill</div></th>
+                        <th rowspan="2"><div class="width_120">Drop of Location</div></th>
+                        <th rowspan="2"><div class="width_80">Paid to Merchant</div></th>
+                        <th rowspan="2"><div class="width_150">Merchant Bill</div></th>
+                        <th rowspan="2"><div class="width_80">Received From Customer</div></th>
+                        <th rowspan="2"><div class="width_120">Shopper</div></th>
+                        <th rowspan="2"><div class="width_80">Shopper Earning</div></th>
+                        <th rowspan="2"><div class="width_100">Time Assigned</div></th>
+                        <th rowspan="2"><div class="width_100">Time Taken</div></th>
+                        <th rowspan="2"><div class="width_100">Customer Bill & Receipt</div></th>
                         <th colspan="2">Feedback To Customer</th>
                         <th colspan="2">Feedback To Shopper</th>
                         <th rowspan="2" class="no_sort"><div class="width_100">Action</div></th>
@@ -97,15 +105,18 @@
                     <thead>
                     <tr>
                         <th rowspan="2">SN</th>
-                        <th rowspan="2"><div class="width_150">Customer Name</div></th>
+                        <th rowspan="2"><div class="width_150">Order Date & Time</div></th>
+                        <th rowspan="2"><div class="width_50">Order No.</div></th>
+                        <th rowspan="2"><div class="width_120">Customer Name</div></th>
                         <th rowspan="2"><div class="width_200">Store Name & Address</div></th>
-                        <th rowspan="2"><div class="width_80">Order No</div></th>
-                        <th rowspan="2"><div class="width_120">Order Date</div></th>
-                        <th rowspan="2"><div class="width_100">Paid by Customer</div></th>
-                        <th rowspan="2"><div class="width_150">Shopper</div></th>
-                        <th rowspan="2"><div class="width_150">Time Assigned</div></th>
-                        <th rowspan="2"><div class="width_150">Time Taken</div></th>
-                        <th rowspan="2" class="no_sort"><div class="width_80">Bill</div></th>
+                        <th rowspan="2"><div class="width_120">Drop of Location</div></th>
+                        <th rowspan="2"><div class="width_80">Paid to Merchant</div></th>
+                        <th rowspan="2"><div class="width_150">Merchant Bill</div></th>
+                        <th rowspan="2"><div class="width_80">Received From Customer</div></th>
+                        <th rowspan="2"><div class="width_120">Shopper</div></th>
+                        <th rowspan="2"><div class="width_80">Shopper Earning</div></th>
+                        <th rowspan="2"><div class="width_100">Time Assigned</div></th>
+                        <th rowspan="2"><div class="width_100">Time Taken</div></th>
                         <th colspan="2">Feedback To Customer</th>
                         <th rowspan="2" class="no_sort">Cancel Reason</th>
                         <th rowspan="2" class="no_sort"><div class="width_100">Action</div></th>

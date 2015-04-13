@@ -783,7 +783,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         walletTransactionEntity.setOrder(order);
         walletTransactionEntity.setCustomer(order.getCustomer());
         walletTransactionEntity.setPaymentMode(paymentMode);
-        walletTransactionEntity.setAvailableWalletAmount(availableAmount);
+        walletTransactionEntity.setAvailableWalletAmount(BigDecimalUtil.checkNull(availableAmount));
         systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
         walletTransactionEntities.add(walletTransactionEntity);
         order.setWalletTransactions(walletTransactionEntities);

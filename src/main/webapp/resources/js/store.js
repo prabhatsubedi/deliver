@@ -773,6 +773,7 @@ if(typeof(Store) == "undefined") var Store = {};
 
                     if(storeBrands.length > 0) {
 
+                        var count = 0;
                         for(var i = 0; i < storeBrands.length; i++) {
 
                             var storeBrand = storeBrands[i];
@@ -789,7 +790,10 @@ if(typeof(Store) == "undefined") var Store = {};
                                 if(storeBrand.priority != undefined) $('.item_image', elem).append('<div class="special_item">Priority : ' + storeBrand.priority + '</div>');
 
                                 store_list += elem.html();
+                                count++;
                             }
+
+                            if(count == 4) break;
 
                         }
 

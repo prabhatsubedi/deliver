@@ -120,7 +120,6 @@ Order.getOrders = function(elemId, url, params){
             }
 
             var storeInfo = "<div class='store_info_td'><span class='show_store_info'>"+order.store.name+' - '+order.store.street+"</span>";
-
             var contactPerson = order.store.contactPerson != undefined?order.store.contactPerson:'';
             var contactNo = order.store.contactNo != undefined?order.store.contactNo:'';
 

@@ -124,7 +124,7 @@
     <%@include file="../includes/header.jsp" %>
     <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left">Invoices</h1>
+            <h1 class="pull-left">Statements</h1>
             <div class="date_filter pull-right form_container form-inline">
                 <div class="date_wrapper">
                     <div class="date_label">From:</div>

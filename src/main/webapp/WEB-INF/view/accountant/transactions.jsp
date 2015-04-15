@@ -45,7 +45,7 @@
         <div class="main_content">
 
             <div class="table-view">
-                <div class="table-responsive" style="margin-bottom: 15px;">
+                <div class="table-responsive" style="margin-bottom: 15px; max-width: 800px;">
                     <input type="hidden" id="due_amount_val">
                     <input type="hidden" id="to_be_submitted_val">
                     <table id="accountTable">

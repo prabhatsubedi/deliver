@@ -52,4 +52,7 @@ public interface CustomerDaoService extends GenericDaoService<Integer, CustomerE
     public Boolean updateTestEntity(Integer id) throws Exception;
 
     public List<TestEntity> findTest() throws Exception;
+
+    public CustomerEntity getWalletInfo(Long facebookId) throws Exception;
+
 }

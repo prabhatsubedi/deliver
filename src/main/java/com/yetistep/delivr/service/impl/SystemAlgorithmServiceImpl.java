@@ -431,13 +431,16 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService{
 
     @Override
     public void encodeWalletTransaction(WalletTransactionEntity walletTransactionEntity) throws Exception {
-        BigDecimal value = walletTransactionEntity.getTransactionAmount();
+        BigDecimal value = walletTransactionEntity.getTransactionAmount().setScale(2, BigDecimal.ROUND_HALF_UP);
         System.out.println("Transaction Amount:"+value);
         System.out.println("Current Milliseconds:"+walletTransactionEntity.getTransactionDate().getTime());
-        value = value.add(new BigDecimal(walletTransactionEntity.getTransactionDate().getTime()));
+        Long currentTime = walletTransactionEntity.getTransactionDate().getTime();
+        currentTime = (currentTime % 1000) >= 500 ? ((currentTime / 1000) * 1000) + 1000 : (currentTime / 1000) * 1000;
+        value = value.add(new BigDecimal(currentTime));
         value = value.multiply(new BigDecimal(walletTransactionEntity.getCustomer().getId()));
-        value = value.add(walletTransactionEntity.getAvailableWalletAmount());
-        String[] encode = value.toString().split(Pattern.quote("."));
+        value = value.add(walletTransactionEntity.getAvailableWalletAmount().setScale(2, BigDecimal.ROUND_HALF_UP));
+        String encodeData = value + "";
+        String[] encode = encodeData.split(Pattern.quote("."));
         String signature = "";
         for(int i=0; i<encode.length; i++){
             if(signature.equals("")){

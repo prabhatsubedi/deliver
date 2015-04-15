@@ -442,4 +442,13 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         List<OrderEntity>  orderEntities = criteria.list();
         return orderEntities;
     }
+
+    @Override
+    public List<OrderEntity> getAllShortFallOrdersOfCustomer(Integer customerId) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.add(Restrictions.gt("shortFallAmount", BigDecimal.ZERO))
+                .add(Restrictions.eq("customer.id", customerId));
+        List<OrderEntity>  orderEntities = criteria.list();
+        return orderEntities;
+    }
 }

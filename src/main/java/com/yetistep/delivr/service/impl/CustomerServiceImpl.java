@@ -847,6 +847,7 @@ public class CustomerServiceImpl implements CustomerService {
             order.setPaidFromCOD(order.getGrandTotal());
         }
 
+        order.setShortFallAmount(BigDecimal.ZERO);
         if(order.getCustomer().getTotalOrderPlaced() == null){
             order.getCustomer().setTotalOrderPlaced(1);
         }else{
@@ -1668,12 +1669,12 @@ public class CustomerServiceImpl implements CustomerService {
         String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
         for(OrderEntity o: orderList){
             if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
-                        /* Customer wallet amount is less than order amount to be paid at customer during cash on delivery */
+                /* Customer wallet amount is less than order amount to be paid at customer during cash on delivery */
                 if(BigDecimalUtil.isGreaterThenOrEqualTo(o.getPaidFromCOD(), customerWalletAmount)){
                     log.info("Customer wallet amount is less than order amount to be paid at customer during cash on delivery order ID:"+o.getId()+"Wallet Amount:"+customerWalletAmount+" Paid from COD:"+o.getPaidFromCOD());
                     String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
                     remarks = String.format(remarks, currency, customerWalletAmount, o.getId());
-                    this.setWalletTransaction(o, customerWalletAmount, AccountType.DEBIT, remarks);
+                    this.setWalletTransaction(o, customerWalletAmount, AccountType.DEBIT, PaymentMode.WALLET, remarks, BigDecimal.ZERO);
 
                     o.setPaidFromCOD(o.getPaidFromCOD().subtract(customerWalletAmount));
                     o.setPaidFromWallet(o.getPaidFromWallet().add(customerWalletAmount));
@@ -1683,7 +1684,7 @@ public class CustomerServiceImpl implements CustomerService {
                     log.info("Customer wallet amount is greater than order amount to be paid at customer during cash on delivery order ID:"+o.getId()+"Wallet Amount:"+customerWalletAmount+" Paid from COD:"+o.getPaidFromCOD());
                     String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
                     remarks = String.format(remarks, currency, o.getPaidFromCOD(), o.getId());
-                    this.setWalletTransaction(o, o.getPaidFromCOD(), AccountType.DEBIT, remarks);
+                    this.setWalletTransaction(o, o.getPaidFromCOD(), AccountType.DEBIT, PaymentMode.WALLET, remarks, customerWalletAmount.subtract(o.getPaidFromCOD()));
 
                     o.setPaidFromWallet(o.getPaidFromWallet().add(o.getPaidFromCOD()));
                     customerWalletAmount = customerWalletAmount.subtract(o.getPaidFromCOD());
@@ -1696,7 +1697,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
-    private void setWalletTransaction(OrderEntity order, BigDecimal amount, AccountType accountType, String remarks) throws Exception{
+    private void setWalletTransaction(OrderEntity order, BigDecimal amount, AccountType accountType, PaymentMode paymentMode, String remarks, BigDecimal availableAmount) throws Exception{
         log.info("Setting wallet transaction info for order:"+order.getId()+" Amount:"+amount+" Account type:"+accountType+" Remarks:"+remarks);
         List<WalletTransactionEntity> walletTransactionEntities = order.getWalletTransactions();
         WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
@@ -1706,6 +1707,8 @@ public class CustomerServiceImpl implements CustomerService {
         walletTransactionEntity.setTransactionAmount(amount);
         walletTransactionEntity.setOrder(order);
         walletTransactionEntity.setCustomer(order.getCustomer());
+        walletTransactionEntity.setPaymentMode(paymentMode);
+        walletTransactionEntity.setAvailableWalletAmount(BigDecimalUtil.checkNull(availableAmount));
         systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
         walletTransactionEntities.add(walletTransactionEntity);
         order.setWalletTransactions(walletTransactionEntities);
@@ -1713,5 +1716,72 @@ public class CustomerServiceImpl implements CustomerService {
         UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
         String extraDetail = order.getId().toString();
         PushNotificationUtil.sendPushNotification(userDevice, remarks, NotifyTo.CUSTOMER, PushNotificationRedirect.TRANSACTION, extraDetail);
+    }
+
+    @Override
+    public Boolean refillWallet(CustomerEntity customer) throws Exception {
+        CustomerEntity customerEntity = customerDaoService.find(customer.getFacebookId());
+        if(customerEntity == null){
+            throw new YSException("VLD011");
+        }
+        customerEntity.setWalletAmount(customerEntity.getWalletAmount().add(customer.getWalletAmount()));
+        List<WalletTransactionEntity> walletTransactionEntities = customerEntity.getWalletTransactions();
+        WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
+        walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+        walletTransactionEntity.setAccountType(AccountType.CREDIT);
+        String remark = MessageBundle.getMessage("WTM004", "push_notification.properties");
+        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+        remark = String.format(remark, currency, customer.getWalletAmount());
+        walletTransactionEntity.setRemarks(remark);
+        walletTransactionEntity.setTransactionAmount(customer.getWalletAmount());
+        walletTransactionEntity.setCustomer(customerEntity);
+        walletTransactionEntity.setPaymentMode(PaymentMode.WALLET);
+        walletTransactionEntity.setAvailableWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()));
+        systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
+        walletTransactionEntities.add(walletTransactionEntity);
+        customerEntity.setWalletTransactions(walletTransactionEntities);
+        boolean status = customerDaoService.update(customerEntity);
+
+        BigDecimal customerWalletAmount = customerEntity.getWalletAmount();
+        BigDecimal customerShortFallAmount = customerEntity.getShortFallAmount();
+
+        /* Short Fall amount adjustments */
+        if(BigDecimalUtil.isGreaterThen(customerShortFallAmount, BigDecimal.ZERO)){
+            log.info("looking for shortfall orders whose shortFallAmount > 0 for customer with ID:"+customerEntity.getId());
+            List<OrderEntity> orderList = orderDaoService.getAllShortFallOrdersOfCustomer(customerEntity.getId());
+            for(OrderEntity o: orderList){
+                if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
+                    /* Customer wallet amount is less than order amount to be paid at customer during cash on delivery */
+                    if(BigDecimalUtil.isGreaterThen(o.getShortFallAmount(), customerWalletAmount)){
+                        log.info("Customer wallet amount is less than short fall amount for order ID:"+o.getId());
+                        String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
+                        remarks = String.format(remarks, currency, customerWalletAmount, o.getId());
+                        this.setWalletTransaction(o, customerWalletAmount, AccountType.DEBIT, PaymentMode.WALLET, remarks, BigDecimal.ZERO);
+
+                        customerShortFallAmount = customerShortFallAmount.subtract(customerWalletAmount);
+                        o.getCustomer().setShortFallAmount(customerShortFallAmount);
+                        o.setShortFallAmount(o.getShortFallAmount().subtract(customerWalletAmount));
+                        customerWalletAmount = BigDecimal.ZERO;
+                        o.getCustomer().setWalletAmount(customerWalletAmount);
+                    }else{
+                        log.info("Customer wallet amount is greater than short fall amount for order ID:"+o.getId());
+                        String remarks = MessageBundle.getMessage("WTM003", "push_notification.properties");
+                        remarks = String.format(remarks, currency, o.getShortFallAmount(), o.getId());
+                        this.setWalletTransaction(o, o.getShortFallAmount(), AccountType.DEBIT, PaymentMode.WALLET, remarks, customerWalletAmount.subtract(o.getShortFallAmount()));
+
+                        customerWalletAmount = customerWalletAmount.subtract(o.getShortFallAmount());
+                        customerShortFallAmount = customerShortFallAmount.subtract(o.getShortFallAmount());
+                        o.setShortFallAmount(BigDecimal.ZERO);
+                        o.getCustomer().setShortFallAmount(customerShortFallAmount);
+                        o.getCustomer().setWalletAmount(customerWalletAmount);
+                    }
+                    orderDaoService.update(o);
+                }else
+                    break;
+            }
+        }
+        /*Running wallet order adjustments*/
+        this.adjustWalletBalanceForPendingOrders(customerWalletAmount, customerEntity.getId());
+        return status;
     }
 }

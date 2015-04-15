@@ -15,7 +15,6 @@ import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
-import com.yetistep.delivr.model.mobile.SparrowResultModel;
 import com.yetistep.delivr.util.YSException;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.log4j.Logger;
@@ -941,6 +940,23 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while testing time stamp", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/refill_wallet", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> refillWallet(@RequestHeader HttpHeaders headers, @RequestBody CustomerEntity customer) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            //  validateMobileClient(headerDto.getAccessToken());
+            customerService.refillWallet(customer);
+            ServiceResponse serviceResponse = new ServiceResponse("Wallet has been refilled successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while refilling customer wallet of FB ID:"+customer.getFacebookId(), e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

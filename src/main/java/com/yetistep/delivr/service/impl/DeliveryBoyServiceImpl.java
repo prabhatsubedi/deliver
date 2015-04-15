@@ -1448,12 +1448,23 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             } else {
                 log.info("Change in item price before cancelling for order ID:" + orderEntity.getId());
                 if (BigDecimalUtil.isGreaterThen(paidFromCOD, BigDecimal.ZERO)) {
-                    String remarks = MessageBundle.getMessage("WTM008", "push_notification.properties");
-                    remarks = String.format(remarks, currency, paidFromCOD, orderEntity.getId());
-                    this.setWalletTransaction(orderEntity, paidFromCOD, AccountType.DEBIT, PaymentMode.WALLET, remarks, customerWalletAmount.subtract(paidFromCOD));
-
                     paidFromWallet = orderEntity.getGrandTotal();
-                    customerWalletAmount = customerWalletAmount.subtract(paidFromCOD);
+                    /* Adjusting balance for shortfall amount for this order */
+                    if(BigDecimalUtil.isGreaterThenOrEqualTo(customerWalletAmount, paidFromCOD)){
+                       customerWalletAmount = customerWalletAmount.subtract(paidFromCOD);
+                       String remarks = MessageBundle.getMessage("WTM008", "push_notification.properties");
+                       remarks = String.format(remarks, currency, paidFromCOD, orderEntity.getId());
+                       this.setWalletTransaction(orderEntity, paidFromCOD, AccountType.DEBIT, PaymentMode.WALLET, remarks, customerWalletAmount);
+                    }else{
+                        orderEntity.setShortFallAmount(paidFromCOD.subtract(customerWalletAmount));
+                        if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
+                            String remarks = MessageBundle.getMessage("WTM008", "push_notification.properties");
+                            remarks = String.format(remarks, currency, customerWalletAmount, orderEntity.getId());
+                            this.setWalletTransaction(orderEntity, customerWalletAmount, AccountType.DEBIT, PaymentMode.WALLET, remarks, BigDecimal.ZERO);
+                            customerWalletAmount = BigDecimal.ZERO;
+                        }
+                        orderEntity.getCustomer().setShortFallAmount(BigDecimalUtil.checkNull(orderEntity.getCustomer().getShortFallAmount()).add(orderEntity.getShortFallAmount()));
+                    }
                     paidFromCOD = BigDecimal.ZERO;
                 } else if (BigDecimalUtil.isLessThen(paidFromCOD, BigDecimal.ZERO)) {
                     String remarks = MessageBundle.getMessage("WTM007", "push_notification.properties");

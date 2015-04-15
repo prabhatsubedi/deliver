@@ -145,6 +145,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             { "name": "" }
         ];
         Main.createDataTable("#merchants_table", dataFilter);
+        Main.saveMerchants();
 
     };
 

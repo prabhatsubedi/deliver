@@ -731,6 +731,10 @@ public class CustomerServiceImpl implements CustomerService {
         /* Transferring data of cart to order and calculating price */
         BigDecimal itemTotalCost = BigDecimal.ZERO;
         BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
+        BigDecimal itemServiceCharge = BigDecimal.ZERO;
+        BigDecimal itemVatCharge = BigDecimal.ZERO;
+
+
         List<CartEntity> cartEntities = cartDaoService.getMyCarts(customerId);
         List<Integer> cartIds = new ArrayList<Integer>();
         List<ItemsOrderEntity> itemsOrder = new ArrayList<ItemsOrderEntity>();
@@ -762,6 +766,8 @@ public class CustomerServiceImpl implements CustomerService {
             BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemPrice, BigDecimalUtil.checkNull(cart.getItem().getServiceCharge()));
             BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), BigDecimalUtil.checkNull(cart.getItem().getVat())));
             /*Set for order total and total serviceVat*/
+            itemServiceCharge = itemServiceCharge.add(serviceCharge);
+            itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), BigDecimalUtil.checkNull(cart.getItem().getVat())));
             itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatCharge);
             itemTotalCost = itemTotalCost.add(itemPrice);
 
@@ -788,6 +794,8 @@ public class CustomerServiceImpl implements CustomerService {
         order.setTotalCost(itemTotalCost);
         order.setSurgeFactor(getSurgeFactor());
         order.setItemServiceAndVatCharge(itemServiceAndVatCharge);
+        order.setItemServiceCharge(itemServiceCharge);
+        order.setItemVatCharge(itemVatCharge);
 
         /* Listing Active stores of a store brand and finding shortest store */
         List<StoreEntity> stores = merchantDaoService.findActiveStoresByBrand(brandId);

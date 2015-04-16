@@ -1209,6 +1209,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         BigDecimal itemTotalCost = BigDecimal.ZERO;
         BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
+        BigDecimal itemServiceCharge = BigDecimal.ZERO;
+        BigDecimal itemVatCharge = BigDecimal.ZERO;
 
         List<ItemsOrderEntity> itemsOrderEntityList = order.getItemsOrder();
         ItemsOrderEntity itemsOrderEntity = getItemOrderById(itemsOrderEntityList, itemOrder.getId());
@@ -1247,6 +1249,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 BigDecimal serviceChargeAmount = BigDecimalUtil.percentageOf(itemsOrder.getItemTotal(), BigDecimalUtil.checkNull(itemsOrder.getServiceCharge()));
                 BigDecimal serviceAndVatChargeAmount = serviceChargeAmount.add(BigDecimalUtil.percentageOf(serviceChargeAmount.add(itemsOrder.getItemTotal()), BigDecimalUtil.checkNull(itemsOrder.getVat())));
                 itemTotalCost = itemTotalCost.add(itemsOrder.getItemTotal());
+                itemServiceCharge = itemServiceCharge.add(serviceChargeAmount);
+                itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(serviceChargeAmount.add(itemsOrder.getItemTotal()), BigDecimalUtil.checkNull(itemsOrder.getVat())));
                 itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatChargeAmount);
                 itemsOrder.setServiceAndVatCharge(serviceAndVatChargeAmount);
             }
@@ -1259,6 +1263,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         order.setTotalCost(itemTotalCost);
         order.setItemServiceAndVatCharge(itemServiceAndVatCharge);
+        order.setItemServiceCharge(itemServiceCharge);
+        order.setItemVatCharge(itemVatCharge);
 
         DeliveryBoySelectionEntity dBoySelection = new DeliveryBoySelectionEntity();
         dBoySelection.setDistanceToStore(order.getSystemChargeableDistance());
@@ -1663,11 +1669,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         orderSummary.setItemOrders(itemsOrderEntities);
         OrderSummaryDto.AccountSummary accountSummary = orderSummary.new AccountSummary();
         BigDecimal totalDiscount = BigDecimal.ZERO;
-        if(order.getCustomer() != null){
+       /* This logic should be discussed since rewards replaced by wallet balance
+       if(order.getCustomer() != null){
             if(BigDecimalUtil.isGreaterThenOrEqualTo(order.getDeliveryCharge(), order.getCustomer().getRewardsEarned())){
                 totalDiscount = order.getCustomer().getRewardsEarned();
             }
-        }
+        }*/
 
         accountSummary.setSubTotal(order.getTotalCost());
         accountSummary.setServiceFee(order.getSystemServiceCharge());

@@ -58,7 +58,7 @@
                             <th><div class="width_100">Time Assigned</div></th>
                             <th><div class="width_100">Time Taken</div></th>
                             <th><div class="width_100">Status</div></th>
-                            <th><div class="width_100">Location</div></th>
+                            <th class="no_sort"><div class="width_150">Action</div></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,8 +84,8 @@
                         <th rowspan="2"><div class="width_100">Time Assigned</div></th>
                         <th rowspan="2"><div class="width_100">Time Taken</div></th>
                         <th rowspan="2"><div class="width_100">Customer Bill & Receipt</div></th>
-                        <th colspan="2">Feedback To Customer</th>
                         <th colspan="2">Feedback To Shopper</th>
+                        <th colspan="2">Feedback To Customer</th>
                         <th rowspan="2" class="no_sort"><div class="width_100">Action</div></th>
                     </tr>
                     <tr>

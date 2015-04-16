@@ -504,6 +504,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         accountSummary.setSubTotal(order.getTotalCost());
         accountSummary.setEstimatedTotal(order.getGrandTotal());
         accountSummary.setDeliveryFee(order.getCourierTransaction().getDeliveryChargedBeforeDiscount());
+        //TODO discussion
         accountSummary.setTotalDiscount(order.getCourierTransaction().getDeliveryChargedBeforeDiscount().subtract(order.getCourierTransaction().getDeliveryChargedAfterDiscount()));
         accountSummary.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         accountSummary.setPaidFromCOD(order.getPaidFromCOD());

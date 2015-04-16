@@ -1683,6 +1683,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         accountSummary.setTotalDiscount(totalDiscount);
         accountSummary.setPartnerShipStatus(merchant.getPartnershipStatus());
         accountSummary.setPaidFromCOD(order.getPaidFromCOD());
+        accountSummary.setPaidFromWallet(order.getPaidFromWallet());
+        accountSummary.setPaymentMode(order.getPaymentMode());
         accountSummary.setEstimatedTotal(order.getGrandTotal());
         orderSummary.setAccountSummary(accountSummary);
         return orderSummary;

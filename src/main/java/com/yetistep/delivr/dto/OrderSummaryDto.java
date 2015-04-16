@@ -2,6 +2,7 @@ package com.yetistep.delivr.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.enums.PaymentMode;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.ItemsOrderEntity;
 import com.yetistep.delivr.model.StoreEntity;
@@ -115,6 +116,7 @@ public class OrderSummaryDto {
         private Boolean partnerShipStatus;
         private BigDecimal paidFromWallet;
         private BigDecimal paidFromCOD;
+        private PaymentMode paymentMode;
         private String currency;
 
         public BigDecimal getSubTotal() {
@@ -203,6 +205,14 @@ public class OrderSummaryDto {
 
         public void setPaidFromCOD(BigDecimal paidFromCOD) {
             this.paidFromCOD = paidFromCOD;
+        }
+
+        public PaymentMode getPaymentMode() {
+            return paymentMode;
+        }
+
+        public void setPaymentMode(PaymentMode paymentMode) {
+            this.paymentMode = paymentMode;
         }
 
         public String getCurrency() {

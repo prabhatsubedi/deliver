@@ -251,6 +251,7 @@ public class CustomerEntity implements Serializable {
         this.allowShare = allowShare;
     }
 
+    @JsonProperty
     @Column(name = "wallet_amount", precision =  19, scale = 2)
     public BigDecimal getWalletAmount() {
         return walletAmount;
@@ -260,6 +261,7 @@ public class CustomerEntity implements Serializable {
         this.walletAmount = walletAmount;
     }
 
+    @JsonProperty
     @Column(name = "shortfall_amount", precision =  19, scale = 2)
     public BigDecimal getShortFallAmount() {
         return shortFallAmount;

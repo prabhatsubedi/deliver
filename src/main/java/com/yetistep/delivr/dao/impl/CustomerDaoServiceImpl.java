@@ -191,8 +191,9 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
 
     @Override
     public CustomerEntity getCustomerProfile(Long facebookId) throws Exception {
-        String sql = "SELECT c.id as id, c.referred_friends_count as referredFriendsCount, c.rewards_earned as rewardsEarned," +
-                " count(o.id) as totalOrderPlaced FROM customers c INNER JOIN orders o on (o.customer_id = c.id) WHERE " +
+        String sql = "SELECT c.id as id, c.referred_friends_count as referredFriendsCount, c.rewards_earned as rewardsEarned, " +
+                "c.wallet_amount as walletAmount, c.shortfall_amount as shortFallAmount, " +
+                "count(o.id) as totalOrderPlaced FROM customers c INNER JOIN orders o on (o.customer_id = c.id) WHERE " +
                 "c.facebook_id = :facebookId AND o.order_status IN (:orderStatusList)";
         List<Integer> orderStatusList = new ArrayList<Integer>();
         orderStatusList.add(JobOrderStatus.ORDER_PLACED.ordinal());
@@ -205,7 +206,9 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
                 .addScalar("id", IntegerType.INSTANCE)
                 .addScalar("referredFriendsCount", IntegerType.INSTANCE)
                 .addScalar("totalOrderPlaced", IntegerType.INSTANCE)
-                .addScalar("rewardsEarned", BigDecimalType.INSTANCE);
+                .addScalar("rewardsEarned", BigDecimalType.INSTANCE)
+                .addScalar("walletAmount", BigDecimalType.INSTANCE)
+                .addScalar("shortFallAmount", BigDecimalType.INSTANCE);
         sqlQuery.setParameter("facebookId", facebookId);
         sqlQuery.setParameterList("orderStatusList", orderStatusList);
 

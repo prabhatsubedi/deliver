@@ -1441,6 +1441,8 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setReferredFriendsCount(0);
         if (customer.getRewardsEarned() == null)
             customer.setRewardsEarned(BigDecimal.ZERO);
+        customer.setWalletAmount(BigDecimalUtil.checkNull(customer.getWalletAmount()).subtract(BigDecimalUtil.checkNull(customer.getShortFallAmount())));
+        customer.setShortFallAmount(null);
         customer.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         return customer;
     }

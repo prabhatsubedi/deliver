@@ -1730,7 +1730,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(customerEntity == null){
             throw new YSException("VLD011");
         }
-        customerEntity.setWalletAmount(customerEntity.getWalletAmount().add(customer.getWalletAmount()));
+        customerEntity.setWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()).add(customer.getWalletAmount()));
         List<WalletTransactionEntity> walletTransactionEntities = customerEntity.getWalletTransactions();
         WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
         walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());

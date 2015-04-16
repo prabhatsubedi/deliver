@@ -1266,6 +1266,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         order.setItemServiceCharge(itemServiceCharge);
         order.setItemVatCharge(itemVatCharge);
 
+        /*This section is used just for getting courier transaction information */
         DeliveryBoySelectionEntity dBoySelection = new DeliveryBoySelectionEntity();
         dBoySelection.setDistanceToStore(order.getSystemChargeableDistance());
         dBoySelection.setStoreToCustomerDistance(order.getCustomerChargeableDistance());
@@ -1365,7 +1366,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                     BigDecimal paidToCourier = this.getCourierBoyEarningAtAnyStage(dBoyOrderHistoryEntity, orderEntity.getOrderStatus());
                     orderEntity.getCourierTransaction().setPaidToCourier(paidToCourier);
                     orderEntity.getDeliveryBoy().setTotalEarnings(orderEntity.getDeliveryBoy().getTotalEarnings().add(paidToCourier));
-                    if(BigDecimalUtil.isGreaterThen(orderEntity.getTotalCost(), BigDecimal.ZERO)){
+                    if(BigDecimalUtil.isGreaterThen(orderEntity.getPaidFromCOD(), BigDecimal.ZERO)){
                         if (orderEntity.getOrderStatus().equals(JobOrderStatus.AT_STORE)) {
                             boolean partnerShipStatus = merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());
                             courierBoyAccountingsAfterTakingOrder(orderEntity.getDeliveryBoy(), orderEntity, partnerShipStatus);
@@ -1617,20 +1618,17 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     }
 
     private void courierBoyAccountingsAfterOrderDelivery(DeliveryBoyEntity deliveryBoy, OrderEntity order) {
-        BigDecimal orderAmtReceived = order.getGrandTotal();
+        BigDecimal orderAmtReceived = order.getPaidFromCOD();
         BigDecimal walletAmount = deliveryBoy.getWalletAmount();
-        BigDecimal bankAmount = deliveryBoy.getBankAmount();
         BigDecimal availableAmount = deliveryBoy.getAvailableAmount();
 
         availableAmount = availableAmount.add(orderAmtReceived);
         walletAmount = walletAmount.add(orderAmtReceived);
-        deliveryBoy.setBankAmount(bankAmount);
         deliveryBoy.setWalletAmount(walletAmount);
         deliveryBoy.setAvailableAmount(availableAmount);
 
         log.info("== AFTER ORDER DELIVERY =="
                 + "\n Wallet Amount: " + walletAmount
-                + "\t Bank Amount: " + bankAmount
                 + "\t Available Amount: " + availableAmount
                 + "\t Amount to be Submitted: " + walletAmount);
     }
@@ -1679,9 +1677,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         accountSummary.setSubTotal(order.getTotalCost());
         accountSummary.setServiceFee(order.getSystemServiceCharge());
         accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
+        accountSummary.setItemServiceCharge(order.getItemServiceCharge());
+        accountSummary.setItemVatCharge(order.getItemVatCharge());
         accountSummary.setDeliveryFee(order.getDeliveryCharge().add(totalDiscount));
         accountSummary.setTotalDiscount(totalDiscount);
         accountSummary.setPartnerShipStatus(merchant.getPartnershipStatus());
+        accountSummary.setPaidFromCOD(order.getPaidFromCOD());
         accountSummary.setEstimatedTotal(order.getGrandTotal());
         orderSummary.setAccountSummary(accountSummary);
         return orderSummary;

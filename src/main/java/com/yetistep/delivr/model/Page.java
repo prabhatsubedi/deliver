@@ -1,7 +1,9 @@
 package com.yetistep.delivr.model;
 
+import com.yetistep.delivr.enums.PaymentMode;
 import com.yetistep.delivr.util.YSException;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,6 +22,7 @@ public class Page {
     private Integer totalRows;
     private String searchFor;
     private Map<String, String> searchFields;
+    private List<PaymentMode> paymentModes;
 
     public Integer getPageNumber() {
         return pageNumber;
@@ -94,5 +97,13 @@ public class Page {
             throw new YSException("ERR013");
         }
         return rowNumber;
+    }
+
+    public List<PaymentMode> getPaymentModes() {
+        return paymentModes;
+    }
+
+    public void setPaymentModes(List<PaymentMode> paymentModes) {
+        this.paymentModes = paymentModes;
     }
 }

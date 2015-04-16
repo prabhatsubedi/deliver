@@ -9,10 +9,7 @@ import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.StaticPagination;
-import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
-import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
-import com.yetistep.delivr.model.mobile.dto.SearchDto;
-import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
+import com.yetistep.delivr.model.mobile.dto.*;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
@@ -1819,5 +1816,31 @@ public class CustomerServiceImpl implements CustomerService {
             log.info("Customer available amount is different than that in signature");
             throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
         }
+    }
+
+    @Override
+    public PaginationDto getWalletTransactions(Page page, Long facebookId) throws Exception {
+        log.info("Retrieving list of wallet transactions");
+        List<PaymentMode> paymentModes = new ArrayList<PaymentMode>();
+        if (page != null && page.getPaymentModes() != null) {
+            paymentModes = page.getPaymentModes();
+        }else{
+            paymentModes.add(PaymentMode.CASH_ON_DELIVERY);
+            paymentModes.add(PaymentMode.WALLET);
+        }
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows = walletTransactionDaoService.getTotalNumberOfWalletTransactions(facebookId, paymentModes);
+        paginationDto.setNumberOfRows(totalRows);
+        List<WalletTransactionEntity> walletTransactionEntities;
+        if(totalRows > 0){
+            if(page != null){
+                page.setTotalRows(totalRows);
+            }
+            walletTransactionEntities = walletTransactionDaoService.getWalletTransactions(page, facebookId, paymentModes);
+        }else{
+            walletTransactionEntities = new ArrayList<WalletTransactionEntity>();
+        }
+        paginationDto.setData(walletTransactionEntities);
+        return paginationDto;
     }
 }

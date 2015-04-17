@@ -616,7 +616,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         checkOutDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         checkOutDto.setMaxOrderLimit(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)));
-        checkOutDto.setWalletAmount(this.getCustomerWalletBalance(facebookId));
+        checkOutDto.setWalletAmount(BigDecimalUtil.checkNull(this.getCustomerWalletBalance(facebookId)));
         return checkOutDto;
     }
 
@@ -1746,8 +1746,22 @@ public class CustomerServiceImpl implements CustomerService {
         }
         order.setOrderStatus(JobOrderStatus.CANCELLED);
         order.setDeliveryStatus(DeliveryStatus.CANCELLED);
+        BigDecimal customerWalletAmount = order.getCustomer().getWalletAmount();
+        if(order.getPaymentMode().equals(PaymentMode.WALLET)){
+            String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+            BigDecimal paidFromWallet = order.getPaidFromWallet();
+            customerWalletAmount = customerWalletAmount.add(paidFromWallet);
+
+            String remarks = MessageBundle.getMessage("WTM002", "push_notification.properties");
+            remarks = String.format(remarks, currency, paidFromWallet, order.getId());
+            this.setWalletTransaction(order, paidFromWallet, AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
+            order.getCustomer().setWalletAmount(customerWalletAmount);
+            order.setPaidFromWallet(BigDecimal.ZERO);
+        }
         boolean status = orderDaoService.update(order);
         if(status){
+            if(order.getPaymentMode().equals(PaymentMode.WALLET))
+                adjustWalletBalanceForPendingOrders(customerWalletAmount, order.getCustomer().getId());
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN007", "push_notification.properties");
             String extraDetail = order.getId().toString()+"/status/"+order.getOrderStatus().toString();
@@ -1891,23 +1905,28 @@ public class CustomerServiceImpl implements CustomerService {
 
     private BigDecimal getCustomerWalletBalance(Long facebookId) throws Exception{
         CustomerEntity customerEntity = customerDaoService.getWalletInfo(facebookId);
-        validateAvailableWalletAmount(customerEntity.getWalletAmount(), customerEntity.getId());
-        BigDecimal balance = customerEntity.getWalletAmount().subtract(BigDecimalUtil.checkNull(customerEntity.getShortFallAmount()));
+        validateAvailableWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()), customerEntity.getId());
+        BigDecimal balance = BigDecimalUtil.checkNull(customerEntity.getWalletAmount()).subtract(BigDecimalUtil.checkNull(customerEntity.getShortFallAmount()));
         return balance;
     }
 
     private void validateAvailableWalletAmount(BigDecimal availableAmount, Integer customerId) throws Exception{
         WalletTransactionEntity walletTransactionEntity = walletTransactionDaoService.getLatestWalletTransaction(customerId);
-        if(walletTransactionEntity == null)
-            return;
-        systemAlgorithmService.decodeWalletTransaction(walletTransactionEntity);
-        if(!walletTransactionEntity.getFlag()){
-            log.info("Signature validation failed");
-            throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
-        }
-        if(!availableAmount.equals(walletTransactionEntity.getAvailableWalletAmount())){
-            log.info("Customer available amount is different than that in signature");
-            throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+        if(walletTransactionEntity == null){
+            if(!availableAmount.equals(BigDecimal.ZERO)){
+                log.info("Customer available amount has no transactions and should be zero");
+                throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+            }
+        }else{
+            systemAlgorithmService.decodeWalletTransaction(walletTransactionEntity);
+            if(!walletTransactionEntity.getFlag()){
+                log.info("Signature validation failed");
+                throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+            }
+            if(!availableAmount.equals(walletTransactionEntity.getAvailableWalletAmount())){
+                log.info("Customer available amount is different than that in signature");
+                throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+            }
         }
     }
 

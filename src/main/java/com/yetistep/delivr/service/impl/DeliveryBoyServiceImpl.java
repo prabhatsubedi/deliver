@@ -1655,6 +1655,11 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 itemsOrderEntity.setItem(item);
             }
 
+            if(itemOrder.getCustomItem() != null && itemOrder.getItemTotal() == null && itemOrder.getAvailabilityStatus()){
+                itemOrder.setServiceCharge(new BigDecimal(-1));
+                itemOrder.setItemTotal(new BigDecimal(-1));
+            }
+
             itemsOrderEntity.setCustomItem(itemOrder.getCustomItem());
             List<ItemsOrderAttributeEntity> itemsOrderAttributeEntities = new ArrayList<ItemsOrderAttributeEntity>();
             for(ItemsOrderAttributeEntity itemOrderAttribute: itemOrder.getItemOrderAttributes()){

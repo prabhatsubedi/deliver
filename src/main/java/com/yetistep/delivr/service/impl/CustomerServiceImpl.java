@@ -1898,6 +1898,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     private void validateAvailableWalletAmount(BigDecimal availableAmount, Integer customerId) throws Exception{
         WalletTransactionEntity walletTransactionEntity = walletTransactionDaoService.getLatestWalletTransaction(customerId);
+        if(walletTransactionEntity == null)
+            return;
         systemAlgorithmService.decodeWalletTransaction(walletTransactionEntity);
         if(!walletTransactionEntity.getFlag()){
             log.info("Signature validation failed");

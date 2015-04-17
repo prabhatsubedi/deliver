@@ -184,6 +184,8 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
 
     @Override
     public void decodeWalletTransaction(WalletTransactionEntity walletTransactionEntity) throws Exception {
+        if(walletTransactionEntity == null)
+            return;
         String[] decode = walletTransactionEntity.getSignature().split("-");
         String parsedResult = "";
         for (int i = 0; i < decode.length; i++) {

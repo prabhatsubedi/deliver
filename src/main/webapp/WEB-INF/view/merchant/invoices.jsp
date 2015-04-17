@@ -146,11 +146,11 @@
                         <th>SN</th>
                         <th><div class="width_150">Store Name & Address</div></th>
                         <th><div class="width_120">Generated Date</div></th>
-                        <th>Invoice Amount</th>
+                        <th>Payable Amount</th>
                         <th><div class="width_80">From Date</div></th>
                         <th><div class="width_80">To Date</div></th>
                         <th><div class="width_120">Paid Date</div></th>
-                        <th class="no_sort"><div class="width_80">Invoice</div></th>
+                        <th class="no_sort"><div class="width_80">Statement</div></th>
                         <th class="no_sort">Select All<span style="margin-left: 10px;"><input type="checkbox" id="selectAllToPay"
                                                                               name="selectAllToPay"/></span></th>
                     </tr>

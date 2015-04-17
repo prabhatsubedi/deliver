@@ -103,7 +103,7 @@ Order.getOrders = function(elemId, url, params){
                 }
                 link_attachments += '</div></div>';
             }
-            var deliveryBoy = typeof(order.deliveryBoy) != 'undefined'?"<div class='db_td'><span class='show_db_info'>"+order.deliveryBoy.user.fullName+"</span>":'';
+            var deliveryBoy = typeof(order.deliveryBoy) != 'undefined'?"<div class='db_td'><span class='show_db_info'><a href='" + Main.modifyURL('/organizer/courier_staff/order_history/' + order.deliveryBoy.id) + "'>" + order.deliveryBoy.user.fullName+"</a></span>":'';
 
             if(typeof(order.deliveryBoy) != 'undefined') {
                 deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>"+order.deliveryBoy.user.mobileNumber+"</div>";
@@ -155,9 +155,9 @@ Order.getOrders = function(elemId, url, params){
 
                 row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, deliveryBoy, typeof order.amountEarned != undefined?order.amountEarned:'', order.assignedTime != undefined?order.assignedTime:'', time_taken, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason, view_items];
             } else if(order.orderStatus == "DELIVERED") {
-                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, deliveryBoy, typeof order.amountEarned != undefined?order.amountEarned:'', order.assignedTime != undefined?order.assignedTime:'', time_taken, (typeof order.bill != "undefined" && typeof order.bill.path!="undefined")?'<a href="'+order.bill.path+'">'+order.bill.path+'</a>':'', (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', (order.rating != undefined && order.rating.customerRating != undefined)?order.rating.customerRating:'', (order.rating != undefined && order.rating.customerComment != undefined)?order.rating.customerComment:'', view_items];
+                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, order.deliveryCharge, order.assignedTime != undefined?order.assignedTime:'', time_taken, (typeof order.bill != "undefined" && typeof order.bill.path!="undefined")?'<a href="'+order.bill.path+'" target="_blank">View Receipt</a>':'', (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', (order.rating != undefined && order.rating.customerRating != undefined)?order.rating.customerRating:'', (order.rating != undefined && order.rating.customerComment != undefined)?order.rating.customerComment:'', view_items];
             } else if($.inArray(order.orderStaus, activeStatus)) {
-                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.orderVerificationCode, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, typeof order.amountEarned != undefined?order.amountEarned:'', order.assignedTime != undefined?order.assignedTime:'', time_taken, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), '', view_items];
+                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.orderVerificationCode, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, order.deliveryCharge, order.assignedTime != undefined?order.assignedTime:'', time_taken, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' + order.deliveryBoy.id + '">View on Map</a> | ' + view_items];
             }
             row = $.extend({}, row);
             tdata.push(row)
@@ -245,6 +245,70 @@ Order.getOrders = function(elemId, url, params){
 
 };
 
+
+Order.getCourierBoyMap = function () {
+
+    $('#modal_map').on('hidden.bs.modal', function(){
+        for (var i in godMarkers) {
+            godMarkers[i].setMap(null);
+        }
+        godMarkers = {};
+        mapBounds = new google.maps.LatLngBounds();
+    });
+    $('body').delegate('.view_courier_boy_map', 'click', function () {
+        $('#modal_map').modal('show');
+        var id = $(this).data("cbid");
+        setTimeout(function () {
+
+            disableMapEdit = true;
+            selectedCountry = undefined;
+            if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
+
+            var callback = function (status, data) {
+                if (!data.success) {
+                    Main.popDialog('', data.message);
+                    return;
+                }
+
+                var courierStaff = data.params.deliveryBoy;
+
+                var locCourierBoy = {};
+                var locStore = {};
+                var locCustomer = {};
+
+                if(courierStaff.latitude != undefined && courierStaff.longitude != undefined) {
+                    locCourierBoy.name = courierStaff.user.fullName;
+                    locCourierBoy.lat = courierStaff.latitude;
+                    locCourierBoy.lang = courierStaff.longitude;
+                }
+
+                var orders = courierStaff.order;
+                for(var i = 0; i < orders.length; i++) {
+                    if(orders[i].orderStatus != "ORDER_ACCEPTED") {
+                        locStore.name = orders[i].store.name;
+                        locStore.lat = orders[i].store.latitude;
+                        locStore.lang = orders[i].store.longitude;
+                        locStore.address = orders[i].store.street + ', ' + orders[i].store.city;
+                        locCustomer.name = orders[i].customer.user.fullName;
+                        locCustomer.lat = orders[i].customer.latitude;
+                        locCustomer.lang = orders[i].customer.longitude;
+                        break;
+                    }
+                }
+
+                if(!$.isEmptyObject(locCourierBoy)) addGodMarker(locCourierBoy, "courier");
+                if(!$.isEmptyObject(locCustomer)) addGodMarker(locCustomer, "customer");
+                if(!$.isEmptyObject(locStore)) addGodMarker(locStore, "store");
+
+            }
+
+            callback.requestType = "GET";
+            var headers = {};
+            headers.id = id;
+            Main.request('/accountant/get_dboy', {}, callback, headers);
+        }, 300);
+    });
+};
 
 Order.getPurchaseHistory = function(){
 
@@ -507,7 +571,7 @@ Order.getInvoices = function(params){
         for (var i = 0; i < invoices.length; i++) {
             var invoice = invoices[i];
             var invoice_amount = invoice.amount;
-            var link = '<a target="_blank" href="'+invoice.path+'">View Invoice</a>';
+            var link = '<a target="_blank" href="'+invoice.path+'">View Statement</a>';
             if(invoice.invoicePaid != undefined){
                 var checkBox = '';
 //                var checkBox = '<input type="checkbox" checked data-id="'+invoice.id+'" class="pay_row">';

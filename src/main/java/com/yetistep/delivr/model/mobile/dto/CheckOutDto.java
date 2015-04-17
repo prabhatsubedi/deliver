@@ -25,6 +25,8 @@ public class CheckOutDto {
     private BigDecimal deliveryFee;
     private BigDecimal discount;
     private BigDecimal estimatedAmount;
+    private BigDecimal walletAmount;
+    private BigDecimal maxOrderLimit;
 
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
@@ -96,6 +98,22 @@ public class CheckOutDto {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public BigDecimal getWalletAmount() {
+        return walletAmount;
+    }
+
+    public void setWalletAmount(BigDecimal walletAmount) {
+        this.walletAmount = walletAmount;
+    }
+
+    public BigDecimal getMaxOrderLimit() {
+        return maxOrderLimit;
+    }
+
+    public void setMaxOrderLimit(BigDecimal maxOrderLimit) {
+        this.maxOrderLimit = maxOrderLimit;
     }
 
     public List<CartCustomItemEntity> getCartCustomItems() {

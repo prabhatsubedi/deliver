@@ -41,6 +41,7 @@ public class CustomerEntity implements Serializable {
     private String longitude;
     private Boolean isDefault;
     private BigDecimal walletAmount;
+    private BigDecimal shortFallAmount;
     private List<CartEntity> carts;
     private String currency;//Transient Variable
     private List<BillEntity> bill;
@@ -250,6 +251,7 @@ public class CustomerEntity implements Serializable {
         this.allowShare = allowShare;
     }
 
+    @JsonProperty
     @Column(name = "wallet_amount", precision =  19, scale = 2)
     public BigDecimal getWalletAmount() {
         return walletAmount;
@@ -257,6 +259,16 @@ public class CustomerEntity implements Serializable {
 
     public void setWalletAmount(BigDecimal walletAmount) {
         this.walletAmount = walletAmount;
+    }
+
+    @JsonProperty
+    @Column(name = "shortfall_amount", precision =  19, scale = 2)
+    public BigDecimal getShortFallAmount() {
+        return shortFallAmount;
+    }
+
+    public void setShortFallAmount(BigDecimal shortFallAmount) {
+        this.shortFallAmount = shortFallAmount;
     }
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.PERSIST)

@@ -2,12 +2,10 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.CustomerDaoService;
 import com.yetistep.delivr.enums.JobOrderStatus;
-import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
 import com.yetistep.delivr.util.HibernateUtil;
 import org.hibernate.*;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
@@ -193,8 +191,9 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
 
     @Override
     public CustomerEntity getCustomerProfile(Long facebookId) throws Exception {
-        String sql = "SELECT c.id as id, c.referred_friends_count as referredFriendsCount, c.rewards_earned as rewardsEarned," +
-                " count(o.id) as totalOrderPlaced FROM customers c INNER JOIN orders o on (o.customer_id = c.id) WHERE " +
+        String sql = "SELECT c.id as id, c.referred_friends_count as referredFriendsCount, c.rewards_earned as rewardsEarned, " +
+                "c.wallet_amount as walletAmount, c.shortfall_amount as shortFallAmount, " +
+                "count(o.id) as totalOrderPlaced FROM customers c INNER JOIN orders o on (o.customer_id = c.id) WHERE " +
                 "c.facebook_id = :facebookId AND o.order_status IN (:orderStatusList)";
         List<Integer> orderStatusList = new ArrayList<Integer>();
         orderStatusList.add(JobOrderStatus.ORDER_PLACED.ordinal());
@@ -207,7 +206,9 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
                 .addScalar("id", IntegerType.INSTANCE)
                 .addScalar("referredFriendsCount", IntegerType.INSTANCE)
                 .addScalar("totalOrderPlaced", IntegerType.INSTANCE)
-                .addScalar("rewardsEarned", BigDecimalType.INSTANCE);
+                .addScalar("rewardsEarned", BigDecimalType.INSTANCE)
+                .addScalar("walletAmount", BigDecimalType.INSTANCE)
+                .addScalar("shortFallAmount", BigDecimalType.INSTANCE);
         sqlQuery.setParameter("facebookId", facebookId);
         sqlQuery.setParameterList("orderStatusList", orderStatusList);
 
@@ -276,6 +277,16 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         List<TestEntity> testEntities = sqlQuery.list();
         return testEntities;
+    }
+
+    @Override
+    public CustomerEntity getWalletInfo(Long facebookId) throws Exception {
+        String sql = "SELECT id, wallet_amount as walletAmount, shortfall_amount as shortFallAmount FROM customers WHERE facebook_id = :facebookId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("facebookId", facebookId);
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(CustomerEntity.class));
+        CustomerEntity customerEntity = (CustomerEntity) sqlQuery.uniqueResult();
+        return customerEntity;
     }
 }
 

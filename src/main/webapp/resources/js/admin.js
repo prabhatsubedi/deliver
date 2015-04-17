@@ -10,6 +10,16 @@ var Admin = function() {
 
         secSettings: undefined,
         secId: undefined,
+        prepSelect: function(prefTitle, prefKey, prefValue, options) {
+            var elem = $('.form_select_template').clone();
+            $('label', elem).attr('for', prefKey).html(prefTitle);
+            $('.info_display', elem).html(options[prefValue]);
+            $('select', elem).attr({id: prefKey, name: prefKey});
+            for(var i in options) {
+                $('select', elem).append('<option value="' + i + '" ' + (prefValue == i ? 'selected="selected"' : '') + '>' + options[i] + '</option>');
+            }
+            return elem;
+        },
         loadSettings : function(secSettings){
 
             var callback = function(status, data) {
@@ -27,10 +37,21 @@ var Admin = function() {
                     var form_fields = '';
                     for(var i = 0; i < preferences.length; i++) {
                         var pref = preferences[i];
-                        var elem = $('.form_field_template').clone();
-                        $('label', elem).attr('for', pref.prefKey).html(pref.prefTitle);
-                        $('.info_display', elem).html(pref.value);
-                        $('input.form-control', elem).attr({id: pref.prefKey, name: pref.prefKey, value: pref.value});
+                        var prefKey = pref.prefKey;
+                        var prefValue = pref.value;
+                        var prefTitle = pref.prefTitle;
+                        if(prefKey == 'ENABLE_FREE_REGISTER') {
+                            var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'Disable', 1: 'Enable'});
+                        } else if(prefKey == 'PROFIT_CHECK_FLAG') {
+                            var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'No', 1: 'Yes'});
+                        } else if(prefKey == 'AIR_OR_ACTUAL_DISTANCE_SWITCH') {
+                            var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'Air Distance', 1: 'Actual Distance'});
+                        } else {
+                            var elem = $('.form_field_template').clone();
+                            $('label', elem).attr('for', prefKey).html(prefTitle);
+                            $('.info_display', elem).html(prefValue);
+                            $('input.form-control', elem).attr({id: prefKey, name: prefKey, value: prefValue});
+                        }
                         form_fields += elem.html();
                     }
                     var elem_section = $('.form_section_template').clone();
@@ -40,6 +61,7 @@ var Admin = function() {
 
                 }
                 $('.display_settings').html(form_sections);
+                $('.form_content .selectpicker').selectpicker('refresh');
 
             };
             if(typeof secSettings != 'object') {
@@ -53,6 +75,10 @@ var Admin = function() {
 
         },
         loadEditSettings: function() {
+            $('.form_content .selectpicker').selectpicker();
+            $('.form_content .selectpicker').live('change', function() {
+                $(this).parent().siblings('.none_editable').html($('option:selected', this).html());
+            });
 
             $('.edit_btn').live('click', function () {
                 var parent = $(this).parents('.form_group').eq(0);
@@ -75,7 +101,7 @@ var Admin = function() {
 
                     var parent = __this.parents('.form_group').eq(0);
                     var preferences = [];
-                    $('input.form-control', parent).each(function(){
+                    $('input.form-control, select', parent).each(function(){
                         var data = {prefKey: $(this).attr('id'), value: $(this).val()};
                         preferences.push(data);
                     });

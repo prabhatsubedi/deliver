@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Invoices</title>
+    <title>Statements</title>
 
     <%@include file="../includes/head.jsp" %>
     <script type="text/javascript"
@@ -124,7 +124,7 @@
     <%@include file="../includes/header.jsp" %>
     <div class="body">
         <div class="heading clearfix">
-            <h1 class="pull-left">Invoices</h1>
+            <h1 class="pull-left">Statements</h1>
             <div class="date_filter pull-right form_container form-inline">
                 <div class="date_wrapper">
                     <div class="date_label">From:</div>
@@ -146,11 +146,11 @@
                         <th>SN</th>
                         <th><div class="width_150">Store Name & Address</div></th>
                         <th><div class="width_120">Generated Date</div></th>
-                        <th>Invoice Amount</th>
+                        <th>Payable Amount</th>
                         <th><div class="width_80">From Date</div></th>
                         <th><div class="width_80">To Date</div></th>
                         <th><div class="width_120">Paid Date</div></th>
-                        <th class="no_sort"><div class="width_80">Invoice</div></th>
+                        <th class="no_sort"><div class="width_80">Statements</div></th>
                         <th class="no_sort">Select All<span style="margin-left: 10px;"><input type="checkbox" id="selectAllToPay"
                                                                               name="selectAllToPay"/></span></th>
                     </tr>

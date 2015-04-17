@@ -1,7 +1,9 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.AccountType;
 import com.yetistep.delivr.enums.PaymentMode;
+import com.yetistep.delivr.util.JsonDateSerializer;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -29,6 +31,7 @@ public class WalletTransactionEntity {
     private OrderEntity order;
     /* Transient variable to represent if transaction is fine or not. i.e. True for fine */
     private Boolean flag;
+    private Integer orderId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,6 +44,7 @@ public class WalletTransactionEntity {
         this.id = id;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "transaction_date", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     public Timestamp getTransactionDate() {
         return transactionDate;
@@ -133,5 +137,14 @@ public class WalletTransactionEntity {
 
     public void setFlag(Boolean flag) {
         this.flag = flag;
+    }
+
+    @Transient
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 }

@@ -61,6 +61,9 @@ public class OrderEntity implements Serializable {
     private PaymentMode paymentMode;
     private BigDecimal paidFromWallet;
     private BigDecimal paidFromCOD;
+    private BigDecimal shortFallAmount;
+    private BigDecimal itemServiceCharge;
+    private BigDecimal itemVatCharge;
     private List<ItemsOrderEntity> itemsOrder;
     private AddressEntity address;
     private DeliveryBoyEntity deliveryBoy;
@@ -318,6 +321,33 @@ public class OrderEntity implements Serializable {
 
     public void setPaidFromCOD(BigDecimal paidFromCOD) {
         this.paidFromCOD = paidFromCOD;
+    }
+
+    @Column(name = "shortfall_amount", precision = 19, scale = 2)
+    public BigDecimal getShortFallAmount() {
+        return shortFallAmount;
+    }
+
+    public void setShortFallAmount(BigDecimal shortFallAmount) {
+        this.shortFallAmount = shortFallAmount;
+    }
+
+    @Column(name = "item_service_charge", precision = 19, scale = 2)
+    public BigDecimal getItemServiceCharge() {
+        return itemServiceCharge;
+    }
+
+    public void setItemServiceCharge(BigDecimal itemServiceCharge) {
+        this.itemServiceCharge = itemServiceCharge;
+    }
+
+    @Column(name = "item_vat_charge", precision = 19, scale = 2)
+    public BigDecimal getItemVatCharge() {
+        return itemVatCharge;
+    }
+
+    public void setItemVatCharge(BigDecimal itemVatCharge) {
+        this.itemVatCharge = itemVatCharge;
     }
 
     @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )

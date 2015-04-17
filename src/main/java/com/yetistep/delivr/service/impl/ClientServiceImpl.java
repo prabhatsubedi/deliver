@@ -5,13 +5,11 @@ import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.OrderSummaryDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.enums.ActionType;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.CategoryDto;
 import com.yetistep.delivr.model.mobile.PageInfo;
-import com.yetistep.delivr.model.mobile.SparrowResultModel;
 import com.yetistep.delivr.model.mobile.StaticPagination;
 import com.yetistep.delivr.model.mobile.dto.CartDto;
 import com.yetistep.delivr.model.mobile.dto.DefaultInfoDto;
@@ -511,10 +509,11 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         orderSummary.setItemOrders(itemsOrder);
 
         OrderSummaryDto.AccountSummary accountSummary = orderSummary.new AccountSummary();
+        
 
         Boolean tbd = false;
         for(ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()){
-            if(itemsOrderEntity.getItemTotal().equals(new BigDecimal(-1))){
+            if(itemsOrderEntity.getItemTotal().equals(new BigDecimal(-1)) && itemsOrderEntity.getAvailabilityStatus()){
                 tbd = true;
                 break;
             }
@@ -525,17 +524,25 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             accountSummary.setVatAndServiceCharge(new BigDecimal(-1));
             accountSummary.setEstimatedTotal(new BigDecimal(-1));
             accountSummary.setDeliveryFee(new BigDecimal(-1));
+            accountSummary.setItemServiceCharge(new BigDecimal(-1));
+            accountSummary.setItemVatCharge(new BigDecimal(-1));
         }   else {
             accountSummary.setServiceFee(order.getSystemServiceCharge());
             accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
             accountSummary.setDeliveryFee(order.getCourierTransaction().getDeliveryChargedBeforeDiscount());
             accountSummary.setEstimatedTotal(order.getGrandTotal());
+            accountSummary.setItemServiceCharge(order.getItemServiceCharge());
+            accountSummary.setItemVatCharge(order.getItemVatCharge());
         }
 
         accountSummary.setSubTotal(order.getTotalCost());
-
+       
+        //TODO discussion
         accountSummary.setTotalDiscount(order.getCourierTransaction().getDeliveryChargedBeforeDiscount().subtract(order.getCourierTransaction().getDeliveryChargedAfterDiscount()));
         accountSummary.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+        accountSummary.setPaidFromCOD(order.getPaidFromCOD());
+        accountSummary.setPaidFromWallet(order.getPaidFromWallet());
+        accountSummary.setPaymentMode(order.getPaymentMode());
         orderSummary.setAccountSummary(accountSummary);
         orderSummary.setAttachments(orderAttachments);
 
@@ -671,16 +678,11 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         //This Will Delete If Cart from Another Brand
         List<Integer> cartList = cartDaoService.findCarts(cart.getCustomer().getFacebookId(), cart.getStoresBrand().getId());
         if (cartList.size() > 0) {
-            log.info("++++++++ Deleting previous cart and and its attributes and customCartItems ++++++++");
+            log.info("++++++++ Deleting previous cart and and its attributes ++++++++");
             List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cartList);
-
-            List<Integer> cartCustomItems = cartCustomItemDaoService.findCartCustomItems(cartList);
             // Delete Cart Attributes
             if (cartAttributes.size() > 0)
                 cartAttributesDaoService.deleteCartAttributes(cartAttributes);
-            //delete cart custom items
-            if (cartCustomItems.size() > 0)
-                cartCustomItemDaoService.deleteCartCustomItems(cartCustomItems);
 
             //Delete Carts
             cartDaoService.deleteCarts(cartList);
@@ -931,7 +933,6 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         List<CartEntity> inActiveCarts = new ArrayList<>();
 
         BigDecimal totalPrice = BigDecimal.ZERO;
-
         for(CartEntity cartEntity : cartEntities){
             //Check Whether Brand Active Or Not
             //TODO: take this block out of the for loop

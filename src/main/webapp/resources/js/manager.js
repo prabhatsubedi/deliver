@@ -145,6 +145,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             { "name": "" }
         ];
         Main.createDataTable("#merchants_table", dataFilter);
+        Main.saveMerchants();
 
     };
 
@@ -706,9 +707,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 Main.request('/accountant/get_dboy', {}, callback, headers);
             }, 300);
         });
-    }
+    };
 
-    Manager.getCourierBoyAccount = function () {
+    Manager.getTransactions = function () {
 
         var dataFilter = function (data, type) {
             if (!data.success) {
@@ -756,6 +757,10 @@ if (typeof(Manager) == "undefined") var Manager = {};
         dataFilter.headers = headers;
 
         Main.createDataTable("#detail_account_table", dataFilter);
+
+    };
+
+    Manager.getCourierBoyAccount = function () {
 
         var callback = function (status, data) {
             if (!data.success) {
@@ -939,6 +944,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
     }
 
     Manager.fillDboyAccount = function(courierStaff){
+        Manager.getTransactions();
         if(typeof courierStaff.previousDue != "undefined"){
             $(".due_amount").text(parseFloat(courierStaff.previousDue).toFixed(2));
             $("#due_amount_val").val(parseFloat(courierStaff.previousDue).toFixed(2));

@@ -2,6 +2,7 @@ package com.yetistep.delivr.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.enums.PaymentMode;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.ItemsOrderEntity;
 import com.yetistep.delivr.model.StoreEntity;
@@ -106,11 +107,16 @@ public class OrderSummaryDto {
     public class AccountSummary{
         private BigDecimal subTotal;
         private BigDecimal vatAndServiceCharge;
+        private BigDecimal itemServiceCharge;
+        private BigDecimal itemVatCharge;
         private BigDecimal serviceFee;
         private BigDecimal deliveryFee;
         private BigDecimal totalDiscount;
         private BigDecimal estimatedTotal;
         private Boolean partnerShipStatus;
+        private BigDecimal paidFromWallet;
+        private BigDecimal paidFromCOD;
+        private PaymentMode paymentMode;
         private String currency;
 
         public BigDecimal getSubTotal() {
@@ -127,6 +133,22 @@ public class OrderSummaryDto {
 
         public void setVatAndServiceCharge(BigDecimal vatAndServiceCharge) {
             this.vatAndServiceCharge = vatAndServiceCharge;
+        }
+
+        public BigDecimal getItemServiceCharge() {
+            return itemServiceCharge;
+        }
+
+        public void setItemServiceCharge(BigDecimal itemServiceCharge) {
+            this.itemServiceCharge = itemServiceCharge;
+        }
+
+        public BigDecimal getItemVatCharge() {
+            return itemVatCharge;
+        }
+
+        public void setItemVatCharge(BigDecimal itemVatCharge) {
+            this.itemVatCharge = itemVatCharge;
         }
 
         public BigDecimal getServiceFee() {
@@ -167,6 +189,30 @@ public class OrderSummaryDto {
 
         public void setPartnerShipStatus(Boolean partnerShipStatus) {
             this.partnerShipStatus = partnerShipStatus;
+        }
+
+        public BigDecimal getPaidFromWallet() {
+            return paidFromWallet;
+        }
+
+        public void setPaidFromWallet(BigDecimal paidFromWallet) {
+            this.paidFromWallet = paidFromWallet;
+        }
+
+        public BigDecimal getPaidFromCOD() {
+            return paidFromCOD;
+        }
+
+        public void setPaidFromCOD(BigDecimal paidFromCOD) {
+            this.paidFromCOD = paidFromCOD;
+        }
+
+        public PaymentMode getPaymentMode() {
+            return paymentMode;
+        }
+
+        public void setPaymentMode(PaymentMode paymentMode) {
+            this.paymentMode = paymentMode;
         }
 
         public String getCurrency() {

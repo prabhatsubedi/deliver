@@ -6,17 +6,23 @@
     <title>Orders</title>
 
     <%@include file="../includes/head.jsp" %>
+
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/map.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/maps.css" type="text/css" />
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/dataTables.tableTools.js"></script>
     <link href="${pageContext.request.contextPath}/resources/css/dataTables.tableTools.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="${pageContext.request.contextPath}/resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" media="screen"/>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/orders.js"></script>
+    <link href="${pageContext.request.contextPath}/resources/css/maps.css" rel="stylesheet" type="text/css" media="screen"/>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 
 </head>
 <script>
     $(document).ready(function () {
         Order.loadOrderFn();
         Order.getOrdersItems();
+        Order.getCourierBoyMap();
     });
 </script>
 <body>
@@ -58,7 +64,7 @@
                             <th><div class="width_100">Time Assigned</div></th>
                             <th><div class="width_100">Time Taken</div></th>
                             <th><div class="width_100">Status</div></th>
-                            <th><div class="width_100">Location</div></th>
+                            <th class="no_sort"><div class="width_200">Action</div></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,8 +90,8 @@
                         <th rowspan="2"><div class="width_100">Time Assigned</div></th>
                         <th rowspan="2"><div class="width_100">Time Taken</div></th>
                         <th rowspan="2"><div class="width_100">Customer Bill & Receipt</div></th>
-                        <th colspan="2">Feedback To Customer</th>
                         <th colspan="2">Feedback To Shopper</th>
+                        <th colspan="2">Feedback To Customer</th>
                         <th rowspan="2" class="no_sort"><div class="width_100">Action</div></th>
                     </tr>
                     <tr>
@@ -159,6 +165,27 @@
                     <tbody>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_map" tabindex="-1" role="dialog" aria-labelledby="mapLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="mapLabel">Shopper Location</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="map-container">
+                    <div id="custom_map_controls" class="clearfix">
+                        <div id="scroll_zoom" class="pull-left">Enable Scroll Zoom</div>
+                    </div>
+                    <div id="map-canvas"></div>
+                </div>
+
             </div>
         </div>
     </div>

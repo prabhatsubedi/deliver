@@ -65,4 +65,8 @@ public interface CustomerService {
     public Boolean reprocessOrder(Integer orderId) throws Exception;
 
     public Boolean cancelOrder(OrderEntity order) throws Exception;
+
+    public Boolean refillWallet(CustomerEntity customer) throws Exception;
+
+    public PaginationDto getWalletTransactions(Page page, Long facebookId) throws Exception;
 }

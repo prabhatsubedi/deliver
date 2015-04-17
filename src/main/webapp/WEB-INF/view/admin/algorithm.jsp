@@ -62,6 +62,19 @@
     </div>
 </div>
 
+<div class="form_select_template hidden">
+    <div class="form-group clearfix">
+        <label class="col-lg-4 floated_label"></label>
+        <div class="col-lg-8">
+            <div class="form-control info_display none_editable"></div>
+            <div class="info_edit editable hidden">
+                <select class="col-xs-12 no_pad no_margin selectpicker" data-style="form-control">
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="form_section_template hidden">
     <div class="form_group">
         <div class="form_head">

@@ -1229,6 +1229,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
          /* Updating name of custom item added by delivery boy */
         if(itemsOrderEntity.getCustomItem() != null && itemOrder.getCustomItem() != null){
             itemsOrderEntity.getCustomItem().setName(itemOrder.getCustomItem().getName());
+            if(itemOrder.getCustomItem().getEditedName() != null)
+                itemsOrderEntity.getCustomItem().setEditedName(itemOrder.getCustomItem().getEditedName());
         }else{
              /* Updating attributes of item added by customer */
             List<ItemsOrderAttributeEntity> itemsOrderAttributeEntityList = itemsOrderEntity.getItemOrderAttributes();
@@ -1656,7 +1658,6 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
 
             if(itemOrder.getCustomItem() != null && itemOrder.getItemTotal() == null && itemOrder.getAvailabilityStatus()){
-                itemOrder.setServiceCharge(new BigDecimal(-1));
                 itemOrder.setItemTotal(new BigDecimal(-1));
             }
 
@@ -1681,11 +1682,32 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }*/
 
         accountSummary.setSubTotal(order.getTotalCost());
-        accountSummary.setServiceFee(order.getSystemServiceCharge());
-        accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
-        accountSummary.setItemServiceCharge(order.getItemServiceCharge());
-        accountSummary.setItemVatCharge(order.getItemVatCharge());
-        accountSummary.setDeliveryFee(order.getDeliveryCharge().add(totalDiscount));
+
+        if(order.getSystemServiceCharge() != null)
+            accountSummary.setServiceFee(order.getSystemServiceCharge());
+        else
+            accountSummary.setServiceFee(new BigDecimal(-1));
+
+        if(order.getItemServiceAndVatCharge() != null)
+            accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
+        else
+            accountSummary.setVatAndServiceCharge(new BigDecimal(-1));
+
+        if(order.getItemServiceCharge() != null)
+            accountSummary.setItemServiceCharge(order.getItemServiceCharge());
+        else
+            accountSummary.setItemServiceCharge(new BigDecimal(-1));
+
+        if(order.getItemVatCharge() != null)
+            accountSummary.setItemVatCharge(order.getItemVatCharge());
+        else
+            accountSummary.setItemVatCharge(new BigDecimal(-1));
+
+        if(order.getDeliveryCharge() != null)
+            accountSummary.setDeliveryFee(order.getDeliveryCharge().add(totalDiscount));
+        else
+            accountSummary.setDeliveryFee(new BigDecimal(-1));
+
         accountSummary.setTotalDiscount(totalDiscount);
         accountSummary.setPartnerShipStatus(merchant.getPartnershipStatus());
         accountSummary.setPaidFromCOD(order.getPaidFromCOD());
@@ -1833,6 +1855,19 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             Map<String, String> assoc = new HashMap<>();
             assoc.put("customItem", "id,name");
             itemOrder = (ItemsOrderEntity) ReturnJsonUtil.getJsonObject(itemOrder, fields, assoc);
+            if (itemOrder.getServiceAndVatCharge() == null)
+                itemOrder.setServiceAndVatCharge(new BigDecimal(-1));
+
+            if(itemOrder.getVat() == null){
+                itemOrder.setVat(new BigDecimal(-1));
+            }
+
+            if(itemOrder.getServiceCharge() == null)
+                itemOrder.setServiceCharge(new BigDecimal(-1));
+
+            if(itemOrder.getItemTotal() == null)
+                itemOrder.setItemTotal(new BigDecimal(-1));
+
         }
         return itemOrder;
     }

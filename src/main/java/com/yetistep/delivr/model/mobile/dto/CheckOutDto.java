@@ -1,5 +1,6 @@
 package com.yetistep.delivr.model.mobile.dto;
 
+import com.yetistep.delivr.model.CartCustomItemEntity;
 import com.yetistep.delivr.model.ItemEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
 
@@ -17,6 +18,7 @@ public class CheckOutDto {
     private String currency;
     private StoresBrandEntity storesBrand;
     private List<ItemEntity> items;
+    private List<CartCustomItemEntity> cartCustomItems;
     private BigDecimal subTotal;
     private BigDecimal tax;
     private BigDecimal serviceFee;
@@ -94,5 +96,13 @@ public class CheckOutDto {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public List<CartCustomItemEntity> getCartCustomItems() {
+        return cartCustomItems;
+    }
+
+    public void setCartCustomItems(List<CartCustomItemEntity> cartCustomItems) {
+        this.cartCustomItems = cartCustomItems;
     }
 }

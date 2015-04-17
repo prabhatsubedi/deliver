@@ -31,6 +31,7 @@ public class CartEntity {
     private StoresBrandEntity storesBrand;
     private CustomerEntity customer;
     private List<CartAttributesEntity> cartAttributes;
+    private CartCustomItemEntity cartCustomItem;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -113,7 +114,7 @@ public class CartEntity {
         this.customer = customer;
     }
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
     public List<CartAttributesEntity> getCartAttributes() {
         return cartAttributes;
     }
@@ -122,4 +123,12 @@ public class CartEntity {
         this.cartAttributes = cartAttributes;
     }
 
+    @OneToOne(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
+    public CartCustomItemEntity getCartCustomItem() {
+        return cartCustomItem;
+    }
+
+    public void setCartCustomItem(CartCustomItemEntity cartCustomItem) {
+        this.cartCustomItem = cartCustomItem;
+    }
 }

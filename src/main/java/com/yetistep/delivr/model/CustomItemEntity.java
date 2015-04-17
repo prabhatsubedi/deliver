@@ -16,6 +16,8 @@ import javax.persistence.*;
 public class CustomItemEntity {
     private Integer id;
     private String name;
+    private String editedName;
+    private Boolean customerCustom;
     /*Transient Variable*/
     private String imageUrl;
     private ItemsOrderEntity itemsOrder;
@@ -38,6 +40,24 @@ public class CustomItemEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Column(name = "edited_name")
+    public String getEditedName() {
+        return editedName;
+    }
+
+    public void setEditedName(String editedName) {
+        this.editedName = editedName;
+    }
+
+    @Column(name = "customer_custom")
+    public Boolean getCustomerCustom() {
+        return customerCustom;
+    }
+
+    public void setCustomerCustom(Boolean customerCustom) {
+        this.customerCustom = customerCustom;
     }
 
     @Transient

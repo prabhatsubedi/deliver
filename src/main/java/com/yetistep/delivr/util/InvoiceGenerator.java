@@ -2,11 +2,13 @@ package com.yetistep.delivr.util;
 
 
 import com.itextpdf.text.*;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.LineSeparator;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.*;
 import org.apache.commons.mail.EmailException;
@@ -14,6 +16,8 @@ import com.yetistep.delivr.service.inf.SystemPropertyService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.awt.*;
+import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
@@ -234,54 +238,68 @@ public class InvoiceGenerator {
 
     //create a header for the company
     private void addPdfHeader(Document document, String serverUrl, Map<String, String> preferences) throws Exception {
-        int bottomPadding = 35;
-
         //address cell
-        PdfPCell addressCell = new PdfPCell();
-        PdfUtil.setPadding(addressCell, 0, 0, bottomPadding, 0);
-
         String name = preferences.get("COMPANY_NAME");
         String address = preferences.get("COMPANY_ADDRESS");
         String[] addressInArray = address.split(",");
         String street = addressInArray[0]+","+addressInArray[1];
         String city = addressInArray[2]+","+addressInArray[3];
         String reg = preferences.get("REGISTRATION_NO");
+        String vat = preferences.get("VAT_NO");
+        String imageUrl = serverUrl+"/resources/images/idelivr-logo-name.png";
 
-        String imageUrl = serverUrl+"/resources/images/delivr-logo.png";
-
+        //logo cell
+        PdfPCell logoCell = new PdfPCell();
         Image logo = Image.getInstance(new URL(imageUrl));
         logo.setAlignment(Element.ALIGN_LEFT);
-        logo.setWidthPercentage(40);
-        addressCell.addElement(logo);
+        logo.setWidthPercentage(60);
+        logoCell.addElement(logo);
+        logoCell.setRight(40);
 
-        Paragraph info = PdfUtil.getParagraph(PdfUtil.largeBold, true, name, street, city, "Reg: " + reg);
+        //contact cell
+        PdfPCell contactCell = new PdfPCell();
+        com.itextpdf.text.Font supportFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 9f));
+        supportFont.setColor(new BaseColor(0xaaaaaa));
+
+        Paragraph support = PdfUtil.getParagraph(supportFont, true, "iDelivr Customer Care : "+preferences.get("HELPLINE_NUMBER")+" | "+preferences.get("SUPPORT_EMAIL"));
+        support.setAlignment(Element.ALIGN_LEFT);
+        support.getFont().setColor(new BaseColor(0xaaaaaa));
+        PdfUtil.setPadding(contactCell, 0, 0, 30, 0);
+        contactCell.addElement(support);
+
+        //address cell
+        PdfPCell addressCell = new PdfPCell();
+        com.itextpdf.text.Font infoFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 16f));
+        infoFont.setColor(new BaseColor(0xaaaaaa));
+        Paragraph info = PdfUtil.getParagraph(infoFont, true, name, street, city, "Reg: " + reg, "Vat: "+vat);
+        info.getFont().setColor(new BaseColor(0x9c9c9c));
+        info.setAlignment(Element.ALIGN_LEFT);
+        info.setLeading(19);
+        PdfUtil.setPadding(addressCell, 20, 0, 20, 0);
         addressCell.addElement(info);
-
-        //billing cell
-        PdfPCell billingCell = new PdfPCell();
-
-        Paragraph paragraph1 = new Paragraph();
-        paragraph1.add(PdfUtil.getPhrase(name+" Customer Care : "+preferences.get("HELPLINE_NUMBER"), PdfUtil.largeBold));
-        paragraph1.setAlignment(Element.ALIGN_RIGHT);
-
-        Paragraph paragraph2 = new Paragraph();
-        paragraph2.add(PdfUtil.getPhrase(preferences.get("SUPPORT_EMAIL"), PdfUtil.largeBold));
-        paragraph2.setAlignment(Element.ALIGN_RIGHT);
-
-        PdfUtil.setPadding(billingCell, 0, 0, bottomPadding, 0);
-
-        billingCell.addElement(paragraph1);
-        billingCell.addElement(paragraph2);
+        addressCell.setColspan(2);
 
         //no border on the cells
-        PdfUtil.setBorder(0, addressCell, billingCell);
+        PdfUtil.setBorder(0, addressCell, contactCell, logoCell);
+
+        //set bottom border on contact cell
+        contactCell.setBorderColorBottom(new BaseColor(0xff9235));
+        contactCell.setBorderWidthBottom(new Float(0.3));
+
+        //set bottom border on address cell
+        addressCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        addressCell.setBorderWidthBottom(new Float(0.3));
 
         //add cells to table
         PdfPTable headerTable = new PdfPTable(2);
+        float[] columnWidths = new float[] {50f, 50f};
+        headerTable.setWidths(columnWidths);
         headerTable.setWidthPercentage(100);
+        headerTable.addCell(logoCell);
+        headerTable.addCell(contactCell);
         headerTable.addCell(addressCell);
-        headerTable.addCell(billingCell);
 
+        //add table to document
         document.add(headerTable);
     }
 
@@ -364,7 +382,7 @@ public class InvoiceGenerator {
 
     private void addBillBody(Document document, OrderEntity order, BillEntity bill) throws Exception {
         //add invoice detail
-        Paragraph title = PdfUtil.getParagraph(PdfUtil.smallBold, "Tax Invoice : "+bill.getId());
+        Paragraph title = PdfUtil.getParagraph(PdfUtil.smallBold, "Invoice : "+bill.getId());
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);
         PdfUtil.addEmptyLine(document, 1);//add empty line
@@ -375,6 +393,9 @@ public class InvoiceGenerator {
         Paragraph orderInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Order Detail", "Order Id: "+order.getId(), "Order Date: "+order.getOrderDate(), "Invoice Date: "+bill.getGeneratedDate());
         orderCell.addElement(orderInfo);
 
+        orderCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        orderCell.setBorderWidthBottom(1);
+
         PdfPCell addressCell = new PdfPCell();
         PdfUtil.setPadding(addressCell, 0, 0, 10, 10);
         String street = order.getAddress().getStreet();
@@ -383,14 +404,24 @@ public class InvoiceGenerator {
         String country = order.getAddress().getCountry();
         String mobile = order.getAddress().getMobileNumber();
 
-        Paragraph addressInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Billing Address", street+", "+city, state+", "+country, "Phone: "+mobile);
+        Paragraph addressInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Customer Address", order.getCustomer().getUser().getFullName(), street+", "+city, state+", "+country, "Phone: "+mobile);
         addressInfo.setAlignment(Element.ALIGN_RIGHT);
         addressCell.addElement(addressInfo);
+
+        addressCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        addressCell.setBorderWidthBottom(1);
 
         PdfUtil.setBorder(0, orderCell, addressCell);
         //add cells to table
         PdfPTable billTable = new PdfPTable(2);
         billTable.setWidthPercentage(100);
+
+        orderCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        orderCell.setBorderWidthBottom(1);
+
+        addressCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        addressCell.setBorderWidthBottom(1);
+
         billTable.addCell(orderCell);
         billTable.addCell(addressCell);
 
@@ -425,26 +456,34 @@ public class InvoiceGenerator {
 
     private void addReceiptBody(Document document, OrderEntity order, ReceiptEntity receipt, BillEntity bill) throws Exception {
         //add invoice detail
-        Paragraph title = PdfUtil.getParagraph(PdfUtil.largeBold, "Receipt for Payment of Delivery and iDelivery Fee");
+        Paragraph title = PdfUtil.getParagraph(PdfUtil.largeBold, "Receipt for Payment of iDeliver and Delivery Fee");
         title.setAlignment(Element.ALIGN_CENTER);
+        title.getFont().setColor(new BaseColor(0xFF9235));
         document.add(title);
-
-        PdfUtil.addEmptyLine(document, 2);
 
         PdfPCell infoCell = new PdfPCell();
         PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
-        Paragraph info = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Bill No: "+bill.getId(), "Bill Issued On: "+bill.getGeneratedDate(), "Receipt No: "+receipt.getId(), "Order Id: "+order.getId());
+        Paragraph info = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Invoice No: "+bill.getId(), "Invoice Issued On: "+bill.getGeneratedDate(), "Receipt No: "+receipt.getId(), "Order Id: "+order.getId());
         infoCell.addElement(info);
+
+        infoCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        infoCell.setBorderWidthBottom(1);
 
         PdfPCell receiptDetailCell = new PdfPCell();
         PdfUtil.setPadding(receiptDetailCell, 0, 0, 10, 10);
-        Paragraph detail = PdfUtil.getParagraph(PdfUtil.largeBold, true, "From: "+bill.getId(), "Delivered at: "+bill.getGeneratedDate(), "Mode of Payment : "+receipt.getId(), "Time of Payment: "+bill.getGeneratedDate(), "Card Number: ");
+        Paragraph detail = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Date of Payment: "+bill.getGeneratedDate(), "Mode of Payment : "+order.getPaymentMode(), "Time of Payment: "+bill.getGeneratedDate(), "Card Number: ");
         receiptDetailCell.addElement(detail);
+
+        receiptDetailCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        receiptDetailCell.setBorderWidthBottom(1);
 
         PdfPCell billAmountCell = new PdfPCell();
         PdfUtil.setPadding(billAmountCell, 0, 0, 10, 10);
-        Paragraph amount = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Total Amount Billed: "+bill.getBillAmount());
+        Paragraph amount = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Total Amount Billed: "+receipt.getReceiptAmount());
         billAmountCell.addElement(amount);
+
+        billAmountCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        billAmountCell.setBorderWidthBottom(new Float(0.5));
 
         PdfPCell receiptCell = new PdfPCell();
         PdfUtil.setPadding(receiptCell, 0, 0, 10, 10);

@@ -19,6 +19,8 @@ public interface CartDaoService extends GenericDaoService<Integer, CartEntity>{
 
     public List<CartEntity> getMyCarts(Long facebookId) throws Exception;
 
+    public List<CartEntity> getMyCustomItemCarts(Long facebookId) throws Exception;
+
     public List<Integer> findCarts(Long fbId, Integer itemId, Integer brandId, String note) throws Exception;
 
     public Boolean updateOrderQuantity(Integer cartId, Integer additionalQuantity) throws Exception;
@@ -27,10 +29,12 @@ public interface CartDaoService extends GenericDaoService<Integer, CartEntity>{
 
     public CartEntity findCart(Integer cartId) throws Exception;
 
+    public CartEntity findCustomCart(Integer cartId) throws Exception;
+
     public Integer getAvailableOrderItem(Integer cartId) throws Exception;
 
     public Boolean checkCartExist(Long facebookId) throws Exception;
 
-
+    public List<Integer> findCarts (Long fbId, Integer brandId, String note) throws Exception;
 
 }

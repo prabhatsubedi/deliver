@@ -119,12 +119,12 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     }
 
     @Override
-    public String generateBillAndReceiptAndSendEmail(OrderEntity order) throws Exception{
-        //Integer orderId = Integer.parseInt(headerDto.getId());
-        //OrderEntity order = orderDaoService.find(orderId);
+    public String generateBillAndReceiptAndSendEmail(HeaderDto headerDto) throws Exception{
+        Integer orderId = Integer.parseInt(headerDto.getId());
+        OrderEntity order = orderDaoService.find(orderId);
         String billAndReceiptPath = "";
         if(order != null) {
-            Integer orderId = order.getId();
+            //Integer orderId = order.getId();
 
             List<BillEntity> billExists = billDaoService.getBillByOrder(orderId);
             List<ReceiptEntity> receiptsExists = receiptDaoService.getBillByOrder(orderId);
@@ -139,15 +139,21 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             bill.setCustomer(order.getCustomer());
 
             Integer vat = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
-            //extract vat from delivery charge  and system charge
+
+            if(order.getDeliveryCharge().equals(BigDecimal.ZERO) && order.getSystemServiceCharge().equals(BigDecimal.ZERO))
+                throw new  YSException("INV007");
+
             BigDecimal deliveryCharge = order.getDeliveryCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2, BigDecimal.ROUND_DOWN);
+            BigDecimal systemServiceCharge = order.getSystemServiceCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2, BigDecimal.ROUND_DOWN);
+
             bill.setDeliveryCharge(deliveryCharge);
-            //bill.setDeliveryCharge(order.getDeliveryCharge());
-            bill.setSystemServiceCharge(order.getSystemServiceCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2, BigDecimal.ROUND_DOWN));
+            bill.setSystemServiceCharge(systemServiceCharge);
+
             BigDecimal vatPcn = new BigDecimal(vat);
-            BigDecimal totalCharge = order.getDeliveryCharge().add(order.getSystemServiceCharge());
-            bill.setVat(totalCharge.multiply(vatPcn).divide(new BigDecimal(100)));
-            BigDecimal totalAmount = totalCharge.add(totalCharge.multiply(vatPcn).divide(new BigDecimal(100)));
+            BigDecimal totalCharge = bill.getDeliveryCharge().add(bill.getSystemServiceCharge());
+            BigDecimal vatAmount = totalCharge.multiply(vatPcn).divide(new BigDecimal(100));
+            bill.setVat(vatAmount);
+            BigDecimal totalAmount = totalCharge.add(vatAmount);
             bill.setBillAmount(totalAmount);
             bill.setGeneratedDate(new Date(System.currentTimeMillis()));
 
@@ -167,6 +173,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             preferences.put("COMPANY_NAME", systemPropertyService.readPrefValue(PreferenceType.COMPANY_NAME));
             preferences.put("COMPANY_ADDRESS", systemPropertyService.readPrefValue(PreferenceType.COMPANY_ADDRESS));
             preferences.put("REGISTRATION_NO", systemPropertyService.readPrefValue(PreferenceType.REGISTRATION_NO));
+            preferences.put("VAT_NO", systemPropertyService.readPrefValue(PreferenceType.VAT_NO));
 
             billAndReceiptPath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt, getServerUrl(), preferences);
             bill.setPath(billAndReceiptPath);
@@ -188,7 +195,13 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     @Override
     public List<StoreEntity> getAllStores() throws Exception {
         List<StoreEntity> storeEntities = storeDaoService.findAll();
-        return  storeEntities;
+        List<StoreEntity> partnerStores = new ArrayList<>();
+        for (StoreEntity storeEntity:storeEntities){
+            if(storeEntity.getStoresBrand().getMerchant().getPartnershipStatus().equals(Boolean.TRUE)){
+                    partnerStores.add(storeEntity);
+            }
+        }
+        return  partnerStores;
     }
 
     @Override

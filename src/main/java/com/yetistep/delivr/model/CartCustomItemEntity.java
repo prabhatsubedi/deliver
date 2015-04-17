@@ -16,6 +16,7 @@ import javax.persistence.*;
 public class CartCustomItemEntity {
     private Integer id;
     private String name;
+    private String editedName;
     /*Transient Variable*/
     private String imageUrl;
     private CartEntity cart;
@@ -38,6 +39,15 @@ public class CartCustomItemEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Column(name = "edited_name")
+    public String getEditedName() {
+        return editedName;
+    }
+
+    public void setEditedName(String editedName) {
+        this.editedName = editedName;
     }
 
     @Transient

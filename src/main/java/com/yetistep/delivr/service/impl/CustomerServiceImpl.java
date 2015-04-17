@@ -110,6 +110,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     ValidateMobileDaoService validateMobileDaoService;
+
+    @Autowired
+    CartCustomItemDaoService cartCustomItemDaoService;
+
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
         log.info("++++++++++++++ Logging Customer ++++++++++++++++");
@@ -436,8 +440,14 @@ public class CustomerServiceImpl implements CustomerService {
 
         CheckOutDto checkOutDto = new CheckOutDto();
         List<ItemEntity> items = new ArrayList<>();
+        List<CartCustomItemEntity> cartCustomItems = new ArrayList<>();
 
         List<CartEntity> carts = cartDaoService.getMyCarts(facebookId);
+        //get custom item carts
+        List<CartEntity> customItemCarts = cartDaoService.getMyCustomItemCarts(facebookId);
+        //merge both carts
+        carts.addAll(customItemCarts);
+
         if(carts==null || carts.size() == 0)
             throw new YSException("CRT001");
 
@@ -447,36 +457,41 @@ public class CustomerServiceImpl implements CustomerService {
         BigDecimal subTotal = BigDecimal.ZERO;
         BigDecimal merchantTax = BigDecimal.ZERO;
         for(CartEntity cart : carts){
-            ItemEntity item = merchantDaoService.getItemDetail(cart.getItem().getId());
+            if(cart.getItem() != null){
+                ItemEntity item = merchantDaoService.getItemDetail(cart.getItem().getId());
 
-            //Calculating Sub Total
-            BigDecimal attributePrice = cartAttributesDaoService.findAttributesPrice(cart.getId());
+                //Calculating Sub Total
+                BigDecimal attributePrice = cartAttributesDaoService.findAttributesPrice(cart.getId());
 
-            BigDecimal total = BigDecimalUtil.calculateCost(cart.getOrderQuantity(), item.getUnitPrice(), attributePrice);
+                BigDecimal total = BigDecimalUtil.calculateCost(cart.getOrderQuantity(), item.getUnitPrice(), attributePrice);
 
-            BigDecimal itemTax = BigDecimal.ZERO;
+                BigDecimal itemTax = BigDecimal.ZERO;
 
-            if(item.getServiceCharge()!=null && BigDecimalUtil.isGreaterThenZero(item.getServiceCharge()))
-                itemTax =  BigDecimalUtil.percentageOf(total, item.getServiceCharge());
+                if(item.getServiceCharge()!=null && BigDecimalUtil.isGreaterThenZero(item.getServiceCharge()))
+                    itemTax =  BigDecimalUtil.percentageOf(total, item.getServiceCharge());
 
-            if(item.getVat()!=null && BigDecimalUtil.isGreaterThenZero(item.getVat()))
-                itemTax = itemTax.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
+                if(item.getVat()!=null && BigDecimalUtil.isGreaterThenZero(item.getVat()))
+                    itemTax = itemTax.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
 
-            merchantTax = merchantTax.add(itemTax);
-            subTotal = subTotal.add(total);
-            //Set Item
-            ItemEntity tempItem = new ItemEntity();
-            tempItem.setId(item.getId());
-            tempItem.setUnitPrice(total);
-            tempItem.setOrderQuantity(cart.getOrderQuantity());
-            tempItem.setName(item.getName());
+                merchantTax = merchantTax.add(itemTax);
+                subTotal = subTotal.add(total);
+                //Set Item
+                ItemEntity tempItem = new ItemEntity();
+                tempItem.setId(item.getId());
+                tempItem.setUnitPrice(total);
+                tempItem.setOrderQuantity(cart.getOrderQuantity());
+                tempItem.setName(item.getName());
 
-            if(item.getItemsImage()!=null && item.getItemsImage().size() > 0)
-                tempItem.setImageUrl(item.getItemsImage().get(0).getUrl());
-            else
-                tempItem.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+                if(item.getItemsImage()!=null && item.getItemsImage().size() > 0)
+                    tempItem.setImageUrl(item.getItemsImage().get(0).getUrl());
+                else
+                    tempItem.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
 
-            items.add(tempItem);
+                items.add(tempItem);
+            } else if(cart.getCartCustomItem() != null){
+                 cart.getCartCustomItem().setCart(cart);
+                 cartCustomItems.add(cart.getCartCustomItem());
+            }
         }
         OrderEntity order = new OrderEntity();
         order.setAddress(address);
@@ -542,13 +557,46 @@ public class CustomerServiceImpl implements CustomerService {
         storeBrand.setBrandName(carts.get(0).getStoresBrand().getBrandName());
         storeBrand.setBrandLogo(carts.get(0).getStoresBrand().getBrandLogo());
 
+        //add custom items to the item
+        List<ItemEntity> customItems = new ArrayList<>();
+        if(cartCustomItems.size() > 0){
+            for (CartCustomItemEntity cartCustomItem: cartCustomItems){
+                ItemEntity item = new ItemEntity();
+                item.setId(cartCustomItem.getId());
+                item.setName(cartCustomItem.getName());
+                item.setImageUrl("https://idelivrlive.s3.amazonaws.com/default/item/noimg.jpg");
+                item.setUnitPrice(new BigDecimal(-1));
+                item.setOrderQuantity(cartCustomItem.getCart().getOrderQuantity());
+                item.setIsCustomItem(Boolean.TRUE);
+                customItems.add(item);
+            }
+        }
+
+        //set none custom item to use later
+        List<ItemEntity> defaultItems = items;
+
+        items.addAll(customItems);
 
         checkOutDto.setStoresBrand(storeBrand);
         checkOutDto.setItems(items);
-        checkOutDto.setSubTotal(subTotal.setScale(0, BigDecimal.ROUND_DOWN));
-        checkOutDto.setTax(merchantTax.setScale(0, BigDecimal.ROUND_DOWN));
-        checkOutDto.setServiceFee(serviceFeeAmt.setScale(0, BigDecimal.ROUND_DOWN));
-        checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
+        //checkOutDto.setCartCustomItems(cartCustomItems);
+
+
+        if(defaultItems.size()>0){
+            checkOutDto.setSubTotal(subTotal.setScale(0, BigDecimal.ROUND_DOWN));
+        }else{
+            checkOutDto.setSubTotal(new BigDecimal(-1));
+        }
+
+        if(cartCustomItems.size()>0){
+            checkOutDto.setTax(new BigDecimal(-1));
+            checkOutDto.setServiceFee(new BigDecimal(-1));
+            checkOutDto.setDeliveryFee(new BigDecimal(-1));
+        }else{
+            checkOutDto.setTax(merchantTax.setScale(0, BigDecimal.ROUND_DOWN));
+            checkOutDto.setServiceFee(serviceFeeAmt.setScale(0, BigDecimal.ROUND_DOWN));
+            checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
+        }
 
         if(BigDecimalUtil.isZero(checkOutDto.getDeliveryFee())) {
             customerBalanceBeforeDiscount = BigDecimal.ZERO;
@@ -559,8 +607,12 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         checkOutDto.setDiscount(customerBalanceBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
-        BigDecimal estimatedAmt = subTotal.add(merchantTax).add(serviceFeeAmt).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
-        checkOutDto.setEstimatedAmount(estimatedAmt.setScale(0, BigDecimal.ROUND_DOWN));
+        if(cartCustomItems.size()>0){
+            checkOutDto.setEstimatedAmount(new BigDecimal(-1));
+        }   else {
+            BigDecimal estimatedAmt = subTotal.add(merchantTax).add(serviceFeeAmt).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
+            checkOutDto.setEstimatedAmount(estimatedAmt.setScale(0, BigDecimal.ROUND_DOWN));
+        }
         checkOutDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         return checkOutDto;
     }
@@ -726,6 +778,11 @@ public class CustomerServiceImpl implements CustomerService {
         BigDecimal itemTotalCost = BigDecimal.ZERO;
         BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
         List<CartEntity> cartEntities = cartDaoService.getMyCarts(customerId);
+        //get custom item carts
+        List<CartEntity> customItemCarts = cartDaoService.getMyCustomItemCarts(customerId);
+        //merge both carts
+        cartEntities.addAll(customItemCarts);
+
         List<Integer> cartIds = new ArrayList<Integer>();
         List<ItemsOrderEntity> itemsOrder = new ArrayList<ItemsOrderEntity>();
         Integer brandId = null;
@@ -737,30 +794,54 @@ public class CustomerServiceImpl implements CustomerService {
             itemsOrderEntity.setQuantity(cart.getOrderQuantity());
             itemsOrderEntity.setCustomerNote(cart.getNote());
             itemsOrderEntity.setItem(cart.getItem());
-            itemsOrderEntity.setServiceCharge(BigDecimalUtil.checkNull(cart.getItem().getServiceCharge()));
-            itemsOrderEntity.setVat(BigDecimalUtil.checkNull(cart.getItem().getVat()));
-            List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cart.getId());
-            List<ItemsOrderAttributeEntity> itemsOrderAttributeEntities = new ArrayList<ItemsOrderAttributeEntity>();
-            for(Integer attribute: cartAttributes){
-                ItemsOrderAttributeEntity itemsOrderAttribute = new ItemsOrderAttributeEntity();
-                itemsOrderAttribute.setItemOrder(itemsOrderEntity);
-                ItemsAttributeEntity itemsAttribute = new ItemsAttributeEntity();
-                itemsAttribute.setId(attribute);
-                itemsOrderAttribute.setItemsAttribute(itemsAttribute);
-                itemsOrderAttributeEntities.add(itemsOrderAttribute);
+            CustomItemEntity customItem = new CustomItemEntity();
+            if(cart.getItem() == null){
+                   customItem.setName(cart.getCartCustomItem().getName());
+                   customItem.setEditedName(cart.getCartCustomItem().getEditedName());
+                   customItem.setItemsOrder(itemsOrderEntity);
+                   customItem.setCustomerCustom(Boolean.TRUE);
             }
-            itemsOrderEntity.setItemOrderAttributes(itemsOrderAttributeEntities);
-            BigDecimal attributePrice = cartAttributesDaoService.findAttributesPrice(cart.getId());
-            BigDecimal itemPrice = BigDecimalUtil.calculateCost(cart.getOrderQuantity(), cart.getItem().getUnitPrice(), attributePrice);
 
-            BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemPrice, BigDecimalUtil.checkNull(cart.getItem().getServiceCharge()));
+            itemsOrderEntity.setCustomItem(customItem);
+            //if cart doesn't have custom item then work for attributes
+            BigDecimal itemPrice;
+            if(cart.getItem() != null){
+                itemsOrderEntity.setServiceCharge(BigDecimalUtil.checkNull(cart.getItem().getServiceCharge()));
+                itemsOrderEntity.setVat(BigDecimalUtil.checkNull(cart.getItem().getVat()));
+
+                List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cart.getId());
+                List<ItemsOrderAttributeEntity> itemsOrderAttributeEntities = new ArrayList<ItemsOrderAttributeEntity>();
+                for(Integer attribute: cartAttributes){
+                    ItemsOrderAttributeEntity itemsOrderAttribute = new ItemsOrderAttributeEntity();
+                    itemsOrderAttribute.setItemOrder(itemsOrderEntity);
+                    ItemsAttributeEntity itemsAttribute = new ItemsAttributeEntity();
+                    itemsAttribute.setId(attribute);
+                    itemsOrderAttribute.setItemsAttribute(itemsAttribute);
+                    itemsOrderAttributeEntities.add(itemsOrderAttribute);
+                }
+                itemsOrderEntity.setItemOrderAttributes(itemsOrderAttributeEntities);
+                BigDecimal attributePrice = cartAttributesDaoService.findAttributesPrice(cart.getId());
+                itemPrice = BigDecimalUtil.calculateCost(cart.getOrderQuantity(), cart.getItem().getUnitPrice(), attributePrice);
+
+                BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemPrice, BigDecimalUtil.checkNull(cart.getItem().getServiceCharge()));
+                BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), BigDecimalUtil.checkNull(cart.getItem().getVat())));
+                /*Set for order total and total serviceVat*/
+                itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatCharge);
+                itemsOrderEntity.setServiceAndVatCharge(serviceAndVatCharge);
+
+                itemTotalCost = itemTotalCost.add(itemPrice);
+
+                itemsOrderEntity.setItemTotal(itemPrice);
+            }
+
+            /*BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemPrice, BigDecimalUtil.checkNull(cart.getItem().getServiceCharge()));
             BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), BigDecimalUtil.checkNull(cart.getItem().getVat())));
-            /*Set for order total and total serviceVat*/
+            *//*Set for order total and total serviceVat*//*
             itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatCharge);
-            itemTotalCost = itemTotalCost.add(itemPrice);
+            itemsOrderEntity.setServiceAndVatCharge(serviceAndVatCharge);*/
+            /*itemTotalCost = itemTotalCost.add(itemPrice);
 
-            itemsOrderEntity.setItemTotal(itemPrice);
-            itemsOrderEntity.setServiceAndVatCharge(serviceAndVatCharge);
+            itemsOrderEntity.setItemTotal(itemPrice);*/
             itemsOrder.add(itemsOrderEntity);
             brandId = cart.getStoresBrand().getId();
             storesBrand = cart.getStoresBrand();
@@ -855,6 +936,7 @@ public class CustomerServiceImpl implements CustomerService {
         orderDaoService.save(order);
 
         deleteCarts(cartIds);
+
         /* Push Notifications */
         List<Integer> idList = getIdOfDeliveryBoys(deliveryBoySelectionEntitiesWithProfit);
         List<String> deviceTokens = userDeviceDaoService.getDeviceTokenFromDeliveryBoyId(idList);
@@ -886,6 +968,14 @@ public class CustomerServiceImpl implements CustomerService {
             // Delete Cart Attributes
             if (cartAttributes.size() > 0)
                 cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+
+
+            //get custom items of carts
+            List<Integer> cartCustomItems = cartCustomItemDaoService.findCartCustomItems(cartList);
+
+            //delete cart custom items
+            if (cartCustomItems.size() > 0)
+                cartCustomItemDaoService.deleteCartCustomItems(cartCustomItems);
 
             //Delete Carts
             cartDaoService.deleteCarts(cartList);

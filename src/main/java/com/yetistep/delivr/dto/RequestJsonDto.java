@@ -78,6 +78,9 @@ public class RequestJsonDto {
     private Integer statusId;
     private List<String> searchColumns;
 
+    //add to custom cart
+    private List<CartEntity> customCartList;
+
 
     /*web search properties
     * */
@@ -445,5 +448,13 @@ public class RequestJsonDto {
 
     public void setPaymentMode(PaymentMode paymentMode) {
         this.paymentMode = paymentMode;
+    }
+
+    public List<CartEntity> getCustomCartList() {
+        return customCartList;
+    }
+
+    public void setCustomCartList(List<CartEntity> customCartList) {
+        this.customCartList = customCartList;
     }
 }

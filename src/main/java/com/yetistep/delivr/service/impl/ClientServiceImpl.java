@@ -77,6 +77,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     @Autowired
     ActionLogDaoService actionLogDaoService;
 
+    @Autowired
+    CartCustomItemDaoService cartCustomItemDaoService;
+
     @Override
     public Map<String, Object> getBrands(RequestJsonDto requestJsonDto) throws Exception {
         log.info("+++++++++ Getting all brands +++++++++++++++");
@@ -477,6 +480,15 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                     item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
                 itemOrder.setItem(item);
             }else if(itemOrder.getCustomItem() != null){
+                if(itemOrder.getCustomItem().getCustomerCustom().equals(Boolean.TRUE))   {
+                    if(itemOrder.getPurchaseStatus() == null || !itemOrder.getPurchaseStatus().equals(Boolean.TRUE)) {
+                        itemOrder.setVat(new BigDecimal(-1));
+                        itemOrder.setServiceCharge(new BigDecimal(-1));
+                        itemOrder.setItemTotal(new BigDecimal(-1));
+                        itemOrder.setServiceAndVatCharge(new BigDecimal(-1));
+                    }
+                }
+
                 itemOrder.getCustomItem().setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
             }
             itemOrder.setItemOrderAttributes(null);
@@ -499,11 +511,29 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         orderSummary.setItemOrders(itemsOrder);
 
         OrderSummaryDto.AccountSummary accountSummary = orderSummary.new AccountSummary();
-        accountSummary.setServiceFee(order.getSystemServiceCharge());
-        accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
+
+        Boolean tbd = false;
+        for(ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()){
+            if(itemsOrderEntity.getItemTotal().equals(new BigDecimal(-1))){
+                tbd = true;
+                break;
+            }
+        }
+
+        if(tbd){
+            accountSummary.setServiceFee(new BigDecimal(-1));
+            accountSummary.setVatAndServiceCharge(new BigDecimal(-1));
+            accountSummary.setEstimatedTotal(new BigDecimal(-1));
+            accountSummary.setDeliveryFee(new BigDecimal(-1));
+        }   else {
+            accountSummary.setServiceFee(order.getSystemServiceCharge());
+            accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
+            accountSummary.setDeliveryFee(order.getCourierTransaction().getDeliveryChargedBeforeDiscount());
+            accountSummary.setEstimatedTotal(order.getGrandTotal());
+        }
+
         accountSummary.setSubTotal(order.getTotalCost());
-        accountSummary.setEstimatedTotal(order.getGrandTotal());
-        accountSummary.setDeliveryFee(order.getCourierTransaction().getDeliveryChargedBeforeDiscount());
+
         accountSummary.setTotalDiscount(order.getCourierTransaction().getDeliveryChargedBeforeDiscount().subtract(order.getCourierTransaction().getDeliveryChargedAfterDiscount()));
         accountSummary.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         orderSummary.setAccountSummary(accountSummary);
@@ -641,11 +671,16 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         //This Will Delete If Cart from Another Brand
         List<Integer> cartList = cartDaoService.findCarts(cart.getCustomer().getFacebookId(), cart.getStoresBrand().getId());
         if (cartList.size() > 0) {
-            log.info("++++++++ Deleting previous cart and and its attributes ++++++++");
+            log.info("++++++++ Deleting previous cart and and its attributes and customCartItems ++++++++");
             List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cartList);
+
+            List<Integer> cartCustomItems = cartCustomItemDaoService.findCartCustomItems(cartList);
             // Delete Cart Attributes
             if (cartAttributes.size() > 0)
                 cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+            //delete cart custom items
+            if (cartCustomItems.size() > 0)
+                cartCustomItemDaoService.deleteCartCustomItems(cartCustomItems);
 
             //Delete Carts
             cartDaoService.deleteCarts(cartList);
@@ -659,48 +694,88 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             }
         }
 
+        String customItemName = new String();
+        if (cart.getCartCustomItem() != null) {
+            if(cart.getCartCustomItem().getName() == null)
+                throw new YSException("VLD037");
+
+            customItemName = cart.getCartCustomItem().getName();
+            cart.getCartCustomItem().setCart(cart);
+        }
+
         //Now Check Same Information
-       List<Integer> prevCartIds = cartDaoService.findCarts(cart.getCustomer().getFacebookId(), cart.getItem().getId(),
+        List<Integer> prevCartIds = null;
+
+        if(cart.getItem() != null){
+            prevCartIds = cartDaoService.findCarts(cart.getCustomer().getFacebookId(), cart.getItem().getId(),
                cart.getStoresBrand().getId(), cart.getNote());
+        }else{
+            prevCartIds = cartDaoService.findCarts(cart.getCustomer().getFacebookId(),
+                    cart.getStoresBrand().getId(), cart.getNote());
+        }
+
       Integer updatedCartId = 0;
       Boolean isUpdated = false;
       if(prevCartIds.size() > 0){
-           for(Integer cartId: prevCartIds){
-               List<Integer> dbAttributes = cartAttributesDaoService.findCartAttributes(cartId);
-               if(inputAttributes.size() == 0){
-                   if(dbAttributes.size() == 0) {
-                       updatedCartId = cartId;
-                       isUpdated = true;
-                       break;
-                   }
-               } else {
-                   if(dbAttributes.size() > 0){
-                         if(inputAttributes.size() == dbAttributes.size()){
-                             Boolean isSame = true;
-                             for(int i=0; i<inputAttributes.size(); i++){
-                                 if(inputAttributes.get(i) != dbAttributes.get(i)) {
-                                     isSame = false;
+          if(cart.getItem() != null){
+               for(Integer cartId: prevCartIds){
+                   List<Integer> dbAttributes = cartAttributesDaoService.findCartAttributes(cartId);
+                   if(inputAttributes.size() == 0){
+                       if(dbAttributes.size() == 0) {
+                           updatedCartId = cartId;
+                           isUpdated = true;
+                           break;
+                       }
+                   } else {
+                       if(dbAttributes.size() > 0){
+                             if(inputAttributes.size() == dbAttributes.size()){
+                                 Boolean isSame = true;
+                                 for(int i=0; i<inputAttributes.size(); i++){
+                                     if(inputAttributes.get(i) != dbAttributes.get(i)) {
+                                         isSame = false;
+                                         break;
+                                     }
+                                 }
+                                 if(isSame){
+                                     updatedCartId = cartId;
+                                     isUpdated = true;
                                      break;
                                  }
                              }
-                             if(isSame){
-                                 updatedCartId = cartId;
-                                 isUpdated = true;
-                                 break;
-                             }
-                         }
+                       }
                    }
                }
-           }
+          }else{
+              //for custom items
+              for(Integer cartId: prevCartIds){
+                  CartCustomItemEntity dbCustomItem = cartCustomItemDaoService.findCustomItem(cartId);
+                  if(dbCustomItem != null){
+                      String dbCustomItemName = dbCustomItem.getName();
+                      Boolean isSame = true;
+                      if(!customItemName.equals(dbCustomItemName)){
+                          isSame = false;
+                          break;
+                      }
+
+                      if(isSame){
+                          updatedCartId = cartId;
+                          isUpdated = true;
+                          break;
+                      }
+                  }
+              }
+          }
 
           if(isUpdated){
-              Integer availableQty = cartDaoService.getAvailableOrderItem(updatedCartId);
-              if(availableQty == 0)
-                  throw new YSException("CRT002");
+              //if not custom item check available quantity
+              if(cart.getItem() != null){
+                  Integer availableQty = cartDaoService.getAvailableOrderItem(updatedCartId);
+                  if(availableQty == 0)
+                      throw new YSException("CRT002");
 
-              if(cart.getOrderQuantity() > availableQty)
-                  throw new YSException("CRT002", "Only " + availableQty + " qty can be added");
-
+                  if(cart.getOrderQuantity() > availableQty)
+                      throw new YSException("CRT002", "Only " + availableQty + " qty can be added");
+              }
               cartDaoService.updateOrderQuantity(updatedCartId, cart.getOrderQuantity());
           } else {
               cart.setCreatedDate(DateUtil.getCurrentTimestampSQL());
@@ -736,6 +811,23 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
        CartDto cartDto = null;
        List<CartEntity> cartEntities = cartDaoService.getMyCarts(facebookId);
+        //get custom item carts
+        List<CartEntity> customItemCarts = cartDaoService.getMyCustomItemCarts(facebookId);
+        for (CartEntity cart: customItemCarts){
+            ItemEntity item = new ItemEntity();
+            List<ItemsImageEntity> itemsImages = new ArrayList<>();
+            ItemsImageEntity itemsImage = new ItemsImageEntity();
+            itemsImage.setUrl("https://idelivrlive.s3.amazonaws.com/default/item/noimg.jpg");
+            item.setId(cart.getCartCustomItem().getId());
+            item.setName(cart.getCartCustomItem().getName());
+            item.setItemsImage(itemsImages);
+            item.setUnitPrice(new BigDecimal(-1));
+            item.setIsCustomItem(Boolean.TRUE);
+            cart.setItem(item);
+            cart.setCartCustomItem(null);
+        }
+        //merge both carts
+        cartEntities.addAll(customItemCarts);
 
        StoresBrandEntity storesBrandEntity;
        if(cartEntities !=null && cartEntities.size() > 0){
@@ -751,7 +843,10 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
                    //Add Attribute Price and Unit Price
                    BigDecimal attributesPrice = cartAttributesDaoService.findAttributesPrice(cartEntity.getId());
-                   cartEntity.getItem().setUnitPrice(cartEntity.getItem().getUnitPrice().add(attributesPrice).multiply(new BigDecimal(cartEntity.getOrderQuantity())));
+
+                   if(!cartEntity.getItem().getUnitPrice().equals(new BigDecimal(-1)))
+                        cartEntity.getItem().setUnitPrice(cartEntity.getItem().getUnitPrice().add(attributesPrice).multiply(new BigDecimal(cartEntity.getOrderQuantity())));
+
                    cartEntity.getItem().setVat(null);
                    cartEntity.getItem().setServiceCharge(null);
                    cartEntity.getItem().setStatus(null);
@@ -812,6 +907,11 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         CartDto cartDto = new CartDto();
 
         List<CartEntity> cartEntities = cartDaoService.getMyCarts(facebookId);
+        //get custom item carts
+        List<CartEntity> customItemCarts = cartDaoService.getMyCustomItemCarts(facebookId);
+        //merge both carts
+        cartEntities.addAll(customItemCarts);
+
         if(cartEntities==null || cartEntities.size() == 0) {
             cartDto.setMessage("CRT001"); //Cart does not exist
             cartDto.setValid(false);
@@ -831,37 +931,49 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         List<CartEntity> inActiveCarts = new ArrayList<>();
 
         BigDecimal totalPrice = BigDecimal.ZERO;
+
         for(CartEntity cartEntity : cartEntities){
             //Check Whether Brand Active Or Not
+            //TODO: take this block out of the for loop
             if(cartEntities.get(0).getStoresBrand().getStatus().ordinal()!=Status.ACTIVE.ordinal()) {
                 isBrandNotActive = true;
                 break;
             }
 
-            if(cartEntity.getItem().getStatus().ordinal() != Status.ACTIVE.ordinal()){
-                if(!inactiveItems.contains(cartEntity.getItem().getId())){
-                    inactiveItems.add(cartEntity.getItem().getId());
-                    inActiveCarts.add(cartEntity);
-                }
+            //if not custom item
+            if(cartEntity.getItem() != null){
+                if(cartEntity.getItem().getStatus().ordinal() != Status.ACTIVE.ordinal()){
+                    if(!inactiveItems.contains(cartEntity.getItem().getId())){
+                        inactiveItems.add(cartEntity.getItem().getId());
+                        inActiveCarts.add(cartEntity);
+                    }
 
-            } else {
-                BigDecimal attributesPrice = cartAttributesDaoService.findAttributesPrice(cartEntity.getId());
-                totalPrice = totalPrice.add(cartEntity.getItem().getUnitPrice().add(attributesPrice).multiply(new BigDecimal(cartEntity.getOrderQuantity())));
+                } else {
+                    BigDecimal attributesPrice = cartAttributesDaoService.findAttributesPrice(cartEntity.getId());
+                    totalPrice = totalPrice.add(cartEntity.getItem().getUnitPrice().add(attributesPrice).multiply(new BigDecimal(cartEntity.getOrderQuantity())));
+                }
             }
 
         }
 
         //If Brand is Inactive
         if(isBrandNotActive) {
+            //TODO: move this block of code to the previous loop of cartEntities
             List<Integer> carts = new ArrayList<>();
             for(CartEntity cartEntity : cartEntities){
                 carts.add(cartEntity.getId());
             }
 
-
             List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(carts);
             if (cartAttributes.size() > 0)
                 cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+
+            //get custom items of carts
+            List<Integer> cartCustomItems = cartCustomItemDaoService.findCartCustomItems(carts);
+
+            //delete cart custom items
+            if (cartCustomItems.size() > 0)
+                cartCustomItemDaoService.deleteCartCustomItems(cartCustomItems);
 
             cartDaoService.deleteCarts(carts);
 
@@ -882,6 +994,14 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(carts);
             if (cartAttributes.size() > 0)
                 cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+
+            //get custom items of carts
+            List<Integer> cartCustomItems = cartCustomItemDaoService.findCartCustomItems(carts);
+
+            //delete cart custom items
+            if (cartCustomItems.size() > 0)
+                cartCustomItemDaoService.deleteCartCustomItems(cartCustomItems);
+
 
             cartDaoService.deleteCarts(carts);
 
@@ -916,10 +1036,12 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         //Now Check if Min and Max Order Quanitity Has been changed from system
         boolean orderLimitationChanged = false;
         for(CartEntity cartEntity : cartEntities){
-            if(cartEntity.getOrderQuantity()< cartEntity.getItem().getMinOrderQuantity() || cartEntity.getOrderQuantity() > cartEntity.getItem().getMaxOrderQuantity()) {
-                orderLimitationChanged = true;
-                Integer changeableOrderQn = cartEntity.getItem().getMinOrderQuantity();
-                cartDaoService.updateMinOrderQuantity(cartEntity.getId(), changeableOrderQn);
+            if(cartEntity.getItem() != null){
+                if(cartEntity.getOrderQuantity()< cartEntity.getItem().getMinOrderQuantity() || cartEntity.getOrderQuantity() > cartEntity.getItem().getMaxOrderQuantity()) {
+                    orderLimitationChanged = true;
+                    Integer changeableOrderQn = cartEntity.getItem().getMinOrderQuantity();
+                    cartDaoService.updateMinOrderQuantity(cartEntity.getId(), changeableOrderQn);
+                }
             }
         }
 
@@ -941,6 +1063,13 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         List<Integer> cartList = new ArrayList<>();
         cartList.add(cartId);
 
+        //get custom items of carts
+        List<Integer> cartCustomItems = cartCustomItemDaoService.findCartCustomItems(cartList);
+
+        //delete cart custom items
+        if (cartCustomItems.size() > 0)
+            cartCustomItemDaoService.deleteCartCustomItems(cartCustomItems);
+
         List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cartList);
         if (cartAttributes.size() > 0)
             cartAttributesDaoService.deleteCartAttributes(cartAttributes);
@@ -955,6 +1084,14 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         if(cartList==null || cartList.size() == 0)
             throw new YSException("CRT001");
 
+        //get custom items of carts
+        List<Integer> cartCustomItems = cartCustomItemDaoService.findCartCustomItems(cartList);
+
+        //delete cart custom items
+        if (cartCustomItems.size() > 0)
+            cartCustomItemDaoService.deleteCartCustomItems(cartCustomItems);
+
+
         List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cartList);
         if (cartAttributes.size() > 0)
             cartAttributesDaoService.deleteCartAttributes(cartAttributes);
@@ -966,6 +1103,10 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     public CartDto getCartSize(Long facebookId) throws Exception {
         log.info("++++++ Getting cart info of customer : " + facebookId + " +++++++++");
         List<CartEntity> carts = cartDaoService.getMyCarts(facebookId);
+        //get custom item carts
+        List<CartEntity> customItemCarts = cartDaoService.getMyCustomItemCarts(facebookId);
+        //merge both carts
+        carts.addAll(customItemCarts);
 
         CartDto cartDto = new CartDto();
         cartDto.setTotalCart(carts.size());
@@ -984,34 +1125,59 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         CartDto cartDto = new CartDto();
         //Cart Detail
         CartEntity cartEntity = cartDaoService.findCart(cartId);
+
+        if(cartEntity == null)
+                    cartEntity = cartDaoService.findCustomCart(cartId);
+
         if(cartEntity == null)
             throw new YSException("CRT001");
 
         //Getting Cart Attributes
         List<Integer> selectedAttributes = cartAttributesDaoService.findCartAttributes(cartEntity.getId());
 
-        //Getting Item Detail
-        ItemEntity itemEntity = getItemDetail(cartEntity.getItem().getId());
+        if(cartEntity.getItem() != null){
+            //Getting Item Detail
+            ItemEntity itemEntity = getItemDetail(cartEntity.getItem().getId());
 
-        // Now Check Selected Attributes
-        if(itemEntity.getAttributesTypes() !=null && itemEntity.getAttributesTypes().size() > 0){
-            for (ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()) {
-                //itemsAttributesTypeEntity.setId(null);
-                itemsAttributesTypeEntity.setItem(null);
-                for (ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
-                    //itemsAttributeEntity.setId(null);
-                    if(selectedAttributes.contains(itemsAttributeEntity.getId()))
-                        itemsAttributeEntity.setSelected(true);
-                    else
-                        itemsAttributeEntity.setSelected(false);
+            // Now Check Selected Attributes
+            if(itemEntity.getAttributesTypes() !=null && itemEntity.getAttributesTypes().size() > 0){
+                for (ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()) {
+                    //itemsAttributesTypeEntity.setId(null);
+                    itemsAttributesTypeEntity.setItem(null);
+                    for (ItemsAttributeEntity itemsAttributeEntity : itemsAttributesTypeEntity.getItemsAttribute()) {
+                        //itemsAttributeEntity.setId(null);
+                        if(selectedAttributes.contains(itemsAttributeEntity.getId()))
+                            itemsAttributeEntity.setSelected(true);
+                        else
+                            itemsAttributeEntity.setSelected(false);
+                    }
                 }
             }
+            itemEntity.setCurrency(null);
+            cartDto.setItem(itemEntity);
         }
 
-        itemEntity.setCurrency(null);
+        //get cutom item of the cart
+        CartCustomItemEntity cartCustomItem = cartCustomItemDaoService.findCustomItem(cartId);
+        if(cartCustomItem != null) {
+            ItemEntity item = new ItemEntity();
+            List<ItemsImageEntity> itemsImages = new ArrayList<>();
+            ItemsImageEntity itemsImage = new ItemsImageEntity();
+            itemsImage.setUrl("https://idelivrlive.s3.amazonaws.com/default/item/noimg.jpg");
+            itemsImages.add(itemsImage);
+            item.setId(cartCustomItem.getId());
+            item.setName(cartCustomItem.getName());
+            item.setItemsImage(itemsImages);
+            item.setUnitPrice(new BigDecimal(-1));
+            item.setMinOrderQuantity(1);
+            item.setMaxOrderQuantity(100);
+            item.setIsCustomItem(Boolean.TRUE);
+            cartDto.setItem(item);
+        }
+
         cartEntity.setItem(null);
         cartDto.setCart(cartEntity);
-        cartDto.setItem(itemEntity);
+        //cartDto.setCustomItem(cartCustomItem);
         cartDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
 
         return cartDto;
@@ -1021,15 +1187,21 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
     public void updateCart(CartEntity cart) throws Exception {
         log.info("+++++++++++ Updating Cart of cart id " + cart.getId() + " ++++++++++++++++++++++");
 
-        // Deleting Cart Attributes
-        cartAttributesDaoService.deleteCartAttributes(cart.getId());
-        //Inserting Cart Attributes
-        if(cart.getCartAttributes()!=null && cart.getCartAttributes().size() > 0){
-            for(CartAttributesEntity cartAttributesEntity : cart.getCartAttributes()){
-                CartEntity cartEntity = new CartEntity();
-                cartEntity.setId(cart.getId());
-                cartAttributesEntity.setCart(cartEntity);
-                cartAttributesDaoService.save(cartAttributesEntity);
+        //if cart has custom item unset the item else save the updated attributes
+        if(cart.getItem().getIsCustomItem().equals(Boolean.TRUE)){
+            cart.setItem(null);
+        } else {
+            // Deleting Cart Attributes
+            cartAttributesDaoService.deleteCartAttributes(cart.getId());
+
+            //Inserting Cart Attributes
+            if(cart.getCartAttributes()!=null && cart.getCartAttributes().size() > 0){
+                for(CartAttributesEntity cartAttributesEntity : cart.getCartAttributes()){
+                    CartEntity cartEntity = new CartEntity();
+                    cartEntity.setId(cart.getId());
+                    cartAttributesEntity.setCart(cartEntity);
+                    cartAttributesDaoService.save(cartAttributesEntity);
+                }
             }
         }
 
@@ -1120,6 +1292,15 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                 // Delete Cart Attributes
                 if (cartAttributes.size() > 0)
                     cartAttributesDaoService.deleteCartAttributes(cartAttributes);
+
+                //get custom items of carts
+                List<Integer> cartCustomItems = cartCustomItemDaoService.findCartCustomItems(cartList);
+
+                //delete cart custom items
+                if (cartCustomItems.size() > 0)
+                    cartCustomItemDaoService.deleteCartCustomItems(cartCustomItems);
+
+
                 //Delete Carts
                 cartDaoService.deleteCarts(cartList);
             }

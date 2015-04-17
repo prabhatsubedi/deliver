@@ -69,7 +69,7 @@ public class UserDaoServiceImpl implements UserDaoService {
         List<UserEntity> usersList = new ArrayList<>();
         try {
             Criteria criteria = sessionFactory.getCurrentSession().createCriteria(UserEntity.class);
-            criteria.add(Restrictions.eq("role.id", Role.ROLE_MANAGER.ordinal()));
+            criteria.add(Restrictions.eq("role.id", Role.ROLE_MANAGER.toInt()));
             HibernateUtil.fillPaginationCriteria(criteria, page, UserEntity.class);
             usersList = criteria.list();
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class UserDaoServiceImpl implements UserDaoService {
         List<UserEntity> usersList = new ArrayList<>();
         try {
             Criteria criteria = sessionFactory.getCurrentSession().createCriteria(UserEntity.class);
-            criteria.add(Restrictions.eq("role.id", Role.ROLE_ACCOUNTANT.ordinal()));
+            criteria.add(Restrictions.eq("role.id", Role.ROLE_ACCOUNTANT.toInt()));
             HibernateUtil.fillPaginationCriteria(criteria, page, UserEntity.class);
             usersList = criteria.list();
         } catch (Exception e) {

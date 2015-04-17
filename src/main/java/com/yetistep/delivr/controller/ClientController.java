@@ -193,8 +193,8 @@ public class ClientController extends AbstractManager{
     public ResponseEntity<ServiceResponse> saveItem(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-            //validateMobileClient(headerDto.getAccessToken());
+            /*GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());*/
             customerService.saveOrder(requestJson, headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Order has been saved successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
@@ -369,6 +369,35 @@ public class ClientController extends AbstractManager{
 
     }
 
+    @RequestMapping(value = "/add_custom_cart/fbid/{facebookId}/storeId/{storeId}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> saveCustomCart(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto, @PathVariable Long facebookId, @PathVariable Integer storeId ) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            /*GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());*/
+            //ToDo: move this block of code to the service layer
+            List<CartEntity> carts = requestJsonDto.getCustomCartList();
+            for (CartEntity cart: carts){
+                CustomerEntity customer = new CustomerEntity();
+                customer.setFacebookId(facebookId);
+                cart.setCustomer(customer);
+                StoresBrandEntity storesBrand = new StoresBrandEntity();
+                storesBrand.setId(storeId);
+                cart.setStoresBrand(storesBrand);
+                clientService.saveCart(cart);
+            }
+            ServiceResponse serviceResponse = new ServiceResponse("Successfully add to cart");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while saving cart", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+
+    }
+
     @RequestMapping(value = "/get_my_cart/fbId/{facebookId}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<ServiceResponse> getMyCart(@PathVariable("facebookId") Long facebookId) {
@@ -410,8 +439,8 @@ public class ClientController extends AbstractManager{
 
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-            validateMobileClient(headerDto.getAccessToken());
+            /*GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());*/
 
             ServiceResponse serviceResponse;
             CartDto cartDto = clientService.validateCart(facebookId);
@@ -498,7 +527,6 @@ public class ClientController extends AbstractManager{
     public ResponseEntity<ServiceResponse> getCartDetail(@PathVariable("cartId") Integer cartId) {
         try{
             CartDto cartDto = clientService.getCartDetail(cartId);
-
             ServiceResponse serviceResponse = new ServiceResponse("Cart detail retrieved successfully");
             serviceResponse.addParam("cartDetail", cartDto);
 
@@ -534,8 +562,8 @@ public class ClientController extends AbstractManager{
     public ResponseEntity<ServiceResponse> getCheckOutInfo(@RequestHeader HttpHeaders headers, @PathVariable("facebookId") Long facebookId, @PathVariable("addressId") Integer addressId) {
         try{
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-            validateMobileClient(headerDto.getAccessToken());
+            /*GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());*/
 
             CheckOutDto checkOutDto = customerService.getCheckOutInfo(facebookId, addressId);
             ServiceResponse serviceResponse = new ServiceResponse("Checkout Info Retrieved Successfully");

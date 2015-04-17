@@ -1,5 +1,6 @@
 package com.yetistep.delivr.model.mobile.dto;
 
+import com.yetistep.delivr.model.CartCustomItemEntity;
 import com.yetistep.delivr.model.CartEntity;
 import com.yetistep.delivr.model.ItemEntity;
 import com.yetistep.delivr.model.StoresBrandEntity;
@@ -20,6 +21,7 @@ public class CartDto {
     private Integer totalCart;
     private CartEntity cart;
     private ItemEntity item;
+    private CartCustomItemEntity customItem;
     private String message;
     private Boolean valid;
 
@@ -85,5 +87,13 @@ public class CartDto {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public CartCustomItemEntity getCustomItem() {
+        return customItem;
+    }
+
+    public void setCustomItem(CartCustomItemEntity customItem) {
+        this.customItem = customItem;
     }
 }

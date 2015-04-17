@@ -137,17 +137,27 @@ public class EmailMsg {
         body.append("<tr><td>SN</td><td>Item Name</td><td>Quantity</td><td>Rate</td></tr>");
         for (ItemsOrderEntity itemsOrder: order.getItemsOrder()) {
           ItemEntity item = itemsOrder.getItem();
-            body.append("<tr>");
-                body.append("<td>"+i+"</td>");
-                body.append("<td><p>"+item.getName()+"</p>");
-                    for (ItemsOrderAttributeEntity itemsOrderAttribute: itemsOrder.getItemOrderAttributes()){
-                          body.append("<p>"+itemsOrderAttribute.getItemsAttribute().getType().getType()+":"+itemsOrderAttribute.getItemsAttribute().getAttribute()+"</p>");
-                    }
+          CustomItemEntity customItem = itemsOrder.getCustomItem();
+            if(item != null){
+                body.append("<tr>");
+                    body.append("<td>"+i+"</td>");
+                    body.append("<td><p>"+item.getName()+"</p>");
+                        for (ItemsOrderAttributeEntity itemsOrderAttribute: itemsOrder.getItemOrderAttributes()){
+                              body.append("<p>"+itemsOrderAttribute.getItemsAttribute().getType().getType()+":"+itemsOrderAttribute.getItemsAttribute().getAttribute()+"</p>");
+                        }
 
-                body.append("</td>");
+                    body.append("</td>");
+                    body.append("<td>"+itemsOrder.getQuantity()+"</td>");
+                    body.append("<td>"+item.getUnitPrice()+"</td>");
+                body.append("</tr>");
+            }else if(customItem != null){
+                body.append("<tr>");
+                body.append("<td>"+i+"</td>");
+                body.append("<td><p>"+customItem.getName()+"</p></td>");
                 body.append("<td>"+itemsOrder.getQuantity()+"</td>");
-                body.append("<td>"+item.getUnitPrice()+"</td>");
-            body.append("</tr>");
+                body.append("<td>TBD</td>");
+                body.append("</tr>");
+            }
             i++;
         }
         body.append("</table>");

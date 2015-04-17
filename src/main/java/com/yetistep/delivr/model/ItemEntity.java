@@ -55,6 +55,7 @@ public class ItemEntity implements Serializable {
     private Integer brandId; //Transient Value
     private Date openingTime; //Transient Value
     private Date closingTime; //Transient Value
+    private Boolean isCustomItem = Boolean.FALSE; //Transient Value
 
     private CategoryEntity category;
     private StoresBrandEntity storesBrand;
@@ -429,5 +430,14 @@ public class ItemEntity implements Serializable {
 
     public void setClosingTime(Date closingTime) {
         this.closingTime = closingTime;
+    }
+
+    @Transient
+    public Boolean getIsCustomItem() {
+        return isCustomItem;
+    }
+
+    public void setIsCustomItem(Boolean customItem) {
+        isCustomItem = customItem;
     }
 }

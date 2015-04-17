@@ -105,4 +105,7 @@ public class CartAttributesDaoServiceImpl implements CartAttributesDaoService{
         query.executeUpdate();
         return true;
     }
+
+
+
 }

@@ -123,6 +123,35 @@ public class CartDaoServiceImpl implements CartDaoService{
     }
 
     @Override
+    public List<CartEntity> getMyCustomItemCarts(Long facebookId) throws Exception {
+        ProjectionList projectionList = Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("note"), "note")
+                .add(Projections.property("orderQuantity"), "orderQuantity")
+                .add(Projections.property("sb.id"), "storesBrand.id")
+                .add(Projections.property("sb.brandName"), "storesBrand.brandName")
+                .add(Projections.property("sb.brandImage"), "storesBrand.brandImage")
+                .add(Projections.property("sb.brandLogo"), "storesBrand.brandLogo")
+                .add(Projections.property("sb.openingTime"), "storesBrand.openingTime")
+                .add(Projections.property("sb.closingTime"), "storesBrand.closingTime")
+                .add(Projections.property("sb.status"), "storesBrand.status")
+                .add(Projections.property("sb.minOrderAmount"), "storesBrand.minOrderAmount")
+                .add(Projections.property("cci.id"), "cartCustomItem.id")
+                .add(Projections.property("cci.name"), "cartCustomItem.name");
+
+
+        Criteria criteria = getCurrentSession().createCriteria(CartEntity.class)
+                .createAlias("storesBrand", "sb")
+                .createAlias("cartCustomItem", "cci")
+                .setProjection(projectionList)
+                .setResultTransformer(new AliasToBeanNestedResultTransformer(CartEntity.class));
+        criteria.add(Restrictions.eq("customer.facebookId", facebookId));
+        List<CartEntity> cartEntities = criteria.list();
+
+        return cartEntities;
+    }
+
+    @Override
     public List<Integer> findCarts (Long fbId, Integer itemId, Integer brandId, String note) throws Exception {
         List<Integer> carts = new ArrayList<>();
 
@@ -136,6 +165,27 @@ public class CartDaoServiceImpl implements CartDaoService{
 
         sqlQuery.setParameter("fbId", fbId);
         sqlQuery.setParameter("itemId", itemId);
+        sqlQuery.setParameter("brandId", brandId);
+        if(note !=null)
+            sqlQuery.setParameter("note", note);
+
+        carts = sqlQuery.list();
+        return carts;
+    }
+
+    @Override
+    public List<Integer> findCarts (Long fbId, Integer brandId, String note) throws Exception {
+        List<Integer> carts = new ArrayList<>();
+
+        String sql = "SELECT DISTINCT(c.id) FROM cart c LEFT JOIN cart_custom_items cci ON (c.id = cci.cart_id) WHERE c.customer_fb_id = :fbId  AND c.brand_id = :brandId ";
+        if(note == null)
+            sql = sql + "AND c.note IS NULL";
+        else
+            sql = sql + "AND LOWER(c.note) = LOWER(:note)";
+
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+
+        sqlQuery.setParameter("fbId", fbId);
         sqlQuery.setParameter("brandId", brandId);
         if(note !=null)
             sqlQuery.setParameter("note", note);
@@ -180,6 +230,26 @@ public class CartDaoServiceImpl implements CartDaoService{
         Criteria criteria = getCurrentSession().createCriteria(CartEntity.class)
                 .createAlias("storesBrand", "sb")
                 .createAlias("item", "i")
+                .setProjection(projectionList)
+                .setResultTransformer(new AliasToBeanNestedResultTransformer(CartEntity.class));
+        criteria.add(Restrictions.eq("id", cartId));
+        CartEntity cart = criteria.list().size()>0 ? (CartEntity) criteria.list().get(0) : null;
+
+        return cart;
+    }
+
+    @Override
+    public CartEntity findCustomCart(Integer cartId) throws Exception {
+        ProjectionList projectionList = Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("note"), "note")
+                .add(Projections.property("orderQuantity"), "orderQuantity")
+                .add(Projections.property("sb.id"), "storesBrand.id")
+                .add(Projections.property("sb.brandName"), "storesBrand.brandName");
+
+
+        Criteria criteria = getCurrentSession().createCriteria(CartEntity.class)
+                .createAlias("storesBrand", "sb")
                 .setProjection(projectionList)
                 .setResultTransformer(new AliasToBeanNestedResultTransformer(CartEntity.class));
         criteria.add(Restrictions.eq("id", cartId));

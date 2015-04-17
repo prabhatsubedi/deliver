@@ -150,7 +150,7 @@
                         <th><div class="width_80">From Date</div></th>
                         <th><div class="width_80">To Date</div></th>
                         <th><div class="width_120">Paid Date</div></th>
-                        <th class="no_sort"><div class="width_80">Statement</div></th>
+                        <th class="no_sort"><div class="width_80">Statements</div></th>
                         <th class="no_sort">Select All<span style="margin-left: 10px;"><input type="checkbox" id="selectAllToPay"
                                                                               name="selectAllToPay"/></span></th>
                     </tr>

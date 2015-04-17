@@ -571,7 +571,7 @@ Order.getInvoices = function(params){
         for (var i = 0; i < invoices.length; i++) {
             var invoice = invoices[i];
             var invoice_amount = invoice.amount;
-            var link = '<a target="_blank" href="'+invoice.path+'">View Invoice</a>';
+            var link = '<a target="_blank" href="'+invoice.path+'">View Statement</a>';
             if(invoice.invoicePaid != undefined){
                 var checkBox = '';
 //                var checkBox = '<input type="checkbox" checked data-id="'+invoice.id+'" class="pay_row">';

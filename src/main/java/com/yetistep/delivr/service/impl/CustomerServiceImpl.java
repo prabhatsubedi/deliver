@@ -1916,9 +1916,9 @@ public class CustomerServiceImpl implements CustomerService {
     private void validateAvailableWalletAmount(BigDecimal availableAmount, Integer customerId) throws Exception{
         WalletTransactionEntity walletTransactionEntity = walletTransactionDaoService.getLatestWalletTransaction(customerId);
         if(walletTransactionEntity == null){
-            if(!availableAmount.equals(BigDecimal.ZERO)){
+            if(BigDecimalUtil.isNotEqualTo(availableAmount, BigDecimal.ZERO)){
                 log.info("Customer available amount has no transactions and should be zero:"+availableAmount);
-                //throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+                throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
             }
             log.info("Customer available amount has been validated:"+availableAmount);
         }else{

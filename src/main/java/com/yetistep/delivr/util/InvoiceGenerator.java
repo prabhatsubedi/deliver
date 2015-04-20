@@ -352,8 +352,13 @@ public class InvoiceGenerator {
         String currency = preferences.get("CURRENCY");
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("SN", PdfUtil.smallBold), PdfUtil.getPhrase("Date and Time of Transaction", PdfUtil.smallBold), PdfUtil.getPhrase("Order No.", PdfUtil.smallBold), PdfUtil.getPhrase("Amount ("+currency+")", PdfUtil.smallBold));
         BigDecimal totalOrderAmount = BigDecimal.ZERO;
+        BigDecimal totalServiceCharge = BigDecimal.ZERO;
         for (OrderEntity order: orders){
-
+            for (ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()) {
+                BigDecimal itemServiceChargePcn = itemsOrderEntity.getItem().getServiceCharge();
+                BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
+                totalServiceCharge.add(itemServiceCharge);
+            }
             //add order
             PdfUtil.addRow(billingTable, PdfUtil.getPhrase(cntOrder), PdfUtil.getPhrase(order.getOrderDate()), PdfUtil.getPhrase(order.getId()), PdfUtil.getPhrase(order.getTotalCost()));
             totalOrderAmount = totalOrderAmount.add(order.getTotalCost());
@@ -361,26 +366,32 @@ public class InvoiceGenerator {
             if(cntOrder%20==0){
                 document.newPage();
             }
-
             cntOrder++;
         }
-        BigDecimal commissionAmount = totalOrderAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
-        BigDecimal vatAmount =  commissionAmount.multiply(new BigDecimal(Integer.parseInt(preferences.get("DELIVERY_FEE_VAT")))).divide(new BigDecimal(100));
-        BigDecimal totalPayableAmount = commissionAmount.add(vatAmount);
+        BigDecimal totalTaxableAmount =  totalOrderAmount.add(totalOrderAmount);
+        BigDecimal vatAmount =  (totalOrderAmount.add(totalOrderAmount)).multiply(new BigDecimal(Integer.parseInt(preferences.get("DELIVERY_FEE_VAT")))).divide(new BigDecimal(100));
+        BigDecimal grandTotalAmount = totalTaxableAmount.add(vatAmount);
+        BigDecimal commissionAmount = grandTotalAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
+        BigDecimal netPayableAmount = grandTotalAmount.subtract(commissionAmount);
+
 
         Phrase subTotal = PdfUtil.getPhrase("Sub Total", PdfUtil.largeBold);
-        //Phrase serviceCharge = PdfUtil.getPhrase("Service Charge", PdfUtil.largeBold);
-        //Phrase taxableAmount = PdfUtil.getPhrase("Taxable Amount", PdfUtil.largeBold);
+        Phrase serviceCharge = PdfUtil.getPhrase("Service Charge", PdfUtil.largeBold);
+        Phrase taxableAmount = PdfUtil.getPhrase("Taxable Amount", PdfUtil.largeBold);
         Phrase vat = PdfUtil.getPhrase("Vat("+preferences.get("DELIVERY_FEE_VAT")+"%)", PdfUtil.largeBold);
-        //Phrase grandTotal = PdfUtil.getPhrase("Grand Total", PdfUtil.largeBold);
+        Phrase grandTotal = PdfUtil.getPhrase("Grand Total", PdfUtil.largeBold);
         Phrase commission = PdfUtil.getPhrase("Commission("+merchant.getCommissionPercentage()+")", PdfUtil.largeBold);
-        Phrase totalPayable = PdfUtil.getPhrase("Total Payable", PdfUtil.largeBold);
+        Phrase totalPayable = PdfUtil.getPhrase("Net Payable", PdfUtil.largeBold);
 
 
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), subTotal, PdfUtil.getPhrase(totalOrderAmount));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), commission, PdfUtil.getPhrase(commissionAmount));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), serviceCharge, PdfUtil.getPhrase(totalServiceCharge));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), taxableAmount, PdfUtil.getPhrase(totalTaxableAmount));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), vat, PdfUtil.getPhrase(vatAmount));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), totalPayable, PdfUtil.getPhrase(totalPayableAmount));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), grandTotal, PdfUtil.getPhrase(grandTotalAmount));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), commission, PdfUtil.getPhrase(commissionAmount));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), totalPayable, PdfUtil.getPhrase(netPayableAmount));
+
         document.add(billingTable);
     }
 
@@ -461,17 +472,19 @@ public class InvoiceGenerator {
 
     private void addReceiptBody(Document document, OrderEntity order, ReceiptEntity receipt, BillEntity bill, Map<String, String> preferences) throws Exception {
         //add invoice detail
-        Paragraph title = PdfUtil.getParagraph(PdfUtil.largeBold, "Receipt for Payment of Processing Charge and Delivery Fee");
+        com.itextpdf.text.Font titleFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 21f));
+        titleFont.setColor(new BaseColor(0xFF9235));
+        Paragraph title = PdfUtil.getParagraph(titleFont, "Receipt for Payment of Processing Charge and Delivery Fee");
         title.setAlignment(Element.ALIGN_CENTER);
-        title.getFont().setColor(new BaseColor(0xFF9235));
         document.add(title);
 
         PdfPCell infoCell = new PdfPCell();
         PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
-        Paragraph info = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Invoice No: "+bill.getId(), "Invoice Issued On: "+bill.getGeneratedDate(), "Receipt No: "+receipt.getId(), "Order Id: "+order.getId());
+        com.itextpdf.text.Font infoFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 21f));
+        infoFont.setColor(new BaseColor(0xFF9235));
+        Paragraph info = PdfUtil.getParagraph(infoFont, true, "Invoice No: "+bill.getId(), "Invoice Issued On: "+bill.getGeneratedDate(), "Receipt No: "+receipt.getId(), "Order Id: "+order.getId());
         infoCell.addElement(info);
 
-        infoCell.setBorderColorBottom(new BaseColor(0xFF9235));
         infoCell.setBorderWidthBottom(1);
 
         PdfPCell receiptDetailCell = new PdfPCell();

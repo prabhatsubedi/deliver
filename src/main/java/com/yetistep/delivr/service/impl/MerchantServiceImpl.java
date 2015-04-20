@@ -124,7 +124,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         if(dbMerchant == null)
                throw new YSException("VLD011");
 
-        if(merchantEntity.getCommissionPercentage() == null || BigDecimalUtil.isZero(merchantEntity.getCommissionPercentage()))
+        if((merchantEntity.getCommissionPercentage() == null || BigDecimalUtil.isZero(merchantEntity.getCommissionPercentage())) && (merchantEntity.getServiceFee() == null || BigDecimalUtil.isZero(merchantEntity.getServiceFee())))
               throw new YSException("MRC001");
 
         if(merchantEntity.getPartnershipStatus()==null)

@@ -1852,11 +1852,13 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             ItemEntity itemEntity = itemOrder.getItem();
             itemEntity.setBrandName("");
             itemEntity.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+
             if (itemEntity.getItemsImage() == null || itemEntity.getItemsImage().size() == 0) {
                 ItemsImageEntity itemsImage = new ItemsImageEntity();
                 itemsImage.setUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
                 itemEntity.setItemsImage(Collections.singletonList(itemsImage));
             }
+
             List<Integer> selectedAttributes = itemsOrderAttributeDaoService.getSelectedAttributesOfItemOrder(itemOrderId);
             if(selectedAttributes.size() > 0){
                 for (ItemsAttributesTypeEntity itemsAttributesTypeEntity : itemEntity.getAttributesTypes()) {
@@ -1866,10 +1868,11 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                     }
                 }
             }
+
         }else{
             String fields = "id,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,note,customItem";
             Map<String, String> assoc = new HashMap<>();
-            assoc.put("customItem", "id,name");
+            assoc.put("customItem", "id,name,editedName,customerCustom");
             itemOrder = (ItemsOrderEntity) ReturnJsonUtil.getJsonObject(itemOrder, fields, assoc);
 
             if(itemOrder.getNote() == "")

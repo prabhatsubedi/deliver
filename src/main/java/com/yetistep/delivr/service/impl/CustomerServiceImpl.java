@@ -172,6 +172,7 @@ public class CustomerServiceImpl implements CustomerService {
             * */
             if(registeredCustomer.getUser().getLastActivityDate() == null) {
                 registeredCustomer.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
+                refillCustomerWallet(registeredCustomer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)), "referee reward amount");
             }
 
             registeredCustomer.getUser().setLastActivityDate(MessageBundle.getCurrentTimestampSQL());
@@ -203,7 +204,7 @@ public class CustomerServiceImpl implements CustomerService {
     //            }
                 //if(registeredCustomer.getUser().getLastActivityDate().equals(null)) {
                 customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
-
+                refillCustomerWallet(customerEntity.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)), "normal user bonus amount");
                // }
                 customerDaoService.save(customerEntity);
             } else {
@@ -1868,7 +1869,7 @@ public class CustomerServiceImpl implements CustomerService {
         return refillCustomerWallet(customer.getFacebookId(), customer.getWalletAmount(), remarks);
     }
 
-    private Boolean refillCustomerWallet(Long facebookId, BigDecimal refillAmount, String remark) throws Exception {
+    public Boolean refillCustomerWallet(Long facebookId, BigDecimal refillAmount, String remark) throws Exception {
         CustomerEntity customerEntity = customerDaoService.find(facebookId);
         if(customerEntity == null){
             throw new YSException("VLD011");

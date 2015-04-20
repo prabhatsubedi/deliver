@@ -915,6 +915,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                if(referrerId != null){
                    CustomerEntity referrer = customerDaoService.find(referrerId);
                    referrer.setRewardsEarned(referrer.getRewardsEarned().add(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT))));
+                   customerService.refillCustomerWallet(referrer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT)), "Referral amount form referee"+order.getCustomer().getFacebookId());
                    customerDaoService.update(referrer);
                }
             }

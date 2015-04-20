@@ -11,6 +11,7 @@ import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
 import com.yetistep.delivr.model.mobile.dto.SearchDto;
 import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -69,4 +70,6 @@ public interface CustomerService {
     public Boolean refillWallet(CustomerEntity customer) throws Exception;
 
     public PaginationDto getWalletTransactions(Page page, Long facebookId) throws Exception;
+
+    public Boolean refillCustomerWallet(Long facebookId, BigDecimal refillAmount, String remark) throws Exception;
 }

@@ -1839,28 +1839,57 @@ public class CustomerServiceImpl implements CustomerService {
         PushNotificationUtil.sendPushNotification(userDevice, remarks, NotifyTo.CUSTOMER, PushNotificationRedirect.TRANSACTION, extraDetail);
     }
 
+    private void setCustomerWalletTransaction(CustomerEntity customer, BigDecimal amount, AccountType accountType, PaymentMode paymentMode, String remarks, BigDecimal availableAmount) throws Exception{
+        log.info("Setting customer wallet transaction info for customer:"+customer.getId()+" Amount:"+amount+" Account type:"+accountType+" Remarks:"+remarks);
+        List<WalletTransactionEntity> walletTransactionEntities = customer.getWalletTransactions();
+        WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
+        walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+        walletTransactionEntity.setAccountType(accountType);
+        walletTransactionEntity.setRemarks(remarks);
+        walletTransactionEntity.setTransactionAmount(amount);
+        walletTransactionEntity.setCustomer(customer);
+        walletTransactionEntity.setPaymentMode(paymentMode);
+        walletTransactionEntity.setAvailableWalletAmount(BigDecimalUtil.checkNull(availableAmount));
+        systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
+        walletTransactionEntities.add(walletTransactionEntity);
+        customer.setWalletTransactions(walletTransactionEntities);
+
+        UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(customer.getId());
+        String extraDetail = "";
+        PushNotificationUtil.sendPushNotification(userDevice, remarks, NotifyTo.CUSTOMER, PushNotificationRedirect.TRANSACTION, extraDetail);
+    }
+
     @Override
     public Boolean refillWallet(CustomerEntity customer) throws Exception {
-        CustomerEntity customerEntity = customerDaoService.find(customer.getFacebookId());
+        String remarks = MessageBundle.getMessage("WTM004", "push_notification.properties");
+        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+        remarks = String.format(remarks, currency, customer.getWalletAmount());
+        return refillCustomerWallet(customer.getFacebookId(), customer.getWalletAmount(), remarks);
+    }
+
+    private Boolean refillCustomerWallet(Long facebookId, BigDecimal refillAmount, String remark) throws Exception {
+        CustomerEntity customerEntity = customerDaoService.find(facebookId);
         if(customerEntity == null){
             throw new YSException("VLD011");
         }
-        customerEntity.setWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()).add(customer.getWalletAmount()));
-        List<WalletTransactionEntity> walletTransactionEntities = customerEntity.getWalletTransactions();
+        customerEntity.setWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()).add(refillAmount));
+        /*List<WalletTransactionEntity> walletTransactionEntities = customerEntity.getWalletTransactions();
         WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
         walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
         walletTransactionEntity.setAccountType(AccountType.CREDIT);
         String remark = MessageBundle.getMessage("WTM004", "push_notification.properties");
         String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
-        remark = String.format(remark, currency, customer.getWalletAmount());
+        remark = String.format(remark, currency, refillAmount);
         walletTransactionEntity.setRemarks(remark);
-        walletTransactionEntity.setTransactionAmount(customer.getWalletAmount());
+        walletTransactionEntity.setTransactionAmount(refillAmount);
         walletTransactionEntity.setCustomer(customerEntity);
         walletTransactionEntity.setPaymentMode(PaymentMode.WALLET);
         walletTransactionEntity.setAvailableWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()));
         systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
         walletTransactionEntities.add(walletTransactionEntity);
-        customerEntity.setWalletTransactions(walletTransactionEntities);
+        customerEntity.setWalletTransactions(walletTransactionEntities);*/
+
+        this.setCustomerWalletTransaction(customerEntity, refillAmount, AccountType.CREDIT, PaymentMode.WALLET, remark, customerEntity.getWalletAmount());
         boolean status = customerDaoService.update(customerEntity);
 
         BigDecimal customerWalletAmount = customerEntity.getWalletAmount();
@@ -1869,6 +1898,7 @@ public class CustomerServiceImpl implements CustomerService {
         /* Short Fall amount adjustments */
         if(BigDecimalUtil.isGreaterThen(customerShortFallAmount, BigDecimal.ZERO)){
             log.info("looking for shortfall orders whose shortFallAmount > 0 for customer with ID:"+customerEntity.getId());
+            String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
             List<OrderEntity> orderList = orderDaoService.getAllShortFallOrdersOfCustomer(customerEntity.getId());
             for(OrderEntity o: orderList){
                 if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){

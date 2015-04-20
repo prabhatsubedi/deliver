@@ -162,4 +162,17 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
         List<String> deviceTokens = sqlQuery.list();
         return deviceTokens;
     }
+
+    @Override
+    public UserDeviceEntity getUserDeviceInfoFromCustomerId(Integer customerId) throws Exception {
+        String sql = "SELECT ud.device_token as deviceToken, ud.family as family FROM " +
+                "customers c INNER JOIN users u on(u.id = c.user_id) " +
+                "INNER JOIN user_device ud ON (ud.user_id = u.id) WHERE c.id = :customerId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("customerId", customerId);
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(UserDeviceEntity.class));
+
+        UserDeviceEntity userDevice = (UserDeviceEntity) sqlQuery.uniqueResult();
+        return userDevice;
+    }
 }

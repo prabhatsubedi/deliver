@@ -541,7 +541,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         merchant.getUser().setFullName(merchantEntity.getUser().getFullName());
         merchant.getUser().setMobileNumber(merchantEntity.getUser().getMobileNumber());
-        merchant.getUser().setStatus(merchantEntity.getUser().getStatus());
+
+        //merchant.getUser().setStatus(merchantEntity.getUser().getStatus());
 
         //merchant.getUser().setEmailAddress(merchantEntity.getUser().getEmailAddress());
         //merchant.getUser().setGender(merchantEntity.getUser().getGender());

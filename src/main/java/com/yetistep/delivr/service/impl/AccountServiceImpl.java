@@ -95,11 +95,14 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             invoiceDaoService.save(invoice);
 
             Map<String, String> preferences = new HashMap<>();
+            preferences.put("CURRENCY", systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
             preferences.put("HELPLINE_NUMBER", systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
             preferences.put("SUPPORT_EMAIL", systemPropertyService.readPrefValue(PreferenceType.SUPPORT_EMAIL));
             preferences.put("COMPANY_NAME", systemPropertyService.readPrefValue(PreferenceType.COMPANY_NAME));
             preferences.put("COMPANY_ADDRESS", systemPropertyService.readPrefValue(PreferenceType.COMPANY_ADDRESS));
             preferences.put("REGISTRATION_NO", systemPropertyService.readPrefValue(PreferenceType.REGISTRATION_NO));
+            preferences.put("VAT_NO", systemPropertyService.readPrefValue(PreferenceType.VAT_NO));
+            preferences.put("DELIVERY_FEE_VAT", systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
 
             invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice, store, serverUrl, preferences);
 
@@ -168,12 +171,14 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             receiptDaoService.save(receipt);
 
             Map<String, String> preferences = new HashMap<>();
+            preferences.put("CURRENCY", systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
             preferences.put("HELPLINE_NUMBER", systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
             preferences.put("SUPPORT_EMAIL", systemPropertyService.readPrefValue(PreferenceType.SUPPORT_EMAIL));
             preferences.put("COMPANY_NAME", systemPropertyService.readPrefValue(PreferenceType.COMPANY_NAME));
             preferences.put("COMPANY_ADDRESS", systemPropertyService.readPrefValue(PreferenceType.COMPANY_ADDRESS));
             preferences.put("REGISTRATION_NO", systemPropertyService.readPrefValue(PreferenceType.REGISTRATION_NO));
             preferences.put("VAT_NO", systemPropertyService.readPrefValue(PreferenceType.VAT_NO));
+            preferences.put("DELIVERY_FEE_VAT", systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
 
             billAndReceiptPath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt, getServerUrl(), preferences);
             bill.setPath(billAndReceiptPath);

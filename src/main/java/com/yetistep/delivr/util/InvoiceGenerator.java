@@ -112,14 +112,14 @@ public class InvoiceGenerator {
             //add bill header
             addPdfHeader(document, serverUrl, preferences);
 
-            addBillBody(document, order, bill);
+            addBillBody(document, order, bill, preferences);
 
             document.newPage();
 
             //add receipt header
             addPdfHeader(document, serverUrl, preferences);
 
-            addReceiptBody(document, order, receipt, bill);
+            addReceiptBody(document, order, receipt, bill, preferences);
 
             document.close();
         }catch (Exception e) {
@@ -161,7 +161,7 @@ public class InvoiceGenerator {
             addInvoiceDetail(document, merchant, invoice, store);
             //document.newPage();
 
-            addInvoiceBody(document, merchant, orders);
+            addInvoiceBody(document, merchant, orders, preferences);
 
             addFooter(document);
             document.close();
@@ -341,7 +341,7 @@ public class InvoiceGenerator {
         PdfUtil.addEmptyLine(document, 2);
     }
 
-    private void addInvoiceBody(Document document, MerchantEntity merchant, List<OrderEntity> orders) throws Exception {
+    private void addInvoiceBody(Document document, MerchantEntity merchant, List<OrderEntity> orders, Map<String, String> preferences) throws Exception {
 
         Integer cntOrder = 1;
 
@@ -349,7 +349,7 @@ public class InvoiceGenerator {
         billingTable.setWidthPercentage(100);
         billingTable.setWidths(new float[]{10, 30, 30, 20});
 
-        String currency = "NRS";
+        String currency = preferences.get("CURRENCY");
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("SN", PdfUtil.smallBold), PdfUtil.getPhrase("Date and Time of Transaction", PdfUtil.smallBold), PdfUtil.getPhrase("Order No.", PdfUtil.smallBold), PdfUtil.getPhrase("Amount ("+currency+")", PdfUtil.smallBold));
         BigDecimal totalOrderAmount = BigDecimal.ZERO;
         for (OrderEntity order: orders){
@@ -365,12 +365,17 @@ public class InvoiceGenerator {
             cntOrder++;
         }
         BigDecimal commissionAmount = totalOrderAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
-        BigDecimal vatAmount =  commissionAmount.multiply(new BigDecimal(13)).divide(new BigDecimal(100));
+        BigDecimal vatAmount =  commissionAmount.multiply(new BigDecimal(Integer.parseInt(preferences.get("DELIVERY_FEE_VAT")))).divide(new BigDecimal(100));
         BigDecimal totalPayableAmount = commissionAmount.add(vatAmount);
-        Phrase totalPayable = PdfUtil.getPhrase("Total Payable", PdfUtil.largeBold);
-        Phrase vat = PdfUtil.getPhrase("Vat(13%)", PdfUtil.largeBold);
-        Phrase commission = PdfUtil.getPhrase("Commission", PdfUtil.largeBold);
+
         Phrase subTotal = PdfUtil.getPhrase("Sub Total", PdfUtil.largeBold);
+        //Phrase serviceCharge = PdfUtil.getPhrase("Service Charge", PdfUtil.largeBold);
+        //Phrase taxableAmount = PdfUtil.getPhrase("Taxable Amount", PdfUtil.largeBold);
+        Phrase vat = PdfUtil.getPhrase("Vat("+preferences.get("DELIVERY_FEE_VAT")+"%)", PdfUtil.largeBold);
+        //Phrase grandTotal = PdfUtil.getPhrase("Grand Total", PdfUtil.largeBold);
+        Phrase commission = PdfUtil.getPhrase("Commission("+merchant.getCommissionPercentage()+")", PdfUtil.largeBold);
+        Phrase totalPayable = PdfUtil.getPhrase("Total Payable", PdfUtil.largeBold);
+
 
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), subTotal, PdfUtil.getPhrase(totalOrderAmount));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), commission, PdfUtil.getPhrase(commissionAmount));
@@ -380,7 +385,7 @@ public class InvoiceGenerator {
     }
 
 
-    private void addBillBody(Document document, OrderEntity order, BillEntity bill) throws Exception {
+    private void addBillBody(Document document, OrderEntity order, BillEntity bill, Map<String, String> preferences) throws Exception {
         //add invoice detail
         Paragraph title = PdfUtil.getParagraph(PdfUtil.smallBold, "Invoice : "+bill.getId());
         title.setAlignment(Element.ALIGN_CENTER);
@@ -454,9 +459,9 @@ public class InvoiceGenerator {
     }
 
 
-    private void addReceiptBody(Document document, OrderEntity order, ReceiptEntity receipt, BillEntity bill) throws Exception {
+    private void addReceiptBody(Document document, OrderEntity order, ReceiptEntity receipt, BillEntity bill, Map<String, String> preferences) throws Exception {
         //add invoice detail
-        Paragraph title = PdfUtil.getParagraph(PdfUtil.largeBold, "Receipt for Payment of iDeliver and Delivery Fee");
+        Paragraph title = PdfUtil.getParagraph(PdfUtil.largeBold, "Receipt for Payment of Processing Charge and Delivery Fee");
         title.setAlignment(Element.ALIGN_CENTER);
         title.getFont().setColor(new BaseColor(0xFF9235));
         document.add(title);

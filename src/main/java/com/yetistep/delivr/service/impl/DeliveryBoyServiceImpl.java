@@ -1221,7 +1221,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         itemsOrderEntity.setAvailabilityStatus(itemOrder.getAvailabilityStatus());
         itemsOrderEntity.setVat(itemOrder.getVat());
         itemsOrderEntity.setServiceCharge(itemOrder.getServiceCharge());
-        itemsOrderEntity.setNote(itemOrder.getNote());
+        if(itemOrder.getNote() != null && itemOrder.getNote() != "")
+            itemsOrderEntity.setNote(itemOrder.getNote());
+
         itemsOrderEntity.setPurchaseStatus(itemOrder.getPurchaseStatus());
         if (itemOrder.getPurchaseStatus() != null && itemOrder.getPurchaseStatus()) {
             itemsOrderEntity.setAvailabilityStatus(true);
@@ -1229,7 +1231,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
          /* Updating name of custom item added by delivery boy */
         if(itemsOrderEntity.getCustomItem() != null && itemOrder.getCustomItem() != null){
             itemsOrderEntity.getCustomItem().setName(itemOrder.getCustomItem().getName());
-            if(itemOrder.getCustomItem().getEditedName() != null)
+            if(itemOrder.getCustomItem().getEditedName() != null && itemOrder.getCustomItem().getEditedName() != "")
                 itemsOrderEntity.getCustomItem().setEditedName(itemOrder.getCustomItem().getEditedName());
         }else{
              /* Updating attributes of item added by customer */
@@ -1833,6 +1835,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             subAssoc.put("itemsAttribute", "id,attribute,unitPrice,selected");
 
             itemOrder = (ItemsOrderEntity) ReturnJsonUtil.getJsonObject(itemOrder, fields, assoc, subAssoc);
+
+            if(itemOrder.getNote() == "")
+                itemOrder.setNote(null);
             ItemEntity itemEntity = itemOrder.getItem();
             itemEntity.setBrandName("");
             itemEntity.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
@@ -1851,10 +1856,14 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 }
             }
         }else{
-            String fields = "id,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,customItem";
+            String fields = "id,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,note,customItem";
             Map<String, String> assoc = new HashMap<>();
             assoc.put("customItem", "id,name");
             itemOrder = (ItemsOrderEntity) ReturnJsonUtil.getJsonObject(itemOrder, fields, assoc);
+
+            if(itemOrder.getNote() == "")
+                itemOrder.setNote(null);
+
             if (itemOrder.getServiceAndVatCharge() == null)
                 itemOrder.setServiceAndVatCharge(new BigDecimal(-1));
 

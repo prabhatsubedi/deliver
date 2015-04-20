@@ -799,12 +799,15 @@ public class CustomerServiceImpl implements CustomerService {
             itemsOrderEntity.setOrder(order);
             itemsOrderEntity.setAvailabilityStatus(true);
             itemsOrderEntity.setQuantity(cart.getOrderQuantity());
-            itemsOrderEntity.setCustomerNote(cart.getNote());
+            if(cart.getNote() != null && cart.getNote() != "")
+                itemsOrderEntity.setCustomerNote(cart.getNote());
+
             itemsOrderEntity.setItem(cart.getItem());
             CustomItemEntity customItem = new CustomItemEntity();
             if(cart.getItem() == null){
                    customItem.setName(cart.getCartCustomItem().getName());
-                   customItem.setEditedName(cart.getCartCustomItem().getEditedName());
+                    if(cart.getCartCustomItem().getEditedName() != null && cart.getCartCustomItem().getEditedName() != "")
+                        customItem.setEditedName(cart.getCartCustomItem().getEditedName());
                    customItem.setItemsOrder(itemsOrderEntity);
                    customItem.setCustomerCustom(Boolean.TRUE);
             }
@@ -1934,6 +1937,7 @@ public class CustomerServiceImpl implements CustomerService {
     public PaginationDto getWalletTransactions(Page page, Long facebookId) throws Exception {
         log.info("Retrieving list of wallet transactions");
         List<PaymentMode> paymentModes = new ArrayList<PaymentMode>();
+
         if (page != null && page.getPaymentModes() != null) {
             paymentModes = page.getPaymentModes();
         }else{

@@ -30,7 +30,7 @@
     <div class="login_block">
         <div class="login_head">Login to iDelivr</div>
         <div class="login_form">
-            <form role="form" id="login_form" method="POST" action="/j_spring_security_check">
+            <form role="form" id="login_form" method="POST" action="${pageContext.request.contextPath}/j_spring_security_check">
                 <div class="form-group">
                     <input type="email" class="form-control" id="email" name="email" placeholder="Email">
                 </div>

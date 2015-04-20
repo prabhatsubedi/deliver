@@ -9,13 +9,6 @@ if(typeof(Order) == "undefined") var Order = {};
 
 Order.loadOrderFn = function(){
 
-    $('.refresh_orders').live('click', function(){
-        $('.main_tabs .loaded').removeClass('loaded');
-        var activeElem = $('.main_tabs .active a');
-        activeElem.addClass('loaded');
-        Order.getOrders("#" + activeElem.attr('data-id'), "/merchant/get_orders", {deliveryStatus: activeElem.attr('data-status')});
-    });
-
     $('.main_tabs a[data-toggle="tab"]:not(".loaded")').on('shown.bs.tab', function() {
 
         $(this).addClass('loaded');
@@ -239,9 +232,6 @@ Order.getOrders = function(elemId, url, params){
     }
 
     Main.createDataTable(elemId, dataFilter);
-
-    if(elemId == '#order_inroute_table')
-        $('#order_inroute_table_length').after('<button class="btn btn_green pull-right refresh_orders" style="line-height: 34px; padding: 0px 10px;">Refresh</button>');
 
 };
 

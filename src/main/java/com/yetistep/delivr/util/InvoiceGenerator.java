@@ -480,7 +480,7 @@ public class InvoiceGenerator {
 
         PdfPCell infoCell = new PdfPCell();
         PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
-        com.itextpdf.text.Font infoFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 21f));
+        com.itextpdf.text.Font infoFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 13f));
         infoFont.setColor(new BaseColor(0xFF9235));
         Paragraph info = PdfUtil.getParagraph(infoFont, true, "Invoice No: "+bill.getId(), "Invoice Issued On: "+bill.getGeneratedDate(), "Receipt No: "+receipt.getId(), "Order Id: "+order.getId());
         infoCell.addElement(info);
@@ -489,7 +489,7 @@ public class InvoiceGenerator {
 
         PdfPCell receiptDetailCell = new PdfPCell();
         PdfUtil.setPadding(receiptDetailCell, 0, 0, 10, 10);
-        Paragraph detail = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Date of Payment: "+bill.getGeneratedDate(), "Mode of Payment : "+order.getPaymentMode(), "Time of Payment: "+bill.getGeneratedDate(), "Card Number: ");
+        Paragraph detail = PdfUtil.getParagraph(infoFont, true, "Date of Payment: "+bill.getGeneratedDate(), "Mode of Payment : "+order.getPaymentMode(), "Time of Payment: "+bill.getGeneratedDate(), "Card Number: ");
         receiptDetailCell.addElement(detail);
 
         receiptDetailCell.setBorderColorBottom(new BaseColor(0xFF9235));
@@ -497,7 +497,7 @@ public class InvoiceGenerator {
 
         PdfPCell billAmountCell = new PdfPCell();
         PdfUtil.setPadding(billAmountCell, 0, 0, 10, 10);
-        Paragraph amount = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Total Amount Billed: "+receipt.getReceiptAmount());
+        Paragraph amount = PdfUtil.getParagraph(infoFont, true, "Total Amount Billed: "+receipt.getReceiptAmount());
         billAmountCell.addElement(amount);
 
         billAmountCell.setBorderColorBottom(new BaseColor(0xFF9235));
@@ -505,7 +505,7 @@ public class InvoiceGenerator {
 
         PdfPCell receiptCell = new PdfPCell();
         PdfUtil.setPadding(receiptCell, 0, 0, 10, 10);
-        Paragraph receivedBy = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Received by: "+bill.getCustomer().getUser().getFullName());
+        Paragraph receivedBy = PdfUtil.getParagraph(infoFont, true, "Received by: "+bill.getCustomer().getUser().getFullName());
         receiptCell.addElement(receivedBy);
 
         PdfUtil.setBorder(0, infoCell, receiptDetailCell, billAmountCell, receiptCell);

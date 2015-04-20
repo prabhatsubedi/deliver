@@ -6,6 +6,7 @@ if(typeof(Main) == "undefined") var Main = {};
 
 var dialogCallback;
 var dialogTimeout;
+var dataTablesInterval;
 var form_submit = true;
 $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data will not be saved. Are you sure to continue?'; });
 
@@ -280,32 +281,37 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         if($.fn.dataTable.fnIsDataTable(selector))
             $(selector).DataTable().clear().destroy();
         $(selector).dataTable();
+        $('<button class="btn btn_green pull-right refresh_data" style="line-height: 34px; padding: 0px 10px;">Refresh</button>').click( function () {
+            $(selector).DataTable().ajax.reload();
+        }).appendTo( '.dataTables_filter' );
+        clearInterval(dataTablesInterval);
+        dataTablesInterval = setInterval($(selector).DataTable().ajax.reload, 60000)
 
-/*
-            selector = "#merchants_table";
-            $.extend($.fn.dataTable.defaults, {
-            sDom: '<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
-            columnDefs: [
-                {
-                    targets: hideCols,
-                    visible: false
+        /*
+                    selector = "#merchants_table";
+                    $.extend($.fn.dataTable.defaults, {
+                    sDom: '<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
+                    columnDefs: [
+                        {
+                            targets: hideCols,
+                            visible: false
+                        }
+                    ],
+                    language: {
+                        paginate: {
+                            next: '&raquo;',
+                            previous: '&laquo'
+                        }
+                    },
+                    fnDrawCallback: typeof(colindex) == 'function' ? colindex : null
+                });
+                dataTable = $(selector).dataTable();
+                dataTable.fnClearTable();
+                if(data.length > 0) {
+                    dataTable.fnAddData(data);
+                    if(colindex != undefined && sortorder != undefined) dataTable.fnSort( [ [colindex, sortorder] ] );
                 }
-            ],
-            language: {
-                paginate: {
-                    next: '&raquo;',
-                    previous: '&laquo'
-                }
-            },
-            fnDrawCallback: typeof(colindex) == 'function' ? colindex : null
-        });
-        dataTable = $(selector).dataTable();
-        dataTable.fnClearTable();
-        if(data.length > 0) {
-            dataTable.fnAddData(data);
-            if(colindex != undefined && sortorder != undefined) dataTable.fnSort( [ [colindex, sortorder] ] );
-        }
-        dataTable.fnDraw();*/
+                dataTable.fnDraw();*/
     }
 
     Main.ucfirst = function(word){

@@ -1869,6 +1869,7 @@ public class CustomerServiceImpl implements CustomerService {
         return refillCustomerWallet(customer.getFacebookId(), customer.getWalletAmount(), remarks);
     }
 
+    @Override
     public Boolean refillCustomerWallet(Long facebookId, BigDecimal refillAmount, String remark) throws Exception {
         CustomerEntity customerEntity = customerDaoService.find(facebookId);
         if(customerEntity == null){

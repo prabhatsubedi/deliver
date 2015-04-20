@@ -185,10 +185,10 @@ public class AccountantController {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            String invoicePath = accountService.generateBillAndReceiptAndSendEmail(headerDto);
+            //String invoicePath = accountService.generateBillAndReceiptAndSendEmail(headerDto);
 
             ServiceResponse serviceResponse = new ServiceResponse("Invoice has been generated successfully: "+headerDto.getId());
-            serviceResponse.addParam("path", invoicePath);
+            //serviceResponse.addParam("path", invoicePath);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while generating invoice: ", e);

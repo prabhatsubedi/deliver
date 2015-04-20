@@ -19,7 +19,7 @@ public interface AccountService {
 
     public String generateInvoice(Integer storeId, String fromDate, String toDate, String serverUrl) throws Exception;
 
-    public String generateBillAndReceiptAndSendEmail(HeaderDto headerDto) throws Exception;
+    public String generateBillAndReceiptAndSendEmail(OrderEntity order) throws Exception;
 
     public List<StoreEntity> getAllStores() throws Exception;
 

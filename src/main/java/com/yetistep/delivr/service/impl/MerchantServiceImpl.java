@@ -1626,7 +1626,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         List<OrderEntity> orderList = new ArrayList<>();
-        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,assignedTime,attachments,grandTotal,totalCost,rating,deliveryCharge,bill";
+        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,assignedTime,attachments,itemServiceAndVatCharge,grandTotal,totalCost,rating,deliveryCharge,bill";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -1697,7 +1697,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         List<OrderEntity> ordersList = new ArrayList<>();
 
-        String fields = "id,orderName,deliveryStatus,orderStatus,attachments,orderDate,customer,store,deliveryBoy,totalCost";
+        String fields = "id,orderName,deliveryStatus,orderStatus,attachments,orderDate,itemServiceAndVatCharge,customer,store,deliveryBoy,totalCost";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

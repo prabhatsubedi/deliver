@@ -203,6 +203,7 @@ public class CustomerServiceImpl implements CustomerService {
     //            }
                 //if(registeredCustomer.getUser().getLastActivityDate().equals(null)) {
                 customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
+
                // }
                 customerDaoService.save(customerEntity);
             } else {

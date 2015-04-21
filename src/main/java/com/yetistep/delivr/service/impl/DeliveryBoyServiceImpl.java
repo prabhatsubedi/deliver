@@ -869,7 +869,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         boolean status = orderDaoService.update(order);
         if(status){
             /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
-            //accountService.generateBillAndReceiptAndSendEmail(order);
+            accountService.generateBillAndReceiptAndSendEmail(order);
 
 
             /*=========== Calculate Average Rating For Customer ================ (Appended By Surendra) */
@@ -1662,6 +1662,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
         List<ItemsOrderEntity> itemsOrderEntities = new ArrayList<ItemsOrderEntity>();
         ItemsOrderEntity itemsOrderEntity = null;
+        Integer countCustomItem = 0;
         for (ItemsOrderEntity itemOrder : itemsOrder) {
             itemsOrderEntity = itemOrder;
             if (itemOrder.getItem() != null) {
@@ -1674,6 +1675,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
             if(itemOrder.getCustomItem() != null && itemOrder.getItemTotal() == null && itemOrder.getAvailabilityStatus()){
                 itemOrder.setItemTotal(new BigDecimal(-1));
+                countCustomItem++;
             }
 
             itemsOrderEntity.setCustomItem(itemOrder.getCustomItem());
@@ -1696,29 +1698,34 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
         }*/
 
-        accountSummary.setSubTotal(order.getTotalCost());
 
-        if(order.getSystemServiceCharge() != null)
+        if(countCustomItem == itemsOrder.size()){
+            accountSummary.setSubTotal(new BigDecimal(-1));
+        } else {
+            accountSummary.setSubTotal(order.getTotalCost());
+        }
+
+        if(countCustomItem==0)
             accountSummary.setServiceFee(order.getSystemServiceCharge());
         else
             accountSummary.setServiceFee(new BigDecimal(-1));
 
-        if(order.getItemServiceAndVatCharge() != null)
+        if(countCustomItem==0)
             accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
         else
             accountSummary.setVatAndServiceCharge(new BigDecimal(-1));
 
-        if(order.getItemServiceCharge() != null)
+        if(countCustomItem==0)
             accountSummary.setItemServiceCharge(order.getItemServiceCharge());
         else
             accountSummary.setItemServiceCharge(new BigDecimal(-1));
 
-        if(order.getItemVatCharge() != null)
+        if(countCustomItem==0)
             accountSummary.setItemVatCharge(order.getItemVatCharge());
         else
             accountSummary.setItemVatCharge(new BigDecimal(-1));
 
-        if(order.getDeliveryCharge() != null)
+        if(countCustomItem==0)
             accountSummary.setDeliveryFee(order.getDeliveryCharge().add(totalDiscount));
         else
             accountSummary.setDeliveryFee(new BigDecimal(-1));
@@ -1740,24 +1747,61 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             throw new YSException("VLD017");
         }
         DeliveryBoySelectionEntity deliveryBoySelection = deliveryBoySelectionDaoService.getSelectionDetails(orderId, deliveryBoyId);
+
         if(deliveryBoySelection == null){
             throw new YSException("ORD003");
         }
+
+
+
         OrderEntity responseOrder = new OrderEntity();
+
+        Integer countCustomItem = 0;
+        for (ItemsOrderEntity itemOrder : order.getItemsOrder()) {
+            if(itemOrder.getCustomItem() != null && itemOrder.getItemTotal() == null && itemOrder.getAvailabilityStatus()){
+                countCustomItem++;
+            }
+        }
+
+        if(countCustomItem > 0)
+            deliveryBoySelection.setPaidToCourier(new BigDecimal(-1));
+
         responseOrder.setId(order.getId());
         responseOrder.setOrderName(order.getOrderName());
         responseOrder.setOrderVerificationStatus(order.getOrderVerificationStatus());
         responseOrder.setDeliveryStatus(order.getDeliveryStatus());
         responseOrder.setOrderStatus(order.getOrderStatus());
         responseOrder.setCustomerChargeableDistance(order.getCustomerChargeableDistance());
-        responseOrder.setTotalCost(order.getTotalCost());
-        responseOrder.setSystemServiceCharge(order.getSystemServiceCharge());
-        responseOrder.setDeliveryCharge(order.getDeliveryCharge());
-        responseOrder.setGrandTotal(order.getGrandTotal());
+        if(countCustomItem == 0)
+            responseOrder.setTotalCost(order.getTotalCost());
+        else
+            responseOrder.setTotalCost(new BigDecimal(-1));
+
+        if(countCustomItem == 0)
+            responseOrder.setSystemServiceCharge(order.getSystemServiceCharge());
+        else
+            responseOrder.setSystemServiceCharge(new BigDecimal(-1));
+
+        if(countCustomItem == 0)
+            responseOrder.setDeliveryCharge(order.getDeliveryCharge());
+        else
+            responseOrder.setDeliveryCharge(new BigDecimal(-1));
+
+        if(countCustomItem == 0)
+            responseOrder.setGrandTotal(order.getGrandTotal());
+        else
+            responseOrder.setGrandTotal(new BigDecimal(-1));
+
+
         responseOrder.setAssignedTime(order.getAssignedTime());
         responseOrder.setRemainingTime(order.getRemainingTime());
         responseOrder.setSurgeFactor(order.getSurgeFactor());
-        responseOrder.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge());
+
+        if(countCustomItem == 0)
+            responseOrder.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge());
+        else
+            responseOrder.setItemServiceAndVatCharge(new BigDecimal(-1));
+
         responseOrder.setOrderDate(order.getOrderDate());
         responseOrder.setAssignedTime(deliveryBoySelection.getTotalTimeRequired());
         responseOrder.setDeliveryBoyShare(deliveryBoySelection.getPaidToCourier());

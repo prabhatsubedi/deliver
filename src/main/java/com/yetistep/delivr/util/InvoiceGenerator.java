@@ -4,10 +4,7 @@ package com.yetistep.delivr.util;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.*;
@@ -405,44 +402,44 @@ public class InvoiceGenerator {
 
 
         PdfPCell orderCell = new PdfPCell();
-        PdfUtil.setPadding(orderCell, 0, 0, 10, 10);
-        Paragraph orderInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Order Detail", "Order Id: "+order.getId(), "Order Date: "+order.getOrderDate(), "Invoice Date: "+bill.getGeneratedDate());
+        PdfUtil.setPadding(orderCell, 20, 0, 20, 50);
+        com.itextpdf.text.Font infoFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 13f));
+        infoFont.setColor(new BaseColor(0x969696));
+        Paragraph orderInfo = PdfUtil.getParagraph(infoFont, true, "Order Detail", "Order Id: "+order.getId(), "Order Date: "+order.getOrderDate(), "Invoice Date: "+bill.getGeneratedDate());
         orderCell.addElement(orderInfo);
 
-        orderCell.setBorderColorBottom(new BaseColor(0xFF9235));
-        orderCell.setBorderWidthBottom(1);
+
 
         PdfPCell addressCell = new PdfPCell();
-        PdfUtil.setPadding(addressCell, 0, 0, 10, 10);
+        PdfUtil.setPadding(addressCell, 20, 0, 20, 0);
         String street = order.getAddress().getStreet();
         String city = order.getAddress().getCity();
         String state = order.getAddress().getState();
         String country = order.getAddress().getCountry();
         String mobile = order.getAddress().getMobileNumber();
 
-        Paragraph addressInfo = PdfUtil.getParagraph(PdfUtil.smallFont, true, "Customer Address", order.getCustomer().getUser().getFullName(), street+", "+city, state+", "+country, "Phone: "+mobile);
+        Paragraph addressInfo = PdfUtil.getParagraph(infoFont, true, "Customer Address", order.getCustomer().getUser().getFullName(), street+", "+city, state+", "+country, "Phone: "+mobile);
         addressInfo.setAlignment(Element.ALIGN_RIGHT);
         addressCell.addElement(addressInfo);
 
-        addressCell.setBorderColorBottom(new BaseColor(0xFF9235));
-        addressCell.setBorderWidthBottom(1);
-
         PdfUtil.setBorder(0, orderCell, addressCell);
+
+
+        addressCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        addressCell.setBorderWidthBottom(new Float(0.3));
+
+        orderCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        orderCell.setBorderWidthBottom(new Float(0.3));
+
         //add cells to table
         PdfPTable billTable = new PdfPTable(2);
         billTable.setWidthPercentage(100);
-
-        orderCell.setBorderColorBottom(new BaseColor(0xFF9235));
-        orderCell.setBorderWidthBottom(1);
-
-        addressCell.setBorderColorBottom(new BaseColor(0xFF9235));
-        addressCell.setBorderWidthBottom(1);
 
         billTable.addCell(orderCell);
         billTable.addCell(addressCell);
 
 
-        billTable.getDefaultCell().setBorder(0);
+        //billTable.getDefaultCell().setBorder(0);
 
         document.add(billTable);
 
@@ -453,18 +450,30 @@ public class InvoiceGenerator {
         billingTable.setWidthPercentage(100);
         billingTable.setWidths(new float[]{45, 45});
 
-        String currency = "NRS";
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Title", PdfUtil.smallBold), PdfUtil.getPhrase("Amount ("+currency+")", PdfUtil.smallBold));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("iDelivr Fee"),
-                PdfUtil.getPhrase(bill.getSystemServiceCharge()));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Delivery Fee"),
-                PdfUtil.getPhrase(bill.getDeliveryCharge(), PdfUtil.smallBold));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Subtotal"),
-                PdfUtil.getPhrase(bill.getDeliveryCharge().add(bill.getSystemServiceCharge()), PdfUtil.smallBold));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Vat"),
-                PdfUtil.getPhrase(bill.getVat(), PdfUtil.smallBold));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Grand Total"),
-                PdfUtil.getPhrase(bill.getDeliveryCharge().add(bill.getSystemServiceCharge()).add(bill.getVat()), PdfUtil.smallBold));
+        String currency = preferences.get("CURRENCY");
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Title", infoFont), PdfUtil.getPhrase("Amount ("+currency+")", infoFont));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("iDelivr Fee", infoFont),
+                PdfUtil.getPhrase(bill.getSystemServiceCharge(), infoFont));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Delivery Fee", infoFont),
+                PdfUtil.getPhrase(bill.getDeliveryCharge(), infoFont));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Subtotal", infoFont),
+                PdfUtil.getPhrase(bill.getDeliveryCharge().add(bill.getSystemServiceCharge()), infoFont));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Vat", infoFont),
+                PdfUtil.getPhrase(bill.getVat(), infoFont));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Grand Total", infoFont),
+                PdfUtil.getPhrase(bill.getDeliveryCharge().add(bill.getSystemServiceCharge()).add(bill.getVat()), infoFont));
+        billingTable.getDefaultCell().setBorder(0);
+
+        for (PdfPRow row: billingTable.getRows()) {
+            for (PdfPCell cell: row.getCells()){
+                   cell.setBorder(0);
+                   cell.setBorderColorBottom(new BaseColor(0xFF9235));
+                   cell.setBorderWidthBottom(new Float(0.3));
+                   cell.setPaddingBottom(20);
+                   cell.setPaddingTop(20);
+                   cell.setPaddingLeft(50);
+            }
+        }
 
         document.add(billingTable);
     }

@@ -47,6 +47,7 @@ public class CustomerEntity implements Serializable {
     private List<BillEntity> bill;
     private List<ReceiptEntity> receipt;
     private List<WalletTransactionEntity> walletTransactions;
+    private List<PaymentGatewayInfoEntity> paymentGatewayInfo;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -316,5 +317,14 @@ public class CustomerEntity implements Serializable {
 
     public void setWalletTransactions(List<WalletTransactionEntity> walletTransactions) {
         this.walletTransactions = walletTransactions;
+    }
+
+    @OneToMany(mappedBy = "customer", cascade = { CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    public List<PaymentGatewayInfoEntity> getPaymentGatewayInfo() {
+        return paymentGatewayInfo;
+    }
+
+    public void setPaymentGatewayInfo(List<PaymentGatewayInfoEntity> paymentGatewayInfo) {
+        this.paymentGatewayInfo = paymentGatewayInfo;
     }
 }

@@ -2,6 +2,7 @@ package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
+import com.yetistep.delivr.dto.PaymentGatewayDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.RatingReason;
 import com.yetistep.delivr.model.*;
@@ -72,4 +73,6 @@ public interface CustomerService {
     public PaginationDto getWalletTransactions(Page page, Long facebookId) throws Exception;
 
     public Boolean refillCustomerWallet(Long facebookId, BigDecimal refillAmount, String remark) throws Exception;
+
+    public PaymentGatewayDto requestToAddFundToWallet(Long facebookId, BigDecimal amount) throws Exception;
 }

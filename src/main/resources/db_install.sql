@@ -211,3 +211,8 @@ INSERT INTO `preferences` (`id`, `pref_key`, `value`, `section_id`, `pref_title`
 ALTER TABLE orders DROP COLUMN transportation_charge;
 ALTER TABLE orders DROP COLUMN delivery_boy_share;
 ALTER TABLE orders DROP COLUMN system_share;
+
+/*wallet configuration=====2015-04-21*/
+INSERT INTO `preferences_sections` (`section`, `group_id`) VALUES ('Wallet Configuration', '1');
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('MINIMUM_TRANSFERABLE_AMOUNT', '100', '12', 'Minimum Transferable Amount');
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('INR_CONVERSION_RATE', '1.6', '12', 'Indian Currency Conversion Rate');

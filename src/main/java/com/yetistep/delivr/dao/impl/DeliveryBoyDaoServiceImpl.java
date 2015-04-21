@@ -10,7 +10,6 @@ import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.util.DateUtil;
 import com.yetistep.delivr.util.HibernateUtil;
 import org.hibernate.*;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.BigDecimalType;
@@ -220,5 +219,21 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.executeUpdate();
         return true;
+    }
+
+    @Override
+    public Integer getNumberOfActiveOrders(Integer deliveryBoyId) throws Exception {
+        List<Integer> jobOrderStatusList = new ArrayList<Integer>();
+        jobOrderStatusList.add(JobOrderStatus.ORDER_PLACED.ordinal());
+        jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
+        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
+        jobOrderStatusList.add(JobOrderStatus.AT_STORE.ordinal());
+        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal());
+        String sql = "SELECT count(id) FROM orders WHERE order_status IN (:orderStatus) AND delivery_boy_id = :dBoyId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("dBoyId", deliveryBoyId);
+        sqlQuery.setParameterList("orderStatus", jobOrderStatusList);
+        BigInteger count = (BigInteger) sqlQuery.uniqueResult();
+        return count.intValue();
     }
 }

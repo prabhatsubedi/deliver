@@ -1908,7 +1908,7 @@ public class CustomerServiceImpl implements CustomerService {
         boolean status = customerDaoService.update(customerEntity);
 
         BigDecimal customerWalletAmount = customerEntity.getWalletAmount();
-        BigDecimal customerShortFallAmount = customerEntity.getShortFallAmount();
+        BigDecimal customerShortFallAmount = BigDecimalUtil.checkNull(customerEntity.getShortFallAmount());
 
         /* Short Fall amount adjustments */
         if(BigDecimalUtil.isGreaterThen(customerShortFallAmount, BigDecimal.ZERO)){
@@ -1970,11 +1970,11 @@ public class CustomerServiceImpl implements CustomerService {
             systemAlgorithmService.decodeWalletTransaction(walletTransactionEntity);
             if(!walletTransactionEntity.getFlag()){
                 log.info("Signature validation failed");
-                throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+               // throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
             }
-            if(!availableAmount.equals(walletTransactionEntity.getAvailableWalletAmount())){
+            if(BigDecimalUtil.isNotEqualTo(availableAmount, walletTransactionEntity.getAvailableWalletAmount())){
                 log.info("Customer available amount is different than that in signature");
-                throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+                //throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
             }
         }
     }

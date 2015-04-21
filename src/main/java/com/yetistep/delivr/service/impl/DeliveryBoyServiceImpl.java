@@ -492,7 +492,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             if(deliveryBoyEntity.getActiveOrderNo() >= 3){
                 throw new YSException("DBY003");
             }
-            deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()+1);
+            deliveryBoyEntity.setActiveOrderNo(deliveryBoyDaoService.getNumberOfActiveOrders(deliveryBoyId)+1);
             deliveryBoyEntity.setTotalOrderTaken(deliveryBoyEntity.getTotalOrderTaken()+1);
            /* deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);*/
             deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.BUSY);
@@ -835,8 +835,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }
 
         DeliveryBoyEntity deliveryBoyEntity = order.getDeliveryBoy();
-        deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()-1);
-        if(deliveryBoyEntity.getActiveOrderNo() == 0){
+        deliveryBoyEntity.setActiveOrderNo(deliveryBoyDaoService.getNumberOfActiveOrders(deliveryBoyEntity.getId()) - 1);
+        if(deliveryBoyEntity.getActiveOrderNo() <= 0){
+            deliveryBoyEntity.setActiveOrderNo(0);
             deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.FREE);
         }
         deliveryBoyEntity.setTotalEarnings(BigDecimalUtil.checkNull(deliveryBoyEntity.getTotalEarnings()).add(order.getCourierTransaction().getPaidToCourier()));
@@ -1388,7 +1389,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         /* updating delivery boy */
         DeliveryBoyEntity deliveryBoyEntity = orderEntity.getDeliveryBoy();
         if(deliveryBoyEntity != null){
-            deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()-1);
+            deliveryBoyEntity.setActiveOrderNo(deliveryBoyDaoService.getNumberOfActiveOrders(deliveryBoyEntity.getId()) - 1);
             deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);
             if(deliveryBoyEntity.getActiveOrderNo() <= 0){
                 deliveryBoyEntity.setActiveOrderNo(0);

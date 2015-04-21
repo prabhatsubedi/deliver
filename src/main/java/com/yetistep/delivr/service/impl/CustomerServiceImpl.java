@@ -1896,7 +1896,7 @@ public class CustomerServiceImpl implements CustomerService {
         boolean status = customerDaoService.update(customerEntity);
 
         BigDecimal customerWalletAmount = customerEntity.getWalletAmount();
-        BigDecimal customerShortFallAmount = customerEntity.getShortFallAmount();
+        BigDecimal customerShortFallAmount = BigDecimalUtil.checkNull(customerEntity.getShortFallAmount());
 
         /* Short Fall amount adjustments */
         if(BigDecimalUtil.isGreaterThen(customerShortFallAmount, BigDecimal.ZERO)){

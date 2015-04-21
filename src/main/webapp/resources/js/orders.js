@@ -122,16 +122,20 @@ Order.getOrders = function(elemId, url, params){
             var activeStatus = ["ORDER_PLACED", "ORDER_ACCEPTED", "IN_ROUTE_TO_PICK_UP", "AT_STORE", "IN_ROUTE_TO_DELIVERY"];
             var orderHistoryLength = order.dBoyOrderHistories.length;
             var time_taken = 0;
+            console.log(orderHistoryLength);
 
+            var amountEarned = 0;
             if(orderHistoryLength > 0){
                 if(order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt != undefined && order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt != undefined){
                     time_taken = ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt)/1000/60).toFixed(0);
                 }else if(order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt != undefined){
                     time_taken = ((n-order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt)/1000/60).toFixed(0);
                 }
+                amountEarned = order.dBoyOrderHistories[orderHistoryLength-1].amountEarned != undefined?Main.getFromLocalStorage("currency")+order.dBoyOrderHistories[orderHistoryLength-1].amountEarned:0;
             }
 
-            var amountEarned = order.dBoyOrderHistories[orderHistoryLength-1].amountEarned != undefined?Main.getFromLocalStorage("currency")+order.dBoyOrderHistories[orderHistoryLength-1].amountEarned:0;
+            var dBoySelection =  order.deliveryBoySelections[0];
+            var amountEarnedLive = dBoySelection!=undefined?dBoySelection.paidToCourier:'';
 
             var drop_location = '';
             order.address.street!="undefined"?drop_location+=order.address.street:'';
@@ -148,11 +152,11 @@ Order.getOrders = function(elemId, url, params){
                     }
                 }
 
-                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, deliveryBoy, amountEarned, order.assignedTime != undefined?order.assignedTime:'', time_taken, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason, view_items];
+                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != undefined?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, deliveryBoy, amountEarned, order.assignedTime != undefined?order.assignedTime:'', time_taken, (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', reason, view_items];
             } else if(order.orderStatus == "DELIVERED") {
-                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, amountEarned, order.assignedTime != undefined?order.assignedTime:'', time_taken, (typeof order.bill != "undefined" && typeof order.bill.path!="undefined")?'<a href="'+order.bill.path+'" target="_blank">View Receipt</a>':'', (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', (order.rating != undefined && order.rating.customerRating != undefined)?order.rating.customerRating:'', (order.rating != undefined && order.rating.customerComment != undefined)?order.rating.customerComment:'', view_items];
+                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != undefined?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, amountEarned, order.assignedTime != undefined?order.assignedTime:'', time_taken, (typeof order.bill != "undefined" && typeof order.bill.path!="undefined")?'<a href="'+order.bill.path+'" target="_blank">View Receipt</a>':'', (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'', (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'', (order.rating != undefined && order.rating.customerRating != undefined)?order.rating.customerRating:'', (order.rating != undefined && order.rating.customerComment != undefined)?order.rating.customerComment:'', view_items];
             } else if($.inArray(order.orderStaus, activeStatus)) {
-                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.orderVerificationCode, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != null?Main.getFromLocalStorage("currency")+order.grandTotal:'', amountEarned, order.assignedTime != undefined?order.assignedTime:'', time_taken, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' + order.deliveryBoy.id + '">View on Map</a> | ' + view_items];
+                row = [i+1, order.orderDate, id, order.customer.user.fullName, storeInfo,  drop_location, order.orderVerificationCode, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', link_attachments, order.grandTotal != undefined?Main.getFromLocalStorage("currency")+order.grandTotal:'', deliveryBoy, amountEarnedLive, order.assignedTime != undefined?order.assignedTime:'', time_taken, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' +  order.deliveryBoy.id + '">View on Map</a> | ' + view_items];
             }
             row = $.extend({}, row);
             tdata.push(row)
@@ -345,7 +349,7 @@ Order.getPurchaseHistory = function(){
 
 
 
-            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.orderDate, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', deliveryBoy, link_attachments, view_items];
+            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.orderDate, order.totalCost != un?Main.getFromLocalStorage("currency")+order.totalCost:'', deliveryBoy, link_attachments, view_items];
             row = $.extend({}, row);
             tableData.push(row);
 

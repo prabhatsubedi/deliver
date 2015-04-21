@@ -275,7 +275,7 @@ public class InvoiceGenerator {
         info.getFont().setColor(new BaseColor(0x9c9c9c));
         info.setAlignment(Element.ALIGN_LEFT);
         info.setLeading(19);
-        PdfUtil.setPadding(addressCell, 20, 0, 20, 0);
+        PdfUtil.setPadding(addressCell, 20, 0, 20, 50);
         addressCell.addElement(info);
         addressCell.setColspan(2);
 
@@ -472,43 +472,63 @@ public class InvoiceGenerator {
 
     private void addReceiptBody(Document document, OrderEntity order, ReceiptEntity receipt, BillEntity bill, Map<String, String> preferences) throws Exception {
         //add invoice detail
-        com.itextpdf.text.Font titleFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 21f));
+        com.itextpdf.text.Font titleFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 19f));
         titleFont.setColor(new BaseColor(0xFF9235));
         Paragraph title = PdfUtil.getParagraph(titleFont, "Receipt for Payment of Processing Charge and Delivery Fee");
         title.setAlignment(Element.ALIGN_CENTER);
+        title.setSpacingBefore(50);
         document.add(title);
 
         PdfPCell infoCell = new PdfPCell();
-        PdfUtil.setPadding(infoCell, 0, 0, 10, 10);
         com.itextpdf.text.Font infoFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 13f));
-        infoFont.setColor(new BaseColor(0xFF9235));
+        infoFont.setColor(new BaseColor(0x969696));
         Paragraph info = PdfUtil.getParagraph(infoFont, true, "Invoice No: "+bill.getId(), "Invoice Issued On: "+bill.getGeneratedDate(), "Receipt No: "+receipt.getId(), "Order Id: "+order.getId());
         infoCell.addElement(info);
+        PdfUtil.setPadding(infoCell, 20, 0, 20, 50);
 
-        infoCell.setBorderWidthBottom(1);
 
         PdfPCell receiptDetailCell = new PdfPCell();
-        PdfUtil.setPadding(receiptDetailCell, 0, 0, 10, 10);
-        Paragraph detail = PdfUtil.getParagraph(infoFont, true, "Date of Payment: "+bill.getGeneratedDate(), "Mode of Payment : "+order.getPaymentMode(), "Time of Payment: "+bill.getGeneratedDate(), "Card Number: ");
+        String paymentMode = order.getPaymentMode().toString();
+        String paymentModeArr[] = paymentMode.split("_");
+        String formattedPaymentMode = "";
+        for (String pMode: paymentModeArr){
+            formattedPaymentMode+=pMode.toLowerCase()+" ";
+        }
+        Paragraph detail = PdfUtil.getParagraph(infoFont, true, "Date of Payment: "+bill.getGeneratedDate(), "Mode of Payment : "+formattedPaymentMode);
         receiptDetailCell.addElement(detail);
+        PdfUtil.setPadding(receiptDetailCell, 20, 0, 20, 50);
 
-        receiptDetailCell.setBorderColorBottom(new BaseColor(0xFF9235));
-        receiptDetailCell.setBorderWidthBottom(1);
 
         PdfPCell billAmountCell = new PdfPCell();
-        PdfUtil.setPadding(billAmountCell, 0, 0, 10, 10);
         Paragraph amount = PdfUtil.getParagraph(infoFont, true, "Total Amount Billed: "+receipt.getReceiptAmount());
         billAmountCell.addElement(amount);
+        PdfUtil.setPadding(billAmountCell, 20, 0, 20, 50);
 
-        billAmountCell.setBorderColorBottom(new BaseColor(0xFF9235));
-        billAmountCell.setBorderWidthBottom(new Float(0.5));
 
         PdfPCell receiptCell = new PdfPCell();
-        PdfUtil.setPadding(receiptCell, 0, 0, 10, 10);
-        Paragraph receivedBy = PdfUtil.getParagraph(infoFont, true, "Received by: "+bill.getCustomer().getUser().getFullName());
+        Paragraph receivedBy = PdfUtil.getParagraph(infoFont, true, "Received by: "+order.getDeliveryBoy().getUser().getFullName());
         receiptCell.addElement(receivedBy);
+        PdfUtil.setPadding(receiptCell, 20, 0, 20, 50);
 
         PdfUtil.setBorder(0, infoCell, receiptDetailCell, billAmountCell, receiptCell);
+
+
+        //set bottom border on address cell
+        infoCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        infoCell.setBorderWidthBottom(new Float(0.3));
+
+        receiptDetailCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        receiptDetailCell.setBorderWidthBottom(new Float(0.3));
+
+        billAmountCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        billAmountCell.setBorderWidthBottom(new Float(0.3));
+
+        receiptCell.setBorderColorBottom(new BaseColor(0xFF9235));
+        receiptCell.setBorderWidthBottom(new Float(0.3));
+
+
+
+
 
         PdfPTable receiptTable = new PdfPTable(1);
         receiptTable.spacingBefore();
@@ -519,7 +539,12 @@ public class InvoiceGenerator {
         receiptTable.addCell(receiptCell);
 
         receiptTable.getDefaultCell().setBorder(0);
+
         document.add(receiptTable);
+        LineSeparator ls = new LineSeparator();
+        ls.setLineColor(new BaseColor(0xFF9235));
+        ls.setPercentage(100);
+        document.add(ls);
     }
 
    /* private void sendInvoicePaymentNReceiptMail() {

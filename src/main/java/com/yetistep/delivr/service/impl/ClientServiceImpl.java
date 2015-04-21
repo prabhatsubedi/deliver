@@ -820,12 +820,14 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         List<CartEntity> customItemCarts = cartDaoService.getMyCustomItemCarts(facebookId);
         for (CartEntity cart: customItemCarts){
             ItemEntity item = new ItemEntity();
-            List<ItemsImageEntity> itemsImages = new ArrayList<>();
+            /*List<ItemsImageEntity> itemsImages = new ArrayList<>();
             ItemsImageEntity itemsImage = new ItemsImageEntity();
             itemsImage.setUrl("https://idelivrlive.s3.amazonaws.com/default/item/noimg.jpg");
+            itemsImages.add(itemsImage);*/
             item.setId(cart.getCartCustomItem().getId());
             item.setName(cart.getCartCustomItem().getName());
-            item.setItemsImage(itemsImages);
+            //item.setItemsImage(itemsImages);
+            item.setImageUrl("https://idelivrlive.s3.amazonaws.com/default/item/noimg.jpg");
             item.setUnitPrice(new BigDecimal(-1));
             item.setIsCustomItem(Boolean.TRUE);
             cart.setItem(item);
@@ -839,7 +841,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
            storesBrandEntity = cartEntities.get(0).getStoresBrand();
 
            for(CartEntity cartEntity : cartEntities){
-               if(cartEntity.getItem() != null){
+               //if not custom item set image and attributes
+               if(!cartEntity.getItem().getIsCustomItem()){
                    ItemsImageEntity itemsImageEntity = itemsImageDaoService.findImage(cartEntity.getItem().getId());
                    if(itemsImageEntity !=null)
                         cartEntity.getItem().setImageUrl(itemsImageEntity.getUrl());
@@ -1030,11 +1033,21 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
        }
 
 
-       if(BigDecimalUtil.isLessThen(totalPrice, cartEntities.get(0).getStoresBrand().getMinOrderAmount())) {
-           //Minimum order value is
-           cartDto.setMessage("CRT008:"+" "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+ cartEntities.get(0).getStoresBrand().getMinOrderAmount());
-           cartDto.setValid(false);
-           return cartDto;
+       Boolean customItemExists = false;
+       for (CartEntity cartEntity: cartEntities){
+           if(cartEntity.getCartCustomItem() != null){
+               customItemExists = true;
+               break;
+           }
+       }
+
+       if(!customItemExists){
+           if(BigDecimalUtil.isLessThen(totalPrice, cartEntities.get(0).getStoresBrand().getMinOrderAmount())) {
+               //Minimum order value is
+               cartDto.setMessage("CRT008:"+" "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+ cartEntities.get(0).getStoresBrand().getMinOrderAmount());
+               cartDto.setValid(false);
+               return cartDto;
+           }
        }
 
         //Now Check if Min and Max Order Quanitity Has been changed from system
@@ -1164,19 +1177,19 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         //get cutom item of the cart
         CartCustomItemEntity cartCustomItem = cartCustomItemDaoService.findCustomItem(cartId);
         if(cartCustomItem != null) {
-            ItemEntity item = new ItemEntity();
+            ItemEntity customItem = new ItemEntity();
             List<ItemsImageEntity> itemsImages = new ArrayList<>();
             ItemsImageEntity itemsImage = new ItemsImageEntity();
             itemsImage.setUrl("https://idelivrlive.s3.amazonaws.com/default/item/noimg.jpg");
             itemsImages.add(itemsImage);
-            item.setId(cartCustomItem.getId());
-            item.setName(cartCustomItem.getName());
-            item.setItemsImage(itemsImages);
-            item.setUnitPrice(new BigDecimal(-1));
-            item.setMinOrderQuantity(1);
-            item.setMaxOrderQuantity(100);
-            item.setIsCustomItem(Boolean.TRUE);
-            cartDto.setItem(item);
+            customItem.setId(cartCustomItem.getId());
+            customItem.setName(cartCustomItem.getName());
+            customItem.setItemsImage(itemsImages);
+            customItem.setUnitPrice(new BigDecimal(-1));
+            customItem.setMinOrderQuantity(1);
+            customItem.setMaxOrderQuantity(100);
+            customItem.setIsCustomItem(Boolean.TRUE);
+            cartDto.setItem(customItem);
         }
 
         cartEntity.setItem(null);

@@ -172,7 +172,7 @@ public class CustomerServiceImpl implements CustomerService {
             * */
             if(registeredCustomer.getUser().getLastActivityDate() == null) {
                 registeredCustomer.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
-                refillCustomerWallet(registeredCustomer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)), "referee reward amount");
+                refillCustomerWallet(registeredCustomer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)), MessageBundle.getMessage("WTM010", "push_notification.properties"));
             }
 
             registeredCustomer.getUser().setLastActivityDate(MessageBundle.getCurrentTimestampSQL());
@@ -204,9 +204,21 @@ public class CustomerServiceImpl implements CustomerService {
     //            }
                 //if(registeredCustomer.getUser().getLastActivityDate().equals(null)) {
                 customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
-                refillCustomerWallet(customerEntity.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)), "normal user bonus amount");
                // }
-                customerDaoService.save(customerEntity);
+               customerDaoService.save(customerEntity);
+               customerEntity.setWalletAmount(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
+               WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
+               walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+               walletTransactionEntity.setAccountType(AccountType.CREDIT);
+               String remark = MessageBundle.getMessage("WTM009", "push_notification.properties");
+               walletTransactionEntity.setRemarks(remark);
+               walletTransactionEntity.setTransactionAmount(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
+               walletTransactionEntity.setCustomer(customerEntity);
+               walletTransactionEntity.setPaymentMode(PaymentMode.WALLET);
+               walletTransactionEntity.setAvailableWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()));
+               systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
+               customerEntity.setWalletTransactions(Collections.singletonList(walletTransactionEntity));
+               customerDaoService.update(customerEntity);
             } else {
                 throw new YSException("SEC014");
            }

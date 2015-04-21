@@ -868,7 +868,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         boolean status = orderDaoService.update(order);
         if(status){
             /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
-            accountService.generateBillAndReceiptAndSendEmail(order);
+            //accountService.generateBillAndReceiptAndSendEmail(order);
 
 
             /*=========== Calculate Average Rating For Customer ================ (Appended By Surendra) */
@@ -915,7 +915,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                if(referrerId != null){
                    CustomerEntity referrer = customerDaoService.find(referrerId);
                    referrer.setRewardsEarned(referrer.getRewardsEarned().add(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT))));
-                   customerService.refillCustomerWallet(referrer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT)), "Referral amount form referee"+order.getCustomer().getFacebookId());
+                   customerService.refillCustomerWallet(referrer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT)), MessageBundle.getMessage("WTM005", "push_notification.properties"));
                    customerDaoService.update(referrer);
                }
             }

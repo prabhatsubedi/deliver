@@ -1626,7 +1626,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         List<OrderEntity> orderList = new ArrayList<>();
-        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,assignedTime,attachments,itemServiceAndVatCharge,grandTotal,totalCost,rating,deliveryCharge,bill";
+        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,deliveryBoySelections,assignedTime,attachments,itemServiceAndVatCharge,grandTotal,totalCost,rating,deliveryCharge,bill";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -1639,6 +1639,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
         assoc.put("orderCancel", "id,reasonDetails,reason");
         assoc.put("dBoyOrderHistories", "id,distanceTravelled,amountEarned,jobStartedAt,orderCompletedAt");
+        assoc.put("deliveryBoySelections", "id,paidToCourier");
         assoc.put("bill", "id,path");
 
         subAssoc.put("user", "id,fullName,mobileNumber,profileImage,addresses");
@@ -1718,7 +1719,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             if(orderEntity.getItemServiceAndVatCharge() != null){
                 totalCost = totalCost.add(orderEntity.getItemServiceAndVatCharge());
             }
-            orderEntity.setGrandTotal(totalCost);
+            orderEntity.setTotalCost(totalCost);
         }
 
         paginationDto.setData(ordersList);

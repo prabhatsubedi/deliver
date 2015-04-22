@@ -278,6 +278,9 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                         console.log(jsonData);
                         return JSON.stringify(jsonData);
                     }
+                }   ,
+                complete: function() {
+                    $('body').removeClass('loader_div').children('.loader').hide().remove();
                 }
             }
         });

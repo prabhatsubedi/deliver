@@ -365,6 +365,7 @@ Order.getPurchaseHistory = function(){
     }
 
     dataFilter.url = "/merchant/get_purchase_history";
+    dataFilter.order = [[ 3, 'desc' ]];
     dataFilter.columns = [
         { "name": "" },
         { "name": "customer#user#fullName" },

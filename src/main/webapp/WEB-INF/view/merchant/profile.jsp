@@ -183,7 +183,7 @@
                                 </div>
 
                                 <div class="form-group clearfix">
-                                    <label for="service_fee" class="col-lg-4 floated_label no_pad">Service Fee</label>
+                                    <label for="service_fee" class="col-lg-4 floated_label no_pad">Processing Charge</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_service_fee none_editable"></div>
                                         <div class="info_edit editable hidden">

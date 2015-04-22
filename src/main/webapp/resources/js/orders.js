@@ -172,7 +172,7 @@ Order.getOrders = function(elemId, url, params){
 
     dataFilter.url = url;
     dataFilter.params = params;
-    dataFilter.order = [[ 3, 'desc' ]];
+    dataFilter.order = [[ 2, 'desc' ]];
     if(elemId == '#order_inroute_table') {
         dataFilter.columns = [
             { "name": "" },
@@ -503,7 +503,7 @@ Order.courierBoyOrderHistory = function(params){
                     unpaid_total += earned_amount;
                 }
 
-                var row = [i+1, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', Main.ucfirst(order.deliveryStatus), '<span class="' + (order.dBoyPaid == undefined ? "paid_status unpaid_amount" : '') + '">' + earned_amount + '</span>', order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:'', order.dBoyPaidDate, checkBox];
+                var row = [i+1, order.orderDate, order.id, order.customer.user.fullName, order.orderName, order.dBoyOrderHistories[orderHistoryLength-1].distanceTravelled+'KM', Main.ucfirst(order.deliveryStatus), '<span class="' + (order.dBoyPaid == undefined ? "paid_status unpaid_amount" : '') + '">' + earned_amount + '</span>', order.assignedTime+'Min', time_taken!=undefined?time_taken+'Min':'', order.rating.customerRating != undefined?order.rating.customerRating:'', order.rating.customerComment != undefined?order.rating.customerComment:'', order.rating.deliveryBoyRating != undefined?order.rating.deliveryBoyRating:'', order.rating.deliveryBoyComment != undefined?order.rating.deliveryBoyComment:'', order.dBoyPaidDate/*, checkBox*/];
                 tableData.push(row);
             }
             $('.unpaid_total').html(unpaid_total.toFixed(2));
@@ -526,6 +526,7 @@ Order.courierBoyOrderHistory = function(params){
     headers.id = Main.getURLvalue(3);
 
     dataFilter.url = "/dboy/get_dBoy_order_history";
+    dataFilter.order = [[ 2, 'desc' ]];
     dataFilter.columns = [
         { "name": "" },
         { "name": "orderDate" },
@@ -541,8 +542,8 @@ Order.courierBoyOrderHistory = function(params){
         { "name": "" },
         { "name": "" },
         { "name": "" },
-        { "name": "dBoyPaidDate" },
-        { "name": "" }
+        { "name": "dBoyPaidDate" }//,
+//        { "name": "" }
     ];
     dataFilter.headers = headers;
     if(params != undefined)

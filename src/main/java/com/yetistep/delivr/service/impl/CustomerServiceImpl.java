@@ -1896,22 +1896,6 @@ public class CustomerServiceImpl implements CustomerService {
             throw new YSException("VLD011");
         }
         customerEntity.setWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()).add(refillAmount));
-        /*List<WalletTransactionEntity> walletTransactionEntities = customerEntity.getWalletTransactions();
-        WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
-        walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
-        walletTransactionEntity.setAccountType(AccountType.CREDIT);
-        String remark = MessageBundle.getMessage("WTM004", "push_notification.properties");
-        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
-        remark = String.format(remark, currency, refillAmount);
-        walletTransactionEntity.setRemarks(remark);
-        walletTransactionEntity.setTransactionAmount(refillAmount);
-        walletTransactionEntity.setCustomer(customerEntity);
-        walletTransactionEntity.setPaymentMode(PaymentMode.WALLET);
-        walletTransactionEntity.setAvailableWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()));
-        systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
-        walletTransactionEntities.add(walletTransactionEntity);
-        customerEntity.setWalletTransactions(walletTransactionEntities);*/
-
         this.setCustomerWalletTransaction(customerEntity, refillAmount, AccountType.CREDIT, PaymentMode.WALLET, remark, customerEntity.getWalletAmount());
         boolean status = customerDaoService.update(customerEntity);
 

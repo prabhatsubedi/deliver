@@ -129,4 +129,12 @@ public class BigDecimalUtil {
        return null;
     }
 
+    public static BigDecimal multiply(BigDecimal input, BigDecimal multiplyFactor){
+        return input.multiply(multiplyFactor);
+    }
+
+    public static BigDecimal divide(BigDecimal input, BigDecimal divisor){
+        return input.divide(divisor, RoundingMode.HALF_UP);
+    }
+
 }

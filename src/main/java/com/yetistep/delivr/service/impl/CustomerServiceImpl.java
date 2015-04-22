@@ -3,13 +3,17 @@ package com.yetistep.delivr.service.impl;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
+import com.yetistep.delivr.dto.PaymentGatewayDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
 import com.yetistep.delivr.model.mobile.PageInfo;
 import com.yetistep.delivr.model.mobile.StaticPagination;
-import com.yetistep.delivr.model.mobile.dto.*;
+import com.yetistep.delivr.model.mobile.dto.CheckOutDto;
+import com.yetistep.delivr.model.mobile.dto.MyOrderDto;
+import com.yetistep.delivr.model.mobile.dto.SearchDto;
+import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
@@ -115,6 +119,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     CartCustomItemDaoService cartCustomItemDaoService;
+
+    @Autowired
+    PaymentGatewayInfoDaoService paymentGatewayInfoDaoService;
 
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
@@ -2005,5 +2012,28 @@ public class CustomerServiceImpl implements CustomerService {
         }
         paginationDto.setData(walletTransactionEntities);
         return paginationDto;
+    }
+
+    @Override
+    public PaymentGatewayDto requestToAddFundToWallet(Long facebookId, BigDecimal amount) throws Exception{
+        CustomerEntity customerEntity = customerDaoService.find(facebookId);
+        if(customerEntity == null){
+            throw new YSException("VLD011");
+        }
+        PaymentGatewayInfoEntity paymentGatewayInfoEntity = new PaymentGatewayInfoEntity();
+        BigDecimal minimumTransferableAmount = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_TRANSFERABLE_AMOUNT));
+        if(BigDecimalUtil.isLessThen(amount, minimumTransferableAmount)){
+            String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+            throw new YSException("VLD038", currency +". "+minimumTransferableAmount);
+        }
+        BigDecimal conversionRate = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.INR_CONVERSION_RATE));
+        paymentGatewayInfoEntity.setAmount(amount);
+        paymentGatewayInfoEntity.setInrAmount(BigDecimalUtil.divide(amount, conversionRate));
+        paymentGatewayInfoEntity.setCurrencyCode(MessageBundle.getPaymentGatewayMsg("currencyCode"));
+        paymentGatewayInfoEntity.setTransactionReference(System.currentTimeMillis()+"");
+        paymentGatewayInfoEntity.setFlag(false);
+        paymentGatewayInfoEntity.setCustomer(customerEntity);
+        paymentGatewayInfoDaoService.save(paymentGatewayInfoEntity);
+        return SHAEncoder.getPaymentRequestData(paymentGatewayInfoEntity);
     }
 }

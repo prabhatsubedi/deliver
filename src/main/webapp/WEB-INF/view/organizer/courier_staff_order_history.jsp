@@ -49,7 +49,7 @@
             }
         });
 
-        function calcUnpaid() {
+/*        function calcUnpaid() {
             var unpaid_total = 0;
             $('.unpaid_amount').each(function(){
                 unpaid_total += parseFloat($(this).html());
@@ -110,7 +110,7 @@
                 Main.popDialog('', 'Are you sure you want to pay the shopper', buttons);
 
             }
-        });
+        });*/
     });
 </script>
 <body>
@@ -162,11 +162,11 @@
                         <th colspan="2">Feedback To Customer</th>
                         <th colspan="2">Feedback To Shopper</th>
                         <th rowspan="2"><div class="width_80">Paid Date & Time</div></th>
-                        <th rowspan="2" class="no_sort">Select All
+<%--                        <th rowspan="2" class="no_sort">Select All
                             <span style="margin-left: 10px;">
                                 <input type="checkbox" id="selectAllToPay" name="selectAllToPay"/>
                             </span>
-                        </th>
+                        </th>--%>
                     </tr>
                         <tr>
                             <th class="no_sort">Rating</th>
@@ -177,7 +177,7 @@
                     </thead>
                     <tbody>
                     </tbody>
-                    <tfoot>
+<%--                    <tfoot>
                     <tr>
                         <th colspan="7">Total</th>
                         <th class="unpaid_total"></th>
@@ -188,7 +188,7 @@
                             </button>
                         </th>
                     </tr>
-                    </tfoot>
+                    </tfoot>--%>
                 </table>
             </div>
         </div>

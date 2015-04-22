@@ -63,6 +63,7 @@
        <mapping class="com.yetistep.delivr.model.ValidateMobileEntity" />
        <mapping class="com.yetistep.delivr.model.TestEntity" />
        <mapping class="com.yetistep.delivr.model.WalletTransactionEntity" />
+       <mapping class="com.yetistep.delivr.model.PaymentGatewayInfoEntity" />
 
     </session-factory>
 </hibernate-configuration>

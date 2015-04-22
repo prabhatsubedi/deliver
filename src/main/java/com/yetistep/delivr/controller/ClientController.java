@@ -1,10 +1,7 @@
 package com.yetistep.delivr.controller;
 
 import com.yetistep.delivr.abs.AbstractManager;
-import com.yetistep.delivr.dto.HeaderDto;
-import com.yetistep.delivr.dto.OrderSummaryDto;
-import com.yetistep.delivr.dto.PaginationDto;
-import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.dto.*;
 import com.yetistep.delivr.enums.RatingReason;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.AddressDto;
@@ -1004,6 +1001,40 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while retrieving list of transactions", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/transactions/pgresponse", method = RequestMethod.POST, headers = "content-type=application/x-www-form-urlencoded")
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getPaymentGatewayResponse(@ModelAttribute PaymentGatewayDto paymentGatewayDto) {
+        try{
+            System.out.println(paymentGatewayDto.toString());
+            ServiceResponse serviceResponse = new ServiceResponse("List of transactions retrieved successfully");
+            serviceResponse.addParam("paymentGatewayResponse", paymentGatewayDto);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting payment response", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/transactions/add_fund/fbId/{facebookId}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> addFundToWallet(@RequestHeader HttpHeaders headers, @RequestBody PaymentGatewayInfoEntity paymentGatewayInfo, @PathVariable Long facebookId) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            //validateMobileClient(headerDto.getAccessToken());
+
+            PaymentGatewayDto paymentGatewayDto = customerService.requestToAddFundToWallet(facebookId, paymentGatewayInfo.getAmount());
+            ServiceResponse serviceResponse = new ServiceResponse("Payment gateway info retrieved successfully");
+            serviceResponse.addParam("paymentGatewayInfo", paymentGatewayDto);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving payment gateway info", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

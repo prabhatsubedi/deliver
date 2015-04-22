@@ -270,10 +270,14 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                     return JSON.stringify(request);
                 },
                 dataFilter : function(data, type) {
-                    $('body').removeClass('loader_div').children('.loader').hide().remove();
-                    var jsonData = dataFilter(JSON.parse(data), type);
-                    console.log(jsonData);
-                    return JSON.stringify(jsonData);
+                    data = JSON.parse(data);
+                    if(data.message == "YSException") {
+                        return JSON.stringify({data: [], recordsFiltered: 0, recordsTotal: 0});
+                    } else {
+                        var jsonData = dataFilter(data, type);
+                        console.log(jsonData);
+                        return JSON.stringify(jsonData);
+                    }
                 }
             }
         });

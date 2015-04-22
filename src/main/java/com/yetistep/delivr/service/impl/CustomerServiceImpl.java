@@ -37,6 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
     private static final Logger log = Logger.getLogger(CustomerServiceImpl.class);
     private static final Integer ON_TIME_DELIVERY = 0;
     private static final Integer DELAYED_DELIVERY = 1;
+    private static final BigDecimal minusOne = new BigDecimal(-1);
 
 
     @Autowired
@@ -580,7 +581,7 @@ public class CustomerServiceImpl implements CustomerService {
                 item.setId(cartCustomItem.getId());
                 item.setName(cartCustomItem.getName());
                 item.setImageUrl("https://idelivrlive.s3.amazonaws.com/default/item/noimg.jpg");
-                item.setUnitPrice(new BigDecimal(-1));
+                item.setUnitPrice(minusOne);
                 item.setOrderQuantity(cartCustomItem.getCart().getOrderQuantity());
                 item.setIsCustomItem(Boolean.TRUE);
                 customItems.add(item);
@@ -600,13 +601,13 @@ public class CustomerServiceImpl implements CustomerService {
         if(defaultItems.size()>0){
             checkOutDto.setSubTotal(subTotal.setScale(0, BigDecimal.ROUND_DOWN));
         }else{
-            checkOutDto.setSubTotal(new BigDecimal(-1));
+            checkOutDto.setSubTotal(minusOne);
         }
 
         if(cartCustomItems.size()>0){
-            checkOutDto.setTax(new BigDecimal(-1));
-            checkOutDto.setServiceFee(new BigDecimal(-1));
-            checkOutDto.setDeliveryFee(new BigDecimal(-1));
+            checkOutDto.setTax(minusOne);
+            checkOutDto.setServiceFee(minusOne);
+            checkOutDto.setDeliveryFee(minusOne);
         }else{
             checkOutDto.setTax(merchantTax.setScale(0, BigDecimal.ROUND_DOWN));
             checkOutDto.setServiceFee(serviceFeeAmt.setScale(0, BigDecimal.ROUND_DOWN));
@@ -623,7 +624,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         checkOutDto.setDiscount(customerBalanceBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
         if(cartCustomItems.size()>0){
-            checkOutDto.setEstimatedAmount(new BigDecimal(-1));
+            checkOutDto.setEstimatedAmount(minusOne);
         }   else {
             BigDecimal estimatedAmt = subTotal.add(merchantTax).add(serviceFeeAmt).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
             checkOutDto.setEstimatedAmount(estimatedAmt.setScale(0, BigDecimal.ROUND_DOWN));

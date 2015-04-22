@@ -50,11 +50,8 @@ public class OrderEntity implements Serializable {
     private Integer elapsedTime;
     private RatingEntity rating;
     private List<String> attachments;
-    private OrderCancelEntity orderCancel;
-    private CourierTransactionEntity courierTransaction;
     private Integer surgeFactor;
     private BigDecimal itemServiceAndVatCharge;
-    private InvoiceEntity invoice;
     private Integer reprocessTime;
     private Boolean dBoyPaid;
     private Date dBoyPaidDate;
@@ -64,6 +61,11 @@ public class OrderEntity implements Serializable {
     private BigDecimal shortFallAmount;
     private BigDecimal itemServiceCharge;
     private BigDecimal itemVatCharge;
+    private String description; //used as transient for dBoy account
+
+    private OrderCancelEntity orderCancel;
+    private CourierTransactionEntity courierTransaction;
+    private InvoiceEntity invoice;
     private List<ItemsOrderEntity> itemsOrder;
     private AddressEntity address;
     private DeliveryBoyEntity deliveryBoy;
@@ -533,5 +535,14 @@ public class OrderEntity implements Serializable {
 
     public void setSettledDate(Date settledDate) {
         this.settledDate = settledDate;
+    }
+
+    @Transient
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

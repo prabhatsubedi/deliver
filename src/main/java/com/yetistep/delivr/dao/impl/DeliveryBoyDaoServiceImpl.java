@@ -236,4 +236,6 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         BigInteger count = (BigInteger) sqlQuery.uniqueResult();
         return count.intValue();
     }
+
+
 }

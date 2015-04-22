@@ -33,6 +33,8 @@ import java.util.*;
  */
 public class ClientServiceImpl extends AbstractManager implements ClientService {
     private static final Logger log = Logger.getLogger(ClientServiceImpl.class);
+    private static final BigDecimal minusOne = new BigDecimal(-1);
+
     @Autowired
     StoresBrandDaoService storesBrandDaoService;
 
@@ -483,10 +485,10 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             }else if(itemOrder.getCustomItem() != null){
                 if(itemOrder.getCustomItem().getCustomerCustom().equals(Boolean.TRUE))   {
                     if(itemOrder.getPurchaseStatus() == null || !itemOrder.getPurchaseStatus().equals(Boolean.TRUE)) {
-                        itemOrder.setVat(new BigDecimal(-1));
-                        itemOrder.setServiceCharge(new BigDecimal(-1));
-                        itemOrder.setItemTotal(new BigDecimal(-1));
-                        itemOrder.setServiceAndVatCharge(new BigDecimal(-1));
+                        itemOrder.setVat(minusOne);
+                        itemOrder.setServiceCharge(minusOne);
+                        itemOrder.setItemTotal(minusOne);
+                        itemOrder.setServiceAndVatCharge(minusOne);
                     }
                 }
 
@@ -516,19 +518,19 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
         Boolean tbd = false;
         for(ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()){
-            if(itemsOrderEntity.getItemTotal().equals(new BigDecimal(-1)) && itemsOrderEntity.getAvailabilityStatus()){
+            if(itemsOrderEntity.getItemTotal().equals(minusOne) && itemsOrderEntity.getAvailabilityStatus()){
                 tbd = true;
                 break;
             }
         }
 
         if(tbd){
-            accountSummary.setServiceFee(new BigDecimal(-1));
-            accountSummary.setVatAndServiceCharge(new BigDecimal(-1));
-            accountSummary.setEstimatedTotal(new BigDecimal(-1));
-            accountSummary.setDeliveryFee(new BigDecimal(-1));
-            accountSummary.setItemServiceCharge(new BigDecimal(-1));
-            accountSummary.setItemVatCharge(new BigDecimal(-1));
+            accountSummary.setServiceFee(minusOne);
+            accountSummary.setVatAndServiceCharge(minusOne);
+            accountSummary.setEstimatedTotal(minusOne);
+            accountSummary.setDeliveryFee(minusOne);
+            accountSummary.setItemServiceCharge(minusOne);
+            accountSummary.setItemVatCharge(minusOne);
         }   else {
             accountSummary.setServiceFee(order.getSystemServiceCharge());
             accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
@@ -828,7 +830,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             item.setName(cart.getCartCustomItem().getName());
             //item.setItemsImage(itemsImages);
             item.setImageUrl("https://idelivrlive.s3.amazonaws.com/default/item/noimg.jpg");
-            item.setUnitPrice(new BigDecimal(-1));
+            item.setUnitPrice(minusOne);
             item.setIsCustomItem(Boolean.TRUE);
             cart.setItem(item);
             cart.setCartCustomItem(null);
@@ -852,7 +854,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                    //Add Attribute Price and Unit Price
                    BigDecimal attributesPrice = cartAttributesDaoService.findAttributesPrice(cartEntity.getId());
 
-                   if(!cartEntity.getItem().getUnitPrice().equals(new BigDecimal(-1)))
+                   if(!cartEntity.getItem().getUnitPrice().equals(minusOne))
                         cartEntity.getItem().setUnitPrice(cartEntity.getItem().getUnitPrice().add(attributesPrice).multiply(new BigDecimal(cartEntity.getOrderQuantity())));
 
                    cartEntity.getItem().setVat(null);
@@ -1185,7 +1187,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             customItem.setId(cartCustomItem.getId());
             customItem.setName(cartCustomItem.getName());
             customItem.setItemsImage(itemsImages);
-            customItem.setUnitPrice(new BigDecimal(-1));
+            customItem.setUnitPrice(minusOne);
             customItem.setMinOrderQuantity(1);
             customItem.setMaxOrderQuantity(100);
             customItem.setIsCustomItem(Boolean.TRUE);

@@ -279,9 +279,21 @@ public class AccountantController {
         }
     }
 
-
-
-
+    @RequestMapping(value = "/get_dboy_account", method = RequestMethod.POST)
+    public ResponseEntity<ServiceResponse> getDBoyAccount(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            PaginationDto advanceAmounts = deliveryBoyService.getDBoyAccount(headerDto, requestJsonDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Advance amounts retrieved successfully");
+            serviceResponse.addParam("advanceAmounts", advanceAmounts);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving advance amounts: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
 
 }

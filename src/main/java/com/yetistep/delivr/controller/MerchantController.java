@@ -9,6 +9,7 @@ import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
 import com.yetistep.delivr.util.SessionManager;
+import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -472,8 +473,15 @@ public class MerchantController {
             serviceResponse.addParam("orders", orders);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while retrieving purchase history: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+             //check if exception is YSException then send header as json
+            if(e instanceof YSException){
+                ServiceResponse serviceResponse = new ServiceResponse("YSException");
+                serviceResponse.addParam("error", httpHeaders);
+                return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+            }
+
+            GeneralUtil.logError(log, "Error Occurred while retrieving purchase history: ", e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
@@ -525,8 +533,8 @@ public class MerchantController {
             serviceResponse.addParam("invoices", invoices);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while retrieving Invoices: ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            GeneralUtil.logError(log, "Error Occurred while retrieving Invoices: ", e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }

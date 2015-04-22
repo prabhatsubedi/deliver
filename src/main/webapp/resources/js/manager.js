@@ -180,7 +180,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             submitHandler: function (form) {
 
                 if($('#commission').val() == 0 && $('#service_fee').val() == 0) {
-                    Main.popDialog('', 'Both commission percent and service fee cannot be 0.');
+                    Main.popDialog('', 'Both commission percent and processing charge cannot be 0.');
                     return false;
                 }
 

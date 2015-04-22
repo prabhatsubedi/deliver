@@ -278,6 +278,9 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                         console.log(jsonData);
                         return JSON.stringify(jsonData);
                     }
+                }   ,
+                complete: function() {
+                    $('body').removeClass('loader_div').children('.loader').hide().remove();
                 }
             }
         });
@@ -289,7 +292,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             $(selector).DataTable().ajax.reload();
         }).appendTo( '.dataTables_filter' );
         clearInterval(dataTablesInterval);
-        dataTablesInterval = setInterval($(selector).DataTable().ajax.reload, 60000)
+        dataTablesInterval = setInterval($(selector).DataTable().ajax.reload, 60000);
 
         /*
                     selector = "#merchants_table";

@@ -479,6 +479,8 @@ public class CustomerServiceImpl implements CustomerService {
         Integer brandId = carts.get(0).getStoresBrand().getId();
         BigDecimal subTotal = BigDecimal.ZERO;
         BigDecimal merchantTax = BigDecimal.ZERO;
+        BigDecimal itemServiceCharge = BigDecimal.ZERO;
+        BigDecimal itemVatCharge = BigDecimal.ZERO;
         for(CartEntity cart : carts){
             if(cart.getItem() != null){
                 ItemEntity item = merchantDaoService.getItemDetail(cart.getItem().getId());
@@ -490,11 +492,15 @@ public class CustomerServiceImpl implements CustomerService {
 
                 BigDecimal itemTax = BigDecimal.ZERO;
 
-                if(item.getServiceCharge()!=null && BigDecimalUtil.isGreaterThenZero(item.getServiceCharge()))
+                if(item.getServiceCharge()!=null && BigDecimalUtil.isGreaterThenZero(item.getServiceCharge())){
                     itemTax =  BigDecimalUtil.percentageOf(total, item.getServiceCharge());
+                    itemServiceCharge = itemServiceCharge.add(itemTax);
+                }
 
-                if(item.getVat()!=null && BigDecimalUtil.isGreaterThenZero(item.getVat()))
+                if(item.getVat()!=null && BigDecimalUtil.isGreaterThenZero(item.getVat())){
                     itemTax = itemTax.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
+                    itemVatCharge = itemVatCharge.add(itemTax);
+                }
 
                 merchantTax = merchantTax.add(itemTax);
                 subTotal = subTotal.add(total);
@@ -615,10 +621,14 @@ public class CustomerServiceImpl implements CustomerService {
             checkOutDto.setTax(minusOne);
             checkOutDto.setServiceFee(minusOne);
             checkOutDto.setDeliveryFee(minusOne);
+            checkOutDto.setItemServiceCharge(minusOne);
+            checkOutDto.setItemVatCharge(minusOne);
         }else{
             checkOutDto.setTax(merchantTax.setScale(0, BigDecimal.ROUND_DOWN));
             checkOutDto.setServiceFee(serviceFeeAmt.setScale(0, BigDecimal.ROUND_DOWN));
             checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
+            checkOutDto.setItemServiceCharge(itemServiceCharge.setScale(0, BigDecimal.ROUND_DOWN));
+            checkOutDto.setItemVatCharge(itemVatCharge.setScale(0, BigDecimal.ROUND_DOWN));
         }
 
         if(BigDecimalUtil.isZero(checkOutDto.getDeliveryFee())) {
@@ -1896,22 +1906,6 @@ public class CustomerServiceImpl implements CustomerService {
             throw new YSException("VLD011");
         }
         customerEntity.setWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()).add(refillAmount));
-        /*List<WalletTransactionEntity> walletTransactionEntities = customerEntity.getWalletTransactions();
-        WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
-        walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
-        walletTransactionEntity.setAccountType(AccountType.CREDIT);
-        String remark = MessageBundle.getMessage("WTM004", "push_notification.properties");
-        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
-        remark = String.format(remark, currency, refillAmount);
-        walletTransactionEntity.setRemarks(remark);
-        walletTransactionEntity.setTransactionAmount(refillAmount);
-        walletTransactionEntity.setCustomer(customerEntity);
-        walletTransactionEntity.setPaymentMode(PaymentMode.WALLET);
-        walletTransactionEntity.setAvailableWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()));
-        systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
-        walletTransactionEntities.add(walletTransactionEntity);
-        customerEntity.setWalletTransactions(walletTransactionEntities);*/
-
         this.setCustomerWalletTransaction(customerEntity, refillAmount, AccountType.CREDIT, PaymentMode.WALLET, remark, customerEntity.getWalletAmount());
         boolean status = customerDaoService.update(customerEntity);
 

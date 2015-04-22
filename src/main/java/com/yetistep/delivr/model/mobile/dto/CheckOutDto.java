@@ -27,6 +27,8 @@ public class CheckOutDto {
     private BigDecimal estimatedAmount;
     private BigDecimal walletAmount;
     private BigDecimal maxOrderLimit;
+    private BigDecimal itemServiceCharge;
+    private BigDecimal itemVatCharge;
 
     public StoresBrandEntity getStoresBrand() {
         return storesBrand;
@@ -122,5 +124,21 @@ public class CheckOutDto {
 
     public void setCartCustomItems(List<CartCustomItemEntity> cartCustomItems) {
         this.cartCustomItems = cartCustomItems;
+    }
+
+    public BigDecimal getItemServiceCharge() {
+        return itemServiceCharge;
+    }
+
+    public void setItemServiceCharge(BigDecimal itemServiceCharge) {
+        this.itemServiceCharge = itemServiceCharge;
+    }
+
+    public BigDecimal getItemVatCharge() {
+        return itemVatCharge;
+    }
+
+    public void setItemVatCharge(BigDecimal itemVatCharge) {
+        this.itemVatCharge = itemVatCharge;
     }
 }

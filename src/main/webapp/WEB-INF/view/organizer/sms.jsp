@@ -59,40 +59,5 @@
     </div>
 </div>
 
-<div class="modal fade modal_form" id="modal_activation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form role="form" id="form_activation" method="POST" action="">
-            <div class="modal-content">
-                <div class="modal-header text-center">
-                    Merchant Activation
-                </div>
-                <div class="modal-body body_padding">
-                    <div class="form-group">
-                        <select id="partnership" name="partnership" class="partnership col-xs-12 no_pad no_margin" data-style="form-control">
-                            <option value="none">Select Partnership Status</option>
-                            <option value="true">Partner</option>
-                            <option value="false">Non Partner</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="commission" name="commission" placeholder="Commission Percent">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="service_fee" name="service_fee" placeholder="Service Fee">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="col-lg-6 no_pad">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    </div>
-                    <div class="col-lg-6 no_pad">
-                        <button type="submit" class="btn btn-default next">Activate</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
 </body>
 </html>

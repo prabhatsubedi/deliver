@@ -39,4 +39,6 @@ public interface DeliveryBoyDaoService extends GenericDaoService<Integer, Delive
 
     public Integer getNumberOfActiveOrders(Integer deliveryBoyId) throws Exception;
 
+    public DeliveryBoyEntity findDBoyById(Integer id) throws Exception;
+
 }

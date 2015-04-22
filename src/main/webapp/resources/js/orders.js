@@ -122,7 +122,6 @@ Order.getOrders = function(elemId, url, params){
             var activeStatus = ["ORDER_PLACED", "ORDER_ACCEPTED", "IN_ROUTE_TO_PICK_UP", "AT_STORE", "IN_ROUTE_TO_DELIVERY"];
             var orderHistoryLength = order.dBoyOrderHistories.length;
             var time_taken = 0;
-            console.log(orderHistoryLength);
 
             var amountEarned = 0;
             if(orderHistoryLength > 0){
@@ -131,10 +130,20 @@ Order.getOrders = function(elemId, url, params){
                 }else if(order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt != undefined){
                     time_taken = ((n-order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt)/1000/60).toFixed(0);
                 }
+
                 amountEarned = order.dBoyOrderHistories[orderHistoryLength-1].amountEarned != undefined?Main.getFromLocalStorage("currency")+order.dBoyOrderHistories[orderHistoryLength-1].amountEarned:0;
             }
 
-            var dBoySelection =  order.deliveryBoySelections[0];
+            var dBoySelection;
+            var deliveryBoySelections = order.deliveryBoySelections;
+            var deliveryBoySelectionsLength = deliveryBoySelections.length;
+            //i is used already. use l here
+            for(var l=0; l < deliveryBoySelectionsLength; l++){
+                 if(deliveryBoySelections[l].accepted != undefined && deliveryBoySelections[l].accepted)  {
+                     dBoySelection =  order.deliveryBoySelections[l];
+                     break;
+                 }
+            }
             var amountEarnedLive = dBoySelection!=undefined?dBoySelection.paidToCourier:'';
 
             var drop_location = '';

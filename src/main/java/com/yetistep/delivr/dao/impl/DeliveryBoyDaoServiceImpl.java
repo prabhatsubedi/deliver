@@ -40,6 +40,16 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
     }
 
     @Override
+    public DeliveryBoyEntity findDBoyById(Integer id) throws Exception {
+         List<DeliveryBoyEntity> deliveryBoys =   new ArrayList<>();
+         Criteria criteria   = getCurrentSession().createCriteria(DeliveryBoyEntity.class);
+         criteria.add(Restrictions.eq("id", id));
+         deliveryBoys = criteria.list();
+         return deliveryBoys.size()>0?deliveryBoys.get(0):null;
+
+    }
+
+    @Override
     public List<DeliveryBoyEntity> findAll() throws Exception {
         return (List<DeliveryBoyEntity>) getCurrentSession().createCriteria(DeliveryBoyEntity.class).list();
     }

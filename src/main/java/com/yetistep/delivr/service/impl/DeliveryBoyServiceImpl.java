@@ -2115,7 +2115,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             page.setTotalRows(totalRows);
         }
 
-        DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
+        DeliveryBoyEntity dBoy = deliveryBoyDaoService.findDBoyById(Integer.parseInt(headerDto.getId()));
 
         List<Object> objects = new ArrayList<>();
 
@@ -2124,21 +2124,58 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("dBoyAdvanceAmounts", "id,advanceDate,advanceAmount,type");
-        assoc.put("order", "id,deliveryStatus,orderStatus,earnedAmount,totalCost,grandTotal,orderDate,paymentMode,paidFromWallet,paidFromCOD");
-        assoc.put("user", "id,fullName,mobileNumber,profileImage");
+        assoc.put("dBoyAdvanceAmounts", "id,advanceDate,amountAdvance,type");
+        assoc.put("order", "id,deliveryStatus,orderStatus,totalCost,grandTotal,orderDate,paymentMode,paidFromWallet,paidFromCOD");
+        //assoc.put("user", "id,fullName,mobileNumber,profileImage");
 
 
         DeliveryBoyEntity acDBoy = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(dBoy, fields, assoc, subAssoc);
 
+        List<OrderEntity> advanceAsOrder = new ArrayList<>();
 
         for (DBoyAdvanceAmountEntity advanceAmount: acDBoy.getdBoyAdvanceAmounts()){
             OrderEntity orderEntity = new OrderEntity();
-
+            orderEntity.setId(advanceAmount.getId());
+            orderEntity.setOrderDate(advanceAmount.getAdvanceDate());
+            orderEntity.setGrandTotal(advanceAmount.getAmountAdvance());
+            orderEntity.setDescription(advanceAmount.getType());
+            advanceAsOrder.add(orderEntity);
         }
 
 
-        paginationDto.setData(objects);
+
+        List<OrderEntity> orderEntities = acDBoy.getOrder();
+        orderEntities.addAll(advanceAsOrder);
+
+        // Now sort by address instead of name (default).
+        Collections.sort(orderEntities, new Comparator<OrderEntity>() {
+            public int compare(OrderEntity one, OrderEntity other) {
+                return one.getOrderDate().compareTo(other.getOrderDate());
+            }
+        });
+
+        BigDecimal balance = BigDecimal.ZERO;
+        for(OrderEntity order: orderEntities){
+             if(order.getDescription() != null && order.getDescription().equals("advanceAmount") || order.getPaymentMode().equals(PaymentMode.CASH_ON_DELIVERY.toString())){
+                 balance = balance.add(order.getGrandTotal());
+                 order.setBalance(balance);
+             }else{
+                   if(!order.getPaidFromCOD().equals(BigDecimal.ZERO)){
+                       balance = balance.add(order.getPaidFromCOD());
+                       order.setBalance(balance);
+                   }
+
+                   balance = balance.subtract(order.getGrandTotal());
+                   order.setBalance(balance);
+
+             }
+        }
+
+
+        acDBoy.setOrder(orderEntities);
+        acDBoy.setdBoyAdvanceAmounts(null);
+
+        paginationDto.setData(orderEntities);
         return paginationDto;
     }
 

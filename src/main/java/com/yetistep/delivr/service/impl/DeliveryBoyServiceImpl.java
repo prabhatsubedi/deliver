@@ -2132,6 +2132,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         DeliveryBoyEntity acDBoy = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(dBoy, fields, assoc, subAssoc);
 
 
+        for (DBoyAdvanceAmountEntity advanceAmount: acDBoy.getdBoyAdvanceAmounts()){
+            OrderEntity orderEntity = new OrderEntity();
+
+        }
 
 
         paginationDto.setData(objects);

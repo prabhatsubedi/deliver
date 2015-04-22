@@ -1683,7 +1683,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             storeIdList = merchantDaoService.getStoreIdList(brandIdList);
 
             if(storeIdList.size() == 0)
-                throw new YSException("VLD038");
+                throw new YSException("VLD039");
         }
 
         PaginationDto paginationDto = new PaginationDto();

@@ -292,7 +292,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             $(selector).DataTable().ajax.reload();
         }).appendTo( '.dataTables_filter' );
         clearInterval(dataTablesInterval);
-        dataTablesInterval = setInterval($(selector).DataTable().ajax.reload, 60000)
+        dataTablesInterval = setInterval($(selector).DataTable().ajax.reload, 60000);
 
         /*
                     selector = "#merchants_table";

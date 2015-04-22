@@ -2005,6 +2005,7 @@ public class CustomerServiceImpl implements CustomerService {
             walletTransactionEntities = new ArrayList<WalletTransactionEntity>();
         }
         paginationDto.setData(walletTransactionEntities);
+        paginationDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         return paginationDto;
     }
 

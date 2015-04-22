@@ -13,6 +13,8 @@ import java.util.List;
 public class PaginationDto implements Serializable{
     /* Total number of rows. */
     private Integer numberOfRows;
+    /* Field to show currency details */
+    private String currency;
     /* List of entities to be sent. */
     private List<?> data;
 
@@ -30,5 +32,13 @@ public class PaginationDto implements Serializable{
 
     public void setData(List<?> data) {
         this.data = data;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

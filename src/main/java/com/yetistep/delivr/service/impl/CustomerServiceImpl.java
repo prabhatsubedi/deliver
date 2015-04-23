@@ -2054,6 +2054,14 @@ public class CustomerServiceImpl implements CustomerService {
             log.warn("Invalid Data:"+paymentGatewayDto.getData());
             throw new YSException("SEC015");
         }
+        if(!paymentGatewayDto.getSeal().equals(SHAEncoder.computeSeal(paymentGatewayDto.getData()))){
+            log.warn("Invalid Data Seal:"+paymentGatewayDto.getData());
+            throw new YSException("SEC016");
+        }
+        if(paymentGatewayInfoEntity.getFlag()){
+            log.warn("Transactions already processed:"+paymentGatewayDto.getData());
+            throw new YSException("SEC017");
+        }
         String transactionReference = properties.getProperty(SHAEncoder.TRANSACTION_REFERENCE_NAME);
         BigDecimal inrAmount = new BigDecimal(properties.getProperty(SHAEncoder.AMOUNT_NAME));
         String currencyCode = properties.getProperty(SHAEncoder.CURRENCY_CODE_NAME);

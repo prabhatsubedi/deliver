@@ -1746,6 +1746,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 CustomItemEntity customItem = item.getCustomItem();
                 ItemEntity new_item = new ItemEntity();
                 new_item.setName(customItem.getName());
+                new_item.setIsCustomItem(true);
+                new_item.setEditedName(customItem.getEditedName());
                 item.setItem(new_item);
             }
         }

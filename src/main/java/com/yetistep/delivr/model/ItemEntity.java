@@ -56,6 +56,7 @@ public class ItemEntity implements Serializable {
     private Date openingTime; //Transient Value
     private Date closingTime; //Transient Value
     private Boolean isCustomItem = Boolean.FALSE; //Transient Value
+    private String editedName;
 
     private CategoryEntity category;
     private StoresBrandEntity storesBrand;
@@ -439,5 +440,14 @@ public class ItemEntity implements Serializable {
 
     public void setIsCustomItem(Boolean customItem) {
         isCustomItem = customItem;
+    }
+
+    @Transient
+    public String getEditedName() {
+        return editedName;
+    }
+
+    public void setEditedName(String editedName) {
+        this.editedName = editedName;
     }
 }

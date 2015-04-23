@@ -442,10 +442,15 @@ Order.getOrdersItems = function(){
         var responseRows = data.params.items.numberOfRows;
         var items = data.params.items.data;
         var tableData = [];
+
+
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
 
-            var row = [i+1, item.item.name, item.quantity, item.serviceCharge, item.vat, item.itemTotal];
+            var name = item.item.name;
+            if(item.item.editedName != undefined)
+                name = "<del>"+item.item.name+"</del> "+item.item.editedName;
+            var row = [i+1, name, item.quantity, item.serviceCharge, item.vat, item.itemTotal];
             row = $.extend({}, row);
             tableData.push(row);
 

@@ -91,7 +91,8 @@ var Search = function() {
             });
 
             $('.pagination li:not(".disabled") a').live('click', function(){
-                Search.searchItems({pageNumber: $(this).attr('pageno'), pageSize: $('.items_container .select_num_items').val()});
+                if($(this).attr('pageno'))
+                    Search.searchItems({pageNumber: $(this).attr('pageno'), pageSize: $('.items_container .select_num_items').val()});
             });
 
             $('.select_num_items').live('change', function(){
@@ -132,8 +133,13 @@ var Search = function() {
                     if(page_size == undefined) page_size = listed_items;
                     var total_pages = Math.ceil(total_items/page_size);
                     var page_list = '<li class="prev_page"><a href="#" pageno="' + (page_number - 1) + '">&laquo;</a></li>';
+                    var pag_gap = 5;
                     for(var i = 1; i <= total_pages; i++) {
-                        page_list += '<li ' + (i == page_number ? 'class="active"' : '') + '><a href="#" pageno="' + i + '">' + i + '</a></li>';
+                        if(i >= page_number - pag_gap && i <= page_number + pag_gap) {
+                            page_list += '<li ' + (i == page_number ? 'class="active"' : '') + '><a href="#" pageno="' + i + '">' + i + '</a></li>';
+                        } else if(i == page_number - pag_gap - 1 || i == page_number + pag_gap + 1) {
+                            page_list += '<li><a>......</a></li>';
+                        }
                     }
                     page_list += '<li class="next_page"><a href="#" pageno="' + (page_number + 1) + '">&raquo;</a></li>';
 

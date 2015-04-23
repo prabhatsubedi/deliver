@@ -180,7 +180,7 @@ public class CustomerServiceImpl implements CustomerService {
             * */
             if(registeredCustomer.getUser().getLastActivityDate() == null) {
                 registeredCustomer.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
-                refillCustomerWallet(registeredCustomer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)), MessageBundle.getMessage("WTM010", "push_notification.properties"));
+                refillCustomerWallet(registeredCustomer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)), MessageBundle.getMessage("WTM010", "push_notification.properties"), false);
             }
 
             registeredCustomer.getUser().setLastActivityDate(MessageBundle.getCurrentTimestampSQL());
@@ -1898,17 +1898,28 @@ public class CustomerServiceImpl implements CustomerService {
         String remarks = MessageBundle.getMessage("WTM004", "push_notification.properties");
         String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
         remarks = String.format(remarks, currency, customer.getWalletAmount());
-        return refillCustomerWallet(customer.getFacebookId(), customer.getWalletAmount(), remarks);
+        return refillCustomerWallet(customer.getFacebookId(), customer.getWalletAmount(), remarks, true);
     }
 
     @Override
-    public Boolean refillCustomerWallet(Long facebookId, BigDecimal refillAmount, String remark) throws Exception {
+    public Boolean refillCustomerWallet(Long facebookId, BigDecimal refillAmount, String remark, Boolean isTransfer) throws Exception {
         CustomerEntity customerEntity = customerDaoService.find(facebookId);
         if(customerEntity == null){
             throw new YSException("VLD011");
         }
         customerEntity.setWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()).add(refillAmount));
         this.setCustomerWalletTransaction(customerEntity, refillAmount, AccountType.CREDIT, PaymentMode.WALLET, remark, customerEntity.getWalletAmount());
+        /* Since bonus is given in transferred amount */
+        if(isTransfer){
+           BigDecimal bonusAmount = BigDecimalUtil.percentageOf(refillAmount, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.TRANSFER_BONUS_PERCENT)));
+           if(BigDecimalUtil.isGreaterThen(bonusAmount, BigDecimal.ZERO)){
+               String bonusRemark = MessageBundle.getPushNotificationMsg("WTM011");
+               String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+               bonusRemark = String.format(bonusRemark, currency, bonusAmount);
+               customerEntity.setWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()).add(bonusAmount));
+               this.setCustomerWalletTransaction(customerEntity, bonusAmount, AccountType.CREDIT, PaymentMode.WALLET, bonusRemark, customerEntity.getWalletAmount());
+           }
+        }
         boolean status = customerDaoService.update(customerEntity);
 
         BigDecimal customerWalletAmount = customerEntity.getWalletAmount();
@@ -2061,7 +2072,7 @@ public class CustomerServiceImpl implements CustomerService {
             String remarks = MessageBundle.getMessage("WTM004", "push_notification.properties");
             String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
             remarks = String.format(remarks, currency, paymentGatewayInfoEntity.getAmount());
-            this.refillCustomerWallet(paymentGatewayInfoEntity.getCustomer().getFacebookId(), paymentGatewayInfoEntity.getAmount(), remarks);
+            this.refillCustomerWallet(paymentGatewayInfoEntity.getCustomer().getFacebookId(), paymentGatewayInfoEntity.getAmount(), remarks, true);
             paymentGatewayInfoEntity.setFlag(true);
         }else{
             String remarks = MessageBundle.getPaymentGatewayMsg(responseCode);

@@ -219,3 +219,6 @@ INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_
 
 /*set default value of customer custom flaf at custom item ========4-23-2015*/
 ALTER TABLE delivr_db.custom_items CHANGE COLUMN customer_custom customer_custom BOOLEAN NOT NULL DEFAULT FALSE;
+
+/*======================2015-04-23=========================*/
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('TRANSFER_BONUS_PERCENT', '5', '12', 'Fund Transfer Bonus %');

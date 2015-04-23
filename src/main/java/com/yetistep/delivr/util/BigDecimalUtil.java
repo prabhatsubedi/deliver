@@ -80,10 +80,9 @@ public class BigDecimalUtil {
     }
 
     public static BigDecimal percentageOf(BigDecimal base, BigDecimal pct){
-        if(base != null)
+        if(base != null && pct != null)
             return base.multiply(pct).divide(HUNDRED);
-
-            return BigDecimal.ZERO;
+        return BigDecimal.ZERO;
     }
 
     public static int getMinimumIndex(List<BigDecimal> values){
@@ -134,7 +133,8 @@ public class BigDecimalUtil {
     }
 
     public static BigDecimal divide(BigDecimal input, BigDecimal divisor){
-        return input.divide(divisor, RoundingMode.HALF_UP);
+        BigDecimal output = input.divide(divisor);
+        return  output.setScale(2, RoundingMode.HALF_UP);
     }
 
 }

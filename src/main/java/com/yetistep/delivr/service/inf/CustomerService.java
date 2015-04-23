@@ -72,7 +72,7 @@ public interface CustomerService {
 
     public PaginationDto getWalletTransactions(Page page, Long facebookId) throws Exception;
 
-    public Boolean refillCustomerWallet(Long facebookId, BigDecimal refillAmount, String remark) throws Exception;
+    public Boolean refillCustomerWallet(Long facebookId, BigDecimal refillAmount, String remark, Boolean isTransfer) throws Exception;
 
     public PaymentGatewayDto requestToAddFundToWallet(Long facebookId, BigDecimal amount) throws Exception;
 

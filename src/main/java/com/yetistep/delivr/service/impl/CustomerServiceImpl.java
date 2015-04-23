@@ -1886,11 +1886,12 @@ public class CustomerServiceImpl implements CustomerService {
         walletTransactionEntities.add(walletTransactionEntity);
         customer.setWalletTransactions(walletTransactionEntities);
 
-        UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(customer.getId());
+        UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromCustomerId(customer.getId());
         String extraDetail = "";
         PushNotificationUtil.sendPushNotification(userDevice, remarks, NotifyTo.CUSTOMER, PushNotificationRedirect.TRANSACTION, extraDetail);
     }
 
+    /* This method should be removed later */
     @Override
     public Boolean refillWallet(CustomerEntity customer) throws Exception {
         String remarks = MessageBundle.getMessage("WTM004", "push_notification.properties");
@@ -2030,5 +2031,45 @@ public class CustomerServiceImpl implements CustomerService {
         paymentGatewayInfoEntity.setCustomer(customerEntity);
         paymentGatewayInfoDaoService.save(paymentGatewayInfoEntity);
         return SHAEncoder.getPaymentRequestData(paymentGatewayInfoEntity);
+    }
+
+    @Override
+    public Boolean paymentGatewaySettlement(PaymentGatewayDto paymentGatewayDto) throws Exception {
+        Properties properties = GeneralUtil.parsePropertiesString(paymentGatewayDto.getData(), "|");
+        Integer transactionId = Integer.parseInt(properties.getProperty(SHAEncoder.ORDER_ID_NAME));
+        PaymentGatewayInfoEntity paymentGatewayInfoEntity = paymentGatewayInfoDaoService.find(transactionId);
+        if(paymentGatewayInfoEntity == null){
+            log.warn("Invalid Data:"+paymentGatewayDto.getData());
+            throw new YSException("SEC015");
+        }
+        String transactionReference = properties.getProperty(SHAEncoder.TRANSACTION_REFERENCE_NAME);
+        BigDecimal inrAmount = new BigDecimal(properties.getProperty(SHAEncoder.AMOUNT_NAME));
+        String currencyCode = properties.getProperty(SHAEncoder.CURRENCY_CODE_NAME);
+        String merchantId = properties.getProperty(SHAEncoder.MERCHANT_ID_NAME);
+
+        if(!paymentGatewayInfoEntity.getTransactionReference().equals(transactionReference) ||
+                BigDecimalUtil.isNotEqualTo(paymentGatewayInfoEntity.getInrAmount(), inrAmount) ||
+                !paymentGatewayInfoEntity.getCurrencyCode().equals(currencyCode) ||
+                !MessageBundle.getPaymentGatewayMsg(SHAEncoder.MERCHANT_GATEWAY_ID_NAME).equals(merchantId)){
+            log.warn("Corrupted Data:"+paymentGatewayDto.getData());
+            throw new YSException("SEC016");
+        }
+
+        String responseCode = properties.getProperty(SHAEncoder.RESPONSE_CODE);
+        if(responseCode.equals(SHAEncoder.SUCCESSFUL_RESPONSE_CODE)){
+            String remarks = MessageBundle.getMessage("WTM004", "push_notification.properties");
+            String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+            remarks = String.format(remarks, currency, paymentGatewayInfoEntity.getAmount());
+            this.refillCustomerWallet(paymentGatewayInfoEntity.getCustomer().getFacebookId(), paymentGatewayInfoEntity.getAmount(), remarks);
+            paymentGatewayInfoEntity.setFlag(true);
+        }else{
+            String remarks = MessageBundle.getPaymentGatewayMsg(responseCode);
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromCustomerId(paymentGatewayInfoEntity.getCustomer().getId());
+            String extraDetail = "";
+            PushNotificationUtil.sendPushNotification(userDevice, remarks, NotifyTo.CUSTOMER, PushNotificationRedirect.TRANSACTION, extraDetail);
+        }
+        paymentGatewayInfoEntity.setResponseCode(responseCode);
+        paymentGatewayInfoDaoService.update(paymentGatewayInfoEntity);
+        return true;
     }
 }

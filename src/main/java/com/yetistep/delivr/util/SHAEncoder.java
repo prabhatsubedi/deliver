@@ -23,15 +23,19 @@ public class SHAEncoder {
     private static final String PG_REQUEST_URL = MessageBundle.getPaymentGatewayMsg("PGRequestURL");
     private static final String INTERFACE_VERSION = MessageBundle.getPaymentGatewayMsg("interfaceVersion");
 
-    private static final String CURRENCY_CODE_NAME = "currencyCode";
-    private static final String MERCHANT_ID_NAME = "merchantId";
     private static final String NORMAL_RETURN_URL_NAME = "normalReturnUrl";
     private static final String AUTOMATIC_RETURN_URL_NAME = "automaticResponseUrl";
     private static final String KEY_VERSION_NAME = "keyVersion";
     private static final String CUSTOMER_LANGUAGE_NAME = "customerLanguage";
-    private static final String ORDER_ID_NAME = "orderId";
-    private static final String AMOUNT_NAME = "amount";
-    private static final String TRANSACTION_REFERENCE_NAME = "transactionReference";
+
+    public static final String MERCHANT_ID_NAME = "merchantId";
+    public static final String MERCHANT_GATEWAY_ID_NAME = "merchantGatewayId";
+    public static final String CURRENCY_CODE_NAME = "currencyCode";
+    public static final String ORDER_ID_NAME = "orderId";
+    public static final String AMOUNT_NAME = "amount";
+    public static final String TRANSACTION_REFERENCE_NAME = "transactionReference";
+    public static final String RESPONSE_CODE = "responseCode";
+    public static final String SUCCESSFUL_RESPONSE_CODE = "00";
 
     private static final String SEPARATOR = "|";
     private static final String EQUALS = "=";
@@ -92,7 +96,7 @@ public class SHAEncoder {
         }
     }
 
-    public static PaymentGatewayDto getPaymentRequestData(PaymentGatewayInfoEntity paymentGatewayInfoEntity) throws Exception{
+    public static PaymentGatewayDto getPaymentRequestData(PaymentGatewayInfoEntity paymentGatewayInfoEntity) throws Exception {
         PaymentGatewayDto paymentGatewayDto = new PaymentGatewayDto();
         String data = generateData(paymentGatewayInfoEntity);
         paymentGatewayDto.setData(data);

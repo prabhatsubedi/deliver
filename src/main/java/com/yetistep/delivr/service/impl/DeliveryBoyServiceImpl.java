@@ -2152,8 +2152,27 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
 
         List<OrderEntity> orderEntities = acDBoy.getOrder();
+
+        for(OrderEntity order: orderEntities){
+            //remove live orders
+            if((order.getDeliveryStatus().equals(DeliveryStatus.SUCCESSFUL) || order.getDeliveryStatus().equals(DeliveryStatus.CANCELLED)) && order.getdBoyOrderHistories().size()>0){
+                //set order completed date as order date
+                order.setOrderDate(order.getdBoyOrderHistories().get(0).getOrderCompletedAt());
+            } else if(!order.getDeliveryStatus().equals(DeliveryStatus.SUCCESSFUL) && !order.getDeliveryStatus().equals(DeliveryStatus.CANCELLED)) {
+                orderEntities.remove(order);
+            }
+        }
+
         //add all order transactions as order for dboy transactions
         orderEntities.addAll(advanceAsOrder);
+
+
+        //sort orders by order date
+        Collections.sort(orderEntities, new Comparator<OrderEntity>() {
+            public int compare(OrderEntity prev, OrderEntity next) {
+                return prev.getOrderDate().compareTo(next.getOrderDate());
+            }
+        });
 
         BigDecimal balance = BigDecimal.ZERO;
         for(OrderEntity order: orderEntities){
@@ -2163,36 +2182,25 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                     balance = balance.add(order.getGrandTotal());
                     order.setBalance(balance);
                     order.setDr(order.getGrandTotal());
+                    order.setDescription("Advance Amount");
                     order.setGrandTotal(null);
                 } else if(order.getDescription().equals("acknowledgeAmount")){
                     balance = balance.subtract(order.getGrandTotal());
                     order.setBalance(balance);
                     order.setCr(order.getGrandTotal());
+                    order.setDescription("Amount Submitted to Account");
                     order.setGrandTotal(null);
                 }
             } else {
-                //remove live orders
-                if((order.getDeliveryStatus().equals(DeliveryStatus.SUCCESSFUL) || order.getDeliveryStatus().equals(DeliveryStatus.CANCELLED)) && order.getdBoyOrderHistories().size()>0){
-                    //set order completed date as order date
-                     order.setOrderDate(order.getdBoyOrderHistories().get(0).getOrderCompletedAt());
-                } else {
-                     orderEntities.remove(order);
-                }
-            }
-
-
-            if(order.getPaymentMode() != null){
-                //this is real order
-                balance = balance.add(order.getPaidFromCOD());
-                order.setBalance(balance);
-                order.setDr(order.getGrandTotal());
-
                 String partnershipStatus = "";
                 if(order.getStore().getStoresBrand().getMerchant().getPartnershipStatus())
                     partnershipStatus = "Partner";
                 else
                     partnershipStatus = "Non Partner";
 
+                balance = balance.add(order.getGrandTotal());
+                order.setBalance(balance);
+                order.setDr(order.getGrandTotal());
 
 
                 if(order.getPaidFromCOD().equals(PaymentMode.WALLET.toString())){
@@ -2207,7 +2215,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                         order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
                     } else {
                         walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
-                        order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                        order.setDescription("Order(WALLET) - "+ partnershipStatus);
                     }
 
                     balance = balance.subtract(walletOrder.getGrandTotal());
@@ -2225,6 +2233,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                         cancelledOrder.setBalance(balance);
                         orderEntities.add(cancelledOrder);
                     }
+
                     order.setDescription("Order(COD) - "+ partnershipStatus);
                 }
             }
@@ -2244,7 +2253,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         acDBoy.setOrder(orderEntities);
         acDBoy.setdBoyAdvanceAmounts(null);
-
+        paginationDto.setNumberOfRows(orderEntities.size());
         paginationDto.setData(orderEntities);
         return paginationDto;
     }

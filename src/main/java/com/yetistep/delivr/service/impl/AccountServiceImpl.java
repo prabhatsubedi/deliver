@@ -154,7 +154,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
             BigDecimal vatPcn = new BigDecimal(vat);
             BigDecimal totalCharge = bill.getDeliveryCharge().add(bill.getSystemServiceCharge());
-            BigDecimal vatAmount = totalCharge.multiply(vatPcn).divide(new BigDecimal(100));
+            BigDecimal vatAmount = totalCharge.multiply(vatPcn).divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_DOWN);
             bill.setVat(vatAmount);
             BigDecimal totalAmount = totalCharge.add(vatAmount);
             bill.setBillAmount(totalAmount);

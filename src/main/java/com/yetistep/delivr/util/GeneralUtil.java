@@ -12,7 +12,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
@@ -209,5 +212,12 @@ public class GeneralUtil {
                 "true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value))
             returnValue = true;
         return returnValue;
+    }
+
+    public static Properties parsePropertiesString(String data, String separator) throws IOException {
+        String parsedData = data.replace(separator, "\n");
+        final Properties prop = new Properties();
+        prop.load(new StringReader(parsedData));
+        return prop;
     }
 }

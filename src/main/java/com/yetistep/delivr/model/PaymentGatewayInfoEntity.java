@@ -20,6 +20,7 @@ public class PaymentGatewayInfoEntity {
     private String currencyCode;
     private String transactionReference;
     private Boolean flag;
+    private String responseCode;
     private CustomerEntity customer;
 
     @Id
@@ -76,6 +77,15 @@ public class PaymentGatewayInfoEntity {
 
     public void setFlag(Boolean flag) {
         this.flag = flag;
+    }
+
+    @Column(name = "response_code")
+    public String getResponseCode() {
+        return responseCode;
+    }
+
+    public void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
     }
 
     @ManyToOne

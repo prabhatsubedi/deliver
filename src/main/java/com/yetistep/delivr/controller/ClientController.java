@@ -1010,9 +1010,8 @@ public class ClientController extends AbstractManager{
     @ResponseBody
     public ResponseEntity<ServiceResponse> getPaymentGatewayResponse(@ModelAttribute PaymentGatewayDto paymentGatewayDto) {
         try{
-            System.out.println(paymentGatewayDto.toString());
-            ServiceResponse serviceResponse = new ServiceResponse("List of transactions retrieved successfully");
-            serviceResponse.addParam("paymentGatewayResponse", paymentGatewayDto);
+            customerService.paymentGatewaySettlement(paymentGatewayDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Transaction retrieved successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while getting payment response", e);
@@ -1027,7 +1026,7 @@ public class ClientController extends AbstractManager{
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-            //validateMobileClient(headerDto.getAccessToken());
+            validateMobileClient(headerDto.getAccessToken());
 
             PaymentGatewayDto paymentGatewayDto = customerService.requestToAddFundToWallet(facebookId, paymentGatewayInfo.getAmount());
             ServiceResponse serviceResponse = new ServiceResponse("Payment gateway info retrieved successfully");

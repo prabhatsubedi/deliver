@@ -243,6 +243,9 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             order: dataFilter.order == undefined ? [[ 0, 'desc' ]] : dataFilter.order,
             fnDrawCallback: typeof dataFilter.callback == 'function' ? dataFilter.callback : null,
             fnInitComplete: function(){
+                $('<button class="btn btn_green pull-right refresh_data" style="line-height: 34px; padding: 0px 10px;">Refresh</button>').click( function () {
+                    $(selector).DataTable().ajax.reload();
+                }).appendTo( selector + '_filter' );
                 $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
                 $('body').removeClass('loader_div').children('.loader').hide().remove();
             },
@@ -288,9 +291,6 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         if($.fn.dataTable.fnIsDataTable(selector))
             $(selector).DataTable().clear().destroy();
         $(selector).dataTable();
-        $('<button class="btn btn_green pull-right refresh_data" style="line-height: 34px; padding: 0px 10px;">Refresh</button>').click( function () {
-            $(selector).DataTable().ajax.reload();
-        }).appendTo( '.dataTables_filter' );
         clearInterval(dataTablesInterval);
         dataTablesInterval = setInterval($(selector).DataTable().ajax.reload, 60000);
 

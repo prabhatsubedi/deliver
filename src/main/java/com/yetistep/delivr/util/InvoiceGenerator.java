@@ -603,7 +603,7 @@ public class InvoiceGenerator {
     }
 
     private String getBillAndReiceptDir(MerchantEntity merchant, OrderEntity order, String separator) {
-        String dir = MessageBundle.separateString(separator, "receipts", "Merchant_" + merchant.getId(), "Order_" + merchant.getId());
+        String dir = MessageBundle.separateString(separator, "receipts", "Merchant_" + merchant.getId(), "Order_" + order.getId());
         return dir;
     }
 

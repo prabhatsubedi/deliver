@@ -2110,6 +2110,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     public PaginationDto getDBoyAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
         Page page = requestJsonDto.getPage();
 
+        DateUtil.getCurrentTime();
+
         PaginationDto paginationDto = new PaginationDto();
         Integer totalRows =  dBoyAdvanceAmountDaoService.getTotalNumbersOfAdvanceAmounts(Integer.parseInt(headerDto.getId()));
         paginationDto.setNumberOfRows(totalRows);

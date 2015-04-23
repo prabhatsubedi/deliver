@@ -580,7 +580,7 @@ public class InvoiceGenerator {
             invoiceDir.mkdirs();
         }
 
-        String fileName = DateUtil.getCurrentDate() + "_" +name+ ".pdf";
+        String fileName = System.currentTimeMillis() + "_" +name+ ".pdf";
         return new File(invoiceDir, fileName);
     }
 
@@ -592,7 +592,7 @@ public class InvoiceGenerator {
             invoiceDir.mkdirs();
         }
 
-        String fileName = DateUtil.getCurrentDate() + "_" +name+ ".pdf";
+        String fileName = System.currentTimeMillis()+ "_" +name+ ".pdf";
         return new File(invoiceDir, fileName);
     }
 

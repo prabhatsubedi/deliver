@@ -449,7 +449,7 @@ Order.getOrdersItems = function(){
 
             var name = item.item.name;
             if(item.item.editedName != undefined)
-                name = "<del>"+item.item.name+"</del> "+item.item.editedName;
+                name = "<s>"+item.item.name+"</s> "+item.item.editedName;
             var row = [i+1, name, item.quantity, item.serviceCharge, item.vat, item.itemTotal];
             row = $.extend({}, row);
             tableData.push(row);

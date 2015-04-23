@@ -83,6 +83,12 @@ public class SHAEncoder {
         return encodeHexString(md.digest());
     }
 
+    public static String computeSeal(String Data) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update((Data + MERCHANT_SECRET_KEY).getBytes("UTF-8"));
+        return encodeHexString(md.digest());
+    }
+
     /**
      * @param args
      */

@@ -133,8 +133,9 @@ public class BigDecimalUtil {
     }
 
     public static BigDecimal divide(BigDecimal input, BigDecimal divisor){
-        BigDecimal output = input.divide(divisor);
-        return  output.setScale(2, RoundingMode.HALF_UP);
+        //BigDecimal output = input.divide(divisor);
+        //return  output.setScale(2, RoundingMode.HALF_UP);
+        return input.divide(divisor, RoundingMode.HALF_UP);
     }
 
 }

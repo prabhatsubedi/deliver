@@ -1666,7 +1666,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         ItemsOrderEntity itemsOrderEntity = null;
         Integer countCustomItem = 0;
         for (ItemsOrderEntity itemOrder : itemsOrder) {
-            if(itemOrder.getNote() == "")
+            if(itemOrder.getNote() !=null &&  itemOrder.getNote().equals(""))
                 itemOrder.setNote(null);
 
             itemsOrderEntity = itemOrder;
@@ -2161,6 +2161,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             } else if(!order.getDeliveryStatus().equals(DeliveryStatus.SUCCESSFUL) && !order.getDeliveryStatus().equals(DeliveryStatus.CANCELLED)) {
                 orderEntities.remove(order);
             }
+
         }
 
         //add all order transactions as order for dboy transactions

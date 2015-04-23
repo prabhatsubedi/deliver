@@ -469,7 +469,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         OrderSummaryDto orderSummary = new OrderSummaryDto();
         List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
         for (ItemsOrderEntity itemOrder : itemsOrder) {
-            if(itemOrder.getNote().equals(""))
+            if ( itemOrder.getNote()!=null && itemOrder.getNote().equals(""))
                 itemOrder.setNote(null);
 
             if (itemOrder.getItem() != null) {

@@ -1225,7 +1225,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         itemsOrderEntity.setAvailabilityStatus(itemOrder.getAvailabilityStatus());
         itemsOrderEntity.setVat(itemOrder.getVat());
         itemsOrderEntity.setServiceCharge(itemOrder.getServiceCharge());
-        if(itemOrder.getNote() != null && itemOrder.getNote() != "")
+        if(itemOrder.getNote() != null && !itemOrder.getNote().equals(""))
             itemsOrderEntity.setNote(itemOrder.getNote());
 
         itemsOrderEntity.setPurchaseStatus(itemOrder.getPurchaseStatus());
@@ -1235,7 +1235,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
          /* Updating name of custom item added by delivery boy */
         if(itemsOrderEntity.getCustomItem() != null && itemOrder.getCustomItem() != null){
             itemsOrderEntity.getCustomItem().setName(itemOrder.getCustomItem().getName());
-            if(itemOrder.getCustomItem().getEditedName() != null && itemOrder.getCustomItem().getEditedName() != "")
+            if(itemOrder.getCustomItem().getEditedName() != null && !itemOrder.getCustomItem().getEditedName().equals(""))
                 itemsOrderEntity.getCustomItem().setEditedName(itemOrder.getCustomItem().getEditedName());
         }else{
              /* Updating attributes of item added by customer */
@@ -1666,6 +1666,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         ItemsOrderEntity itemsOrderEntity = null;
         Integer countCustomItem = 0;
         for (ItemsOrderEntity itemOrder : itemsOrder) {
+            if(itemOrder.getNote() == "")
+                itemOrder.setNote(null);
+
             itemsOrderEntity = itemOrder;
             if (itemOrder.getItem() != null) {
                 ItemEntity item = new ItemEntity();
@@ -2125,8 +2128,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("dBoyAdvanceAmounts", "id,advanceDate,amountAdvance,type");
-        assoc.put("order", "id,deliveryStatus,orderStatus,totalCost,grandTotal,orderDate,paymentMode,paidFromWallet,paidFromCOD");
-        //assoc.put("user", "id,fullName,mobileNumber,profileImage");
+        assoc.put("order", "id,deliveryStatus,orderStatus,grandTotal,orderDate,paymentMode,paidFromWallet,paidFromCOD,store,dBoyOrderHistories");
+        subAssoc.put("dBoyOrderHistories", "id,orderCompletedAt");
+        subAssoc.put("store", "id,storesBrand");
+        subAssoc.put("store", "id,storesBrand");
+        subAssoc.put("storesBrand", "id,merchant");
+        subAssoc.put("merchant", "id,partnershipStatus");
 
 
         DeliveryBoyEntity acDBoy = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(dBoy, fields, assoc, subAssoc);
@@ -2145,31 +2152,94 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
 
         List<OrderEntity> orderEntities = acDBoy.getOrder();
+        //add all order transactions as order for dboy transactions
         orderEntities.addAll(advanceAsOrder);
-
-        // Now sort by address instead of name (default).
-        Collections.sort(orderEntities, new Comparator<OrderEntity>() {
-            public int compare(OrderEntity one, OrderEntity other) {
-                return one.getOrderDate().compareTo(other.getOrderDate());
-            }
-        });
 
         BigDecimal balance = BigDecimal.ZERO;
         for(OrderEntity order: orderEntities){
-             if(order.getDescription() != null && order.getDescription().equals("advanceAmount") || order.getPaymentMode().equals(PaymentMode.CASH_ON_DELIVERY.toString())){
-                 balance = balance.add(order.getGrandTotal());
-                 order.setBalance(balance);
-             }else{
-                   if(!order.getPaidFromCOD().equals(BigDecimal.ZERO)){
-                       balance = balance.add(order.getPaidFromCOD());
-                       order.setBalance(balance);
-                   }
+            if(order.getDescription() != null) {
+                //this is not real order but dboy transactions
+                if(order.getDescription().equals("advanceAmount")){
+                    balance = balance.add(order.getGrandTotal());
+                    order.setBalance(balance);
+                    order.setDr(order.getGrandTotal());
+                    order.setGrandTotal(null);
+                } else if(order.getDescription().equals("acknowledgeAmount")){
+                    balance = balance.subtract(order.getGrandTotal());
+                    order.setBalance(balance);
+                    order.setCr(order.getGrandTotal());
+                    order.setGrandTotal(null);
+                }
+            } else {
+                //remove live orders
+                if((order.getDeliveryStatus().equals(DeliveryStatus.SUCCESSFUL) || order.getDeliveryStatus().equals(DeliveryStatus.CANCELLED)) && order.getdBoyOrderHistories().size()>0){
+                    //set order completed date as order date
+                     order.setOrderDate(order.getdBoyOrderHistories().get(0).getOrderCompletedAt());
+                } else {
+                     orderEntities.remove(order);
+                }
+            }
 
-                   balance = balance.subtract(order.getGrandTotal());
-                   order.setBalance(balance);
 
-             }
+            if(order.getPaymentMode() != null){
+                //this is real order
+                balance = balance.add(order.getPaidFromCOD());
+                order.setBalance(balance);
+                order.setDr(order.getGrandTotal());
+
+                String partnershipStatus = "";
+                if(order.getStore().getStoresBrand().getMerchant().getPartnershipStatus())
+                    partnershipStatus = "Partner";
+                else
+                    partnershipStatus = "Non Partner";
+
+
+
+                if(order.getPaidFromCOD().equals(PaymentMode.WALLET.toString())){
+                    OrderEntity walletOrder = new OrderEntity();
+                    walletOrder.setId(order.getId());
+                    walletOrder.setOrderDate(order.getOrderDate());
+                    walletOrder.setGrandTotal(order.getGrandTotal());
+                    walletOrder.setCr(order.getGrandTotal());
+                    //if cod amount is greater then 0 then the payment mode is wallet_cod
+                    if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
+                        walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                        order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                    } else {
+                        walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
+                        order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                    }
+
+                    balance = balance.subtract(walletOrder.getGrandTotal());
+                    walletOrder.setBalance(balance);
+                    orderEntities.add(walletOrder);
+                } else {
+                    //if order is canceled add cancelled transaction row
+                    if(order.getDeliveryStatus().equals(DeliveryStatus.CANCELLED)){
+                        OrderEntity cancelledOrder = new OrderEntity();
+                        cancelledOrder.setId(order.getId());
+                        cancelledOrder.setCr(order.getDr());
+                        cancelledOrder.setDescription("Canceled order received");
+                        cancelledOrder.setOrderDate(order.getOrderDate());
+                        balance = balance.subtract(cancelledOrder.getDr());
+                        cancelledOrder.setBalance(balance);
+                        orderEntities.add(cancelledOrder);
+                    }
+                    order.setDescription("Order(COD) - "+ partnershipStatus);
+                }
+            }
+            // store information, dboy history and grand total is not required now
+            order.setGrandTotal(null);
+            order.setStore(null);
+            order.setdBoyOrderHistories(null);
         }
+
+        //sort orders by order date
+        Collections.sort(orderEntities, new Comparator<OrderEntity>() {
+            public int compare(OrderEntity one, OrderEntity other) {
+             return one.getOrderDate().compareTo(other.getOrderDate());
+            }
+        });
 
 
         acDBoy.setOrder(orderEntities);

@@ -835,16 +835,17 @@ public class CustomerServiceImpl implements CustomerService {
                 itemsOrderEntity.setCustomerNote(cart.getNote());
 
             itemsOrderEntity.setItem(cart.getItem());
-            CustomItemEntity customItem = new CustomItemEntity();
             if(cart.getItem() == null){
-                   customItem.setName(cart.getCartCustomItem().getName());
-                    if(cart.getCartCustomItem().getEditedName() != null && cart.getCartCustomItem().getEditedName() != "")
-                        customItem.setEditedName(cart.getCartCustomItem().getEditedName());
-                   customItem.setItemsOrder(itemsOrderEntity);
-                   customItem.setCustomerCustom(Boolean.TRUE);
+                CustomItemEntity customItem = new CustomItemEntity();
+                customItem.setName(cart.getCartCustomItem().getName());
+                if(cart.getCartCustomItem().getEditedName() != null && cart.getCartCustomItem().getEditedName() != "")
+                    customItem.setEditedName(cart.getCartCustomItem().getEditedName());
+
+                customItem.setItemsOrder(itemsOrderEntity);
+                customItem.setCustomerCustom(Boolean.TRUE);
+                itemsOrderEntity.setCustomItem(customItem);
             }
 
-            itemsOrderEntity.setCustomItem(customItem);
             //if cart doesn't have custom item then work for attributes
             BigDecimal itemPrice;
             if(cart.getItem() != null){

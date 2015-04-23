@@ -75,7 +75,7 @@ public class OrderCancelEntity {
     }
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", unique = true)
     public OrderEntity getOrder() {
         return order;
     }

@@ -51,7 +51,7 @@ public class CustomItemEntity {
         this.editedName = editedName;
     }
 
-    @Column(name = "customer_custom")
+    @Column(name = "customer_custom", columnDefinition = "BOOLEAN NOT NULL DEFAULT FALSE")
     public Boolean getCustomerCustom() {
         return customerCustom;
     }
@@ -71,7 +71,7 @@ public class CustomItemEntity {
 
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "items_order_id")
+    @JoinColumn(name = "items_order_id", unique = true)
     public ItemsOrderEntity getItemsOrder() {
         return itemsOrder;
     }

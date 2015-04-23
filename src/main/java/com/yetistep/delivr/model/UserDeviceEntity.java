@@ -143,7 +143,7 @@ public class UserDeviceEntity {
     }
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", unique = true)
     public UserEntity getUser() {
         return user;
     }

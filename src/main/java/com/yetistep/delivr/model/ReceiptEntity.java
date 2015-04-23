@@ -66,6 +66,7 @@ public class ReceiptEntity {
     }
 
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE } , fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", unique = true)
     public OrderEntity getOrder() {
         return order;
     }

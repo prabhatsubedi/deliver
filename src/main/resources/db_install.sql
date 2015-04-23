@@ -216,3 +216,6 @@ ALTER TABLE orders DROP COLUMN system_share;
 INSERT INTO `preferences_sections` (`section`, `group_id`) VALUES ('Wallet Configuration', '1');
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('MINIMUM_TRANSFERABLE_AMOUNT', '100', '12', 'Minimum Transferable Amount');
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('INR_CONVERSION_RATE', '1.6', '12', 'Indian Currency Conversion Rate');
+
+/*set default value of customer custom flaf at custom item ========4-23-2015*/
+ALTER TABLE delivr_db.custom_items CHANGE COLUMN customer_custom customer_custom BOOLEAN NOT NULL DEFAULT FALSE;

@@ -63,6 +63,8 @@ public class OrderEntity implements Serializable {
     private BigDecimal itemVatCharge;
     private String description; //used as transient for dBoy account
     private BigDecimal balance; //used as transient for dBoy account
+    private BigDecimal dr;  //used as transient for dBoy account
+    private BigDecimal cr;  //used as transient for dBoy account
 
     private OrderCancelEntity orderCancel;
     private CourierTransactionEntity courierTransaction;
@@ -554,5 +556,23 @@ public class OrderEntity implements Serializable {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    @Transient
+    public BigDecimal getDr() {
+        return dr;
+    }
+
+    public void setDr(BigDecimal dr) {
+        this.dr = dr;
+    }
+
+    @Transient
+    public BigDecimal getCr() {
+        return cr;
+    }
+
+    public void setCr(BigDecimal cr) {
+        this.cr = cr;
     }
 }

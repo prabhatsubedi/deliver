@@ -52,7 +52,7 @@ public class MerchantEntity implements Serializable {
     }
 
     @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", unique = true)
     public UserEntity getUser() {
         return user;
     }

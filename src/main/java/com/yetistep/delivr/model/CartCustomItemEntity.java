@@ -60,7 +60,7 @@ public class CartCustomItemEntity {
     }
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
+    @JoinColumn(name = "cart_id", unique = true)
     public CartEntity getCart() {
         return cart;
     }

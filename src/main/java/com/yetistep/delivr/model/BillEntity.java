@@ -99,6 +99,7 @@ public class BillEntity {
     }
 
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", unique = true)
     public OrderEntity getOrder() {
         return order;
     }

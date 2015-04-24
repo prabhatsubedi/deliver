@@ -25,6 +25,7 @@ public class DBoyAdvanceAmountEntity implements Serializable {
     private DeliveryBoyEntity deliveryBoy;
     private BigDecimal amountAdvance;
     private String type;
+    private String accountantNote;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -73,5 +74,14 @@ public class DBoyAdvanceAmountEntity implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Column(name = "accountant_note")
+    public String getAccountantNote() {
+        return accountantNote;
+    }
+
+    public void setAccountantNote(String accountantNote) {
+        this.accountantNote = accountantNote;
     }
 }

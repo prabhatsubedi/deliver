@@ -14,7 +14,7 @@ import java.util.List;
  * Time: 10:10 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface DBoyAdvanceAmountDaoService  extends GenericDaoService<Integer, DeliveryBoyEntity> {
+public interface DBoyAdvanceAmountDaoService  extends GenericDaoService<Integer, DBoyAdvanceAmountEntity> {
 
     public Integer getTotalNumbersOfAdvanceAmounts(Integer dBoyId) throws Exception;
 

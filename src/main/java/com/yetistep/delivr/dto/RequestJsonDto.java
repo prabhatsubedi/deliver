@@ -460,4 +460,13 @@ public class RequestJsonDto {
     public void setCustomCartList(List<CartEntity> customCartList) {
         this.customCartList = customCartList;
     }
+
+
+    public String getAccountantNote() {
+        return accountantNote;
+    }
+
+    public void setAccountantNote(String accountantNote) {
+        this.accountantNote = accountantNote;
+    }
 }

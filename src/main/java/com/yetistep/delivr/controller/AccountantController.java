@@ -296,4 +296,24 @@ public class AccountantController {
     }
 
 
+    @RequestMapping(value = "/add_accountant_note", method = RequestMethod.POST)
+    public ResponseEntity<ServiceResponse> addAccountantNote(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+
+
+            accountService.saveDBoyTransactionNote(headerDto, requestJsonDto);
+
+
+            ServiceResponse serviceResponse = new ServiceResponse("Accountant note saved successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while saving accountant note: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
 }

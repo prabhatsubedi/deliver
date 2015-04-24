@@ -29,27 +29,29 @@ public class DBoyAdvanceAmountDaoServiceImpl implements DBoyAdvanceAmountDaoServ
     SessionFactory sessionFactory;
 
     @Override
-    public DeliveryBoyEntity find(Integer id) throws Exception {
+    public DBoyAdvanceAmountEntity find(Integer id) throws Exception {
+        return  (DBoyAdvanceAmountEntity) getCurrentSession().get(DBoyAdvanceAmountEntity.class, id);
+    }
+
+    @Override
+    public List<DBoyAdvanceAmountEntity> findAll() throws Exception {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public List<DeliveryBoyEntity> findAll() throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public Boolean save(DBoyAdvanceAmountEntity value) throws Exception {
+        getCurrentSession().save(value);
+        return true;
     }
 
     @Override
-    public Boolean save(DeliveryBoyEntity value) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public Boolean update(DBoyAdvanceAmountEntity value) throws Exception {
+        getCurrentSession().update(value);
+        return true;
     }
 
     @Override
-    public Boolean update(DeliveryBoyEntity value) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Boolean delete(DeliveryBoyEntity value) throws Exception {
+    public Boolean delete(DBoyAdvanceAmountEntity value) throws Exception {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

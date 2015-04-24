@@ -29,4 +29,5 @@ public interface AccountService {
 
     public void settleMerchantsOrder(HeaderDto headerDto) throws Exception;
 
+    public void saveDBoyTransactionNote(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 }

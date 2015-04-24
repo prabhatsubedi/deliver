@@ -65,6 +65,7 @@ public class OrderEntity implements Serializable {
     private BigDecimal balance; //used as transient for dBoy account
     private BigDecimal dr;  //used as transient for dBoy account
     private BigDecimal cr;  //used as transient for dBoy account
+    private String accountantNote;
 
     private OrderCancelEntity orderCancel;
     private CourierTransactionEntity courierTransaction;
@@ -538,6 +539,15 @@ public class OrderEntity implements Serializable {
 
     public void setSettledDate(Date settledDate) {
         this.settledDate = settledDate;
+    }
+
+    @Column(name = "accountant_note")
+    public String getAccountantNote() {
+        return accountantNote;
+    }
+
+    public void setAccountantNote(String accountantNote) {
+        this.accountantNote = accountantNote;
     }
 
     @Transient

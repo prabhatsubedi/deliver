@@ -59,6 +59,9 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     @Autowired
     SystemPropertyService systemPropertyService;
 
+    @Autowired
+    DBoyAdvanceAmountDaoService dBoyAdvanceAmountDaoService;
+
     @Override
     public String generateInvoice(Integer storeId, String fromDate, String toDate, String serverUrl) throws Exception {
         String invoicePath = new String();
@@ -263,4 +266,20 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             orderDaoService.update(order);
         }
     }
+
+
+    @Override
+    public void saveDBoyTransactionNote(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
+         String className = requestJsonDto.getClassName();
+         if(className.equals("order")){
+             OrderEntity orderEntity = orderDaoService.find(Integer.parseInt(headerDto.getId()));
+             orderEntity.setAccountantNote(requestJsonDto.getAccountantNote());
+             orderDaoService.update(orderEntity);
+         } else {
+             DBoyAdvanceAmountEntity dBoyAdvanceAmountEntity = dBoyAdvanceAmountDaoService.find(Integer.parseInt(headerDto.getId()));
+             dBoyAdvanceAmountEntity.setAccountantNote(requestJsonDto.getAccountantNote());
+             dBoyAdvanceAmountDaoService.update(dBoyAdvanceAmountEntity);
+         }
+    }
+
 }

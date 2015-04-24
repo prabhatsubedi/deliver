@@ -17,7 +17,7 @@ public class CustomItemEntity {
     private Integer id;
     private String name;
     private String editedName;
-    private Boolean customerCustom;
+    private Boolean customerCustom = false;
     /*Transient Variable*/
     private String imageUrl;
     private ItemsOrderEntity itemsOrder;

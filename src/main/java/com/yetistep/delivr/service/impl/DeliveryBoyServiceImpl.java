@@ -2174,6 +2174,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
         });
 
+        //add rows for cr on cancel and wallet transaction
+        List<OrderEntity> addedOrderRows = new ArrayList<>();
+
         BigDecimal balance = BigDecimal.ZERO;
         for(OrderEntity order: orderEntities){
             if(order.getDescription() != null) {
@@ -2203,24 +2206,46 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 order.setDr(order.getGrandTotal());
 
 
-                if(order.getPaidFromCOD().equals(PaymentMode.WALLET.toString())){
-                    OrderEntity walletOrder = new OrderEntity();
-                    walletOrder.setId(order.getId());
-                    walletOrder.setOrderDate(order.getOrderDate());
-                    walletOrder.setGrandTotal(order.getGrandTotal());
-                    walletOrder.setCr(order.getGrandTotal());
-                    //if cod amount is greater then 0 then the payment mode is wallet_cod
-                    if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
-                        walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
-                        order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
-                    } else {
-                        walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
-                        order.setDescription("Order(WALLET) - "+ partnershipStatus);
-                    }
+                if(order.getPaymentMode().equals(PaymentMode.WALLET)){
+                    if(order.getDeliveryStatus().equals(DeliveryStatus.SUCCESSFUL)){
+                        OrderEntity walletOrder = new OrderEntity();
+                        walletOrder.setId(order.getId());
+                        walletOrder.setOrderDate(order.getOrderDate());
+                        walletOrder.setGrandTotal(order.getGrandTotal());
+                        walletOrder.setCr(order.getPaidFromWallet());
+                        //if cod amount is greater then 0 then the payment mode is wallet_cod
+                        if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
+                            walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                            order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                        } else {
+                            walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
+                            order.setDescription("Order(WALLET) - "+ partnershipStatus);
+                        }
 
-                    balance = balance.subtract(walletOrder.getGrandTotal());
-                    walletOrder.setBalance(balance);
-                    orderEntities.add(walletOrder);
+                        balance = balance.subtract(order.getPaidFromWallet());
+                        walletOrder.setBalance(balance);
+                        addedOrderRows.add(walletOrder);
+                    } else {
+
+                        OrderEntity walletOrder = new OrderEntity();
+                        walletOrder.setId(order.getId());
+                        walletOrder.setOrderDate(order.getOrderDate());
+                        walletOrder.setGrandTotal(order.getGrandTotal());
+                        walletOrder.setCr(order.getGrandTotal());
+                        //if cod amount is greater then 0 then the payment mode is wallet_cod
+                        if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
+                            walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                            order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                        } else {
+                            walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
+                            order.setDescription("Order(WALLET) - "+ partnershipStatus);
+                        }
+
+                        balance = balance.subtract(order.getGrandTotal());
+                        walletOrder.setBalance(balance);
+                        addedOrderRows.add(walletOrder);
+
+                    }
                 } else {
                     //if order is canceled add cancelled transaction row
                     if(order.getDeliveryStatus().equals(DeliveryStatus.CANCELLED)){
@@ -2229,9 +2254,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                         cancelledOrder.setCr(order.getDr());
                         cancelledOrder.setDescription("Canceled order received");
                         cancelledOrder.setOrderDate(order.getOrderDate());
-                        balance = balance.subtract(cancelledOrder.getDr());
+                        balance = balance.subtract(order.getDr());
                         cancelledOrder.setBalance(balance);
-                        orderEntities.add(cancelledOrder);
+                        addedOrderRows.add(cancelledOrder);
                     }
 
                     order.setDescription("Order(COD) - "+ partnershipStatus);
@@ -2242,6 +2267,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             order.setStore(null);
             order.setdBoyOrderHistories(null);
         }
+
+        orderEntities.addAll(addedOrderRows);
 
         //sort orders by order date
         Collections.sort(orderEntities, new Comparator<OrderEntity>() {

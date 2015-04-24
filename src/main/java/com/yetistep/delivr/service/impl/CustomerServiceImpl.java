@@ -2065,12 +2065,10 @@ public class CustomerServiceImpl implements CustomerService {
         String transactionReference = properties.getProperty(SHAEncoder.TRANSACTION_REFERENCE_NAME);
         BigDecimal inrAmount = new BigDecimal(properties.getProperty(SHAEncoder.AMOUNT_NAME));
         String currencyCode = properties.getProperty(SHAEncoder.CURRENCY_CODE_NAME);
-        String merchantId = properties.getProperty(SHAEncoder.MERCHANT_ID_NAME);
 
         if(!paymentGatewayInfoEntity.getTransactionReference().equals(transactionReference) ||
                 BigDecimalUtil.isNotEqualTo(paymentGatewayInfoEntity.getInrAmount(), inrAmount) ||
-                !paymentGatewayInfoEntity.getCurrencyCode().equals(currencyCode) ||
-                !MessageBundle.getPaymentGatewayMsg(SHAEncoder.MERCHANT_GATEWAY_ID_NAME).equals(merchantId)){
+                !paymentGatewayInfoEntity.getCurrencyCode().equals(currencyCode)){
             log.warn("Corrupted Data:"+paymentGatewayDto.getData());
             throw new YSException("SEC016");
         }

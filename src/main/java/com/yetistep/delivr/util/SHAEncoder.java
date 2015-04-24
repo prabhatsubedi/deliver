@@ -15,13 +15,14 @@ import java.security.MessageDigest;
 public class SHAEncoder {
 
     private static final String CURRENCY_CODE = MessageBundle.getPaymentGatewayMsg("currencyCode");
-    private static final String MERCHANT_ID = MessageBundle.getPaymentGatewayMsg("merchantGatewayId");
-    private static final String MERCHANT_SECRET_KEY = MessageBundle.getPaymentGatewayMsg("merchantSecretKey");
-    private static final String RETURN_URL = MessageBundle.getPaymentGatewayMsg("returnUrl");
     private static final String KEY_VERSION = MessageBundle.getPaymentGatewayMsg("keyVersion");
     private static final String CUSTOMER_LANGUAGE = MessageBundle.getPaymentGatewayMsg("customerLanguage");
-    private static final String PG_REQUEST_URL = MessageBundle.getPaymentGatewayMsg("PGRequestURL");
     private static final String INTERFACE_VERSION = MessageBundle.getPaymentGatewayMsg("interfaceVersion");
+
+    private static final String MERCHANT_ID = System.getProperty("DELIVR_MERCHANT_GATEWAY_ID");
+    private static final String MERCHANT_SECRET_KEY = System.getProperty("DELIVR_MERCHANT_SECRET_KEY");
+    private static final String RETURN_URL = System.getProperty("DELIVR_PG_RESPONSE_URL");
+    private static final String PG_REQUEST_URL = System.getProperty("DELIVR_PG_REQUEST_URL");
 
     private static final String NORMAL_RETURN_URL_NAME = "normalReturnUrl";
     private static final String AUTOMATIC_RETURN_URL_NAME = "automaticResponseUrl";

@@ -224,7 +224,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         }
 
         $.extend($.fn.dataTable.defaults, {
-            sDom: 'T<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
+            sDom: dataFilter.sDom == undefined ? 'T<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>' : dataFilter.sDom,
             columnDefs: [
                 {
 //                    targets: hideCols,

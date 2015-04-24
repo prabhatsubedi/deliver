@@ -118,7 +118,7 @@ Order.getOrders = function(elemId, url, params){
 
             storeInfo += "<div class='store_info hidden'><div class='contact_person'><strong>"+contactPerson+"</strong></div><div class='contact_no'>"+contactNo+"</div></div></div>";
 
-            var view_items = '<span class="item_list" data-id="'+id+'" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
+            var view_items = '<span class="item_list" data-store="' + order.store.name + '" data-id="'+id+'" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
             var activeStatus = ["ORDER_PLACED", "ORDER_ACCEPTED", "IN_ROUTE_TO_PICK_UP", "AT_STORE", "IN_ROUTE_TO_DELIVERY"];
             var orderHistoryLength = order.dBoyOrderHistories.length;
             var time_taken = 0;
@@ -450,7 +450,7 @@ Order.getOrdersItems = function(){
             var name = item.item.name;
             if(item.item.editedName != undefined)
                 name = "<s>"+item.item.name+"</s> "+item.item.editedName;
-            var row = [i+1, name, item.quantity, item.serviceCharge, item.vat, item.itemTotal];
+            var row = [i+1, name, item.quantity, '<span class="item_sc">' + item.serviceCharge + '</span>%', '<span class="item_vat">' + item.vat + '</span>%', Main.getFromLocalStorage("currency") + ' <span class="item_total">' + item.itemTotal + '</span>'];
             row = $.extend({}, row);
             tableData.push(row);
 
@@ -463,10 +463,32 @@ Order.getOrdersItems = function(){
 
         return response;
     };
+    dataFilter.sDom = 't';
 
     $("#order_items_modal").on('show.bs.modal', function(e){
 
+        $('.modal-header h3', this).html($(e.relatedTarget).data('store'));
         dataFilter.url = "/merchant/get_orders_items";
+        dataFilter.callback = function() {
+            var val_sc = 0;
+            var val_vat = 0;
+            var val_total = 0;
+            $("#orders_items_table tbody tr").each(function(){
+                var per_sc = parseFloat($('.item_sc', this).html());
+                var per_vat = parseFloat($('.item_vat', this).html());
+                var total_price = parseFloat($('.item_total', this).html());
+                var ind_sc = total_price * per_sc/100;
+                var ind_vat = (total_price + ind_sc) * per_vat/100;
+                val_sc += ind_sc;
+                val_vat += ind_vat;
+                val_total += total_price;
+            });
+
+            $("#orders_items_table tfoot .sub_total").html(Main.getFromLocalStorage("currency") + ' ' + val_total.toFixed(2));
+            $("#orders_items_table tfoot .total_sc").html(Main.getFromLocalStorage("currency") + ' ' + val_sc.toFixed(2));
+            $("#orders_items_table tfoot .total_vat").html(Main.getFromLocalStorage("currency") + ' ' + val_vat.toFixed(2));
+            $("#orders_items_table tfoot .grand_total").html(Main.getFromLocalStorage("currency") + ' ' + (val_total + val_sc + val_vat).toFixed(2));
+        };
         dataFilter.columns = [
             { "name": "" },
             { "name": "item.name" },

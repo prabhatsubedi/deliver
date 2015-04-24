@@ -154,16 +154,34 @@
                 <table id="orders_items_table">
                     <thead>
                     <tr>
-                        <th>SN</th>
-                        <th>Item Name</th>
-                        <th>Quantity</th>
-                        <th>Service Charge</th>
-                        <th>Vat</th>
-                        <th>Grand Total</th>
+                        <th class="no_sort">SN</th>
+                        <th class="no_sort">Item Name</th>
+                        <th class="no_sort">Qty</th>
+                        <th class="no_sort">Service Charge</th>
+                        <th class="no_sort">VAT</th>
+                        <th class="no_sort">Total Item Price</th>
                     </tr>
                     </thead>
                     <tbody>
                     </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="5" class="text-right"><strong>Sub Total</strong></td>
+                        <td class="sub_total"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-right"><strong>Total Service Charge</strong></td>
+                        <td class="total_sc"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-right"><strong>Total VAT</strong></td>
+                        <td class="total_vat"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-right"><strong>Grand Total</strong></td>
+                        <td class="grand_total"></td>
+                    </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>

@@ -498,8 +498,8 @@ public class CustomerServiceImpl implements CustomerService {
                 }
 
                 if(item.getVat()!=null && BigDecimalUtil.isGreaterThenZero(item.getVat())){
+                    itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
                     itemTax = itemTax.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
-                    itemVatCharge = itemVatCharge.add(itemTax);
                 }
 
                 merchantTax = merchantTax.add(itemTax);

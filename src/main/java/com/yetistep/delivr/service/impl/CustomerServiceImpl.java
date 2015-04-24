@@ -612,7 +612,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
         if(defaultItems.size()>0){
-            checkOutDto.setSubTotal(subTotal.setScale(0, BigDecimal.ROUND_DOWN));
+            checkOutDto.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_DOWN));
         }else{
             checkOutDto.setSubTotal(minusOne);
         }
@@ -624,11 +624,11 @@ public class CustomerServiceImpl implements CustomerService {
             checkOutDto.setItemServiceCharge(minusOne);
             checkOutDto.setItemVatCharge(minusOne);
         }else{
-            checkOutDto.setTax(merchantTax.setScale(0, BigDecimal.ROUND_DOWN));
-            checkOutDto.setServiceFee(serviceFeeAmt.setScale(0, BigDecimal.ROUND_DOWN));
-            checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
-            checkOutDto.setItemServiceCharge(itemServiceCharge.setScale(0, BigDecimal.ROUND_DOWN));
-            checkOutDto.setItemVatCharge(itemVatCharge.setScale(0, BigDecimal.ROUND_DOWN));
+            checkOutDto.setTax(merchantTax.setScale(2, BigDecimal.ROUND_DOWN));
+            checkOutDto.setServiceFee(serviceFeeAmt.setScale(2, BigDecimal.ROUND_DOWN));
+            checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount.setScale(2, BigDecimal.ROUND_DOWN));
+            checkOutDto.setItemServiceCharge(itemServiceCharge.setScale(2, BigDecimal.ROUND_DOWN));
+            checkOutDto.setItemVatCharge(itemVatCharge.setScale(2, BigDecimal.ROUND_DOWN));
         }
 
         if(BigDecimalUtil.isZero(checkOutDto.getDeliveryFee())) {
@@ -639,12 +639,12 @@ public class CustomerServiceImpl implements CustomerService {
             customerBalanceBeforeDiscount =  checkOutDto.getDeliveryFee();
         }
 
-        checkOutDto.setDiscount(customerBalanceBeforeDiscount.setScale(0, BigDecimal.ROUND_DOWN));
+        checkOutDto.setDiscount(customerBalanceBeforeDiscount.setScale(2, BigDecimal.ROUND_DOWN));
         if(cartCustomItems.size()>0){
             checkOutDto.setEstimatedAmount(minusOne);
         }   else {
             BigDecimal estimatedAmt = subTotal.add(merchantTax).add(serviceFeeAmt).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
-            checkOutDto.setEstimatedAmount(estimatedAmt.setScale(0, BigDecimal.ROUND_DOWN));
+            checkOutDto.setEstimatedAmount(estimatedAmt.setScale(2, BigDecimal.ROUND_DOWN));
         }
         checkOutDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         checkOutDto.setMaxOrderLimit(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)));
@@ -907,11 +907,11 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         order.setItemsOrder(itemsOrder);
-        order.setTotalCost(itemTotalCost);
+        order.setTotalCost(itemTotalCost.setScale(2, BigDecimal.ROUND_DOWN));
         order.setSurgeFactor(getSurgeFactor());
-        order.setItemServiceAndVatCharge(itemServiceAndVatCharge);
-        order.setItemServiceCharge(itemServiceCharge);
-        order.setItemVatCharge(itemVatCharge);
+        order.setItemServiceAndVatCharge(itemServiceAndVatCharge.setScale(2, BigDecimal.ROUND_DOWN));
+        order.setItemServiceCharge(itemServiceCharge.setScale(2, BigDecimal.ROUND_DOWN));
+        order.setItemVatCharge(itemVatCharge.setScale(2, BigDecimal.ROUND_DOWN));
 
         /* Listing Active stores of a store brand and finding shortest store */
         List<StoreEntity> stores = merchantDaoService.findActiveStoresByBrand(brandId);

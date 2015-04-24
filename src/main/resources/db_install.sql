@@ -222,3 +222,16 @@ ALTER TABLE delivr_db.custom_items CHANGE COLUMN customer_custom customer_custom
 
 /*======================2015-04-23=========================*/
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('TRANSFER_BONUS_PERCENT', '5', '12', 'Fund Transfer Bonus %');
+
+/*======================make oneToOne foreign keys unique===================*/
+ALTER TABLE bills ADD UNIQUE (order_id);
+ALTER TABLE receipts ADD UNIQUE (order_id);
+ALTER TABLE cart_custom_items ADD UNIQUE (cart_id);
+ALTER TABLE ratings ADD UNIQUE (order_id);
+ALTER TABLE courier_transaction ADD UNIQUE (order_id);
+ALTER TABLE customers ADD UNIQUE (user_id);
+ALTER TABLE delivery_boys ADD UNIQUE (user_id);
+ALTER TABLE merchants ADD UNIQUE (user_id);
+ALTER TABLE custom_items ADD UNIQUE(items_order_id);
+ALTER TABLE order_cancel ADD UNIQUE (order_id);
+ALTER TABLE user_device ADD UNIQUE (user_id);

@@ -2111,16 +2111,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         Page page = requestJsonDto.getPage();
 
         PaginationDto paginationDto = new PaginationDto();
-        Integer totalRows =  dBoyAdvanceAmountDaoService.getTotalNumbersOfAdvanceAmounts(Integer.parseInt(headerDto.getId()));
-        paginationDto.setNumberOfRows(totalRows);
-
-        if(page != null){
-            page.setTotalRows(totalRows);
-        }
 
         DeliveryBoyEntity dBoy = deliveryBoyDaoService.findDBoyById(Integer.parseInt(headerDto.getId()));
-
-        List<Object> objects = new ArrayList<>();
 
         String fields = "id,dBoyAdvanceAmounts,order,user";
 
@@ -2160,7 +2152,6 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }  else {
                 orderEntities.remove(order);
             }
-
         }
 
         //add all order transactions as order for dboy transactions

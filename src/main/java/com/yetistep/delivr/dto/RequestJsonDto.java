@@ -103,6 +103,9 @@ public class RequestJsonDto {
     /* Payment mode */
     private PaymentMode paymentMode;
 
+    /*boy transaction account*/
+    private String accountantNote;
+
     /*=================================================================== */
     public PasswordActionType getActionType() {
         return actionType;

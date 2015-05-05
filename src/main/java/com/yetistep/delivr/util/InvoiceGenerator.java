@@ -67,6 +67,33 @@ public class InvoiceGenerator {
     }
 
 
+    public String generateDBoyPayStatement(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store, String serverUrl, Map<String, String> preferences) throws Exception {
+        File invoiceFile = generateInvoicePDF(orders, merchant, invoice, store, serverUrl, preferences);
+
+        if (invoiceFile == null)
+            return null;
+
+        String invoicePath = invoiceFile.getPath();
+
+        //upload invoice to S3 Bucket
+        if (!MessageBundle.isLocalHost()) {
+            int noOfRetry = 3;
+            for (int i = 0; i < noOfRetry; i++) {//retry three time, if exception occurs
+                try {
+                    String dir = getInvoiceDir(merchant, store, File.separator);
+                    String bucketUrl = AmazonUtil.uploadFileToS3(invoiceFile, dir, invoiceFile.getName(), true);
+                    invoicePath = AmazonUtil.cacheImage(bucketUrl);
+                    break;
+                } catch (Exception e) {
+                    if (i == (noOfRetry - 1)) throw e;
+                    GeneralUtil.wait(1500);
+                }
+            }
+        }
+        return invoicePath;
+    }
+
+
     public String generateBillAndReceipt(OrderEntity order, BillEntity bill, ReceiptEntity receipt, String serverUrl, Map<String, String> preferences) throws Exception{
         File billFile = generateBillAndReceiptPDF(order, bill, receipt, serverUrl, preferences);
 

@@ -2162,7 +2162,13 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         for(OrderEntity order: orderEntities){
             //remove live orders
-            if(order.getdBoyOrderHistories().size() >0){
+            List<Integer> activeStatuses = new ArrayList<>();
+            activeStatuses.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
+            activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
+            activeStatuses.add(JobOrderStatus.AT_STORE.ordinal());
+            activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal());
+
+            if(order.getdBoyOrderHistories().size() >0 && !activeStatuses.contains(order.getOrderStatus().ordinal())){
                 order.setOrderDate(order.getdBoyOrderHistories().get(0).getOrderCompletedAt());
             }  else {
                 orderEntities.remove(order);

@@ -215,7 +215,8 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
     @Override
     public void generatedBoyPayStatement(Integer dBoyId, String fromDate, String toDate, String serverUrl) throws Exception {
-        String invoicePath = new String();
+        String statementPath = new String();
+        InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
         List<OrderEntity> orders =  orderDaoService.getDBoyOrders(dBoyId, fromDate, toDate);
 
         if (orders.size()>0){
@@ -236,6 +237,21 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             dBoyPayment.setdBoyPaid(false);
 
             dBoyPaymentDaoService.save(dBoyPayment);
+
+            Map<String, String> preferences = new HashMap<>();
+            preferences.put("CURRENCY", systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+            preferences.put("HELPLINE_NUMBER", systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+            preferences.put("SUPPORT_EMAIL", systemPropertyService.readPrefValue(PreferenceType.SUPPORT_EMAIL));
+            preferences.put("COMPANY_NAME", systemPropertyService.readPrefValue(PreferenceType.COMPANY_NAME));
+            preferences.put("COMPANY_ADDRESS", systemPropertyService.readPrefValue(PreferenceType.COMPANY_ADDRESS));
+            preferences.put("REGISTRATION_NO", systemPropertyService.readPrefValue(PreferenceType.REGISTRATION_NO));
+            preferences.put("VAT_NO", systemPropertyService.readPrefValue(PreferenceType.VAT_NO));
+            preferences.put("DELIVERY_FEE_VAT", systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
+
+            //statementPath =  invoiceGenerator.generateDBoyPayStatement(orders, dBoyPayment, orders, serverUrl, preferences);
+
+            dBoyPayment.setPath(statementPath);
+            dBoyPaymentDaoService.update(dBoyPayment);
 
         }
 

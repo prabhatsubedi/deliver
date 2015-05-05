@@ -302,9 +302,7 @@ public class AccountantController {
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
 
-
             accountService.saveDBoyTransactionNote(headerDto, requestJsonDto);
-
 
             ServiceResponse serviceResponse = new ServiceResponse("Accountant note saved successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

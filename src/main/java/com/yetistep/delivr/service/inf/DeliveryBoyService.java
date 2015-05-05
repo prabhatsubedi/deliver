@@ -74,4 +74,6 @@ public interface DeliveryBoyService {
     public PaginationDto getAdvanceAmounts(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 
     public PaginationDto getDBoyAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
+
+    public List<DeliveryBoyEntity> findAllActiveDeliveryBoy() throws Exception;
 }

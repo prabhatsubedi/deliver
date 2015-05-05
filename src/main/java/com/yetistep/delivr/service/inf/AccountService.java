@@ -21,6 +21,8 @@ public interface AccountService {
 
     public String generateBillAndReceiptAndSendEmail(OrderEntity order) throws Exception;
 
+    public void generatedBoyPayStatement(Integer dBoyId, String fromDate, String toDate, String serverUrl) throws Exception;
+
     public List<StoreEntity> getAllStores() throws Exception;
 
     public void payDboy(HeaderDto headerDto) throws Exception;

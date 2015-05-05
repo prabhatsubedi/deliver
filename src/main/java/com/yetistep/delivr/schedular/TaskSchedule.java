@@ -3,10 +3,12 @@ package com.yetistep.delivr.schedular;
 import com.yetistep.delivr.dao.inf.DeliveryBoyDaoService;
 import com.yetistep.delivr.dao.inf.OrderDaoService;
 import com.yetistep.delivr.enums.PreferenceType;
+import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.StoreEntity;
 import com.yetistep.delivr.service.inf.AccountService;
 import com.yetistep.delivr.service.inf.CustomerService;
+import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,9 @@ public class TaskSchedule {
 
     @Autowired
     DeliveryBoyDaoService deliveryBoyDaoService;
+
+    @Autowired
+    DeliveryBoyService deliveryBoyService;
 
     @Autowired
     CustomerService customerService;
@@ -73,7 +78,7 @@ public class TaskSchedule {
         List<StoreEntity> stores=accountService.getAllStores();
 
         if(stores.size()>0){
-            String filePath = new String();
+            //String filePath = new String();
             for (StoreEntity store: stores){
                 accountService.generateInvoice(store.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()), "http://test.idelivr.com/");
             }
@@ -81,6 +86,28 @@ public class TaskSchedule {
             log.info("no stores found. ");
         }
     }
+
+    /*@Scheduled(cron="0 0 22 * * SAT")
+    public void generateDBoyPayStatement() throws Exception {
+        log.info("Generating DBoy pay statement:");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 0);
+        Calendar calPrev = Calendar.getInstance();
+        calPrev.add(Calendar.DATE, -7);
+
+        List<DeliveryBoyEntity> allActiveDBoy = deliveryBoyService.findAllActiveDeliveryBoy();
+        if(allActiveDBoy.size()>0){
+            for (DeliveryBoyEntity deliveryBoy: allActiveDBoy){
+                accountService.generatedBoyPayStatement(deliveryBoy.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()), "http://test.idelivr.com/");
+            }
+        }else{
+            log.info("no shoppers found");
+        }
+
+
+    }*/
+
 
     @Scheduled(cron="0 * * * * ?")
     @Transactional

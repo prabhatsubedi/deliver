@@ -789,7 +789,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<String> itemsImages = requestJson.getItemImages();
 
         StoresBrandEntity storesBrand = merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
-        if((storesBrand == null) || (storesBrand.getStatus().equals(Status.ACTIVE)) )
+        if((storesBrand == null) || (!storesBrand.getStatus().equals(Status.ACTIVE)))
             throw new YSException("VLD012");
 
         CategoryEntity category = new CategoryEntity();

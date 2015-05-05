@@ -70,6 +70,7 @@ public class OrderEntity implements Serializable {
     private OrderCancelEntity orderCancel;
     private CourierTransactionEntity courierTransaction;
     private InvoiceEntity invoice;
+    private DBoyPaymentEntity dBoyPayment;
     private List<ItemsOrderEntity> itemsOrder;
     private AddressEntity address;
     private DeliveryBoyEntity deliveryBoy;
@@ -459,13 +460,23 @@ public class OrderEntity implements Serializable {
         this.itemServiceAndVatCharge = itemServiceAndVatCharge;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     public InvoiceEntity getInvoice() {
         return invoice;
     }
 
     public void setInvoice(InvoiceEntity invoice) {
         this.invoice = invoice;
+    }
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "dboy_payment_id")
+    public DBoyPaymentEntity getdBoyPayment() {
+        return dBoyPayment;
+    }
+
+    public void setdBoyPayment(DBoyPaymentEntity dBoyPayment) {
+        this.dBoyPayment = dBoyPayment;
     }
 
     @Column(name="reprocess_time")

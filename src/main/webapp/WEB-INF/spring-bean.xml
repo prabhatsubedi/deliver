@@ -55,4 +55,5 @@
     <bean id = "walletTransactionDaoService" class = "com.yetistep.delivr.dao.impl.WalletTransactionDaoServiceImpl" />
     <bean id = "cartCustomItemDaoService" class = "com.yetistep.delivr.dao.impl.CartCustomItemDaoServiceImpl" />
     <bean id = "paymentGatewayInfoDaoService" class = "com.yetistep.delivr.dao.impl.PaymentGatewayInfoDaoServiceImpl" />
+    <bean id = "dBoyPaymentDaoService" class = "com.yetistep.delivr.dao.impl.DBoyPaymentDaoServiceImpl" />
  </beans>

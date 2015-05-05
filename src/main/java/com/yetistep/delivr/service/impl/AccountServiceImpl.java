@@ -62,13 +62,16 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     @Autowired
     DBoyAdvanceAmountDaoService dBoyAdvanceAmountDaoService;
 
+    @Autowired
+    DBoyPaymentDaoService dBoyPaymentDaoService;
+
     @Override
     public String generateInvoice(Integer storeId, String fromDate, String toDate, String serverUrl) throws Exception {
         String invoicePath = new String();
         List<OrderEntity> orders =  orderDaoService.getStoresOrders(storeId, fromDate, toDate);
         if(orders.size()>0){
             StoreEntity store =  storeDaoService.find(storeId);
-            store.getId();
+            //store.getId();
 
             MerchantEntity merchant = store.getStoresBrand().getMerchant();
             InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
@@ -87,14 +90,25 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             invoice.setGeneratedDate(new Date(System.currentTimeMillis()));
             invoice.setFromDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(fromDate).getTime()));
             invoice.setToDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(toDate).getTime()));
+
             BigDecimal totalOrderAmount = BigDecimal.ZERO;
+            BigDecimal totalServiceCharge = BigDecimal.ZERO;
             for (OrderEntity order: orders){
+                for (ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()) {
+                    BigDecimal itemServiceChargePcn = itemsOrderEntity.getItem().getServiceCharge();
+                    BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
+                    totalServiceCharge.add(itemServiceCharge);
+                }
+                //add order
                 totalOrderAmount = totalOrderAmount.add(order.getTotalCost());
             }
-            BigDecimal commissionAmount = totalOrderAmount.max(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
-            BigDecimal vatAmount =  commissionAmount.multiply(new BigDecimal(13)).divide(new BigDecimal(100));
-            BigDecimal totalPayableAmount = commissionAmount.add(vatAmount);
-            invoice.setAmount(totalPayableAmount);
+            BigDecimal totalTaxableAmount =  totalOrderAmount.add(totalServiceCharge);
+            BigDecimal vatAmount =  totalTaxableAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
+            BigDecimal grandTotalAmount = totalTaxableAmount.add(vatAmount);
+            BigDecimal commissionAmount = grandTotalAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
+            BigDecimal netPayableAmount = grandTotalAmount.subtract(commissionAmount);
+            invoice.setAmount(netPayableAmount);
+
             invoiceDaoService.save(invoice);
 
             Map<String, String> preferences = new HashMap<>();
@@ -137,7 +151,6 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             if(billExists.size()>0 || receiptsExists.size()>0){
                 throw new YSException("INV006");
             }
-
 
             InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
             BillEntity bill = new BillEntity();
@@ -198,6 +211,34 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             }
         }
         return billAndReceiptPath;
+    }
+
+    @Override
+    public void generatedBoyPayStatement(Integer dBoyId, String fromDate, String toDate, String serverUrl) throws Exception {
+        String invoicePath = new String();
+        List<OrderEntity> orders =  orderDaoService.getDBoyOrders(dBoyId, fromDate, toDate);
+
+        if (orders.size()>0){
+            DBoyPaymentEntity dBoyPayment = new DBoyPaymentEntity();
+            DeliveryBoyEntity deliveryBoy = new DeliveryBoyEntity();
+            deliveryBoy.setId(dBoyId);
+            dBoyPayment.setDeliveryBoy(deliveryBoy);
+            dBoyPayment.setOrders(orders);
+            dBoyPayment.setGeneratedDate(new Date(System.currentTimeMillis()));
+
+            for (OrderEntity orderEntity: orders){
+                orderEntity.setdBoyPayment(dBoyPayment);
+            }
+
+            dBoyPayment.setGeneratedDate(new Date(System.currentTimeMillis()));
+            dBoyPayment.setFromDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(fromDate).getTime()));
+            dBoyPayment.setToDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(toDate).getTime()));
+            dBoyPayment.setdBoyPaid(false);
+
+            dBoyPaymentDaoService.save(dBoyPayment);
+
+        }
+
     }
 
     @Override

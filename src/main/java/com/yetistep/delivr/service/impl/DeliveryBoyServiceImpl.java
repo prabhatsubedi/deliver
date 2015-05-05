@@ -198,6 +198,21 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     }
 
     @Override
+    public List<DeliveryBoyEntity> findAllActiveDeliveryBoy() throws Exception{
+        List<DeliveryBoyEntity> allActiveDBoy = new ArrayList<>();
+        List<DeliveryBoyEntity> dbDeliveryBoy = deliveryBoyDaoService.findAll();
+
+        for (DeliveryBoyEntity deliveryBoy: dbDeliveryBoy){
+            if (deliveryBoy.getUser().getStatus().equals(Status.ACTIVE)){
+                allActiveDBoy.add(deliveryBoy);
+            }
+        }
+
+        return allActiveDBoy;
+    }
+
+
+    @Override
     public PaginationDto findAllDeliverBoy(RequestJsonDto requestJsonDto) throws Exception {
         log.info("Retrieving list of Deliver Boys");
 

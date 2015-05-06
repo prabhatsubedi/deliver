@@ -2153,6 +2153,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             orderEntity.setOrderDate(advanceAmount.getAdvanceDate());
             orderEntity.setGrandTotal(advanceAmount.getAmountAdvance());
             orderEntity.setDescription(advanceAmount.getType());
+            orderEntity.setAccountantNote(advanceAmount.getAccountantNote());
             advanceAsOrder.add(orderEntity);
         }
 

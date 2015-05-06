@@ -324,7 +324,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
     @Override
     public List<OrderEntity> getDBoyOrders(Integer dBoyId, String fromDate, String toDate) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
-        criteria.add(Restrictions.and(Restrictions.eq("orderStatus", JobOrderStatus.DELIVERED), Restrictions.eq("delivery_boy_id.id", dBoyId), Restrictions.gt("orderDate", new SimpleDateFormat("yyyy-MM-dd").parse(fromDate)), Restrictions.le("orderDate", new SimpleDateFormat("yyyy-MM-dd").parse(toDate))));
+        criteria.add(Restrictions.and(Restrictions.eq("orderStatus", JobOrderStatus.DELIVERED), Restrictions.eq("deliveryBoy.id", dBoyId), Restrictions.gt("orderDate", new SimpleDateFormat("yyyy-MM-dd").parse(fromDate)), Restrictions.le("orderDate", new SimpleDateFormat("yyyy-MM-dd").parse(toDate))));
         List<OrderEntity>  orderEntities = criteria.list();
         return orderEntities;
     }

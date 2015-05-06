@@ -6,6 +6,7 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.draw.LineSeparator;
+import com.yetistep.delivr.dao.inf.DBoyPaymentDaoService;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.*;
 import org.apache.commons.mail.EmailException;
@@ -34,6 +35,8 @@ public class InvoiceGenerator {
 
     @Autowired
     SystemPropertyService systemPropertyService;
+
+
 
     private static final Logger log = Logger.getLogger(InvoiceGenerator.class);
 
@@ -67,8 +70,8 @@ public class InvoiceGenerator {
     }
 
 
-    public String generateDBoyPayStatement(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store, String serverUrl, Map<String, String> preferences) throws Exception {
-        File invoiceFile = generateInvoicePDF(orders, merchant, invoice, store, serverUrl, preferences);
+    public String generateDBoyPayStatement(List<OrderEntity> orders, DeliveryBoyEntity deliveryBoy, DBoyPaymentEntity dBoyPayment, String serverUrl, Map<String, String> preferences) throws Exception {
+        File invoiceFile = generatedDBoyPaymentPDF(orders, deliveryBoy, dBoyPayment, serverUrl, preferences);
 
         if (invoiceFile == null)
             return null;
@@ -80,7 +83,7 @@ public class InvoiceGenerator {
             int noOfRetry = 3;
             for (int i = 0; i < noOfRetry; i++) {//retry three time, if exception occurs
                 try {
-                    String dir = getInvoiceDir(merchant, store, File.separator);
+                    String dir = getDBoyPaymentDir(deliveryBoy, File.separator);
                     String bucketUrl = AmazonUtil.uploadFileToS3(invoiceFile, dir, invoiceFile.getName(), true);
                     invoicePath = AmazonUtil.cacheImage(bucketUrl);
                     break;
@@ -217,59 +220,6 @@ public class InvoiceGenerator {
 
         return invoiceFile;
     }
-
-//    //create a header for the company
-//    private void addInvoiceHeader(Document document, InvoiceEntity invoice) throws Exception {
-//        int bottomPadding = 35;
-//
-//        Paragraph title = PdfUtil.getParagraph(PdfUtil.catFont, "INVOICE");
-//        title.setAlignment(Element.ALIGN_CENTER);
-//        document.add(title);
-//
-//        //add empty line
-//        PdfUtil.addEmptyLine(document, 2);
-//
-//        //address cell
-//        PdfPCell addressCell = new PdfPCell();
-//        PdfUtil.setPadding(addressCell, 0, 0, bottomPadding, 0);
-//        addressCell.addElement(PdfUtil.getParagraph(PdfUtil.catFont, ""));
-//
-//        String address = "";
-//        String contactNo = "";
-//        String vatNo = "";
-//
-//        Paragraph info = PdfUtil.getParagraph(PdfUtil.smallFont, true, address, "Ph: " + contactNo, "VAT No.: " + vatNo);
-//        addressCell.addElement(info);
-//
-//        //billing cell
-//        PdfPCell billingCell = new PdfPCell();
-//
-//        Paragraph paragraph1 = new Paragraph();
-//        paragraph1.add(PdfUtil.getPhrase("Billing Date: ", PdfUtil.smallBold));
-//        paragraph1.add(PdfUtil.getPhrase(invoice.getGeneratedDate(), PdfUtil.smallFont));
-//        paragraph1.setAlignment(Element.ALIGN_RIGHT);
-//
-//        Paragraph paragraph2 = new Paragraph();
-//        paragraph2.add(PdfUtil.getPhrase("Invoice No: ", PdfUtil.smallBold));
-//        paragraph2.add(PdfUtil.getPhrase(1, PdfUtil.smallFont));
-//        paragraph2.setAlignment(Element.ALIGN_RIGHT);
-//
-//        PdfUtil.setPadding(billingCell, 0, 0, bottomPadding, 0);
-//
-//        billingCell.addElement(paragraph1);
-//        billingCell.addElement(paragraph2);
-//
-//        //no border on the cells
-//        PdfUtil.setBorder(0, addressCell, billingCell);
-//
-//        //add cells to table
-//        PdfPTable headerTable = new PdfPTable(2);
-//        headerTable.setWidthPercentage(100);
-//        headerTable.addCell(addressCell);
-//        headerTable.addCell(billingCell);
-//
-//        document.add(headerTable);
-//    }
 
     //create a header for the company
     private void addPdfHeader(Document document, String serverUrl, Map<String, String> preferences) throws Exception {
@@ -561,7 +511,7 @@ public class InvoiceGenerator {
 
         String currency = preferences.get("CURRENCY");
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Title", infoFont), PdfUtil.getPhrase("Amount ("+currency+")", infoFont));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("iDelivr Fee", infoFont),
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Processing Fee", infoFont),
                 PdfUtil.getPhrase(bill.getSystemServiceCharge(), infoFont));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("Delivery Fee", infoFont),
                 PdfUtil.getPhrase(bill.getDeliveryCharge(), infoFont));
@@ -644,10 +594,6 @@ public class InvoiceGenerator {
         receiptCell.setBorderColorBottom(new BaseColor(0xFF9235));
         receiptCell.setBorderWidthBottom(new Float(0.3));
 
-
-
-
-
         PdfPTable receiptTable = new PdfPTable(1);
         receiptTable.spacingBefore();
         receiptTable.setWidthPercentage(100);
@@ -665,9 +611,102 @@ public class InvoiceGenerator {
         document.add(ls);
     }
 
-   /* private void sendInvoicePaymentNReceiptMail() {
+    private File generatedDBoyPaymentPDF(List<OrderEntity> orders, DeliveryBoyEntity deliveryBoy, DBoyPaymentEntity dBoyPayment, String serverUrl, Map<String, String> preferences) throws Exception {
+        FileOutputStream stream = null;
+        File payStatementFile = null;
 
-    }*/
+        try{
+
+            Document document = new Document();
+            /*Integer cntOrder = 1;*/
+
+            payStatementFile = getPayStatementFile(deliveryBoy, "payStatement");
+            stream = new FileOutputStream(payStatementFile);
+            PdfWriter writer = PdfWriter.getInstance(document, stream);
+            document.open();
+            document.setMargins(20, 20, 20, 20);
+            //add doc header
+            addPdfHeader(document, serverUrl, preferences);
+
+            addPayStatementBody(document, deliveryBoy, dBoyPayment,  orders, preferences);
+
+            addFooter(document);
+
+            document.close();
+
+
+        }catch (Exception e) {
+            log.error("Error occurred while generating coupon bill", e);
+
+            if (stream != null) {
+                stream.flush();
+                stream.close();
+            }
+
+            if (payStatementFile != null) {
+                payStatementFile.delete();
+            }
+            payStatementFile = null;
+            throw e;
+        }
+
+        return payStatementFile;
+
+    }
+
+    private void addPayStatementBody(Document document, DeliveryBoyEntity deliveryBoy, DBoyPaymentEntity dBoyPayment, List<OrderEntity> orders, Map<String, String> preferences) throws Exception{
+
+        com.itextpdf.text.Font titleFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 19f));
+        titleFont.setColor(new BaseColor(0xFF9235));
+        Paragraph title = PdfUtil.getParagraph(titleFont, "Pay Statement");
+        Paragraph shopperName = PdfUtil.getParagraph(titleFont, deliveryBoy.getUser().getFullName());
+        title.setAlignment(Element.ALIGN_CENTER);
+        title.setSpacingBefore(20);
+        title.setSpacingAfter(30);
+        shopperName.setAlignment(Element.ALIGN_CENTER);
+        shopperName.setSpacingBefore(50);
+        document.add(shopperName);
+        document.add(title);
+
+        PdfPTable billingTable = new PdfPTable(4);
+        billingTable.setWidthPercentage(100);
+        billingTable.setWidths(new float[]{20, 30, 20, 30});
+
+        String currency = preferences.get("CURRENCY");
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase("SN", PdfUtil.smallBold), PdfUtil.getPhrase("Date and Time", PdfUtil.smallBold), PdfUtil.getPhrase("Order No.", PdfUtil.smallBold), PdfUtil.getPhrase("Amount Earned ("+currency+")", PdfUtil.smallBold));
+
+        BigDecimal totalAmountEarned = BigDecimal.ZERO;
+        Integer cntOrder = 1;
+        for (OrderEntity order:orders){
+
+            PdfUtil.addRow(billingTable, PdfUtil.getPhrase(cntOrder), PdfUtil.getPhrase(order.getOrderDate()), PdfUtil.getPhrase(order.getId()), PdfUtil.getPhrase(order.getdBoyOrderHistories().get(0).getAmountEarned()));
+            totalAmountEarned = totalAmountEarned.add(order.getdBoyOrderHistories().get(0).getAmountEarned());
+
+            if(cntOrder%20==0){
+                document.newPage();
+            }
+            cntOrder++;
+        }
+
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), PdfUtil.getPhrase("Total"), PdfUtil.getPhrase(totalAmountEarned));
+        BigDecimal tdsAmount = totalAmountEarned.multiply(new BigDecimal(preferences.get("TDS_PERCENTAGE"))).divide(new BigDecimal(100));
+        BigDecimal totalPayableAmount =  totalAmountEarned.subtract(tdsAmount);
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), PdfUtil.getPhrase("TDS(%)"), PdfUtil.getPhrase(tdsAmount));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), PdfUtil.getPhrase("Total Payable"), PdfUtil.getPhrase(totalPayableAmount));
+        dBoyPayment.setPayableAmount(totalPayableAmount);
+        for (PdfPRow row: billingTable.getRows()) {
+            for (PdfPCell cell: row.getCells()){
+                cell.setBorder(0);
+                cell.setBorderColorBottom(new BaseColor(0xFF9235));
+                cell.setBorderWidthBottom(new Float(0.3));
+                cell.setPaddingBottom(20);
+                cell.setPaddingTop(20);
+                cell.setPaddingLeft(50);
+            }
+        }
+
+        document.add(billingTable);
+    }
 
     private void addFooter(Document document) throws Exception {
         PdfUtil.addEmptyLine(document, 2);//add empty line
@@ -678,11 +717,21 @@ public class InvoiceGenerator {
     }
 
 
-
-
-
     private File getFile(MerchantEntity merchant, StoreEntity store, String name) {
         String dir = getInvoiceDir(merchant, store, File.separator);
+
+        File invoiceDir = new File(HOME_DIR + File.separator + dir + File.separator);
+        if (!invoiceDir.exists()) {
+            invoiceDir.mkdirs();
+        }
+
+        String fileName = System.currentTimeMillis() + "_" +name+ ".pdf";
+        return new File(invoiceDir, fileName);
+    }
+
+
+    private File getPayStatementFile(DeliveryBoyEntity deliveryBoy, String name) {
+        String dir = getDBoyPaymentDir(deliveryBoy, File.separator);
 
         File invoiceDir = new File(HOME_DIR + File.separator + dir + File.separator);
         if (!invoiceDir.exists()) {
@@ -707,6 +756,12 @@ public class InvoiceGenerator {
 
     private String getInvoiceDir(MerchantEntity merchant, StoreEntity store, String separator) {
         String dir = MessageBundle.separateString(separator, "Invoices", "Merchant_" + merchant.getId(), "StoreBrand_"+store.getStoresBrand().getId(), "Store"+store.getId());
+
+        return dir;
+    }
+
+    private String getDBoyPaymentDir(DeliveryBoyEntity deliveryBoy, String separator) {
+        String dir = MessageBundle.separateString(separator, "Shopper_payment", "Shopper_" + deliveryBoy.getId());
 
         return dir;
     }

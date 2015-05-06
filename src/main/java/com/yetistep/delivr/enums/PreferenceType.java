@@ -8,7 +8,7 @@ package com.yetistep.delivr.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum PreferenceType {
-    CURRENCY,
+    CURRENCY,TDS_PERCENTAGE,
     //Delivery Boy Preferences
     DBOY_ADDITIONAL_PER_KM_CHARGE, DBOY_PER_KM_CHARGE_UPTO_NKM, DBOY_PER_KM_CHARGE_ABOVE_NKM, DEFAULT_NKM_DISTANCE, RESERVED_COMM_PER_BY_SYSTEM,
     //DBOY Surge Factor

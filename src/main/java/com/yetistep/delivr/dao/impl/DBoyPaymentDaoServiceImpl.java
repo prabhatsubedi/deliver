@@ -3,10 +3,17 @@ package com.yetistep.delivr.dao.impl;
 import com.yetistep.delivr.dao.inf.DBoyPaymentDaoService;
 import com.yetistep.delivr.model.DBoyPaymentEntity;
 import com.yetistep.delivr.model.InvoiceEntity;
+import com.yetistep.delivr.model.Page;
+import com.yetistep.delivr.util.HibernateUtil;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,13 +30,24 @@ public class DBoyPaymentDaoServiceImpl implements DBoyPaymentDaoService {
 
     @Override
     public DBoyPaymentEntity find(Integer id) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return (DBoyPaymentEntity) getCurrentSession().get(DBoyPaymentEntity.class, id);
     }
 
     @Override
     public List<DBoyPaymentEntity> findAll() throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+       return (List<DBoyPaymentEntity>) getCurrentSession().createCriteria(DBoyPaymentEntity.class).list();
     }
+
+    @Override
+    public List<DBoyPaymentEntity> findAllOfShopper(Page page, Integer dBoyId) throws Exception {
+        List<DBoyPaymentEntity> merchants  = new ArrayList<>();
+        Criteria criteria  = getCurrentSession().createCriteria(DBoyPaymentEntity.class);
+        criteria.add(Restrictions.eq("deliveryBoy.id", dBoyId));
+        HibernateUtil.fillPaginationCriteria(criteria, page, DBoyPaymentEntity.class);
+        merchants = criteria.list();
+        return merchants;
+    }
+
 
     @Override
     public Boolean save(DBoyPaymentEntity value) throws Exception {
@@ -51,5 +69,16 @@ public class DBoyPaymentDaoServiceImpl implements DBoyPaymentDaoService {
     @Override
     public Session getCurrentSession() throws Exception {
         return sessionFactory.getCurrentSession();
+    }
+
+
+    @Override
+    public Integer getTotalNumberOfPayStatements(Integer dBoyId) throws Exception {
+        String sqQuery =    "SELECT COUNT(dp.id) FROM dboy_payment dp WHERE dp.dboy_id =:dBoyId";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("dBoyId", dBoyId);
+
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
     }
 }

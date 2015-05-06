@@ -87,7 +87,7 @@ public class TaskSchedule {
         }
     }
 
-    @Scheduled(cron="0 0 22 * * SAT")
+    @Scheduled(cron="0 0 23 * * SAT")
     public void generateDBoyPayStatement() throws Exception {
         log.info("Generating DBoy pay statement:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -97,6 +97,7 @@ public class TaskSchedule {
         calPrev.add(Calendar.DATE, -7);
 
         List<DeliveryBoyEntity> allActiveDBoy = deliveryBoyService.findAllActiveDeliveryBoy();
+
         if(allActiveDBoy.size()>0){
             for (DeliveryBoyEntity deliveryBoy: allActiveDBoy){
                 accountService.generatedBoyPayStatement(deliveryBoy.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()), "http://test.idelivr.com/");

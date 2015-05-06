@@ -235,3 +235,6 @@ ALTER TABLE merchants ADD UNIQUE (user_id);
 ALTER TABLE custom_items ADD UNIQUE(items_order_id);
 ALTER TABLE order_cancel ADD UNIQUE (order_id);
 ALTER TABLE user_device ADD UNIQUE (user_id);
+
+/*======================2015-05-06=========================*/
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('TDS_PERCENTAGE', '15', '1', 'TDS Percentage');

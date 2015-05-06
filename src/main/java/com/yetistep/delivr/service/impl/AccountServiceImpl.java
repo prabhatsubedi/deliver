@@ -3,16 +3,15 @@ package com.yetistep.delivr.service.impl;
 import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.InvoiceStatus;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.AccountService;
+import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
-import com.yetistep.delivr.util.DateUtil;
-import com.yetistep.delivr.util.EmailMsg;
-import com.yetistep.delivr.util.InvoiceGenerator;
-import com.yetistep.delivr.util.YSException;
+import com.yetistep.delivr.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +63,9 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
     @Autowired
     DBoyPaymentDaoService dBoyPaymentDaoService;
+
+    @Autowired
+    DeliveryBoyDaoService deliveryBoyDaoService;
 
     @Override
     public String generateInvoice(Integer storeId, String fromDate, String toDate, String serverUrl) throws Exception {
@@ -221,20 +223,26 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
         if (orders.size()>0){
             DBoyPaymentEntity dBoyPayment = new DBoyPaymentEntity();
-            DeliveryBoyEntity deliveryBoy = new DeliveryBoyEntity();
-            deliveryBoy.setId(dBoyId);
+            DeliveryBoyEntity deliveryBoy = deliveryBoyDaoService.findDBoyById(dBoyId);
             dBoyPayment.setDeliveryBoy(deliveryBoy);
             dBoyPayment.setOrders(orders);
             dBoyPayment.setGeneratedDate(new Date(System.currentTimeMillis()));
 
+            BigDecimal totalAmountEarned = BigDecimal.ZERO;
             for (OrderEntity orderEntity: orders){
                 orderEntity.setdBoyPayment(dBoyPayment);
+                totalAmountEarned.add(orderEntity.getdBoyOrderHistories().get(0).getAmountEarned());
             }
+
+            BigDecimal tdsAmount = totalAmountEarned.multiply(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.TDS_PERCENTAGE))).divide(new BigDecimal(100));
+
+            BigDecimal totalPayableAmount = totalAmountEarned.subtract(tdsAmount);
 
             dBoyPayment.setGeneratedDate(new Date(System.currentTimeMillis()));
             dBoyPayment.setFromDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(fromDate).getTime()));
             dBoyPayment.setToDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(toDate).getTime()));
             dBoyPayment.setdBoyPaid(false);
+            dBoyPayment.setPayableAmount(totalPayableAmount);
 
             dBoyPaymentDaoService.save(dBoyPayment);
 
@@ -247,8 +255,9 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             preferences.put("REGISTRATION_NO", systemPropertyService.readPrefValue(PreferenceType.REGISTRATION_NO));
             preferences.put("VAT_NO", systemPropertyService.readPrefValue(PreferenceType.VAT_NO));
             preferences.put("DELIVERY_FEE_VAT", systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
+            preferences.put("TDS_PERCENTAGE", systemPropertyService.readPrefValue(PreferenceType.TDS_PERCENTAGE));
 
-            //statementPath =  invoiceGenerator.generateDBoyPayStatement(orders, dBoyPayment, orders, serverUrl, preferences);
+            statementPath =  invoiceGenerator.generateDBoyPayStatement(orders, deliveryBoy, dBoyPayment, serverUrl, preferences);
 
             dBoyPayment.setPath(statementPath);
             dBoyPaymentDaoService.update(dBoyPayment);
@@ -338,5 +347,56 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
              dBoyAdvanceAmountDaoService.update(dBoyAdvanceAmountEntity);
          }
     }
+
+    @Override
+    public PaginationDto getDBoyPayStatement(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
+        Page page = requestJsonDto.getPage();
+
+        List<DBoyPaymentEntity> dBoyPaymentEntities = new ArrayList<>();
+        Integer dBoyId = Integer.parseInt(headerDto.getId());
+
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  dBoyPaymentDaoService.getTotalNumberOfPayStatements(dBoyId);
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+        dBoyPaymentEntities = dBoyPaymentDaoService.findAllOfShopper(page, dBoyId);
+
+        List<DBoyPaymentEntity> dBoyPayments = new ArrayList<>();
+
+        String fields = "id,generatedDate,path,payableAmount,fromDate,toDate,paidDate,dBoyPaid";
+
+        for (DBoyPaymentEntity dBoyPayment:dBoyPaymentEntities){
+            dBoyPayments.add((DBoyPaymentEntity) ReturnJsonUtil.getJsonObject(dBoyPayment, fields));
+        }
+
+        paginationDto.setData(dBoyPayments);
+
+        return paginationDto;
+    }
+
+
+    @Override
+    public void payDBoyPayStatement(HeaderDto headerDto) throws Exception {
+        String invoiceId = headerDto.getId();
+        String[] invoiceIds =  invoiceId.split(",");
+        List<DBoyPaymentEntity> dBoyPaymentEntities = new ArrayList<>();
+
+        for (String id: invoiceIds ) {
+            if(id != "")
+                dBoyPaymentEntities.add(dBoyPaymentDaoService.find(Integer.parseInt(id)));
+        }
+
+        for (DBoyPaymentEntity dBoyPayment: dBoyPaymentEntities){
+            dBoyPayment.setdBoyPaid(true);
+            dBoyPayment.setPaidDate(new Date(System.currentTimeMillis()));
+            dBoyPaymentDaoService.update(dBoyPayment);
+        }
+    }
+
+
 
 }

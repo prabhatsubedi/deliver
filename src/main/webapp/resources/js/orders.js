@@ -395,14 +395,23 @@ Order.getPurchaseHistory = function(){
 
     $("body").delegate(".db_td", "mouseleave", function(){
         $(this).find(".db_info").addClass("hidden");
-    });
+    });*/
     $("body").delegate("span.view_bills", "mouseover", function(){
-        $(this).siblings(".bill_list").removeClass("hidden");
+        $('#view_bill_cont').html("").addClass("hidden");
+        var offset = $(this).parent('.bill_td').offset();
+        var poffset = $('#purchase_history_table_wrapper').offset();
+        $('#view_bill_cont').html($(this).siblings(".bill_list").html()).removeClass("hidden");
+        $('#view_bill_cont').css({top: offset.top - poffset.top - $('#view_bill_cont').height() + 45, left: offset.left - poffset.left - 190});
+//        $(this).siblings(".bill_list").removeClass("hidden");
     });
 
-    $("body").delegate(".bill_td", "mouseleave", function(){
-        $(this).find(".bill_list").addClass("hidden");
+/*    $("body").delegate(".bill_td", "mouseleave", function(){
+        $('#view_bill_cont').html("").addClass("hidden");
+//        $(this).find(".bill_list").addClass("hidden");
     });*/
+    $('body').click(function(){
+        $('#view_bill_cont').html("").addClass("hidden");
+    });
 
     $('.db_td').live('mouseover', function(){
         $(this).addClass('currentPreview');

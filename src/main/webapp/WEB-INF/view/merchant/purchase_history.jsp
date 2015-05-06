@@ -47,6 +47,7 @@
                     <tbody>
                     </tbody>
                 </table>
+                <div id="view_bill_cont" class="bill_list hidden"></div>
               </div>
         </div>
     </div>

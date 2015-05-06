@@ -331,7 +331,7 @@ public class AccountantController {
     }
 
 
-    @RequestMapping(value = "/pay_dboy_statement", method = RequestMethod.POST)
+    @RequestMapping(value = "/pay_dboy_statement", method = RequestMethod.GET)
     public ResponseEntity<ServiceResponse> payDBoyPayStatement(@RequestHeader HttpHeaders headers) {
         try{
             HeaderDto headerDto = new HeaderDto();

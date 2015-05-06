@@ -93,9 +93,15 @@
                     <thead>
                     <tr>
                         <th>SN</th>
-                        <th>Issued Date</th>
-                        <th>Type</th>
-                        <th>Amount</th>
+                        <th>Date and Time</th>
+                        <th>Description</th>
+                        <th>Order ID</th>
+                        <th>DR</th>
+                        <th>CR</th>
+                        <th>Balance</th>
+                        <th>Order Status</th>
+                        <th>Remarks</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody></tbody>
@@ -104,6 +110,31 @@
             </div>
 
         </div>
+    </div>
+</div>
+
+<div class="modal fade modal_form" id="modal_note">
+    <div class="modal-dialog">
+        <form role="form" id="form_note" method="POST" action="">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    Add Note
+                </div>
+                <div class="modal-body body_padding">
+                    <div class="form-group">
+                        <textarea class="form-control" id="note" name="note" placeholder="Note"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-lg-6 no_pad">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                    <div class="col-lg-6 no_pad">
+                        <button type="submit" class="btn btn-default next">Add</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 

@@ -711,6 +711,57 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.getTransactions = function () {
 
+        var callback = function (status, data) {
+            if (!data.success) {
+                Main.popDialog('', data.message);
+                return;
+            }
+            var advanceAmounts = data.params.advanceAmounts.data;
+            var tdata = [];
+
+            if(advanceAmounts.length > 0) {
+
+                for(i = 0; i < advanceAmounts.length; i++) {
+
+                    var advanceAmount = advanceAmounts[i];
+                    var orderDate = advanceAmount.orderDate == undefined ? "" : advanceAmount.orderDate;
+                    var description = advanceAmount.description == undefined ? "" : advanceAmount.description;
+                    var id = advanceAmount.id == undefined ? "" : advanceAmount.id;
+                    var dr = advanceAmount.dr == undefined ? "" : advanceAmount.dr;
+                    var cr = advanceAmount.cr == undefined ? "" : advanceAmount.cr;
+                    var balance = advanceAmount.balance == undefined ? "" : advanceAmount.balance;
+                    var orderStatus = advanceAmount.orderStatus == undefined ? "" : advanceAmount.orderStatus;
+                    var _orderStatus = [];
+                    if(orderStatus != "") {
+                        _orderStatus = orderStatus.toLowerCase().split('_');
+                    }
+                    $.each(_orderStatus, function(index, item) {
+                        _orderStatus[index] = Main.ucfirst(item);
+                    });
+                    orderStatus = _orderStatus.join(" ");
+                    var accountantNote = advanceAmount.accountantNote == undefined ? "" : advanceAmount.accountantNote;
+                    var action = '<a data-id="' + advanceAmount.id + '" data-mode="' + (advanceAmount.paymentMode == undefined ? "advanceAmount" : "order" ) + '" href="#" class="btn_add_note">Add Note</a>';
+                    var row = [i + 1, orderDate, description, id, dr, cr, balance, orderStatus, accountantNote, action];
+                    tdata.push(row);
+
+                }
+
+            }
+
+            Main.createNDataTable("#detail_account_table", tdata, 0, "desc", true);
+
+        };
+
+        callback.loaderDiv = "body";
+        callback.requestType = "POST";
+        var headers = {};
+        headers.id = cbid;
+        Main.request('/accountant/get_dboy_account', {}, callback, headers);
+
+    };
+
+/*    Manager.getTransactions = function () {
+
         var dataFilter = function (data, type) {
             if (!data.success) {
                 Main.popDialog('', data.message);
@@ -758,9 +809,46 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
         Main.createDataTable("#detail_account_table", dataFilter);
 
-    };
+    };*/
 
     Manager.getCourierBoyAccount = function () {
+
+        $('.btn_add_note').live('click', function(e){
+            e.preventDefault();
+            $('#modal_note').modal('show');
+            $('.btn_add_note').removeClass('current_note');
+            $(this).addClass('current_note');
+        });
+
+        $.validator.setDefaults({
+            errorPlacement : function(error, element){
+                $('#error_container').html(error);
+            }
+        });
+
+        $('#form_note').validate({
+            submitHandler: function() {
+                var callback = function (status, data) {
+                    Main.popDialog('', data.message);
+                    if (data.success) {
+                        Manager.getTransactions();
+                        $('#modal_note').modal('hide');
+                        $('#form_note')[0].reset();
+                    }
+                }
+                callback.loaderDiv = "#form_note";
+                callback.requestType = "POST";
+                var headers = {};
+                headers.id = $('.current_note').data('id');
+                var params = {};
+                params.accountantNote = $('#note').val();
+                params.className = $('.current_note').data('mode');
+                Main.request('/accountant/add_accountant_note', params, callback, headers);
+
+                return false;
+            }
+        });
+        $('#note').rules('add', {required: true});
 
         var callback = function (status, data) {
             if (!data.success) {
@@ -937,7 +1025,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 button2.text = "No";
 
                 var buttons = [button1, button2];
-                Main.popDialog('', "Are you sure you want to submit RS." + $("#to_be_submitted_val").val() + " from '" + $('.cbname').html() + "'?", buttons);
+                Main.popDialog('', "Are you sure you want to submit " + Main.getFromLocalStorage("currency") + " " + $("#to_be_submitted_val").val() + " from '" + $('.cbname').html() + "'?", buttons);
 
             }
         });

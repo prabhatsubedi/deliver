@@ -163,6 +163,15 @@ body.loader_div > .loader {
 .width_300 {
     min-width: 300px;
 }
+.custom_link {
+    color: #337ab7;
+    text-decoration: none;
+    cursor: pointer;
+}
+.custom_link:focus, .custom_link:hover {
+    color: #23527c;
+    text-decoration: underline;
+}
 .color_error {
     color: #f71d1d;
 }
@@ -454,6 +463,11 @@ body.loader_div > .loader {
     background-color: #e0e0e0;
     border: none;
     border-radius: 0px;
+}
+.modal_form textarea.form-control {
+    height: auto;
+    line-height: normal;
+    padding: 10px 20px;
 }
 .modal_form .bootstrap-select button.dropdown-toggle {
     padding: 0px 30px;

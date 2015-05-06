@@ -210,6 +210,34 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
     };
 
+    Main.createNDataTable = function (selector, data, colindex, sortorder, hideCols){
+        $('body').addClass('loader_div').append('<div class="loader"></div>');
+        $.extend($.fn.dataTable.defaults, {
+            sDom: '<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
+            columnDefs: [
+                {
+                    targets: hideCols,
+                    visible: false
+                }
+            ],
+            language: {
+                paginate: {
+                    next: '&raquo;',
+                    previous: '&laquo'
+                }
+            },
+            fnInitComplete: function(){
+                $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+                $('body').removeClass('loader_div').children('.loader').hide().remove();
+            }
+        });
+        var dataTable = $(selector).dataTable();
+        dataTable.fnClearTable();
+        dataTable.fnAddData(data);
+        if(colindex != undefined && sortorder != undefined) dataTable.fnSort( [ [colindex, sortorder] ] );
+        dataTable.fnDraw();
+    }
+
     Main.createDataTable = function (selector, dataFilter, colindex, sortorder, hideCols){
 
         var headers = {};

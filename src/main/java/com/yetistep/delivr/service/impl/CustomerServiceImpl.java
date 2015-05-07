@@ -2040,7 +2040,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         BigDecimal conversionRate = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.INR_CONVERSION_RATE));
         paymentGatewayInfoEntity.setAmount(amount);
-        paymentGatewayInfoEntity.setInrAmount(BigDecimalUtil.divide(amount, conversionRate));
+        paymentGatewayInfoEntity.setInrAmount(BigDecimalUtil.convertToINRPaisa(amount, conversionRate));
         paymentGatewayInfoEntity.setCurrencyCode(MessageBundle.getPaymentGatewayMsg("currencyCode"));
         paymentGatewayInfoEntity.setTransactionReference(System.currentTimeMillis()+"");
         paymentGatewayInfoEntity.setFlag(false);

@@ -138,6 +138,13 @@ public class BigDecimalUtil {
         return input.divide(divisor, RoundingMode.HALF_UP);
     }
 
+    public static BigDecimal convertToINRPaisa(BigDecimal input, BigDecimal divisor){
+        //BigDecimal output = input.divide(divisor);
+        //return  output.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal conversionRateInPaisa = input.multiply(new BigDecimal(100));
+        return conversionRateInPaisa.divide(divisor, RoundingMode.HALF_DOWN);
+    }
+
     public static boolean isIntegerValue(BigDecimal bd) {
         return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
     }

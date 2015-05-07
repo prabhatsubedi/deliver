@@ -64,7 +64,7 @@ public class InvoiceEntity {
         this.path = path;
     }
 
-    @Column(name = "invoice_amount")
+    @Column(name = "invoice_status")
     public InvoiceStatus getInvoiceStatus() {
         return invoiceStatus;
     }
@@ -73,7 +73,7 @@ public class InvoiceEntity {
         this.invoiceStatus = invoiceStatus;
     }
 
-    @Column(name = "paid_amount")
+    @Column(name = "invoice_amount")
     public BigDecimal getAmount() {
         return amount;
     }

@@ -517,12 +517,17 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         
 
         Boolean tbd = false;
+        //to calculate subtotal
+        Boolean allTbd = true;
         for(ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()){
             if(itemsOrderEntity.getItemTotal().equals(minusOne) && itemsOrderEntity.getAvailabilityStatus()){
                 tbd = true;
-                break;
+            }  else {
+                allTbd = false;
             }
         }
+
+
 
         if(tbd){
             accountSummary.setServiceFee(minusOne);
@@ -540,8 +545,11 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             accountSummary.setItemVatCharge(order.getItemVatCharge());
         }
 
-        accountSummary.setSubTotal(order.getTotalCost());
-       
+        if(allTbd)
+            accountSummary.setSubTotal(minusOne);
+        else
+            accountSummary.setSubTotal(order.getTotalCost());
+
         //TODO discussion
         accountSummary.setTotalDiscount(order.getCourierTransaction().getDeliveryChargedBeforeDiscount().subtract(order.getCourierTransaction().getDeliveryChargedAfterDiscount()));
         accountSummary.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));

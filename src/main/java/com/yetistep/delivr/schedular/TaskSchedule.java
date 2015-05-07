@@ -66,14 +66,14 @@ public class TaskSchedule {
 
     }
 
-    @Scheduled(cron="0 0 22 * * SAT")
+    @Scheduled(cron="0 0 23 * * *")
     public void generateInvoice() throws Exception{
         log.info("Generating invoice:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 0);
         Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -7);
+        calPrev.add(Calendar.DATE, -200);
 
         List<StoreEntity> stores=accountService.getAllStores();
 
@@ -87,14 +87,14 @@ public class TaskSchedule {
         }
     }
 
-    @Scheduled(cron="0 0 23 * * SAT")
+    @Scheduled(cron="0 0 23 * * *")
     public void generateDBoyPayStatement() throws Exception {
         log.info("Generating DBoy pay statement:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 0);
         Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -7);
+        calPrev.add(Calendar.DATE, -200);
 
         List<DeliveryBoyEntity> allActiveDBoy = deliveryBoyService.findAllActiveDeliveryBoy();
 

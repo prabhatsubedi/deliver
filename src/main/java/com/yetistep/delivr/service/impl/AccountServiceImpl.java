@@ -107,9 +107,9 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             BigDecimal totalTaxableAmount =  totalOrderAmount.add(totalServiceCharge);
             BigDecimal vatAmount =  totalTaxableAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
             BigDecimal grandTotalAmount = totalTaxableAmount.add(vatAmount);
-            BigDecimal commissionAmount = grandTotalAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
+            BigDecimal commissionAmount = totalOrderAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
             BigDecimal netPayableAmount = grandTotalAmount.subtract(commissionAmount);
-            invoice.setAmount(netPayableAmount);
+            invoice.setAmount(netPayableAmount.setScale(2, BigDecimal.ROUND_DOWN));
 
             invoiceDaoService.save(invoice);
 
@@ -175,11 +175,11 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             BigDecimal vatAmount = totalCharge.multiply(vatPcn).divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_DOWN);
             bill.setVat(vatAmount);
             BigDecimal totalAmount = totalCharge.add(vatAmount);
-            bill.setBillAmount(totalAmount);
+            bill.setBillAmount(totalAmount.setScale(2, BigDecimal.ROUND_DOWN));
             bill.setGeneratedDate(new Date(System.currentTimeMillis()));
 
             ReceiptEntity receipt = new ReceiptEntity();
-            receipt.setReceiptAmount(totalAmount);
+            receipt.setReceiptAmount(totalAmount.setScale(2, BigDecimal.ROUND_DOWN));
             receipt.setGeneratedDate(new Date(System.currentTimeMillis()));
 
             receipt.setOrder(order);
@@ -242,7 +242,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             dBoyPayment.setFromDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(fromDate).getTime()));
             dBoyPayment.setToDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(toDate).getTime()));
             dBoyPayment.setdBoyPaid(false);
-            dBoyPayment.setPayableAmount(totalPayableAmount);
+            dBoyPayment.setPayableAmount(totalPayableAmount.setScale(2, BigDecimal.ROUND_DOWN));
 
             dBoyPaymentDaoService.save(dBoyPayment);
 
@@ -350,6 +350,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
     @Override
     public PaginationDto getDBoyPayStatement(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
+
         Page page = requestJsonDto.getPage();
 
         List<DBoyPaymentEntity> dBoyPaymentEntities = new ArrayList<>();

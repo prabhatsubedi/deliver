@@ -69,7 +69,7 @@ public class StoreEntity implements Serializable {
         this.storesBrand = storesBrand;
     }
 
-    @OneToMany(mappedBy = "store")
+    @OneToMany(mappedBy = "store", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonProperty
     public List<ItemsStoreEntity> getItemsStore() {
         return itemsStore;

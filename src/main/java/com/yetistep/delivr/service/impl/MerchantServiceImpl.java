@@ -412,6 +412,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         for (StoreEntity store: stores){
             if(store.getId() == null){
                 store.setStoresBrand(dbStoresBrand);
+                List<ItemEntity> brandsItems = dbStoresBrand.getItems();
+                List<ItemsStoreEntity> newStoresItems = new ArrayList<>();
+                for (ItemEntity item: brandsItems){
+                    ItemsStoreEntity itemsStore = new ItemsStoreEntity();
+                    itemsStore.setItem(item);
+                    itemsStore.setStore(store);
+                    newStoresItems.add(itemsStore);
+                }
+                store.setItemsStore(newStoresItems);
                 dbStores.add(store);
             } else {
                 storeIdList.add(store.getId());

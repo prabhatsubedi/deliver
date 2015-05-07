@@ -51,12 +51,15 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
     Main.modifyURL = function(url) {
         if(url.indexOf("#") != 0) {
-            if(url.indexOf("/") != 0) url = "/" + url;
-            if(Main.pageContext != "" && Main.pageContext != undefined) {
-                if(url.indexOf(Main.pageContext) > -1)
-                    return url;
-                else
-                    return Main.pageContext + url;
+            if(url.indexOf("://") == -1) {
+                if(url.indexOf("/") != 0) url = "/" + url;
+                if(Main.pageContext != "" && Main.pageContext != undefined) {
+                    if(url.indexOf(Main.pageContext) > -1)
+                        return url;
+                    else
+                        return Main.pageContext + url;
+                }
+
             }
             return url;
         }
@@ -91,7 +94,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             }
         }
 
-        Main.ajax = $.ajax({
+        var ajaxParams = {
             url: Main.modifyURL(url),
             type: requestType != undefined ? requestType : "POST",
             data: parameter.stringify == false ? parameter : JSON.stringify(parameter),
@@ -109,7 +112,13 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             complete: function() {
                 setTimeout(hideLoader, 1000)
             }
-        });
+        };
+        if(callback.dataType == "jsonp") {
+            ajaxParams.dataType = callback.dataType;
+            ajaxParams.jsonp = callback.func;
+        }
+
+        Main.ajax = $.ajax(ajaxParams);
     };
 
     Main.doLogin = function (data) {

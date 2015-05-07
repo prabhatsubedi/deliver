@@ -277,8 +277,8 @@ $(document).ready(function(){
                             }
                         }
 
-                        if(country == selectedCountry)
-                        {
+/*                        if(country == selectedCountry)
+                        {*/
                             addressComponents = results[0].address_components;
                             for (var i in addressComponents)
                             {
@@ -493,12 +493,12 @@ $(document).ready(function(){
 
                             });
 
-                        }
+/*                        }
                         else
                         {
                             Main.popDialog('', 'Marker location doesn\'t lie within selected country boundary.');
                             return false;
-                        }
+                        }*/
                     } else {
                         Main.popDialog('', 'No results found');
                     }
@@ -586,8 +586,8 @@ $(document).ready(function(){
                             }
                         }
 
-                        if(country == selectedCountry)
-                        {
+/*                        if(country == selectedCountry)
+                        {*/
                             addressComponents = results[0].address_components;
                             for (var i in addressComponents)
                             {
@@ -867,11 +867,11 @@ $(document).ready(function(){
 
                             }
 
-                        }
+/*                        }
                         else
                         {
                             Main.popDialog('', 'Marker location doesn\'t lie within selected country boundary.');
-                        }
+                        }*/
                     } else {
                         Main.popDialog('', 'No results found');
                     }

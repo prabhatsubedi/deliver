@@ -95,6 +95,7 @@
 
                     var callback = function(success, data){
                         Main.popDialog('Invoice Payment', data.message);
+                        Order.getInvoices();
                         return;
                     }
 

@@ -2081,6 +2081,11 @@ label.check_label .checkbox {
     right: -200px;
     bottom: -10px;
 }
+.table-view #view_bill_cont {
+    right: auto;
+    bottom: auto;
+    word-break: break-all;
+}
 
 .table-view .show_db_info, .table-view .view_bills, .table-view .show_store_info{
     color: #64A4EA;

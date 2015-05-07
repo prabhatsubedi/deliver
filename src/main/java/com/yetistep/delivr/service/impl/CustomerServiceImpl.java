@@ -2083,7 +2083,7 @@ public class CustomerServiceImpl implements CustomerService {
         }else{
             String remarks = MessageBundle.getPaymentGatewayMsg(responseCode);
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromCustomerId(paymentGatewayInfoEntity.getCustomer().getId());
-            String extraDetail = "";
+            String extraDetail = "-1";
             PushNotificationUtil.sendPushNotification(userDevice, remarks, NotifyTo.CUSTOMER, PushNotificationRedirect.TRANSACTION, extraDetail);
         }
         paymentGatewayInfoEntity.setResponseCode(responseCode);

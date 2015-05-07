@@ -2094,4 +2094,9 @@ public class CustomerServiceImpl implements CustomerService {
         paymentGatewayInfoDaoService.update(paymentGatewayInfoEntity);
         return true;
     }
+
+    @Override
+    public CustomerEntity getWalletBalance(Long facebookId) throws Exception {
+        return customerDaoService.getWalletInfo(facebookId);
+    }
 }

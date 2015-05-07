@@ -94,7 +94,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             }
         }
 
-        var ajaxParams = {
+        Main.ajax = $.ajax({
             url: Main.modifyURL(url),
             type: requestType != undefined ? requestType : "POST",
             data: parameter.stringify == false ? parameter : JSON.stringify(parameter),
@@ -112,13 +112,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
             complete: function() {
                 setTimeout(hideLoader, 1000)
             }
-        };
-        if(callback.dataType == "jsonp") {
-            ajaxParams.dataType = callback.dataType;
-            ajaxParams.jsonp = callback.func;
-        }
-
-        Main.ajax = $.ajax(ajaxParams);
+        });
     };
 
     Main.doLogin = function (data) {

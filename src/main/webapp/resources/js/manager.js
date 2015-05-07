@@ -864,6 +864,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             $("#to_be_submitted_val").val(courierStaff.walletAmount);*/
             Manager.fillDboyAccount(courierStaff);
             $('.cbname').html(courierStaff.user.fullName);
+            document.title = courierStaff.user.fullName + "'s Transaction";
 
         }
         callback.loaderDiv = ".update_courier_boy_account";

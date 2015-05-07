@@ -973,6 +973,10 @@ public class CustomerServiceImpl implements CustomerService {
             walletTransactionEntities.add(walletTransactionEntity);
             order.setWalletTransactions(walletTransactionEntities);
         }else{
+            if(BigDecimalUtil.isLessThen(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)), order.getGrandTotal())) {
+                //Max order amount reached
+                throw new YSException("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
+            }
             order.setPaidFromWallet(BigDecimal.ZERO);
             order.setPaidFromCOD(order.getGrandTotal());
         }

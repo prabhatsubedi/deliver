@@ -1035,12 +1035,12 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
         }
 
-       if(BigDecimalUtil.isLessThen(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)), totalPrice)) {
-           //Max order amount reached
-           cartDto.setMessage("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
-           cartDto.setValid(false);
-           return cartDto;
-       }
+//       if(BigDecimalUtil.isLessThen(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)), totalPrice)) {
+//           //Max order amount reached
+//           cartDto.setMessage("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
+//           cartDto.setValid(false);
+//           return cartDto;
+//       }
 
 
        Boolean customItemExists = false;

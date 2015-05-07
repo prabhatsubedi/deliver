@@ -238,7 +238,7 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
 
                         callback.loaderDiv = ".active_img_container";
 
-                        Main.request('/merchant/add_items_images', {itemImages: [src_url]}, callback, {id: $('.active_img_container').eq(0).attr('data-id')});
+                        Main.request('/merchant/add_items_images', {itemImages: [src_url]}, callback, {id: $('.active_img_container').eq(0).parent().attr('data-id')});
 
                     } else {
                         $('#' + img_container).addClass('image_selected').removeClass('error').html('<img src="' + src_url + '" style="height: 100%;" class="img-responsive" data-new="true" />');

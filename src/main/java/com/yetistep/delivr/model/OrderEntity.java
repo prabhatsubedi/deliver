@@ -84,6 +84,7 @@ public class OrderEntity implements Serializable {
     //for merchant settlement
     private Boolean settled;
     private Date settledDate;
+    private String currency; //Transient Field
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -595,5 +596,14 @@ public class OrderEntity implements Serializable {
 
     public void setCr(BigDecimal cr) {
         this.cr = cr;
+    }
+
+    @Transient
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

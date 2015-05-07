@@ -14,20 +14,41 @@
     <script type="text/javascript">
         $(document).ready(function(){
 
-            var callback = function(a, b) {
-                console.log(a);
-                console.log(b);
-            };
-            callback.func = function(data) {
-                console.log(data);
-            };
+            $('#payment').submit(function(e){
+                e.preventDefault();
 
-            Main.request('http://192.168.1.204:8080/client/transactions/add_fund/fbId/789233697779841', {}, callback, {accessToken: "dfsdfds", "Access-Control-Allow-Origin":"*"})
+                var callback = function(status, data) {
+                    if(data.success) {
+                        var paymentInfo = data.params.paymentGatewayInfo;
+                        $('#form').attr('action', paymentInfo.pgrequestURL);
+                        $('#data').val(paymentInfo.data);
+                        $('#seal').val(paymentInfo.seal);
+                        $('#interfaceVersion').val(paymentInfo.interfaceVersion);
+                        $('#form').submit();
+                    }
+                };
+
+                Main.request('/client/transactions/add_fund/fbId/789233697779841', { "amount":$('#amount').val() }, callback, {accessToken: "dfsdfds"});
+
+                return false;
+            });
 
         });
     </script>
 </head>
 <body>
+
+
+<form method="post" id="payment">
+    <input type="text" name="amount" id="amount">
+    <input type="submit">
+</form>
+
+<form method="post" id="form" class="hidden">
+    <input type="text" name="data" id="data">
+    <input type="text" name="seal" id="seal">
+    <input type="text" name="interfaceVersion" id="interfaceVersion">
+</form>
 
 </body>
 </html>

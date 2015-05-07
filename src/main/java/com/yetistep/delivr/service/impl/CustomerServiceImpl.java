@@ -2097,6 +2097,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerEntity getWalletBalance(Long facebookId) throws Exception {
-        return customerDaoService.getWalletInfo(facebookId);
+        CustomerEntity customer = customerDaoService.getWalletInfo(facebookId);
+        if(customer == null)
+            throw new YSException("VLD011");
+        customer.setWalletAmount(BigDecimalUtil.checkNull(customer.getWalletAmount()).subtract(BigDecimalUtil.checkNull(customer.getShortFallAmount())));
+        customer.setShortFallAmount(null);
+        customer.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+        return  customer;
     }
 }

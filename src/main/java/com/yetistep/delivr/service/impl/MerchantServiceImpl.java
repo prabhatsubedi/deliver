@@ -8,7 +8,6 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
-import com.yetistep.delivr.model.mobile.dto.ItemDto;
 import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
@@ -1482,6 +1481,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }else if(type.equals("Brand")) {
             for(String id: ids) {
                 StoresBrandEntity storesBrand =   merchantDaoService.findBrandDetail(Integer.parseInt(id));
+                if(!storesBrand.getMerchant().getUser().getStatus().equals(Status.ACTIVE))
+                    throw new YSException("VLD040");
                 storesBrand.setStatus(Status.fromInt(statusId));
                 if(statusId==3){
                     storesBrand.setFeatured(null);

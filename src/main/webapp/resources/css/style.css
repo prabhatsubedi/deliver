@@ -2136,4 +2136,22 @@ label.check_label .checkbox {
     color: black;
 }
 
-
+#order_details .modal-content {
+    border-radius: 6px;
+    overflow: hidden;
+}
+#order_details .modal-header {
+    background-color: #FF9043;
+    text-align: center;
+    color: #FFFFFF;
+}
+#order_details .modal-body .dRow > div:first-child {
+    font-weight: bold;
+}
+#order_details .modal-body .dRow {
+    border-bottom: 1px solid #ECECEC;
+    padding: 10px 2px;
+}
+#order_details .modal-body .dRow:last-child {
+    border-bottom: none;
+}

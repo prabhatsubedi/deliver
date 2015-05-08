@@ -209,5 +209,56 @@
     </div>
 </div>
 
+<div class="modal fade" id="order_details" tabindex="-1" role="dialog" aria-labelledby="mapLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">ORDER DETAILS</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="dRow clearfix">
+                    <div class="col-xs-6 no_pad">Order No</div>
+                    <div class="col-xs-6 no_pad order_value"></div>
+                </div>
+                <div class="dRow clearfix">
+                    <div class="col-xs-6 no_pad">Customer Name</div>
+                    <div class="col-xs-6 no_pad order_value"></div>
+                </div>
+                <div class="dRow clearfix">
+                    <div class="col-xs-6 no_pad">Distance Travelled</div>
+                    <div class="col-xs-6 no_pad order_value"></div>
+                </div>
+                <div class="dRow clearfix">
+                    <div class="col-xs-6 no_pad">Feedback to Customer</div>
+                    <div class="col-xs-6 no_pad order_value"></div>
+                </div>
+                <div class="dRow clearfix">
+                    <div class="col-xs-6 no_pad">Feedback to Shopper</div>
+                    <div class="col-xs-6 no_pad order_value"></div>
+                </div>
+                <div class="dRow clearfix">
+                    <div class="col-xs-6 no_pad">Time Assigned</div>
+                    <div class="col-xs-6 no_pad order_value"></div>
+                </div>
+                <div class="dRow clearfix">
+                    <div class="col-xs-6 no_pad">Time Taken</div>
+                    <div class="col-xs-6 no_pad order_value"></div>
+                </div>
+                <div class="dRow clearfix">
+                    <div class="col-xs-6 no_pad">Cancel Reason</div>
+                    <div class="col-xs-6 no_pad order_value"></div>
+                </div>
+                <div class="dRow clearfix">
+                    <div class="col-xs-6 no_pad">Amount Earned</div>
+                    <div class="col-xs-6 no_pad order_value"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

@@ -65,8 +65,12 @@ var merchantProfile;
                 $('.val_vat').html(merchant.vatNo);
                 $('.val_pan').html(merchant.panNo);
                 $('.val_partnership').html(merchant.partnershipStatus ? 'Partner' : 'Non Partner');
-                $('.val_commission').html(merchant.commissionPercentage);
-                $('.val_service_fee').html(merchant.serviceFee);
+                if(merchant.user.status == "ACTIVE" || merchant.user.status == "INACTIVE") {
+                    $('.val_commission').html(merchant.commissionPercentage);
+                    $('.val_service_fee').html(merchant.serviceFee);
+                    $('.commission_group').removeClass('hidden');
+                    $('.processing_group').removeClass('hidden');
+                }
                 $('.val_status').html(Main.ucfirst(merchant.user.status));
 
                 $('#business_name').val(merchant.businessTitle);

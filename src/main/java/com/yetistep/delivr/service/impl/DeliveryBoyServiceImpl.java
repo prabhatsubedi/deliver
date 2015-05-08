@@ -2389,4 +2389,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         return paginationDto;
     }
 
+    @Override
+    public OrderEntity getPaidFromCODAmount(Integer orderId) throws Exception {
+        OrderEntity order = orderDaoService.getPaidFromCashOnDeliveryAmount(orderId);
+        if(order == null)
+            throw new YSException("VLD017");
+        order.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+        return order;
+    }
 }

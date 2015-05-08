@@ -433,4 +433,23 @@ public class DeliveryBoyController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/order/paid_from_cod/{orderId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getPaidFromCODAmount(@RequestHeader HttpHeaders headers, @PathVariable Integer orderId) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
+
+            OrderEntity order = deliveryBoyService.getPaidFromCODAmount(orderId);
+            ServiceResponse serviceResponse = new ServiceResponse("Paid from cash on delivery amount has been retrieved successfully");
+            serviceResponse.addParam("order", order);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error Occurred while retrieving paid from cash on delivery amount", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

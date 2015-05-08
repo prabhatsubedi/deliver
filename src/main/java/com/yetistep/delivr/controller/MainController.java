@@ -158,4 +158,12 @@ public class MainController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/balance/**", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView balance(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("balance");
+        return modelAndView;
+    }
+
 }

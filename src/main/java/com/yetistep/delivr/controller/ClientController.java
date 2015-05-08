@@ -1026,7 +1026,7 @@ public class ClientController extends AbstractManager{
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-            validateMobileClient(headerDto.getAccessToken());
+            //validateMobileClient(headerDto.getAccessToken());
 
             PaymentGatewayDto paymentGatewayDto = customerService.requestToAddFundToWallet(facebookId, paymentGatewayInfo.getAmount());
             ServiceResponse serviceResponse = new ServiceResponse("Payment gateway info retrieved successfully");
@@ -1034,6 +1034,25 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while retrieving payment gateway info", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/get_wallet_balance/fbId/{facebookId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getWalletBalance(@RequestHeader HttpHeaders headers, @PathVariable Long facebookId) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            //validateMobileClient(headerDto.getAccessToken());
+
+            CustomerEntity customer= customerService.getWalletBalance(facebookId);
+            ServiceResponse serviceResponse = new ServiceResponse("Wallet balance retrieved successfully");
+            serviceResponse.addParam("customer", customer);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving wallet info", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }

@@ -7,6 +7,7 @@ import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.RoleEntity;
+import com.yetistep.delivr.model.StoresBrandEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.UserService;
 import com.yetistep.delivr.util.EmailMsg;
@@ -198,17 +199,24 @@ public class UserServiceImpl extends AbstractManager implements UserService{
             throw new YSException("VLD011");
         }
         user.setStatus(userEntity.getStatus());
-
+        if(user.getRole().getRole().equals(Role.ROLE_MERCHANT) && user.getStatus().equals(Status.INACTIVE)) {
+             List<StoresBrandEntity> storesBrandEntities = user.getMerchant().getStoresBrand();
+             for(StoresBrandEntity storesBrand: storesBrandEntities){
+                 storesBrand.setStatus(Status.INACTIVE);
+                 storesBrand.setFeatured(null);
+                 storesBrand.setPriority(null);
+             }
+        }
 
         userDaoService.update(user);
 
-        if(user.getRole().getRole().toString().equals("ROLE_MERCHANT") && user.getVerifiedStatus() == false) {
+        if(user.getRole().getRole().equals(Role.ROLE_MERCHANT) && user.getStatus().equals(Status.INACTIVE)) {
             //Sending Email For Merchant
             String url = getServerUrl();
             String body = EmailMsg.deactivateMerchant(user.getFullName(), getServerUrl());
             String subject = "Delivr: Your account has been deactivated ";
             sendMail(user.getUsername(), body, subject);
-        } else if (user.getRole().getRole().equals("ROLE_MERCHANT") && user.getVerifiedStatus() == true){
+        } else if (user.getRole().getRole().equals(Role.ROLE_MERCHANT) && user.getStatus().equals(Status.ACTIVE)){
             //Sending Email For Merchant
             String url = getServerUrl();
             String body = EmailMsg.activateMerchant(url, user.getFullName(), getServerUrl());

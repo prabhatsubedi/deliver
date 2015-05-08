@@ -17,9 +17,74 @@
         var cbid = Main.getURLvalue(2);
         $(document).ready(function () {
             Manager.getCourierBoyAccount();
+            Manager.getStatements(cbid);
             Manager.updateCourierBoyAccount();
             Manager.submitCourierBoyPreviousAmount();
             Manager.submitCourierBoyWalletAmount();
+
+            function calcUnpaid() {
+                var unpaid_total = 0;
+                $('.unpaid_amount').each(function(){
+                    unpaid_total += parseFloat($(this).html());
+                });
+                $('.unpaid_total').html(unpaid_total.toFixed(2));
+            }
+
+            $("#selectAllToPay").change(function() {
+                var ischecked= $(this).is(':checked');
+                if(!ischecked) {
+                    $(".pay_row").prop("checked", false);
+                    $('.paid_status').addClass('unpaid_amount');
+                } else {
+                    $(".pay_row").prop("checked", true);
+                    $('.paid_status').removeClass('unpaid_amount');
+                }
+                calcUnpaid();
+            });
+
+            $('.pay_row').live('change', function(){
+                var this_amount = $('.paid_status', $(this).parents('tr').eq(0));
+                if($(this).prop('checked')) {
+                    this_amount.removeClass('unpaid_amount');
+                } else {
+                    this_amount.addClass('unpaid_amount');
+                }
+                calcUnpaid();
+            });
+
+            $("#pay_button").click(function(){
+                var idString = "";
+                $(".pay_row").each(function(){
+                    if($(this).prop("checked"))
+                        idString+=$(this).data("id")+",";
+                });
+                if(idString == ""){
+                    Main.popDialog('', 'Please select invoice(s) to pay');
+                }else{
+                    var button1 = function() {
+
+                        var callback = function(success, data){
+                            Main.popDialog('', data.message);
+                            Manager.getStatements();
+                            return;
+                        }
+
+                        callback.loaderDiv = "body";
+                        callback.requestType = "GET";
+                        var header = {};
+                        header.id = idString;
+
+                        Main.request('/accountant/pay_dboy_statement', {}, callback, header);
+                    };
+
+                    button1.text = "Yes";
+                    var button2 = "No";
+
+                    var buttons = [button1, button2];
+                    Main.popDialog('', "Are you sure you want to pay the statement(s)", buttons);
+
+                }
+            });
         });
     </script>
 
@@ -87,18 +152,53 @@
                 </div>
 
                 <div class="heading clearfix" style="margin: 0px -15px 15px; border-top: 1px solid #dbdada;">
+                    <h1 class="pull-left">Pay Statements</h1>
+                </div>
+                <table id="pay_statements">
+                    <thead>
+                    <tr>
+                        <th rowspan="2">SN</th>
+                        <th rowspan="2">Date</th>
+                        <th colspan="2">Payment Period</th>
+                        <th rowspan="2">Total Payable</th>
+                        <th rowspan="2" class="no_sort">Statement</th>
+                        <th rowspan="2">Paid Date</th>
+                        <th rowspan="2" class="no_sort">Select All<span style="margin-left: 10px;"><input type="checkbox" id="selectAllToPay"
+                                                                                                          name="selectAllToPay"/></span></th>
+                    </tr>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                    <tr>
+                        <th colspan="4">Total</th>
+                        <th class="unpaid_total"></th>
+                        <th colspan="3">
+                            <button type="submit" id="pay_button" class="btn btn-primary clearfix action_button pull-right">
+                                <span class="pull-left">pay</span>
+                                <span class="pull-right" id="payLoader"></span>
+                            </button>
+                        </th>
+                    </tr>
+                    </tfoot>
+                </table>
+
+                <div class="heading clearfix" style="margin: 15px -15px 15px; border-top: 1px solid #dbdada;">
                     <h1 class="pull-left">Transaction History</h1>
                 </div>
                 <table id="detail_account_table">
                     <thead>
                     <tr>
                         <th>SN</th>
-                        <th>Date and Time</th>
-                        <th>Description</th>
+                        <th><div class="width_120">Date and Time</div></th>
+                        <th><div class="width_200">Description</div></th>
                         <th>Order ID</th>
-                        <th>DR</th>
-                        <th>CR</th>
-                        <th>Balance</th>
+                        <th><div class="width_80">DR</div></th>
+                        <th><div class="width_80">CR</div></th>
+                        <th><div class="width_80">Balance</div></th>
                         <th>Order Status</th>
                         <th>Remarks</th>
                         <th>Action</th>

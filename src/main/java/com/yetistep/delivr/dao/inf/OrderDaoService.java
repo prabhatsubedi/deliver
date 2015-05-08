@@ -67,5 +67,5 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
 
     public List<OrderEntity> getDBoyOrders(Integer dBoyId, String fromDate, String toDate) throws Exception;
 
-
+    public OrderEntity getPaidFromCashOnDeliveryAmount(Integer orderId) throws Exception;
 }

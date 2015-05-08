@@ -2040,7 +2040,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         BigDecimal conversionRate = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.INR_CONVERSION_RATE));
         paymentGatewayInfoEntity.setAmount(amount);
-        paymentGatewayInfoEntity.setInrAmount(BigDecimalUtil.divide(amount, conversionRate));
+        paymentGatewayInfoEntity.setInrAmount(BigDecimalUtil.convertToINRPaisa(amount, conversionRate));
         paymentGatewayInfoEntity.setCurrencyCode(MessageBundle.getPaymentGatewayMsg("currencyCode"));
         paymentGatewayInfoEntity.setTransactionReference(System.currentTimeMillis()+"");
         paymentGatewayInfoEntity.setFlag(false);
@@ -2093,5 +2093,16 @@ public class CustomerServiceImpl implements CustomerService {
         paymentGatewayInfoEntity.setResponseCode(responseCode);
         paymentGatewayInfoDaoService.update(paymentGatewayInfoEntity);
         return true;
+    }
+
+    @Override
+    public CustomerEntity getWalletBalance(Long facebookId) throws Exception {
+        CustomerEntity customer = customerDaoService.getWalletInfo(facebookId);
+        if(customer == null)
+            throw new YSException("VLD011");
+        customer.setWalletAmount(BigDecimalUtil.checkNull(customer.getWalletAmount()).subtract(BigDecimalUtil.checkNull(customer.getShortFallAmount())));
+        customer.setShortFallAmount(null);
+        customer.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+        return  customer;
     }
 }

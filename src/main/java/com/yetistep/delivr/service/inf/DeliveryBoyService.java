@@ -76,4 +76,6 @@ public interface DeliveryBoyService {
     public PaginationDto getDBoyAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 
     public List<DeliveryBoyEntity> findAllActiveDeliveryBoy() throws Exception;
+
+    public OrderEntity getPaidFromCODAmount(Integer orderId) throws Exception;
 }

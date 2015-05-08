@@ -230,7 +230,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var button2 = "No";
 
             var buttons = [button1, button2];
-            Main.popDialog('', 'Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?', buttons);
+            Main.popDialog('', 'Are you sure you want to ' + (statusCheck == "ACTIVE" ? "activate" : "deactivate") + ' this merchant?', buttons);
         });
 
     };
@@ -727,9 +727,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     var orderDate = advanceAmount.orderDate == undefined ? "" : advanceAmount.orderDate;
                     var description = advanceAmount.description == undefined ? "" : advanceAmount.description;
                     var id = advanceAmount.id == undefined ? "" : advanceAmount.id;
-                    var dr = advanceAmount.dr == undefined ? "" : advanceAmount.dr;
-                    var cr = advanceAmount.cr == undefined ? "" : advanceAmount.cr;
-                    var balance = advanceAmount.balance == undefined ? "" : advanceAmount.balance;
+                    var dr = advanceAmount.dr == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.dr;
+                    var cr = advanceAmount.cr == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.cr;
+                    var balance = advanceAmount.balance == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.balance;
                     var orderStatus = advanceAmount.orderStatus == undefined ? "" : advanceAmount.orderStatus;
                     var _orderStatus = [];
                     if(orderStatus != "") {
@@ -741,14 +741,14 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     orderStatus = _orderStatus.join(" ");
                     var accountantNote = advanceAmount.accountantNote == undefined ? "" : advanceAmount.accountantNote;
                     var action = '<a data-id="' + advanceAmount.id + '" data-mode="' + (advanceAmount.paymentMode == undefined ? "advanceAmount" : "order" ) + '" href="#" class="btn_add_note">Add Note</a>';
-                    var row = [i + 1, orderDate, description, id, dr, cr, balance, orderStatus, accountantNote, action];
+                    var row = [i + 1, orderDate, description, (advanceAmount.paymentMode == undefined ? "" : id ), dr, cr, balance, orderStatus, accountantNote, action];
                     tdata.push(row);
 
                 }
 
             }
 
-            Main.createNDataTable("#detail_account_table", tdata, 0, "desc", true);
+            Main.createNDataTable("#detail_account_table", tdata);
 
         };
 
@@ -760,27 +760,37 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     };
 
-/*    Manager.getTransactions = function () {
+    Manager.getStatements = function () {
 
         var dataFilter = function (data, type) {
             if (!data.success) {
                 Main.popDialog('', data.message);
                 return;
             }
-            var responseRows = data.params.advanceAmounts.numberOfRows;
-            var advanceAmounts = data.params.advanceAmounts.data;
+
+            var responseRows = data.params.payStatement.numberOfRows;
+            var payStatements = data.params.payStatement.data;
+            var unpaid_total = 0;
+
             var tdata = [];
 
-            if(advanceAmounts.length > 0) {
-                $('#modal_account_detail .modal-title span').html('(' + advanceAmounts[0].deliveryBoy.user.fullName + ')');
+            if(payStatements.length > 0) {
 
-                for(i = 0; i < advanceAmounts.length; i++) {
+                for(i = 0; i < payStatements.length; i++) {
 
-                    var advanceAmount = advanceAmounts[i];
+                    var payStatement = payStatements[i];
 
-                    var row = [advanceAmount.id, advanceAmount.advanceDate, (advanceAmount.type == 'acknowledgeAmount' ? 'Acknowledge' : 'Advance'), advanceAmount.amountAdvance];
+                    if(payStatement.dBoyPaid != false){
+                        var checkBox = '';
+                    }else{
+                        var checkBox = '<input type="checkbox" data-id="'+payStatement.id+'" class="pay_row">';
+                        unpaid_total += payStatement.payableAmount;
+                    }
+
+                    var row = [payStatement.id, payStatement.generatedDate, payStatement.fromDate, payStatement.toDate, Main.getFromLocalStorage('currency') + ' <span class="' + (payStatement.dBoyPaid == false ? "paid_status unpaid_amount" : '') + '">' + payStatement.payableAmount + '</span>', '<a href="' + payStatement.path + '" target="_blank">PDF' + '</a>', payStatement.paidDate, checkBox];
                     row = $.extend({}, row);
                     tdata.push(row);
+                    $('.unpaid_total').html(Main.getFromLocalStorage('currency') + " " + unpaid_total.toFixed(2));
 
                 }
 
@@ -798,18 +808,22 @@ if (typeof(Manager) == "undefined") var Manager = {};
         var headers = {};
         headers.id = cbid;
 
-        dataFilter.url = "/accountant/get_advance_amounts";
+        dataFilter.url = "/accountant/get_dboy_pay_statement";
         dataFilter.columns = [
             { "name": "id" },
-            { "name": "advanceDate" },
-            { "name": "type" },
-            { "name": "amountAdvance" }
+            { "name": "generatedDate" },
+            { "name": "fromDate" },
+            { "name": "toDate" },
+            { "name": "payableAmount" },
+            { "name": "" },
+            { "name": "paidDate" },
+            { "name": "" }
         ];
         dataFilter.headers = headers;
 
-        Main.createDataTable("#detail_account_table", dataFilter);
+        Main.createDataTable("#pay_statements", dataFilter);
 
-    };*/
+    };
 
     Manager.getCourierBoyAccount = function () {
 
@@ -976,7 +990,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 button2.text = "No";
 
                 var buttons = [button1, button2];
-                Main.popDialog('', "Are you sure you want to acknowledge  RS." + $("#due_amount_val").val() + " from '" + $('.cbname').html() + "'?", buttons);
+                Main.popDialog('', "Are you sure you want to receive  RS." + $("#due_amount_val").val() + " from '" + $('.cbname').html() + "'?", buttons);
 
             }
         });

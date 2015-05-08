@@ -172,7 +172,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group clearfix">
+                                <div class="form-group clearfix hidden commission_group">
                                     <label for="commission" class="col-lg-4 floated_label no_pad">Commission Percent</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_commission none_editable"></div>
@@ -182,7 +182,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group clearfix">
+                                <div class="form-group clearfix hidden processing_group">
                                     <label for="service_fee" class="col-lg-4 floated_label no_pad">Processing Charge</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_service_fee none_editable"></div>

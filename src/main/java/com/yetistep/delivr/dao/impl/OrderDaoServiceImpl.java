@@ -460,4 +460,14 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         List<OrderEntity>  orderEntities = criteria.list();
         return orderEntities;
     }
+
+    @Override
+    public OrderEntity getPaidFromCashOnDeliveryAmount(Integer orderId) throws Exception {
+        String sql = "SELECT id, paid_from_cod as paidFromCOD FROM orders WHERE id = :orderId";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("orderId", orderId);
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(OrderEntity.class));
+        OrderEntity orderEntity = (OrderEntity) sqlQuery.uniqueResult();
+        return orderEntity;
+    }
 }

@@ -787,7 +787,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         unpaid_total += payStatement.payableAmount;
                     }
 
-                    var row = [payStatement.id, payStatement.generatedDate, payStatement.fromDate, payStatement.toDate, 'Rs. <span class="' + (payStatement.dBoyPaid == false ? "paid_status unpaid_amount" : '') + '">' + payStatement.payableAmount + '</span>', '<a href="' + payStatement.path + '" target="_blank">PDF' + '</a>', checkBox];
+                    var row = [payStatement.id, payStatement.generatedDate, payStatement.fromDate, payStatement.toDate, 'Rs. <span class="' + (payStatement.dBoyPaid == false ? "paid_status unpaid_amount" : '') + '">' + payStatement.payableAmount + '</span>', '<a href="' + payStatement.path + '" target="_blank">PDF' + '</a>', payStatement.paidDate, checkBox];
                     row = $.extend({}, row);
                     tdata.push(row);
                     $('.unpaid_total').html(unpaid_total.toFixed(2));
@@ -816,6 +816,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             { "name": "toDate" },
             { "name": "payableAmount" },
             { "name": "" },
+            { "name": "paidDate" },
             { "name": "" }
         ];
         dataFilter.headers = headers;

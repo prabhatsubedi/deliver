@@ -162,6 +162,7 @@
                         <th colspan="2">Payment Period</th>
                         <th rowspan="2">Total Payable</th>
                         <th rowspan="2" class="no_sort">Statement</th>
+                        <th rowspan="2">Paid Date</th>
                         <th rowspan="2" class="no_sort">Select All<span style="margin-left: 10px;"><input type="checkbox" id="selectAllToPay"
                                                                                                           name="selectAllToPay"/></span></th>
                     </tr>
@@ -175,7 +176,7 @@
                     <tr>
                         <th colspan="4">Total</th>
                         <th class="unpaid_total"></th>
-                        <th colspan="2">
+                        <th colspan="3">
                             <button type="submit" id="pay_button" class="btn btn-primary clearfix action_button pull-right">
                                 <span class="pull-left">pay</span>
                                 <span class="pull-right" id="payLoader"></span>

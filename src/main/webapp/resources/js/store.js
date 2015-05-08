@@ -628,8 +628,16 @@ if(typeof(Store) == "undefined") var Store = {};
                     var callback = function (status, data) {
                         Main.popDialog('', data.message, function () {
                             if (data.success != true) {
-                                toggleSwitch(value == 'on' ? 'off' : 'on', elem);
+                                value = value == 'on' ? 'off' : 'on';
                             }
+
+                            if(value == 'on') {
+                                elem.css({left: 0}).removeClass('off').addClass('on');
+                            } else {
+                                elem.css({left: 30}).removeClass('on').addClass('off');
+                            }
+                            dragged = false;
+                            cancel_drag = false;
                         });
                     };
 
@@ -641,6 +649,14 @@ if(typeof(Store) == "undefined") var Store = {};
                 };
                 var button2 = function() {
                     value = value == 'on' ? 'off' : 'on';
+
+                    if(value == 'on') {
+                        elem.css({left: 0}).removeClass('off').addClass('on');
+                    } else {
+                        elem.css({left: 30}).removeClass('on').addClass('off');
+                    }
+                    dragged = false;
+                    cancel_drag = false;
                 };
 
                 button1.text = "Yes";
@@ -650,14 +666,6 @@ if(typeof(Store) == "undefined") var Store = {};
                 Main.popDialog('', 'Are you sure you want to ' + (value == 'on' ? 'activate' : 'deactivate') + ' store?', buttons);
 
             }
-
-            if(value == 'on') {
-                elem.css({left: 0}).removeClass('off').addClass('on');
-            } else {
-                elem.css({left: 30}).removeClass('on').addClass('off');
-            }
-            dragged = false;
-            cancel_drag = false;
         }
         $('.switch_activation .btn_switch').bind('contextmenu', function(e) {
             return false;

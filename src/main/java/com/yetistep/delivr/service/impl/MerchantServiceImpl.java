@@ -1481,8 +1481,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }else if(type.equals("Brand")) {
             for(String id: ids) {
                 StoresBrandEntity storesBrand =   merchantDaoService.findBrandDetail(Integer.parseInt(id));
-                /*if(!storesBrand.getMerchant().getUser().getStatus().equals(Status.ACTIVE))
-                    throw new YSException("VLD040");*/
+                if(!storesBrand.getMerchant().getUser().getStatus().equals(Status.ACTIVE))
+                    throw new YSException("VLD040");
                 storesBrand.setStatus(Status.fromInt(statusId));
                 if(statusId==3){
                     storesBrand.setFeatured(null);

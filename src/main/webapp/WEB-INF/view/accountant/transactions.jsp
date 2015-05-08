@@ -193,12 +193,12 @@
                     <thead>
                     <tr>
                         <th>SN</th>
-                        <th>Date and Time</th>
-                        <th>Description</th>
+                        <th><div class="width_120">Date and Time</div></th>
+                        <th><div class="width_200">Description</div></th>
                         <th>Order ID</th>
-                        <th>DR</th>
-                        <th>CR</th>
-                        <th>Balance</th>
+                        <th><div class="width_80">DR</div></th>
+                        <th><div class="width_80">CR</div></th>
+                        <th><div class="width_80">Balance</div></th>
                         <th>Order Status</th>
                         <th>Remarks</th>
                         <th>Action</th>

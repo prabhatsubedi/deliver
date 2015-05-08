@@ -727,9 +727,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     var orderDate = advanceAmount.orderDate == undefined ? "" : advanceAmount.orderDate;
                     var description = advanceAmount.description == undefined ? "" : advanceAmount.description;
                     var id = advanceAmount.id == undefined ? "" : advanceAmount.id;
-                    var dr = advanceAmount.dr == undefined ? "" : advanceAmount.dr;
-                    var cr = advanceAmount.cr == undefined ? "" : advanceAmount.cr;
-                    var balance = advanceAmount.balance == undefined ? "" : advanceAmount.balance;
+                    var dr = advanceAmount.dr == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.dr;
+                    var cr = advanceAmount.cr == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.cr;
+                    var balance = advanceAmount.balance == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.balance;
                     var orderStatus = advanceAmount.orderStatus == undefined ? "" : advanceAmount.orderStatus;
                     var _orderStatus = [];
                     if(orderStatus != "") {
@@ -787,10 +787,10 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         unpaid_total += payStatement.payableAmount;
                     }
 
-                    var row = [payStatement.id, payStatement.generatedDate, payStatement.fromDate, payStatement.toDate, 'Rs. <span class="' + (payStatement.dBoyPaid == false ? "paid_status unpaid_amount" : '') + '">' + payStatement.payableAmount + '</span>', '<a href="' + payStatement.path + '" target="_blank">PDF' + '</a>', payStatement.paidDate, checkBox];
+                    var row = [payStatement.id, payStatement.generatedDate, payStatement.fromDate, payStatement.toDate, Main.getFromLocalStorage('currency') + ' <span class="' + (payStatement.dBoyPaid == false ? "paid_status unpaid_amount" : '') + '">' + payStatement.payableAmount + '</span>', '<a href="' + payStatement.path + '" target="_blank">PDF' + '</a>', payStatement.paidDate, checkBox];
                     row = $.extend({}, row);
                     tdata.push(row);
-                    $('.unpaid_total').html(unpaid_total.toFixed(2));
+                    $('.unpaid_total').html(Main.getFromLocalStorage('currency') + " " + unpaid_total.toFixed(2));
 
                 }
 

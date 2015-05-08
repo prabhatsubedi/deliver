@@ -240,7 +240,34 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 $('body').removeClass('loader_div').children('.loader').hide().remove();
             }
         });
-        var dataTable = $(selector).dataTable();
+        var dataTable = $(selector).dataTable({
+
+            sDom: 'T<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
+            columnDefs: [
+                {
+//                    targets: hideCols,
+//                    visible: false,
+                    bSortable: false,
+                    aTargets: ['no_sort']
+                }
+            ],
+            columns: null,
+            language: {
+                paginate: {
+                    next: '&raquo;',
+                    previous: '&laquo'
+                }
+            },
+            order: [],
+            fnDrawCallback: null,
+            fnInitComplete: function(){
+                $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
+                $('body').removeClass('loader_div').children('.loader').hide().remove();
+            },
+            processing: true,
+            serverSide: false,
+            ajax: null
+        });
         dataTable.fnClearTable();
         dataTable.fnAddData(data);
         if(colindex != undefined && sortorder != undefined) dataTable.fnSort( [ [colindex, sortorder] ] );

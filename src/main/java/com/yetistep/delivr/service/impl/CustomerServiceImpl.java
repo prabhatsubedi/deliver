@@ -602,7 +602,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         //set none custom item to use later
-        List<ItemEntity> defaultItems = items;
+        //List<ItemEntity> defaultItems = items;
 
         items.addAll(customItems);
 
@@ -611,10 +611,10 @@ public class CustomerServiceImpl implements CustomerService {
         //checkOutDto.setCartCustomItems(cartCustomItems);
 
 
-        if(defaultItems.size()>0){
-            checkOutDto.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_DOWN));
-        }else{
+        if(cartCustomItems.size()==items.size()){
             checkOutDto.setSubTotal(minusOne);
+        }else{
+            checkOutDto.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_DOWN));
         }
 
         if(cartCustomItems.size()>0){

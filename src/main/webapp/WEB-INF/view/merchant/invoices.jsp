@@ -144,27 +144,31 @@
                 <table id="invoices_table">
                     <thead>
                     <tr>
-                        <th>SN</th>
-                        <th><div class="width_150">Store Name & Address</div></th>
-                        <th><div class="width_120">Generated Date</div></th>
-                        <th>Payable Amount</th>
-                        <th><div class="width_80">From Date</div></th>
-                        <th><div class="width_80">To Date</div></th>
-                        <th><div class="width_120">Paid Date</div></th>
-                        <th class="no_sort"><div class="width_80">Statements</div></th>
-                        <th class="no_sort">Select All<span style="margin-left: 10px;"><input type="checkbox" id="selectAllToPay"
+                        <th rowspan="2">SN</th>
+                        <th rowspan="2"><div class="width_120">Date</div></th>
+                        <th colspan="2"><div class="width_80">Statement Period</div></th>
+                        <th rowspan="2"><div class="width_150">Store Name & Address</div></th>
+                        <th rowspan="2">Payable Amount</th>
+                        <th rowspan="2">Commission Amount</th>
+                        <th rowspan="2"><div class="width_120">Paid Date</div></th>
+                        <th rowspan="2" class="no_sort"><div class="width_80">Statement & Invoice</div></th>
+                        <th rowspan="2" class="no_sort">Select All<span style="margin-left: 10px;"><input type="checkbox" id="selectAllToPay"
                                                                               name="selectAllToPay"/></span></th>
+                    </tr>
+                    <tr>
+                        <th><div class="width_80">From</div></th>
+                        <th><div class="width_80">To</div></th>
                     </tr>
                     </thead>
                     <tbody>
                     </tbody>
                     <tfoot>
                     <tr>
-                        <th colspan="3">Total</th>
+                        <th colspan="5">Total</th>
                         <th class="unpaid_total"></th>
-                        <th colspan="5">
+                        <th colspan="4">
                             <button type="submit" id="pay_button" class="btn btn-primary clearfix action_button pull-right">
-                                <span class="pull-left">Pay Invoice</span>
+                                <span class="pull-left">Acknowledge</span>
                                 <span class="pull-right" id="payLoader"></span>
                             </button>
                         </th>

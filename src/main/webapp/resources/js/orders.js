@@ -678,7 +678,7 @@ Order.getInvoices = function(params){
                 unpaid_total += invoice_amount;
             }
 
-            var row = [invoice.id, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", invoice.generatedDate, 'Rs. <span class="' + (invoice.invoicePaid == undefined ? "paid_status unpaid_amount" : '') + '">' + invoice_amount + '</span>', invoice.fromDate, invoice.toDate, invoice.paidDate!=undefined?invoice.paidDate:'', link, checkBox];
+            var row = [invoice.id, invoice.generatedDate, invoice.fromDate, invoice.toDate, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", 'Rs. <span class="' + (invoice.invoicePaid == undefined ? "paid_status unpaid_amount" : '') + '">' + invoice_amount + '</span>', "", invoice.paidDate!=undefined?invoice.paidDate:'', link, checkBox];
             row = $.extend({}, row);
             tableData.push(row);
         }
@@ -697,11 +697,12 @@ Order.getInvoices = function(params){
     dataFilter.url = "/merchant/get_invoices";
     dataFilter.columns = [
         { "name": "id" },
-        { "name": "store#storesBrand#brandName" },
         { "name": "generatedDate" },
-        { "name": "amount" },
         { "name": "fromDate" },
         { "name": "toDate" },
+        { "name": "store#storesBrand#brandName" },
+        { "name": "amount" },
+        { "name": "" },
         { "name": "paidDate" },
         { "name": "" },
         { "name": "" }

@@ -230,7 +230,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var button2 = "No";
 
             var buttons = [button1, button2];
-            Main.popDialog('', 'Are you sure you want to ' + (statusCheck ? "activate" : "deactivate") + ' this merchant?', buttons);
+            Main.popDialog('', 'Are you sure you want to ' + (statusCheck == "ACTIVE" ? "activate" : "deactivate") + ' this merchant?', buttons);
         });
 
     };

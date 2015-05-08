@@ -151,6 +151,27 @@
                     </table>
                 </div>
 
+                <div class="heading clearfix" style="margin: 15px -15px 15px; border-top: 1px solid #dbdada;">
+                    <h1 class="pull-left">Transaction History</h1>
+                </div>
+                <table id="detail_account_table">
+                    <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th><div class="width_120">Date and Time</div></th>
+                        <th><div class="width_200">Description</div></th>
+                        <th>Order ID</th>
+                        <th><div class="width_80">DR</div></th>
+                        <th><div class="width_80">CR</div></th>
+                        <th><div class="width_80">Balance</div></th>
+                        <th>Order Status</th>
+                        <th>Remarks</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
                 <div class="heading clearfix" style="margin: 0px -15px 15px; border-top: 1px solid #dbdada;">
                     <h1 class="pull-left">Pay Statements</h1>
                 </div>
@@ -184,27 +205,6 @@
                         </th>
                     </tr>
                     </tfoot>
-                </table>
-
-                <div class="heading clearfix" style="margin: 15px -15px 15px; border-top: 1px solid #dbdada;">
-                    <h1 class="pull-left">Transaction History</h1>
-                </div>
-                <table id="detail_account_table">
-                    <thead>
-                    <tr>
-                        <th>SN</th>
-                        <th><div class="width_120">Date and Time</div></th>
-                        <th><div class="width_200">Description</div></th>
-                        <th>Order ID</th>
-                        <th><div class="width_80">DR</div></th>
-                        <th><div class="width_80">CR</div></th>
-                        <th><div class="width_80">Balance</div></th>
-                        <th>Order Status</th>
-                        <th>Remarks</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody></tbody>
                 </table>
 
             </div>

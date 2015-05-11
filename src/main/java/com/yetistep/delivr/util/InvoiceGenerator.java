@@ -290,7 +290,10 @@ public class InvoiceGenerator {
 
     private void addInvoiceDetail(Document document, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store) throws Exception{
         //add invoice detail
-        Paragraph title1 = PdfUtil.getParagraph(PdfUtil.largeBold, "Statement of Transaction");
+        com.itextpdf.text.Font titleFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 19f));
+        titleFont.setColor(new BaseColor(0xFF9235));
+
+        Paragraph title1 = PdfUtil.getParagraph(titleFont, "Statement of Transaction");
         title1.setAlignment(Element.ALIGN_CENTER);
         document.add(title1);
         PdfUtil.addEmptyLine(document, 1);//add empty line
@@ -299,7 +302,7 @@ public class InvoiceGenerator {
         PdfUtil.setPadding(transactionCell, 20, 0, 20, 50);
         com.itextpdf.text.Font infoFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 13f));
         infoFont.setColor(new BaseColor(0x969696));
-        Paragraph transactionHeader = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Transaction Detail");
+        Paragraph transactionHeader = PdfUtil.getParagraph(titleFont, true, "Transaction Detail");
         Paragraph transactionInfo = PdfUtil.getParagraph(infoFont, true, "Transaction Between: "+invoice.getFromDate()+" and "+invoice.getToDate(), "Statement No.: "+invoice.getId(), "Statement Date: "+invoice.getGeneratedDate());
         transactionHeader.setAlignment(Element.ALIGN_LEFT);
         transactionInfo.setAlignment(Element.ALIGN_LEFT);
@@ -308,7 +311,7 @@ public class InvoiceGenerator {
 
         PdfPCell billingCell = new PdfPCell();
         PdfUtil.setPadding(transactionCell, 20, 0, 20, 50);
-        Paragraph billingHeader = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Merchant Address");
+        Paragraph billingHeader = PdfUtil.getParagraph(titleFont, true, "Merchant Address");
         Paragraph billingInfo = PdfUtil.getParagraph(infoFont, true, store.getStoresBrand().getBrandName(), store.getStreet()+", "+store.getCity(), store.getState()+", "+store.getCountry(), "Phone: "+store.getContactNo() );
         billingInfo.setAlignment(Element.ALIGN_RIGHT);
         billingHeader.setAlignment(Element.ALIGN_RIGHT);
@@ -339,7 +342,10 @@ public class InvoiceGenerator {
 
     private void addCommissionDetail(Document document, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store) throws Exception{
         //add invoice detail
-        Paragraph title1 = PdfUtil.getParagraph(PdfUtil.largeBold, "Statement No.: "+invoice.getId(), "For Commission");
+        com.itextpdf.text.Font titleFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 19f));
+        titleFont.setColor(new BaseColor(0xFF9235));
+
+        Paragraph title1 = PdfUtil.getParagraph(titleFont, "Statement No.: "+invoice.getId(), "For Commission");
         title1.setAlignment(Element.ALIGN_CENTER);
         document.add(title1);
         PdfUtil.addEmptyLine(document, 1);//add empty line
@@ -348,7 +354,7 @@ public class InvoiceGenerator {
         PdfUtil.setPadding(transactionCell, 20, 0, 20, 50);
         com.itextpdf.text.Font infoFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 13f));
         infoFont.setColor(new BaseColor(0x969696));
-        Paragraph transactionHeader = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Transaction Detail");
+        Paragraph transactionHeader = PdfUtil.getParagraph(titleFont, true, "Transaction Detail");
         Paragraph transactionInfo = PdfUtil.getParagraph(infoFont, true, "Transaction Between: "+invoice.getFromDate()+" and "+invoice.getToDate(), "Statement Date: "+invoice.getGeneratedDate(), "For Statement No.: "+invoice.getId());
         transactionHeader.setAlignment(Element.ALIGN_LEFT);
         transactionInfo.setAlignment(Element.ALIGN_LEFT);
@@ -357,7 +363,7 @@ public class InvoiceGenerator {
 
         PdfPCell billingCell = new PdfPCell();
         PdfUtil.setPadding(transactionCell, 20, 0, 20, 50);
-        Paragraph billingHeader = PdfUtil.getParagraph(PdfUtil.largeBold, true, "Merchant Address");
+        Paragraph billingHeader = PdfUtil.getParagraph(titleFont, true, "Merchant Address");
         Paragraph billingInfo = PdfUtil.getParagraph(infoFont, true, store.getStoresBrand().getBrandName(), store.getStreet()+", "+store.getCity(), store.getState()+", "+store.getCountry(), "VAT: "+merchant.getVatNo(), "PAN: "+merchant.getPanNo(), "Phone: "+store.getContactNo() );
         billingInfo.setAlignment(Element.ALIGN_RIGHT);
         billingHeader.setAlignment(Element.ALIGN_RIGHT);
@@ -507,7 +513,9 @@ public class InvoiceGenerator {
 
     private void addBillBody(Document document, OrderEntity order, BillEntity bill, Map<String, String> preferences) throws Exception {
         //add invoice detail
-        Paragraph title = PdfUtil.getParagraph(PdfUtil.smallBold, "Invoice : "+bill.getId());
+        com.itextpdf.text.Font titleFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 19f));
+        titleFont.setColor(new BaseColor(0xFF9235));
+        Paragraph title = PdfUtil.getParagraph(titleFont, "Invoice : "+bill.getId());
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);
         PdfUtil.addEmptyLine(document, 1);//add empty line
@@ -517,7 +525,9 @@ public class InvoiceGenerator {
         PdfUtil.setPadding(orderCell, 20, 0, 20, 50);
         com.itextpdf.text.Font infoFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 13f));
         infoFont.setColor(new BaseColor(0x969696));
-        Paragraph orderInfo = PdfUtil.getParagraph(infoFont, true, "Order Detail", "Order Id: "+order.getId(), "Order Date: "+order.getOrderDate(), "Invoice Date: "+bill.getGeneratedDate());
+        Paragraph orderCellTitle = PdfUtil.getParagraph(titleFont,  "Order Detail");
+        Paragraph orderInfo = PdfUtil.getParagraph(infoFont, true, "Order Id: "+order.getId(), "Order Date: "+order.getOrderDate(), "Invoice Date: "+bill.getGeneratedDate());
+        orderCell.addElement(orderCellTitle);
         orderCell.addElement(orderInfo);
 
 
@@ -529,9 +539,11 @@ public class InvoiceGenerator {
         String state = order.getAddress().getState();
         String country = order.getAddress().getCountry();
         String mobile = order.getAddress().getMobileNumber();
-
+        Paragraph addressCellTitle = PdfUtil.getParagraph(titleFont,  "Customer Address");
         Paragraph addressInfo = PdfUtil.getParagraph(infoFont, true, "Customer Address", order.getCustomer().getUser().getFullName(), street+", "+city, state+", "+country, "Phone: "+mobile);
+        addressCellTitle.setAlignment(Element.ALIGN_RIGHT);
         addressInfo.setAlignment(Element.ALIGN_RIGHT);
+        addressCell.addElement(addressCellTitle);
         addressCell.addElement(addressInfo);
 
         PdfUtil.setBorder(0, orderCell, addressCell);

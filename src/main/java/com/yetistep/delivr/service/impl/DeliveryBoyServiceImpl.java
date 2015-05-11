@@ -20,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -1441,10 +1439,11 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             //Lets Change User Status
         /* Less then or equal 1 means Current Delivery Also In Session (That has not completed) */
             if(orderDaoService.hasCustomerRunningOrders(orderEntity.getCustomer().getId()) <= 1){
-                if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING))))
+                if(BigDecimalUtil.isLessThen(averageRating, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_DEFAULT_RATING)))){
                     //Deactivate User
                     log.info("Deactivating Customer id : " + orderEntity.getCustomer().getId());
-                userDaoService.deactivateUser(orderEntity.getCustomer().getUser().getId());
+                    userDaoService.deactivateUser(orderEntity.getCustomer().getUser().getId());
+                }
             }
 
         /* Ended By Surendra */

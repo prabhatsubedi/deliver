@@ -19,6 +19,7 @@ public class ItemsImageEntity implements Serializable {
     private Integer id;
     private ItemEntity item;
     private String url;
+    private Boolean defaultImage; //Transient Field
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -51,4 +52,12 @@ public class ItemsImageEntity implements Serializable {
         this.url = url;
     }
 
+    @Transient
+    public Boolean getDefaultImage() {
+        return defaultImage;
+    }
+
+    public void setDefaultImage(Boolean defaultImage) {
+        this.defaultImage = defaultImage;
+    }
 }

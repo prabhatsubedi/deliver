@@ -591,8 +591,10 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 //                price = price.add(BigDecimalUtil.percentageOf(price, itemDto.getVat()));
 //            }
 
-            if(itemDto.getImageUrl()==null || itemDto.getImageUrl().isEmpty())
+            if(itemDto.getImageUrl()==null || itemDto.getImageUrl().isEmpty()){
                  itemDto.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+                itemDto.setDefaultImage(true);
+            }
 
             itemDto.setPrice(price.setScale(2, BigDecimal.ROUND_UP));
             itemDto.setVat(null);
@@ -637,6 +639,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             List<ItemsImageEntity> itemImages = new ArrayList<>();
             ItemsImageEntity itemsImage = new ItemsImageEntity();
             itemsImage.setUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+            itemsImage.setDefaultImage(true);
             itemImages.add(itemsImage);
             itemEntity.setItemsImage(itemImages);
         }
@@ -837,7 +840,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             item.setId(cart.getCartCustomItem().getId());
             item.setName(cart.getCartCustomItem().getName());
             //item.setItemsImage(itemsImages);
-            item.setImageUrl("https://idelivrlive.s3.amazonaws.com/default/item/noimg.jpg");
+            item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+            item.setDefaultImage(true);
             item.setUnitPrice(minusOne);
             item.setIsCustomItem(Boolean.TRUE);
             cart.setItem(item);
@@ -856,8 +860,10 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                    ItemsImageEntity itemsImageEntity = itemsImageDaoService.findImage(cartEntity.getItem().getId());
                    if(itemsImageEntity !=null)
                         cartEntity.getItem().setImageUrl(itemsImageEntity.getUrl());
-                   else
+                   else {
                         cartEntity.getItem().setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+                       cartEntity.getItem().setDefaultImage(true);
+                   }
 
                    //Add Attribute Price and Unit Price
                    BigDecimal attributesPrice = cartAttributesDaoService.findAttributesPrice(cartEntity.getId());
@@ -1190,7 +1196,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             ItemEntity customItem = new ItemEntity();
             List<ItemsImageEntity> itemsImages = new ArrayList<>();
             ItemsImageEntity itemsImage = new ItemsImageEntity();
-            itemsImage.setUrl("https://idelivrlive.s3.amazonaws.com/default/item/noimg.jpg");
+            itemsImage.setUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+            itemsImage.setDefaultImage(true);
             itemsImages.add(itemsImage);
             customItem.setId(cartCustomItem.getId());
             customItem.setName(cartCustomItem.getName());

@@ -56,6 +56,7 @@ public class ItemEntity implements Serializable {
     private Date openingTime; //Transient Value
     private Date closingTime; //Transient Value
     private Boolean isCustomItem = Boolean.FALSE; //Transient Value
+    private Boolean defaultImage; //Transient Value
     private String editedName;
 
     private CategoryEntity category;
@@ -440,6 +441,15 @@ public class ItemEntity implements Serializable {
 
     public void setIsCustomItem(Boolean customItem) {
         isCustomItem = customItem;
+    }
+
+    @Transient
+    public Boolean getDefaultImage() {
+        return defaultImage;
+    }
+
+    public void setDefaultImage(Boolean defaultImage) {
+        this.defaultImage = defaultImage;
     }
 
     @Transient

@@ -46,6 +46,7 @@ public class SearchDto {
     private PageInfo pageInfo;
     private List<SearchDto> searchList;
 
+    private Boolean defaultImage;
 
 
     public Integer getItemId() {
@@ -214,5 +215,13 @@ public class SearchDto {
 
     public void setMinOrderAmount(BigDecimal minOrderAmount) {
         this.minOrderAmount = minOrderAmount;
+    }
+
+    public Boolean getDefaultImage() {
+        return defaultImage;
+    }
+
+    public void setDefaultImage(Boolean defaultImage) {
+        this.defaultImage = defaultImage;
     }
 }

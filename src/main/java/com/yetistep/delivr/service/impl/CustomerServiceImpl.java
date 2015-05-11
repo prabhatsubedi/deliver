@@ -2028,6 +2028,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public PaymentGatewayDto requestToAddFundToWallet(Long facebookId, BigDecimal amount) throws Exception{
+        log.info("Request to add fund of "+amount + " from customer "+facebookId);
         CustomerEntity customerEntity = customerDaoService.find(facebookId);
         if(customerEntity == null){
             throw new YSException("VLD011");

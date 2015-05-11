@@ -19,6 +19,7 @@ public class ItemDto {
     private BigDecimal vat;
     private String imageUrl;
     private Integer brandId;
+    private Boolean defaultImage;
 
     public Integer getId() {
         return id;
@@ -90,5 +91,13 @@ public class ItemDto {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public Boolean getDefaultImage() {
+        return defaultImage;
+    }
+
+    public void setDefaultImage(Boolean defaultImage) {
+        this.defaultImage = defaultImage;
     }
 }

@@ -593,7 +593,7 @@ public class CustomerServiceImpl implements CustomerService {
                 ItemEntity item = new ItemEntity();
                 item.setId(cartCustomItem.getId());
                 item.setName(cartCustomItem.getName());
-                item.setImageUrl("https://idelivrlive.s3.amazonaws.com/default/item/noimg.jpg");
+                item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
                 item.setUnitPrice(minusOne);
                 item.setOrderQuantity(cartCustomItem.getCart().getOrderQuantity());
                 item.setIsCustomItem(Boolean.TRUE);
@@ -1280,8 +1280,10 @@ public class CustomerServiceImpl implements CustomerService {
                 }
 
                 //Add Default Image If Image not at item
-                if(item.getImageUrl() == null)
+                if(item.getImageUrl() == null){
                     item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+                    tempItem.setDefaultImage(true);
+                }
 
                 if(lat !=null && lon !=null){
                     /* Extract Latitude and Longitude */
@@ -1460,8 +1462,10 @@ public class CustomerServiceImpl implements CustomerService {
                 SearchDto tempItem = new SearchDto();
 
                 //Add Default Image If Image not at item
-                if(item.getImageUrl() == null)
+                if(item.getImageUrl() == null){
                     item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+                    tempItem.setDefaultImage(true);
+                }
 
                 if(lat !=null && lon !=null) {
                     /* Extract Latitude and Longitude */

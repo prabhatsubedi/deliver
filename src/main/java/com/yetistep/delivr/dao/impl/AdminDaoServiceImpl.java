@@ -1,11 +1,9 @@
 package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.AdminDaoService;
-import com.yetistep.delivr.enums.DBoyStatus;
-import com.yetistep.delivr.enums.DeliveryStatus;
-import com.yetistep.delivr.enums.JobOrderStatus;
-import com.yetistep.delivr.enums.Status;
+import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.OrderEntity;
+import com.yetistep.delivr.service.inf.SystemPropertyService;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -15,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.security.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -31,6 +30,9 @@ public class AdminDaoServiceImpl implements AdminDaoService {
 
     @Autowired
     SessionFactory sessionFactory;
+
+    @Autowired
+    SystemPropertyService systemPropertyService;
 
     @Override
     public Session getCurrentSession() throws Exception {
@@ -293,6 +295,22 @@ public class AdminDaoServiceImpl implements AdminDaoService {
        return  totalTime;
     }
 
+
+    @Override
+    public Integer getCountOutOfReachDBoy() throws Exception {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Integer prefValueInMillis = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.LOCATION_UPDATE_TIMEOUT_IN_MIN))*60*1000;
+
+        String preferredTime = dateFormat.format(System.currentTimeMillis()-prefValueInMillis);
+
+        String sqQuery = "SELECT count(id) FROM delivery_boys  WHERE last_location_update<:preferredTime";
+        Query query = getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("preferredTime", preferredTime);
+        Number cnt = (Number) query.uniqueResult();
+
+        return cnt.intValue();
+
+    }
 
 
 

@@ -126,9 +126,13 @@ public class AdminServiceImpl implements AdminService {
         Map<Integer, Map<String, String>> offDutyDBCount =  new HashMap<>();
         List<Integer> offDutyStatus = new ArrayList<>();
         offDutyStatus.add(DBoyStatus.NOT_AVAILABLE.ordinal());
-
         offDutyDBCount.put(adminDaoService.getDBoyCount(offDutyStatus), null);
         generalData.put("offDutyDeliveryBoy", offDutyDBCount);
+
+        Map<Integer, Map<String, String>> outOfReachCount =  new HashMap<>();
+        outOfReachCount.put(adminDaoService.getCountOutOfReachDBoy(), null);
+        generalData.put("outOfReachDeliveryBoy", onDutyDBCount);
+
 
         Map<Integer, Map<String, String>> servedTillDateCount =  new HashMap<>();
         Map<String, String> avgDVTime = new HashMap<>();

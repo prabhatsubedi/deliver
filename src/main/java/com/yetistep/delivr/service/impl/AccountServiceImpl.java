@@ -186,6 +186,11 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             BigDecimal vatAmount = totalCharge.multiply(vatPcn).divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_DOWN);
             bill.setVat(vatAmount);
             BigDecimal totalAmount = totalCharge.add(vatAmount);
+
+            //if total amount equals to 0, do not generate the bill and receipt
+            if(totalAmount.equals(BigDecimal.ZERO))
+                    return "";
+
             bill.setBillAmount(totalAmount.setScale(2, BigDecimal.ROUND_DOWN));
             bill.setGeneratedDate(new Date(System.currentTimeMillis()));
 

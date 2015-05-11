@@ -54,6 +54,8 @@ public interface AdminDaoService {
 
     public Map<String, Integer> onTimeDeliveryCount(Integer dayCount, String type) throws Exception;
 
+    public Integer getCountOutOfReachDBoy() throws Exception;
+
 
 
 }

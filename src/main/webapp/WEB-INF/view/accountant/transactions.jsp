@@ -172,7 +172,7 @@
                     <tbody></tbody>
                 </table>
 
-                <div class="heading clearfix" style="margin: 0px -15px 15px; border-top: 1px solid #dbdada;">
+                <div class="heading clearfix" style="margin: 15px -15px 15px; border-top: 1px solid #dbdada;">
                     <h1 class="pull-left">Pay Statements</h1>
                 </div>
                 <table id="pay_statements">

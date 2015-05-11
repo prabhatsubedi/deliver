@@ -49,6 +49,7 @@
                         <th>SN</th>
                         <th><div class="width_150"> Store Name </div></th>
                         <th><div class="width_150"> Business Name </div></th>
+                        <th> Partnership Status </th>
                         <th> No. of Stores </th>
                         <th> Featured </th>
                         <th> Priority </th>

@@ -3,6 +3,7 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.PasswordActionType;
+import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.CountryEntity;
 import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.MerchantEntity;
@@ -47,6 +48,9 @@ public class AnonController {
 
     @Autowired
     CustomerService customerService;
+
+    @Autowired
+    SystemPropertyService systemPropertyService;
 
     /* Controller For All User */
     @RequestMapping(value = "/save_merchant", method = RequestMethod.POST)
@@ -152,6 +156,16 @@ public class AnonController {
     @RequestMapping(value = "/referral/{referral_id}", method = RequestMethod.GET)
     public ModelAndView referral(@PathVariable String referral_id){
         ModelAndView modelAndView = new ModelAndView();
+
+        try {
+
+            String companyLogo = systemPropertyService.readPrefValue(PreferenceType.COMPANY_LOGO);
+            modelAndView.addObject("companyLogo", companyLogo);
+
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while getting company logo", e);
+        }
+
         modelAndView.setViewName("referral");
         return modelAndView;
     }

@@ -239,3 +239,6 @@ ALTER TABLE user_device ADD UNIQUE (user_id);
 /*======================2015-05-06=========================*/
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('TDS_PERCENTAGE', '15', '1', 'TDS Percentage');
 ALTER TABLE invoices DROP COLUMN paid_amount;
+
+/*======================2015-05-11=========================*/
+UPDATE `delivr_db`.`preferences` SET `section_id` = '4' WHERE `preferences`.`pref_key` = "ENABLE_FREE_REGISTER";

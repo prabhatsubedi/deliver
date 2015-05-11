@@ -406,6 +406,8 @@ public class AdminServiceImpl implements AdminService {
                 dir = MessageBundle.separateString("/", "default", "category");
             } else if(prefKey.equals(PreferenceType.DEFAULT_IMG_SEARCH.toString())){
                 dir = MessageBundle.separateString("/", "default", "search");
+            }else if(prefKey.equals(PreferenceType.COMPANY_LOGO.toString())){
+                dir = MessageBundle.separateString("/", "default", "logo");
             }
 
             boolean isLocal = MessageBundle.isLocalHost();
@@ -414,7 +416,8 @@ public class AdminServiceImpl implements AdminService {
 
 
 
-            AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(preference.getValue()));
+            if(preference.getValue() != null && !preference.getValue().equals(""))
+                AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(preference.getValue()));
 
             String itemImageUrl = "preference" + (isLocal ? "_tmp_" : "_") + preference.getId()+System.currentTimeMillis();
             String s3PathImage = GeneralUtil.saveImageToBucket(image, itemImageUrl, dir, true);

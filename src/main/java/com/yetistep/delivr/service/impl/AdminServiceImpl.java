@@ -4,17 +4,20 @@ import com.amazonaws.util.json.JSONArray;
 import com.amazonaws.util.json.JSONObject;
 import com.yetistep.delivr.dao.inf.AdminDaoService;
 import com.yetistep.delivr.dao.inf.CountryDaoService;
+import com.yetistep.delivr.dao.inf.PreferencesDaoService;
 import com.yetistep.delivr.dao.inf.ValidateMobileDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.SparrowResultModel;
 import com.yetistep.delivr.model.mobile.dto.SMSDto;
 import com.yetistep.delivr.service.inf.AdminService;
-import com.yetistep.delivr.util.CommonConstants;
-import com.yetistep.delivr.util.SparrowSMSUtil;
+import com.yetistep.delivr.service.inf.SystemPropertyService;
+import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +42,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     ValidateMobileDaoService validateMobileDaoService;
+
+    @Autowired
+    PreferencesDaoService preferencesDaoService;
+
+    @Autowired
+    SystemPropertyService systemPropertyService;
 
     @Override
     public List<CountryEntity> findAllCountries() throws Exception {
@@ -379,4 +388,44 @@ public class AdminServiceImpl implements AdminService {
 
         return true;
     }
+
+    @Override
+    public Boolean updateDefaultImage(RequestJsonDto requestJsonDto) throws Exception {
+        String prefKey = requestJsonDto.getPrefKey();
+        String image = requestJsonDto.getImageString();
+        log.info("+++++++++ updating image " + prefKey + " ++++++++++++++++");
+
+        if (requestJsonDto.getImageString() != null) {
+            log.info("Uploading item images to S3 Bucket ");
+
+            String dir = "";
+
+            if(prefKey.equals(PreferenceType.DEFAULT_IMG_ITEM.toString())){
+                dir = MessageBundle.separateString("/", "default", "item");
+            } else if(prefKey.equals(PreferenceType.DEFAULT_IMG_CATEGORY.toString())){
+                dir = MessageBundle.separateString("/", "default", "category");
+            } else if(prefKey.equals(PreferenceType.DEFAULT_IMG_SEARCH.toString())){
+                dir = MessageBundle.separateString("/", "default", "search");
+            }
+
+            boolean isLocal = MessageBundle.isLocalHost();
+
+            PreferencesEntity preference = preferencesDaoService.findByKey(prefKey);
+
+
+
+            AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(preference.getValue()));
+
+            String itemImageUrl = "preference" + (isLocal ? "_tmp_" : "_") + preference.getId()+System.currentTimeMillis();
+            String s3PathImage = GeneralUtil.saveImageToBucket(image, itemImageUrl, dir, true);
+            preference.setValue(s3PathImage);
+
+            List<PreferencesEntity> preferences = new ArrayList<>();
+            preferences.add(preference);
+            systemPropertyService.updateSystemPreferences(preferences);
+
+        }
+        return true;
+    }
+
 }

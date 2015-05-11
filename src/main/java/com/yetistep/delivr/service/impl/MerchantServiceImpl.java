@@ -1867,12 +1867,14 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
         List<StoreEntity> storeEntityList = new ArrayList<>();
-        String fields = "id,generatedDate,path,amount,fromDate,toDate,invoicePaid,paidDate,store";
+        String fields = "id,generatedDate,path,amount,fromDate,toDate,invoicePaid,paidDate,store,commission";
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("store", "id,street,storesBrand");
+        assoc.put("commission", "id,amount");
         subAssoc.put("storesBrand", "id,brandName");
+
 
         for (InvoiceEntity invoiceEntity: invoiceList){
             invoices.add((InvoiceEntity) ReturnJsonUtil.getJsonObject(invoiceEntity, fields, assoc, subAssoc));

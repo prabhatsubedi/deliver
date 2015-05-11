@@ -81,6 +81,10 @@ public class RequestJsonDto {
     //add to custom cart
     private List<CartEntity> customCartList;
 
+    //update string image
+    private String imageString;
+    private String prefKey;
+
 
     /*web search properties
     * */
@@ -451,6 +455,22 @@ public class RequestJsonDto {
 
     public void setPaymentMode(PaymentMode paymentMode) {
         this.paymentMode = paymentMode;
+    }
+
+    public String getImageString() {
+        return imageString;
+    }
+
+    public void setImageString(String imageString) {
+        this.imageString = imageString;
+    }
+
+    public String getPrefKey() {
+        return prefKey;
+    }
+
+    public void setPrefKey(String prefKey) {
+        this.prefKey = prefKey;
     }
 
     public List<CartEntity> getCustomCartList() {

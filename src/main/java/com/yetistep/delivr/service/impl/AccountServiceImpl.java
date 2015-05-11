@@ -79,6 +79,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
 
             InvoiceEntity invoice = new InvoiceEntity();
+            CommissionStatementEntity commission = new CommissionStatementEntity();
             invoice.setInvoiceStatus(InvoiceStatus.UNPAID);
             invoice.setMerchant(merchant);
             invoice.setStore(store);
@@ -89,7 +90,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                 orderEntity.setInvoice(invoice);
             }
 
-            invoice.setGeneratedDate(new Date(System.currentTimeMillis()));
+            invoice.setGeneratedDate(new Date(DateUtil.getCurrentTimestampSQL().getTime()));
             invoice.setFromDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(fromDate).getTime()));
             invoice.setToDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(toDate).getTime()));
 
@@ -111,6 +112,16 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             BigDecimal netPayableAmount = grandTotalAmount.subtract(commissionAmount);
             invoice.setAmount(netPayableAmount.setScale(2, BigDecimal.ROUND_DOWN));
 
+
+            BigDecimal commissionVatAmount = commissionAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
+            BigDecimal totalCommissionAmount = commissionAmount.add(commissionVatAmount);
+
+            commission.setGeneratedDate(new Date(DateUtil.getCurrentTimestampSQL().getTime()));
+            commission.setAmount(totalCommissionAmount);
+
+
+            commission.setInvoice(invoice);
+            invoice.setCommission(commission);
             invoiceDaoService.save(invoice);
 
             Map<String, String> preferences = new HashMap<>();
@@ -238,7 +249,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
             BigDecimal totalPayableAmount = totalAmountEarned.subtract(tdsAmount);
 
-            dBoyPayment.setGeneratedDate(new Date(System.currentTimeMillis()));
+            dBoyPayment.setGeneratedDate(new Date(DateUtil.getCurrentTimestampSQL().getTime()));
             dBoyPayment.setFromDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(fromDate).getTime()));
             dBoyPayment.setToDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(toDate).getTime()));
             dBoyPayment.setdBoyPaid(false);

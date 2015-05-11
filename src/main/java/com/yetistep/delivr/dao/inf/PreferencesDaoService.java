@@ -14,7 +14,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface PreferencesDaoService extends GenericDaoService<Integer, PreferencesEntity>{
-    public PreferencesEntity find(String key) throws Exception;
+    public PreferencesEntity findByKey(String key) throws Exception;
 
     public PreferenceTypeEntity findAll(Integer groupId) throws Exception;
 

@@ -27,7 +27,6 @@ public class DBoyPaymentEntity {
     private List<OrderEntity> orders;
     private DeliveryBoyEntity deliveryBoy;
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -120,4 +119,5 @@ public class DBoyPaymentEntity {
     public void setDeliveryBoy(DeliveryBoyEntity deliveryBoy) {
         this.deliveryBoy = deliveryBoy;
     }
+
 }

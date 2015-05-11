@@ -8,8 +8,10 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,12 +27,11 @@ public class PreferencesDaoServiceImpl implements PreferencesDaoService{
 
     @Override
     public PreferencesEntity find(Integer id) throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return (PreferencesEntity) getCurrentSession().get(PreferenceTypeEntity.class, id);
     }
 
     @Override
     public List<PreferencesEntity> findAll() throws Exception {
-
         return (List<PreferencesEntity>) getCurrentSession().createCriteria(PreferencesEntity.class).list();
     }
 
@@ -88,8 +89,12 @@ public class PreferencesDaoServiceImpl implements PreferencesDaoService{
 
 
     @Override
-    public PreferencesEntity find(String key) throws Exception {
-        return (PreferencesEntity) getCurrentSession().get(PreferencesEntity.class, key);
+    public PreferencesEntity findByKey(String key) throws Exception {
+        List<PreferencesEntity> preferences  = new ArrayList<PreferencesEntity>();
+        Criteria criteria  = getCurrentSession().createCriteria(PreferencesEntity.class);
+        criteria.add(Restrictions.eq("prefKey", key));
+        preferences = criteria.list();
+        return preferences.size()>0?preferences.get(0):null;
     }
 
     @Override

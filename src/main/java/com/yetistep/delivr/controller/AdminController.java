@@ -239,6 +239,22 @@ public class AdminController {
     }
 
 
+    @RequestMapping(value="/update_default_images", method = RequestMethod.POST)
+    public ResponseEntity<ServiceResponse> updateDefaultImage(@RequestBody RequestJsonDto requestJsonDto){
+        try{
+            adminService.updateDefaultImage(requestJsonDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Default images updated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        }catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while updating default images", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
+
 }
 
 

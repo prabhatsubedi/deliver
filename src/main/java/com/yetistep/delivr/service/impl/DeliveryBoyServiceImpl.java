@@ -2260,7 +2260,6 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                         OrderEntity walletOrder = new OrderEntity();
                         walletOrder.setId(order.getId());
                         walletOrder.setOrderDate(order.getOrderDate());
-                        walletOrder.setGrandTotal(order.getGrandTotal());
                         walletOrder.setCr(order.getPaidFromWallet());
                         walletOrder.setPaymentMode(order.getPaymentMode());
                         //if cod amount is greater then 0 then the payment mode is wallet_cod
@@ -2278,31 +2277,49 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                     } else {
                         //cr = wallet amount
                         if(itemPurchased){
-                            OrderEntity walletOrder = new OrderEntity();
-                            walletOrder.setId(order.getId());
-                            walletOrder.setOrderDate(order.getOrderDate());
-                            walletOrder.setGrandTotal(order.getGrandTotal());
-                            walletOrder.setCr(order.getGrandTotal());
-                            walletOrder.setPaymentMode(order.getPaymentMode());
-                            //if cod amount is greater then 0 then the payment mode is wallet_cod
-                            if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
-                                walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
-                                order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
-                            } else {
-                                walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
-                                order.setDescription("Order(WALLET) - "+ partnershipStatus);
-                            }
+                            if(order.getStore().getStoresBrand().getMerchant().getPartnershipStatus()){
+                                OrderEntity walletOrder = new OrderEntity();
+                                walletOrder.setId(order.getId());
+                                walletOrder.setOrderDate(order.getOrderDate());
+                                walletOrder.setCr(order.getPaidFromWallet());
+                                walletOrder.setPaymentMode(order.getPaymentMode());
+                                //if cod amount is greater then 0 then the payment mode is wallet_cod
+                                if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
+                                    walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                                    order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                                } else {
+                                    walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
+                                    order.setDescription("Order(WALLET) - "+ partnershipStatus);
+                                }
 
-                            balance = balance.subtract(order.getGrandTotal());
-                            walletOrder.setBalance(balance);
-                            addedOrderRows.add(walletOrder);
+                                balance = balance.subtract(order.getPaidFromWallet());
+                                walletOrder.setBalance(balance);
+                                addedOrderRows.add(walletOrder);
+                            } else {
+                                OrderEntity nonPartnerOrder = new OrderEntity();
+                                nonPartnerOrder.setId(order.getId());
+                                Long orderDateInTime = order.getOrderDate().getTime()-1000;
+                                java.sql.Timestamp timestamp = new java.sql.Timestamp(orderDateInTime);
+                                nonPartnerOrder.setOrderDate(timestamp);
+                                nonPartnerOrder.setCr(order.getTotalCost().add(order.getItemServiceAndVatCharge()));
+                                nonPartnerOrder.setPaymentMode(order.getPaymentMode());
+                                nonPartnerOrder.setDescription("Paid to Merchant - "+ partnershipStatus);
+
+                                balance = balance.subtract(order.getTotalCost().add(order.getItemServiceAndVatCharge()));
+                                nonPartnerOrder.setBalance(balance);
+                                addedOrderRows.add(nonPartnerOrder);
+
+                                if(order.getAccountantNote()==null){
+                                    String note = "receive item worth "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+" "+order.getDr();
+                                    order.setAccountantNote(note);
+                                }
+                            }
                         } else {
                             //both cr and dr = 0
                             order.setDr(BigDecimal.ZERO);
                             OrderEntity walletOrder = new OrderEntity();
                             walletOrder.setId(order.getId());
                             walletOrder.setOrderDate(order.getOrderDate());
-                            walletOrder.setGrandTotal(order.getGrandTotal());
                             walletOrder.setCr(BigDecimal.ZERO);
                             walletOrder.setPaymentMode(order.getPaymentMode());
                             //if cod amount is greater then 0 then the payment mode is wallet_cod
@@ -2336,6 +2353,19 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                                 cancelledOrder.setBalance(balance);
                                 addedOrderRows.add(cancelledOrder);
                             } else {
+                                OrderEntity nonPartnerOrder = new OrderEntity();
+                                nonPartnerOrder.setId(order.getId());
+                                Long orderDateInTime = order.getOrderDate().getTime()-1000;
+                                java.sql.Timestamp timestamp = new java.sql.Timestamp(orderDateInTime);
+                                nonPartnerOrder.setOrderDate(timestamp);
+                                nonPartnerOrder.setCr(order.getTotalCost().add(order.getItemServiceAndVatCharge()));
+                                nonPartnerOrder.setPaymentMode(order.getPaymentMode());
+                                nonPartnerOrder.setDescription("Paid to Merchant - "+ partnershipStatus);
+
+                                balance = balance.subtract(order.getTotalCost().add(order.getItemServiceAndVatCharge()));
+                                nonPartnerOrder.setBalance(balance);
+                                addedOrderRows.add(nonPartnerOrder);
+
                                 if(order.getAccountantNote()==null){
                                     String note = "receive item worth "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+" "+order.getDr();
                                     order.setAccountantNote(note);

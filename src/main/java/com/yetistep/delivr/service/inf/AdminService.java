@@ -1,6 +1,7 @@
 package com.yetistep.delivr.service.inf;
 
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.CountryEntity;
 import com.yetistep.delivr.model.mobile.SparrowResultModel;
 import com.yetistep.delivr.model.mobile.dto.SMSDto;
@@ -35,5 +36,7 @@ public interface AdminService {
     public List<SMSDto> customerSendableSMSList() throws Exception;
 
     public Boolean sendSMS(SMSDto smsDto) throws Exception;
+
+    public Boolean updateDefaultImage(RequestJsonDto requestJsonDto) throws Exception;
 
 }

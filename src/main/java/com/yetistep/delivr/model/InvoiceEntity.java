@@ -32,6 +32,7 @@ public class InvoiceEntity {
     private List<OrderEntity> orders;
     private MerchantEntity merchant;
     private StoreEntity store;
+    private CommissionStatementEntity commission;
 
 
     @Id
@@ -144,5 +145,14 @@ public class InvoiceEntity {
 
     public void setStore(StoreEntity store) {
         this.store = store;
+    }
+
+    @OneToOne(mappedBy = "invoice", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    public CommissionStatementEntity getCommission() {
+        return commission;
+    }
+
+    public void setCommission(CommissionStatementEntity commission) {
+        this.commission = commission;
     }
 }

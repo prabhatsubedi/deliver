@@ -149,4 +149,8 @@ public class BigDecimalUtil {
         return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
     }
 
+    public static BigDecimal chopToTwoDecimalPlace(BigDecimal number) {
+        return number.setScale(2, BigDecimal.ROUND_DOWN);
+    }
+
 }

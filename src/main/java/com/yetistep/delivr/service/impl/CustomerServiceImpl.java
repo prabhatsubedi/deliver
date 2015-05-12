@@ -624,11 +624,16 @@ public class CustomerServiceImpl implements CustomerService {
             checkOutDto.setItemServiceCharge(minusOne);
             checkOutDto.setItemVatCharge(minusOne);
         }else{
-            checkOutDto.setTax(merchantTax.setScale(2, BigDecimal.ROUND_DOWN));
-            checkOutDto.setServiceFee(serviceFeeAmt.setScale(2, BigDecimal.ROUND_DOWN));
-            checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount.setScale(2, BigDecimal.ROUND_DOWN));
-            checkOutDto.setItemServiceCharge(itemServiceCharge.setScale(2, BigDecimal.ROUND_DOWN));
-            checkOutDto.setItemVatCharge(itemVatCharge.setScale(2, BigDecimal.ROUND_DOWN));
+            merchantTax = merchantTax.setScale(2, BigDecimal.ROUND_DOWN);
+            serviceFeeAmt =  serviceFeeAmt.setScale(2, BigDecimal.ROUND_DOWN);
+            deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.setScale(2, BigDecimal.ROUND_DOWN);
+            itemServiceCharge = itemServiceCharge.setScale(2, BigDecimal.ROUND_DOWN);
+            itemVatCharge = itemVatCharge.setScale(2, BigDecimal.ROUND_DOWN);
+            checkOutDto.setTax(merchantTax);
+            checkOutDto.setServiceFee(serviceFeeAmt);
+            checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount);
+            checkOutDto.setItemServiceCharge(itemServiceCharge);
+            checkOutDto.setItemVatCharge(itemVatCharge);
         }
 
         if(BigDecimalUtil.isZero(checkOutDto.getDeliveryFee())) {

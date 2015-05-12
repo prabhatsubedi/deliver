@@ -1284,10 +1284,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             throw new YSException("CRT008", " "+order.getStore().getStoresBrand().getMinOrderAmount());
         }*/
 
-        order.setTotalCost(itemTotalCost);
-        order.setItemServiceAndVatCharge(itemServiceAndVatCharge);
-        order.setItemServiceCharge(itemServiceCharge);
-        order.setItemVatCharge(itemVatCharge);
+        order.setTotalCost(BigDecimalUtil.chopToTwoDecimalPlace(itemTotalCost));
+        order.setItemServiceAndVatCharge(BigDecimalUtil.chopToTwoDecimalPlace(itemServiceAndVatCharge));
+        order.setItemServiceCharge(BigDecimalUtil.chopToTwoDecimalPlace(itemServiceCharge));
+        order.setItemVatCharge(BigDecimalUtil.chopToTwoDecimalPlace(itemVatCharge));
 
         /*This section is used just for getting courier transaction information */
         DeliveryBoySelectionEntity dBoySelection = new DeliveryBoySelectionEntity();

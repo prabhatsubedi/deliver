@@ -10,9 +10,7 @@ import com.yetistep.delivr.model.mobile.DeviceInfo;
 import com.yetistep.delivr.model.mobile.dto.*;
 import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.CustomerService;
-import com.yetistep.delivr.util.GeneralUtil;
-import com.yetistep.delivr.util.ServiceResponse;
-import com.yetistep.delivr.util.YSException;
+import com.yetistep.delivr.util.*;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1006,17 +1004,18 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/transactions/pgresponse", method = RequestMethod.POST, headers = "content-type=application/x-www-form-urlencoded")
+    @RequestMapping(value = "/transactions/pgresponse", method = RequestMethod.POST, headers = "content-type=application/x-www-form-urlencoded", produces = MediaType.TEXT_HTML_VALUE)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getPaymentGatewayResponse(@ModelAttribute PaymentGatewayDto paymentGatewayDto) {
+    public String getPaymentGatewayResponse(@ModelAttribute PaymentGatewayDto paymentGatewayDto) {
         try{
-            customerService.paymentGatewaySettlement(paymentGatewayDto);
-            ServiceResponse serviceResponse = new ServiceResponse("Transaction retrieved successfully");
-            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+            String responseCode = customerService.paymentGatewaySettlement(paymentGatewayDto);
+            String remarks = MessageBundle.getPaymentGatewayMsg(responseCode);
+            if(responseCode.equals(SHAEncoder.SUCCESSFUL_RESPONSE_CODE))
+                 return SHAEncoder.getResponseHTML(remarks, true);
+            return SHAEncoder.getResponseHTML(remarks, false);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while getting payment response", e);
-            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
-            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+            return SHAEncoder.getResponseHTML(e.getLocalizedMessage(), false);
         }
     }
 

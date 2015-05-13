@@ -76,7 +76,7 @@ public interface CustomerService {
 
     public PaymentGatewayDto requestToAddFundToWallet(Long facebookId, BigDecimal amount) throws Exception;
 
-    public Boolean paymentGatewaySettlement(PaymentGatewayDto paymentGatewayDto) throws Exception;
+    public String paymentGatewaySettlement(PaymentGatewayDto paymentGatewayDto) throws Exception;
 
     public CustomerEntity getWalletBalance(Long facebookId) throws Exception;
 }

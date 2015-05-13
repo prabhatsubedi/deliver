@@ -2060,7 +2060,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Boolean paymentGatewaySettlement(PaymentGatewayDto paymentGatewayDto) throws Exception {
+    public String paymentGatewaySettlement(PaymentGatewayDto paymentGatewayDto) throws Exception {
         Properties properties = GeneralUtil.parsePropertiesString(paymentGatewayDto.getData(), "|");
         Integer transactionId = Integer.parseInt(properties.getProperty(SHAEncoder.ORDER_ID_NAME));
         PaymentGatewayInfoEntity paymentGatewayInfoEntity = paymentGatewayInfoDaoService.find(transactionId);
@@ -2074,7 +2074,8 @@ public class CustomerServiceImpl implements CustomerService {
         }
         if(paymentGatewayInfoEntity.getFlag()){
             log.warn("Transactions already processed:"+paymentGatewayDto.getData());
-            throw new YSException("SEC017");
+            return paymentGatewayInfoEntity.getResponseCode();
+            //throw new YSException("SEC017");
         }
         String transactionReference = properties.getProperty(SHAEncoder.TRANSACTION_REFERENCE_NAME);
         BigDecimal inrAmount = new BigDecimal(properties.getProperty(SHAEncoder.AMOUNT_NAME));
@@ -2102,7 +2103,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         paymentGatewayInfoEntity.setResponseCode(responseCode);
         paymentGatewayInfoDaoService.update(paymentGatewayInfoEntity);
-        return true;
+        return paymentGatewayInfoEntity.getResponseCode();
     }
 
     @Override

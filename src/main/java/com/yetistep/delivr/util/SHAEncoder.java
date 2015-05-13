@@ -134,6 +134,15 @@ public class SHAEncoder {
         return data;
     }
 
+    public static String getResponseHTML(String msg, Boolean success){
+        String colorCode = "red";
+        if(success)
+            colorCode = "green";
+        return "<html><h3 style='color: "+colorCode+"'>"+msg+"</h3>" +
+                "<div>Click back to continue</div>" +
+                "<div><button onclick='window.history.back();'>Back</button></div></html>";
+    }
+
 }
 
 

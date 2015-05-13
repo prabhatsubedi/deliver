@@ -624,11 +624,16 @@ public class CustomerServiceImpl implements CustomerService {
             checkOutDto.setItemServiceCharge(minusOne);
             checkOutDto.setItemVatCharge(minusOne);
         }else{
-            checkOutDto.setTax(merchantTax.setScale(2, BigDecimal.ROUND_DOWN));
-            checkOutDto.setServiceFee(serviceFeeAmt.setScale(2, BigDecimal.ROUND_DOWN));
-            checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount.setScale(2, BigDecimal.ROUND_DOWN));
-            checkOutDto.setItemServiceCharge(itemServiceCharge.setScale(2, BigDecimal.ROUND_DOWN));
-            checkOutDto.setItemVatCharge(itemVatCharge.setScale(2, BigDecimal.ROUND_DOWN));
+            merchantTax = merchantTax.setScale(2, BigDecimal.ROUND_DOWN);
+            serviceFeeAmt =  serviceFeeAmt.setScale(2, BigDecimal.ROUND_DOWN);
+            deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.setScale(2, BigDecimal.ROUND_DOWN);
+            itemServiceCharge = itemServiceCharge.setScale(2, BigDecimal.ROUND_DOWN);
+            itemVatCharge = itemVatCharge.setScale(2, BigDecimal.ROUND_DOWN);
+            checkOutDto.setTax(merchantTax);
+            checkOutDto.setServiceFee(serviceFeeAmt);
+            checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount);
+            checkOutDto.setItemServiceCharge(itemServiceCharge);
+            checkOutDto.setItemVatCharge(itemVatCharge);
         }
 
         if(BigDecimalUtil.isZero(checkOutDto.getDeliveryFee())) {
@@ -2055,7 +2060,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Boolean paymentGatewaySettlement(PaymentGatewayDto paymentGatewayDto) throws Exception {
+    public String paymentGatewaySettlement(PaymentGatewayDto paymentGatewayDto) throws Exception {
         Properties properties = GeneralUtil.parsePropertiesString(paymentGatewayDto.getData(), "|");
         Integer transactionId = Integer.parseInt(properties.getProperty(SHAEncoder.ORDER_ID_NAME));
         PaymentGatewayInfoEntity paymentGatewayInfoEntity = paymentGatewayInfoDaoService.find(transactionId);
@@ -2069,7 +2074,8 @@ public class CustomerServiceImpl implements CustomerService {
         }
         if(paymentGatewayInfoEntity.getFlag()){
             log.warn("Transactions already processed:"+paymentGatewayDto.getData());
-            throw new YSException("SEC017");
+            return paymentGatewayInfoEntity.getResponseCode();
+            //throw new YSException("SEC017");
         }
         String transactionReference = properties.getProperty(SHAEncoder.TRANSACTION_REFERENCE_NAME);
         BigDecimal inrAmount = new BigDecimal(properties.getProperty(SHAEncoder.AMOUNT_NAME));
@@ -2097,7 +2103,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         paymentGatewayInfoEntity.setResponseCode(responseCode);
         paymentGatewayInfoDaoService.update(paymentGatewayInfoEntity);
-        return true;
+        return paymentGatewayInfoEntity.getResponseCode();
     }
 
     @Override

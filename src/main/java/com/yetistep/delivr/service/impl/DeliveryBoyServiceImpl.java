@@ -1284,10 +1284,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             throw new YSException("CRT008", " "+order.getStore().getStoresBrand().getMinOrderAmount());
         }*/
 
-        order.setTotalCost(itemTotalCost);
-        order.setItemServiceAndVatCharge(itemServiceAndVatCharge);
-        order.setItemServiceCharge(itemServiceCharge);
-        order.setItemVatCharge(itemVatCharge);
+        order.setTotalCost(BigDecimalUtil.chopToTwoDecimalPlace(itemTotalCost));
+        order.setItemServiceAndVatCharge(BigDecimalUtil.chopToTwoDecimalPlace(itemServiceAndVatCharge));
+        order.setItemServiceCharge(BigDecimalUtil.chopToTwoDecimalPlace(itemServiceCharge));
+        order.setItemVatCharge(BigDecimalUtil.chopToTwoDecimalPlace(itemVatCharge));
 
         /*This section is used just for getting courier transaction information */
         DeliveryBoySelectionEntity dBoySelection = new DeliveryBoySelectionEntity();
@@ -1465,7 +1465,14 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         BigDecimal paidFromWallet = orderEntity.getPaidFromWallet();
         BigDecimal paidFromCOD = orderEntity.getPaidFromCOD();
         String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
-        if (orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)) {
+        if (orderStatus.equals(JobOrderStatus.ORDER_ACCEPTED) && orderEntity.getPaymentMode().equals(PaymentMode.WALLET)) {
+            log.info("ORDER ACCEPTED STAGE: No Change in item price before cancelling for order ID:" + orderEntity.getId());
+            customerWalletAmount = customerWalletAmount.add(paidFromWallet);
+            String remarks = MessageBundle.getMessage("WTM006", "push_notification.properties");
+            remarks = String.format(remarks, currency, paidFromWallet, orderEntity.getId());
+            this.setWalletTransaction(orderEntity, paidFromWallet, AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
+            paidFromWallet = BigDecimal.ZERO;
+        }else if (orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)) {
             log.info("No Change in item price before cancelling for order ID:" + orderEntity.getId());
             BigDecimal adjustAmount = paidFromWallet.subtract(orderEntity.getDeliveryCharge());
             customerWalletAmount = customerWalletAmount.add(adjustAmount);

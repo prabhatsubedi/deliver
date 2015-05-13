@@ -284,7 +284,7 @@ public class AccountantController {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
-            PaginationDto advanceAmounts = deliveryBoyService.getDBoyAccount(headerDto, requestJsonDto);
+            PaginationDto advanceAmounts = accountService.getDBoyAccount(headerDto, requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("DBoy transactions retrieved successfully");
             serviceResponse.addParam("advanceAmounts", advanceAmounts);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

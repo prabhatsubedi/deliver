@@ -5,8 +5,7 @@ import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
-import com.yetistep.delivr.enums.InvoiceStatus;
-import com.yetistep.delivr.enums.PreferenceType;
+import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.AccountService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
@@ -20,10 +19,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -412,6 +408,328 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             dBoyPayment.setPaidDate(new Date(System.currentTimeMillis()));
             dBoyPaymentDaoService.update(dBoyPayment);
         }
+    }
+
+    @Override
+    public PaginationDto getDBoyAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
+        Page page = requestJsonDto.getPage();
+
+        PaginationDto paginationDto = new PaginationDto();
+
+        DeliveryBoyEntity dBoy = deliveryBoyDaoService.findDBoyById(Integer.parseInt(headerDto.getId()));
+
+        String fields = "id,dBoyAdvanceAmounts,order,user";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("dBoyAdvanceAmounts", "id,advanceDate,amountAdvance,type,accountantNote");
+        assoc.put("order", "id,deliveryStatus,orderStatus,grandTotal,orderDate,paymentMode,paidFromWallet,paidFromCOD,store,dBoyOrderHistories,accountantNote,itemServiceAndVatCharge,totalCost,itemsOrder");
+        subAssoc.put("itemsOrder", "id,purchaseStatus");
+        subAssoc.put("dBoyOrderHistories", "id,orderCompletedAt");
+        subAssoc.put("store", "id,storesBrand");
+        subAssoc.put("store", "id,storesBrand");
+        subAssoc.put("storesBrand", "id,merchant");
+        subAssoc.put("merchant", "id,partnershipStatus");
+
+
+        DeliveryBoyEntity acDBoy = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(dBoy, fields, assoc, subAssoc);
+
+        List<OrderEntity> advanceAsOrder = new ArrayList<>();
+
+        for (DBoyAdvanceAmountEntity advanceAmount: acDBoy.getdBoyAdvanceAmounts()){
+            OrderEntity orderEntity = new OrderEntity();
+            orderEntity.setId(advanceAmount.getId());
+            orderEntity.setOrderDate(advanceAmount.getAdvanceDate());
+            orderEntity.setGrandTotal(advanceAmount.getAmountAdvance());
+            orderEntity.setDescription(advanceAmount.getType());
+            orderEntity.setAccountantNote(advanceAmount.getAccountantNote());
+            advanceAsOrder.add(orderEntity);
+        }
+
+
+
+        List<OrderEntity> orderEntities = acDBoy.getOrder();
+
+        List<OrderEntity> liveOrders = new ArrayList<>();
+
+        for(OrderEntity order: orderEntities){
+            //remove live orders
+            List<Integer> activeStatuses = new ArrayList<>();
+            activeStatuses.add(JobOrderStatus.ORDER_PLACED.ordinal());
+            activeStatuses.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
+            activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
+            activeStatuses.add(JobOrderStatus.AT_STORE.ordinal());
+            activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal());
+
+            if(order.getdBoyOrderHistories().size() >0 && !activeStatuses.contains(order.getOrderStatus().ordinal()) ){
+                order.setOrderDate(order.getdBoyOrderHistories().get(0).getOrderCompletedAt());
+            }  else {
+                liveOrders.add(order);
+            }
+        }
+
+        //TODO: confirm the conditions applied
+        orderEntities.removeAll(liveOrders);
+
+        //add all order transactions as order for dboy transactions
+        orderEntities.addAll(advanceAsOrder);
+
+
+        //sort orders by order date
+        Collections.sort(orderEntities, new Comparator<OrderEntity>() {
+            public int compare(OrderEntity prev, OrderEntity next) {
+                return prev.getOrderDate().compareTo(next.getOrderDate());
+            }
+        });
+
+        //add rows for cr on cancel and wallet transaction
+        List<OrderEntity> addedOrderRows = new ArrayList<>();
+
+        BigDecimal balance = BigDecimal.ZERO;
+        for(OrderEntity order: orderEntities){
+            if(order.getDescription() != null) {
+                //this is not real order but dboy transactions
+                if(order.getDescription().equals("advanceAmount")){
+                    balance = balance.add(order.getGrandTotal());
+                    order.setBalance(balance);
+                    order.setDr(order.getGrandTotal());
+                    order.setDescription("Advance Amount");
+                    order.setGrandTotal(null);
+                } else if(order.getDescription().equals("acknowledgeAmount")){
+                    balance = balance.subtract(order.getGrandTotal());
+                    order.setBalance(balance);
+                    order.setCr(order.getGrandTotal());
+                    order.setDescription("Amount Submitted to Account");
+                    order.setGrandTotal(null);
+                }
+            } else {
+                String partnershipStatus = "";
+                if(order.getStore().getStoresBrand().getMerchant().getPartnershipStatus()) {
+                    partnershipStatus = "Partner";
+                } else {
+                    partnershipStatus = "Non Partner";
+                    if(order.getDeliveryStatus().equals(DeliveryStatus.SUCCESSFUL)){
+                        OrderEntity nonPartnerOrder = new OrderEntity();
+                        nonPartnerOrder.setId(order.getId());
+                        Long orderDateInTime = order.getOrderDate().getTime()-1000;
+                        java.sql.Timestamp timestamp = new java.sql.Timestamp(orderDateInTime);
+                        nonPartnerOrder.setOrderDate(timestamp);
+                        nonPartnerOrder.setGrandTotal(order.getGrandTotal());
+                        nonPartnerOrder.setCr(order.getTotalCost().add(order.getItemServiceAndVatCharge()));
+                        nonPartnerOrder.setPaymentMode(order.getPaymentMode());
+                        nonPartnerOrder.setDescription("Paid to Merchant - "+ partnershipStatus);
+
+                        balance = balance.subtract(order.getTotalCost().add(order.getItemServiceAndVatCharge()));
+                        nonPartnerOrder.setBalance(balance);
+                        addedOrderRows.add(nonPartnerOrder);
+                    }
+                }
+
+                balance = balance.add(order.getGrandTotal());
+                order.setBalance(balance);
+                order.setDr(order.getGrandTotal());
+
+                //check if item purchased
+                Boolean itemPurchased = false;
+                if(order.getDeliveryStatus().equals(DeliveryStatus.CANCELLED)){
+                    for (ItemsOrderEntity itemsOrder: order.getItemsOrder()){
+                        if (itemsOrder.getPurchaseStatus() != null && itemsOrder.getPurchaseStatus()){
+                            itemPurchased = true;
+                            break;
+                        }
+                    }
+                }
+
+
+                if(order.getPaymentMode().equals(PaymentMode.WALLET)){
+                    if(order.getDeliveryStatus().equals(DeliveryStatus.SUCCESSFUL)){
+                        //cr = wallet amount
+                        OrderEntity walletOrder = new OrderEntity();
+                        walletOrder.setId(order.getId());
+                        walletOrder.setOrderDate(order.getOrderDate());
+                        walletOrder.setCr(order.getPaidFromWallet());
+                        walletOrder.setPaymentMode(order.getPaymentMode());
+                        //if cod amount is greater then 0 then the payment mode is wallet_cod
+                        if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
+                            walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                            order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                        } else {
+                            walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
+                            order.setDescription("Order(WALLET) - "+ partnershipStatus);
+                        }
+
+                        balance = balance.subtract(order.getPaidFromWallet());
+                        walletOrder.setBalance(balance);
+                        addedOrderRows.add(walletOrder);
+                    } else {
+                        //cr = wallet amount
+                        if(itemPurchased){
+                            if(order.getStore().getStoresBrand().getMerchant().getPartnershipStatus()){
+                               /* OrderEntity walletOrder = new OrderEntity();
+                                walletOrder.setId(order.getId());
+                                walletOrder.setOrderDate(order.getOrderDate());
+                                walletOrder.setCr(order.getPaidFromWallet());
+                                walletOrder.setPaymentMode(order.getPaymentMode());*/
+                                //if cod amount is greater then 0 then the payment mode is wallet_cod
+                                if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
+                                    //walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                                    order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                                } else {
+                                    //walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
+                                    order.setDescription("Order(WALLET) - "+ partnershipStatus);
+                                }
+
+                                //balance = balance.add(order.getGrandTotal());
+
+                                if(order.getAccountantNote()==null){
+                                    String note = "receive item worth "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+" "+order.getDr();
+                                    order.setAccountantNote(note);
+                                }
+                                /*walletOrder.setBalance(balance);
+                                addedOrderRows.add(walletOrder);*/
+                            } else {
+                                OrderEntity nonPartnerOrder = new OrderEntity();
+                                nonPartnerOrder.setId(order.getId());
+                                Long orderDateInTime = order.getOrderDate().getTime()-1000;
+                                java.sql.Timestamp timestamp = new java.sql.Timestamp(orderDateInTime);
+                                nonPartnerOrder.setOrderDate(timestamp);
+                                nonPartnerOrder.setCr(order.getTotalCost().add(order.getItemServiceAndVatCharge()));
+                                nonPartnerOrder.setPaymentMode(order.getPaymentMode());
+                                nonPartnerOrder.setDescription("Paid to Merchant - "+ partnershipStatus);
+
+                                balance = balance.subtract(order.getTotalCost().add(order.getItemServiceAndVatCharge())).subtract(order.getGrandTotal());
+                                nonPartnerOrder.setBalance(balance);
+                                balance = balance.add(order.getGrandTotal());
+                                order.setBalance(balance);
+
+                                //balance = balance.subtract(order.getGrandTotal());
+
+                                if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
+                                    order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                                } else {
+                                    order.setDescription("Order(WALLET) - "+ partnershipStatus);
+                                }
+
+
+                            if(order.getAccountantNote()==null){
+                                    String note = "receive item worth "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+" "+order.getDr();
+                                    order.setAccountantNote(note);
+                                }
+
+                                addedOrderRows.add(nonPartnerOrder);
+                           }
+                        } else {
+                            //both cr and dr = 0
+                            order.setDr(BigDecimal.ZERO);
+                            OrderEntity walletOrder = new OrderEntity();
+                            walletOrder.setId(order.getId());
+                            walletOrder.setOrderDate(order.getOrderDate());
+                            walletOrder.setCr(BigDecimal.ZERO);
+                            walletOrder.setPaymentMode(order.getPaymentMode());
+                            //if cod amount is greater then 0 then the payment mode is wallet_cod
+                            if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
+                                walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                                order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                            } else {
+                                walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
+                                order.setDescription("Order(WALLET) - "+ partnershipStatus);
+                            }
+                            balance = balance.subtract(order.getPaidFromWallet());
+                            order.setBalance(balance);
+                            walletOrder.setBalance(balance);
+                            addedOrderRows.add(walletOrder);
+                        }
+
+                    }
+                } else {
+                    if(order.getDeliveryStatus().equals(DeliveryStatus.CANCELLED)){
+
+                        if(itemPurchased){
+                            if(order.getStore().getStoresBrand().getMerchant().getPartnershipStatus()){
+                                /*OrderEntity cancelledOrder = new OrderEntity();
+                                cancelledOrder.setId(order.getId());
+                                cancelledOrder.setCr(order.getDr());
+                                cancelledOrder.setDescription("Canceled order received-"+partnershipStatus);
+                                cancelledOrder.setOrderDate(order.getOrderDate());
+                                cancelledOrder.setPaymentMode(order.getPaymentMode());
+                                cancelledOrder.setAccountantNote(order.getAccountantNote());
+                                //balance = balance.subtract(order.getDr());
+                                cancelledOrder.setBalance(balance);
+                                addedOrderRows.add(cancelledOrder);*/
+                                if(order.getAccountantNote()==null){
+                                    String note = "receive item worth "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+" "+order.getDr();
+                                    order.setAccountantNote(note);
+                                }
+                            } else {
+                                OrderEntity nonPartnerOrder = new OrderEntity();
+                                nonPartnerOrder.setId(order.getId());
+                                Long orderDateInTime = order.getOrderDate().getTime()-1000;
+                                java.sql.Timestamp timestamp = new java.sql.Timestamp(orderDateInTime);
+                                nonPartnerOrder.setOrderDate(timestamp);
+                                nonPartnerOrder.setCr(order.getTotalCost().add(order.getItemServiceAndVatCharge()));
+                                nonPartnerOrder.setPaymentMode(order.getPaymentMode());
+                                nonPartnerOrder.setDescription("Paid to Merchant - "+ partnershipStatus);
+
+                                balance = balance.subtract(order.getTotalCost().add(order.getItemServiceAndVatCharge())).subtract(order.getGrandTotal());
+                                nonPartnerOrder.setBalance(balance);
+
+                                balance = balance.add(order.getGrandTotal());
+                                order.setBalance(balance);
+
+                                addedOrderRows.add(nonPartnerOrder);
+
+                                if(order.getAccountantNote()==null){
+                                    String note = "receive item worth "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+" "+order.getDr();
+                                    order.setAccountantNote(note);
+                                }
+                            }
+
+                        } else {
+                            //if(!order.getStore().getStoresBrand().getMerchant().getPartnershipStatus()){
+                            order.setDr(BigDecimal.ZERO);
+                            OrderEntity cancelledOrder = new OrderEntity();
+                            cancelledOrder.setId(order.getId());
+                            cancelledOrder.setCr(BigDecimal.ZERO);
+                            cancelledOrder.setDescription("Canceled order received-item not purchased");
+                            cancelledOrder.setOrderDate(order.getOrderDate());
+                            cancelledOrder.setPaymentMode(order.getPaymentMode());
+                            balance = balance.subtract(order.getGrandTotal());
+                            order.setBalance(balance);
+                            cancelledOrder.setBalance(balance);
+                            addedOrderRows.add(cancelledOrder);
+                            /*} else {
+                                order.setDr(BigDecimal.ZERO);
+                                balance = balance.subtract(order.getGrandTotal());
+                                order.setBalance(balance);
+                            }*/
+                        }
+                    }
+
+                    order.setDescription("Order(COD) - "+ partnershipStatus);
+                }
+            }
+            // store information, dboy history and grand total is not required now
+            order.setGrandTotal(null);
+            order.setStore(null);
+            order.setdBoyOrderHistories(null);
+        }
+
+        orderEntities.addAll(addedOrderRows);
+
+        //sort orders by order date
+        Collections.sort(orderEntities, new Comparator<OrderEntity>() {
+            public int compare(OrderEntity one, OrderEntity other) {
+                return one.getOrderDate().compareTo(other.getOrderDate());
+            }
+        });
+
+
+        acDBoy.setOrder(orderEntities);
+        acDBoy.setdBoyAdvanceAmounts(null);
+        paginationDto.setNumberOfRows(orderEntities.size());
+        paginationDto.setData(orderEntities);
+        return paginationDto;
     }
 
 

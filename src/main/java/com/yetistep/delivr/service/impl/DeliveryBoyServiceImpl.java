@@ -1389,13 +1389,13 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                     BigDecimal paidToCourier = this.getCourierBoyEarningAtAnyStage(dBoyOrderHistoryEntity, orderEntity.getOrderStatus());
                     orderEntity.getCourierTransaction().setPaidToCourier(paidToCourier);
                     orderEntity.getDeliveryBoy().setTotalEarnings(orderEntity.getDeliveryBoy().getTotalEarnings().add(paidToCourier));
-                    if(BigDecimalUtil.isGreaterThen(orderEntity.getPaidFromCOD(), BigDecimal.ZERO)){
+                    if(BigDecimalUtil.isGreaterThen(orderEntity.getGrandTotal(), BigDecimal.ZERO)){
                         if (orderEntity.getOrderStatus().equals(JobOrderStatus.AT_STORE)) {
                             boolean partnerShipStatus = merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());
                             courierBoyAccountingsAfterTakingOrder(orderEntity.getDeliveryBoy(), orderEntity, partnerShipStatus);
-                            courierBoyAccountingsAfterOrderDelivery(orderEntity.getDeliveryBoy(), orderEntity);
+                            courierBoyAccountingsAfterOrderCancel(orderEntity.getDeliveryBoy(), orderEntity);
                         }else if (orderEntity.getOrderStatus().equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)) {
-                            courierBoyAccountingsAfterOrderDelivery(orderEntity.getDeliveryBoy(), orderEntity);
+                            courierBoyAccountingsAfterOrderCancel(orderEntity.getDeliveryBoy(), orderEntity);
                         }
                     }
                     break;
@@ -1674,6 +1674,23 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 + "\t Available Amount: " + availableAmount
                 + "\t Amount to be Submitted: " + walletAmount);
     }
+
+    private void courierBoyAccountingsAfterOrderCancel(DeliveryBoyEntity deliveryBoy, OrderEntity order) {
+        BigDecimal orderAmtReceived = order.getGrandTotal();
+        BigDecimal walletAmount = deliveryBoy.getWalletAmount();
+        BigDecimal availableAmount = deliveryBoy.getAvailableAmount();
+
+        availableAmount = availableAmount.add(orderAmtReceived);
+        walletAmount = walletAmount.add(orderAmtReceived);
+        deliveryBoy.setWalletAmount(walletAmount);
+        deliveryBoy.setAvailableAmount(availableAmount);
+
+        log.info("== AFTER ORDER DELIVERY =="
+                + "\n Wallet Amount: " + walletAmount
+                + "\t Available Amount: " + availableAmount
+                + "\t Amount to be Submitted: " + walletAmount);
+    }
+
 
     @Override
     public OrderSummaryDto getShoppingList(Integer orderId) throws Exception {

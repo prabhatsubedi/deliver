@@ -138,9 +138,9 @@ public class SHAEncoder {
         String colorCode = "red";
         if(success)
             colorCode = "green";
-        return "<html><h3 style='color: "+colorCode+"'>"+msg+"</h3>" +
-                "<div>Click back to continue</div>" +
-                "<div><button onclick='window.history.back();'>Back</button></div></html>";
+        return "<html><title>"+colorCode+"</title><h3 style='color: "+colorCode+"'>"+msg+"</h3>"
+                + "<div>Click OK to continue</div>" +
+                "<div><button onclick='ok.performClick(this.value);'>OK</button></div></html>";
     }
 
 }

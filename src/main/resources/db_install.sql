@@ -245,3 +245,4 @@ UPDATE `delivr_db`.`preferences` SET `section_id` = '4' WHERE `preferences`.`pre
 
 /*======================2015-05-06=========================*/
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('REFERRAL_FACEBOOK_IMG', '', '7', 'Facebook Referral Image');
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('APPLICATION_NAME', 'coolkat', '5', 'Application Name');

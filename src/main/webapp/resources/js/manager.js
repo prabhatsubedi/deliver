@@ -1050,17 +1050,22 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.fillDboyAccount = function(courierStaff){
         Manager.getTransactions();
+        var itemAvailableBalance = parseFloat(courierStaff.itemReturnedTotal).toFixed(2);
         if(typeof courierStaff.previousDue != "undefined"){
             $(".due_amount").text(parseFloat(courierStaff.previousDue).toFixed(2));
             $("#due_amount_val").val(parseFloat(courierStaff.previousDue).toFixed(2));
         }
         if(typeof courierStaff.walletAmount != "undefined" && typeof courierStaff.bankAmount != "undefined"){
-            $(".available_balance").text(parseFloat(courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2));
+            var totalAvailableBalance = parseFloat(courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2);
+            $(".available_balance").text(totalAvailableBalance);
+            $(".cash_available_balance").text(totalAvailableBalance-itemAvailableBalance);
         }
         if(typeof courierStaff.walletAmount != "undefined"){
             $(".to_be_submitted").text(parseFloat(courierStaff.walletAmount).toFixed(2));
             $("#to_be_submitted_val").val(parseFloat(courierStaff.walletAmount).toFixed(2));
         }
+
+        $(".item_available_balance").text(itemAvailableBalance);
     }
 
     Manager.getCategories = function(){

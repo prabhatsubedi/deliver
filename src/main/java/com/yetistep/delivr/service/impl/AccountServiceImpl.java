@@ -566,11 +566,6 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                         //cr = wallet amount
                         if(itemPurchased){
                             if(order.getStore().getStoresBrand().getMerchant().getPartnershipStatus()){
-                               /* OrderEntity walletOrder = new OrderEntity();
-                                walletOrder.setId(order.getId());
-                                walletOrder.setOrderDate(order.getOrderDate());
-                                walletOrder.setCr(order.getPaidFromWallet());
-                                walletOrder.setPaymentMode(order.getPaymentMode());*/
                                 //if cod amount is greater then 0 then the payment mode is wallet_cod
                                 if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
                                     //walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
@@ -580,14 +575,12 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                                     order.setDescription("Order(WALLET) - "+ partnershipStatus);
                                 }
 
-                                //balance = balance.add(order.getGrandTotal());
 
                                 if(order.getAccountantNote()==null){
                                     String note = "receive item worth "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+" "+order.getDr();
                                     order.setAccountantNote(note);
                                 }
-                                /*walletOrder.setBalance(balance);
-                                addedOrderRows.add(walletOrder);*/
+
                             } else {
                                 OrderEntity nonPartnerOrder = new OrderEntity();
                                 nonPartnerOrder.setId(order.getId());
@@ -647,16 +640,6 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
                         if(itemPurchased){
                             if(order.getStore().getStoresBrand().getMerchant().getPartnershipStatus()){
-                                /*OrderEntity cancelledOrder = new OrderEntity();
-                                cancelledOrder.setId(order.getId());
-                                cancelledOrder.setCr(order.getDr());
-                                cancelledOrder.setDescription("Canceled order received-"+partnershipStatus);
-                                cancelledOrder.setOrderDate(order.getOrderDate());
-                                cancelledOrder.setPaymentMode(order.getPaymentMode());
-                                cancelledOrder.setAccountantNote(order.getAccountantNote());
-                                //balance = balance.subtract(order.getDr());
-                                cancelledOrder.setBalance(balance);
-                                addedOrderRows.add(cancelledOrder);*/
                                 if(order.getAccountantNote()==null){
                                     String note = "receive item worth "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+" "+order.getDr();
                                     order.setAccountantNote(note);

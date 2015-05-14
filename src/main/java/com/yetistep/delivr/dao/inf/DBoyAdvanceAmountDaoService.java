@@ -5,6 +5,7 @@ import com.yetistep.delivr.model.DBoyAdvanceAmountEntity;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.Page;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -19,4 +20,6 @@ public interface DBoyAdvanceAmountDaoService  extends GenericDaoService<Integer,
     public Integer getTotalNumbersOfAdvanceAmounts(Integer dBoyId) throws Exception;
 
     public List<DBoyAdvanceAmountEntity> getAdvanceAmounts(Integer dBoyId, Page page) throws Exception;
+
+    public Timestamp getLatestAckTimestamp(Integer dBoyId) throws Exception;
 }

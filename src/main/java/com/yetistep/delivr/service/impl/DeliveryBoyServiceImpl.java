@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -167,7 +168,6 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             throw new YSException("VLD011");
         }
 
-
         String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,previousDue,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude,order";
 
         Map<String, String> assoc = new HashMap<>();
@@ -194,6 +194,20 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }
 
         deliveryBoy.setOrder(activeOrders);
+
+        Timestamp lastAckDate = dBoyAdvanceAmountDaoService.getLatestAckTimestamp(deliveryBoyEntity.getId());
+
+        BigDecimal cancelledPurchaseTotal = BigDecimal.ZERO;
+        if(lastAckDate != null){
+          List<OrderEntity> cancelledPurchasedOrders =  orderDaoService.getCancelledPurchasedOrder(deliveryBoy.getId(), lastAckDate);
+            for (OrderEntity order: cancelledPurchasedOrders){
+                cancelledPurchaseTotal.add(order.getGrandTotal());
+            }
+        }
+
+        deliveryBoy.setItemReturnedTotal(cancelledPurchaseTotal);
+
+
         return deliveryBoy;
     }
 

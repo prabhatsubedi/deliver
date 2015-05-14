@@ -8,6 +8,7 @@ import com.yetistep.delivr.model.RatingEntity;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -68,4 +69,6 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
     public List<OrderEntity> getDBoyOrders(Integer dBoyId, String fromDate, String toDate) throws Exception;
 
     public OrderEntity getPaidFromCashOnDeliveryAmount(Integer orderId) throws Exception;
+
+    public List<OrderEntity> getCancelledPurchasedOrder(Integer dBoyId, Timestamp date) throws Exception;
 }

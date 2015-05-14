@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -470,4 +471,16 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         OrderEntity orderEntity = (OrderEntity) sqlQuery.uniqueResult();
         return orderEntity;
     }
+
+    @Override
+    public List<OrderEntity> getCancelledPurchasedOrder(Integer dBoyId, Timestamp date) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class, "order");
+        criteria.add(Restrictions.gt("totalCost", BigDecimal.ZERO));
+        criteria.add(Restrictions.gt("orderDate", date));
+        criteria.add(Restrictions.eq("orderStatus", JobOrderStatus.CANCELLED));
+        List<OrderEntity>  orderEntities = criteria.list();
+        return  orderEntities;
+    }
+
+
 }

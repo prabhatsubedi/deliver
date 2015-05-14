@@ -12,7 +12,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.criteria.Order;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,4 +83,16 @@ public class DBoyAdvanceAmountDaoServiceImpl implements DBoyAdvanceAmountDaoServ
         merchants = criteria.list();
         return merchants;
     }
+
+    @Override
+    public Timestamp getLatestAckTimestamp(Integer dBoyId) throws Exception{
+        List<DBoyAdvanceAmountEntity> acks  = new ArrayList<DBoyAdvanceAmountEntity>();
+        Criteria criteria  = getCurrentSession().createCriteria(DBoyAdvanceAmountEntity.class);
+        criteria.add(Restrictions.eq("deliveryBoy.id", dBoyId));
+        criteria.addOrder(org.hibernate.criterion.Order.desc("advanceDate"));
+        criteria.setMaxResults(1);
+        acks = criteria.list();
+        return acks.size()>0?acks.get(0).getAdvanceDate():null;
+    }
+
 }

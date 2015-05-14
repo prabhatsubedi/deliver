@@ -137,12 +137,24 @@
                         </tr>
                         <tr class="odd">
                             <th>3</th>
+                            <td>Item Available Balance</td>
+                            <td class="item_available_balance"></td>
+                            <td></td>
+                        </tr>
+                        <tr class="even">
+                            <th>4</th>
+                            <td>Cash Available Balance</td>
+                            <td class="cash_available_balance"></td>
+                            <td></td>
+                        </tr>
+                        <tr class="odd">
+                            <th>5</th>
                             <td>Today's Amount to be submitted to Account</td>
                             <td class="to_be_submitted"></td>
                             <td><input type="checkbox" id="submit"></td>
                         </tr>
                         <tr class="even">
-                            <th>4</th>
+                            <th>6</th>
                             <td>Advance Amount</td>
                             <td class="advance_amount form_container"><input type="text" id="advance_amount_val" class="form-control"></td>
                             <td></td>

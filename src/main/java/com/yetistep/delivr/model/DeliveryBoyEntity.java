@@ -53,6 +53,7 @@ public class DeliveryBoyEntity implements Serializable {
     private String latitude;
     private String longitude;
     private Timestamp lastLocationUpdate;
+    private BigDecimal itemReturnedTotal; //transient variable
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -316,5 +317,16 @@ public class DeliveryBoyEntity implements Serializable {
 
     public void setLastLocationUpdate(Timestamp lastLocationUpdate) {
         this.lastLocationUpdate = lastLocationUpdate;
+    }
+
+
+    @Transient
+    @JsonProperty
+    public BigDecimal getItemReturnedTotal() {
+        return itemReturnedTotal;
+    }
+
+    public void setItemReturnedTotal(BigDecimal itemReturnedTotal) {
+        this.itemReturnedTotal = itemReturnedTotal;
     }
 }

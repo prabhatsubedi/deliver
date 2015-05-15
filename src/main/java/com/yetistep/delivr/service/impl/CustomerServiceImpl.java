@@ -1153,14 +1153,33 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
+    private Boolean hasCustomerCustomItem(OrderEntity order) throws Exception{
+        Boolean hasCustomerCustomItem = false;
+        List<ItemsOrderEntity> itemsOrders = order.getItemsOrder();
+        if(itemsOrders != null){
+            for (ItemsOrderEntity itemsOrder: itemsOrders){
+                CustomItemEntity customItem = itemsOrder.getCustomItem();
+                if(customItem != null && customItem.getCustomerCustom()){
+                    hasCustomerCustomItem = true;
+                    break;
+                }
+            }
+        }
+        return hasCustomerCustomItem;
+    }
+
     private List<DeliveryBoySelectionEntity> filterDBoyWithProfitCriteria(OrderEntity order, List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities, BigDecimal merchantCommission, BigDecimal merchantServiceFee) throws Exception {
         log.info("Unfiltered Dboys:"+deliveryBoySelectionEntities.toString());
         List<DeliveryBoySelectionEntity> filteredDeliveryBoys = new ArrayList<DeliveryBoySelectionEntity>();
         BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
         Boolean PROFIT_CHECK = GeneralUtil.parseBoolean(systemPropertyService.readPrefValue(PreferenceType.PROFIT_CHECK_FLAG));
+
+        //check if is custom order: sagar
+        Boolean isCustomerCustomOrder = hasCustomerCustomItem(order);
+
         for (DeliveryBoySelectionEntity deliveryBoySelectionEntity : deliveryBoySelectionEntities) {
             CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, deliveryBoySelectionEntity, merchantCommission, merchantServiceFee);
-            if(PROFIT_CHECK){
+            if(PROFIT_CHECK && !isCustomerCustomOrder){
                 if(BigDecimalUtil.isGreaterThen(courierTransaction.getProfit(), BigDecimalUtil.percentageOf(order.getTotalCost(), MINIMUM_PROFIT_PERCENTAGE)))
                     filteredDeliveryBoys.add(deliveryBoySelectionEntity);
             }else{
@@ -1747,10 +1766,12 @@ public class CustomerServiceImpl implements CustomerService {
                 List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(order.getStore(), availableAndActiveDBoys, order, true);
                 /* Selects delivery boys based on profit criteria. */
                 List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, courierTransactionEntity.getCommissionPct(), courierTransactionEntity.getServiceFeePct());
+
                 if(deliveryBoySelectionEntitiesWithProfit.size() == 0){
                     log.info("Order is cancelling since not enough profit:"+orderId);
                     return cancelOrder(order);
                 }
+
                 order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
 
                 orderDaoService.update(order);

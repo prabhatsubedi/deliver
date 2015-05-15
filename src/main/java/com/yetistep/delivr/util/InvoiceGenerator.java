@@ -295,6 +295,7 @@ public class InvoiceGenerator {
 
         Paragraph title1 = PdfUtil.getParagraph(titleFont, "Statement of Transaction");
         title1.setAlignment(Element.ALIGN_CENTER);
+        title1.setSpacingBefore(10);
         document.add(title1);
         PdfUtil.addEmptyLine(document, 1);//add empty line
 
@@ -346,8 +347,12 @@ public class InvoiceGenerator {
         titleFont.setColor(new BaseColor(0xFF9235));
 
         Paragraph title1 = PdfUtil.getParagraph(titleFont, "Statement No.: "+invoice.getId(), "For Commission");
+        Paragraph title2 = PdfUtil.getParagraph(titleFont, "For Commission");
         title1.setAlignment(Element.ALIGN_CENTER);
+        title2.setAlignment(Element.ALIGN_CENTER);
+        title1.setSpacingBefore(10);
         document.add(title1);
+        document.add(title2);
         PdfUtil.addEmptyLine(document, 1);//add empty line
 
         PdfPCell transactionCell = new PdfPCell();
@@ -397,7 +402,7 @@ public class InvoiceGenerator {
 
         PdfPTable billingTable = new PdfPTable(4);
         billingTable.setWidthPercentage(100);
-        billingTable.setWidths(new float[]{20, 30, 30, 20});
+        billingTable.setWidths(new float[]{15, 30, 35, 20});
 
         String currency = preferences.get("CURRENCY");
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("SN", PdfUtil.smallBold), PdfUtil.getPhrase("Date and Time of Transaction", PdfUtil.smallBold), PdfUtil.getPhrase("Order No.", PdfUtil.smallBold), PdfUtil.getPhrase("Amount ("+currency+")", PdfUtil.smallBold));
@@ -517,6 +522,7 @@ public class InvoiceGenerator {
         titleFont.setColor(new BaseColor(0xFF9235));
         Paragraph title = PdfUtil.getParagraph(titleFont, "Invoice : "+bill.getId());
         title.setAlignment(Element.ALIGN_CENTER);
+        title.setSpacingBefore(10);
         document.add(title);
         PdfUtil.addEmptyLine(document, 1);//add empty line
 
@@ -631,9 +637,9 @@ public class InvoiceGenerator {
         receiptDetailCell.addElement(detail);
         PdfUtil.setPadding(receiptDetailCell, 20, 0, 20, 50);
 
-
+        String currency = preferences.get("CURRENCY");
         PdfPCell billAmountCell = new PdfPCell();
-        Paragraph amount = PdfUtil.getParagraph(infoFont, true, "Total Amount Billed: "+receipt.getReceiptAmount().setScale(2, BigDecimal.ROUND_DOWN));
+        Paragraph amount = PdfUtil.getParagraph(infoFont, true, "Total Amount Billed: "+currency+receipt.getReceiptAmount().setScale(2, BigDecimal.ROUND_DOWN));
         billAmountCell.addElement(amount);
         PdfUtil.setPadding(billAmountCell, 20, 0, 20, 50);
 

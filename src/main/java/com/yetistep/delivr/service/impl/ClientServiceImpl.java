@@ -1271,7 +1271,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                     break;
                 String serverUrl = getServerUrl();
                 String body = "<p>Hi</p>";
-                body += clientName+"<p> has invited you to use iDelivr application.</p>";
+                body += clientName+"<p> has invited you to use KollKat application.</p>";
                 body += "<p>to join the delivr please find the following link: </p>";
                 body += "<p>"+clientUrl+"</p>";
                 String subject = " You are invited to use delivr application ";

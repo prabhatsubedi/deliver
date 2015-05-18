@@ -162,6 +162,7 @@ public class ClientController extends AbstractManager{
         }
     }
 
+    //this function is used only when the sms is enabled
     @RequestMapping(value = "/reg_mobile_code", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> verifyMobileCode(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {

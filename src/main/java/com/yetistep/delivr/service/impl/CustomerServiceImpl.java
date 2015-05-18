@@ -289,6 +289,9 @@ public class CustomerServiceImpl implements CustomerService {
         UserEntity user = addressDto.getUser();
         AddressEntity address = addressDto.getAddress();
 
+        //register mobile first for no sms. once sms is enable remove this line of code
+        verifyMobile(user.getLastAddressMobile(), user.getCustomer().getFacebookId());
+
         /* Check Customer JSON */
         if (user.getCustomer() == null || user.getCustomer().getFacebookId() == null)
             throw new YSException("JSN001");
@@ -309,8 +312,9 @@ public class CustomerServiceImpl implements CustomerService {
         if(validateMobileEntity == null)
               throw new YSException("SEC010");
 
-        if(validateMobileEntity.getVerificationCode()!=null && !validateMobileEntity.getVerificationCode().equals(user.getVerificationCode()))
-              throw new YSException("SEC011");
+        //once sms is enable remove this line of code
+        /*if(validateMobileEntity.getVerificationCode()!=null && !validateMobileEntity.getVerificationCode().equals(user.getVerificationCode()))
+              throw new YSException("SEC011");*/
 
 
         /* Check Valid Mobile and Mobile Code */
@@ -374,15 +378,18 @@ public class CustomerServiceImpl implements CustomerService {
         ValidateMobileEntity validMobile = validateMobileDaoService.getMobileCode(customerEntity.getUser().getId(), mobile);
 
         //String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), mobile);
-       // String message = "iDelivr: Your verification code for iDelivr is ";
+       // String message = "KollKat: Your verification code for iDelivr is ";
         String verificationCode = null;
         Boolean validatedByUser = false;
         if(validMobile == null) {
             log.debug("++++++ Updating Mobile No and Validation Code");
-            verificationCode = GeneralUtil.generateMobileCode();
+
+            //once the sms is enabled these lines of code should be uncommented
+
+            /*verificationCode = GeneralUtil.generateMobileCode();
 
             //Now Send SMS
-            SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
+            SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);*/
 
             ValidateMobileEntity validateMobileEntity = new ValidateMobileEntity();
             validateMobileEntity.setMobileNo(mobile);
@@ -402,18 +409,22 @@ public class CustomerServiceImpl implements CustomerService {
                 if(validMobile.getTotalSmsSend()!=null && validMobile.getTotalSmsSend() > 2)
                     throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
 
-                //Send SMS Only
+                //once the sms is enabled these lines of code should be uncommented
+
+                /*//Send SMS Only
                 verificationCode = String.valueOf(validMobile.getVerificationCode());
 
                 //Now Send SMS
-                SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
+                SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);*/
 
                 validateMobileDaoService.updateNoOfSMSSend(validMobile.getId());
 
                 validatedByUser = false;
 
             } else {
-                verificationCode = String.valueOf(validMobile.getVerificationCode());
+                if(validMobile.getVerificationCode() != null)  {
+                    verificationCode = String.valueOf(validMobile.getVerificationCode());
+                }
                 validatedByUser = validMobile.getVerifiedByUser()!=null ? validMobile.getVerifiedByUser() : false;
             }
 
@@ -1550,7 +1561,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     class StoreDistanceComparator implements Comparator<StoreEntity> {
-
         @Override
         public int compare(StoreEntity o1, StoreEntity o2) {
             BigDecimal distanceSub = o1.getCustomerToStoreDistance().subtract(o2.getCustomerToStoreDistance());

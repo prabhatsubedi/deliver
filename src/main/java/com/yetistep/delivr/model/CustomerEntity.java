@@ -61,7 +61,7 @@ public class CustomerEntity implements Serializable {
         this.id = id;
     }
 
-    @OneToOne(cascade = { CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", unique = true)
     @JsonProperty
     public UserEntity getUser() {

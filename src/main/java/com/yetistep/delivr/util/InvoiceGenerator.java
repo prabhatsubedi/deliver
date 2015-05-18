@@ -246,7 +246,7 @@ public class InvoiceGenerator {
         com.itextpdf.text.Font supportFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 9f));
         supportFont.setColor(new BaseColor(0xaaaaaa));
 
-        Paragraph support = PdfUtil.getParagraph(supportFont, true, "iDelivr Customer Care : "+preferences.get("HELPLINE_NUMBER")+" | "+preferences.get("SUPPORT_EMAIL"));
+        Paragraph support = PdfUtil.getParagraph(supportFont, true, "Koolkat Customer Care : "+preferences.get("HELPLINE_NUMBER")+" | "+preferences.get("SUPPORT_EMAIL"));
         support.setAlignment(Element.ALIGN_LEFT);
         support.getFont().setColor(new BaseColor(0xaaaaaa));
         PdfUtil.setPadding(contactCell, 0, 0, 30, 0);
@@ -788,7 +788,7 @@ public class InvoiceGenerator {
         PdfUtil.addEmptyLine(document, 2);//add empty line
 
         //document.add(PdfUtil.getParagraph(PdfUtil.smallFont, "Thank you for your business."));
-        document.add(PdfUtil.getParagraph(PdfUtil.smallFont, "If you have any questions, contact us at support@iDelivr.com"));
+        document.add(PdfUtil.getParagraph(PdfUtil.smallFont, "If you have any questions, contact us at support@koolkat.in"));
         //document.add(PdfUtil.getParagraph(PdfUtil.smallFont, "View all invoices: " + INVOICE_URL));
     }
 

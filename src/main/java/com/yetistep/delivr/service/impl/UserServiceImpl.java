@@ -178,7 +178,7 @@ public class UserServiceImpl extends AbstractManager implements UserService{
         String url = hostName + "/assistance/reset_password/" + verificationCode;
         log.info("Sending mail to " + userName + " with password reset url: " + url);
 
-        String subject = "Dealify: Forgot your Password!";
+        String subject = "Delivr: Forgot your Password!";
         String body = EmailMsg.resetForgotPassword(url, user.getFullName(), getServerUrl());
 
         sendMail(userName, body, subject);

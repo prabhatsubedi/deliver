@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Delivr</title>
+<title>KoolKat</title>
 
     <%@include file="includes/head.jsp" %>
     
@@ -84,7 +84,7 @@
     <div class="foot_logo"><img src="${pageContext.request.contextPath}/resources/images/login-logo.png" class="img-responsive"></div>
     <div class="foot_links">
         <ul class="nav nav-pills text-center">
-            <li><a href="#">Delivr</a></li>
+            <li><a href="#">KoolKat</a></li>
             <li><a href="#">Terms of use</a></li>
             <li><a href="#">Privacy Policy</a></li>
         </ul>
@@ -121,7 +121,7 @@
                     </form>
                 </div>
                 <div class="login_foot text-center">
-                    Are you new to <strong>Delivr</strong> ?
+                    Are you new to <strong>KoolKat</strong> ?
                     <button type="button" class="btn btn-default btn_logins" data-toggle="modal" data-target="#modal_signup" data-dismiss="modal">Sign Up</button>
                 </div>
             </div>

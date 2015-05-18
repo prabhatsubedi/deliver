@@ -92,13 +92,13 @@
             <button onClick="Fb.fbLogin()" id="fbLoginBtn" class="btn btn-default btn-lg">Sign Up with Facebook</button>
 
             <div id="new_account_msg">
-                <h4>Thank you for signing up to Delivr.</h4>
-                <h4> Do download Delivr from Google Play Store</h4>
+                <h4>Thank you for signing up to KoolKat.</h4>
+                <h4> Do download KoolKat from Google Play Store</h4>
                 <a href="https://play.google.com/store/apps/details?id=com.yetistep.swipr"><img src="${pageContext.request.contextPath}/resources/images/play_store_black.png" class="play_store"/></a>
             </div>
             <div id="old_account_msg">
                 <h4>Your account has already been created. </h4 >
-                <h4>If you have not downloaded Delivr yet, feel free to download Delivr from Google Play Store.</h4>
+                <h4>If you have not downloaded KoolKat yet, feel free to download KoolKat from Google Play Store.</h4>
                 <a href="https://play.google.com/store/apps/details?id=com.yetistep.swipr"><img src="${pageContext.request.contextPath}/resources/images/play_store_black.png" class="play_store"/></a>
             </div>
             <h4 id="unknown_msg">

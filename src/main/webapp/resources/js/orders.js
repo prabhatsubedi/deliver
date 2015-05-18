@@ -39,13 +39,15 @@ Order.loadOrderFn = function(){
         $(this).find(".store_info").addClass("hidden");
     });
 
-    $("body").delegate("span.view_bills", "mouseover", function(){
-        $(this).siblings(".bill_list").removeClass("hidden");
+    $("body").delegate("span.view_bills", "click", function(){
+        var bills = $(this).siblings(".bill_list").clone();
+        $('#order_bills .modal-body').html(bills.html());
+        $('#order_bills').modal('show');
     });
 
-    $("body").delegate(".bill_td", "mouseleave", function(){
+/*    $("body").delegate(".bill_td", "mouseleave", function(){
         $(this).find(".bill_list").addClass("hidden");
-    });
+    });*/
 
 
     $('.db_td').live('mouseover', function(){
@@ -187,10 +189,9 @@ Order.getOrders = function(elemId, url, params){
             if(order.attachments.length > 0){
                 link_attachments += '<div class="bill_td"><span class="view_bills">View Bills</span><div class="bill_list hidden">';
                 for(var j= 0; j<order.attachments.length; j++){
-                    var nameArray = order.attachments[j].split("/");
-                    var  nameArrayLength = nameArray.length;
-
-                    link_attachments += '<p><a target="_blank" href="'+order.attachments[j]+'">'+nameArray[nameArrayLength-1]+'</a></p>';
+//                    var nameArray = order.attachments[j].split("/");
+//                    var  nameArrayLength = nameArray.length;
+                    link_attachments += '<p><a target="_blank" href="'+order.attachments[j]+'"><img class="img-responsive" src="' + order.attachments[j] + '"></a></p>';
                 }
                 link_attachments += '</div></div>';
             }
@@ -284,13 +285,25 @@ Order.getOrders = function(elemId, url, params){
 
             var orderId = '<a href="#" data-target="#order_details" data-toggle="modal" data-index="' + i + '">' + id + '</a>';
 
+            var totalCost = order.totalCost;
+            if(totalCost == -1)
+                totalCost = 'TBD';
+            else
+                totalCost = totalCost != null ? Main.getFromLocalStorage("currency") + " " + totalCost : '';
+
+            var grandTotal = order.grandTotal;
+            if(grandTotal == -1)
+                grandTotal = 'TBD';
+            else
+                grandTotal = grandTotal != null ? Main.getFromLocalStorage("currency") + " " + grandTotal : '';
+
             var row;
             if(order.orderStatus == "CANCELLED"){
-                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, order.totalCost != null?Main.getFromLocalStorage("currency")+" "+order.totalCost:'', link_attachments, order.grandTotal != undefined?Main.getFromLocalStorage("currency")+" "+order.grandTotal:'', deliveryBoy, amountEarned, order.assignedTime != undefined?order.assignedTime:'', time_taken, dboyRating, dboyComment, reason, view_items];
+                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarned, order.assignedTime != undefined?order.assignedTime:'', time_taken, dboyRating, dboyComment, reason, view_items];
             } else if(order.orderStatus == "DELIVERED") {
-                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, order.totalCost != null?Main.getFromLocalStorage("currency")+" "+order.totalCost:'', link_attachments, order.grandTotal != undefined?Main.getFromLocalStorage("currency")+" "+order.grandTotal:'', deliveryBoy, amountEarned, order.assignedTime != undefined?order.assignedTime:'', time_taken, (typeof order.bill != "undefined" && typeof order.bill.path!="undefined")?'<a href="'+order.bill.path+'" target="_blank">View Receipt</a>':'', dboyRating, dboyComment, cusRating, cusComment, view_items];
+                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarned, order.assignedTime != undefined?order.assignedTime:'', time_taken, (typeof order.bill != "undefined" && typeof order.bill.path!="undefined")?'<a href="'+order.bill.path+'" target="_blank">View Receipt</a>':'', dboyRating, dboyComment, cusRating, cusComment, view_items];
             } else if($.inArray(order.orderStaus, activeStatus)) {
-                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, order.orderVerificationCode, order.totalCost != null?Main.getFromLocalStorage("currency")+" "+order.totalCost:'', link_attachments, order.grandTotal != undefined?Main.getFromLocalStorage("currency")+" "+order.grandTotal:'', deliveryBoy, amountEarnedLive, order.assignedTime != undefined?order.assignedTime:'', time_taken, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' +  order.deliveryBoy.id + '">View on Map</a> | ' + view_items];
+                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, order.orderVerificationCode, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarnedLive, order.assignedTime != undefined?order.assignedTime:'', time_taken, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' +  order.deliveryBoy.id + '">View on Map</a> | ' + view_items];
             }
             row = $.extend({}, row);
             tdata.push(row)
@@ -460,7 +473,7 @@ Order.getPurchaseHistory = function(){
             if(order.attachments.length > 0){
                  link_attachments += '<div class="bill_td"><span class="view_bills">View Bills</span><div class="bill_list hidden">';
                 for(var j= 0; j<order.attachments.length; j++){
-                    link_attachments += '<p><a href="'+order.attachments[j]+'">'+order.attachments[j]+'</a></p>';
+                    link_attachments += '<p><a href="'+order.attachments[j]+'"><img class="img-responsive" src="' + order.attachments[j] + '"></a></p>';
                 }
                 link_attachments += '</div></div>';
             }
@@ -521,13 +534,19 @@ Order.getPurchaseHistory = function(){
     $("body").delegate(".db_td", "mouseleave", function(){
         $(this).find(".db_info").addClass("hidden");
     });*/
-    $("body").delegate("span.view_bills", "mouseover", function(){
+/*    $("body").delegate("span.view_bills", "mouseover", function(){
         $('#view_bill_cont').html("").addClass("hidden");
         var offset = $(this).parent('.bill_td').offset();
         var poffset = $('#purchase_history_table_wrapper').offset();
         $('#view_bill_cont').html($(this).siblings(".bill_list").html()).removeClass("hidden");
         $('#view_bill_cont').css({top: offset.top - poffset.top - $('#view_bill_cont').height() + 45, left: offset.left - poffset.left - 190});
 //        $(this).siblings(".bill_list").removeClass("hidden");
+    });*/
+
+    $("body").delegate("span.view_bills", "click", function(){
+        var bills = $(this).siblings(".bill_list").clone();
+        $('#order_bills .modal-body').html(bills.html());
+        $('#order_bills').modal('show');
     });
 
 /*    $("body").delegate(".bill_td", "mouseleave", function(){

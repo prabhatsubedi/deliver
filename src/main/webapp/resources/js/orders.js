@@ -7,6 +7,8 @@
  */
 if(typeof(Order) == "undefined") var Order = {};
 
+var gOrders;
+
 Order.loadOrderFn = function(){
 
     $('.main_tabs a[data-toggle="tab"]:not(".loaded")').on('shown.bs.tab', function() {
@@ -70,33 +72,99 @@ Order.loadOrderFn = function(){
         }
     });
 
-    function createRow(key, value, valElem, elem) {
-        if(value != "" && value != "undefined")
-            valElem.html(elem.data(key)).parent('.dRow').removeClass('hidden');
+    var modalContent;
+    function createRow(label, value, title) {
+        if(value != "" && value != undefined) {
+            if(title != undefined) {
+                modalContent = $('.modal_content_template').clone();
+                $('.modal-title', modalContent).html(title);
+                $('#order_details .modal-content').append(modalContent.html());
+            }
+
+            var elem = $('.order_details_row').clone();
+            $('.order_label', elem).html(label);
+            $('.order_value', elem).html(value);
+            $('#order_details .modal-body:last-child').append(elem.html());
+        }
     };
 
     $('#order_details').on('show.bs.modal', function(e){
         $('.dRow', this).addClass('hidden');
         var elem = $(e.relatedTarget);
         var values = $('.order_value', this);
-        var id = elem.data("id");
-        var customer_name = elem.data("customer_name");
-        var distance_travelled = elem.data("distance_travelled");
-        var customer_feedback = elem.data("customer_feedback");
-        var shopper_feedback = elem.data("shopper_feedback");
-        var assigned_time = elem.data("assigned_time");
-        var time_taken = elem.data("time_taken");
-        var cancel_reason = elem.data("cancel_reason");
-        var amount_earned = elem.data("amount_earned");
-        createRow("id", id, values.eq(0), elem);
-        createRow("customer_name", customer_name, values.eq(1), elem);
-        createRow("distance_travelled", distance_travelled, values.eq(2), elem);
-        createRow("customer_feedback", customer_feedback, values.eq(3), elem);
-        createRow("shopper_feedback", shopper_feedback, values.eq(4), elem);
-        createRow("assigned_time", assigned_time, values.eq(5), elem);
-        createRow("time_taken", time_taken, values.eq(6), elem);
-        createRow("cancel_reason", cancel_reason, values.eq(7), elem);
-        createRow("amount_earned", amount_earned, values.eq(8), elem);
+        var index = elem.data("index");
+        var order = gOrders[index];
+        var orderDate = order.orderDate;
+        var id = order.id;
+        var customerPays = order.grandTotal != undefined ? Main.getFromLocalStorage("currency") + " " + order.grandTotal : '';
+        var merchantGets = order.totalCost != null ? Main.getFromLocalStorage("currency") + " " + order.totalCost : '';
+        var cancelReason = '';
+        if(order.orderStatus == "CANCELLED") {
+            if (order.orderCancel.reasonDetails != undefined) {
+                if (order.orderCancel.reasonDetails.id == 6) {
+                    cancelReason = order.orderCancel.reason;
+                } else {
+                    cancelReason = order.orderCancel.reasonDetails.cancelReason;
+                }
+            }
+        }
+
+        var cusName = order.customer.user.fullName;
+        var cusPhone = order.customer.user.mobileNumber;
+        var deliveryAddress = '';
+        order.address.street != "undefined" ? deliveryAddress += order.address.street : '';
+        order.address.city != "undefined" ? deliveryAddress += "," + order.address.city : '';
+        var cusRating = (order.rating != undefined && order.rating.customerRating != undefined) ? order.rating.customerRating : '';
+        var cusComment = (order.rating != undefined && order.rating.customerComment != undefined) ? order.rating.customerComment : '';
+
+        var storeName = order.store.name;
+        var storeLocation = order.store.street;
+        var contactPerson = order.store.contactPerson != undefined ? order.store.contactPerson : '';
+        var contactNo = order.store.contactNo != undefined ? order.store.contactNo : '';
+
+        var shopperName = "";
+        if(order.deliveryBoy != undefined)
+            shopperName = order.deliveryBoy.user.fullName;
+        var timeAssigned = order.assignedTime != undefined ? order.assignedTime : '';
+        var orderHistoryLength = order.dBoyOrderHistories.length;
+        var timeTaken = 0;
+        var amountEarned = 0;
+        if(orderHistoryLength > 0){
+            if(order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt != undefined && order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt != undefined){
+                timeTaken = ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt)/1000/60).toFixed(0);
+            }else if(order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt != undefined){
+                timeTaken = ((n-order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt)/1000/60).toFixed(0);
+            }
+
+            amountEarned = order.dBoyOrderHistories[orderHistoryLength-1].amountEarned != undefined?Main.getFromLocalStorage("currency")+" "+order.dBoyOrderHistories[orderHistoryLength-1].amountEarned:0;
+        }
+        var shopperRating = (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'';
+        var shopperComment = (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'';
+
+        $('#order_details .modal-content').html('');
+        createRow("Order No.", id, "Order Details");
+        $('.modal_content_template .close').addClass('hidden').remove();
+        createRow("Customer Pays", customerPays);
+        createRow("Merchant Gets", merchantGets);
+        createRow("Cancel Reason", cancelReason);
+
+        createRow("Customer Name", cusName, "Customer Details");
+        createRow("Customer Phone", cusPhone);
+        createRow("Delivery Address", deliveryAddress);
+        createRow("Rating", cusRating);
+        createRow("Comments", cusComment);
+
+        createRow("Store Name", storeName, "Store Details");
+        createRow("Store Location", storeLocation);
+        createRow("Contact Person", contactPerson);
+        createRow("Contact No.", contactNo);
+
+        createRow("Shopper Name", shopperName, "Shopper Details");
+        createRow("Time Assigned", timeAssigned);
+        createRow("Time Taken", timeTaken);
+        createRow("Earning", amountEarned);
+        createRow("Rating", shopperRating);
+        createRow("Comment", shopperComment);
     });
 
 };
@@ -108,7 +176,7 @@ Order.getOrders = function(elemId, url, params){
             return;
         }
         var responseRows = data.params.orders.numberOfRows;
-        var orders = data.params.orders.data;
+        var orders = gOrders = data.params.orders.data;
         var tdata = [];
         var d = new Date();
         var n = d.getTime();
@@ -169,10 +237,10 @@ Order.getOrders = function(elemId, url, params){
             var deliveryBoySelectionsLength = deliveryBoySelections.length;
             //i is used already. use l here
             for(var l=0; l < deliveryBoySelectionsLength; l++){
-                 if(deliveryBoySelections[l].accepted != undefined && deliveryBoySelections[l].accepted)  {
-                     dBoySelection =  order.deliveryBoySelections[l];
-                     break;
-                 }
+                if(deliveryBoySelections[l].accepted != undefined && deliveryBoySelections[l].accepted)  {
+                    dBoySelection =  order.deliveryBoySelections[l];
+                    break;
+                }
             }
             var amountEarnedLive = dBoySelection!=undefined?Main.getFromLocalStorage("currency")+" "+dBoySelection.paidToCourier:'';
 
@@ -200,19 +268,21 @@ Order.getOrders = function(elemId, url, params){
             var distanceTravelled = 0;
             if(orderHistoryLength > 0) {
                 distanceTravelled = order.dBoyOrderHistories[0].distanceTravelled;
-            }
+            }/*
 
-            var orderId = '<a href="#" data-target="#order_details" data-toggle="modal"' +
-                ' data-id="' + id + '"' +
-                ' data-customer_name="' + cusName + '"' +
-                ' data-distance_travelled="' + distanceTravelled + '"' +
-                ' data-customer_feedback="' + cusComment + (cusRating == '' ? '' : ' ' + cusRating + ' star') + '"' +
-                ' data-shopper_feedback="' + dboyComment + (dboyRating == '' ? '' : ' ' + dboyRating + ' star') + '"' +
-                ' data-assigned_time="' + order.assignedTime + '"' +
-                ' data-time_taken="' + time_taken + '"' +
-                ' data-cancel_reason="' + reason + '"' +
-                ' data-amount_earned="' + amountEarned + '"' +
-                '>' + id + '</a>';
+             var orderId = '<a href="#" data-target="#order_details" data-toggle="modal"' +
+             ' data-id="' + id + '"' +
+             ' data-customer_name="' + cusName + '"' +
+             ' data-distance_travelled="' + distanceTravelled + '"' +
+             ' data-customer_feedback="' + cusComment + (cusRating == '' ? '' : ' ' + cusRating + ' star') + '"' +
+             ' data-shopper_feedback="' + dboyComment + (dboyRating == '' ? '' : ' ' + dboyRating + ' star') + '"' +
+             ' data-assigned_time="' + order.assignedTime + '"' +
+             ' data-time_taken="' + time_taken + '"' +
+             ' data-cancel_reason="' + reason + '"' +
+             ' data-amount_earned="' + amountEarned + '"' +
+             '>' + id + '</a>';*/
+
+            var orderId = '<a href="#" data-target="#order_details" data-toggle="modal" data-index="' + i + '">' + id + '</a>';
 
             var row;
             if(order.orderStatus == "CANCELLED"){
@@ -514,7 +584,7 @@ Order.getOrdersItems = function(){
             var name = item.item.name;
             if(item.item.editedName != undefined)
                 name = "<s>"+item.item.name+"</s> "+item.item.editedName;
-            var row = [i+1, name, item.quantity, '<span class="item_sc">' + item.serviceCharge + '</span>%', '<span class="item_vat">' + item.vat + '</span>%', Main.getFromLocalStorage("currency") + ' <span class="item_total">' + item.itemTotal + '</span>'];
+            var row = [i+1, name, item.quantity, '<span class="item_sc">' + (item.serviceCharge == undefined ? 'N/A' : item.serviceCharge) + '</span>' + (item.serviceCharge != undefined ? '' : '%'), '<span class="item_vat">' + (item.itemTotal == undefined ? 'N/A' : item.vat) + '</span>' + (item.vat != undefined ? '' : '%'), (item.itemTotal == undefined ? '' : Main.getFromLocalStorage("currency")) + ' <span class="item_total">' + (item.itemTotal == undefined ? 'N/A' : item.itemTotal) + '</span>'];
             row = $.extend({}, row);
             tableData.push(row);
 
@@ -541,17 +611,31 @@ Order.getOrdersItems = function(){
                 var per_sc = parseFloat($('.item_sc', this).html());
                 var per_vat = parseFloat($('.item_vat', this).html());
                 var total_price = parseFloat($('.item_total', this).html());
-                var ind_sc = total_price * per_sc/100;
-                var ind_vat = (total_price + ind_sc) * per_vat/100;
-                val_sc += ind_sc;
-                val_vat += ind_vat;
-                val_total += total_price;
+                if(isNaN(per_sc) || isNaN(per_vat) || isNaN(total_price)) {
+                    val_sc = 'N/A';
+                    val_vat = 'N/A';
+                    val_total = 'N/A';
+                    return false;
+                } else {
+                    var ind_sc = total_price * per_sc/100;
+                    var ind_vat = (total_price + ind_sc) * per_vat/100;
+                    val_sc += ind_sc;
+                    val_vat += ind_vat;
+                    val_total += total_price;
+                }
             });
 
-            $("#orders_items_table tfoot .sub_total").html(Main.getFromLocalStorage("currency") + ' ' + val_total.toFixed(2));
-            $("#orders_items_table tfoot .total_sc").html(Main.getFromLocalStorage("currency") + ' ' + val_sc.toFixed(2));
-            $("#orders_items_table tfoot .total_vat").html(Main.getFromLocalStorage("currency") + ' ' + val_vat.toFixed(2));
-            $("#orders_items_table tfoot .grand_total").html(Main.getFromLocalStorage("currency") + ' ' + (val_total + val_sc + val_vat).toFixed(2));
+            if(val_sc == "N/A" || val_vat == "N/A" || val_total == "N/A") {
+                $("#orders_items_table tfoot .sub_total").html("N/A");
+                $("#orders_items_table tfoot .total_sc").html("N/A");
+                $("#orders_items_table tfoot .total_vat").html("N/A");
+                $("#orders_items_table tfoot .grand_total").html("N/A");
+            } else {
+                $("#orders_items_table tfoot .sub_total").html(Main.getFromLocalStorage("currency") + ' ' + val_total.toFixed(2));
+                $("#orders_items_table tfoot .total_sc").html(Main.getFromLocalStorage("currency") + ' ' + val_sc.toFixed(2));
+                $("#orders_items_table tfoot .total_vat").html(Main.getFromLocalStorage("currency") + ' ' + val_vat.toFixed(2));
+                $("#orders_items_table tfoot .grand_total").html(Main.getFromLocalStorage("currency") + ' ' + (val_total + val_sc + val_vat).toFixed(2));
+            }
         };
         dataFilter.columns = [
             { "name": "" },

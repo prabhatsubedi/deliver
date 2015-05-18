@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Delivr</title>
+<title>KoolKat</title>
 
     <%@include file="includes/head.jsp" %>
     

@@ -5,6 +5,7 @@ import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
@@ -46,6 +47,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Autowired
     ItemDaoService itemDaoService;
+
+    private static final BigDecimal minusOne = new BigDecimal(-1);
 
     @Override
     public void saveMerchant(MerchantEntity merchant, HeaderDto headerDto) throws Exception {
@@ -1636,13 +1639,14 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         List<OrderEntity> orderList = new ArrayList<>();
-        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,deliveryBoySelections,assignedTime,attachments,itemServiceAndVatCharge,grandTotal,totalCost,rating,deliveryCharge,bill";
+        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,deliveryBoySelections,assignedTime,attachments,itemServiceAndVatCharge,grandTotal,totalCost,rating,deliveryCharge,bill,itemsOrder";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("deliveryBoy", "id,user,averageRating,latitude,longitude");
         assoc.put("customer", "id,user,bill");
+        assoc.put("itemsOrder", "id,itemTotal,serviceAndVatCharge,availabilityStatus,purchaseStatus,vat,serviceCharge,customItem");
         assoc.put("store", "id,name,street,contactPerson,contactNo");
         assoc.put("address", "id,street,city,state,country");
         assoc.put("attachments", "url");
@@ -1657,20 +1661,40 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         subAssoc.put("addresses", "id,street,city,state,country");
 
         for (OrderEntity order:orders){
+            List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
+            for (ItemsOrderEntity itemOrder : itemsOrder) {
+                if(itemOrder.getCustomItem() != null){
+                    if(itemOrder.getCustomItem().getCustomerCustom().equals(Boolean.TRUE))   {
+                        if(itemOrder.getPurchaseStatus() == null || !itemOrder.getPurchaseStatus().equals(Boolean.TRUE)) {
+                            order.setGrandTotal(minusOne);
+                            break;
+                        }
+                    }
+                }
+            }
+
             orderList.add((OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
         }
 
         for (OrderEntity orderEntity: orderList){
-            BigDecimal totalCost = orderEntity.getTotalCost();
-            if(orderEntity.getItemServiceAndVatCharge() != null){
-                totalCost = totalCost.add(orderEntity.getItemServiceAndVatCharge());
+            // if is custom order not purchase set total cost and grand total -1
+            if(orderEntity.getGrandTotal().equals(minusOne)){
+                orderEntity.setTotalCost(minusOne);
+            }   else {
+                BigDecimal totalCost = orderEntity.getTotalCost();
+
+                if(orderEntity.getItemServiceAndVatCharge() != null){
+                    totalCost = totalCost.add(orderEntity.getItemServiceAndVatCharge());
+                }
+
+                orderEntity.setTotalCost(totalCost);
             }
-            orderEntity.setTotalCost(totalCost);
         }
 
         paginationDto.setData(orderList);
         return paginationDto;
     }
+
 
     @Override
     public PaginationDto getPurchaseHistory(HeaderDto headerDto, RequestJsonDto requestJson) throws Exception {

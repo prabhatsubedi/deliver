@@ -10,8 +10,8 @@
 <link href="${pageContext.request.contextPath}/resources/css/bootstrap.css" rel="stylesheet" type="text/css" media="screen" />
 <link href="${pageContext.request.contextPath}/resources/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" media="screen" />
 <link href="${pageContext.request.contextPath}/resources/css/style.css" rel="stylesheet" type="text/css" media="screen" />
-<link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/images/delivr-logo.png" type="image/x-icon" />
-<link rel="icon" href="${pageContext.request.contextPath}/resources/images/delivr-logo.png" type="image/x-icon" />
+<link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/images/logo.png" type="image/x-icon" />
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/logo.png" type="image/x-icon" />
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-migrate-1.2.1.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-ui.min.js"></script>

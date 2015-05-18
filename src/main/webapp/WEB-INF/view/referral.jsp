@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>iDelivr</title>
+    <title>KoolKat</title>
     <%@include file="includes/head.jsp" %>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/fb.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/date.format.js"></script>
@@ -79,7 +79,7 @@
         </div>
     </div>
     <div class="hero-unit">
-        <h2>Welcome to iDelivr!</h2>
+        <h2>Welcome to KoolKat!</h2>
         <blockquote>
             <p class="info">
                 A quick and better way to get anything delivered at your doorstep.

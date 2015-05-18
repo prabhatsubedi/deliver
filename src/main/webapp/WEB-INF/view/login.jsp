@@ -26,9 +26,9 @@
 
 <div class="login_container" id="modal_login">
     <div class="logo_block">
-        <img src="${pageContext.request.contextPath}/resources/images/delivr-logo.png" class="img-responsive center-block"></div>
+        <img src="${pageContext.request.contextPath}/resources/images/logo.png" class="img-responsive center-block"></div>
     <div class="login_block">
-        <div class="login_head">Login to iDelivr</div>
+        <div class="login_head">Login to KoolKat</div>
         <div class="login_form">
             <form role="form" id="login_form" method="POST" action="${pageContext.request.contextPath}/j_spring_security_check">
                 <div class="form-group">

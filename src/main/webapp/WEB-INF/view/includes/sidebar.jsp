@@ -9,7 +9,7 @@
     </div>
     <div class="sidebar_inner">
         <div class="sidebar_logo">
-            <a href="/organizer/dashboard"><img src="${pageContext.request.contextPath}/resources/images/delivr-logo.png" class="img-responsive" /></a>
+            <a href="/organizer/dashboard"><img src="${pageContext.request.contextPath}/resources/images/logo.png" class="img-responsive" /></a>
         </div>
         <div class="sidebar_menu">
             <ul class="nav nav-stacked">

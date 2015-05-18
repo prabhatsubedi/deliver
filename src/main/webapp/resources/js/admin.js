@@ -96,10 +96,20 @@ var Admin = function() {
             $('.save_btn').live('click', function () {
 
                 var __this = $(this);
+                var parent = __this.parents('.form_group').eq(0);
+
+
+                if(parent[0] == $('#DBOY_PER_KM_CHARGE_UPTO_NKM').parents('.form_group')[0] || parent == $('#DBOY_MIN_AMOUNT').parents('.form_group')[0]) {
+                    var cDistanceCharge = parseFloat($('#DBOY_PER_KM_CHARGE_UPTO_NKM').val());
+                    var dDistanceCharge = parseFloat($('#DBOY_MIN_AMOUNT').val());
+                    if(dDistanceCharge > cDistanceCharge) {
+                        alert("\'Per KM Charge for Default Distance to Customer\' shouldn't be smaller than \'Minimum Amount Given to Shopper\'.");
+                        return false;
+                    }
+                }
 
                 var button1 = function() {
 
-                    var parent = __this.parents('.form_group').eq(0);
                     var preferences = [];
                     $('input.form-control, select', parent).each(function(){
                         var data = {prefKey: $(this).attr('id'), value: $(this).val()};

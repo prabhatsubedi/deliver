@@ -985,8 +985,9 @@ public class CustomerServiceImpl implements CustomerService {
             WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
             walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
             walletTransactionEntity.setAccountType(AccountType.DEBIT);
+            String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
             String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
-            walletTransactionEntity.setRemarks(String.format(remarks, order.getStore().getName()));
+            walletTransactionEntity.setRemarks(String.format(remarks, currency, order.getGrandTotal(), order.getStore().getName()));
             walletTransactionEntity.setTransactionAmount(order.getGrandTotal());
             walletTransactionEntity.setOrder(order);
             walletTransactionEntity.setCustomer(order.getCustomer());

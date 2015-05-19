@@ -1428,7 +1428,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
     Manager.loadDashboard = function(){
 
         disableMapEdit = true;
-        selectedCountry = undefined;
+//        selectedCountry = undefined;
         if(!initialized) initialize(); else google.maps.event.trigger(map, 'resize');
 
         $('.count_head').click(function(){

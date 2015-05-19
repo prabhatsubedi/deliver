@@ -312,7 +312,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(validateMobileEntity == null)
               throw new YSException("SEC010");
 
-        //once sms is enable remove this line of code
+        /*once sms is enable remove this line of code*/
         /*if(validateMobileEntity.getVerificationCode()!=null && !validateMobileEntity.getVerificationCode().equals(user.getVerificationCode()))
               throw new YSException("SEC011");*/
 

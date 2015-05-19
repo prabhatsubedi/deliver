@@ -680,7 +680,7 @@ public class CustomerServiceImpl implements CustomerService {
             if(categoryEntity.getImageUrl()==null)
                 categoryEntity.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_CATEGORY));
         }
-        return categories;
+        return categories ;
     }
 
     @Override

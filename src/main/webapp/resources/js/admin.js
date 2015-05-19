@@ -35,6 +35,7 @@ var Admin = function() {
                     var preferences = section.preference;
                     if(preferences.length <= 0) continue;
                     var form_fields = '';
+
                     for(var i = 0; i < preferences.length; i++) {
                         var pref = preferences[i];
                         var prefKey = pref.prefKey;
@@ -46,6 +47,35 @@ var Admin = function() {
                             var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'No', 1: 'Yes'});
                         } else if(prefKey == 'AIR_OR_ACTUAL_DISTANCE_SWITCH') {
                             var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'Air Distance', 1: 'Actual Distance'});
+                        } else if(prefKey == 'COMPANY_LOGO' || prefKey == 'DEFAULT_IMG_ITEM' || prefKey == 'DEFAULT_IMG_CATEGORY' || prefKey == 'DEFAULT_IMG_SEARCH') {
+                            var elem = $('.image_template').clone();
+                            var imgWidth = '';
+                            var imgHeight = '';
+
+                            if(prefKey == 'COMPANY_LOGO') {
+                                imgWidth = '120';
+                                imgHeight = '120';
+                            } else if(prefKey == 'DEFAULT_IMG_ITEM') {
+                                imgWidth = '400';
+                                imgHeight = '400';
+                            } else if(prefKey == 'DEFAULT_IMG_CATEGORY') {
+                                imgWidth = '720';
+                                imgHeight = '160';
+                            } else {
+                                imgWidth = '750';
+                                imgHeight = '500';
+                            }
+
+                            var imgSize = imgWidth + 'x' + imgHeight;
+                            $('label', elem).attr('for', prefKey).html(prefTitle);
+                            $('.image_container', elem).attr({id: prefKey, 'mr-width': imgWidth, 'mr-height': imgHeight});
+                            $('.image_input', elem).attr({id: prefKey + '_input', name: prefKey + '_input', 'data-dimension': imgSize});
+                            if(prefValue != "") {
+                                $('.image_container', elem).html('<img src="' + prefValue + '" style="height: 100%;" class="img-responsive" />');
+                            } else {
+                                $('.drop_info .image_size', elem).html(imgSize);
+                            }
+
                         } else {
                             var elem = $('.form_field_template').clone();
                             $('label', elem).attr('for', prefKey).html(prefTitle);
@@ -54,7 +84,10 @@ var Admin = function() {
                         }
                         form_fields += elem.html();
                     }
+
                     var elem_section = $('.form_section_template').clone();
+                    if(sectionName == "Default Image")
+                        $('.form_head .detail_options', elem_section).remove();
                     $('.form_head .section_title', elem_section).html(sectionName);
                     $('.form_content .row', elem_section).html(form_fields);
                     form_sections += elem_section.html();
@@ -62,6 +95,16 @@ var Admin = function() {
                 }
                 $('.display_settings').html(form_sections);
                 $('.form_content .selectpicker').selectpicker('refresh');
+                if($('.main_tabs li.active').index() == 0) {
+                    Image.dropZone('#COMPANY_LOGO_input', '#COMPANY_LOGO');
+                    Image.dropZone('#DEFAULT_IMG_ITEM_input', '#DEFAULT_IMG_ITEM');
+                    Image.dropZone('#DEFAULT_IMG_CATEGORY_input', '#DEFAULT_IMG_CATEGORY');
+                    Image.dropZone('#DEFAULT_IMG_SEARCH_input', '#DEFAULT_IMG_SEARCH');
+                    $('#COMPANY_LOGO, #DEFAULT_IMG_ITEM, #DEFAULT_IMG_CATEGORY, #DEFAULT_IMG_SEARCH').bind('submitPref', function(){
+                        Admin.uploadPrefImage({prefKey: $(this).attr('id'), imageString: $('img', this).attr('src')}, $(this));
+                    });
+                    Main.elemRatio();
+                }
 
             };
             if(typeof secSettings != 'object') {
@@ -142,6 +185,23 @@ var Admin = function() {
             };
             callback.loaderDiv = "body";
             Main.request('/admin/update_preferences', updatedData, callback);
+
+        },
+        uploadPrefImage: function(imgData, img_container) {
+
+            var callback = function(status, data) {
+
+                Main.popDialog('', data.message, function() {
+                    if(data.success) {
+                        $(".none_editable", parent).removeClass('hidden');
+                        $(".editable", parent).addClass('hidden');
+                        Admin.loadSettings(Admin.secId);
+                    }
+                });
+
+            };
+            callback.loaderDiv = img_container;
+            Main.request('/admin/update_default_images', imgData, callback);
 
         },
         loadUserManagement: function() {

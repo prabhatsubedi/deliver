@@ -242,6 +242,7 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
 
                     } else {
                         $('#' + img_container).addClass('image_selected').removeClass('error').html('<img src="' + src_url + '" style="height: 100%;" class="img-responsive" data-new="true" />');
+                        $('#' + img_container).trigger('submitPref');
                     }
                 }
             }
@@ -278,6 +279,7 @@ var jcrop_api, xsize, ysize, xsize_dup, ysize_dup, $preview, $pcnt, $pimg, $pcnt
 
                     } else {
                         $('#' + img_container).addClass('image_selected').removeClass('error').html('<img src="' + strImage + '" style="height: 100%;" class="img-responsive" data-new="true" />');
+                        $('#' + img_container).trigger('submitPref');
                     }
                     $('#crop_img_modal').modal('hide');
                 }

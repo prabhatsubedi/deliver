@@ -6,7 +6,13 @@
     <title>Settings</title>
 
     <%@include file="../includes/head.jsp" %>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/html2canvas.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.Jcrop.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/image.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/admin.js"></script>
+
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jquery.Jcrop.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jcrop.css" type="text/css" />
 
 
     <script type="text/javascript">
@@ -90,6 +96,57 @@
         </div>
         <div class="form_content">
             <div class="row">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="image_template hidden">
+    <div class="form-group clearfix">
+        <label class="col-lg-4 floated_label"></label>
+        <div class="col-lg-8">
+            <div class="col-sm-6 image_wrapper no_pad">
+                <div id="brand_image" class="image_container drop_zone unselectable text-center maintain_ratio" mr-width="400" mr-height="400">
+                    <div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: <span class="image_size">400x400</span></div>
+                </div>
+                <input type="file" onchange="Image.readURL(this)" data-dimension="400x400" id="brand_image_input" name="brand_image_input" class="hidden image_input" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="crop_img_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+
+                <img id="jcrop_target" />
+
+                <div class="preview-pane preview-pane-org">
+                    <div class="preview-container">
+                        <img id="jcrop_preview"  />
+                    </div>
+                </div>
+                <div class="preview-pane">
+                    <div class="preview-head">Preview</div>
+                    <div class="preview-container-dup">
+                        <img id="jcrop_preview_dup" />
+                    </div>
+                    <div class="preview-options">
+                        <div class="aspect_ratio">
+                            <label style="font-weight: normal; line-height: 30px; margin-bottom: 0px;"><input type="checkbox" id="ar_lock" class="check" style="float: left; margin-right: 5px; margin-top: 9px;"/>Maintain Aspect ratio</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="col-lg-6 no_pad">
+                    <button type="button" id="cancel_preview" class="btn btn-primary">Cancel</button>
+                </div>
+                <div class="col-lg-6 no_pad">
+                    <button type="button" id="apply_preview" class="btn btn-primary">Crop Image</button>
+                </div>
             </div>
         </div>
     </div>

@@ -1055,20 +1055,20 @@ if (typeof(Manager) == "undefined") var Manager = {};
             itemAvailableBalance = 0;
         }
         if(typeof courierStaff.previousDue != "undefined"){
-            $(".due_amount").text(parseFloat(courierStaff.previousDue).toFixed(2));
+            $(".due_amount").text(Main.getFromLocalStorage('currency') + " " + parseFloat(courierStaff.previousDue).toFixed(2));
             $("#due_amount_val").val(parseFloat(courierStaff.previousDue).toFixed(2));
         }
         if(typeof courierStaff.walletAmount != "undefined" && typeof courierStaff.bankAmount != "undefined"){
             var totalAvailableBalance = parseFloat(courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2);
-            $(".available_balance").text(totalAvailableBalance);
-            $(".cash_available_balance").text(totalAvailableBalance-itemAvailableBalance);
+            $(".available_balance").text(Main.getFromLocalStorage('currency') + " " + totalAvailableBalance);
+            $(".cash_available_balance").text(Main.getFromLocalStorage('currency') + " " + (totalAvailableBalance-itemAvailableBalance));
         }
         if(typeof courierStaff.walletAmount != "undefined"){
-            $(".to_be_submitted").text(parseFloat(courierStaff.walletAmount).toFixed(2));
+            $(".to_be_submitted").text(Main.getFromLocalStorage('currency') + " " + parseFloat(courierStaff.walletAmount).toFixed(2));
             $("#to_be_submitted_val").val(parseFloat(courierStaff.walletAmount).toFixed(2));
         }
 
-        $(".item_available_balance").text(itemAvailableBalance);
+        $(".item_available_balance").text(Main.getFromLocalStorage('currency') + " "  + itemAvailableBalance);
     }
 
     Manager.getCategories = function(){

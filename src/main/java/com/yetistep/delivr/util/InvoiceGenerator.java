@@ -764,9 +764,9 @@ public class InvoiceGenerator {
         BigDecimal totalPayableAmount =  totalAmountEarned.subtract(tdsAmount);
         Phrase tdsPhrase = PdfUtil.getPhrase("");
         if(BigDecimalUtil.isIntegerValue(new BigDecimal(preferences.get("TDS_PERCENTAGE")))){
-            tdsPhrase = PdfUtil.getPhrase(Integer.parseInt(preferences.get("TDS_PERCENTAGE")));
+            tdsPhrase = PdfUtil.getPhrase("TDS Percentage ("+Integer.parseInt(preferences.get("TDS_PERCENTAGE")+")"));
         } else {
-            tdsPhrase = PdfUtil.getPhrase(preferences.get("TDS_PERCENTAGE"));
+            tdsPhrase = PdfUtil.getPhrase("TDS Percentage ("+preferences.get("TDS_PERCENTAGE")+")");
         }
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), tdsPhrase, PdfUtil.getPhrase(tdsAmount.setScale(2, BigDecimal.ROUND_DOWN)));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), PdfUtil.getPhrase("Total Payable"), PdfUtil.getPhrase(totalPayableAmount.setScale(2, BigDecimal.ROUND_DOWN)));

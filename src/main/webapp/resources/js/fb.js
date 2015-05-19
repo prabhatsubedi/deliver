@@ -19,7 +19,7 @@ window.fbAsyncInit = function() {
 
     // init the FB JS SDK                                                            n
     FB.init({
-        version    : 'v2.1',
+        version    : 'v2.2',
         appId      : apId,                        // App ID from the app dashboard
         status     : true,                                 // Check Facebook Login status
         cookie     : true, // enable cookies to allow the server to access the session

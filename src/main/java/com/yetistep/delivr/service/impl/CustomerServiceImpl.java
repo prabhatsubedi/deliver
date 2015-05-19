@@ -380,7 +380,8 @@ public class CustomerServiceImpl implements CustomerService {
         //String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), mobile);
        // String message = "KollKat: Your verification code for iDelivr is ";
         String verificationCode = null;
-        Boolean validatedByUser = false;
+        //one sms is enabled set validatedByUser false by default and uncomment the related lines of code
+        Boolean validatedByUser = true;
         if(validMobile == null) {
             log.debug("++++++ Updating Mobile No and Validation Code");
 
@@ -419,13 +420,14 @@ public class CustomerServiceImpl implements CustomerService {
 
                 validateMobileDaoService.updateNoOfSMSSend(validMobile.getId());
 
-                validatedByUser = false;
+                //
+                //validatedByUser = false;
 
             } else {
                 if(validMobile.getVerificationCode() != null)  {
                     verificationCode = String.valueOf(validMobile.getVerificationCode());
                 }
-                validatedByUser = validMobile.getVerifiedByUser()!=null ? validMobile.getVerifiedByUser() : false;
+               // validatedByUser = validMobile.getVerifiedByUser()!=null ? validMobile.getVerifiedByUser() : false;
             }
 
         }

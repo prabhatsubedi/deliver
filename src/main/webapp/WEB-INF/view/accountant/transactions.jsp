@@ -131,19 +131,19 @@
                         </tr>
                         <tr class="even">
                             <th>2</th>
-                            <td>Current Available Balance</td>
+                            <td>Available Current Balance</td>
                             <td class="available_balance"></td>
                             <td></td>
                         </tr>
                         <tr class="odd">
                             <th>3</th>
-                            <td>Item Available Balance</td>
+                            <td>Available Item Balance</td>
                             <td class="item_available_balance"></td>
                             <td></td>
                         </tr>
                         <tr class="even">
                             <th>4</th>
-                            <td>Cash Available Balance</td>
+                            <td>Available Cash Balance</td>
                             <td class="cash_available_balance"></td>
                             <td></td>
                         </tr>

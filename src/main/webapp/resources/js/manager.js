@@ -1048,7 +1048,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.fillDboyAccount = function(courierStaff){
         Manager.getTransactions();
-        var itemAvailableBalance = parseFloat(courierStaff.itemReturnedTotal).toFixed(2);
+        var itemAvailableBalance;
+        if(courierStaff.itemReturnedTotal != "undefined" ) {
+            itemAvailableBalance = parseFloat(courierStaff.itemReturnedTotal).toFixed(2);
+        }else {
+            itemAvailableBalance = 0;
+        }
         if(typeof courierStaff.previousDue != "undefined"){
             $(".due_amount").text(parseFloat(courierStaff.previousDue).toFixed(2));
             $("#due_amount_val").val(parseFloat(courierStaff.previousDue).toFixed(2));

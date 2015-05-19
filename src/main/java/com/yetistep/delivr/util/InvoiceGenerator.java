@@ -231,7 +231,7 @@ public class InvoiceGenerator {
         String city = addressInArray[2]+","+addressInArray[3];
         String reg = preferences.get("REGISTRATION_NO");
         String vat = preferences.get("VAT_NO");
-        String imageUrl = serverUrl+"/resources/images/idelivr-logo-name.png";
+        String imageUrl = serverUrl+"/resources/images/login-logo.png";
 
         //logo cell
         PdfPCell logoCell = new PdfPCell();

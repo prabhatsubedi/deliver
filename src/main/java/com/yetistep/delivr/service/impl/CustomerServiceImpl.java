@@ -179,13 +179,16 @@ public class CustomerServiceImpl implements CustomerService {
             * set reward for the customer
             * */
             if(registeredCustomer.getUser().getLastActivityDate() == null) {
-                registeredCustomer.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
-                refillCustomerWallet(registeredCustomer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)), MessageBundle.getMessage("WTM010", "push_notification.properties"), false);
+                if(registeredCustomer.getReferredBy() != null){
+                    registeredCustomer.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
+                    refillCustomerWallet(registeredCustomer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)), MessageBundle.getMessage("WTM010", "push_notification.properties"), false);
+                }
             }
 
             registeredCustomer.getUser().setLastActivityDate(MessageBundle.getCurrentTimestampSQL());
 
             validateUserDevice(registeredCustomer.getUser().getUserDevice());
+            registeredCustomer.setDefault(false);
             customerDaoService.update(registeredCustomer);
 
         } else {
@@ -213,6 +216,7 @@ public class CustomerServiceImpl implements CustomerService {
                 //if(registeredCustomer.getUser().getLastActivityDate().equals(null)) {
                 customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
                // }
+               customerEntity.setDefault(false);
                customerDaoService.save(customerEntity);
                customerEntity.setWalletAmount(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
                WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
@@ -226,6 +230,7 @@ public class CustomerServiceImpl implements CustomerService {
                walletTransactionEntity.setAvailableWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()));
                systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
                customerEntity.setWalletTransactions(Collections.singletonList(walletTransactionEntity));
+               customerEntity.setDefault(false);
                customerDaoService.update(customerEntity);
             } else {
                 throw new YSException("SEC014");
@@ -290,7 +295,7 @@ public class CustomerServiceImpl implements CustomerService {
         AddressEntity address = addressDto.getAddress();
 
         //register mobile first for no sms. once sms is enable remove this line of code
-        verifyMobile(user.getLastAddressMobile(), user.getCustomer().getFacebookId());
+        //verifyMobile(user.getLastAddressMobile(), user.getCustomer().getFacebookId());
 
         /* Check Customer JSON */
         if (user.getCustomer() == null || user.getCustomer().getFacebookId() == null)
@@ -312,9 +317,9 @@ public class CustomerServiceImpl implements CustomerService {
         if(validateMobileEntity == null)
               throw new YSException("SEC010");
 
-        //once sms is enable remove this line of code
-        /*if(validateMobileEntity.getVerificationCode()!=null && !validateMobileEntity.getVerificationCode().equals(user.getVerificationCode()))
-              throw new YSException("SEC011");*/
+        /*once sms is enable remove this line of code*/
+        if(validateMobileEntity.getVerificationCode()!=null && !validateMobileEntity.getVerificationCode().equals(user.getVerificationCode()))
+              throw new YSException("SEC011");
 
 
         /* Check Valid Mobile and Mobile Code */
@@ -380,17 +385,17 @@ public class CustomerServiceImpl implements CustomerService {
         //String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), mobile);
        // String message = "KollKat: Your verification code for iDelivr is ";
         String verificationCode = null;
-        //one sms is enabled set validatedByUser false by default and uncomment the related lines of code
-        Boolean validatedByUser = true;
+        //once sms is enabled set validatedByUser false by default and uncomment the related lines of code
+        Boolean validatedByUser = false;
         if(validMobile == null) {
             log.debug("++++++ Updating Mobile No and Validation Code");
 
             //once the sms is enabled these lines of code should be uncommented
 
-            /*verificationCode = GeneralUtil.generateMobileCode();
+            verificationCode = GeneralUtil.generateMobileCode();
 
             //Now Send SMS
-            SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);*/
+            SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
 
             ValidateMobileEntity validateMobileEntity = new ValidateMobileEntity();
             validateMobileEntity.setMobileNo(mobile);
@@ -412,22 +417,22 @@ public class CustomerServiceImpl implements CustomerService {
 
                 //once the sms is enabled these lines of code should be uncommented
 
-                /*//Send SMS Only
+                //Send SMS Only
                 verificationCode = String.valueOf(validMobile.getVerificationCode());
 
                 //Now Send SMS
-                SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);*/
+                SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
 
                 validateMobileDaoService.updateNoOfSMSSend(validMobile.getId());
 
                 //
-                //validatedByUser = false;
+                validatedByUser = false;
 
             } else {
                 if(validMobile.getVerificationCode() != null)  {
                     verificationCode = String.valueOf(validMobile.getVerificationCode());
                 }
-               // validatedByUser = validMobile.getVerifiedByUser()!=null ? validMobile.getVerifiedByUser() : false;
+                validatedByUser = validMobile.getVerifiedByUser()!=null ? validMobile.getVerifiedByUser() : false;
             }
 
         }
@@ -1246,6 +1251,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new YSException("VLD021");
 
         user.getCustomer().setReferredBy(Long.parseLong(headerDto.getId()));
+        user.getCustomer().setDefault(false);
         user.getCustomer().setFbToken(headerDto.getAccessToken());
         user.getCustomer().setUser(user);
         user.setCreatedDate(DateUtil.getCurrentTimestampSQL());

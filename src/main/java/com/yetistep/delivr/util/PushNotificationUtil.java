@@ -26,7 +26,7 @@ public class PushNotificationUtil {
 
     private static final String DBOY_API_KEY = "AIzaSyBp36qfwThBp57gVjC0dOA4qf3vTv3gHCA";
     private static final String CUSTOMER_API_KEY = "AIzaSyCXcn_iKKSCnBnYbrinDFCmTdt6xyPcbTI";
-    public static final String CERTIFICATE_IOS = "iphone_dev.p12";
+    public static final String CERTIFICATE_IOS = "Koolkat_dev.p12";
     public static final String PASSWORD_IOS = "password123";
 
 

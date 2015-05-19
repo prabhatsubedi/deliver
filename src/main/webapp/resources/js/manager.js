@@ -787,7 +787,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         unpaid_total += payStatement.payableAmount;
                     }
 
-                    var row = [payStatement.id, payStatement.generatedDate, payStatement.fromDate, payStatement.toDate, Main.getFromLocalStorage('currency') + ' <span class="' + (payStatement.dBoyPaid == false ? "paid_status unpaid_amount" : '') + '">' + payStatement.payableAmount + '</span>', '<a href="' + payStatement.path + '" target="_blank">PDF' + '</a>', payStatement.paidDate, checkBox];
+                    var row = [payStatement.id, payStatement.generatedDate, payStatement.fromDate, payStatement.toDate, Main.getFromLocalStorage('currency') + ' <span class="' + (payStatement.dBoyPaid == false ? "paid_status unpaid_amount" : '') + '">' + payStatement.payableAmount + '</span>', '<a href="' + payStatement.path + '" target="_blank">PDF' + '</a>', payStatement.paidDate == undefined ? '' : payStatement.paidDate, checkBox];
                     row = $.extend({}, row);
                     tdata.push(row);
                     $('.unpaid_total').html(Main.getFromLocalStorage('currency') + " " + unpaid_total.toFixed(2));

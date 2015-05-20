@@ -47,7 +47,7 @@ var Admin = function() {
                             var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'No', 1: 'Yes'});
                         } else if(prefKey == 'AIR_OR_ACTUAL_DISTANCE_SWITCH') {
                             var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'Air Distance', 1: 'Actual Distance'});
-                        } else if(prefKey == 'COMPANY_LOGO' || prefKey == 'DEFAULT_IMG_ITEM' || prefKey == 'DEFAULT_IMG_CATEGORY' || prefKey == 'DEFAULT_IMG_SEARCH') {
+                        } else if(prefKey == 'COMPANY_LOGO' || prefKey == 'DEFAULT_IMG_ITEM' || prefKey == 'DEFAULT_IMG_CATEGORY' || prefKey == 'DEFAULT_IMG_SEARCH' || prefKey == 'REFERRAL_FACEBOOK_IMG') {
                             var elem = $('.image_template').clone();
                             var imgWidth = '';
                             var imgHeight = '';
@@ -59,6 +59,9 @@ var Admin = function() {
                                 imgWidth = '400';
                                 imgHeight = '400';
                             } else if(prefKey == 'DEFAULT_IMG_CATEGORY') {
+                                imgWidth = '720';
+                                imgHeight = '160';
+                            }  else if(prefKey == 'REFERRAL_FACEBOOK_IMG') {
                                 imgWidth = '720';
                                 imgHeight = '160';
                             } else {
@@ -100,7 +103,8 @@ var Admin = function() {
                     Image.dropZone('#DEFAULT_IMG_ITEM_input', '#DEFAULT_IMG_ITEM');
                     Image.dropZone('#DEFAULT_IMG_CATEGORY_input', '#DEFAULT_IMG_CATEGORY');
                     Image.dropZone('#DEFAULT_IMG_SEARCH_input', '#DEFAULT_IMG_SEARCH');
-                    $('#COMPANY_LOGO, #DEFAULT_IMG_ITEM, #DEFAULT_IMG_CATEGORY, #DEFAULT_IMG_SEARCH').bind('submitPref', function(){
+                    Image.dropZone('#REFERRAL_FACEBOOK_IMG_input', '#REFERRAL_FACEBOOK_IMG');
+                    $('#COMPANY_LOGO, #DEFAULT_IMG_ITEM, #DEFAULT_IMG_CATEGORY, #DEFAULT_IMG_SEARCH, #REFERRAL_FACEBOOK_IMG').bind('submitPref', function(){
                         Admin.uploadPrefImage({prefKey: $(this).attr('id'), imageString: $('img', this).attr('src')}, $(this));
                     });
                     Main.elemRatio();

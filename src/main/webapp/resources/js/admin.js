@@ -411,6 +411,51 @@ var Admin = function() {
 
             Main.request(url, params, callback, headers);
 
+        },
+        refillWallet: function() {
+
+            $.validator.setDefaults({
+                errorPlacement: function (error, element) {
+                    $('#error_container').html(error);
+                },
+                ignore: []
+            });
+
+            $('#form').validate({
+                submitHandler: function () {
+
+
+                    var button1 = function() {
+
+                        $("button[type='submit']").attr("disabled", true);
+
+                        var callback = function (status, data) {
+                            $("button[type='submit']").removeAttr("disabled");
+
+                            Main.popDialog('', data.message, function() {
+                                if(data.success)
+                                    $('#form')[0].reset();
+                            });
+                        };
+
+                        callback.loaderDiv = "body";
+
+                        Main.request('/client/refill_wallet', {facebookId: $('#userID').val(), walletAmount:$('#amount').val()}, callback, {accessToken: "abc"});
+
+                    };
+
+                    button1.text = "Yes";
+                    var button2 = "No";
+
+                    var buttons = [button1, button2];
+                    Main.popDialog('', 'Are you sure you want to refill wallet?', buttons);
+                    return false;
+
+                }
+            });
+            $('#amount').rules('add', {required: true, number: true});
+            $('#userID').rules('add', {required: true, digits: true});
+
         }
 
     };

@@ -159,7 +159,7 @@ public class AnonController {
 
         try {
 
-            String companyLogo = systemPropertyService.readPrefValue(PreferenceType.COMPANY_LOGO);
+            String companyLogo = systemPropertyService.readPrefValue(PreferenceType.REFERRAL_FACEBOOK_IMG);
             modelAndView.addObject("companyLogo", companyLogo);
 
         } catch (Exception e){

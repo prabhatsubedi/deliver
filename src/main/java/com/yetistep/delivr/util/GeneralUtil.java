@@ -71,7 +71,7 @@ public class GeneralUtil {
             String compressImgName = imageName;
             ImageConverter.compressImage(tmpImg, imgType, compressImgName, 0.7f);
 
-            compressImgName += ".jpg";
+            compressImgName += "."+imgType;
             File compressedFile = new File(tmpDir + File.separator + compressImgName);
             log.info("Compressed and saved in " + compressedFile.getPath());
 

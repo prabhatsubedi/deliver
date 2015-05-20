@@ -73,13 +73,13 @@
 
 <div class="container">
     <div class=row>
-        <div class="col-md-2 col-sm-1"></div>
         <div class="span12">
-            <center><img src="${companyLogo}" width="20%"/></center>
+            <center><img src="${companyLogo}" width="60%"/></center>
         </div>
     </div>
     <div class="hero-unit">
         <h2>Welcome to KoolKat!</h2>
+        <p style="display: none;">Welcome to Koolkat!</p>
         <blockquote>
             <p class="info">
                 A quick and better way to get anything delivered at your doorstep.
@@ -93,12 +93,12 @@
 
             <div id="new_account_msg">
                 <h4>Thank you for signing up to KoolKat.</h4>
-                <h4> Do download KoolKat from Google Play Store</h4>
+                <h4> Do download Koolkat from Google Play Store</h4>
                 <%--<a href="https://play.google.com/store/apps/details?id=com.yetistep.swipr"><img src="${pageContext.request.contextPath}/resources/images/play_store_black.png" class="play_store"/></a>--%>
             </div>
             <div id="old_account_msg">
                 <h4>Your account has already been created. </h4 >
-                <h4>If you have not downloaded KoolKat yet, feel free to download KoolKat from Google Play Store.</h4>
+                <h4>If you have not downloaded Koolkat yet, feel free to download Koolkat from Google Play Store.</h4>
                 <%--<a href="https://play.google.com/store/apps/details?id=com.yetistep.swipr"><img src="${pageContext.request.contextPath}/resources/images/play_store_black.png" class="play_store"/></a>--%>
             </div>
             <h4 id="unknown_msg">

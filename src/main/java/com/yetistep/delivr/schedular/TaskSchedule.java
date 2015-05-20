@@ -10,6 +10,7 @@ import com.yetistep.delivr.service.inf.AccountService;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
+import com.yetistep.delivr.util.MessageBundle;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -80,7 +81,13 @@ public class TaskSchedule {
         if(stores.size()>0){
             //String filePath = new String();
             for (StoreEntity store: stores){
-                accountService.generateInvoice(store.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()), "http://test.idelivr.com/");
+                String url = "";
+                if(MessageBundle.isLocalHost()){
+                    url = "http://localhost:8080/";
+                }else{
+                    url = "http://test.idelivr.com/";
+                }
+                accountService.generateInvoice(store.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()), url);
             }
         } else {
             log.info("no stores found. ");

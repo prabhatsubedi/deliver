@@ -47,7 +47,6 @@ public class CourierTransactionDaoServiceImpl implements CourierTransactionDaoSe
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 }

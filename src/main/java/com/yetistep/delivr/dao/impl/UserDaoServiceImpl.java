@@ -133,8 +133,7 @@ public class UserDaoServiceImpl implements UserDaoService {
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = getSessionFactory().getCurrentSession();
-        return session;
+        return getSessionFactory().getCurrentSession();
     }
 
     public SessionFactory getSessionFactory() {
@@ -292,8 +291,7 @@ public class UserDaoServiceImpl implements UserDaoService {
         criteria.add(Restrictions.eq("role.id", Role.ROLE_CUSTOMER.toInt()));
 
         HibernateUtil.fillPaginationCriteria(criteria, page, UserEntity.class);
-        List<UserEntity> users = criteria.list();
-        return users;
+        return (List<UserEntity>) criteria.list();
     }
 
 
@@ -304,7 +302,6 @@ public class UserDaoServiceImpl implements UserDaoService {
         query.setParameter("roleId", Role.ROLE_CUSTOMER.toInt());
         query.setParameter("status", Status.INACTIVE.ordinal());
 
-        BigInteger cnt = (BigInteger) query.uniqueResult();
-        return cnt.intValue();
+        return ((BigInteger) query.uniqueResult()).intValue();
     }
 }

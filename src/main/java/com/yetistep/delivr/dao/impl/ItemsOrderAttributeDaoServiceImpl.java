@@ -54,7 +54,6 @@ public class ItemsOrderAttributeDaoServiceImpl implements ItemsOrderAttributeDao
         String sql = "SELECT items_attribute_id FROM items_order_attribute WHERE item_order_id = :itemOrderId";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("itemOrderId", itemOrderId);
-        List<Integer> selectedAttributes = sqlQuery.list();
-        return selectedAttributes;
+        return (List<Integer>) sqlQuery.list();
     }
 }

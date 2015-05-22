@@ -72,8 +72,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -219,8 +218,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
         Query query = sessionFactory.getCurrentSession().createQuery(hqlQuery);
         query.setParameter("brandId", brandId);
-        List<CategoryEntity> categories = query.list();
-        return categories;
+        return (List<CategoryEntity>) query.list();
     }
 
     @Override
@@ -230,8 +228,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
         Query query = sessionFactory.getCurrentSession().createQuery(hqlQuery);
         //query.setParameter("brandId", brandId);
-        List<CategoryEntity> categories = query.list();
-        return categories;
+        return (List<CategoryEntity>) query.list();
     }
 
 
@@ -531,8 +528,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
         query.setParameter("orderId", orderId);
-        Boolean partnerShipStatus = (Boolean) query.uniqueResult();
-        return partnerShipStatus;
+        return  (Boolean) query.uniqueResult();
     }
 
     @Override
@@ -572,8 +568,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
                 .setResultTransformer( Transformers.aliasToBean(MerchantEntity.class));
         query.setParameter("orderId", orderId);
-        MerchantEntity merchantEntity = (MerchantEntity) query.uniqueResult();
-        return merchantEntity;
+        return  (MerchantEntity) query.uniqueResult();
     }
 
     @Override
@@ -641,8 +636,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
                 .setResultTransformer(Transformers.aliasToBean(MerchantEntity.class));
         query.setParameter("storeBrandId", storeBrandId);
-        MerchantEntity merchantEntity = (MerchantEntity) query.uniqueResult();
-        return merchantEntity;
+        return (MerchantEntity) query.uniqueResult();
     }
 
     @Override
@@ -650,16 +644,14 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         String sqQuery = "SELECT sb.id FROM stores_brands sb WHERE merchant_id =:merchantId";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
         query.setParameter("merchantId", merchantId);
-        List<Integer> brandIdList = query.list();
-        return  brandIdList;
+        return (List<Integer>) query.list();
     }
 
     @Override
     public List<Integer> getBrandIdList() throws Exception {
         String sqQuery = "SELECT sb.id FROM stores_brands sb";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
-        List<Integer> brandIdList = query.list();
-        return  brandIdList;
+        return (List<Integer>) query.list();
     }
 
     @Override
@@ -667,8 +659,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         String sqQuery = "SELECT s.id FROM stores s WHERE stores_brand_id IN(:brandId)";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
         query.setParameterList("brandId", brandId);
-        List<Integer> storeIdList = query.list();
-        return  storeIdList;
+        return (List<Integer>) query.list();
     }
 
     @Override

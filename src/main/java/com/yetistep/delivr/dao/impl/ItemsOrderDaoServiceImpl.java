@@ -49,8 +49,7 @@ public class ItemsOrderDaoServiceImpl implements ItemsOrderDaoService {
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -58,7 +57,6 @@ public class ItemsOrderDaoServiceImpl implements ItemsOrderDaoService {
         String sqlQuery = "SELECT count(id) FROM items_orders WHERE order_id = :orderId AND purchase_status IS NULL";
         SQLQuery query = getCurrentSession().createSQLQuery(sqlQuery);
         query.setParameter("orderId", orderId);
-        Integer unProcessedOrders = ((Number) query.uniqueResult()).intValue();
-        return unProcessedOrders;
+        return  ((Number) query.uniqueResult()).intValue();
     }
 }

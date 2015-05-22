@@ -187,9 +187,7 @@ public class UserServiceImpl extends AbstractManager implements UserService{
 
     @Override
     public List<UserEntity> getUsers() {
-        List<UserEntity> users = userDaoService.getUsers();
-        return  users;
-
+        return userDaoService.getUsers();
     }
 
     @Override

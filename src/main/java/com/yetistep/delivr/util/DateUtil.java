@@ -17,8 +17,7 @@ import java.util.Calendar;
 public class DateUtil {
     public static Date getCurrentDate() {
         long time = System.currentTimeMillis();
-        Date date = new Date(time);
-        return date;
+        return new Date(time);
     }
 
     public static Date getYesterday(){
@@ -30,8 +29,7 @@ public class DateUtil {
         calendar.setTimeInMillis(date.getTime());
         calendar.add(Calendar.DATE, days);
 
-        Date newDate = new Date(calendar.getTimeInMillis());
-        return newDate;
+        return new Date(calendar.getTimeInMillis());
     }
 
     public static Date addMonth(int months, Date date) {
@@ -39,8 +37,7 @@ public class DateUtil {
         calendar.setTimeInMillis(date.getTime());
         calendar.add(Calendar.MONTH, months);
 
-        Date newDate = new Date(calendar.getTimeInMillis());
-        return newDate;
+        return new Date(calendar.getTimeInMillis());
     }
 
     public static int findAge(Date date) {
@@ -62,31 +59,27 @@ public class DateUtil {
         calendar.setTimeInMillis(timestamp.getTime());
         calendar.add(Calendar.HOUR_OF_DAY, hour);
 
-        Timestamp newTimeStamp = new Timestamp(calendar.getTimeInMillis());
-        return newTimeStamp;
+        return new Timestamp(calendar.getTimeInMillis());
     }
 
     public static Timestamp addMinute(Timestamp timestamp, int min) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp.getTime());
         calendar.add(Calendar.MINUTE, min);
-        Timestamp newTimeStamp = new Timestamp(calendar.getTimeInMillis());
-        return newTimeStamp;
+        return new Timestamp(calendar.getTimeInMillis());
     }
 
     public static Timestamp addSeconds(Timestamp timestamp, int seconds) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp.getTime());
         calendar.add(Calendar.SECOND, seconds);
-        Timestamp newTimeStamp = new Timestamp(calendar.getTimeInMillis());
-        return newTimeStamp;
+        return new Timestamp(calendar.getTimeInMillis());
     }
 
     public static Timestamp subtractSeconds(Timestamp timestamp, int seconds) {
         Long givenTimeStamp = timestamp.getTime();
         givenTimeStamp = givenTimeStamp - seconds * 1000;
-        Timestamp newTimeStamp = new Timestamp(givenTimeStamp);
-        return newTimeStamp;
+        return new Timestamp(givenTimeStamp);
     }
 
     public  static Timestamp getCurrentTimestampSQL(){
@@ -96,8 +89,7 @@ public class DateUtil {
 
     public static Date stringToSQLDate(String dateStr) {
         try{
-            Date date = Date.valueOf(dateStr);
-            return date;
+            return Date.valueOf(dateStr);
         }catch (Exception e) {
             throw new RuntimeException("Invalid argument ["+dateStr+"], cannot be parsed to date");
         }

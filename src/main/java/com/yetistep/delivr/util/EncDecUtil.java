@@ -34,8 +34,7 @@ public class EncDecUtil {
 
     public static SecretKey retriveSecretKey(String keyStr) throws Exception {
         byte[] encodedKey = new BASE64Decoder().decodeBuffer(keyStr);
-        SecretKey originalKey = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES"); //EDIT: missing 'new'
-        return originalKey;
+        return new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES"); //EDIT: missing 'new'
     }
 
     public static String encrypt(String message, SecretKey key) throws Exception {
@@ -43,10 +42,8 @@ public class EncDecUtil {
         aesCipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] byteDataToEncrypt = message.getBytes();
         byte[] byteCipherText = aesCipher.doFinal(byteDataToEncrypt);
-        String cipherText = new BASE64Encoder().encode(byteCipherText);
-        //System.out.println("Encrypted message:- " + cipherText);
+        return new BASE64Encoder().encode(byteCipherText);
 
-        return cipherText;
     }
 
     public static String decrypt(String encryptedMessage, SecretKey key) throws Exception {
@@ -55,10 +52,7 @@ public class EncDecUtil {
         Cipher aesCipher = Cipher.getInstance("AES");
         aesCipher.init(Cipher.DECRYPT_MODE, key);
         byte[] byteDecryptedText = aesCipher.doFinal(encryptedMessageByte);
-        String decryptedMessage = new String(byteDecryptedText);
-        //System.out.println("Decrypted message:- " + decryptedMessage);
-        return decryptedMessage;
-
+        return new String(byteDecryptedText);
     }
 
     public static String generateResponseAccessToken(String key) throws Exception {

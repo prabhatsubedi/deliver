@@ -1270,9 +1270,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<RatingReason> getRatingReasons() throws Exception {
-        List<RatingReason> reasonList =
-                new ArrayList<RatingReason>(EnumSet.allOf(RatingReason.class));
-        return reasonList;
+        return new ArrayList<RatingReason>(EnumSet.allOf(RatingReason.class));
     }
 
     @Override
@@ -2031,8 +2029,7 @@ public class CustomerServiceImpl implements CustomerService {
     private BigDecimal getCustomerWalletBalance(Long facebookId) throws Exception{
         CustomerEntity customerEntity = customerDaoService.getWalletInfo(facebookId);
         validateAvailableWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()), customerEntity.getId());
-        BigDecimal balance = BigDecimalUtil.checkNull(customerEntity.getWalletAmount()).subtract(BigDecimalUtil.checkNull(customerEntity.getShortFallAmount()));
-        return balance;
+        return BigDecimalUtil.checkNull(customerEntity.getWalletAmount()).subtract(BigDecimalUtil.checkNull(customerEntity.getShortFallAmount()));
     }
 
     private void validateAvailableWalletAmount(BigDecimal availableAmount, Integer customerId) throws Exception{

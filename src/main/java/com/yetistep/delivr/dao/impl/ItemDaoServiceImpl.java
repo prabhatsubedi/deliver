@@ -59,8 +59,7 @@ public class ItemDaoServiceImpl implements ItemDaoService{
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -116,9 +115,7 @@ public class ItemDaoServiceImpl implements ItemDaoService{
 
 
         criteria.add(Restrictions.eq("id", itemId));
-        List<ItemEntity> item = criteria.list();
-
-        return item;
+        return (List<ItemEntity>) criteria.list();
     }
 
     @Override
@@ -134,8 +131,7 @@ public class ItemDaoServiceImpl implements ItemDaoService{
         sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
         sqlQuery.setParameter("word", CommonConstants.DELIMITER+word+CommonConstants.DELIMITER);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(ItemEntity.class));
-        List<ItemEntity> itemEntities = sqlQuery.list();
-        return itemEntities;
+        return (List<ItemEntity>) sqlQuery.list();
     }
 
     @Override
@@ -152,8 +148,7 @@ public class ItemDaoServiceImpl implements ItemDaoService{
         sqlQuery.setParameter("word", CommonConstants.DELIMITER + word + CommonConstants.DELIMITER);
         sqlQuery.setParameter("brandId", brandId);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(ItemEntity.class));
-        List<ItemEntity> itemEntities = sqlQuery.list();
-        return itemEntities;
+        return (List<ItemEntity>) sqlQuery.list();
     }
 
     @Override

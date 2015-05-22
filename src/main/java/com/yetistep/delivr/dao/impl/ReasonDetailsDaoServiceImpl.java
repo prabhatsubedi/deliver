@@ -37,8 +37,7 @@ public class ReasonDetailsDaoServiceImpl implements ReasonDetailsDaoService {
                .add(Projections.property("ratingStar"), "ratingStar")
         ).setResultTransformer(Transformers.aliasToBean(ReasonDetailsEntity.class));
         criteria.add(Restrictions.eq("status", true));
-        List<ReasonDetailsEntity> reasonDetailsList = criteria.list();
-        return reasonDetailsList;
+        return (List<ReasonDetailsEntity>) criteria.list();
     }
 
     @Override
@@ -61,7 +60,6 @@ public class ReasonDetailsDaoServiceImpl implements ReasonDetailsDaoService {
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 }

@@ -48,7 +48,6 @@ public class PaymentGatewayInfoDaoServiceImpl implements PaymentGatewayInfoDaoSe
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 }

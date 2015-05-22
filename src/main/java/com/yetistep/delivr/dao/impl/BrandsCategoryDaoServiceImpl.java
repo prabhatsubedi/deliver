@@ -51,8 +51,7 @@ public class BrandsCategoryDaoServiceImpl implements BrandsCategoryDaoService{
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -64,7 +63,6 @@ public class BrandsCategoryDaoServiceImpl implements BrandsCategoryDaoService{
         sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
         sqlQuery.setParameter("categoryId", categoryId);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
-        List<StoresBrandEntity> stores = sqlQuery.list();
-        return stores;
+        return (List<StoresBrandEntity>) sqlQuery.list();
     }
 }

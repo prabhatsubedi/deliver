@@ -55,8 +55,7 @@ public class AddressDaoServiceImpl implements AddressDaoService{
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -85,8 +84,7 @@ public class AddressDaoServiceImpl implements AddressDaoService{
         sqlQuery.setParameter("flag", CommonConstants.DELETE_FLAG);
 
         sqlQuery.setResultTransformer(Transformers.aliasToBean(AddressEntity.class));
-        List<AddressEntity> addressEntities = sqlQuery.list();
-        return addressEntities;
+        return (List<AddressEntity>) sqlQuery.list();
     }
 
     @Override

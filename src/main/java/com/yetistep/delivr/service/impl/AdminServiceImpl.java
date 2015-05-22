@@ -380,8 +380,7 @@ public class AdminServiceImpl implements AdminService {
     public List<SMSDto> customerSendableSMSList() throws Exception {
         log.info("++++++++++ Getting Max Reached Sendable Customer List ++++++++++++");
 
-        List<SMSDto> smsDtos = validateMobileDaoService.getMaxReachedUsers();
-        return smsDtos;
+        return (List<SMSDto>) validateMobileDaoService.getMaxReachedUsers();
     }
 
     @Override

@@ -99,8 +99,7 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -123,8 +122,7 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("status", Status.ACTIVE.toInt());
         sqlQuery.setResultTransformer(Transformers.aliasToBean(CategoryEntity.class));
-        List<CategoryEntity> categories = sqlQuery.list();
-        return categories;
+        return  (List<CategoryEntity>) sqlQuery.list();
     }
 
     @Override

@@ -90,7 +90,7 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
 
     @Override
     public List<DeliveryBoyEntity> findAllCapableDeliveryBoys(Integer updateLocationTimeOut) throws Exception {
-        List<DeliveryBoyEntity> deliveryBoys = getCurrentSession().createCriteria(DeliveryBoyEntity.class)
+        return (List<DeliveryBoyEntity>) getCurrentSession().createCriteria(DeliveryBoyEntity.class)
                 .createAlias("user", "u")
                 .add(Restrictions.or(Restrictions.eq("availabilityStatus", DBoyStatus.FREE), Restrictions.eq("availabilityStatus", DBoyStatus.BUSY)))
                 .add(Restrictions.lt("activeOrderNo", 3))
@@ -98,13 +98,11 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
                 .add(Restrictions.isNotNull("longitude"))
                 .add(Restrictions.gt("lastLocationUpdate", DateUtil.getTimestampLessThanNMinutes(updateLocationTimeOut)))
                 .add(Restrictions.and(Restrictions.eq("u.verifiedStatus", true), Restrictions.eq("u.mobileVerificationStatus", true), Restrictions.eq("u.status", Status.ACTIVE))).list();
-        return deliveryBoys;
     }
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -134,8 +132,7 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         query.setParameter("orderPlaced",JobOrderStatus.ORDER_PLACED.ordinal());
         query.setParameter("rejected", false);
         query.setResultTransformer(Transformers.aliasToBean(DeliveryBoyEntity.class));
-        DeliveryBoyEntity deliveryBoyEntity = (DeliveryBoyEntity) query.uniqueResult();
-        return deliveryBoyEntity;
+        return (DeliveryBoyEntity) query.uniqueResult();
     }
 
     @Override

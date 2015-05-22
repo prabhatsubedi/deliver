@@ -838,20 +838,15 @@ public class InvoiceGenerator {
     }
 
     private String getInvoiceDir(MerchantEntity merchant, StoreEntity store, String separator) {
-        String dir = MessageBundle.separateString(separator, "Invoices", "Merchant_" + merchant.getId(), "StoreBrand_"+store.getStoresBrand().getId(), "Store"+store.getId());
-
-        return dir;
+        return MessageBundle.separateString(separator, "Invoices", "Merchant_" + merchant.getId(), "StoreBrand_"+store.getStoresBrand().getId(), "Store"+store.getId());
     }
 
     private String getDBoyPaymentDir(DeliveryBoyEntity deliveryBoy, String separator) {
-        String dir = MessageBundle.separateString(separator, "Shopper_payment", "Shopper_" + deliveryBoy.getId());
-
-        return dir;
+        return MessageBundle.separateString(separator, "Shopper_payment", "Shopper_" + deliveryBoy.getId());
     }
 
     private String getBillAndReiceptDir(MerchantEntity merchant, OrderEntity order, String separator) {
-        String dir = MessageBundle.separateString(separator, "receipts", "Merchant_" + merchant.getId(), "Order_" + order.getId());
-        return dir;
+        return MessageBundle.separateString(separator, "receipts", "Merchant_" + merchant.getId(), "Order_" + order.getId());
     }
 
 }

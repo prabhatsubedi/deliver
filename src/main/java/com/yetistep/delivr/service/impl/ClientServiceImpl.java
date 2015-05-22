@@ -670,11 +670,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         assoc.put("attributesTypes", "id,type,multiSelect,itemsAttribute");
         subAssoc.put("itemsAttribute", "id,attribute,unitPrice");
 
-        ItemEntity item = (ItemEntity) ReturnJsonUtil.getJsonObject(itemEntity, fields, assoc , subAssoc);
-
-
-        return item;
-//        return itemEntity;
+        return  (ItemEntity) ReturnJsonUtil.getJsonObject(itemEntity, fields, assoc , subAssoc);
     }
 
     @Override

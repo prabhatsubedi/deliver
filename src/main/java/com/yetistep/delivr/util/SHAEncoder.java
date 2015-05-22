@@ -114,7 +114,7 @@ public class SHAEncoder {
     }
 
     private static String generateData(PaymentGatewayInfoEntity paymentGatewayInfoEntity) {
-        String data = AMOUNT_NAME + EQUALS + paymentGatewayInfoEntity.getInrAmount()
+        return AMOUNT_NAME + EQUALS + paymentGatewayInfoEntity.getInrAmount()
                 + SEPARATOR
                 + CURRENCY_CODE_NAME + EQUALS + CURRENCY_CODE
                 + SEPARATOR
@@ -131,7 +131,6 @@ public class SHAEncoder {
                 + TRANSACTION_REFERENCE_NAME + EQUALS + paymentGatewayInfoEntity.getTransactionReference()
                 + SEPARATOR
                 + ORDER_ID_NAME + EQUALS + paymentGatewayInfoEntity.getId();
-        return data;
     }
 
     public static String getResponseHTML(String msg, Boolean success){

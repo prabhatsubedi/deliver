@@ -241,11 +241,10 @@ public class EmailMsg {
     }
 
     private static String getHtmlHeader(String serverUrl) {
-        String htmlHead = "<html><head><title>"+EMAIL_WELCOME_SUBJECT+"</title>" +
+        return "<html><head><title>"+EMAIL_WELCOME_SUBJECT+"</title>" +
                 "<style>" + style.toString() + "</style>" + "<link rel='stylesheet' " + "href='" + serverUrl + "/resources/css/fonts/font.css'>" +
                 "<link rel='stylesheet' " + "href='" + serverUrl + "/resources/css/email.css'>" +
                 "</head><body>";
-        return htmlHead;
     }
 
     private static String getEmailHead(String userHeaderContent) {

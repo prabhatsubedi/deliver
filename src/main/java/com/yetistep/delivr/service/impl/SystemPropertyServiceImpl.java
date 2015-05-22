@@ -63,8 +63,7 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
     @Override
     public List<PreferencesEntity> getAllPreferences() throws Exception {
         log.info("---------------------Fetching All Preferences--------------------------");
-        List<PreferencesEntity> allPreferences = preferencesDaoService.findAll();
-        return allPreferences;
+        return preferencesDaoService.findAll();
     }
 
     @Override

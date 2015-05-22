@@ -54,8 +54,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -133,8 +132,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
         criteria.add(Restrictions.or(Restrictions.eq("featured", true), Restrictions.gt("priority", 0)))
                 .add(Restrictions.eq("status", Status.ACTIVE))
                     .addOrder(Order.asc("priority"));
-        List<StoresBrandEntity> storesBrandEntities = criteria.list();
-        return storesBrandEntities;
+        return (List<StoresBrandEntity>) criteria.list();
     }
 
     @Override
@@ -166,8 +164,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Restrictions.eq("status", Status.ACTIVE));
         HibernateUtil.fillPaginationCriteria(criteria, page, StoresBrandEntity.class);
 
-        List<StoresBrandEntity> storesBrandEntities = criteria.list();
-        return storesBrandEntities;
+        return (List<StoresBrandEntity>) criteria.list();
     }
 
     @Override
@@ -195,13 +192,11 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
         criteria.add(Restrictions.eq("status", Status.INACTIVE));
         HibernateUtil.fillPaginationCriteria(criteria, page, StoresBrandEntity.class);
 
-        List<StoresBrandEntity> storesBrandEntities = criteria.list();
-        return storesBrandEntities;
+        return (List<StoresBrandEntity>) criteria.list();
     }
 
     @Override
     public List<StoresBrandEntity> findStoresBrand(Boolean isPriority, Integer... brandId) throws Exception {
-        List<StoresBrandEntity> storesBrandEntities;
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
         criteria.setProjection(Projections.projectionList()
                 .add(Projections.property("id"), "id")
@@ -218,8 +213,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
         criteria.add(Restrictions.in("id", brandId));
         if(isPriority)
             criteria.addOrder(Order.asc("priority"));
-        storesBrandEntities = criteria.list();
-        return storesBrandEntities;
+        return  (List<StoresBrandEntity>) criteria.list();
     }
 
     @Override
@@ -268,7 +262,6 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("brandsId", brandsId);
 
-        Integer merchantId = ((Number)sqlQuery.uniqueResult()).intValue();
-        return merchantId;
+        return ((Number)sqlQuery.uniqueResult()).intValue();
     }
 }

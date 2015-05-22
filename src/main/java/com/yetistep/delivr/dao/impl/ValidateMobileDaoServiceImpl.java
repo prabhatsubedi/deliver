@@ -49,8 +49,7 @@ public class ValidateMobileDaoServiceImpl implements ValidateMobileDaoService{
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
 
@@ -63,8 +62,7 @@ public class ValidateMobileDaoServiceImpl implements ValidateMobileDaoService{
         sqlQuery.setParameter("userId", userId);
         sqlQuery.setParameter("mobileNo", mobileNo);
         sqlQuery.setResultTransformer(new AliasToBeanNestedResultTransformer(ValidateMobileEntity.class));
-        ValidateMobileEntity code = sqlQuery.list().size() > 0 ? (ValidateMobileEntity) sqlQuery.list().get(0) : null;
-        return code;
+        return sqlQuery.list().size() > 0 ? (ValidateMobileEntity) sqlQuery.list().get(0) : null;
     }
 
     @Override
@@ -96,8 +94,7 @@ public class ValidateMobileDaoServiceImpl implements ValidateMobileDaoService{
 
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setResultTransformer(new AliasToBeanNestedResultTransformer(SMSDto.class));
-        List<SMSDto> smsDtos = sqlQuery.list();
-        return smsDtos;
+        return (List<SMSDto>) sqlQuery.list();
     }
 
     @Override
@@ -106,7 +103,6 @@ public class ValidateMobileDaoServiceImpl implements ValidateMobileDaoService{
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("id", id);
 
-        String verificationCode = sqlQuery.uniqueResult().toString();
-        return verificationCode;
+        return sqlQuery.uniqueResult().toString();
     }
 }

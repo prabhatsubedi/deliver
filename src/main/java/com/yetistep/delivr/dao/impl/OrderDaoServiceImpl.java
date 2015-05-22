@@ -57,8 +57,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
     public List<OrderEntity> find(List<Integer> id) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.in("id", id));
-        List<OrderEntity>  orderEntities = criteria.list();
-        return orderEntities;
+        return (List<OrderEntity>) criteria.list();
     }
 
     @Override
@@ -123,8 +122,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         query.setParameter("inRouteToDelivery", JobOrderStatus.IN_ROUTE_TO_DELIVERY.ordinal());
         query.setParameter("deliveryBoyId", deliverBoyId);
         query.setResultTransformer(Transformers.aliasToBean(OrderInfoDto.class));
-        List<OrderInfoDto> orderEntities = query.list();
-        return orderEntities;
+        return (List<OrderInfoDto>) query.list();
     }
 
     @Override
@@ -155,8 +153,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         query.setParameter("orderPlaced", JobOrderStatus.ORDER_PLACED.ordinal());
         query.setParameter("deliveryBoyId", deliveryBoyId);
         query.setResultTransformer(Transformers.aliasToBean(OrderInfoDto.class));
-        List<OrderInfoDto> orderEntities = query.list();
-        return orderEntities;
+        return (List<OrderInfoDto>) query.list();
     }
 
     @Override
@@ -172,8 +169,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
                 .add(Restrictions.in("orderStatus", jobOrderStatusList))
                 .addOrder(Order.desc("id"))
                 .setMaxResults(1);
-        OrderEntity orderEntity = (OrderEntity) criteria.uniqueResult();
-        return orderEntity;
+        return (OrderEntity) criteria.uniqueResult();
     }
 
     @Override
@@ -182,8 +178,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
         query.setParameter("orderId", orderId);
         Integer orderStatus = (Integer) query.uniqueResult();
-        JobOrderStatus jobOrderStatus = JobOrderStatus.fromInt(orderStatus);
-        return jobOrderStatus;
+        return JobOrderStatus.fromInt(orderStatus);
     }
 
     @Override
@@ -199,8 +194,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         query.setParameter("orderPlaced", JobOrderStatus.ORDER_PLACED.ordinal());
         query.setParameter("orderDate", DateUtil.subtractSeconds(DateUtil.getCurrentTimestampSQL(), timeDuration));
         query.setResultTransformer(Transformers.aliasToBean(OrderEntity.class));
-        List<OrderEntity> orderEntities =  query.list();
-        return orderEntities;
+        return (List<OrderEntity>)  query.list();
     }
 
     @Override
@@ -232,8 +226,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         orderStatuses.add(JobOrderStatus.CANCELLED);
         criteria.add(Restrictions.and(Restrictions.in("orderStatus", orderStatuses), Restrictions.eq("deliveryBoy.id", dBoyId)));
         HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
-        List<Object>  orderEntities = criteria.list();
-        return orderEntities;
+        return (List<Object>) criteria.list();
     }
 
     @Override
@@ -244,8 +237,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         orderStatuses.add(JobOrderStatus.CANCELLED);
         criteria.add(Restrictions.and(Restrictions.in("orderStatus", orderStatuses), Restrictions.eq("deliveryBoy.id", dBoyId), Restrictions.between("orderDate", fromDate, toDate)));
         HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
-        List<Object>  orderEntities = criteria.list();
-        return orderEntities;
+        return (List<Object>) criteria.list();
     }
 
     @Override
@@ -301,8 +293,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
                 .addScalar("deliveryLongitude", StringType.INSTANCE);
         query.setParameter("orderID", orderId);
         query.setResultTransformer(Transformers.aliasToBean(TrackOrderDto.class));
-        TrackOrderDto order = (TrackOrderDto) query.uniqueResult();
-        return order;
+        return (TrackOrderDto) query.uniqueResult();
     }
 
     @Override
@@ -310,24 +301,21 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.eq("orderStatus", JobOrderStatus.DELIVERED))
                 .add(Restrictions.eq("store.id", storeId));
-        List<OrderEntity>  orderEntities = criteria.list();
-        return orderEntities;
+        return (List<OrderEntity>) criteria.list();
     }
 
     @Override
     public List<OrderEntity> getStoresOrders(Integer storeId, String fromDate, String toDate) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.and(Restrictions.eq("orderStatus", JobOrderStatus.DELIVERED), Restrictions.eq("store.id", storeId), Restrictions.gt("orderDate", new SimpleDateFormat("yyyy-MM-dd").parse(fromDate)), Restrictions.le("orderDate", new SimpleDateFormat("yyyy-MM-dd").parse(toDate))));
-        List<OrderEntity>  orderEntities = criteria.list();
-        return orderEntities;
+        return (List<OrderEntity>) criteria.list();
     }
 
     @Override
     public List<OrderEntity> getDBoyOrders(Integer dBoyId, String fromDate, String toDate) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.and(Restrictions.eq("orderStatus", JobOrderStatus.DELIVERED), Restrictions.eq("deliveryBoy.id", dBoyId), Restrictions.gt("orderDate", new SimpleDateFormat("yyyy-MM-dd").parse(fromDate)), Restrictions.le("orderDate", new SimpleDateFormat("yyyy-MM-dd").parse(toDate))));
-        List<OrderEntity>  orderEntities = criteria.list();
-        return orderEntities;
+        return (List<OrderEntity>) criteria.list();
     }
 
 
@@ -336,8 +324,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.eq("orderStatus", JobOrderStatus.DELIVERED))
                 .add(Restrictions.eq("customer.id", customerId));
-        List<OrderEntity>  orderEntities = criteria.list();
-        return orderEntities;
+        return (List<OrderEntity>) criteria.list();
     }
 
 
@@ -350,8 +337,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
 
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
         query.setParameter("customerId", customerId);
-        List<Integer> list = query.list();
-        return list;
+        return (List<Integer>) query.list();
     }
 
 
@@ -365,8 +351,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
 
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
         query.setParameter("dboyId", dboyId);
-        List<Integer> list = query.list();
-        return list;
+        return (List<Integer>) query.list();
     }
 
     public List<RatingEntity> getDboyRatingDetails(Integer dboyId) throws Exception {
@@ -379,8 +364,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
         query.setParameter("dboyId", dboyId);
         query.setResultTransformer(Transformers.aliasToBean(RatingEntity.class));
-        List<RatingEntity> list = query.list();
-        return list;
+        return (List<RatingEntity>) query.list();
     }
 
     @Override
@@ -412,8 +396,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         jobOrderList.add(JobOrderStatus.DELIVERED.ordinal());
         jobOrderList.add(JobOrderStatus.CANCELLED.ordinal());
         query.setParameterList("jobOrderList", jobOrderList);
-        Integer count = ((Number) query.uniqueResult()).intValue();
-        return count;
+        return ((Number) query.uniqueResult()).intValue();
     }
 
     @Override
@@ -431,8 +414,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
                 .add(Restrictions.gt("paidFromCOD", BigDecimal.ZERO))
                 .add(Restrictions.eq("customer.id", customerId))
                 .add(Restrictions.not(Restrictions.eq("id", orderId)));
-        List<OrderEntity>  orderEntities = criteria.list();
-        return orderEntities;
+        return (List<OrderEntity>) criteria.list();
     }
 
     @Override
@@ -449,8 +431,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
                 .add(Restrictions.eq("paymentMode", PaymentMode.WALLET))
                 .add(Restrictions.gt("paidFromCOD", BigDecimal.ZERO))
                 .add(Restrictions.eq("customer.id", customerId));
-        List<OrderEntity>  orderEntities = criteria.list();
-        return orderEntities;
+        return (List<OrderEntity>) criteria.list();
     }
 
     @Override
@@ -458,8 +439,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.gt("shortFallAmount", BigDecimal.ZERO))
                 .add(Restrictions.eq("customer.id", customerId));
-        List<OrderEntity>  orderEntities = criteria.list();
-        return orderEntities;
+        return (List<OrderEntity>) criteria.list();
     }
 
     @Override
@@ -468,8 +448,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("orderId", orderId);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(OrderEntity.class));
-        OrderEntity orderEntity = (OrderEntity) sqlQuery.uniqueResult();
-        return orderEntity;
+        return (OrderEntity) sqlQuery.uniqueResult();
     }
 
     @Override
@@ -478,8 +457,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         criteria.add(Restrictions.gt("totalCost", BigDecimal.ZERO));
         criteria.add(Restrictions.gt("orderDate", date));
         criteria.add(Restrictions.eq("orderStatus", JobOrderStatus.CANCELLED));
-        List<OrderEntity>  orderEntities = criteria.list();
-        return  orderEntities;
+        return (List<OrderEntity>) criteria.list();
     }
 
 

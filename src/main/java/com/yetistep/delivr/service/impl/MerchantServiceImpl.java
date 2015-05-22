@@ -341,19 +341,17 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         merchantDaoService.saveStoresBrand(storesBrand);
 
-        StoresBrandEntity brand = storesBrand;
-
         if (brandLogo != null && !brandLogo.isEmpty() && brandImage != null && !brandImage.isEmpty()) {
             log.info("Uploading brand logo and image to S3 Bucket ");
-            String dir = MessageBundle.separateString("/", "Merchant_"+dbMerchant.getId(), "Brand_"+ brand.getId());
+            String dir = MessageBundle.separateString("/", "Merchant_"+dbMerchant.getId(), "Brand_"+ storesBrand.getId());
             boolean isLocal = MessageBundle.isLocalHost();
-            String brandLogoName = "brand_logo" + (isLocal ? "_tmp_" : "_") + brand.getId()+System.currentTimeMillis();
-            String brandImageName = "brand_image" + (isLocal ? "_tmp_" : "_") + brand.getId()+System.currentTimeMillis();
+            String brandLogoName = "brand_logo" + (isLocal ? "_tmp_" : "_") + storesBrand.getId()+System.currentTimeMillis();
+            String brandImageName = "brand_image" + (isLocal ? "_tmp_" : "_") + storesBrand.getId()+System.currentTimeMillis();
             String s3PathLogo = GeneralUtil.saveImageToBucket(brandLogo, brandLogoName, dir, true);
             String s3PathImage = GeneralUtil.saveImageToBucket(brandImage, brandImageName, dir, true);
-            brand.setBrandLogo(s3PathLogo);
-            brand.setBrandImage(s3PathImage);
-            merchantDaoService.updateStoresBrand(brand);
+            storesBrand.setBrandLogo(s3PathLogo);
+            storesBrand.setBrandImage(s3PathImage);
+            merchantDaoService.updateStoresBrand(storesBrand);
         }
     }
 
@@ -626,8 +624,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     @Override
     public List<CategoryEntity> getParentCategories() throws Exception {
         log.info("++++++++++++ getting parent categories +++++++++++++++");
-        List<CategoryEntity> categories = merchantDaoService.findParentCategories();
-        return categories;
+        return (List<CategoryEntity>) merchantDaoService.findParentCategories();
     }
 
 

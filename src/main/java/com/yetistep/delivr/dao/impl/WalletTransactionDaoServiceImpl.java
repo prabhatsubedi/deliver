@@ -57,8 +57,7 @@ public class WalletTransactionDaoServiceImpl implements WalletTransactionDaoServ
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -67,8 +66,7 @@ public class WalletTransactionDaoServiceImpl implements WalletTransactionDaoServ
                 .add(Restrictions.eq("customer.id", customerId))
                 .addOrder(Order.desc("id"))
                 .setMaxResults(1);
-        WalletTransactionEntity walletTransactionEntity = (WalletTransactionEntity) criteria.uniqueResult();
-        return walletTransactionEntity;
+        return (WalletTransactionEntity) criteria.uniqueResult();
     }
 
     @Override
@@ -88,9 +86,7 @@ public class WalletTransactionDaoServiceImpl implements WalletTransactionDaoServ
                 .add(Restrictions.in("paymentMode", paymentModes))
                 .addOrder(Order.desc("id"));
         HibernateUtil.fillPaginationCriteria(criteria, page, WalletTransactionEntity.class);
-        List<WalletTransactionEntity> walletTransactionEntities = criteria.list();
-        return walletTransactionEntities;
-
+        return (List<WalletTransactionEntity>) criteria.list();
     }
 
     @Override

@@ -53,8 +53,7 @@ public class CartAttributesDaoServiceImpl implements CartAttributesDaoService{
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override

@@ -62,8 +62,7 @@ public class GeoCodingUtil {
 
     public static GeoApiContext getGeoApiContext(){
         // Replace the API key below with a valid API key.
-        GeoApiContext context = new GeoApiContext().setApiKey(GOOGLE_MAP_API_KEY);
-        return context;
+        return new GeoApiContext().setApiKey(GOOGLE_MAP_API_KEY);
     }
 
 

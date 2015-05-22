@@ -53,16 +53,14 @@ public class ActionLogDaoServiceImpl implements ActionLogDaoService {
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
     public List<ActionLogEntity> findActionLogPaginated(Page page) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(ActionLogEntity.class);
         HibernateUtil.fillPaginationCriteria(criteria, page, ActionLogEntity.class);
-        List<ActionLogEntity> actionLogEntities = criteria.list();
-        return actionLogEntities;
+        return (List<ActionLogEntity>) criteria.list();
     }
 
     @Override

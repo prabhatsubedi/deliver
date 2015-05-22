@@ -4,8 +4,6 @@ package com.yetistep.delivr.controller;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.AuthenticatedUser;
-import com.yetistep.delivr.model.RoleEntity;
-import com.yetistep.delivr.service.inf.ClientService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
@@ -28,8 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Array;
-import java.util.*;
 
 @Controller
 public class MainController {
@@ -116,8 +112,7 @@ public class MainController {
         if (logout != null) {
             message = "You've been logged out successfully.";
         }
-        ServiceResponse serviceResponse = new ServiceResponse(message);
-        return serviceResponse;
+        return new ServiceResponse(message);
     }
 
     // customize the error message

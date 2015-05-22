@@ -165,8 +165,7 @@ public class AdminController {
             e.printStackTrace();
         }
 
-        ServiceResponse serviceResponse = new ServiceResponse("Role has been saved successfully");
-        return serviceResponse;
+        return new ServiceResponse("Role has been saved successfully");
     }
 
     @RequestMapping(value="/get_preferences", method = RequestMethod.GET)

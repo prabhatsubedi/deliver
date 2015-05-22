@@ -571,9 +571,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         assoc.put("addresses", "id,latitude,longitude,street,city,state,country");
 
 
-        UserEntity user = ((UserEntity) ReturnJsonUtil.getJsonObject(userEntity, fields, assoc));
-
-        return user;
+        return ((UserEntity) ReturnJsonUtil.getJsonObject(userEntity, fields, assoc));
     }
 
     @Override

@@ -36,8 +36,7 @@ public class SpringUserDetailsServiceImpl implements UserDetailsService {
         UserEntity user = userDao.findByUserName(username);
 
         List<GrantedAuthority> authorities = buildUserAuthority(user.getRole());
-        AuthenticatedUser authUser = buildUserForAuthentication(user, authorities);
-        return authUser;
+        return buildUserForAuthentication(user, authorities);
 
     }
 
@@ -81,8 +80,7 @@ public class SpringUserDetailsServiceImpl implements UserDetailsService {
         // Build user's authorities
         try {
             setAuths.add(new SimpleGrantedAuthority(role.getRole().toString()));
-            List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
-            return Result;
+            return new ArrayList<GrantedAuthority>(setAuths);
         }catch (Exception e) {
             throw e;
         }

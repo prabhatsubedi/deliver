@@ -2,7 +2,6 @@ package com.yetistep.delivr.util;
 
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.AuthenticatedUser;
-import com.yetistep.delivr.model.RoleEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Iterator;

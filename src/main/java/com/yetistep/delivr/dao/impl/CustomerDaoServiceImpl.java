@@ -140,8 +140,7 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         query.setParameter("cancelled", JobOrderStatus.CANCELLED.ordinal());
         query.setParameter("facebookId", facebookId);
         query.setResultTransformer(Transformers.aliasToBean(MyOrderDto.class));
-        List<MyOrderDto> currentOrders = query.list();
-        return currentOrders;
+        return  (List<MyOrderDto>) query.list();
     }
 
     @Override
@@ -172,8 +171,7 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
 
         HibernateUtil.fillPaginationCriteria(query, page);
         query.setResultTransformer(Transformers.aliasToBean(MyOrderDto.class));
-        List<MyOrderDto> pastOrders = query.list();
-        return pastOrders;
+        return  (List<MyOrderDto>) query.list();
     }
 
     @Override
@@ -213,8 +211,7 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         sqlQuery.setParameterList("orderStatusList", orderStatusList);
 
         sqlQuery.setResultTransformer(Transformers.aliasToBean(CustomerEntity.class));
-        CustomerEntity customerEntity = (CustomerEntity) sqlQuery.uniqueResult();
-        return customerEntity;
+        return  (CustomerEntity) sqlQuery.uniqueResult();
     }
 
     @Override
@@ -246,8 +243,7 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
 
         Criteria criteria = getCurrentSession().createCriteria(CustomerEntity.class);
         criteria.add(Restrictions.eq("facebookId", facebookId));
-        CustomerEntity customerEntity = criteria.list().size() > 0 ? (CustomerEntity) criteria.list().get(0) : null;
-        return customerEntity;
+        return criteria.list().size() > 0 ? (CustomerEntity) criteria.list().get(0) : null;
     }
 
     @Override
@@ -275,8 +271,7 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
     public List<TestEntity> findTest() throws Exception {
         String sql = "SELECT * FROM timestamp_test";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
-        List<TestEntity> testEntities = sqlQuery.list();
-        return testEntities;
+        return (List<TestEntity>) sqlQuery.list();
     }
 
     @Override
@@ -285,8 +280,7 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("facebookId", facebookId);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(CustomerEntity.class));
-        CustomerEntity customerEntity = (CustomerEntity) sqlQuery.uniqueResult();
-        return customerEntity;
+        return  (CustomerEntity) sqlQuery.uniqueResult();
     }
 }
 

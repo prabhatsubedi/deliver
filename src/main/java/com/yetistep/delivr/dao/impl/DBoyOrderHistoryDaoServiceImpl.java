@@ -39,8 +39,7 @@ public class DBoyOrderHistoryDaoServiceImpl implements DBoyOrderHistoryDaoServic
     public List<DBoyOrderHistoryEntity> find(List<Integer> id) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(DBoyOrderHistoryEntity.class);
         criteria.add(Restrictions.in("id", id));
-        List<DBoyOrderHistoryEntity>  orderHistoryEntities = criteria.list();
-        return orderHistoryEntities;
+        return  (List<DBoyOrderHistoryEntity>) criteria.list();
     }
 
     @Override
@@ -96,8 +95,7 @@ public class DBoyOrderHistoryDaoServiceImpl implements DBoyOrderHistoryDaoServic
                 .add(Restrictions.in("deliveryStatus", deliveryStatus))
                 .addOrder(Order.desc("orderCompletedAt"));
         HibernateUtil.fillPaginationCriteria(criteria, page, DBoyOrderHistoryEntity.class);
-        List<PastDeliveriesDto> pastDeliveries = criteria.list();
-        return pastDeliveries;
+        return  (List<PastDeliveriesDto>) criteria.list();
     }
 
     @Override
@@ -126,7 +124,6 @@ public class DBoyOrderHistoryDaoServiceImpl implements DBoyOrderHistoryDaoServic
         sqlQuery.setParameter("orderId", orderId);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(DBoyOrderHistoryEntity.class));
 
-        DBoyOrderHistoryEntity dBoyOrderHistoryEntity = sqlQuery.list().size() > 0 ? (DBoyOrderHistoryEntity) sqlQuery.list().get(0) : null;
-        return dBoyOrderHistoryEntity;
+        return sqlQuery.list().size() > 0 ? (DBoyOrderHistoryEntity) sqlQuery.list().get(0) : null;
     }
 }

@@ -51,8 +51,7 @@ public class DeliverBoySelectionDaoServiceImpl implements DeliveryBoySelectionDa
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -70,8 +69,7 @@ public class DeliverBoySelectionDaoServiceImpl implements DeliveryBoySelectionDa
                 .add(Restrictions.eq("order.id", orderId))
                 .add(Restrictions.eq("deliveryBoy.id", deliveryBoyId))
                 .add(Restrictions.eq("rejected", false));
-        DeliveryBoySelectionEntity deliveryBoySelectionEntity = (DeliveryBoySelectionEntity) criteria.uniqueResult();
-        return deliveryBoySelectionEntity;
+        return (DeliveryBoySelectionEntity) criteria.uniqueResult();
     }
 
     @Override
@@ -102,8 +100,7 @@ public class DeliverBoySelectionDaoServiceImpl implements DeliveryBoySelectionDa
                 .add(Restrictions.eq("o.orderStatus", JobOrderStatus.ORDER_PLACED))
                 .add(Restrictions.eq("deliveryBoy.id", deliveryBoyId))
                 .add(Restrictions.eq("rejected", false));
-        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = (List<DeliveryBoySelectionEntity>) criteria.list();
-        return deliveryBoySelectionEntities;
+        return  (List<DeliveryBoySelectionEntity>) criteria.list();
     }
 
     @Override
@@ -113,7 +110,6 @@ public class DeliverBoySelectionDaoServiceImpl implements DeliveryBoySelectionDa
         sqlQuery.setParameter("orderId", orderId);
         sqlQuery.setParameter("deliveryBoyId", deliveryBoyId);
         sqlQuery.setParameter("rejected", false);
-        Integer numberOfDeliveryBoys = ((Number)sqlQuery.uniqueResult()).intValue();
-        return numberOfDeliveryBoys;
+        return ((Number)sqlQuery.uniqueResult()).intValue();
     }
 }

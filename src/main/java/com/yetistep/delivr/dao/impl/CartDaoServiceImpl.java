@@ -59,8 +59,7 @@ public class CartDaoServiceImpl implements CartDaoService{
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -117,9 +116,7 @@ public class CartDaoServiceImpl implements CartDaoService{
                 .setProjection(projectionList)
                 .setResultTransformer(new AliasToBeanNestedResultTransformer(CartEntity.class));
         criteria.add(Restrictions.eq("customer.facebookId", facebookId));
-        List<CartEntity> cartEntities = criteria.list();
-
-        return cartEntities;
+        return  (List<CartEntity>) criteria.list();
     }
 
     @Override
@@ -146,9 +143,7 @@ public class CartDaoServiceImpl implements CartDaoService{
                 .setProjection(projectionList)
                 .setResultTransformer(new AliasToBeanNestedResultTransformer(CartEntity.class));
         criteria.add(Restrictions.eq("customer.facebookId", facebookId));
-        List<CartEntity> cartEntities = criteria.list();
-
-        return cartEntities;
+        return  (List<CartEntity>) criteria.list();
     }
 
     @Override
@@ -233,9 +228,7 @@ public class CartDaoServiceImpl implements CartDaoService{
                 .setProjection(projectionList)
                 .setResultTransformer(new AliasToBeanNestedResultTransformer(CartEntity.class));
         criteria.add(Restrictions.eq("id", cartId));
-        CartEntity cart = criteria.list().size()>0 ? (CartEntity) criteria.list().get(0) : null;
-
-        return cart;
+        return criteria.list().size()>0 ? (CartEntity) criteria.list().get(0) : null;
     }
 
     @Override
@@ -253,9 +246,7 @@ public class CartDaoServiceImpl implements CartDaoService{
                 .setProjection(projectionList)
                 .setResultTransformer(new AliasToBeanNestedResultTransformer(CartEntity.class));
         criteria.add(Restrictions.eq("id", cartId));
-        CartEntity cart = criteria.list().size()>0 ? (CartEntity) criteria.list().get(0) : null;
-
-        return cart;
+        return criteria.list().size()>0 ? (CartEntity) criteria.list().get(0) : null;
     }
 
     @Override
@@ -265,8 +256,7 @@ public class CartDaoServiceImpl implements CartDaoService{
                 "WHERE c.id = :cartId";
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
         query.setParameter("cartId", cartId);
-        Integer availableQty = ((Number) query.uniqueResult()).intValue();
-        return availableQty;
+        return  ((Number) query.uniqueResult()).intValue();
     }
 
     @Override

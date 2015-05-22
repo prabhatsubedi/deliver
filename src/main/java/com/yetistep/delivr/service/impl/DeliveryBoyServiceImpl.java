@@ -416,8 +416,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 "profileImage,blacklistStatus,verifiedStatus,subscribeNewsletter,lastActivityDate,createdDate,addresses");
         subAssoc.put("addresses", "id,street,city,state,country,countryCode");
 
-        DeliveryBoyEntity deliveryBoyEntity = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(userEntity.getDeliveryBoy(), fields, assoc , subAssoc);
-        return deliveryBoyEntity;
+        return (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(userEntity.getDeliveryBoy(), fields, assoc , subAssoc);
     }
 
     @Override

@@ -92,8 +92,7 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
         String sql = "SELECT ud.device_token FROM user_device ud INNER JOIN users u ON (u.id = ud.user_id) INNER JOIN delivery_boys db ON (db.user_id = u.id) WHERE db.id IN (:deliveryBoyId)";
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
         query.setParameterList("deliveryBoyId", deliveryBoysId);
-        List<String> deviceTokens = query.list();
-        return deviceTokens;
+        return (List<String>) query.list();
     }
 
     @Override
@@ -105,8 +104,7 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
         sqlQuery.setParameter("orderId", orderId);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(UserDeviceEntity.class));
 
-        UserDeviceEntity userDevice = (UserDeviceEntity) sqlQuery.uniqueResult();
-        return userDevice;
+        return (UserDeviceEntity) sqlQuery.uniqueResult();
     }
 
     @Override
@@ -134,8 +132,7 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
         sqlQuery.setParameter("rejected", false);
         sqlQuery.setParameter("orderId", orderId);
         sqlQuery.setParameter("deliveryBoyId", exceptDeliveryBoyId);
-        List<String> deviceTokens = sqlQuery.list();
-        return deviceTokens;
+        return (List<String>) sqlQuery.list();
     }
 
     @Override
@@ -147,8 +144,7 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
         sqlQuery.setParameter("accepted", false);
         sqlQuery.setParameter("rejected", false);
         sqlQuery.setParameter("orderId", orderId);
-        List<String> deviceTokens = sqlQuery.list();
-        return deviceTokens;
+        return (List<String>) sqlQuery.list();
     }
 
     @Override
@@ -159,8 +155,7 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("roleId", role.toInt());
         sqlQuery.setParameter("family", "%"+family+"%");
-        List<String> deviceTokens = sqlQuery.list();
-        return deviceTokens;
+        return (List<String>) sqlQuery.list();
     }
 
     @Override
@@ -172,7 +167,6 @@ public class UserDeviceDaoServiceImpl implements UserDeviceDaoService {
         sqlQuery.setParameter("customerId", customerId);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(UserDeviceEntity.class));
 
-        UserDeviceEntity userDevice = (UserDeviceEntity) sqlQuery.uniqueResult();
-        return userDevice;
+        return (UserDeviceEntity) sqlQuery.uniqueResult();
     }
 }

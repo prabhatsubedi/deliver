@@ -53,8 +53,7 @@ public class StoreDaoServiceImpl implements StoreDaoService{
 
     @Override
     public Session getCurrentSession() throws Exception {
-        Session session = sessionFactory.getCurrentSession();
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -77,9 +76,7 @@ public class StoreDaoServiceImpl implements StoreDaoService{
         query.setParameter("brandId", brandId);
         query.setParameter("status", Status.ACTIVE.ordinal());
 
-        Integer activeStore = ((Number) query.uniqueResult()).intValue();
-
-        return activeStore;
+        return  ((Number) query.uniqueResult()).intValue();
     }
 
     @Override
@@ -90,8 +87,7 @@ public class StoreDaoServiceImpl implements StoreDaoService{
         sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
         sqlQuery.setResultTransformer(Transformers.aliasToBean(StoreEntity.class));
 
-        List<StoreEntity> storeEntities = sqlQuery.list();
-        return storeEntities;
+        return (List<StoreEntity>) sqlQuery.list();
     }
 
     @Override

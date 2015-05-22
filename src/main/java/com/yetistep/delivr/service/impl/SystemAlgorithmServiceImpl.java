@@ -186,6 +186,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
     public void decodeWalletTransaction(WalletTransactionEntity walletTransactionEntity) throws Exception {
         if(walletTransactionEntity == null)
             return;
+        log.info(walletTransactionEntity.toString());
         String[] decode = walletTransactionEntity.getSignature().split("-");
         String parsedResult = "";
         for (int i = 0; i < decode.length; i++) {

@@ -147,4 +147,22 @@ public class WalletTransactionEntity {
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
+
+    @Override
+    public String toString() {
+        return "WalletTransactionEntity{" +
+                "id=" + id +
+                ", transactionDate=" + transactionDate +
+                ", transactionAmount=" + transactionAmount +
+                ", remarks='" + remarks + '\'' +
+                ", accountType=" + accountType +
+                ", signature='" + signature + '\'' +
+                ", availableWalletAmount=" + availableWalletAmount +
+                ", paymentMode=" + paymentMode +
+                ", customer=" + customer +
+                ", order=" + order +
+                ", flag=" + flag +
+                ", orderId=" + orderId +
+                '}';
+    }
 }

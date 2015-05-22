@@ -424,7 +424,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("dBoyAdvanceAmounts", "id,advanceDate,amountAdvance,type,accountantNote");
-        assoc.put("order", "id,deliveryStatus,orderStatus,grandTotal,orderDate,paymentMode,paidFromWallet,paidFromCOD,store,dBoyOrderHistories,accountantNote,itemServiceAndVatCharge,totalCost,itemsOrder");
+        assoc.put("order", "id,deliveryStatus,deliveryCharge,orderStatus,grandTotal,orderDate,paymentMode,paidFromWallet,paidFromCOD,store,dBoyOrderHistories,accountantNote,itemServiceAndVatCharge,totalCost,itemsOrder");
         subAssoc.put("itemsOrder", "id,purchaseStatus");
         subAssoc.put("dBoyOrderHistories", "id,orderCompletedAt");
         subAssoc.put("store", "id,storesBrand");
@@ -530,12 +530,19 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                 order.setBalance(balance);
                 order.setDr(order.getGrandTotal());
 
-                //check if item purchased
+                //check if item purchased && processed
                 Boolean itemPurchased = false;
+                Boolean itemProcessed = false;
                 if(order.getDeliveryStatus().equals(DeliveryStatus.CANCELLED)){
                     for (ItemsOrderEntity itemsOrder: order.getItemsOrder()){
                         if (itemsOrder.getPurchaseStatus() != null && itemsOrder.getPurchaseStatus()){
                             itemPurchased = true;
+                            break;
+                        }
+                    }
+                    for (ItemsOrderEntity itemsOrder: order.getItemsOrder()){
+                        if (itemsOrder.getPurchaseStatus() != null && !itemsOrder.getPurchaseStatus()){
+                            itemProcessed = true;
                             break;
                         }
                     }
@@ -613,25 +620,48 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                                 addedOrderRows.add(nonPartnerOrder);
                            }
                         } else {
-                            //both cr and dr = 0
-                            order.setDr(BigDecimal.ZERO);
-                            OrderEntity walletOrder = new OrderEntity();
-                            walletOrder.setId(order.getId());
-                            walletOrder.setOrderDate(order.getOrderDate());
-                            walletOrder.setCr(BigDecimal.ZERO);
-                            walletOrder.setPaymentMode(order.getPaymentMode());
-                            //if cod amount is greater then 0 then the payment mode is wallet_cod
-                            if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
-                                walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
-                                order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+
+                            if(!itemProcessed || order.getDeliveryCharge() == null){
+                                //both cr and dr = 0
+                                order.setDr(BigDecimal.ZERO);
+                                OrderEntity walletOrder = new OrderEntity();
+                                walletOrder.setId(order.getId());
+                                walletOrder.setOrderDate(order.getOrderDate());
+                                walletOrder.setCr(BigDecimal.ZERO);
+                                walletOrder.setPaymentMode(order.getPaymentMode());
+                                //if cod amount is greater then 0 then the payment mode is wallet_cod
+                                if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
+                                    walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                                    order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                                } else {
+                                    walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
+                                    order.setDescription("Order(WALLET) - "+ partnershipStatus);
+                                }
+                                balance = balance.subtract(order.getGrandTotal());
+                                order.setBalance(balance);
+                                walletOrder.setBalance(balance);
+                                addedOrderRows.add(walletOrder);
                             } else {
-                                walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
-                                order.setDescription("Order(WALLET) - "+ partnershipStatus);
+                                //both cr and dr = 0
+                                BigDecimal deliveryCharge = order.getDeliveryCharge();
+                                order.setDr(deliveryCharge);
+                                OrderEntity walletOrder = new OrderEntity();
+                                walletOrder.setId(order.getId());
+                                walletOrder.setOrderDate(order.getOrderDate());
+                                walletOrder.setCr(BigDecimal.ZERO);
+                                walletOrder.setPaymentMode(order.getPaymentMode());
+                                //if cod amount is greater then 0 then the payment mode is wallet_cod
+                                if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
+                                    walletOrder.setDescription("Order(WALLET+COD) - delivery charge added - "+ partnershipStatus);
+                                    order.setDescription("Order(WALLET+COD) - delivery charge added - "+ partnershipStatus);
+                                } else {
+                                    walletOrder.setDescription("Order(WALLET) - delivery charge added - "+ partnershipStatus);
+                                    order.setDescription("Order(WALLET) - delivery charge added - "+ partnershipStatus);
+                                }
+
+                                walletOrder.setBalance(balance);
+                                addedOrderRows.add(walletOrder);
                             }
-                            balance = balance.subtract(order.getPaidFromWallet());
-                            order.setBalance(balance);
-                            walletOrder.setBalance(balance);
-                            addedOrderRows.add(walletOrder);
                         }
 
                     }
@@ -669,23 +699,32 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                             }
 
                         } else {
-                            //if(!order.getStore().getStoresBrand().getMerchant().getPartnershipStatus()){
-                            order.setDr(BigDecimal.ZERO);
-                            OrderEntity cancelledOrder = new OrderEntity();
-                            cancelledOrder.setId(order.getId());
-                            cancelledOrder.setCr(BigDecimal.ZERO);
-                            cancelledOrder.setDescription("Canceled order received-item not purchased");
-                            cancelledOrder.setOrderDate(order.getOrderDate());
-                            cancelledOrder.setPaymentMode(order.getPaymentMode());
-                            balance = balance.subtract(order.getGrandTotal());
-                            order.setBalance(balance);
-                            cancelledOrder.setBalance(balance);
-                            addedOrderRows.add(cancelledOrder);
-                            /*} else {
+
+                            if(!itemProcessed || order.getDeliveryCharge() == null){
                                 order.setDr(BigDecimal.ZERO);
+                                OrderEntity cancelledOrder = new OrderEntity();
+                                cancelledOrder.setId(order.getId());
+                                cancelledOrder.setCr(BigDecimal.ZERO);
+                                cancelledOrder.setDescription("Canceled order received-item not purchased");
+                                cancelledOrder.setOrderDate(order.getOrderDate());
+                                cancelledOrder.setPaymentMode(order.getPaymentMode());
                                 balance = balance.subtract(order.getGrandTotal());
                                 order.setBalance(balance);
-                            }*/
+                                cancelledOrder.setBalance(balance);
+                                addedOrderRows.add(cancelledOrder);
+                            } else {
+                                BigDecimal deliveryCharge = order.getDeliveryCharge();
+                                order.setDr(deliveryCharge);
+                                OrderEntity cancelledOrder = new OrderEntity();
+                                cancelledOrder.setId(order.getId());
+                                cancelledOrder.setCr(BigDecimal.ZERO);
+                                cancelledOrder.setDescription("Canceled order received-item not purchased");
+                                cancelledOrder.setOrderDate(order.getOrderDate());
+                                cancelledOrder.setPaymentMode(order.getPaymentMode());
+                                cancelledOrder.setBalance(balance);
+                                addedOrderRows.add(cancelledOrder);
+                            }
+
                         }
                     }
 

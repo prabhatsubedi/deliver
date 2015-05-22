@@ -1727,6 +1727,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 ItemEntity item = new ItemEntity();
                 item.setId(itemOrder.getItem().getId());
                 item.setName(itemOrder.getItem().getName());
+                item.setAdditionalOffer(itemOrder.getItem().getAdditionalOffer());
                 item.setUnitPrice(itemOrder.getItem().getUnitPrice());
                 itemsOrderEntity.setItem(item);
             }
@@ -1921,6 +1922,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 ItemEntity item = new ItemEntity();
                 item.setId(itemOrder.getItem().getId());
                 item.setName(itemOrder.getItem().getName());
+                item.setAdditionalOffer(itemOrder.getItem().getAdditionalOffer());
                 item.setUnitPrice(itemOrder.getItem().getUnitPrice());
                 itemOrder.setItem(item);
             }else if(itemOrder.getCustomItem() != null){
@@ -1958,7 +1960,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
             Map<String, String> assoc = new HashMap<>();
             Map<String, String> subAssoc = new HashMap<>();
-            assoc.put("item", "id,name,availableStartTime,availableEndTime,maxOrderQuantity,minOrderQuantity,unitPrice,itemsImage,attributesTypes");
+            assoc.put("item", "id,name,availableStartTime,availableEndTime,maxOrderQuantity,minOrderQuantity,unitPrice,itemsImage,attributesTypes,additionalOffer");
             subAssoc.put("itemsImage", "url");
             subAssoc.put("attributesTypes", "id,itemsAttribute,multiSelect,type");
             subAssoc.put("itemsAttribute", "id,attribute,unitPrice,selected");

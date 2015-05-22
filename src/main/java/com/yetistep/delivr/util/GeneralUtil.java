@@ -184,7 +184,7 @@ public class GeneralUtil {
     }
 
     public static HttpHeaders getCacheHeader() {
-        Integer inSec = 0*60;
+        Integer inSec = 0;
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Cache-Control", "max-age="+inSec);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);

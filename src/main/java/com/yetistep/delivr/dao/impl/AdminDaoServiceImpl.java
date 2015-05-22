@@ -177,7 +177,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
 
         Number cnt = (Number) query.uniqueResult();
         if(cnt != null)
-            return (Integer) cnt.intValue()/60;
+            return cnt.intValue()/60;
         else return 0;
     }
 
@@ -218,7 +218,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
 
         Number cnt = (Number) query.uniqueResult();
         if(cnt != null)
-            return (Integer) cnt.intValue()/60;
+            return cnt.intValue()/60;
         else return 0;
     }
 

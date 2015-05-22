@@ -56,6 +56,8 @@ public class AdminServiceImpl implements AdminService {
 
 
     public List<Map<String, Map<Integer, Map<String, String>>>> getGodsView() throws Exception{
+        //TwilioSMSUtil.getUsageRecords();
+
         List<Map<String, Map<Integer, Map<String, String>>>> godsView = new ArrayList<>();
         Map<String, Map<Integer, Map<String, String>>> generalData = new HashMap<>();
 
@@ -371,6 +373,8 @@ public class AdminServiceImpl implements AdminService {
     public SparrowResultModel getSMSCredits() throws Exception {
         return SparrowSMSUtil.getSMSCredits();
     }
+
+
 
     @Override
     public List<SMSDto> customerSendableSMSList() throws Exception {

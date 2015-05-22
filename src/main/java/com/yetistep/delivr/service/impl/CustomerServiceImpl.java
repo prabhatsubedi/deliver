@@ -382,11 +382,17 @@ public class CustomerServiceImpl implements CustomerService {
 
         ValidateMobileEntity validMobile = validateMobileDaoService.getMobileCode(customerEntity.getUser().getId(), mobile);
 
-        //String mobCode = addressDaoService.getMobileCode(customerEntity.getUser().getId(), mobile);
-       // String message = "KollKat: Your verification code for iDelivr is ";
         String verificationCode = null;
         //once sms is enabled set validatedByUser false by default and uncomment the related lines of code
         Boolean validatedByUser = false;
+
+        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+        String countryCode;
+        if(currency.equals("₹")){
+            countryCode = "+91";
+        }else{
+            countryCode = "+977";
+        }
         if(validMobile == null) {
             log.debug("++++++ Updating Mobile No and Validation Code");
 
@@ -395,7 +401,9 @@ public class CustomerServiceImpl implements CustomerService {
             verificationCode = GeneralUtil.generateMobileCode();
 
             //Now Send SMS
+
             SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
+            //TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile, countryCode);
 
             ValidateMobileEntity validateMobileEntity = new ValidateMobileEntity();
             validateMobileEntity.setMobileNo(mobile);
@@ -422,6 +430,7 @@ public class CustomerServiceImpl implements CustomerService {
 
                 //Now Send SMS
                 SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
+                //TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile, countryCode);
 
                 validateMobileDaoService.updateNoOfSMSSend(validMobile.getId());
 

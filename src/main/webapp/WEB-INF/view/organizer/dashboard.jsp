@@ -62,10 +62,10 @@
                         </div>
                         <div class="more_data_cont">
                             <div class="more_data">
-                                <div class="data_row"><span class="badge count_inRouteToDelivery">0</span>In Route to Delivery</div>
                                 <div class="data_row"><span class="badge count_inRouteToPickUp">0</span>In Route to Pickup</div>
                                 <div class="data_row"><span class="badge count_atStore">0</span>At Store</div>
                                 <div class="data_row"><span class="badge count_orderAccepted">0</span>Order Picked</div>
+                                <div class="data_row"><span class="badge count_inRouteToDelivery">0</span>In Route to Delivery</div>
                             </div>
                         </div>
                     </div>

@@ -475,6 +475,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                 ItemEntity item = new ItemEntity();
                 item.setId(itemOrder.getItem().getId());
                 item.setName(itemOrder.getItem().getName());
+                item.setAdditionalOffer(itemOrder.getItem().getAdditionalOffer());
                 ItemsImageEntity itemsImageEntity = itemsImageDaoService.findImage(itemOrder.getItem().getId());
                 if(itemsImageEntity !=null)
                     item.setImageUrl(itemsImageEntity.getUrl());

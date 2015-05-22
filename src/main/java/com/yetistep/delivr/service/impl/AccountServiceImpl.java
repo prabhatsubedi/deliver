@@ -631,7 +631,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                                 walletOrder.setPaymentMode(order.getPaymentMode());
                                 //if cod amount is greater then 0 then the payment mode is wallet_cod
                                 if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
-                                    walletOrder.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
+                                    walletOrder.setDescription("Order(WALLET+COD) - item not purchased, not processed"+ partnershipStatus);
                                     order.setDescription("Order(WALLET+COD) - "+ partnershipStatus);
                                 } else {
                                     walletOrder.setDescription("Order(WALLET) - "+ partnershipStatus);
@@ -652,11 +652,11 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                                 walletOrder.setPaymentMode(order.getPaymentMode());
                                 //if cod amount is greater then 0 then the payment mode is wallet_cod
                                 if(order.getPaidFromCOD() != null && order.getPaidFromCOD().compareTo(BigDecimal.ZERO) == 1){
-                                    walletOrder.setDescription("Order(WALLET+COD) - delivery charge added - "+ partnershipStatus);
-                                    order.setDescription("Order(WALLET+COD) - delivery charge added - "+ partnershipStatus);
+                                    walletOrder.setDescription("Order(WALLET+COD) - item not purchased but processed - "+ partnershipStatus);
+                                    order.setDescription("Order(WALLET+COD) - item not purchased but processed - "+ partnershipStatus);
                                 } else {
-                                    walletOrder.setDescription("Order(WALLET) - delivery charge added - "+ partnershipStatus);
-                                    order.setDescription("Order(WALLET) - delivery charge added - "+ partnershipStatus);
+                                    walletOrder.setDescription("Order(WALLET) - item not purchased but processed - "+ partnershipStatus);
+                                    order.setDescription("Order(WALLET) - item not purchased but processed - "+ partnershipStatus);
                                 }
 
                                 walletOrder.setBalance(balance);
@@ -705,7 +705,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                                 OrderEntity cancelledOrder = new OrderEntity();
                                 cancelledOrder.setId(order.getId());
                                 cancelledOrder.setCr(BigDecimal.ZERO);
-                                cancelledOrder.setDescription("Canceled order received-item not purchased");
+                                cancelledOrder.setDescription("Canceled order received-item not purchased, not processed");
                                 cancelledOrder.setOrderDate(order.getOrderDate());
                                 cancelledOrder.setPaymentMode(order.getPaymentMode());
                                 balance = balance.subtract(order.getGrandTotal());
@@ -718,7 +718,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                                 OrderEntity cancelledOrder = new OrderEntity();
                                 cancelledOrder.setId(order.getId());
                                 cancelledOrder.setCr(BigDecimal.ZERO);
-                                cancelledOrder.setDescription("Canceled order received-item not purchased");
+                                cancelledOrder.setDescription("Canceled order received-item not purchased but processed");
                                 cancelledOrder.setOrderDate(order.getOrderDate());
                                 cancelledOrder.setPaymentMode(order.getPaymentMode());
                                 cancelledOrder.setBalance(balance);

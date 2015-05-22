@@ -136,11 +136,48 @@ public class SHAEncoder {
 
     public static String getResponseHTML(String msg, Boolean success){
         String colorCode = "red";
-        if(success)
+        String status = "failure";
+        if(success){
             colorCode = "green";
-        return "<html><title>"+colorCode+"</title><h3 style='color: "+colorCode+"'>"+msg+"</h3>"
-                + "<div>Click OK to continue</div>" +
-                "<div><button onclick='ok.performClick(this.value);'>OK</button></div></html>";
+            status = "success";
+        }
+        return "<html>" +
+                "<title>" + status + "</title>" +
+                "<style>" +
+                ".message{" +
+                "text-align: center;" +
+                "margin: 35% 0 20% 0;" +
+                "color: #b4b4b4;" +
+                "}" +
+                "" +
+                ".box{" +
+                "font-family: times new roman;" +
+                "font-weight: bold;" +
+                "text-align: center;" +
+                "font-size: 16px;" +
+                "color: #FFF;" +
+                "padding: 0 18px;" +
+                "}" +
+                "" +
+                "body{" +
+                "margin:20px;" +
+                "}" +
+                "" +
+                ".center{" +
+                "width: 35%;" +
+                "margin-left: auto;" +
+                "margin-right: auto;" +
+                "background: none repeat scroll 0% 0% #ff9235;" +
+                "border-radius: 36px;" +
+                "padding: 10px;" +
+                "}" +
+                "</style>" +
+                "<body>" +
+                "<h4 class='message'>"+msg+"</h4>" +
+                "<div class='center'><span class='box' onclick='ok.performClick(this.value);'>Continue</span></div>" +
+                "" +
+                "</body>" +
+                "</html>";
     }
 
 }

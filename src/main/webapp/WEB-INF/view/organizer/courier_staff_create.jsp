@@ -42,6 +42,7 @@
 
             <div class="form_container">
                 <form role="form" id="courier_boy_form" method="POST" action="">
+                    <input type="password" class="hidden">
                     <div class="courier_staff_profile_pic">
                         <div id="profile_image" class="drop_zone disabled unselectable text-center maintain_ratio" mr-width="200" mr-height="200">
                             <div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 200x200</div>

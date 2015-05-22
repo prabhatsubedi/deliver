@@ -2093,7 +2093,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         PaymentGatewayInfoEntity paymentGatewayInfoEntity = new PaymentGatewayInfoEntity();
         BigDecimal minimumTransferableAmount = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_TRANSFERABLE_AMOUNT));
-        if(BigDecimalUtil.isLessThen(amount, minimumTransferableAmount)){
+        if(BigDecimalUtil.isLessThen(BigDecimalUtil.checkNull(amount), minimumTransferableAmount)){
             String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
             throw new YSException("VLD038", currency +". "+minimumTransferableAmount);
         }

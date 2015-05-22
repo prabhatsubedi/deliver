@@ -39,6 +39,7 @@
         <div class="main_content">
             <div class="profile_container">
                 <form role="form" id="courier_boy_form" method="POST" action="">
+                    <input type="password" class="hidden">
                     <div class="profile_header clearfix">
                         <div class="profile_header_image pull-left">
                             <div id="profile_image" class="drop_zone user_image disabled unselectable text-center maintain_ratio" mr-width="200" mr-height="200">

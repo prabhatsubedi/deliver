@@ -5,6 +5,7 @@ import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.MerchantEntity;
+import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.service.inf.AccountService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.ManagerService;
@@ -343,6 +344,23 @@ public class AccountantController {
             GeneralUtil.logError(log, "Error Occurred while paying DBoy : ", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
+    @RequestMapping(value = "/get_order", method = RequestMethod.GET)
+    public ResponseEntity<ServiceResponse> getOrder(@RequestHeader HttpHeaders headers) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            OrderEntity order = accountService.getOrder(headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Order has been retrieved successfully");
+            serviceResponse.addParam("order", order);
+            return new ResponseEntity<>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving order : ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
 

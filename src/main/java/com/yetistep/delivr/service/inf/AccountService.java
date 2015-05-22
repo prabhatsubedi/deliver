@@ -39,4 +39,6 @@ public interface AccountService {
     public void payDBoyPayStatement(HeaderDto headerDto) throws Exception;
 
     public PaginationDto getDBoyAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
+
+    public OrderEntity getOrder(HeaderDto headerDto) throws Exception;
 }

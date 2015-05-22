@@ -715,6 +715,32 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         return paginationDto;
     }
 
+    @Override
+    public OrderEntity getOrder(HeaderDto headerDto) throws Exception{
+         OrderEntity order = orderDaoService.findOrderById(Integer.parseInt(headerDto.getId()));
+        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,deliveryBoySelections,assignedTime,attachments,itemServiceAndVatCharge,grandTotal,totalCost,rating,deliveryCharge,bill,itemsOrder";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("deliveryBoy", "id,user,averageRating,latitude,longitude");
+        assoc.put("customer", "id,user,bill");
+        assoc.put("itemsOrder", "id,itemTotal,serviceAndVatCharge,availabilityStatus,purchaseStatus,vat,serviceCharge,customItem");
+        assoc.put("store", "id,name,street,contactPerson,contactNo");
+        assoc.put("address", "id,street,city,state,country");
+        assoc.put("attachments", "url");
+        assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
+        assoc.put("orderCancel", "id,reasonDetails,reason");
+        assoc.put("dBoyOrderHistories", "id,distanceTravelled,amountEarned,jobStartedAt,orderCompletedAt");
+        assoc.put("deliveryBoySelections", "id,paidToCourier,accepted");
+        assoc.put("bill", "id,path");
+
+        subAssoc.put("user", "id,fullName,mobileNumber,profileImage,addresses,emailAddress");
+        subAssoc.put("reasonDetails", "id,cancelReason");
+        subAssoc.put("addresses", "id,street,city,state,country");
+
+        return (OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc);
+    }
 
 
 }

@@ -152,10 +152,7 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         query.setParameter("deliveryBoyId", deliveryBoyId);
         query.setParameter("orderId", orderId);
         BigInteger count = (BigInteger) query.uniqueResult();
-        if(count.intValue() == 0){
-            return true;
-        }
-        return false;
+        return count.intValue() == 0;
     }
 
     @Override
@@ -187,10 +184,7 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         query.setParameter("deliveryBoyId", deliveryBoyId);
         query.setParameter("orderId", orderId);
         BigInteger count = (BigInteger) query.uniqueResult();
-        if(count.intValue() == 0){
-            return true;
-        }
-        return false;
+        return count.intValue() == 0;
     }
 
     @Override
@@ -210,7 +204,7 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("licenseNumber", licenseNumber);
         BigInteger count = (BigInteger) sqlQuery.uniqueResult();
-        return (count.intValue() > 0) ? true : false;
+        return (count.intValue() > 0);
     }
 
     @Override
@@ -220,7 +214,7 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
         sqlQuery.setParameter("licenseNumber", licenseNumber);
         sqlQuery.setParameter("dBoyId", dBoyId);
         BigInteger count = (BigInteger) sqlQuery.uniqueResult();
-        return (count.intValue() > 0) ? true : false;
+        return (count.intValue() > 0);
     }
 
     @Override

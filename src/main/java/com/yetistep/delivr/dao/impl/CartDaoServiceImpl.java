@@ -275,9 +275,6 @@ public class CartDaoServiceImpl implements CartDaoService{
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
         query.setParameter("facebookId", facebookId);
         Integer availableQty = ((Number) query.uniqueResult()).intValue();
-        if(availableQty.equals(0)){
-            return false;
-        }
-        return true;
+        return !availableQty.equals(0);
     }
 }

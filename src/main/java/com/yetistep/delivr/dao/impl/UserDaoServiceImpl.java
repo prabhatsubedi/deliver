@@ -208,7 +208,7 @@ public class UserDaoServiceImpl implements UserDaoService {
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("mobileNumber", mobileNumber);
         BigInteger count = (BigInteger) sqlQuery.uniqueResult();
-        return (count.intValue() > 0) ? true : false;
+        return (count.intValue() > 0);
     }
 
     @Override
@@ -218,7 +218,7 @@ public class UserDaoServiceImpl implements UserDaoService {
         sqlQuery.setParameter("mobileNumber", mobileNumber);
         sqlQuery.setParameter("userId", userId);
         BigInteger count = (BigInteger) sqlQuery.uniqueResult();
-        return (count.intValue() > 0) ? true : false;
+        return (count.intValue() > 0);
     }
 
     @Override
@@ -229,7 +229,7 @@ public class UserDaoServiceImpl implements UserDaoService {
         sqlQuery.setParameter("roleId", roleId);
 
         BigInteger count = (BigInteger) sqlQuery.uniqueResult();
-        return (count.intValue() > 0) ? true : false;
+        return (count.intValue() > 0);
     }
 
     @Override
@@ -241,7 +241,7 @@ public class UserDaoServiceImpl implements UserDaoService {
         sqlQuery.setParameter("userId", userId);
 
         BigInteger count = (BigInteger) sqlQuery.uniqueResult();
-        return (count.intValue() > 0) ? true : false;
+        return (count.intValue() > 0);
     }
 
     @Override

@@ -44,6 +44,6 @@ public enum CancelReason {
         public String toString() {
             return "Others";
         }
-    };
+    }
 
 }

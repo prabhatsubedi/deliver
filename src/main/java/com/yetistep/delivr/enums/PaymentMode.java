@@ -8,5 +8,5 @@ package com.yetistep.delivr.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum PaymentMode {
-    CASH_ON_DELIVERY, WALLET;
+    CASH_ON_DELIVERY, WALLET
 }

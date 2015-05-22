@@ -468,7 +468,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             log.info("Deleting brand log to S3 Bucket ");
             AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(brandLogoUrl));
             log.info("Uploading brand log to S3 Bucket ");
-            String brandLogoName = "brand_logo" + (isLocal ? "_tmp_" : "_") + dbStoresBrand.getId()+System.currentTimeMillis();;
+            String brandLogoName = "brand_logo" + (isLocal ? "_tmp_" : "_") + dbStoresBrand.getId()+System.currentTimeMillis();
             String s3PathLogo = GeneralUtil.saveImageToBucket(brandLogo, brandLogoName, dir, true);
             dbStoresBrand.setBrandLogo(s3PathLogo);
             merchantDaoService.updateStoresBrand(dbStoresBrand);
@@ -478,7 +478,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             log.info("Deleting brand log to S3 Bucket ");
             AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(brandImageUrl));
             log.info("Uploading brand image to S3 Bucket ");
-            String brandImageName = "brand_image" + (isLocal ? "_tmp_" : "_") + dbStoresBrand.getId()+System.currentTimeMillis();;
+            String brandImageName = "brand_image" + (isLocal ? "_tmp_" : "_") + dbStoresBrand.getId()+System.currentTimeMillis();
             String s3PathImage = GeneralUtil.saveImageToBucket(brandImage, brandImageName, dir, true);
             dbStoresBrand.setBrandImage(s3PathImage);
             merchantDaoService.updateStoresBrand(dbStoresBrand);

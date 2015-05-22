@@ -14,17 +14,11 @@ import java.util.List;
 public class BigDecimalUtil {
     private static final BigDecimal HUNDRED = new BigDecimal(100);
     public static boolean isGreaterThen(BigDecimal param1, BigDecimal param2){
-         if(param1.compareTo(param2) == 1){
-             return true;
-         }
-        return false;
+        return param1.compareTo(param2) == 1;
     }
 
-    public static final boolean isGreaterThenOrEqualTo(BigDecimal param1, BigDecimal param2){
-        if(param1.compareTo(param2) == 1 || param1.compareTo(param2) == 0){
-            return true;
-        }
-        return false;
+    public static boolean isGreaterThenOrEqualTo(BigDecimal param1, BigDecimal param2){
+        return param1.compareTo(param2) == 1 || param1.compareTo(param2) == 0;
     }
 
     public static boolean isLessThanZero(BigDecimal param) {
@@ -36,47 +30,29 @@ public class BigDecimalUtil {
     }
 
     public static boolean isLessThen(BigDecimal param1, BigDecimal param2){
-        if(param1.compareTo(param2) == -1) {
-             return true;
-        }
-        return false;
+        return param1.compareTo(param2) == -1;
     }
 
     public static boolean isLessThenOrEqualTo(BigDecimal param1, BigDecimal param2){
-        if(param1.compareTo(param2) == -1 || param1.compareTo(param2) == 0) {
-            return true;
-        }
-        return false;
+        return param1.compareTo(param2) == -1 || param1.compareTo(param2) == 0;
     }
 
     public static boolean isEqualTo(BigDecimal param1, BigDecimal param2){
-        if(param1.compareTo(param2) == 0){
-            return true;
-        }
-        return false;
+        return param1.compareTo(param2) == 0;
     }
     /*
     Checking Constraint is param1 is not equal to param2
      */
     public static boolean isNotEqualTo(BigDecimal param1, BigDecimal param2){
-         if(param1.compareTo(param2) != 0){
-            return true;
-         }
-        return false;
+        return param1.compareTo(param2) != 0;
     }
 
     public static boolean isZero(BigDecimal param1){
-        if(param1.compareTo(BigDecimal.ZERO) == 0){
-            return true;
-        }
-        return false;
+        return param1.compareTo(BigDecimal.ZERO) == 0;
     }
 
     public static boolean isNotZero(BigDecimal param1){
-        if(param1.compareTo(BigDecimal.ZERO) != 0){
-            return true;
-        }
-        return false;
+        return param1.compareTo(BigDecimal.ZERO) != 0;
     }
 
     public static BigDecimal percentageOf(BigDecimal base, BigDecimal pct){

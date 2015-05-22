@@ -27,8 +27,6 @@ public class EmailUtil {
     private String fromCredential;
     private Email mail;
 
-    private static Pattern pattern;
-    private static Matcher matcher;
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -251,8 +249,8 @@ public class EmailUtil {
     }
 
     public static boolean validate(final String hex) {
-        pattern = Pattern.compile(EMAIL_PATTERN);
-        matcher = pattern.matcher(hex);
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(hex);
         return matcher.matches();
 
     }

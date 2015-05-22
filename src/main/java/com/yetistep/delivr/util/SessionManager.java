@@ -15,7 +15,7 @@ import java.util.Iterator;
  * To change this template use File | Settings | File Templates.
  */
 public class SessionManager {
-    private static final String BLANK = "";
+    //private static final String BLANK = "";
 
     public static AuthenticatedUser getPrincipal() {
         return (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -26,12 +26,13 @@ public class SessionManager {
     }
 
     public static Role getRole() {
-        String role = BLANK;
-        for (Iterator iterator = getPrincipal().getAuthorities().iterator(); iterator.hasNext(); ) {
-            //Currently Just One Role Assigned
-            role = String.valueOf(iterator.next());
-            break;
-        }
+        //String role = BLANK;
+        Iterator iterator = getPrincipal().getAuthorities().iterator();
+        //for (Iterator iterator = getPrincipal().getAuthorities().iterator(); iterator.hasNext(); ) {
+        //Currently Just One Role Assigned
+        String role = String.valueOf(iterator.next());
+            //break;
+        //}
         return Role.valueOf(role);
     }
 

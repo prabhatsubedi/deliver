@@ -61,7 +61,7 @@ public class DeliverBoySelectionDaoServiceImpl implements DeliveryBoySelectionDa
                 .add(Restrictions.eq("order.id", orderId))
                 .add(Restrictions.eq("accepted", true));
         List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = criteria.list();
-        return deliveryBoySelectionEntities.size() == 0 ? true : false;
+        return deliveryBoySelectionEntities.size() == 0;
     }
 
     @Override

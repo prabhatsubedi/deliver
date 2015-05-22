@@ -39,5 +39,5 @@ public enum PushNotificationRedirect {
         public String toString() {
             return ":transaction";
         }
-    };
+    }
 }

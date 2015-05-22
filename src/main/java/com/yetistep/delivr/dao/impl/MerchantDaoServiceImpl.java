@@ -639,7 +639,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
                 "m.service_fee as serviceFee, m.commission_percentage as commissionPercentage " +
                 "FROM merchants m INNER JOIN stores_brands sb on sb.merchant_id = m.id WHERE sb.id =:storeBrandId";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
-                .setResultTransformer( Transformers.aliasToBean(MerchantEntity.class));
+                .setResultTransformer(Transformers.aliasToBean(MerchantEntity.class));
         query.setParameter("storeBrandId", storeBrandId);
         MerchantEntity merchantEntity = (MerchantEntity) query.uniqueResult();
         return merchantEntity;
@@ -772,10 +772,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         query.setParameterList("role", roleList);
         Integer availableQty = ((Number) query.uniqueResult()).intValue();
 
-        if(availableQty.equals(0)){
-            return false;
-        }
-        return true;
+        return !availableQty.equals(0);
     }
 
     @Override

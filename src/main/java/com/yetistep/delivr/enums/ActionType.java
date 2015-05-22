@@ -8,5 +8,5 @@ package com.yetistep.delivr.enums;
  * Enum for storing action (CREATE|READ|UPDATE|DELETE) performed by the user.
  */
 public enum ActionType {
-    CREATE, READ, UPDATE, DELETE;
+    CREATE, READ, UPDATE, DELETE
 }

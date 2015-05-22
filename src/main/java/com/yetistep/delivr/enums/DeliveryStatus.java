@@ -11,5 +11,5 @@ public enum DeliveryStatus {
     PENDING,
     SUCCESSFUL,
     CANCELLED,
-    ASSIGNED_TO_OTHER;
+    ASSIGNED_TO_OTHER
 }

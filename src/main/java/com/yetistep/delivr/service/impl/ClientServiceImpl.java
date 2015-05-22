@@ -273,7 +273,6 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                 categoryDto.setValues(resultCat);
                 categoryDto.setHasNext(false);
                 addToList(categoryDtoList, categoryDto);
-                continue;
             } else {
                 /* Item has many categories */
                 Integer hasPrevParent = 0;
@@ -1257,7 +1256,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
 
         boolean isLocal =  MessageBundle.isLocalHost();
-        String clientUrl = getServerUrl()+"/anon/referral/"+headerDto.getId();;
+        String clientUrl = getServerUrl()+"/anon/referral/"+headerDto.getId();
         /*if(isLocal) {
             clientUrl = getServerUrl()+"/anon/referral/"+headerDto.getId();
         }else{

@@ -1061,7 +1061,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
         if(typeof courierStaff.walletAmount != "undefined" && typeof courierStaff.bankAmount != "undefined"){
             var totalAvailableBalance = parseFloat(courierStaff.walletAmount + courierStaff.bankAmount).toFixed(2);
             $(".available_balance").text(Main.getFromLocalStorage('currency') + " " + totalAvailableBalance);
-            $(".cash_available_balance").text(Main.getFromLocalStorage('currency') + " " + (totalAvailableBalance-itemAvailableBalance));
+            $(".cash_available_balance").text(Main.getFromLocalStorage('currency') + " " + (courierStaff.bankAmount-itemAvailableBalance).toFixed(2));
         }
         if(typeof courierStaff.walletAmount != "undefined"){
             $(".to_be_submitted").text(Main.getFromLocalStorage('currency') + " " + parseFloat(courierStaff.walletAmount).toFixed(2));

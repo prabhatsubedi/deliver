@@ -61,7 +61,6 @@ public class TwilioSMSUtil {
 
 
     public static UsageRecordList getUsageRecords(){
-        UsageRecordList records = client.getAccount().getUsageRecords();
-        return records;
+        return (UsageRecordList) client.getAccount().getUsageRecords();
     }
 }

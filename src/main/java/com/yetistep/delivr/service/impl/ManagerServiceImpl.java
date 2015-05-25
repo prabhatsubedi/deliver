@@ -240,12 +240,21 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         Timestamp lastAckDate = dBoyAdvanceAmountDaoService.getLatestAckTimestamp(deliveryBoy.getId());
 
         BigDecimal cancelledPurchaseTotal = BigDecimal.ZERO;
-        if(lastAckDate != null){
-            List<OrderEntity> cancelledPurchasedOrders =  orderDaoService.getCancelledPurchasedOrder(deliveryBoy.getId(), lastAckDate);
-            for (OrderEntity order: cancelledPurchasedOrders){
-                cancelledPurchaseTotal.add(order.getGrandTotal());
+        //if(lastAckDate != null){
+        List<OrderEntity> cancelledPurchasedOrders =  orderDaoService.getCancelledPurchasedOrder(deliveryBoy.getId(), lastAckDate);
+        for (OrderEntity order: cancelledPurchasedOrders){
+            Boolean itemPurchased = false;
+            List<ItemsOrderEntity> itemsOrders = order.getItemsOrder();
+            for(ItemsOrderEntity itemsOrder: itemsOrders){
+                if(itemsOrder.getPurchaseStatus() != null && itemsOrder.getPurchaseStatus()){
+                    itemPurchased = true;
+                    break;
+                }
             }
+            if(itemPurchased)
+                cancelledPurchaseTotal =  cancelledPurchaseTotal.add(order.getGrandTotal());
         }
+        //}
 
         deliveryBoy.setItemReturnedTotal(cancelledPurchaseTotal);
 
@@ -282,12 +291,21 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         Timestamp lastAckDate = dBoyAdvanceAmountDaoService.getLatestAckTimestamp(deliveryBoy.getId());
 
         BigDecimal cancelledPurchaseTotal = BigDecimal.ZERO;
-        if(lastAckDate != null){
-            List<OrderEntity> cancelledPurchasedOrders =  orderDaoService.getCancelledPurchasedOrder(deliveryBoy.getId(), lastAckDate);
-            for (OrderEntity order: cancelledPurchasedOrders){
-                cancelledPurchaseTotal.add(order.getGrandTotal());
+        //if(lastAckDate != null){
+        List<OrderEntity> cancelledPurchasedOrders =  orderDaoService.getCancelledPurchasedOrder(deliveryBoy.getId(), lastAckDate);
+        for (OrderEntity order: cancelledPurchasedOrders){
+            Boolean itemPurchased = false;
+            List<ItemsOrderEntity> itemsOrders = order.getItemsOrder();
+            for(ItemsOrderEntity itemsOrder: itemsOrders){
+                if(itemsOrder.getPurchaseStatus() != null && itemsOrder.getPurchaseStatus()){
+                    itemPurchased = true;
+                    break;
+                }
             }
+            if(itemPurchased)
+                cancelledPurchaseTotal =  cancelledPurchaseTotal.add(order.getGrandTotal());
         }
+        //}
 
         deliveryBoy.setItemReturnedTotal(cancelledPurchaseTotal);
 
@@ -326,12 +344,21 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         Timestamp lastAckDate = dBoyAdvanceAmountDaoService.getLatestAckTimestamp(deliveryBoy.getId());
 
         BigDecimal cancelledPurchaseTotal = BigDecimal.ZERO;
-        if(lastAckDate != null){
-            List<OrderEntity> cancelledPurchasedOrders =  orderDaoService.getCancelledPurchasedOrder(deliveryBoy.getId(), lastAckDate);
-            for (OrderEntity order: cancelledPurchasedOrders){
-                cancelledPurchaseTotal.add(order.getGrandTotal());
+        //if(lastAckDate != null){
+        List<OrderEntity> cancelledPurchasedOrders =  orderDaoService.getCancelledPurchasedOrder(deliveryBoy.getId(), lastAckDate);
+        for (OrderEntity order: cancelledPurchasedOrders){
+            Boolean itemPurchased = false;
+            List<ItemsOrderEntity> itemsOrders = order.getItemsOrder();
+            for(ItemsOrderEntity itemsOrder: itemsOrders){
+                if(itemsOrder.getPurchaseStatus() != null && itemsOrder.getPurchaseStatus()){
+                    itemPurchased = true;
+                    break;
+                }
             }
+            if(itemPurchased)
+                cancelledPurchaseTotal =  cancelledPurchaseTotal.add(order.getGrandTotal());
         }
+        //}
 
         deliveryBoy.setItemReturnedTotal(cancelledPurchaseTotal);
 

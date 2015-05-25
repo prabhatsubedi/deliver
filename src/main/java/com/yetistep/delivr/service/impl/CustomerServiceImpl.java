@@ -605,6 +605,7 @@ public class CustomerServiceImpl implements CustomerService {
             deliveryChargedBeforeDiscount = deliveryCostWithoutAdditionalDvAmt.subtract(customerDiscount);
             deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.add(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
         }
+        deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.subtract(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, BigDecimalUtil.checkNull(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DISCOUNT_ON_DELIVERY_FEE)))));
 
 
         /* Item Detail and Others */

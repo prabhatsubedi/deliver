@@ -105,7 +105,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         BigDecimal deliveryChargedAfterDiscount = ZERO;
         if (BigDecimalUtil.isGreaterThenOrEqualTo(deliveryChargedBeforeDiscount, customerBalanceBeforeDiscount))
             deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
-
+        deliveryChargedAfterDiscount = deliveryChargedAfterDiscount.subtract(BigDecimalUtil.percentageOf(deliveryChargedAfterDiscount, BigDecimalUtil.checkNull(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DISCOUNT_ON_DELIVERY_FEE)))));
 
         /* 14. ======= Customer available balance after discount ======== */
         BigDecimal customerBalanceAfterDiscount = ZERO;

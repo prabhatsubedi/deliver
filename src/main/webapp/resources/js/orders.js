@@ -784,7 +784,7 @@ Order.getInvoices = function(params){
                 unpaid_total += invoice_amount;
             }
 
-            var row = [invoice.id, invoice.generatedDate, invoice.fromDate, invoice.toDate, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", 'Rs. <span class="' + (invoice.invoicePaid == undefined ? "paid_status unpaid_amount" : '') + '">' + invoice_amount + '</span>', "", invoice.paidDate!=undefined?invoice.paidDate:'', link, checkBox];
+            var row = [invoice.id, invoice.generatedDate, invoice.fromDate, invoice.toDate, invoice.store.storesBrand.brandName+"("+invoice.store.street+")", 'Rs. <span class="' + (invoice.invoicePaid == undefined ? "paid_status unpaid_amount" : '') + '">' + invoice_amount + '</span>', invoice.commission != undefined ? Main.getFromLocalStorage('currency') + ' ' + invoice.commission.amount : '', invoice.paidDate!=undefined?invoice.paidDate:'', link, checkBox];
             row = $.extend({}, row);
             tableData.push(row);
         }

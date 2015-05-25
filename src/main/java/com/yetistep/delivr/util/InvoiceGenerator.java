@@ -350,6 +350,7 @@ public class InvoiceGenerator {
         title1.setAlignment(Element.ALIGN_CENTER);
         title2.setAlignment(Element.ALIGN_CENTER);
         title1.setSpacingBefore(10);
+        title2.setSpacingBefore(8);
         document.add(title1);
         document.add(title2);
         PdfUtil.addEmptyLine(document, 1);//add empty line

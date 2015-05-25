@@ -5,6 +5,7 @@ import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
+import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
@@ -1726,6 +1727,16 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         List<OrderEntity> orders = merchantDaoService.getPurchaseHistory(storeIdList, page);
+
+        //remove not purchased canceled orders form the purchase history
+        List<OrderEntity> notPurchaseCanceledOrders = new ArrayList<>();
+        for (OrderEntity order: orders){
+            if(order.getTotalCost().compareTo(BigDecimal.ZERO) == 0 && !order.getDeliveryStatus().equals(DeliveryStatus.SUCCESSFUL)){
+                notPurchaseCanceledOrders.add(order);
+            }
+        }
+
+        orders.removeAll(notPurchaseCanceledOrders);
 
         List<OrderEntity> ordersList = new ArrayList<>();
 

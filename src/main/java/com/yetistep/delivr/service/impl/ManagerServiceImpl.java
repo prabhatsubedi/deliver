@@ -12,6 +12,7 @@ import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.ManagerService;
 import com.yetistep.delivr.service.inf.MerchantService;
+import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,12 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
     @Autowired
     OrderDaoService orderDaoService;
+
+    @Autowired
+    WalletTransactionDaoService walletTransactionDaoService;
+
+    @Autowired
+    SystemAlgorithmService systemAlgorithmService;
 
     @Override
     public void saveManagerOrAccountant(UserEntity user, HeaderDto headerDto) throws Exception {
@@ -804,4 +811,15 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
          categoryDaoService.updatePriority(categoryEntities);
     }
 
+    @Override
+    public List<WalletTransactionEntity> getWalletTransactionInformation() throws Exception {
+        List<WalletTransactionEntity> walletTransactionEntities = walletTransactionDaoService.findAll();
+        for(WalletTransactionEntity walletTransactionEntity: walletTransactionEntities){
+            systemAlgorithmService.decodeWalletTransaction(walletTransactionEntity);
+            CustomerEntity customerEntity = new CustomerEntity();
+            customerEntity.setId(walletTransactionEntity.getCustomer().getId());
+            walletTransactionEntity.setCustomer(customerEntity);
+        }
+        return walletTransactionEntities;
+    }
 }

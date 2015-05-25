@@ -37,7 +37,20 @@ public class WalletTransactionDaoServiceImpl implements WalletTransactionDaoServ
 
     @Override
     public List<WalletTransactionEntity> findAll() throws Exception {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        Criteria criteria = getCurrentSession().createCriteria(WalletTransactionEntity.class);
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("transactionDate"), "transactionDate")
+                .add(Projections.property("transactionAmount"), "transactionAmount")
+                .add(Projections.property("remarks"), "remarks")
+                .add(Projections.property("accountType"), "accountType")
+                .add(Projections.property("paymentMode"), "paymentMode")
+                .add(Projections.property("availableWalletAmount"), "availableWalletAmount")
+                .add(Projections.property("signature"), "signature")
+                .add(Projections.property("order.id"), "orderId")
+                .add(Projections.property("customer"), "customer")
+        ).setResultTransformer(Transformers.aliasToBean(WalletTransactionEntity.class));
+        return criteria.list();
     }
 
     @Override

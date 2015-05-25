@@ -199,6 +199,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         decodedData = decodedData.subtract(walletTransactionEntity.getAvailableWalletAmount());
         decodedData = decodedData.divide(new BigDecimal(walletTransactionEntity.getCustomer().getId()));
         decodedData = decodedData.subtract(new BigDecimal(walletTransactionEntity.getTransactionDate().getTime()));
+        log.info("Wallet Transaction Amount:"+decodedData +"\tTransaction Date:"+walletTransactionEntity.getTransactionDate()+"\tAvailable Amount:"+walletTransactionEntity.getAvailableWalletAmount());
         if (BigDecimalUtil.isEqualTo(decodedData, walletTransactionEntity.getTransactionAmount()))
             walletTransactionEntity.setFlag(true);
         else

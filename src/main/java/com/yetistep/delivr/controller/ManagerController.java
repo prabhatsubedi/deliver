@@ -605,5 +605,18 @@ public class ManagerController {
         }
     }
 
-
+    @RequestMapping(value = "/get_wallet_transaction", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> getWalletTransaction() {
+        try{
+            List<WalletTransactionEntity> walletTransactions = managerService.getWalletTransactionInformation();
+            ServiceResponse serviceResponse = new ServiceResponse("Wallet transactions retrieved successfully");
+            serviceResponse.addParam("walletTransactions", walletTransactions);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving wallet transaction info", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

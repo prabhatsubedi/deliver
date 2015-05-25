@@ -127,7 +127,7 @@ Order.loadOrderFn = function(){
         var shopperName = "";
         if(order.deliveryBoy != undefined)
             shopperName = order.deliveryBoy.user.fullName;
-        var timeAssigned = order.assignedTime != undefined ? order.assignedTime : '';
+        var timeAssigned = order.assignedTime != undefined ? Main.convertMin(order.assignedTime) : '';
         var orderHistoryLength = order.dBoyOrderHistories.length;
         var timeTaken = 0;
         var amountEarned = 0;
@@ -140,6 +140,7 @@ Order.loadOrderFn = function(){
 
             amountEarned = order.dBoyOrderHistories[orderHistoryLength-1].amountEarned != undefined?Main.getFromLocalStorage("currency")+" "+order.dBoyOrderHistories[orderHistoryLength-1].amountEarned:0;
         }
+        timeTaken = Main.convertMin(timeTaken);
         var shopperRating = (order.rating != undefined && order.rating.deliveryBoyRating != undefined)?order.rating.deliveryBoyRating:'';
         var shopperComment = (order.rating != undefined && order.rating.deliveryBoyComment != undefined)?order.rating.deliveryBoyComment:'';
 
@@ -220,6 +221,7 @@ Order.getOrders = function(elemId, url, params){
             var view_items = '<span class="item_list" data-store="' + order.store.name + '" data-id="'+id+'" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
             var activeStatus = ["ORDER_PLACED", "ORDER_ACCEPTED", "IN_ROUTE_TO_PICK_UP", "AT_STORE", "IN_ROUTE_TO_DELIVERY"];
             var orderHistoryLength = order.dBoyOrderHistories.length;
+            var assigned_time = order.assignedTime != undefined? Main.convertMin(order.assignedTime):'';
             var time_taken = 0;
 
             var amountEarned = 0;
@@ -232,6 +234,7 @@ Order.getOrders = function(elemId, url, params){
 
                 amountEarned = order.dBoyOrderHistories[orderHistoryLength-1].amountEarned != undefined?Main.getFromLocalStorage("currency")+" "+order.dBoyOrderHistories[orderHistoryLength-1].amountEarned:0;
             }
+            time_taken = Main.convertMin(time_taken);
 
             var dBoySelection;
             var deliveryBoySelections = order.deliveryBoySelections;
@@ -299,11 +302,11 @@ Order.getOrders = function(elemId, url, params){
 
             var row;
             if(order.orderStatus == "CANCELLED"){
-                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarned, order.assignedTime != undefined?order.assignedTime:'', time_taken, dboyRating, dboyComment, reason, view_items];
+                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarned, assigned_time, time_taken, dboyRating, dboyComment, reason, view_items];
             } else if(order.orderStatus == "DELIVERED") {
-                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarned, order.assignedTime != undefined?order.assignedTime:'', time_taken, (typeof order.bill != "undefined" && typeof order.bill.path!="undefined")?'<a href="'+order.bill.path+'" target="_blank">View Receipt</a>':'', dboyRating, dboyComment, cusRating, cusComment, view_items];
+                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarned, assigned_time, time_taken, (typeof order.bill != "undefined" && typeof order.bill.path!="undefined")?'<a href="'+order.bill.path+'" target="_blank">View Receipt</a>':'', dboyRating, dboyComment, cusRating, cusComment, view_items];
             } else if($.inArray(order.orderStaus, activeStatus)) {
-                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, order.orderVerificationCode, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarnedLive, order.assignedTime != undefined?order.assignedTime:'', time_taken, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' +  order.deliveryBoy.id + '">View on Map</a> | ' + view_items];
+                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, order.orderVerificationCode, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarnedLive, assigned_time, time_taken, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' +  order.deliveryBoy.id + '">View on Map</a> | ' + view_items];
             }
             row = $.extend({}, row);
             tdata.push(row)

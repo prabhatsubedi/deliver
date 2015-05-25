@@ -442,7 +442,8 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
     };*/
 
-    Main.elemRatio = function(callback) {
+    Main.
+        elemRatio = function(callback) {
         function elem_ratio() {
             $('.maintain_ratio').each(function(){
                 var mthis = $(this);

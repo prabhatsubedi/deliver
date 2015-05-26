@@ -165,7 +165,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         System.out.println("Transaction Amount:" + value);
         System.out.println("Current Milliseconds:" + walletTransactionEntity.getTransactionDate().getTime());
         Long currentTime = walletTransactionEntity.getTransactionDate().getTime();
-        currentTime = (currentTime % 1000) >= 500 ? ((currentTime / 1000) * 1000) + 1000 : (currentTime / 1000) * 1000;
+        currentTime = (currentTime / 1000) * 1000;
         value = value.add(new BigDecimal(currentTime));
         value = value.multiply(new BigDecimal(walletTransactionEntity.getCustomer().getId()));
         value = value.add(walletTransactionEntity.getAvailableWalletAmount().setScale(2, BigDecimal.ROUND_HALF_UP));

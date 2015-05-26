@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,20 +38,16 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public List<MerchantEntity> findAll() throws Exception {
-        List<MerchantEntity> merchants  = new ArrayList<MerchantEntity>();
         Criteria criteria  = getCurrentSession().createCriteria(MerchantEntity.class, "merchant");
         criteria.addOrder(Order.desc("id"));
-        merchants = criteria.list();
-        return merchants;
+        return (List<MerchantEntity>) criteria.list();
     }
 
     @Override
     public List<MerchantEntity> findAll(Page page) throws Exception {
-        List<MerchantEntity> merchants  = new ArrayList<MerchantEntity>();
         Criteria criteria  = getCurrentSession().createCriteria(MerchantEntity.class);
         HibernateUtil.fillPaginationCriteria(criteria, page, MerchantEntity.class);
-        merchants = criteria.list();
-        return merchants;
+        return (List<MerchantEntity>) criteria.list();
     }
 
     @Override
@@ -316,20 +313,18 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
 
     @Override
-     public Integer getTotalNumberOfBrandByMerchant(Integer merchantId) throws Exception{
-        String sqQuery =    "SELECT COUNT(sb.id) FROM stores_brands sb WHERE  sb.merchant_id =:merchantId";
-        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
-        query.setParameter("merchantId", merchantId);
-        BigInteger cnt = (BigInteger) query.uniqueResult();
-        return cnt.intValue();
+     public Integer getTotalNumberOfBrandByMerchant(Integer merchantId, Page page) throws Exception{
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        criteria.add(Restrictions.and(Restrictions.eq("merchant.id", merchantId))) ;
+        HibernateUtil.fillPaginationCriteria(criteria, page, StoresBrandEntity.class);
+        return (int) (long) criteria.setProjection(Projections.rowCount()).uniqueResult();
     }
 
     @Override
-    public Integer getTotalNumberOfBrand() throws Exception {
-        String sqQuery =    "SELECT COUNT(sb.id) FROM stores_brands sb";
-        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
-        BigInteger cnt = (BigInteger) query.uniqueResult();
-        return cnt.intValue();
+    public Integer getTotalNumberOfBrand(Page page) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        HibernateUtil.fillPaginationCriteria(criteria, page, StoresBrandEntity.class);
+        return (int) (long) criteria.setProjection(Projections.rowCount()).uniqueResult();
     }
 
     @Override
@@ -664,22 +659,18 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public List<OrderEntity> getOrders(List<Integer> storeId, Page page) throws Exception {
-        List<OrderEntity> orders = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.and(Restrictions.in("store.id", storeId)));
         HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
-        orders = criteria.list();
-        return orders;
+        return (List<OrderEntity>) criteria.list();
     }
 
     @Override
     public List<OrderEntity> getOrders(List<Integer> storeId, Page page, DeliveryStatus status) throws Exception {
-        List<OrderEntity> orders = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.and(Restrictions.in("store.id", storeId), Restrictions.eq("deliveryStatus", status)));
         HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
-        orders = criteria.list();
-        return orders;
+        return (List<OrderEntity>) criteria.list();
     }
 
     @Override
@@ -767,11 +758,16 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public Integer getTotalNumberOfMerchants() throws Exception{
-        String sqQuery =    "SELECT COUNT(m.id) FROM merchants m";
+    public Integer getTotalNumberOfMerchants(Page page) throws Exception{
+        page.setPageNumber(null);
+        page.setPageSize(null);
+        /*String sqQuery =    "SELECT COUNT(m.id) FROM merchants m";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
         BigInteger cnt = (BigInteger) query.uniqueResult();
-        return cnt.intValue();
+        return cnt.intValue();*/
+        Criteria criteria  = getCurrentSession().createCriteria(MerchantEntity.class);
+        HibernateUtil.fillPaginationCriteria(criteria, page, MerchantEntity.class);
+        return (int) (long) criteria.setProjection(Projections.rowCount()).uniqueResult();
     }
 
 }

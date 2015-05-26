@@ -242,15 +242,24 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         Page page = requestJsonDto.getPage();
 
-        PaginationDto paginationDto = new PaginationDto();
-        Integer totalRows =  deliveryBoyDaoService.getTotalNumberOfDboys();
-        paginationDto.setNumberOfRows(totalRows);
+        Page pageForCount = new Page();
+        pageForCount.setSearchFor(page.getSearchFor());
 
-        if(page != null){
-            page.setTotalRows(totalRows);
+        if(page != null && page.getSearchFor() != null && !page.getSearchFor().equals("")){
+            Map<String, String> fieldsMap = new HashMap<>();
+            fieldsMap.put("user", "fullName,mobileNumber,emailAddress");
+            pageForCount.setSearchFields(fieldsMap);
+            page.setSearchFields(fieldsMap);
         }
 
 
+
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  deliveryBoyDaoService.getTotalNumberOfDboys(pageForCount);
+        paginationDto.setNumberOfRows(totalRows);
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
 
         List<DeliveryBoyEntity> deliveryBoyEntities = deliveryBoyDaoService.findAll(page);
         /*For filtering role -- set to null as all delivery boy has same role*/

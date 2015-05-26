@@ -39,13 +39,15 @@ public class DBoyPaymentDaoServiceImpl implements DBoyPaymentDaoService {
     }
 
     @Override
-    public List<DBoyPaymentEntity> findAllOfShopper(Page page, Integer dBoyId) throws Exception {
-        List<DBoyPaymentEntity> merchants  = new ArrayList<>();
-        Criteria criteria  = getCurrentSession().createCriteria(DBoyPaymentEntity.class);
+    public List<DBoyPaymentEntity> findAllPayStatementsOfShopper(Page page, Integer dBoyId) throws Exception {
+        /*Criteria criteria  = getCurrentSession().createCriteria(DBoyPaymentEntity.class);
         criteria.add(Restrictions.eq("deliveryBoy.id", dBoyId));
         HibernateUtil.fillPaginationCriteria(criteria, page, DBoyPaymentEntity.class);
-        merchants = criteria.list();
-        return merchants;
+        return (List<DBoyPaymentEntity>) criteria.list();*/
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DBoyPaymentEntity.class);
+        criteria.add(Restrictions.eq("deliveryBoy.id", dBoyId));
+        HibernateUtil.fillPaginationCriteria(criteria, page, DBoyPaymentEntity.class);
+        return (List<DBoyPaymentEntity>) criteria.list();
     }
 
 

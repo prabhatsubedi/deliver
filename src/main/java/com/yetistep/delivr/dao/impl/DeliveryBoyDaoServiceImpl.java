@@ -10,6 +10,7 @@ import com.yetistep.delivr.model.Page;
 import com.yetistep.delivr.util.DateUtil;
 import com.yetistep.delivr.util.HibernateUtil;
 import org.hibernate.*;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.BigDecimalType;
@@ -64,11 +65,15 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
     }
 
     @Override
-    public Integer getTotalNumberOfDboys() throws Exception {
-        String sqQuery =    "SELECT COUNT(db.id) FROM delivery_boys db";
+    public Integer getTotalNumberOfDboys(Page page) throws Exception {
+        /*String sqQuery =    "SELECT COUNT(db.id) FROM delivery_boys db";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
         BigInteger cnt = (BigInteger) query.uniqueResult();
-        return cnt.intValue();
+        return cnt.intValue();*/
+
+        Criteria criteria  = getCurrentSession().createCriteria(DeliveryBoyEntity.class);
+        HibernateUtil.fillPaginationCriteria(criteria, page, DeliveryBoyEntity.class);
+        return (int) (long) criteria.setProjection(Projections.rowCount()).uniqueResult();
     }
 
     @Override

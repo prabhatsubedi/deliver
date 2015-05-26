@@ -30,39 +30,36 @@ public class HibernateUtil {
 
     public static void fillPaginationCriteria(Criteria criteria, Page page, Class clazz) throws Exception{
         if (page != null) {
-            if(page.getTotalRows() > 0){
-                /* Pagination implementation*/
-                if(page.getPageNumber()!= null && page.getPageSize() != null){
-                    criteria.setFirstResult(page.getValidRowNumber()).setMaxResults(page.getPageSize());
-                }
                 /*search implementation*/
-                if(page.getSearchFor() != null && page.getSearchFor() != "" && page.getSearchFields() != null) {
+                if(page.getSearchFor() != null && !page.getSearchFor().equals("") && page.getSearchFields() != null) {
                     Iterator itS = page.getSearchFields().entrySet().iterator();
                     Criterion criterion = null;
-                    Integer cnt = 0;
                     while (itS.hasNext()) {
                         Map.Entry pairs = (Map.Entry)itS.next();
                         if(pairs.getKey().toString() == "self"){
                             for (String field:pairs.getValue().toString().split(",")) {
-                                if(criterion == null) criterion = Restrictions.like(field, "%"+page.getSearchFor());
+                                if(criterion == null) criterion = Restrictions.like(field, "%"+page.getSearchFor()+"%");
                                 else
-                                    criterion = Restrictions.or(criterion, Restrictions.like(field, "%"+page.getSearchFor()));
-                                cnt++;
+                                    criterion = Restrictions.or(criterion, Restrictions.like(field, "%"+page.getSearchFor()+"%"));
                             }
                         }else{
                             criteria.createAlias(pairs.getKey().toString(), pairs.getKey().toString());
                             String fields[] = pairs.getValue().toString().split(",");
                             for (String field:pairs.getValue().toString().split(",")) {
-                                if(criterion == null) criterion = Restrictions.like(pairs.getKey().toString()+"."+field, "%"+page.getSearchFor());
+                                if(criterion == null) criterion = Restrictions.like(pairs.getKey().toString()+"."+field, "%"+page.getSearchFor()+"%");
                                 else
-                                    criterion = Restrictions.or(criterion, Restrictions.like(pairs.getKey().toString()+"."+field, "%"+page.getSearchFor()));
-                                cnt++;
+                                    criterion = Restrictions.or(criterion, Restrictions.like(pairs.getKey().toString()+"."+field, "%"+page.getSearchFor()+"%"));
                             }
                         }
                     }
                     criteria.add(criterion);
                 }
 
+             /* Pagination implementation*/
+            if(page.getTotalRows() != null && page.getTotalRows() > 0){
+                if(page.getPageNumber()!= null && page.getPageSize() != null){
+                    criteria.setFirstResult(page.getValidRowNumber()).setMaxResults(page.getPageSize());
+                }
 
                 /* Order By Implementation*/
                 if (page.getSortOrder() != null && page.getSortBy() != null) {

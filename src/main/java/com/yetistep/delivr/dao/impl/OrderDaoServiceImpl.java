@@ -455,6 +455,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
     public List<OrderEntity> getCancelledPurchasedOrder(Integer dBoyId, Timestamp date) throws Exception {
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class, "order");
         criteria.add(Restrictions.gt("totalCost", BigDecimal.ZERO));
+        criteria.add(Restrictions.eq("deliveryBoy.id", dBoyId));
         if(date != null)
             criteria.add(Restrictions.gt("orderDate", date));
         criteria.add(Restrictions.eq("orderStatus", JobOrderStatus.CANCELLED));

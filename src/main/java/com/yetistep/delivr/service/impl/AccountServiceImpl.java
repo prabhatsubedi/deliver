@@ -376,7 +376,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             page.setTotalRows(totalRows);
         }
 
-        dBoyPaymentEntities = dBoyPaymentDaoService.findAllOfShopper(page, dBoyId);
+        dBoyPaymentEntities = dBoyPaymentDaoService.findAllPayStatementsOfShopper(page, dBoyId);
 
         List<DBoyPaymentEntity> dBoyPayments = new ArrayList<>();
 

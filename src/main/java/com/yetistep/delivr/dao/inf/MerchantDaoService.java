@@ -5,6 +5,7 @@ import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.model.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -132,11 +133,11 @@ public interface MerchantDaoService extends GenericDaoService<Integer, MerchantE
 
     public List<MerchantEntity> findAll(Page page) throws Exception;
 
-    public Integer getTotalNumberOfMerchants() throws Exception;
+    public Integer getTotalNumberOfMerchants(Page page) throws Exception;
 
-    public Integer getTotalNumberOfBrandByMerchant(Integer merchantId) throws Exception;
+    public Integer getTotalNumberOfBrandByMerchant(Integer merchantId, Page page) throws Exception;
 
-    public Integer getTotalNumberOfBrand() throws Exception;
+    public Integer getTotalNumberOfBrand(Page page) throws Exception;
 
     public Integer getTotalNumbersItems(Integer orderId) throws Exception;
 

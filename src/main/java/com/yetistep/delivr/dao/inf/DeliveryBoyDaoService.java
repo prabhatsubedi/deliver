@@ -31,7 +31,7 @@ public interface DeliveryBoyDaoService extends GenericDaoService<Integer, Delive
 
     public Boolean checkIfLicenseNumberExists(String licenseNumber) throws Exception;
 
-    public Integer getTotalNumberOfDboys() throws Exception;
+    public Integer getTotalNumberOfDboys(Page page) throws Exception;
 
     public Boolean updatePreviousDayDueAmount() throws Exception;
 

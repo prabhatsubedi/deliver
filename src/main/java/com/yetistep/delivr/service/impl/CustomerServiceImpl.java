@@ -294,9 +294,6 @@ public class CustomerServiceImpl implements CustomerService {
         UserEntity user = addressDto.getUser();
         AddressEntity address = addressDto.getAddress();
 
-        //register mobile first for no sms. once sms is enable remove this line of code
-        //verifyMobile(user.getLastAddressMobile(), user.getCustomer().getFacebookId());
-
         /* Check Customer JSON */
         if (user.getCustomer() == null || user.getCustomer().getFacebookId() == null)
             throw new YSException("JSN001");
@@ -388,20 +385,20 @@ public class CustomerServiceImpl implements CustomerService {
 
         String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
         String countryCode;
-        if(currency.equals("₹")){
+
+        if(currency.equals("&#8377")){
             countryCode = "+91";
         }else{
             countryCode = "+977";
         }
+
         if(validMobile == null) {
             log.debug("++++++ Updating Mobile No and Validation Code");
 
-            //once the sms is enabled these lines of code should be uncommented
 
             verificationCode = GeneralUtil.generateMobileCode();
 
             //Now Send SMS
-
             SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
             //TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile, countryCode);
 
@@ -422,8 +419,6 @@ public class CustomerServiceImpl implements CustomerService {
 
                 if(validMobile.getTotalSmsSend()!=null && validMobile.getTotalSmsSend() > 2)
                     throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
-
-                //once the sms is enabled these lines of code should be uncommented
 
                 //Send SMS Only
                 verificationCode = String.valueOf(validMobile.getVerificationCode());

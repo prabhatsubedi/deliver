@@ -153,16 +153,19 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         log.info("++++++++++++ Getting All Merchants +++++++++++++++");
         List<MerchantEntity> merchantEntities = new ArrayList<>();
         Page page = requestJsonDto.getPage();
+        Page pageForCount = new Page();
+        pageForCount.setSearchFor(page.getSearchFor());
 
-        if(page != null && page.getSearchFor() != null){
+        if(page != null && page.getSearchFor() != null && !page.getSearchFor().equals("")){
             Map<String, String> fieldsMap = new HashMap<>();
             fieldsMap.put("self", "businessTitle");
             fieldsMap.put("user", "fullName,emailAddress,mobileNumber");
+            pageForCount.setSearchFields(fieldsMap);
             page.setSearchFields(fieldsMap);
         }
 
         PaginationDto paginationDto = new PaginationDto();
-        Integer totalRows =  merchantDaoService.getTotalNumberOfMerchants();
+        Integer totalRows =  merchantDaoService.getTotalNumberOfMerchants(pageForCount);
         paginationDto.setNumberOfRows(totalRows);
 
         if(page != null){
@@ -662,12 +665,23 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         PaginationDto paginationDto = new PaginationDto();
 
         Page page = requestJsonDto.getPage();
+        Page pageForCount = new Page();
+        pageForCount.setSearchFor(page.getSearchFor());
+
+        if(page != null && page.getSearchFor() != null && !page.getSearchFor().equals("")){
+            Map<String, String> fieldsMap = new HashMap<>();
+            fieldsMap.put("self", "brandName,brandLogo,brandImage");
+            fieldsMap.put("merchant", "businessTitle");
+            pageForCount.setSearchFields(fieldsMap);
+            page.setSearchFields(fieldsMap);
+        }
+
 
         Integer totalRows;
         if (headerDto.getMerchantId() != null){
-             totalRows =  merchantDaoService.getTotalNumberOfBrandByMerchant(headerDto.getMerchantId());
+             totalRows =  merchantDaoService.getTotalNumberOfBrandByMerchant(headerDto.getMerchantId(), pageForCount);
         }else{
-             totalRows =  merchantDaoService.getTotalNumberOfBrand();
+             totalRows =  merchantDaoService.getTotalNumberOfBrand(pageForCount);
         }
         paginationDto.setNumberOfRows(totalRows);
 

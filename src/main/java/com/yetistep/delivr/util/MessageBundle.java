@@ -109,6 +109,20 @@ public class MessageBundle {
         return System.getProperty("DELIVR_SMS_FROM");
     }
 
+    public static String getTwilioSMSSid(){
+        return System.getProperty("DELIVR_TWILIO_SMS_SID");
+    }
+
+    public static String getTwilioSMSToken(){
+        return System.getProperty("DELIVR_TWILIO_SMS_TOKEN");
+    }
+
+    public static String getTwilioSMSFrom(){
+        return System.getProperty("DELIVR_TWILIO_SMS_FROM");
+    }
+
+
+
 
     public static String getPropertyKey(String key, File file){
         try {

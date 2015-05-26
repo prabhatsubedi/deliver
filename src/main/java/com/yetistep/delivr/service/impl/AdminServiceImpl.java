@@ -56,8 +56,6 @@ public class AdminServiceImpl implements AdminService {
 
 
     public List<Map<String, Map<Integer, Map<String, String>>>> getGodsView() throws Exception{
-        //TwilioSMSUtil.getUsageRecords();
-
         List<Map<String, Map<Integer, Map<String, String>>>> godsView = new ArrayList<>();
         Map<String, Map<Integer, Map<String, String>>> generalData = new HashMap<>();
 
@@ -388,6 +386,16 @@ public class AdminServiceImpl implements AdminService {
         log.info("+++++++++ Sending SMS to " + smsDto.getMobileNo() + " ++++++++++++++++");
         String verificationCode = validateMobileDaoService.getVerificationCode(smsDto.getId());
 
+        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+        String countryCode;
+
+        if(currency.equals("&#8377")){
+            countryCode = "+91";
+        }else{
+            countryCode = "+977";
+        }
+
+        //TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", smsDto.getMobileNo(), countryCode);
         SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", smsDto.getMobileNo());
 
         //Now Update Total SMS Count

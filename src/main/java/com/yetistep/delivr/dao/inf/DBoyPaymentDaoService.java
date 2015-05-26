@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface DBoyPaymentDaoService extends GenericDaoService<Integer, DBoyPaymentEntity> {
 
-    public List<DBoyPaymentEntity> findAllOfShopper(Page page, Integer dBoyId) throws Exception;
+    public List<DBoyPaymentEntity> findAllPayStatementsOfShopper(Page page, Integer dBoyId) throws Exception;
 
     public Integer getTotalNumberOfPayStatements(Integer dBoyId) throws Exception;
 

@@ -1009,14 +1009,10 @@ public class ClientController extends AbstractManager{
     @ResponseBody
     public String getPaymentGatewayResponse(@ModelAttribute PaymentGatewayDto paymentGatewayDto) {
         try{
-            String responseCode = customerService.paymentGatewaySettlement(paymentGatewayDto);
-            String remarks = MessageBundle.getPaymentGatewayMsg(responseCode);
-            if(responseCode.equals(SHAEncoder.SUCCESSFUL_RESPONSE_CODE))
-                 return SHAEncoder.getResponseHTML(remarks, true);
-            return SHAEncoder.getResponseHTML(remarks, false);
+           return customerService.paymentGatewaySettlement(paymentGatewayDto);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while getting payment response", e);
-            return SHAEncoder.getResponseHTML(e.getLocalizedMessage(), false);
+            return "Something went wrong while getting payment response";
         }
     }
 

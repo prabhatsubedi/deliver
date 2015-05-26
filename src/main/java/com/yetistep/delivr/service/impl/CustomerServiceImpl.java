@@ -2121,7 +2121,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         if(paymentGatewayInfoEntity.getFlag()){
             log.warn("Transactions already processed:"+paymentGatewayDto.getData());
-            return paymentGatewayInfoEntity.getResponseCode();
+            return this.getHTMLMessage(paymentGatewayInfoEntity.getResponseCode(), paymentGatewayInfoEntity.getCustomer().getId());
             //throw new YSException("SEC017");
         }
         String transactionReference = properties.getProperty(SHAEncoder.TRANSACTION_REFERENCE_NAME);
@@ -2150,7 +2150,16 @@ public class CustomerServiceImpl implements CustomerService {
         }
         paymentGatewayInfoEntity.setResponseCode(responseCode);
         paymentGatewayInfoDaoService.update(paymentGatewayInfoEntity);
-        return paymentGatewayInfoEntity.getResponseCode();
+        return this.getHTMLMessage(paymentGatewayInfoEntity.getResponseCode(), paymentGatewayInfoEntity.getCustomer().getId());
+    }
+
+    private String getHTMLMessage(String responseCode, Integer customerId) throws Exception{
+        String remarks = MessageBundle.getPaymentGatewayMsg(responseCode);
+        Boolean flag = false;
+        if(responseCode.equals(SHAEncoder.SUCCESSFUL_RESPONSE_CODE))
+            flag = true;
+        UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromCustomerId(customerId);
+        return SHAEncoder.getResponseHTML(remarks, flag, userDevice.getFamily());
     }
 
     @Override

@@ -249,3 +249,6 @@ INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_
 
 /*======================2015-05-19=========================*/
 ALTER TABLE customers MODIFY COLUMN is_default TINYINT(1) NOT NULL DEFAULT 0;
+
+/*=========================2015-05-25======================*/
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('DISCOUNT_ON_DELIVERY_FEE', '100', '11', 'Discount on delivery fee %');

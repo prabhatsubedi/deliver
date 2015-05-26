@@ -1499,18 +1499,49 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if (orderStatus.equals(JobOrderStatus.ORDER_ACCEPTED) && orderEntity.getPaymentMode().equals(PaymentMode.WALLET)) {
             log.info("ORDER ACCEPTED STAGE: No Change in item price before cancelling for order ID:" + orderEntity.getId());
             customerWalletAmount = customerWalletAmount.add(paidFromWallet);
-            String remarks = MessageBundle.getMessage("WTM006", "push_notification.properties");
+            String remarks = MessageBundle.getMessage("WTM012", "push_notification.properties");
             remarks = String.format(remarks, currency, paidFromWallet, orderEntity.getId());
             this.setWalletTransaction(orderEntity, paidFromWallet, AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
             paidFromWallet = BigDecimal.ZERO;
         }else if (orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)) {
-            log.info("No Change in item price before cancelling for order ID:" + orderEntity.getId());
-            BigDecimal adjustAmount = paidFromWallet.subtract(orderEntity.getDeliveryCharge());
-            customerWalletAmount = customerWalletAmount.add(adjustAmount);
-            paidFromWallet = orderEntity.getDeliveryCharge();
-            String remarks = MessageBundle.getMessage("WTM006", "push_notification.properties");
-            remarks = String.format(remarks, currency, adjustAmount, orderEntity.getId());
-            this.setWalletTransaction(orderEntity, adjustAmount, AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
+            log.info("IN_ROUTE_TO_PICK_UP: No Change in item price before cancelling for order ID:" + orderEntity.getId());
+            BigDecimal deliveryCharge = orderEntity.getDeliveryCharge();
+            if(orderEntity.getPaymentMode().equals(PaymentMode.CASH_ON_DELIVERY)){
+                if(BigDecimalUtil.isGreaterThen(deliveryCharge, BigDecimal.ZERO)){
+                    if(BigDecimalUtil.isGreaterThenOrEqualTo(customerWalletAmount, deliveryCharge)){
+                        customerWalletAmount = customerWalletAmount.subtract(deliveryCharge);
+                        String remarks = MessageBundle.getMessage("WTM008", "push_notification.properties");
+                        remarks = String.format(remarks, currency, deliveryCharge, orderEntity.getId());
+                        this.setWalletTransaction(orderEntity, deliveryCharge, AccountType.DEBIT, PaymentMode.WALLET, remarks, customerWalletAmount);
+                    }else{
+                        orderEntity.setShortFallAmount(deliveryCharge.subtract(customerWalletAmount));
+                        if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
+                            String remarks = MessageBundle.getMessage("WTM008", "push_notification.properties");
+                            remarks = String.format(remarks, currency, customerWalletAmount, orderEntity.getId());
+                            this.setWalletTransaction(orderEntity, customerWalletAmount, AccountType.DEBIT, PaymentMode.WALLET, remarks, BigDecimal.ZERO);
+                            customerWalletAmount = BigDecimal.ZERO;
+                        }
+                        orderEntity.getCustomer().setShortFallAmount(BigDecimalUtil.checkNull(orderEntity.getCustomer().getShortFallAmount()).add(orderEntity.getShortFallAmount()));
+                    }
+                }
+            }else{
+                BigDecimal adjustAmount = paidFromWallet.subtract(deliveryCharge);
+                if(BigDecimalUtil.isGreaterThen(adjustAmount, BigDecimal.ZERO)){
+                    customerWalletAmount = customerWalletAmount.add(adjustAmount);
+                    paidFromWallet = deliveryCharge;
+                    String remarks = MessageBundle.getMessage("WTM006", "push_notification.properties");
+                    remarks = String.format(remarks, currency, adjustAmount, orderEntity.getId());
+                    this.setWalletTransaction(orderEntity, adjustAmount, AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
+                }
+
+            }
+            paidFromCOD = BigDecimal.ZERO;
+//            BigDecimal adjustAmount = paidFromWallet.subtract(orderEntity.getDeliveryCharge());
+//            customerWalletAmount = customerWalletAmount.add(adjustAmount);
+//            paidFromWallet = orderEntity.getDeliveryCharge();
+//            String remarks = MessageBundle.getMessage("WTM006", "push_notification.properties");
+//            remarks = String.format(remarks, currency, adjustAmount, orderEntity.getId());
+//            this.setWalletTransaction(orderEntity, adjustAmount, AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
         } else if (orderStatus.equals(JobOrderStatus.AT_STORE)) {
             if (BigDecimalUtil.isEqualTo(paidFromCOD, BigDecimal.ZERO)) {
                 log.info("No Change in item price before cancelling for order ID:" + orderEntity.getId());

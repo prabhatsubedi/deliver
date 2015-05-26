@@ -133,52 +133,47 @@ public class SHAEncoder {
                 + ORDER_ID_NAME + EQUALS + paymentGatewayInfoEntity.getId();
     }
 
-    public static String getResponseHTML(String msg, Boolean success){
-        String colorCode = "red";
-        String status = "failure";
-        if(success){
-            colorCode = "green";
-            status = "success";
+    private static String getAndroidResponseHTML(String msg, Boolean success) {
+        String onClick = "cancel.performClick();";
+        if (success) {
+            onClick = "ok.performClick();";
         }
         return "<html>" +
-                "<title>" + status + "</title>" +
+                "<title>Koolkat</title>" +
                 "<style>" +
+                "body{" +
+                "margin:20px;" +
+                "text-align: center" +
+                "}" +
                 ".message{" +
-                "text-align: center;" +
                 "margin: 35% 0 20% 0;" +
                 "color: #b4b4b4;" +
                 "}" +
-                "" +
-                ".box{" +
-                "font-family: times new roman;" +
+                ".btn_continue, .btn_continue:focus, .btn_continue:active {" +
                 "font-weight: bold;" +
-                "text-align: center;" +
                 "font-size: 16px;" +
                 "color: #FFF;" +
-                "padding: 0 18px;" +
-                "}" +
-                "" +
-                "body{" +
-                "margin:20px;" +
-                "}" +
-                "" +
-                ".center{" +
-                "width: 35%;" +
-                "margin-left: auto;" +
-                "margin-right: auto;" +
+                "border: medium none;" +
                 "background: none repeat scroll 0% 0% #ff9235;" +
-                "border-radius: 36px;" +
+                "border-radius: 2px;" +
                 "padding: 10px;" +
+                "width: 100%;" +
                 "}" +
                 "</style>" +
                 "<body>" +
-                "<h4 class='message'>"+msg+"</h4>" +
-                "<div class='center'><span class='box' onclick='ok.performClick(this.value);'>Continue</span></div>" +
+                "<h4 class='message'>" + msg + "</h4>" +
+                "<button class='btn_continue' onclick='"+onClick+"'>Continue</button>" +
                 "" +
                 "</body>" +
                 "</html>";
     }
 
+    public static String getResponseHTML(String msg, Boolean success, String deviceFamily) {
+        if (deviceFamily.equalsIgnoreCase("IOS") || deviceFamily.equalsIgnoreCase("MAC_OS_X")){
+            return getAndroidResponseHTML(msg, success);
+        }
+        return getAndroidResponseHTML(msg, success);
+    }
 }
 
 

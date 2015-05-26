@@ -539,7 +539,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         }   else {
             accountSummary.setServiceFee(order.getSystemServiceCharge());
             accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
-            accountSummary.setDeliveryFee(order.getCourierTransaction().getDeliveryChargedBeforeDiscount());
+            accountSummary.setDeliveryFee(order.getCourierTransaction().getDeliveryChargedAfterDiscount());
             accountSummary.setEstimatedTotal(order.getGrandTotal());
             accountSummary.setItemServiceCharge(order.getItemServiceCharge());
             accountSummary.setItemVatCharge(order.getItemVatCharge());
@@ -551,7 +551,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             accountSummary.setSubTotal(order.getTotalCost());
 
         //TODO discussion
-        accountSummary.setTotalDiscount(order.getCourierTransaction().getDeliveryChargedBeforeDiscount().subtract(order.getCourierTransaction().getDeliveryChargedAfterDiscount()));
+        //accountSummary.setTotalDiscount(order.getCourierTransaction().getDeliveryChargedBeforeDiscount().subtract(order.getCourierTransaction().getDeliveryChargedAfterDiscount()));
+        accountSummary.setTotalDiscount(BigDecimal.ZERO);
         accountSummary.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         accountSummary.setPaidFromCOD(order.getPaidFromCOD());
         accountSummary.setPaidFromWallet(order.getPaidFromWallet());

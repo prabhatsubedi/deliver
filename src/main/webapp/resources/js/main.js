@@ -240,6 +240,10 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 $('body').removeClass('loader_div').children('.loader').hide().remove();
             }
         });
+
+        if($.fn.dataTable.fnIsDataTable(selector))
+            $(selector).DataTable().clear().destroy();
+
         var dataTable = $(selector).dataTable({
 
             sDom: 'T<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
@@ -258,7 +262,6 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                     previous: '&laquo'
                 }
             },
-            order: [],
             fnDrawCallback: null,
             fnInitComplete: function(){
                 $('.dataTables_length select').attr('data-width', 'auto').selectpicker();
@@ -355,8 +358,8 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         if($.fn.dataTable.fnIsDataTable(selector))
             $(selector).DataTable().clear().destroy();
         $(selector).dataTable();
-        clearInterval(dataTablesInterval);
-        dataTablesInterval = setInterval($(selector).DataTable().ajax.reload, 60000);
+//        clearInterval(dataTablesInterval);
+//        dataTablesInterval = setInterval($(selector).DataTable().ajax.reload, 60000);
 
         /*
                     selector = "#merchants_table";

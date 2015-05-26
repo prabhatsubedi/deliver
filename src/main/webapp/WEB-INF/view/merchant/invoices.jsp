@@ -89,12 +89,12 @@
                     idString+=$(this).data("id")+",";
             });
             if(idString == ""){
-                Main.popDialog('', 'Please select invoice(s) to pay');
+                Main.popDialog('', 'Please select statement(s) to pay');
             }else{
                 var button1 = function() {
 
                     var callback = function(success, data){
-                        Main.popDialog('Invoice Payment', data.message);
+                        Main.popDialog('Statement Payment', data.message);
                         Order.getInvoices();
                         return;
                     }
@@ -111,7 +111,7 @@
                 var button2 = "No";
 
                 var buttons = [button1, button2];
-                Main.popDialog('', "Are you sure you want to pay the invoice(s)", buttons);
+                Main.popDialog('', "Are you sure you want to acknowledge the statement(s)", buttons);
 
             }
         });

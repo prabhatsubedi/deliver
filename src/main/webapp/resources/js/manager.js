@@ -747,7 +747,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     tdata.push(row);
 
                 }
-                Main.createNDataTable("#detail_account_table", tdata);
+                Main.createNDataTable("#detail_account_table", tdata, 0, 'desc');
             }
 
         };

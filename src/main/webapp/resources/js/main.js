@@ -240,6 +240,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                 $('body').removeClass('loader_div').children('.loader').hide().remove();
             }
         });
+
         var dataTable = $(selector).dataTable({
 
             sDom: 'T<"clearfix"lf><"table-responsive jscrollpane_div"t><"clearfix"ip>',
@@ -258,7 +259,6 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                     previous: '&laquo'
                 }
             },
-            order: [],
             fnDrawCallback: null,
             fnInitComplete: function(){
                 $('.dataTables_length select').attr('data-width', 'auto').selectpicker();

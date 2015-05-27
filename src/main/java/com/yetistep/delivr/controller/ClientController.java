@@ -938,11 +938,11 @@ public class ClientController extends AbstractManager{
 
     @RequestMapping(value = "/get_helpline_info", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ServiceResponse> getHelplineInformation(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ServiceResponse> getHelplineInformation() {
         try{
-            HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
-            //  validateMobileClient(headerDto.getAccessToken());
+            //HeaderDto headerDto = new HeaderDto();
+            //GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            //validateMobileClient(headerDto.getAccessToken());
 
             PreferenceDto helplineInfo = clientService.getHelpLineDetails();
             ServiceResponse serviceResponse = new ServiceResponse("Help line details has been retrieved successfully");

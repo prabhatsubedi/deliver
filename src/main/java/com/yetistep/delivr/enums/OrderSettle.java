@@ -7,12 +7,12 @@ package com.yetistep.delivr.enums;
  * Time: 2:52 PM
  * To change this template use File | Settings | File Templates.
  */
-public enum OrderSettle implements PersistentEnum{
+public enum OrderSettle implements PersistentEnum {
     SETTLED(1), UNSETTLED(2);
 
     private final int id;
 
-    OrderSettle(int id){
+    OrderSettle(int id) {
         this.id = id;
     }
 
@@ -21,10 +21,9 @@ public enum OrderSettle implements PersistentEnum{
         return id;
     }
 
-    public static OrderSettle fromInt(int arg){
-        if(arg == 1)
+    public static OrderSettle fromInt(int arg) {
+        if (arg == 1)
             return SETTLED;
-        else
-            return UNSETTLED;
+        return UNSETTLED;
     }
 }

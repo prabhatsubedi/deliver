@@ -7,7 +7,7 @@ package com.yetistep.delivr.enums;
  * Time: 1:16 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MerchantTypeCustom extends PersistentEnumUserType<MerchantType>{
+public class MerchantTypeCustom extends PersistentEnumUserType<MerchantType> {
 
     @Override
     public Class<MerchantType> returnedClass() {

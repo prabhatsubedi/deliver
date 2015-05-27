@@ -7,12 +7,12 @@ package com.yetistep.delivr.enums;
  * Time: 2:52 PM
  * To change this template use File | Settings | File Templates.
  */
-public enum MerchantType implements PersistentEnum{
+public enum MerchantType implements PersistentEnum {
     INDIVIDUAL(1), CORPORATE(2);
 
     private final int id;
 
-    MerchantType(int id){
+    MerchantType(int id) {
         this.id = id;
     }
 
@@ -21,10 +21,9 @@ public enum MerchantType implements PersistentEnum{
         return id;
     }
 
-    public static MerchantType fromInt(int arg){
-        if(arg == 1)
+    public static MerchantType fromInt(int arg) {
+        if (arg == 1)
             return INDIVIDUAL;
-        else
-            return CORPORATE;
+        return CORPORATE;
     }
 }

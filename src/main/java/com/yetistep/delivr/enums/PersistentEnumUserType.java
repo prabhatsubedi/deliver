@@ -32,7 +32,7 @@ public abstract class PersistentEnumUserType<T extends PersistentEnum> implement
 
     @Override
     public Serializable disassemble(Object value) throws HibernateException {
-        return (Serializable)value;
+        return (Serializable) value;
     }
 
     @Override
@@ -54,11 +54,11 @@ public abstract class PersistentEnumUserType<T extends PersistentEnum> implement
     public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor sessionImplementor, Object owner)
             throws HibernateException, SQLException {
         int id = rs.getInt(names[0]);
-        if(rs.wasNull()) {
+        if (rs.wasNull()) {
             return null;
         }
-        for(PersistentEnum value : returnedClass().getEnumConstants()) {
-            if(id == value.getId()) {
+        for (PersistentEnum value : returnedClass().getEnumConstants()) {
+            if (id == value.getId()) {
                 return value;
             }
         }
@@ -71,7 +71,7 @@ public abstract class PersistentEnumUserType<T extends PersistentEnum> implement
         if (value == null) {
             st.setNull(index, Types.INTEGER);
         } else {
-            st.setInt(index, ((PersistentEnum)value).getId());
+            st.setInt(index, ((PersistentEnum) value).getId());
         }
     }
 

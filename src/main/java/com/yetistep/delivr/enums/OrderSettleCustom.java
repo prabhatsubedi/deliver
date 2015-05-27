@@ -7,7 +7,7 @@ package com.yetistep.delivr.enums;
  * Time: 1:16 PM
  * To change this template use File | Settings | File Templates.
  */
-public class OrderSettleCustom extends PersistentEnumUserType<OrderSettle>{
+public class OrderSettleCustom extends PersistentEnumUserType<OrderSettle> {
 
     @Override
     public Class<OrderSettle> returnedClass() {

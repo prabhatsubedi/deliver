@@ -8,9 +8,10 @@ package com.yetistep.delivr.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum DistanceType {
-    AIR_DISTANCE, ACTUAL_DISTANCE;
+    AIR_DISTANCE, //Value in database: 0
+    ACTUAL_DISTANCE; //Value in database: 1
 
-    public String toStr(){
+    public String toStr() {
         return this.toString();
     }
 
@@ -18,10 +19,12 @@ public enum DistanceType {
         return this.ordinal();
     }
 
-    public static DistanceType fromInt(Integer arg){
-        switch (arg){
-            case 1: return ACTUAL_DISTANCE;
-            default: return AIR_DISTANCE;
+    public static DistanceType fromInt(Integer arg) {
+        switch (arg) {
+            case 1:
+                return ACTUAL_DISTANCE;
+            default:
+                return AIR_DISTANCE;
         }
     }
 }

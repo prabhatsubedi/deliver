@@ -10,7 +10,7 @@ package com.yetistep.delivr.enums;
 public enum DBoyStatus {
     NOT_AVAILABLE, FREE, BUSY;
 
-    public String toStr(){
+    public String toStr() {
         return this.toString();
     }
 
@@ -18,11 +18,14 @@ public enum DBoyStatus {
         return this.ordinal();
     }
 
-    public static DBoyStatus fromInt(Integer arg){
-        switch (arg){
-            case 0: return NOT_AVAILABLE;
-            case 1: return FREE;
-            default: return BUSY;
+    public static DBoyStatus fromInt(Integer arg) {
+        switch (arg) {
+            case 0:
+                return NOT_AVAILABLE;
+            case 1:
+                return FREE;
+            default:
+                return BUSY;
         }
     }
 }

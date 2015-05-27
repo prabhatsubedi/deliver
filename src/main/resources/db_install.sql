@@ -252,3 +252,6 @@ ALTER TABLE customers MODIFY COLUMN is_default TINYINT(1) NOT NULL DEFAULT 0;
 
 /*=========================2015-05-25======================*/
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('DISCOUNT_ON_DELIVERY_FEE', '100', '11', 'Discount on delivery fee %');
+
+/* =============================2015-05-27======================================= */
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('IOS_APP_VER_NO', '1.0', '6', 'IOS Application Version No');

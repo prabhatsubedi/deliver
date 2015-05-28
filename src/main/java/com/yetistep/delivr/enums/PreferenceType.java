@@ -52,6 +52,7 @@ public enum PreferenceType {
     DEFAULT_IMG_CATEGORY,
     DEFAULT_IMG_SEARCH,
     REFERRAL_FACEBOOK_IMG,
+    LOGO_FOR_PDF_EMAIL,
 
     /* Wallet Configuration */
     MINIMUM_TRANSFERABLE_AMOUNT,
@@ -100,6 +101,6 @@ public enum PreferenceType {
     DBOY_MIN_AMOUNT,                //Minimum Amount Given to Shopper
     MINIMUM_PROFIT_PERCENTAGE,      //Minimum Profit Percentage for Order Acceptance
     DEDUCTION_PERCENT,              //Deduction in case of Delayed Delivery from Shopper Earning
-    DISCOUNT_ON_DELIVERY_FEE;
+    DISCOUNT_ON_DELIVERY_FEE
 
 }

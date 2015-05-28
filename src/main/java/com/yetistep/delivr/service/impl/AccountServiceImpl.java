@@ -133,7 +133,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             preferences.put("VAT_NO", systemPropertyService.readPrefValue(PreferenceType.VAT_NO));
             preferences.put("DELIVERY_FEE_VAT", systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
 
-            String imageUrl = systemPropertyService.readPrefValue(PreferenceType.REFERRAL_FACEBOOK_IMG);
+            String imageUrl = systemPropertyService.readPrefValue(PreferenceType.LOGO_FOR_PDF_EMAIL);
 
             invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice, store, imageUrl, preferences);
 
@@ -223,7 +223,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                 preferences.put("VAT_NO", systemPropertyService.readPrefValue(PreferenceType.VAT_NO));
                 preferences.put("DELIVERY_FEE_VAT", systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
 
-                String imageUrl = systemPropertyService.readPrefValue(PreferenceType.REFERRAL_FACEBOOK_IMG);
+                String imageUrl = systemPropertyService.readPrefValue(PreferenceType.LOGO_FOR_PDF_EMAIL);
                 billAndReceiptPath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt, imageUrl, preferences);
                 bill.setPath(billAndReceiptPath);
                 receipt.setPath(billAndReceiptPath);
@@ -284,7 +284,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             preferences.put("DELIVERY_FEE_VAT", systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
             preferences.put("TDS_PERCENTAGE", systemPropertyService.readPrefValue(PreferenceType.TDS_PERCENTAGE));
 
-            String imageUrl = systemPropertyService.readPrefValue(PreferenceType.REFERRAL_FACEBOOK_IMG);
+            String imageUrl = systemPropertyService.readPrefValue(PreferenceType.LOGO_FOR_PDF_EMAIL);
             statementPath =  invoiceGenerator.generateDBoyPayStatement(orders, deliveryBoy, dBoyPayment, imageUrl, preferences);
 
             dBoyPayment.setPath(statementPath);

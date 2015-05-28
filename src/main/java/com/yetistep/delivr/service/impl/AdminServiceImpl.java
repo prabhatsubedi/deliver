@@ -425,6 +425,8 @@ public class AdminServiceImpl implements AdminService {
                 dir = MessageBundle.separateString("/", "default", "logo");
             } else if(prefKey.equals(PreferenceType.REFERRAL_FACEBOOK_IMG.toString())){
                 dir = MessageBundle.separateString("/", "default", "login_logo");
+            } else if(prefKey.equals(PreferenceType.LOGO_FOR_PDF_EMAIL.toString())){
+                dir = MessageBundle.separateString("/", "default", "login_logo");
             }
 
             boolean isLocal = MessageBundle.isLocalHost();

@@ -72,7 +72,7 @@
                         <th class="no_sort">Qty</th>
                         <th class="no_sort">Service Charge</th>
                         <th class="no_sort">VAT</th>
-                        <th class="no_sort">Total Item Price</th>
+                        <th class="no_sort">Item Price</th>
                     </tr>
                     </thead>
                     <tbody>

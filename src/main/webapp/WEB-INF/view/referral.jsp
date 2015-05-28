@@ -103,7 +103,7 @@
 
 <div class="container">
     <div class=row>
-        <div class="span12">
+        <div class="span12" style="padding:0px 20px;">
             <img src="${pageContext.request.contextPath}/resources/images/fbs-logo.png" class="img-responsive center-block">
         </div>
     </div>

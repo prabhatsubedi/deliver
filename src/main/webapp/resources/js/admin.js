@@ -62,8 +62,8 @@ var Admin = function() {
                                 imgWidth = '720';
                                 imgHeight = '160';
                             }  else if(prefKey == 'REFERRAL_FACEBOOK_IMG') {
-                                imgWidth = '720';
-                                imgHeight = '160';
+                                imgWidth = '470';
+                                imgHeight = '246';
                             } else {
                                 imgWidth = '750';
                                 imgHeight = '500';

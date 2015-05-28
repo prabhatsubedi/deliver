@@ -90,7 +90,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             throw new YSException("VLD033");
 
         /* Featured Brand List Only */
-        List<StoresBrandEntity> featuredBrands = storesBrandDaoService.findFeaturedBrands();
+        List<StoresBrandEntity> featuredBrands = storesBrandDaoService.findActiveFeaturedBrands();
 
         /* Priority Brands Not Featured */
         List<StoresBrandEntity> priorityBrands = null;
@@ -105,9 +105,9 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             }
 //                throw new YSException("VLD011");
 
-            priorityBrands = storesBrandDaoService.findPriorityBrands(null);
+            priorityBrands = storesBrandDaoService.findActivePriorityBrands(null);
         } else {
-            priorityBrands = storesBrandDaoService.findPriorityBrands("Not Null");
+            priorityBrands = storesBrandDaoService.findActivePriorityBrands("Not Null");
             isBrandWitDistanceSort = true;
             lat = requestJsonDto.getGpsInfo().getLatitude();
             lon = requestJsonDto.getGpsInfo().getLongitude();
@@ -148,7 +148,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                 ignoreList.add(storesBrandEntity.getId());
             }
 
-            List<StoreEntity> storeEntities = storeDaoService.findStores(ignoreList);
+            List<StoreEntity> storeEntities = storeDaoService.findActiveStores(ignoreList);
 
                  /* Extract Latitude and Longitude */
             if((lat!=null && !lat.isEmpty()) && (lon!=null && !lon.isEmpty())) //If and only if lat, lon exist of customer then sort
@@ -1377,7 +1377,8 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         PreferenceDto preferenceDto = new PreferenceDto();
         preferenceDto.setHelplineNumber(systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
         preferenceDto.setCustomerCareEmail(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_CARE_EMAIL));
-
+        preferenceDto.setRefereeRewardAmount(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
+        preferenceDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         return preferenceDto;
     }
 

@@ -2,15 +2,15 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.StoreDaoService;
 import com.yetistep.delivr.enums.Status;
-import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.StoreEntity;
-import com.yetistep.delivr.model.StoresBrandEntity;
-import org.hibernate.*;
+import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -70,6 +70,22 @@ public class StoreDaoServiceImpl implements StoreDaoService{
     }
 
     @Override
+    public List<StoreEntity> findActiveStores(List<Integer> ignoreBrand) throws Exception {
+        List<StoreEntity> storeEntities = null;
+        Criteria criteria = getCurrentSession().createCriteria(StoreEntity.class);
+        criteria.createAlias("storesBrand.merchant", "m");
+        criteria.createAlias("m.user", "u");
+        if (ignoreBrand.size() > 0)
+            criteria.add(Restrictions.not(Restrictions.in("storesBrand.id", ignoreBrand)));
+        criteria.add(Restrictions.eq("status", Status.ACTIVE));
+        criteria.add(Restrictions.eq("u.status", Status.ACTIVE));
+
+        storeEntities = criteria.list();
+
+        return storeEntities;
+    }
+
+    @Override
     public Integer getActiveStores(Integer brandId) throws Exception {
         String sql = "SELECT COUNT(*) FROM stores WHERE stores_brand_id = :brandId AND status = :status";
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
@@ -85,6 +101,21 @@ public class StoreDaoServiceImpl implements StoreDaoService{
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("brandId", brandId);
         sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(StoreEntity.class));
+
+        return (List<StoreEntity>) sqlQuery.list();
+    }
+
+    @Override
+    public List<StoreEntity> findActiveStores(Integer brandId) throws Exception {
+        String sql = "SELECT name, latitude, longitude, city, street FROM stores s " +
+                "INNER JOIN stores_brands sb on (s.stores_brand_id = sb.id) INNER JOIN " +
+                "merchants m  on (m.id = sb.merchant_id) INNER JOIN users u on (u.id = m.user_id) " +
+                "WHERE sb.id = :brandId AND s.status = :status AND u.status = :userStatus";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("brandId", brandId);
+        sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
+        sqlQuery.setParameter("userStatus", Status.ACTIVE.ordinal());
         sqlQuery.setResultTransformer(Transformers.aliasToBean(StoreEntity.class));
 
         return (List<StoreEntity>) sqlQuery.list();

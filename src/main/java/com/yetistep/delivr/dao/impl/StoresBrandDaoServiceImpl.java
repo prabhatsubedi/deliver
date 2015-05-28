@@ -230,6 +230,22 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
         return brandIds;
     }
 
+    @Override
+    public List<Integer> getActiveSearchBrands(String word, Integer limit) throws Exception {
+        List<Integer> brandIds;
+        String sql = "SELECT sb.id as id FROM stores_brands sb INNER JOIN merchants m on (sb.merchant_id = m.id) " +
+                "INNER JOIN users u on(m.user_id = u.id) WHERE sb.brand_name LIKE " +
+                ":word AND sb.status = :status AND u.status = :userStatus LIMIT :limit";
+
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("word", CommonConstants.DELIMITER+word+CommonConstants.DELIMITER);
+        sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
+        sqlQuery.setParameter("userStatus", Status.ACTIVE.ordinal());
+        sqlQuery.setParameter("limit", limit);
+        brandIds = sqlQuery.list();
+        return brandIds;
+    }
+
 
     @Override
     public Boolean updateFeatureAndPriorityOfStoreBrands(List<StoresBrandEntity> storeBrands) throws Exception {
@@ -263,5 +279,71 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
         sqlQuery.setParameter("brandsId", brandsId);
 
         return ((Number)sqlQuery.uniqueResult()).intValue();
+    }
+
+    @Override
+    public List<StoresBrandEntity> findActiveFeaturedBrands() throws Exception {
+        List<StoresBrandEntity> storesBrandEntities = null;
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        criteria.createAlias("merchant", "m");
+        criteria.createAlias("m.user", "u");
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("openingTime"), "openingTime")
+                .add(Projections.property("closingTime"), "closingTime")
+                .add(Projections.property("brandName"), "brandName")
+                .add(Projections.property("brandLogo"), "brandLogo")
+                .add(Projections.property("brandImage"), "brandImage")
+                .add(Projections.property("brandUrl"), "brandUrl")
+                .add(Projections.property("featured"), "featured")
+                .add(Projections.property("priority"), "priority")
+                .add(Projections.property("minOrderAmount"), "minOrderAmount")
+        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
+        criteria.add(Restrictions.isNotNull("featured")) ;
+        criteria.add(Restrictions.eq("status", Status.ACTIVE));
+        criteria.add(Restrictions.eq("u.status", Status.ACTIVE));
+        storesBrandEntities = criteria.list();
+        return storesBrandEntities;
+    }
+
+    @Override
+    public List<StoresBrandEntity> findActivePriorityExceptFeaturedBrands(String priority) throws Exception {
+        List<StoresBrandEntity> storesBrandEntities = null;
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StoresBrandEntity.class);
+        criteria.createAlias("merchant", "m");
+        criteria.createAlias("m.user", "u");
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("openingTime"), "openingTime")
+                .add(Projections.property("closingTime"), "closingTime")
+                .add(Projections.property("brandName"), "brandName")
+                .add(Projections.property("brandLogo"), "brandLogo")
+                .add(Projections.property("brandImage"), "brandImage")
+                .add(Projections.property("brandUrl"), "brandUrl")
+                .add(Projections.property("featured"), "featured")
+                .add(Projections.property("priority"), "priority")
+                .add(Projections.property("minOrderAmount"), "minOrderAmount")
+        ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
+        criteria.add(Restrictions.isNull("featured"));
+        criteria.add(Restrictions.eq("status", Status.ACTIVE));
+        criteria.add(Restrictions.eq("u.status", Status.ACTIVE));
+
+        if(priority == null){
+            //All Brands Null at bottom
+            criteria.addOrder(Order.asc("priority").nulls(NullPrecedence.LAST));
+        } else {
+            //Only Priority set brands
+            criteria.add(Restrictions.isNotNull("priority")) ;
+            criteria.addOrder(Order.asc("priority"));
+        }
+
+        storesBrandEntities = criteria.list();
+        return storesBrandEntities;
+    }
+
+
+    @Override
+    public List<StoresBrandEntity> findActivePriorityBrands(String priority) throws Exception {
+        return findActivePriorityExceptFeaturedBrands(priority);
     }
 }

@@ -1321,7 +1321,7 @@ public class CustomerServiceImpl implements CustomerService {
                 ItemEntity item = iterator.next();
 
                 SearchDto tempItem = new SearchDto();
-                List<StoreEntity> storeEntities = storeDaoService.findStores(item.getBrandId());
+                List<StoreEntity> storeEntities = storeDaoService.findActiveStores(item.getBrandId());
                 if(storeEntities.size() == 0) { //If all Stores are inactivated
                     iterator.remove();
                     continue;
@@ -1378,7 +1378,7 @@ public class CustomerServiceImpl implements CustomerService {
         else if(totalItemSize==0)
             limit = CommonConstants.MAX_SEARCH_DATA;
 
-        List<Integer> brandIds = storesBrandDaoService.getSearchBrands(word, limit);
+        List<Integer> brandIds = storesBrandDaoService.getActiveSearchBrands(word, limit);
 
         List<SearchDto> storeList = new ArrayList<>();
 

@@ -1,5 +1,7 @@
 package com.yetistep.delivr.model.mobile.dto;
 
+import java.math.BigDecimal;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Chandra Prakash Panday
@@ -11,6 +13,8 @@ public class PreferenceDto {
     private String helplineNumber;
     private String customerCareEmail;
     private String acceptanceRadius;
+    private BigDecimal refereeRewardAmount;
+    private String currency;
 
     public String getHelplineNumber() {
         return helplineNumber;
@@ -34,5 +38,21 @@ public class PreferenceDto {
 
     public void setAcceptanceRadius(String acceptanceRadius) {
         this.acceptanceRadius = acceptanceRadius;
+    }
+
+    public BigDecimal getRefereeRewardAmount() {
+        return refereeRewardAmount;
+    }
+
+    public void setRefereeRewardAmount(BigDecimal refereeRewardAmount) {
+        this.refereeRewardAmount = refereeRewardAmount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

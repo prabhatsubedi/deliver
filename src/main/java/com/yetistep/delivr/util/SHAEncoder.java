@@ -168,13 +168,49 @@ public class SHAEncoder {
                 "</html>";
     }
 
+    private static String getIOSResponseHTML(String msg, Boolean success) {
+        String onClick = "cancel.performClick();";
+        if (success) {
+            onClick = "ok.performClick();";
+        }
+        return "<html>" +
+                "<title>Koolkat</title>" +
+                "<style>" +
+                "body{" +
+                "margin:20px;" +
+                "text-align: center" +
+                "}" +
+                ".message{" +
+                "margin: 35% 0 20% 0;" +
+                "color: #b4b4b4;" +
+                "}" +
+                ".btn_continue, .btn_continue:focus, .btn_continue:active {" +
+                "font-weight: bold;" +
+                "font-size: 16px;" +
+                "color: #FFF;" +
+                "border: medium none;" +
+                "background: none repeat scroll 0% 0% #ff9235;" +
+                "border-radius: 2px;" +
+                "padding: 10px;" +
+                "width: 100%;" +
+                "}" +
+                "</style>" +
+                "<body>" +
+                "<h4 class='message'>" + msg + "</h4>" +
+                "<button class='btn_continue' onclick='alert(1)'>Continue</button>" +
+                "" +
+                "</body>" +
+                "</html>";
+    }
+
     public static String getResponseHTML(String msg, Boolean success, String deviceFamily) {
         if (deviceFamily.equalsIgnoreCase("IOS") || deviceFamily.equalsIgnoreCase("MAC_OS_X")){
-            return getAndroidResponseHTML(msg, success);
+            return getIOSResponseHTML(msg, success);
         }
         return getAndroidResponseHTML(msg, success);
     }
 }
+
 
 
 

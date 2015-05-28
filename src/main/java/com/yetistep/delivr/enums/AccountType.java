@@ -8,5 +8,6 @@ package com.yetistep.delivr.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum AccountType {
-    DEBIT, CREDIT
+    DEBIT, //Value in database: 0
+    CREDIT //Value in database: 1
 }

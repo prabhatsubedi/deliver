@@ -15,13 +15,18 @@ public enum Status {
         return this.ordinal();
     }
 
-    public static Status fromInt(Integer arg){
-        switch (arg){
-            case 0: return UNVERIFIED;
-            case 1: return VERIFIED;
-            case 2: return ACTIVE;
-            case 3: return INACTIVE;
-            default: return UNVERIFIED;
+    public static Status fromInt(Integer arg) {
+        switch (arg) {
+            case 0:
+                return UNVERIFIED;
+            case 1:
+                return VERIFIED;
+            case 2:
+                return ACTIVE;
+            case 3:
+                return INACTIVE;
+            default:
+                return UNVERIFIED;
         }
     }
 }

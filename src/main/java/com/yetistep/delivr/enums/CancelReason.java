@@ -7,26 +7,28 @@ package com.yetistep.delivr.enums;
  * Time: 11:43 AM
  * To change this template use File | Settings | File Templates.
  */
+
+@Deprecated
 public enum CancelReason {
 
     CUSTOMER_UNREACHABLE {
-            @Override
-            public String toString() {
-                return "Customer Not Reachable";
-            }
-        },
+        @Override
+        public String toString() {
+            return "Customer Not Reachable";
+        }
+    },
     ITEM_NOT_FOUND {
-            @Override
-            public String toString() {
-                return "Item Not Found";
-            }
-        },
+        @Override
+        public String toString() {
+            return "Item Not Found";
+        }
+    },
     CUSTOMER_DENY_TO_TAKE_ORDER {
-            @Override
-            public String toString() {
-                return "Customer Denied to take order";
-            }
-        },
+        @Override
+        public String toString() {
+            return "Customer Denied to take order";
+        }
+    },
     CUSTOMER_LOCATION_UNKNOWN {
         @Override
         public String toString() {

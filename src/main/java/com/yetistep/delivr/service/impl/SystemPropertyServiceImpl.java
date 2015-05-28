@@ -1,14 +1,19 @@
 package com.yetistep.delivr.service.impl;
 
-import com.yetistep.delivr.dao.impl.PreferencesDaoServiceImpl;
 import com.yetistep.delivr.dao.inf.PreferencesDaoService;
+import com.yetistep.delivr.dao.inf.UserDeviceDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
+import com.yetistep.delivr.enums.NotifyTo;
 import com.yetistep.delivr.enums.PreferenceType;
+import com.yetistep.delivr.enums.PushNotificationRedirect;
+import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.model.PreferenceSectionEntity;
 import com.yetistep.delivr.model.PreferenceTypeEntity;
 import com.yetistep.delivr.model.PreferencesEntity;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.MessageBundle;
+import com.yetistep.delivr.util.PushNotification;
+import com.yetistep.delivr.util.PushNotificationUtil;
 import com.yetistep.delivr.util.ReturnJsonUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +37,9 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
 
     @Autowired
     PreferencesDaoService preferencesDaoService;
+
+    @Autowired
+    UserDeviceDaoService userDeviceDaoService;
 
 
     @Override
@@ -107,11 +115,38 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
     public Boolean updateSystemPreferences(List<PreferencesEntity> systemPreferences) throws Exception {
         log.info("+++++++++++ Updating preferences table and property file ++++++++++++++");
         //update preference in db
+
         preferencesDaoService.updatePreferences(systemPreferences);
 
+        for (PreferencesEntity preference : systemPreferences) {
+            if (preference.getPrefKey().equals(PreferenceType.ANDROID_APP_VER_NO.toString())) {
+                String androidVersionNo = readPrefValue(PreferenceType.ANDROID_APP_VER_NO);
+                String message = MessageBundle.getPushNotificationMsg("VUM001");
+                if (!preference.getValue().equals(androidVersionNo)) {
+                    sendNotification(Role.ROLE_CUSTOMER, "ANDROID", NotifyTo.CUSTOMER_ANDROID, message, preference.getValue());
+                }
+            } else if (preference.getPrefKey().equals(PreferenceType.IOS_APP_VER_NO.toString())) {
+                String iosVersionNo = readPrefValue(PreferenceType.IOS_APP_VER_NO);
+                String message = MessageBundle.getPushNotificationMsg("VUM001");
+                if (!preference.getValue().equals(iosVersionNo)) {
+                    sendNotification(Role.ROLE_CUSTOMER, "MAC_OS_X", NotifyTo.CUSTOMER_IOS, message, preference.getValue());
+                }
+            }
+        }
         //update preference in property fle
         savePropertyFileToWEB_INF(systemPreferences);
         return true;
+    }
+
+    private void sendNotification(Role role, String family, NotifyTo notifyTo, String message, String extraDetail) throws Exception {
+        List<String> deviceTokens = userDeviceDaoService.getAllDeviceTokensForFamilyAndRole(role, family);
+        PushNotification pushNotification = new PushNotification();
+        pushNotification.setTokens(deviceTokens);
+        pushNotification.setMessage(message);
+        pushNotification.setPushNotificationRedirect(PushNotificationRedirect.PLAYSTORE);
+        pushNotification.setExtraDetail(extraDetail);
+        pushNotification.setNotifyTo(notifyTo);
+        PushNotificationUtil.sendNotification(pushNotification, family);
     }
 
 
@@ -121,7 +156,7 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
         //update preference in db
         preferencesDaoService.updatePreferenceType(preferenceType);
         List<PreferencesEntity> systemPreferences = new ArrayList<>();
-        for (PreferenceSectionEntity sectionEntity: preferenceType.getSection()){
+        for (PreferenceSectionEntity sectionEntity : preferenceType.getSection()) {
             systemPreferences.addAll(sectionEntity.getPreference());
         }
 
@@ -132,7 +167,7 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
     }
 
     @Override
-    public String readPrefValue(PreferenceType preferenceType) throws Exception{
+    public String readPrefValue(PreferenceType preferenceType) throws Exception {
         Resource resource = new ClassPathResource(SYSTEM_PREF_FILE);
         return MessageBundle.getPropertyKey(preferenceType.toString(), resource.getFile());
     }

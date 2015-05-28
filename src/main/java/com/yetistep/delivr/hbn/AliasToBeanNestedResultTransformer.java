@@ -7,10 +7,6 @@ package com.yetistep.delivr.hbn;
  * Time: 11:26 AM
  * To change this template use File | Settings | File Templates.
  */
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.property.PropertyAccessor;
@@ -18,9 +14,13 @@ import org.hibernate.property.PropertyAccessorFactory;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.transform.ResultTransformer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author samiandoni
- *
  */
 public class AliasToBeanNestedResultTransformer extends AliasToBeanResultTransformer {
 
@@ -59,9 +59,9 @@ public class AliasToBeanNestedResultTransformer extends AliasToBeanResultTransfo
                         list.add(hasChild);
                         subclassToAlias.put(subclass, list);
                     }
-                    if(sp.length>2){
-                        aliasName = alias.substring(alias.indexOf(".")+1);
-                        ((List)subclassToAlias.get(subclass)).set(3,true);
+                    if (sp.length > 2) {
+                        aliasName = alias.substring(alias.indexOf(".") + 1);
+                        ((List) subclassToAlias.get(subclass)).set(3, true);
                     }
                     ((List<Object>) subclassToAlias.get(subclass).get(0)).add(tuple[i]);
                     ((List<String>) subclassToAlias.get(subclass).get(1)).add(aliasName);
@@ -86,14 +86,14 @@ public class AliasToBeanNestedResultTransformer extends AliasToBeanResultTransfo
         for (Class<?> subclass : subclassToAlias.keySet()) {
             List list = subclassToAlias.get(subclass);
             Boolean hasChild = (Boolean) list.get(3);
-            if(hasChild){
+            if (hasChild) {
                 subclassTransformer = new AliasToBeanNestedResultTransformer(subclass);
-            }else{
+            } else {
                 subclassTransformer = new AliasToBeanResultTransformer(subclass);
             }
-            List<Object> aliaes= (List<Object>) list.get(1);
+            List<Object> aliasList = (List<Object>) list.get(1);
             Object subObject = subclassTransformer.transformTuple(((List<Object>) list.get(0)).toArray(),
-                    aliaes.toArray(new String[aliaes.size()]));
+                    aliasList.toArray(new String[aliasList.size()]));
             PropertyAccessor accessor = PropertyAccessorFactory.getPropertyAccessor("property");
             accessor.getSetter(resultClass, (String) list.get(2)).set(root, subObject, null);
         }

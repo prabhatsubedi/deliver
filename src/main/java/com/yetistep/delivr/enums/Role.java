@@ -13,31 +13,32 @@ public enum Role {
 
     private final int role;
 
-    private Role(int role){
+    private Role(int role) {
         this.role = role;
     }
 
-    public Integer toInt(){
+    public Integer toInt() {
         return role;
     }
 
-    public String toStr(){
+    public String toStr() {
         return String.valueOf(role);
     }
 
-    public static Role fromInt(Integer arg){
-        if(arg.equals(1))
-            return ROLE_ADMIN;
-        else if(arg.equals(2))
-            return ROLE_MANAGER;
-        else if(arg.equals(3))
-            return ROLE_ACCOUNTANT;
-        else if(arg.equals(4))
-            return ROLE_DELIVERY_BOY;
-        else if(arg.equals(5))
-            return ROLE_MERCHANT;
-        else
-            return ROLE_CUSTOMER;
-
+    public static Role fromInt(Integer arg) {
+        switch (arg) {
+            case 1:
+                return ROLE_ADMIN;
+            case 2:
+                return ROLE_MANAGER;
+            case 3:
+                return ROLE_ACCOUNTANT;
+            case 4:
+                return ROLE_DELIVERY_BOY;
+            case 5:
+                return ROLE_MERCHANT;
+            default:
+                return ROLE_CUSTOMER;
+        }
     }
 }

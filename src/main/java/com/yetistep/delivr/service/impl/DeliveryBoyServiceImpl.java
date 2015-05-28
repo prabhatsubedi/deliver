@@ -1530,7 +1530,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                     customerWalletAmount = customerWalletAmount.add(adjustAmount);
                     paidFromWallet = deliveryCharge;
                     String remarks = MessageBundle.getMessage("WTM006", "push_notification.properties");
-                    remarks = String.format(remarks, currency, adjustAmount, orderEntity.getId());
+                    remarks = String.format(remarks, currency, adjustAmount, orderEntity.getId(), currency, deliveryCharge);
                     this.setWalletTransaction(orderEntity, adjustAmount, AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
                 }
 

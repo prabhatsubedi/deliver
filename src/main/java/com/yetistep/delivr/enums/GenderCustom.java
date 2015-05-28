@@ -8,9 +8,10 @@ package com.yetistep.delivr.enums;
  * To change this template use File | Settings | File Templates.
  */
 public class GenderCustom extends PersistentEnumUserType<Gender> {
-@Override
-  public Class<Gender> returnedClass() {
+
+    @Override
+    public Class<Gender> returnedClass() {
         return Gender.class;
-  }
+    }
 
 }

@@ -8,33 +8,32 @@ package com.yetistep.delivr.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum PushNotificationRedirect {
-    ORDER{
+    ORDER {
         @Override
         public String toString() {
             return ":order";
         }
-    },
-    DELIVR{
+    }, DELIVR {
         @Override
         public String toString() {
             return ":delivr";
         }
-    }, PLAYSTORE{
+    }, PLAYSTORE {
         @Override
         public String toString() {
             return ":playstore";
         }
-    }, RECEIPT{
+    }, RECEIPT {
         @Override
         public String toString() {
             return ":receipt";
         }
-    }, INFO{
+    }, INFO {
         @Override
         public String toString() {
             return ":info";
         }
-    }, TRANSACTION{
+    }, TRANSACTION {
         @Override
         public String toString() {
             return ":transaction";

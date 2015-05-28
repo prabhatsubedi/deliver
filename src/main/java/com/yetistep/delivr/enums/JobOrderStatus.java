@@ -18,41 +18,50 @@ public enum JobOrderStatus {
     DELIVERED, /* when delivery boy enter the receive CODE */
     CANCELLED; /* when order has been cancelled or failed */
 
-    public static JobOrderStatus fromInt(int arg){
-        if(arg == 0)
-            return ORDER_PLACED;
-        else if(arg == 1)
-            return ORDER_ACCEPTED;
-        else if(arg == 2)
-            return IN_ROUTE_TO_PICK_UP;
-        else if(arg == 3)
-            return AT_STORE;
-        else if(arg == 4)
-            return IN_ROUTE_TO_DELIVERY;
-        else if(arg == 5)
-            return DELIVERED;
-        else
-            return CANCELLED;
+    public static JobOrderStatus fromInt(int arg) {
+        switch (arg) {
+            case 0:
+                return ORDER_PLACED;
+            case 1:
+                return ORDER_ACCEPTED;
+            case 2:
+                return IN_ROUTE_TO_PICK_UP;
+            case 3:
+                return AT_STORE;
+            case 4:
+                return IN_ROUTE_TO_DELIVERY;
+            case 5:
+                return DELIVERED;
+            default:
+                return CANCELLED;
+        }
     }
-
 
     /**
      * This method is used to check validation of job order while traversing from one state to other.
-     * @param currentJobOrderStatus  Current Job Order Status
-     * @param nextJobOrderStatus Next Job Order Status
-     * @throws Exception  Business Exception based on job order status
+     *
+     * @param currentJobOrderStatus Current Job Order Status
+     * @param nextJobOrderStatus    Next Job Order Status
+     * @throws Exception Business Exception based on job order status
      */
     public static void traverseJobStatus(JobOrderStatus currentJobOrderStatus, JobOrderStatus nextJobOrderStatus) throws Exception {
-        if(nextJobOrderStatus.equals(DELIVERED))
-            checkConditions(currentJobOrderStatus, false, false, false, false, false, true);
-        else if(nextJobOrderStatus.equals(IN_ROUTE_TO_DELIVERY))
-            checkConditions(currentJobOrderStatus, false, true, false, false, true, true);
-        else if(nextJobOrderStatus.equals(AT_STORE))
-            checkConditions(currentJobOrderStatus, false, true, false, true, true, true);
-        else if(nextJobOrderStatus.equals(IN_ROUTE_TO_PICK_UP))
-            checkConditions(currentJobOrderStatus, false, true, true, true, true, true);
-        else if(nextJobOrderStatus.equals(ORDER_ACCEPTED))
-            checkConditions(currentJobOrderStatus, true, true, true, true, true, true);
+        switch (nextJobOrderStatus) {
+            case DELIVERED:
+                checkConditions(currentJobOrderStatus, false, false, false, false, false, true);
+                break;
+            case IN_ROUTE_TO_DELIVERY:
+                checkConditions(currentJobOrderStatus, false, true, false, false, true, true);
+                break;
+            case AT_STORE:
+                checkConditions(currentJobOrderStatus, false, true, false, true, true, true);
+                break;
+            case IN_ROUTE_TO_PICK_UP:
+                checkConditions(currentJobOrderStatus, false, true, true, true, true, true);
+                break;
+            case ORDER_ACCEPTED:
+                checkConditions(currentJobOrderStatus, true, true, true, true, true, true);
+                break;
+        }
     }
 
     private static void checkConditions(JobOrderStatus currentJobOrderStatus, boolean orderAccepted, boolean cancelled,

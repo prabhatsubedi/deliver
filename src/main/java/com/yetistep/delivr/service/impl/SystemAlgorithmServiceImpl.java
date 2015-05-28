@@ -162,8 +162,6 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
     @Override
     public void encodeWalletTransaction(WalletTransactionEntity walletTransactionEntity) throws Exception {
         BigDecimal value = walletTransactionEntity.getTransactionAmount().setScale(2, BigDecimal.ROUND_HALF_UP);
-        System.out.println("Transaction Amount:" + value);
-        System.out.println("Current Milliseconds:" + walletTransactionEntity.getTransactionDate().getTime());
         Long currentTime = walletTransactionEntity.getTransactionDate().getTime();
         currentTime = (currentTime / 1000) * 1000;
         value = value.add(new BigDecimal(currentTime));

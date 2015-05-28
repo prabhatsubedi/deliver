@@ -16,7 +16,7 @@ public enum InvoiceStatus {
     public static InvoiceStatus fromString(String status) {
         try {
             return InvoiceStatus.valueOf(status.toUpperCase());
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new YSException("INV001");
         }
     }

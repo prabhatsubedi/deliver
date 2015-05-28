@@ -20,17 +20,18 @@ public abstract class AbstractManager {
     HttpServletRequest httpServletRequest;
 
     Logger log = Logger.getLogger(AbstractManager.class);
-    public String getServerName(){
-      //Requested Server Name
-      return httpServletRequest.getServerName();
+
+    public String getServerName() {
+        //Requested Server Name
+        return httpServletRequest.getServerName();
     }
 
-    public String getServerUrl(){
+    public String getServerUrl() {
         //Requested URL
         return httpServletRequest.getRequestURL().toString().replace(httpServletRequest.getServletPath(), "").trim();
     }
 
-    public String getIpAddress(){
+    public String getIpAddress() {
         //Client IP Address
         String ipAddress = httpServletRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null)
@@ -78,14 +79,14 @@ public abstract class AbstractManager {
         String family = ua.getOperatingSystem().name();
 
 
-        if (family.toUpperCase().indexOf("IOS")>= 0 || family.toUpperCase().indexOf("MAC")>= 0 || family.toUpperCase().indexOf("UNKNOWN")>= 0) {
+        if (family.toUpperCase().indexOf("IOS") >= 0 || family.toUpperCase().indexOf("MAC") >= 0 || family.toUpperCase().indexOf("UNKNOWN") >= 0) {
             timeStr = RNCryptoEncDec.decryptAccessToken(token);
-        } else if(family.toUpperCase().indexOf("ANDROID")>=0){
+        } else if (family.toUpperCase().indexOf("ANDROID") >= 0) {
             timeStr = EncDecUtil.decryptAccessToken(token, MessageBundle.getSecretKey());
         }
         Long timeVal = Long.valueOf(timeStr).longValue();
         Long now = System.currentTimeMillis();
-        log.info("+++++++ previous time "+ timeStr + " Current Time " + now + " +++++++++");
+        log.info("+++++++ previous time " + timeStr + " Current Time " + now + " +++++++++");
         Long diff = (now - timeVal) / 1000;
         log.info("+++++++ Time Diff " + diff);
 //        if (diff > 120) //if diff more than 2 minutes

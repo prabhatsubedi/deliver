@@ -14,7 +14,6 @@ public enum Gender implements PersistentEnum {
     ALL(3),
     OTHERS(4);
 
-
     private final int id;
 
     Gender(int id) {
@@ -26,15 +25,17 @@ public enum Gender implements PersistentEnum {
         return id;
     }
 
-    public static Gender fromInt(int arg){
-        if(arg == 1)
-            return MALE;
-        else if(arg == 2)
-            return FEMALE;
-        else if(arg == 3)
-            return ALL;
-        else
-            return OTHERS;
+    public static Gender fromInt(int arg) {
+        switch (arg) {
+            case 1:
+                return MALE;
+            case 2:
+                return FEMALE;
+            case 3:
+                return ALL;
+            default:
+                return OTHERS;
+        }
     }
 
 }

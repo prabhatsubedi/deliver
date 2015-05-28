@@ -163,10 +163,10 @@ var merchantProfile;
         $('.save_btn').click(function () {
             if ($('#merchant_form').valid()) {
 
-                if($('#commission').val() == 0 && $('#service_fee').val() == 0) {
+/*                if($('#commission').val() == 0 && $('#service_fee').val() == 0) {
                     Main.popDialog('', 'Both commission percent and processing charge cannot be 0.');
                     return false;
-                }
+                }*/
 
                 var address = arrGeoPoints[Object.keys(arrGeoPoints)[0]];
                 if(address == undefined) {

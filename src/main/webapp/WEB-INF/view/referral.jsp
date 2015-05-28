@@ -12,8 +12,8 @@
         body{
             padding: 0;
             font-family: 'Open Sans', sans-serif;
-            min-width: 240px;
             background: #F58220 url('../../resources/images/fbs-bg.png') repeat left top;
+            min-width: 360px;
         }
         .container{
             margin-top: 80px;
@@ -32,7 +32,7 @@
         }
 
         .well {
-            padding: 50px;
+            padding: 50px 20px;
             background-color: #FFFFFF;
             border-radius: 10px;
         }
@@ -79,6 +79,14 @@
                 margin-left: 5%;
                 margin-right: 5%;
                 width: 90%;
+            }
+
+            #fbLoginBtn{
+                padding: 0 20px 0 0;
+            }
+
+            #fbLoginBtn img {
+                margin-right: 20px;
             }
 
         }

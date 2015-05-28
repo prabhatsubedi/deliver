@@ -47,7 +47,7 @@ var Admin = function() {
                             var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'No', 1: 'Yes'});
                         } else if(prefKey == 'AIR_OR_ACTUAL_DISTANCE_SWITCH') {
                             var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'Air Distance', 1: 'Actual Distance'});
-                        } else if(prefKey == 'COMPANY_LOGO' || prefKey == 'DEFAULT_IMG_ITEM' || prefKey == 'DEFAULT_IMG_CATEGORY' || prefKey == 'DEFAULT_IMG_SEARCH' || prefKey == 'REFERRAL_FACEBOOK_IMG') {
+                        } else if(prefKey == 'COMPANY_LOGO' || prefKey == 'DEFAULT_IMG_ITEM' || prefKey == 'DEFAULT_IMG_CATEGORY' || prefKey == 'DEFAULT_IMG_SEARCH' || prefKey == 'REFERRAL_FACEBOOK_IMG' || prefKey == 'LOGO_FOR_PDF_EMAIL') {
                             var elem = $('.image_template').clone();
                             var imgWidth = '';
                             var imgHeight = '';
@@ -64,6 +64,9 @@ var Admin = function() {
                             }  else if(prefKey == 'REFERRAL_FACEBOOK_IMG') {
                                 imgWidth = '470';
                                 imgHeight = '246';
+                            }   else if(prefKey == 'LOGO_FOR_PDF_EMAIL') {
+                                imgWidth = '720';
+                                imgHeight = '185';
                             } else {
                                 imgWidth = '750';
                                 imgHeight = '500';
@@ -104,7 +107,8 @@ var Admin = function() {
                     Image.dropZone('#DEFAULT_IMG_CATEGORY_input', '#DEFAULT_IMG_CATEGORY');
                     Image.dropZone('#DEFAULT_IMG_SEARCH_input', '#DEFAULT_IMG_SEARCH');
                     Image.dropZone('#REFERRAL_FACEBOOK_IMG_input', '#REFERRAL_FACEBOOK_IMG');
-                    $('#COMPANY_LOGO, #DEFAULT_IMG_ITEM, #DEFAULT_IMG_CATEGORY, #DEFAULT_IMG_SEARCH, #REFERRAL_FACEBOOK_IMG').bind('submitPref', function(){
+                    Image.dropZone('#LOGO_FOR_PDF_EMAIL_input', '#LOGO_FOR_PDF_EMAIL');
+                    $('#COMPANY_LOGO, #DEFAULT_IMG_ITEM, #DEFAULT_IMG_CATEGORY, #DEFAULT_IMG_SEARCH, #REFERRAL_FACEBOOK_IMG, #LOGO_FOR_PDF_EMAIL').bind('submitPref', function(){
                         Admin.uploadPrefImage({prefKey: $(this).attr('id'), imageString: $('img', this).attr('src')}, $(this));
                     });
                     Main.elemRatio();

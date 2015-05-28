@@ -13,17 +13,33 @@
             padding: 0;
             font-family: 'Open Sans', sans-serif;
             min-width: 240px;
+            background: #F58220 url('../../resources/images/fbs-bg.png') repeat left top;
         }
         .container{
-            margin-top: 30px;
+            margin-top: 80px;
         }
 
         .welcome{
-            font-size: 21px;
+            font-size: 50px;
+            color: #FFFFFF;
+            margin-bottom: 20px;
         }
 
-        blockquote {
-            border-left: 5px solid #ccc;
+        .info{
+            font-size: 24px;
+            color: #FFFFFF;
+            margin-bottom: 60px;
+        }
+
+        .well {
+            padding: 50px;
+            background-color: #FFFFFF;
+            border-radius: 10px;
+        }
+        .well h3 {
+            margin-bottom: 25px;
+            margin-top: 0px;
+            color: #F69651;
         }
 
         #old_account_msg, #unknown_msg, #new_account_msg{
@@ -35,16 +51,18 @@
         }
 
         #fbLoginBtn{
-            padding: 15px 8px 15px 35px;
-            background: #4a6ea8 url('../../resources/images/facebook-icon.png') no-repeat 6px -8px;
+            background: transparent url("../../resources/images/fbs_btn.png") repeat-x scroll center center;
+            border: 0 none;
             color: white;
             font-size: 18px;
-            line-height: 25px;
+            line-height: 50px;
+            padding: 0 40px 0 0;
         }
 
-        #fbLoginBtn:hover{
-            background-color: #3b5996;
+        #fbLoginBtn img {
+            margin-right: 40px;
         }
+
         img{
             border: 0;
         }
@@ -78,21 +96,19 @@
 <div class="container">
     <div class=row>
         <div class="span12">
-            <center><img src="${companyLogo}" width="40%"/></center>
+            <img src="${pageContext.request.contextPath}/resources/images/fbs-logo.png" class="img-responsive center-block">
         </div>
     </div>
-    <div class="hero-unit" style="margin-top: 50px;">
+    <div class="hero-unit text-center" style="margin-top: 50px;">
         <p class="welcome">Welcome to Koolkat!</p>
-        <blockquote>
-            <p class="info">
-                A quick and better way to get anything delivered at your doorstep.
-            </p>
-        </blockquote>
+        <p class="info">
+            A quick and better way to get anything delivered at your doorstep.
+        </p>
     </div>
     <div class="well">
         <center>
             <h3>Your friend thinks that you are missing out.</h3>
-            <button onClick="Fb.fbLogin()" id="fbLoginBtn" class="btn btn-default btn-lg">Sign Up with Facebook</button>
+            <button onClick="Fb.fbLogin()" id="fbLoginBtn" class="btn btn-default btn-lg"><img src="${pageContext.request.contextPath}/resources/images/fbs_fb.png">Sign Up with Facebook</button>
 
             <div id="new_account_msg">
                 <h4>Thank you for signing up to Koolkat.</h4>

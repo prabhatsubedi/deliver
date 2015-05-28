@@ -1293,13 +1293,16 @@ if (typeof(Manager) == "undefined") var Manager = {};
                                return;
                            }
                            var category = data.params.category;
-
-                           $('.category_detail #category_id').val(category.id);
-                           //$('.category_detail #category_parent_id').val(category.id);
-                           $(".category_detail .name").html(category.name);
-                           $(".category_detail #name").val(category.name);
-                           if(category.imageUrl != null)
-                               $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
+                           if(typeof  category != "undefined") {
+                               $('.category_detail #category_id').val(category.id);
+                               //$('.category_detail #category_parent_id').val(category.id);
+                               $(".category_detail .name").html(category.name);
+                               $(".category_detail #name").val(category.name);
+                               if(category.imageUrl != null)
+                                   $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
+                            }  else if(typeof data.params.error != "undefined") {
+                               alert(data.params.error.errorMessage);
+                            }
 
                            $(".none_editable").removeClass('hidden');
                            $(".editable").addClass('hidden');
@@ -1337,33 +1340,39 @@ if (typeof(Manager) == "undefined") var Manager = {};
                            //Manager.getCategories();
                            var category = data.params.category;
 
-                           $('.cateogry_list a').removeClass("current_category");
-                           $('.cateogry_list a[data-id='+category.id+']').addClass('current_category');
-                           $('.category_detail #category_id').val(category.id);
-                           $('.category_detail #category_parent_id').val(category.id);
-                           $(".category_detail .name").html(category.name);
-                           $(".category_detail #name").val(category.name);
-                           if(category.imageUrl != null)
-                               $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
+                           if(typeof category != "undefined")  {
+                               $('.cateogry_list a').removeClass("current_category");
+                               $('.cateogry_list a[data-id='+category.id+']').addClass('current_category');
+                               $('.category_detail #category_id').val(category.id);
+                               $('.category_detail #category_parent_id').val(category.id);
+                               $(".category_detail .name").html(category.name);
+                               $(".category_detail #name").val(category.name);
+                               if(category.imageUrl != null)
+                                   $('#category_image').html('<img src="' + category.imageUrl + '" class="img-responsive" style="height: 100%;" />');
 
-                           $(".none_editable").removeClass('hidden');
-                           $(".editable").addClass('hidden');
-                           $("#category_image").addClass('disabled');
 
-                           /*if(parent_id != ''){
-                            $('.cateogry_list a[data-id='+parent_id+']').siblings('ul').removeClass('hidden');
-                            $('.cateogry_list a[data-id='+parent_id+']').removeClass('glyphicon-plus').addClass('glyphicon-minus');
-                            $('.glyphicon-minus',$('.cateogry_list a[data-id='+parent_id+']').parent('li').siblings('li')).removeClass('glyphicon-minus').addClass('glyphicon-plus');
-                            $('ul', $('.cateogry_list a[data-id='+parent_id+']').parent('li').siblings('li')).addClass('hidden');
-                            }else{
-                            $('.cateogry_list a[data-id='+category.id+']').siblings('ul').removeClass('hidden');
-                            $('.cateogry_list a[data-id='+category.id+']').removeClass('glyphicon-plus').addClass('glyphicon-minus');
-                            $('.glyphicon-minus',$('.cateogry_list a[data-id='+category.id+']').parent('li').siblings('li')).removeClass('glyphicon-minus').addClass('glyphicon-plus');
-                            $('ul', $('.cateogry_list a[data-id='+category.id+']').parent('li').siblings('li')).addClass('hidden');
-                            }*/
+                               $(".none_editable").removeClass('hidden');
+                               $(".editable").addClass('hidden');
+                               $("#category_image").addClass('disabled');
 
-                           $('.cateogry_list a').removeClass("current_category");
-                           $('.cateogry_list a[data-id='+category.id+']').addClass('current_category');
+                               /*if(parent_id != ''){
+                                $('.cateogry_list a[data-id='+parent_id+']').siblings('ul').removeClass('hidden');
+                                $('.cateogry_list a[data-id='+parent_id+']').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+                                $('.glyphicon-minus',$('.cateogry_list a[data-id='+parent_id+']').parent('li').siblings('li')).removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                                $('ul', $('.cateogry_list a[data-id='+parent_id+']').parent('li').siblings('li')).addClass('hidden');
+                                }else{
+                                $('.cateogry_list a[data-id='+category.id+']').siblings('ul').removeClass('hidden');
+                                $('.cateogry_list a[data-id='+category.id+']').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+                                $('.glyphicon-minus',$('.cateogry_list a[data-id='+category.id+']').parent('li').siblings('li')).removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                                $('ul', $('.cateogry_list a[data-id='+category.id+']').parent('li').siblings('li')).addClass('hidden');
+                                }*/
+
+                               $('.cateogry_list a').removeClass("current_category");
+                               $('.cateogry_list a[data-id='+category.id+']').addClass('current_category');
+                           } else if(typeof data.params.error != "undefined") {
+                               alert(data.params.error.errorMessage);
+                           }
+
                        }
                        var headers = {};
                        headers.id = parent_id;

@@ -8,6 +8,7 @@ import com.yetistep.delivr.model.mobile.dto.SMSDto;
 import com.yetistep.delivr.service.inf.*;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
+import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -293,8 +294,14 @@ public class ManagerController {
             serviceResponse.addParam("category", newCategory);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.CREATED);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while creating category", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            if(e instanceof YSException){
+                ServiceResponse serviceResponse = new ServiceResponse("YSException");
+                serviceResponse.addParam("error", httpHeaders);
+                return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+            }
+
+            GeneralUtil.logError(log, "Error Occurred while creating category", e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
@@ -313,8 +320,14 @@ public class ManagerController {
             serviceResponse.addParam("category", newCategory);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while updating category", e);
+
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            if(e instanceof YSException){
+                ServiceResponse serviceResponse = new ServiceResponse("YSException");
+                serviceResponse.addParam("error", httpHeaders);
+                return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+            }
+            GeneralUtil.logError(log, "Error Occurred while updating category", e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
@@ -348,8 +361,13 @@ public class ManagerController {
             serviceResponse.addParam("category", category);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
-            GeneralUtil.logError(log, "Error Occurred while retrieving category", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            if(e instanceof YSException){
+                ServiceResponse serviceResponse = new ServiceResponse("YSException");
+                serviceResponse.addParam("error", httpHeaders);
+                return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+            }
+            GeneralUtil.logError(log, "Error Occurred while retrieving category", e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
@@ -366,8 +384,14 @@ public class ManagerController {
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
         }catch (Exception e){
-            GeneralUtil.logError(log, "Error Occurred while retrieving gods view", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            if(e instanceof YSException){
+                ServiceResponse serviceResponse = new ServiceResponse("YSException");
+                serviceResponse.addParam("error", httpHeaders);
+                return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+            }
+
+            GeneralUtil.logError(log, "Error Occurred while retrieving gods view", e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
 
         }

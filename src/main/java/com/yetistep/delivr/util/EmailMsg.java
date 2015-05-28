@@ -235,7 +235,7 @@ public class EmailMsg {
         StringBuilder builder = new StringBuilder();
         builder.append("<p style='font-weight:bold; font-size:22px; text-align: center;'>"+COMPANY_NAME+" is available for</p>");
         builder.append("<div style='width:47%; margin:0 auto; align:center; padding: 30px 0;'><a href='#' style='text-decoration: none; float: left; color: #999999; font-weight:bold; text-align:center;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/iphone_final.png' style='padding: 10px 20px;display:block;'>i-phone</a>\n" +
-               "<a href='https://play.google.com/store/apps/details?id=com.yetistep.dealify' style='text-decoration: none; float: left; color: #999999; font-weight:bold; text-align:center;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/android_final.png' style='padding: 10px 20px;display:block;'>Android</a>\n"+
+               "<a href='https://play.google.com/store/apps/details?id=com.yetistep.delivr&hl=en' style='text-decoration: none; float: left; color: #999999; font-weight:bold; text-align:center;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/android_final.png' style='padding: 10px 20px;display:block;'>Android</a>\n"+
                "<a href='#' style='text-decoration: none;  float: left; color: #999999; font-weight:bold; text-align:center;'><img src='https://myswiprtests3.s3.amazonaws.com/email_icons/desktop_final.png' style='padding: 10px 20px;display:block;'>Desktop</a></div>");
         return builder.toString();
     }
@@ -289,8 +289,8 @@ public class EmailMsg {
 
     private static String getLinkFooter() {
         StringBuilder builder = new StringBuilder();
-        builder.append("<div style='margin: 0 auto; width: 100%; text-align: center;'>");
-        builder.append("<a href='#'>Privacy Policy</a>");
+        builder.append("<div style='margin: 0 auto; width: 100%; text-align: center; float: left; clear:both'>");
+        builder.append("<a href='http://koolkat.in/privacy-policy/'>Privacy Policy</a>");
         builder.append("</div>");
         return builder.toString();
     }

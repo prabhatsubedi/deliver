@@ -43,7 +43,7 @@ public class TwilioSMSUtil {
 
             MessageFactory messageFactory = client.getAccount().getMessageFactory();
             message = messageFactory.create(params);
-            log.info(message.getSid());
+            log.info("Twilio SID: "+message.getSid());
         } catch (TwilioRestException e) {
             log.info(e.getErrorMessage());
             throw new RuntimeException(e.getErrorMessage());

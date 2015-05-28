@@ -549,7 +549,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         dbCategory.setName(category.getName());
         if(childCategories != null && childCategories.size()>0){
             for (CategoryEntity child: childCategories){
-                if( child.getName() != null && child.getId() != dbCategory.getId() &&  child.getName().equals(dbCategory.getName())){
+                if( child.getName() != null && !child.getId().equals(dbCategory.getId()) &&  child.getName().equals(dbCategory.getName())){
                     throw new YSException("VLD035");
                 }
             }

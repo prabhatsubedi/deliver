@@ -255,3 +255,6 @@ INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_
 
 /* =============================2015-05-27======================================= */
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('IOS_APP_VER_NO', '1.0', '6', 'IOS Application Version No');
+
+/* =============================2015-05-28======================================= */
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('MAX_ORDER_SERVING_DISTANCE', '30', '9', 'Maximum order serving distance in km');

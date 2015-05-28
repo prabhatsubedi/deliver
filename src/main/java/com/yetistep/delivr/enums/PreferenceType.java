@@ -82,6 +82,7 @@ public enum PreferenceType {
 
     ADDITIONAL_KM_FREE_LIMIT,       //Unpaid KM for Shopper
     DEFAULT_NKM_DISTANCE,           //Default Charged Distance from Customer to Store
+    MAX_ORDER_SERVING_DISTANCE,     //Maximum order serving distance in KM
 
     /* Order Processing Configuration*/
     DEVIATION_IN_TIME,              //Order Acceptance Deviation Time in Min

@@ -947,8 +947,9 @@ public class CustomerServiceImpl implements CustomerService {
             throw new YSException("VLD024");
         }
         StoreEntity store = findNearestStoreFromCustomer(order, stores);
-        if(BigDecimalUtil.isGreaterThen(order.getCustomerChargeableDistance(), new BigDecimal("300"))){
-            throw new YSException("VLD036");
+        BigDecimal maxDistance = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MAX_ORDER_SERVING_DISTANCE));
+        if(BigDecimalUtil.isGreaterThen(order.getCustomerChargeableDistance(), maxDistance)){
+            throw new YSException("VLD036", maxDistance + "km");
         }
         order.setStore(store);
         order.setOrderName(store.getName() + " to " + order.getAddress().getStreet());

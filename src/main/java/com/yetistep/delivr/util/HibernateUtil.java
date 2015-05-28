@@ -31,19 +31,43 @@ public class HibernateUtil {
     public static void fillPaginationCriteria(Criteria criteria, Page page, Class clazz) throws Exception{
         if (page != null) {
                 /*search implementation*/
-                if(page.getSearchFor() != null && !page.getSearchFor().equals("") && page.getSearchFields() != null) {
-                    Iterator itS = page.getSearchFields().entrySet().iterator();
-                    Criterion criterion = null;
-                    while (itS.hasNext()) {
-                        Map.Entry pairs = (Map.Entry)itS.next();
-                        if(pairs.getKey().toString() == "self"){
-                            for (String field:pairs.getValue().toString().split(",")) {
-                                if(criterion == null) criterion = Restrictions.like(field, "%"+page.getSearchFor()+"%");
-                                else
-                                    criterion = Restrictions.or(criterion, Restrictions.like(field, "%"+page.getSearchFor()+"%"));
+            if(page.getSearchFor() != null && !page.getSearchFor().equals("") && page.getSearchFields() != null) {
+                Iterator itS = page.getSearchFields().entrySet().iterator();
+                Criterion criterion = null;
+                String aliasPath = criteria.getAlias();
+                while (itS.hasNext()) {
+                    Map.Entry pairs = (Map.Entry)itS.next();
+                    if(pairs.getKey().toString() == "self"){
+                        for (String field:pairs.getValue().toString().split(",")) {
+                            if(criterion == null) criterion = Restrictions.like(field, "%"+page.getSearchFor()+"%");
+                            else
+                                criterion = Restrictions.or(criterion, Restrictions.like(field, "%"+page.getSearchFor()+"%"));
+                        }
+                    }else{
+                        String[] searchingPath = pairs.getKey().toString().split("#");
+                        if(searchingPath.length==2){
+                            //if alias do not exists create it
+                            String baseClass = searchingPath[0];
+                            if(!criteria.toString().contains("Subcriteria("+aliasPath+"."+baseClass+":"+baseClass+")")) {
+                                criteria.createAlias(aliasPath+"."+baseClass, baseClass);
                             }
-                        }else{
-                            criteria.createAlias(pairs.getKey().toString(), pairs.getKey().toString());
+
+                            if(!criteria.toString().contains("Subcriteria("+baseClass+"."+searchingPath[1]+":"+searchingPath[1]+")")){
+                                criteria.createAlias(aliasPath+"."+baseClass+"."+searchingPath[1], searchingPath[1]);
+                            }
+
+                            String fields[] = pairs.getValue().toString().split(",");
+                            for (String field:pairs.getValue().toString().split(",")) {
+                                if(criterion == null) criterion = Restrictions.like(searchingPath[1]+"."+field, "%"+page.getSearchFor()+"%");
+                                else
+                                    criterion = Restrictions.or(criterion, Restrictions.like(searchingPath[1]+"."+field, "%"+page.getSearchFor()+"%"));
+                            }
+                        }else if(searchingPath.length>2){
+                            //ToDO: do it  if required
+                        } else {
+                            if(!criteria.toString().contains("Subcriteria("+aliasPath+"."+pairs.getKey().toString()+":"+pairs.getKey().toString()+")")) {
+                                criteria.createAlias(aliasPath+"."+pairs.getKey().toString(), pairs.getKey().toString());
+                            }
                             String fields[] = pairs.getValue().toString().split(",");
                             for (String field:pairs.getValue().toString().split(",")) {
                                 if(criterion == null) criterion = Restrictions.like(pairs.getKey().toString()+"."+field, "%"+page.getSearchFor()+"%");
@@ -52,8 +76,9 @@ public class HibernateUtil {
                             }
                         }
                     }
-                    criteria.add(criterion);
                 }
+                criteria.add(criterion);
+            }
 
              /* Pagination implementation*/
             if(page.getTotalRows() != null && page.getTotalRows() > 0){
@@ -66,6 +91,7 @@ public class HibernateUtil {
                 /* Throws NoSuchFieldException if field doesn't exist. */
                     try{
                         String[] sortingInfo = page.getSortBy().split("#");
+                        String aliasPath = criteria.getAlias();
                         if(sortingInfo.length==2){
                             String classString = sortingInfo[0];
                             String fieldString = sortingInfo[1];
@@ -82,8 +108,8 @@ public class HibernateUtil {
                             sortingClass.getDeclaredField(fieldString);
 
                             //if alias do not exists create it
-                            if(!criteria.toString().contains("Subcriteria("+classString+":"+classString+")")) {
-                                criteria.createAlias(classString, classString);
+                            if(!criteria.toString().contains("Subcriteria("+aliasPath+"."+classString+":"+classString+")")) {
+                                criteria.createAlias(aliasPath+"."+classString, classString);
                             }
 
                             if (page.getSortOrder().equalsIgnoreCase("asc")) {
@@ -95,10 +121,10 @@ public class HibernateUtil {
                             Integer i = 0;
                             String prevModel = "";
                             Class parentClass = clazz;
-                            String aliasPath = criteria.getAlias();
+                            //String aliasPath = criteria.getAlias();
                             for (String key: sortingInfo){
                                 if(i != (sortingInfo.length-1)){
-                                    //if alias do not exists create it
+                                    //if alias exists do not exists create it
                                     if(!criteria.toString().contains("Subcriteria("+aliasPath+"."+sortingInfo[i]+":"+sortingInfo[i]+")")){
                                         criteria.createAlias(aliasPath+"."+sortingInfo[i], sortingInfo[i]);
                                     }

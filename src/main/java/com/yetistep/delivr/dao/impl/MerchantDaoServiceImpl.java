@@ -674,13 +674,17 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public Integer getTotalNumbersOfOrders(List<Integer> storeId, DeliveryStatus status) throws Exception {
-        String sqQuery =    "SELECT COUNT(o.id) FROM orders o WHERE o.store_id IN (:storeId) && o.delivery_status =:deliveryStatus";
+    public Integer getTotalNumbersOfOrders(List<Integer> storeId, DeliveryStatus status, Page page) throws Exception {
+        /*String sqQuery =    "SELECT COUNT(o.id) FROM orders o WHERE o.store_id IN (:storeId) && o.delivery_status =:deliveryStatus";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
         query.setParameterList("storeId", storeId);
         query.setParameter("deliveryStatus", status.ordinal());
         BigInteger cnt = (BigInteger) query.uniqueResult();
-        return cnt.intValue();
+        return cnt.intValue();*/
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.add(Restrictions.and(Restrictions.in("store.id", storeId), Restrictions.eq("deliveryStatus", status)));
+        HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
+        return (int) (long) criteria.setProjection(Projections.rowCount()).uniqueResult();
     }
 
     @Override
@@ -700,12 +704,16 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
     }
 
     @Override
-    public Integer getTotalNumbersOfOrders(List<Integer> storeId) throws Exception {
-        String sqQuery =    "SELECT COUNT(o.id) FROM orders o WHERE o.store_id IN (:storeId)";
+    public Integer getTotalNumbersOfOrders(List<Integer> storeId, Page page) throws Exception {
+        /*String sqQuery =    "SELECT COUNT(o.id) FROM orders o WHERE o.store_id IN (:storeId)";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
         query.setParameterList("storeId", storeId);
         BigInteger cnt = (BigInteger) query.uniqueResult();
-        return cnt.intValue();
+        return cnt.intValue();*/
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.add(Restrictions.and(Restrictions.in("store.id", storeId)));
+        HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
+        return (int) (long) criteria.setProjection(Projections.rowCount()).uniqueResult();
     }
 
     @Override

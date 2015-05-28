@@ -18,11 +18,11 @@ import java.util.List;
  */
 public interface AccountService {
 
-    public String generateInvoice(Integer storeId, String fromDate, String toDate, String serverUrl) throws Exception;
+    public String generateInvoice(Integer storeId, String fromDate, String toDate) throws Exception;
 
     public String generateBillAndReceiptAndSendEmail(OrderEntity order) throws Exception;
 
-    public void generatedBoyPayStatement(Integer dBoyId, String fromDate, String toDate, String serverUrl) throws Exception;
+    public void generatedBoyPayStatement(Integer dBoyId, String fromDate, String toDate) throws Exception;
 
     public List<StoreEntity> getAllStores() throws Exception;
 

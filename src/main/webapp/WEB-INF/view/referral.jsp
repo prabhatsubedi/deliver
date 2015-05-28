@@ -97,12 +97,12 @@
             <div id="new_account_msg">
                 <h4>Thank you for signing up to Koolkat.</h4>
                 <h4> Do download Koolkat from Google Play Store</h4>
-                <a href="https://play.google.com/store/apps/details?id=com.yetistep.swipr"><img src="${pageContext.request.contextPath}/resources/images/play_store_black.png" class="play_store"/></a>
+                <a href="https://play.google.com/store/apps/details?id=com.yetistep.delivr&hl=en"><img src="${pageContext.request.contextPath}/resources/images/play_store_black.png" class="play_store"/></a>
             </div>
             <div id="old_account_msg">
                 <h4>Your account has already been created. </h4 >
                 <h4>If you have not downloaded Koolkat yet, feel free to download Koolkat from Google Play Store.</h4>
-                <a href="https://play.google.com/store/apps/details?id=com.yetistep.swipr"><img src="${pageContext.request.contextPath}/resources/images/play_store_black.png" class="play_store"/></a>
+                <a href="https://play.google.com/store/apps/details?id=com.yetistep.delivr&hl=en"><img src="${pageContext.request.contextPath}/resources/images/play_store_black.png" class="play_store"/></a>
             </div>
             <h4 id="unknown_msg">
                 Sorry! Facebook says, you are not authorized to use this app.

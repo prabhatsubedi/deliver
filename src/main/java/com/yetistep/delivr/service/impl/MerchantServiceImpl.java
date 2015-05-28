@@ -672,6 +672,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             Map<String, String> fieldsMap = new HashMap<>();
             fieldsMap.put("self", "brandName,brandLogo,brandImage");
             fieldsMap.put("merchant", "businessTitle");
+            fieldsMap.put("merchant#user", "fullName");
             pageForCount.setSearchFields(fieldsMap);
             page.setSearchFields(fieldsMap);
         }
@@ -703,7 +704,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("store", "id");
-        assoc.put("merchant", "id,businessTitle,user,partnershipStatus");
+        //assoc.put("merchant", "id,businessTitle,user,partnershipStatus");
         subAssoc.put("user", "fullName");
 
 
@@ -1632,11 +1633,25 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         PaginationDto paginationDto = new PaginationDto();
+
+        Page pageForCount = new Page();
+        pageForCount.setSearchFor(page.getSearchFor());
+
+        if(page != null && page.getSearchFor() != null && !page.getSearchFor().equals("")){
+            Map<String, String> fieldsMap = new HashMap<>();
+            fieldsMap.put("self", "orderName");
+            //fieldsMap.put("customer#user", "fullName,mobileNumber,emailAddress");
+            //fieldsMap.put("deliveryBoy#user", "fullName,mobileNumber,emailAddress");
+            fieldsMap.put("address", "street,city,state,country");
+            pageForCount.setSearchFields(fieldsMap);
+            page.setSearchFields(fieldsMap);
+        }
+
         Integer totalRows;
         if(requestJson.getDeliveryStatus() != null){
-            totalRows =  merchantDaoService.getTotalNumbersOfOrders(storeIdList, requestJson.getDeliveryStatus());
+            totalRows =  merchantDaoService.getTotalNumbersOfOrders(storeIdList, requestJson.getDeliveryStatus(), pageForCount);
         }else{
-            totalRows =  merchantDaoService.getTotalNumbersOfOrders(storeIdList);
+            totalRows =  merchantDaoService.getTotalNumbersOfOrders(storeIdList, pageForCount);
         }
         paginationDto.setNumberOfRows(totalRows);
 

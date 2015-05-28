@@ -42,8 +42,8 @@ public class InvoiceGenerator {
 
     private static final String HOME_DIR = System.getProperty("catalina.home");
 
-    public String generateInvoice(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store, String serverUrl, Map<String, String> preferences) throws Exception {
-            File invoiceFile = generateInvoicePDF(orders, merchant, invoice, store, serverUrl, preferences);
+    public String generateInvoice(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store, String imageUrl, Map<String, String> preferences) throws Exception {
+            File invoiceFile = generateInvoicePDF(orders, merchant, invoice, store, imageUrl, preferences);
 
             if (invoiceFile == null)
                 return null;
@@ -69,8 +69,8 @@ public class InvoiceGenerator {
     }
 
 
-    public String generateDBoyPayStatement(List<OrderEntity> orders, DeliveryBoyEntity deliveryBoy, DBoyPaymentEntity dBoyPayment, String serverUrl, Map<String, String> preferences) throws Exception {
-        File invoiceFile = generatedDBoyPaymentPDF(orders, deliveryBoy, dBoyPayment, serverUrl, preferences);
+    public String generateDBoyPayStatement(List<OrderEntity> orders, DeliveryBoyEntity deliveryBoy, DBoyPaymentEntity dBoyPayment, String imageUrl, Map<String, String> preferences) throws Exception {
+        File invoiceFile = generatedDBoyPaymentPDF(orders, deliveryBoy, dBoyPayment, imageUrl, preferences);
 
         if (invoiceFile == null)
             return null;
@@ -166,7 +166,7 @@ public class InvoiceGenerator {
         return billAndReceiptFile;
     }
 
-    private File generateInvoicePDF(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store, String serverUrl, Map<String, String> preferences) throws Exception {
+    private File generateInvoicePDF(List<OrderEntity> orders, MerchantEntity merchant, InvoiceEntity invoice, StoreEntity store, String imageUrl, Map<String, String> preferences) throws Exception {
 
         FileOutputStream stream = null;
         File invoiceFile = null;
@@ -182,7 +182,7 @@ public class InvoiceGenerator {
             document.open();
             document.setMargins(20, 20, 20, 20);
             //add doc header
-            addPdfHeader(document, serverUrl, preferences);
+            addPdfHeader(document, imageUrl, preferences);
 
             addInvoiceDetail(document, merchant, invoice, store);
             //document.newPage();
@@ -193,7 +193,7 @@ public class InvoiceGenerator {
 
             document.newPage();
 
-            addPdfHeader(document, serverUrl, preferences);
+            addPdfHeader(document, imageUrl, preferences);
 
             addCommissionDetail(document, merchant, invoice, store);
 
@@ -221,7 +221,7 @@ public class InvoiceGenerator {
     }
 
     //create a header for the company
-    private void addPdfHeader(Document document, String serverUrl, Map<String, String> preferences) throws Exception {
+    private void addPdfHeader(Document document, String imageUrl, Map<String, String> preferences) throws Exception {
         //address cell
         String name = preferences.get("COMPANY_NAME");
         String address = preferences.get("COMPANY_ADDRESS");
@@ -230,10 +230,11 @@ public class InvoiceGenerator {
         String city = addressInArray[2]+","+addressInArray[3];
         String reg = preferences.get("REGISTRATION_NO");
         String vat = preferences.get("VAT_NO");
-        String imageUrl = serverUrl+"/resources/images/login-logo.png";
+        //String imageUrl = serverUrl+"/resources/images/login-logo.png";
 
         //logo cell
         PdfPCell logoCell = new PdfPCell();
+        System.out.println(imageUrl);
         Image logo = Image.getInstance(new URL(imageUrl));
         logo.setAlignment(Element.ALIGN_LEFT);
         logo.setWidthPercentage(60);
@@ -690,7 +691,7 @@ public class InvoiceGenerator {
         document.add(ls);
     }
 
-    private File generatedDBoyPaymentPDF(List<OrderEntity> orders, DeliveryBoyEntity deliveryBoy, DBoyPaymentEntity dBoyPayment, String serverUrl, Map<String, String> preferences) throws Exception {
+    private File generatedDBoyPaymentPDF(List<OrderEntity> orders, DeliveryBoyEntity deliveryBoy, DBoyPaymentEntity dBoyPayment, String imageUrl, Map<String, String> preferences) throws Exception {
         FileOutputStream stream = null;
         File payStatementFile = null;
 
@@ -705,7 +706,7 @@ public class InvoiceGenerator {
             document.open();
             document.setMargins(20, 20, 20, 20);
             //add doc header
-            addPdfHeader(document, serverUrl, preferences);
+            addPdfHeader(document, imageUrl, preferences);
 
             addPayStatementBody(document, deliveryBoy, dBoyPayment,  orders, preferences);
 

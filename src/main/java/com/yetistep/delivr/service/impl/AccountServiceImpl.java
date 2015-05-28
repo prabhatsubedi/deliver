@@ -11,6 +11,7 @@ import com.yetistep.delivr.service.inf.AccountService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,8 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class AccountServiceImpl extends AbstractManager implements AccountService{
+
+    private static final Logger log = Logger.getLogger(MerchantServiceImpl.class);
 
     @Autowired
     OrderDaoService orderDaoService;
@@ -64,7 +67,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     DeliveryBoyDaoService deliveryBoyDaoService;
 
     @Override
-    public String generateInvoice(Integer storeId, String fromDate, String toDate, String serverUrl) throws Exception {
+    public String generateInvoice(Integer storeId, String fromDate, String toDate) throws Exception {
         String invoicePath = new String();
         List<OrderEntity> orders =  orderDaoService.getStoresOrders(storeId, fromDate, toDate);
         if(orders.size()>0){
@@ -130,14 +133,16 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             preferences.put("VAT_NO", systemPropertyService.readPrefValue(PreferenceType.VAT_NO));
             preferences.put("DELIVERY_FEE_VAT", systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
 
-            invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice, store, serverUrl, preferences);
+            String imageUrl = systemPropertyService.readPrefValue(PreferenceType.REFERRAL_FACEBOOK_IMG);
+
+            invoicePath = invoiceGenerator.generateInvoice(orders, merchant, invoice, store, imageUrl, preferences);
 
             invoice.setPath(invoicePath);
             invoiceDaoService.update(invoice);
 
             String email = store.getEmail();
             if(email != null && !email.equals("")) {
-                String message = EmailMsg.sendInvoiceEmail(store, fromDate, toDate, serverUrl);
+                String message = EmailMsg.sendInvoiceEmail(store, fromDate, toDate, getServerUrl());
                 sendAttachmentEmail(email,  message, "get invoice-"+fromDate+"-"+toDate, invoicePath);
             }
             System.out.println("Email sent successfully with attachment: "+invoicePath+" for store "+store.getId());
@@ -168,67 +173,77 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
             Integer vat = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
 
-            if(order.getDeliveryCharge().equals(BigDecimal.ZERO) && order.getSystemServiceCharge().equals(BigDecimal.ZERO))
-                throw new  YSException("INV007");
+            //if both delivery charge and systemService charge equals to 0, do not generate the bill and receipt
+            log.info("++++++++++++ check if both delivery charge and systemService charge equals to 0  +++++++++++++++");
+            log.info("++++++++++++ "+(BigDecimal.ZERO.compareTo(order.getDeliveryCharge()) != 0)+" "+(BigDecimal.ZERO.compareTo(order.getSystemServiceCharge())!=0)+"  +++++++++++++++");
+            if(BigDecimal.ZERO.compareTo(order.getDeliveryCharge()) != 0 || BigDecimal.ZERO.compareTo(order.getSystemServiceCharge())!=0) {
+                log.info("++++++++++++ check it  +++++++++++++++");
+                BigDecimal deliveryCharge;
+                BigDecimal systemServiceCharge;
 
-            BigDecimal deliveryCharge = order.getDeliveryCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2, BigDecimal.ROUND_DOWN);
-            BigDecimal systemServiceCharge = order.getSystemServiceCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2, BigDecimal.ROUND_DOWN);
+                if(BigDecimal.ZERO.compareTo(order.getDeliveryCharge()) != 0)
+                    deliveryCharge = order.getDeliveryCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2, BigDecimal.ROUND_DOWN);
+                else
+                    deliveryCharge = order.getDeliveryCharge();
 
-            bill.setDeliveryCharge(deliveryCharge);
-            bill.setSystemServiceCharge(systemServiceCharge);
+                if(BigDecimal.ZERO.compareTo(order.getSystemServiceCharge())!=0)
+                    systemServiceCharge = order.getSystemServiceCharge().multiply(new BigDecimal(100)).divide(new BigDecimal(vat+100), MathContext.DECIMAL32).setScale(2, BigDecimal.ROUND_DOWN);
+                else
+                    systemServiceCharge = order.getSystemServiceCharge();
 
-            BigDecimal vatPcn = new BigDecimal(vat);
-            BigDecimal totalCharge = bill.getDeliveryCharge().add(bill.getSystemServiceCharge());
-            BigDecimal vatAmount = totalCharge.multiply(vatPcn).divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_DOWN);
-            bill.setVat(vatAmount);
-            BigDecimal totalAmount = totalCharge.add(vatAmount);
+                bill.setDeliveryCharge(deliveryCharge);
+                bill.setSystemServiceCharge(systemServiceCharge);
 
-            //if total amount equals to 0, do not generate the bill and receipt
-            if(totalAmount.equals(BigDecimal.ZERO))
-                    return "";
+                BigDecimal vatPcn = new BigDecimal(vat);
+                BigDecimal totalCharge = bill.getDeliveryCharge().add(bill.getSystemServiceCharge());
+                BigDecimal vatAmount = totalCharge.multiply(vatPcn).divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_DOWN);
+                bill.setVat(vatAmount);
+                BigDecimal totalAmount = totalCharge.add(vatAmount);
 
-            bill.setBillAmount(totalAmount.setScale(2, BigDecimal.ROUND_DOWN));
-            bill.setGeneratedDate(new Date(System.currentTimeMillis()));
+                bill.setBillAmount(totalAmount.setScale(2, BigDecimal.ROUND_DOWN));
+                bill.setGeneratedDate(new Date(System.currentTimeMillis()));
 
-            ReceiptEntity receipt = new ReceiptEntity();
-            receipt.setReceiptAmount(totalAmount.setScale(2, BigDecimal.ROUND_DOWN));
-            receipt.setGeneratedDate(new Date(System.currentTimeMillis()));
+                ReceiptEntity receipt = new ReceiptEntity();
+                receipt.setReceiptAmount(totalAmount.setScale(2, BigDecimal.ROUND_DOWN));
+                receipt.setGeneratedDate(new Date(System.currentTimeMillis()));
 
-            receipt.setOrder(order);
-            receipt.setCustomer(order.getCustomer());
+                receipt.setOrder(order);
+                receipt.setCustomer(order.getCustomer());
 
-            billDaoService.save(bill);
-            receiptDaoService.save(receipt);
+                billDaoService.save(bill);
+                receiptDaoService.save(receipt);
 
-            Map<String, String> preferences = new HashMap<>();
-            preferences.put("CURRENCY", systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
-            preferences.put("HELPLINE_NUMBER", systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
-            preferences.put("SUPPORT_EMAIL", systemPropertyService.readPrefValue(PreferenceType.SUPPORT_EMAIL));
-            preferences.put("COMPANY_NAME", systemPropertyService.readPrefValue(PreferenceType.COMPANY_NAME));
-            preferences.put("COMPANY_ADDRESS", systemPropertyService.readPrefValue(PreferenceType.COMPANY_ADDRESS));
-            preferences.put("REGISTRATION_NO", systemPropertyService.readPrefValue(PreferenceType.REGISTRATION_NO));
-            preferences.put("VAT_NO", systemPropertyService.readPrefValue(PreferenceType.VAT_NO));
-            preferences.put("DELIVERY_FEE_VAT", systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
+                Map<String, String> preferences = new HashMap<>();
+                preferences.put("CURRENCY", systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
+                preferences.put("HELPLINE_NUMBER", systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+                preferences.put("SUPPORT_EMAIL", systemPropertyService.readPrefValue(PreferenceType.SUPPORT_EMAIL));
+                preferences.put("COMPANY_NAME", systemPropertyService.readPrefValue(PreferenceType.COMPANY_NAME));
+                preferences.put("COMPANY_ADDRESS", systemPropertyService.readPrefValue(PreferenceType.COMPANY_ADDRESS));
+                preferences.put("REGISTRATION_NO", systemPropertyService.readPrefValue(PreferenceType.REGISTRATION_NO));
+                preferences.put("VAT_NO", systemPropertyService.readPrefValue(PreferenceType.VAT_NO));
+                preferences.put("DELIVERY_FEE_VAT", systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
 
-            billAndReceiptPath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt, getServerUrl(), preferences);
-            bill.setPath(billAndReceiptPath);
-            receipt.setPath(billAndReceiptPath);
-            receipt.setGeneratedDate(new Date(System.currentTimeMillis()));
+                String imageUrl = systemPropertyService.readPrefValue(PreferenceType.REFERRAL_FACEBOOK_IMG);
+                billAndReceiptPath = invoiceGenerator.generateBillAndReceipt(order, bill, receipt, imageUrl, preferences);
+                bill.setPath(billAndReceiptPath);
+                receipt.setPath(billAndReceiptPath);
+                receipt.setGeneratedDate(new Date(System.currentTimeMillis()));
 
-            billDaoService.update(bill);
-            receiptDaoService.update(receipt);
+                billDaoService.update(bill);
+                receiptDaoService.update(receipt);
 
-            String email = order.getCustomer().getUser().getEmailAddress();
-            if(email != null && !email.equals("")) {
-                String message = EmailMsg.sendBillAndReceipt(order, order.getCustomer().getUser().getFullName(), email, getServerUrl());
-                sendAttachmentEmail(email,  message, "Bill and Receipt", billAndReceiptPath);
+                String email = order.getCustomer().getUser().getEmailAddress();
+                if(email != null && !email.equals("")) {
+                    String message = EmailMsg.sendBillAndReceipt(order, order.getCustomer().getUser().getFullName(), email, getServerUrl());
+                    sendAttachmentEmail(email,  message, "Bill and Receipt", billAndReceiptPath);
+                }
             }
         }
         return billAndReceiptPath;
     }
 
     @Override
-    public void generatedBoyPayStatement(Integer dBoyId, String fromDate, String toDate, String serverUrl) throws Exception {
+    public void generatedBoyPayStatement(Integer dBoyId, String fromDate, String toDate) throws Exception {
         String statementPath = new String();
         InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
         List<OrderEntity> orders =  orderDaoService.getDBoyOrders(dBoyId, fromDate, toDate);
@@ -269,7 +284,8 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             preferences.put("DELIVERY_FEE_VAT", systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
             preferences.put("TDS_PERCENTAGE", systemPropertyService.readPrefValue(PreferenceType.TDS_PERCENTAGE));
 
-            statementPath =  invoiceGenerator.generateDBoyPayStatement(orders, deliveryBoy, dBoyPayment, serverUrl, preferences);
+            String imageUrl = systemPropertyService.readPrefValue(PreferenceType.REFERRAL_FACEBOOK_IMG);
+            statementPath =  invoiceGenerator.generateDBoyPayStatement(orders, deliveryBoy, dBoyPayment, imageUrl, preferences);
 
             dBoyPayment.setPath(statementPath);
             dBoyPaymentDaoService.update(dBoyPayment);

@@ -67,47 +67,41 @@ public class TaskSchedule {
 
     }
 
-    @Scheduled(cron="0 0 23 * * ?")
+    @Scheduled(cron="0 0 23 * * SAT")
     public void generateInvoice() throws Exception{
         log.info("Generating invoice:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 0);
         Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -1);
+        calPrev.add(Calendar.DATE, -7);
 
         List<StoreEntity> stores=accountService.getAllStores();
 
         if(stores.size()>0){
             //String filePath = new String();
             for (StoreEntity store: stores){
-                String url = "";
-                if(MessageBundle.isLocalHost()){
-                    url = "http://localhost:8080/";
-                }else{
-                    url = "http://test.idelivr.com/";
-                }
-                accountService.generateInvoice(store.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()), url);
+                accountService.generateInvoice(store.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()));
             }
         } else {
             log.info("no stores found. ");
         }
     }
 
-    @Scheduled(cron="0 0 23 * * ?")
+    @Scheduled(cron="0 0 23 * * SAT")
     public void generateDBoyPayStatement() throws Exception {
         log.info("Generating DBoy pay statement:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 0);
         Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -1);
+        calPrev.add(Calendar.DATE, -7);
 
         List<DeliveryBoyEntity> allActiveDBoy = deliveryBoyService.findAllActiveDeliveryBoy();
 
         if(allActiveDBoy.size()>0){
             for (DeliveryBoyEntity deliveryBoy: allActiveDBoy){
-                accountService.generatedBoyPayStatement(deliveryBoy.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()), "http://test.idelivr.com/");
+                accountService.generatedBoyPayStatement(deliveryBoy.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()));
             }
         }else{
             log.info("no shoppers found");

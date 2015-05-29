@@ -1300,7 +1300,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
         item.setCategory(category);
 
-        String fields = "id,name,description,availableQuantity,availableStartTime,availableEndTime,maxOrderQuantity,minOrderQuantity,unitPrice,currencyType,additionalOffer,status,vat,serviceCharge,deliveryFee,itemsImage,itemsStores,attributesTypes,category,storesBrand";
+        String fields = "id,name,description,availableQuantity,availableStartTime,availableEndTime,maxOrderQuantity,minOrderQuantity,unitPrice,tags,currencyType,additionalOffer,status,vat,serviceCharge,deliveryFee,itemsImage,itemsStores,attributesTypes,category,storesBrand";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

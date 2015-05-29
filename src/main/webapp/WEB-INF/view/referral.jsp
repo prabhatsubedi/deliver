@@ -12,8 +12,8 @@
         body{
             padding: 0;
             font-family: 'Open Sans', sans-serif;
-            min-width: 240px;
             background: #F58220 url('../../resources/images/fbs-bg.png') repeat left top;
+            min-width: 360px;
         }
         .container{
             margin-top: 80px;
@@ -32,35 +32,38 @@
         }
 
         .well {
-            padding: 50px;
-            background-color: #FFFFFF;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 0 none;
             border-radius: 10px;
+            padding: 50px 20px;
         }
         .well h3 {
             margin-bottom: 25px;
             margin-top: 0px;
-            color: #F69651;
+            color: #FFFFFF;
+        }
+        .well h4 {
+            color: #FFFFFF;
         }
 
         #old_account_msg, #unknown_msg, #new_account_msg{
             display: none;
         }
 
-        #old_account_msg, #new_account_msg{
-            padding: 30px 0 80px 0;
-        }
-
         #fbLoginBtn{
             background: transparent url("../../resources/images/fbs_btn.png") repeat-x scroll center center;
             border: 0 none;
+            border-radius: 5px;
             color: white;
             font-size: 18px;
-            line-height: 50px;
+            height: 58px;
+            overflow: hidden;
             padding: 0 40px 0 0;
         }
 
         #fbLoginBtn img {
             margin-right: 40px;
+            margin-top: -1px;
         }
 
         img{
@@ -81,6 +84,14 @@
                 width: 90%;
             }
 
+            #fbLoginBtn{
+                padding: 0 20px 0 0;
+            }
+
+            #fbLoginBtn img {
+                margin-right: 20px;
+            }
+
         }
         @media (max-width: 300px) {
 
@@ -95,7 +106,7 @@
 
 <div class="container">
     <div class=row>
-        <div class="span12">
+        <div class="span12" style="padding:0px 20px;">
             <img src="${pageContext.request.contextPath}/resources/images/fbs-logo.png" class="img-responsive center-block">
         </div>
     </div>

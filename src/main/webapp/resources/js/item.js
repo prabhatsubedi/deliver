@@ -165,6 +165,7 @@ function toggleSwitch(value, elem) {
                         $('.submit_item').attr({'data-id': item.id});
                         $('#name_item').val(item.name);
                         $('#description').val(item.description);
+                        $('#tags').val(item.tags);
                         $('#additional_offer').val(item.additionalOffer);
 
                         $('#available_start_time').val(item.availableStartTime);
@@ -623,6 +624,7 @@ function toggleSwitch(value, elem) {
                     item.id = $('.submit_item').attr('data-id');
                     item.name = $('#name_item').val();
                     if($('#description').val() != "") item.description = $('#description').val();
+                    item.tags = $('#tags').val();
                     item.availableStartTime = $('#available_start_time').val();
                     item.availableEndTime = $('#available_end_time').val();
                     //item.availableQuantity = 0;

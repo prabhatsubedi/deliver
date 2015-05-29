@@ -85,6 +85,12 @@
                                             </div>
                                         </div>
                                         <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label" for="description">Tags</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="tags" name="tags">
+                                            </div>
+                                        </div>
+                                        <div class="form-group clearfix">
                                             <label class="col-lg-4 floated_label" for="additional_offer">Additional Offer</label>
                                             <div class="col-lg-8">
                                                 <input type="text" class="form-control" id="additional_offer" name="additional_offer" value="N/A">

@@ -575,6 +575,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Disjunction disjunction = Restrictions.disjunction();
         for (String s: splitString){
             disjunction.add(Restrictions.like("name", s, MatchMode.ANYWHERE));
+            disjunction.add(Restrictions.like("tags", s, MatchMode.ANYWHERE));
         }
         criteria.add(Restrictions.and(disjunction, Restrictions.in("category.id", categoryId),  Restrictions.in("storesBrand.id", storeId)));
         HibernateUtil.fillPaginationCriteria(criteria, page, ItemEntity.class);
@@ -596,9 +597,9 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         Integer i = 0;
         for (String s: splitString){
             if(i == 0)
-                queryString =  queryString+ "i.name LIKE '%"+s+"%'";
+                queryString =  queryString+ "i.name LIKE '%"+s+"%' OR i.tags LIKE '%"+s+"%'";
             else
-                queryString =  queryString+ "OR i.name LIKE '%"+s+"%'";
+                queryString =  queryString+ "OR i.name LIKE '%"+s+"%' OR i.tags LIKE '%"+s+"%'";
             i++;
         }
 

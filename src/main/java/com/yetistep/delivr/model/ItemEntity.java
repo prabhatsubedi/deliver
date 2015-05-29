@@ -48,6 +48,7 @@ public class ItemEntity implements Serializable {
     private BigDecimal vat;
     private BigDecimal serviceCharge;
     private Status status;
+    private String tags;
     private String imageUrl; //Transient Value
     private String brandName; //Transient Value
     private Integer orderQuantity; //Transient Value
@@ -386,6 +387,15 @@ public class ItemEntity implements Serializable {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @Column(name = "tags")
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     @JsonIgnore

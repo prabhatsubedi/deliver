@@ -81,7 +81,6 @@ if( typeof (Fb) == "undefined"){
             Main.popDialog('', 'Internet connection problem.');
             return false;
         }
-
     }
 
     /*Fb.setRequestHeader = function(){
@@ -98,7 +97,6 @@ if( typeof (Fb) == "undefined"){
                     Main.popDialog('', 'Invalid referral.');
                     return false;
                 }
-                console.log(user);
                 var user_info = {
                     "fullName":user.name,
                     "gender": user.gender?user.gender.toUpperCase():null,

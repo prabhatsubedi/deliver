@@ -77,6 +77,11 @@
                                     </div>
 
                                     <div class="detail_row">
+                                        <label class="detail_label">Tags</label>
+                                        <div class="detail_value tags"></div>
+                                    </div>
+
+                                    <div class="detail_row">
                                         <label class="detail_label">Additional Offer</label>
                                         <div class="detail_value additional_offer"></div>
                                     </div>

@@ -1335,6 +1335,7 @@ function toggleSwitch(value, elem) {
                     $('.btn_switch').removeClass('on').addClass('off');
 
                 $('.item_info .description').html(item.description);
+                $('.item_info .tags').html(item.tags);
                 $('.item_info .additional_offer').html(item.additionalOffer);
 
                 var item_stores = "";

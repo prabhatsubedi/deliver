@@ -76,4 +76,6 @@ public interface DeliveryBoyService {
     public List<DeliveryBoyEntity> findAllActiveDeliveryBoy() throws Exception;
 
     public OrderEntity getPaidFromCODAmount(Integer orderId) throws Exception;
+
+    public PreferenceDto getHelpLineDetails() throws Exception;
 }

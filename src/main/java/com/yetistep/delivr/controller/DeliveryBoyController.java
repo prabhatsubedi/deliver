@@ -54,7 +54,8 @@ public class DeliveryBoyController extends AbstractManager{
             DeliveryBoyEntity deliveryBoyEntity =  deliveryBoyService.dboyLogin(headerDto, userDevice);
             ServiceResponse serviceResponse = new ServiceResponse("Shopper logged in successfully");
             serviceResponse.addParam("userDetail", deliveryBoyEntity);
-
+            PreferenceDto preferenceDto = deliveryBoyService.getHelpLineDetails();
+            serviceResponse.addParam("preference", preferenceDto);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
 
         } catch (Exception e){

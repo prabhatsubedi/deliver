@@ -935,6 +935,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         dbItem.setVat(item.getVat());
         dbItem.setServiceCharge(item.getServiceCharge());
         dbItem.setUnitPrice(item.getUnitPrice());
+        dbItem.setTags(item.getTags());
         dbItem.setModifiedDate(DateUtil.getCurrentTimestampSQL());
 
 

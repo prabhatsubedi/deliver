@@ -2222,8 +2222,6 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     public PreferenceDto getHelpLineDetails() throws Exception {
         PreferenceDto preferenceDto = new PreferenceDto();
         preferenceDto.setHelplineNumber(systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
-        preferenceDto.setCustomerCareEmail(systemPropertyService.readPrefValue(PreferenceType.CUSTOMER_CARE_EMAIL));
-        preferenceDto.setRefereeRewardAmount(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
         preferenceDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         return preferenceDto;
     }

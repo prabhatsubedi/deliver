@@ -875,6 +875,43 @@ function toggleSwitch(value, elem) {
             allowPageScroll: 'vertical'
         });*/
 
+
+        $('.btn_add_tags').live('click', function(e){
+            e.preventDefault();
+            $('#modal_tags').modal('show');
+            $('.btn_add_tags').removeClass('current_tags');
+            $(this).addClass('current_tags');
+        });
+
+        $.validator.setDefaults({
+            errorPlacement : function(error, element){
+                $('#error_container').html(error);
+            }
+        });
+
+        $('#form_tags').validate({
+            submitHandler: function() {
+                var callback = function (status, data) {
+                    Main.popDialog('', data.message);
+                    if (data.success) {
+                        $('#modal_tags').modal('hide');
+                        $('#form_tags')[0].reset();
+                    }
+                }
+                callback.loaderDiv = "#form_tags";
+                callback.requestType = "POST";
+                var headers = {};
+                headers.id = $('.current_tags').parent().data('id');
+                var params = {};
+                params.itemTags = $('#tags').val();
+                params.className = $('.current_tags').data('mode');
+                Main.request('/merchant/add_item_tags', params, callback, headers);
+
+                return false;
+            }
+        });
+        $('#tags').rules('add', {required: true});
+
         Image.dropZone('#item_image_input', '.item_drop_zone');
 
         Main.resizableCatMenu();

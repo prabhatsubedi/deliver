@@ -1652,6 +1652,20 @@ label.check_label .checkbox {
 .switch_container .switch .btn_switch.off:before {
     content: "OUT OF STOCK";
 }
+.items_list .block_item .btn_add_tags {
+    border-radius: 3px;
+    display: none;
+    font-size: 12px;
+    line-height: 22px;
+    padding: 0 8px;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    width: auto;
+}
+.items_list .block_item:hover .btn_add_tags {
+    display:block;
+}
 
 /* store detail */
 

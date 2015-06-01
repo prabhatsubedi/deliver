@@ -65,6 +65,7 @@
                         <div class="btn_switch on"></div>
                     </div>
                 </div>
+                <button type="button" class="btn btn_green btn_add_tags">Add Tags</button>
             </div>
             <div class="item_infos">
                 <p class="item_name"><a href="#"></a></p>
@@ -123,6 +124,31 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal fade modal_form" id="modal_tags">
+    <div class="modal-dialog">
+        <form role="form" id="form_tags" method="POST" action="">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    Add Tags
+                </div>
+                <div class="modal-body body_padding">
+                    <div class="form-group">
+                        <textarea class="form-control" id="tags" name="tags" placeholder="Tags"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-lg-6 no_pad">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                    <div class="col-lg-6 no_pad">
+                        <button type="submit" class="btn btn-default next">Add</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 

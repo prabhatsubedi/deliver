@@ -28,7 +28,7 @@
     <div class="logo_block">
         <img src="${pageContext.request.contextPath}/resources/images/logo.png" class="img-responsive center-block"></div>
     <div class="login_block">
-        <div class="login_head">Login to KoolKat</div>
+        <div class="login_head">Login to Koolkat</div>
         <div class="login_form">
             <form role="form" id="login_form" method="POST" action="${pageContext.request.contextPath}/j_spring_security_check">
                 <div class="form-group">
@@ -84,7 +84,7 @@
     <div class="foot_logo"><img src="${pageContext.request.contextPath}/resources/images/login-logo.png" class="img-responsive"></div>
     <div class="foot_links">
         <ul class="nav nav-pills text-center">
-            <li><a href="#">KoolKat</a></li>
+            <li><a href="#">Koolkat</a></li>
             <li><a href="#">Terms of use</a></li>
             <li><a href="#">Privacy Policy</a></li>
         </ul>
@@ -121,7 +121,7 @@
                     </form>
                 </div>
                 <div class="login_foot text-center">
-                    Are you new to <strong>KoolKat</strong> ?
+                    Are you new to <strong>Koolkat</strong> ?
                     <button type="button" class="btn btn-default btn_logins" data-toggle="modal" data-target="#modal_signup" data-dismiss="modal">Sign Up</button>
                 </div>
             </div>

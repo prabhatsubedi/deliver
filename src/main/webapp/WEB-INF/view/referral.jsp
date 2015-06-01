@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>KoolKat</title>
+    <title>Koolkat</title>
     <%@include file="includes/head.jsp" %>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/fb.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/date.format.js"></script>

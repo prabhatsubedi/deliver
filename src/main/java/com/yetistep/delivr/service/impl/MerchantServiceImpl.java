@@ -1717,6 +1717,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
                 orderEntity.setTotalCost(totalCost);
             }
+            if(orderEntity.getAddress().getMobileNumber() == null){
+                orderEntity.getAddress().setMobileNumber(orderEntity.getCustomer().getUser().getMobileNumber());
+            }
             orderEntity.getCustomer().getUser().setAddresses(null);
         }
 

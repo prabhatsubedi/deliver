@@ -1951,6 +1951,16 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         return paginationDto;
     }
 
+    @Override
+    public void addItemsTags(HeaderDto headerDto, RequestJsonDto requestJson) throws  Exception{
+        Integer itemId = Integer.parseInt(headerDto.getId());
+        String tags = requestJson.getItemTags();
+        ItemEntity item = merchantDaoService.getItemDetail(itemId);
+        item.setTags(tags);
+
+        itemDaoService.update(item);
+    }
+
 
 }
 

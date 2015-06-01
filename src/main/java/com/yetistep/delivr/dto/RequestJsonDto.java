@@ -110,6 +110,9 @@ public class RequestJsonDto {
     /*boy transaction account*/
     private String accountantNote;
 
+    /*add item tags*/
+    private String itemTags;
+
     /*=================================================================== */
     public PasswordActionType getActionType() {
         return actionType;
@@ -488,5 +491,13 @@ public class RequestJsonDto {
 
     public void setAccountantNote(String accountantNote) {
         this.accountantNote = accountantNote;
+    }
+
+    public String getItemTags() {
+        return itemTags;
+    }
+
+    public void setItemTags(String itemTags) {
+        this.itemTags = itemTags;
     }
 }

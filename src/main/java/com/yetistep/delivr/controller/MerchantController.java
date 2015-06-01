@@ -500,7 +500,23 @@ public class MerchantController {
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
             merchantService.addItemsImages(headerDto, requestJson);
 
-            ServiceResponse serviceResponse = new ServiceResponse("Images has been saved successfully for item: "+headerDto.getId());
+            ServiceResponse serviceResponse = new ServiceResponse("Images has been saved successfully saved for item: "+headerDto.getId());
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving purchase history: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/add_items_tags", method = RequestMethod.POST)
+    public ResponseEntity<ServiceResponse> addItemsTags(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            merchantService.addItemsTags(headerDto, requestJson);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Tags has been saved successfully saved for item: "+headerDto.getId());
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
             GeneralUtil.logError(log, "Error Occurred while retrieving purchase history: ", e);

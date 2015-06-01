@@ -79,4 +79,6 @@ public interface MerchantService {
     public List<StoresBrandEntity> findSearchBrands(HeaderDto headerDto) throws Exception;
 
     public List<MerchantEntity> getAllMerchants() throws Exception;
+
+    public void addItemsTags(HeaderDto headerDto, RequestJsonDto requestJson) throws Exception;
 }

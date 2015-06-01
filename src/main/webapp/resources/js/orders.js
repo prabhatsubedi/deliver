@@ -302,9 +302,9 @@ Order.getOrders = function(elemId, url, params){
 
             var row;
             if(order.orderStatus == "CANCELLED"){
-                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarned, assigned_time, time_taken, dboyRating, dboyComment, reason, view_items];
+                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarned, assigned_time, time_taken, dboyRating, cusComment, reason, view_items];
             } else if(order.orderStatus == "DELIVERED") {
-                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarned, assigned_time, time_taken, (typeof order.bill != "undefined" && typeof order.bill.path!="undefined")?'<a href="'+order.bill.path+'" target="_blank">View Receipt</a>':'', dboyRating, dboyComment, cusRating, cusComment, view_items];
+                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarned, assigned_time, time_taken, (typeof order.bill != "undefined" && typeof order.bill.path!="undefined")?'<a href="'+order.bill.path+'" target="_blank">View Receipt</a>':'', dboyRating, cusComment, cusRating, dboyComment, view_items];
             } else if($.inArray(order.orderStaus, activeStatus)) {
                 row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, order.orderVerificationCode, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarnedLive, assigned_time, time_taken, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' +  order.deliveryBoy.id + '">View on Map</a> | ' + view_items];
             }

@@ -12,10 +12,10 @@ window.fbAsyncInit = function() {
          apId = "979998678677787";
     else if(hostName=="test.idelivr.com" || hostName=="www.test.idelivr.com")
          apId = "979999898677665";
-    else if(hostName=="test1.idelivr.com" || hostName=="www.test1.idelivr.com")
-        apId = "910783542265968";
+    else if(hostName=="ktm.koolkat.in" || hostName=="www.test1.idelivr.com")
+         apId = "910783542265968";
     else if(hostName=="test.koolkat.in" || hostName=="www.test.koolkat.in" || hostName=="52.74.199.191")
-        apId = "978523412158647";
+         apId = "978523412158647";
 
     // init the FB JS SDK                                                            n
     FB.init({

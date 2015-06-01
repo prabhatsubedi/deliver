@@ -97,9 +97,11 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             BigDecimal totalServiceCharge = BigDecimal.ZERO;
             for (OrderEntity order: orders){
                 for (ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()) {
-                    BigDecimal itemServiceChargePcn = itemsOrderEntity.getItem().getServiceCharge();
-                    BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
-                    totalServiceCharge.add(itemServiceCharge);
+                    if(itemsOrderEntity.getItem() != null){
+                        BigDecimal itemServiceChargePcn = itemsOrderEntity.getItem().getServiceCharge();
+                        BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
+                        totalServiceCharge.add(itemServiceCharge);
+                    }
                 }
                 //add order
                 totalOrderAmount = totalOrderAmount.add(order.getTotalCost());
@@ -142,7 +144,13 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
             String email = store.getEmail();
             if(email != null && !email.equals("")) {
-                String message = EmailMsg.sendInvoiceEmail(store, fromDate, toDate, getServerUrl());
+                String serverUrl;
+                if(MessageBundle.isLocalHost()){
+                    serverUrl = "http://localhost:8080/";
+                } else {
+                    serverUrl = "http://test.idelivr.com/";
+                }
+                String message = EmailMsg.sendInvoiceEmail(store, fromDate, toDate, serverUrl);
                 sendAttachmentEmail(email,  message, "get invoice-"+fromDate+"-"+toDate, invoicePath);
             }
             System.out.println("Email sent successfully with attachment: "+invoicePath+" for store "+store.getId());

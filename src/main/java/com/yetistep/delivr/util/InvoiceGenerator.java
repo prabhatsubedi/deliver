@@ -416,9 +416,11 @@ public class InvoiceGenerator {
         BigDecimal totalServiceCharge = BigDecimal.ZERO;
         for (OrderEntity order: orders){
             for (ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()) {
-                BigDecimal itemServiceChargePcn = itemsOrderEntity.getItem().getServiceCharge();
-                BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
-                totalServiceCharge.add(itemServiceCharge);
+                if(itemsOrderEntity.getItem() != null){
+                    BigDecimal itemServiceChargePcn = itemsOrderEntity.getItem().getServiceCharge();
+                    BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
+                    totalServiceCharge.add(itemServiceCharge);
+                }
             }
             //add order
             PdfUtil.addRow(billingTable, PdfUtil.getPhrase(cntOrder), PdfUtil.getPhrase(order.getOrderDate()), PdfUtil.getPhrase(order.getId()), PdfUtil.getPhrase(order.getTotalCost()));
@@ -773,9 +775,9 @@ public class InvoiceGenerator {
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), PdfUtil.getPhrase("Total"), PdfUtil.getPhrase(totalAmountEarned.setScale(2, BigDecimal.ROUND_DOWN)));
         BigDecimal tdsAmount = totalAmountEarned.multiply(new BigDecimal(preferences.get("TDS_PERCENTAGE"))).divide(new BigDecimal(100));
         BigDecimal totalPayableAmount =  totalAmountEarned.subtract(tdsAmount);
-        Phrase tdsPhrase = PdfUtil.getPhrase("");
+        Phrase tdsPhrase;
         if(BigDecimalUtil.isIntegerValue(new BigDecimal(preferences.get("TDS_PERCENTAGE")))){
-            tdsPhrase = PdfUtil.getPhrase("TDS Percentage ("+Integer.parseInt(preferences.get("TDS_PERCENTAGE")+")"));
+            tdsPhrase = PdfUtil.getPhrase("TDS Percentage ("+Integer.parseInt(preferences.get("TDS_PERCENTAGE"))+")");
         } else {
             tdsPhrase = PdfUtil.getPhrase("TDS Percentage ("+preferences.get("TDS_PERCENTAGE")+")");
         }

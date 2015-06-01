@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -572,8 +573,32 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
         String[] splitString = searchString.split(",");
-        Disjunction disjunction = Restrictions.disjunction();
+        List<String> finalSearchString = new ArrayList<>();
+        String implodeString = "";
         for (String s: splitString){
+            finalSearchString.add(s);
+            implodeString+=s;
+        }
+
+        String[] explodeSting = implodeString.split("(?!^)");
+        String genImplodeArray =  explodeSting[0];
+        List<String> genSearchString = new ArrayList<>();
+        Integer cnt = 0;
+        for (String s: explodeSting){
+            if(cnt>0){
+                genImplodeArray+=s;
+                if(cnt>2){
+                    genSearchString.add(genImplodeArray);
+                }
+            }
+            cnt++;
+        }
+
+        Collections.reverse(genSearchString);
+        finalSearchString.addAll(genSearchString);
+
+        Disjunction disjunction = Restrictions.disjunction();
+        for (String s: finalSearchString){
             disjunction.add(Restrictions.like("name", s, MatchMode.ANYWHERE));
             disjunction.add(Restrictions.like("tags", s, MatchMode.ANYWHERE));
         }
@@ -593,9 +618,32 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         return (count != null) ? count.intValue() : null;*/
         String[] splitString = searchString.split(",");
 
+        List<String> finalSearchString = new ArrayList<>();
+        String implodeString = "";
+        for (String s: splitString){
+            finalSearchString.add(s);
+            implodeString+=s;
+        }
+
+        String[] explodeSting = implodeString.split("(?!^)");
+        String genImplodeArray =  explodeSting[0];
+        List<String> genSearchString = new ArrayList<>();
+        Integer cnt = 0;
+        for (String s: explodeSting){
+            if(cnt>0){
+                genImplodeArray+=s;
+                if(cnt>2){
+                    genSearchString.add(genImplodeArray);
+                }
+            }
+            cnt++;
+        }
+        Collections.reverse(genSearchString);
+        finalSearchString.addAll(genSearchString);
+
         String queryString = "";
         Integer i = 0;
-        for (String s: splitString){
+        for (String s: finalSearchString){
             if(i == 0)
                 queryString =  queryString+ "i.name LIKE '%"+s+"%' OR i.tags LIKE '%"+s+"%'";
             else
@@ -609,8 +657,8 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         query.setParameterList("storeId", storeId);
         query.setParameterList("categoryId", categoryId);
 
-        BigInteger cnt = (BigInteger) query.uniqueResult();
-        return cnt.intValue();
+        BigInteger count = (BigInteger) query.uniqueResult();
+        return count.intValue();
     }
 
     @Override

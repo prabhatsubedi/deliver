@@ -183,7 +183,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
 
     @Override
     public Integer getOnTimeCount(String type) throws Exception {
-        String sqQuery = "SELECT COUNT(o.id) FROM orders o INNER JOIN dboy_order_history doh ON o.delivery_boy_id = doh.dboy_id && o.id = doh.order_id WHERE o.assigned_time "+type+" (doh.completed_at - doh.job_started_at)";
+        String sqQuery = "SELECT COUNT(o.id) FROM orders o INNER JOIN dboy_order_history doh ON o.delivery_boy_id = doh.dboy_id && o.id = doh.order_id WHERE o.assigned_time "+type+" ((UNIX_TIMESTAMP(doh.completed_at) - UNIX_TIMESTAMP(doh.job_started_at))/60)";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
 
         BigInteger cnt = (BigInteger) query.uniqueResult();

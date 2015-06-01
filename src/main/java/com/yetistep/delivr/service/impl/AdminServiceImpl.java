@@ -96,8 +96,8 @@ public class AdminServiceImpl implements AdminService {
         }
         generalData.put("deliveryFailed", deliveryFailedPcn);
 
-        Integer onTimeDeliveryCount = adminDaoService.getOnTimeCount("<=");
-        Integer exceedTimeDeliveryCount = adminDaoService.getOnTimeCount(">");
+        Integer onTimeDeliveryCount = adminDaoService.getOnTimeCount(">=");
+        Integer exceedTimeDeliveryCount = adminDaoService.getOnTimeCount("<");
         Integer totalDeliveryCount = onTimeDeliveryCount+exceedTimeDeliveryCount;
 
         Map<Integer, Map<String, String>> onTimeDeliveryPcn =  new HashMap<>();

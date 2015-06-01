@@ -959,7 +959,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             * if the transaction is first transaction of  the current customer
             * set reward for referrer
             * */
-            if(customersOrders.size() == 0){
+             if(customersOrders.size() == 1){
                Long referrerId = order.getCustomer().getReferredBy();
                if(referrerId != null){
                    CustomerEntity referrer = customerDaoService.find(referrerId);

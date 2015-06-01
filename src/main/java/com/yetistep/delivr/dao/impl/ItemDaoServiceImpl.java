@@ -2,16 +2,15 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.ItemDaoService;
 import com.yetistep.delivr.enums.Status;
+import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
 import com.yetistep.delivr.model.CategoryEntity;
 import com.yetistep.delivr.model.ItemEntity;
 import com.yetistep.delivr.model.mobile.dto.ItemDto;
-import com.yetistep.delivr.hbn.AliasToBeanNestedResultTransformer;
 import com.yetistep.delivr.util.CommonConstants;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -124,12 +123,13 @@ public class ItemDaoServiceImpl implements ItemDaoService{
                 "sb.opening_time AS openingTime, sb.closing_time AS closingTime FROM items i " +
                 "LEFT JOIN items_images ii ON ii.id = (SELECT MIN(id) FROM items_images WHERE item_id = i.id) " +
                 "INNER JOIN stores_brands sb ON(sb.id = i.brand_id AND sb.status=:status) " +
-                "WHERE i.status = :status AND i.name LIKE :word " +
+                "WHERE i.status = :status AND (i.name LIKE :word OR i.tags LIKE :tags)" +
                 "ORDER BY i.unit_price ASC LIMIT " + CommonConstants.MAX_SEARCH_DATA;
 
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
         sqlQuery.setParameter("word", CommonConstants.DELIMITER+word+CommonConstants.DELIMITER);
+        sqlQuery.setParameter("tags", CommonConstants.DELIMITER+word+CommonConstants.DELIMITER);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(ItemEntity.class));
         return (List<ItemEntity>) sqlQuery.list();
     }

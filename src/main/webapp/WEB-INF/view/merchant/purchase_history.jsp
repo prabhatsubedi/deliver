@@ -38,7 +38,7 @@
                             <th>Store Name & Address</th>
                             <th>Order No</th>
                             <th>Order Date & Time</th>
-                            <th>Paid to Merchant</th>
+                            <th>Merchant Invoice Amount</th>
                             <th>Shopper</th>
                             <th class="no_sort">Bill</th>
                             <th class="no_sort">Items</th>

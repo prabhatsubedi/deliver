@@ -1676,7 +1676,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         assoc.put("customer", "id,user,bill");
         assoc.put("itemsOrder", "id,itemTotal,serviceAndVatCharge,availabilityStatus,purchaseStatus,vat,serviceCharge,customItem");
         assoc.put("store", "id,name,street,contactPerson,contactNo");
-        assoc.put("address", "id,street,city,state,country");
+        assoc.put("address", "id,street,city,state,country,notes,givenLocation,mobileNumber");
         assoc.put("attachments", "url");
         assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
         assoc.put("orderCancel", "id,reasonDetails,reason");
@@ -1717,6 +1717,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
                 orderEntity.setTotalCost(totalCost);
             }
+            orderEntity.getCustomer().getUser().setAddresses(null);
         }
 
         paginationDto.setData(orderList);

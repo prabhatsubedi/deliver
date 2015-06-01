@@ -509,7 +509,7 @@ public class MerchantController {
         }
     }
 
-    @RequestMapping(value = "/add_items_tags", method = RequestMethod.POST)
+    @RequestMapping(value = "/add_item_tags", method = RequestMethod.POST)
     public ResponseEntity<ServiceResponse> addItemsTags(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJson) {
         try{
             HeaderDto headerDto = new HeaderDto();

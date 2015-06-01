@@ -842,6 +842,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     }
 
     private Boolean deliverOrder(OrderEntity orderEntityJson, OrderEntity order, Integer deliveryBoyId) throws Exception {
+        log.info("Delivering order with order ID: "+order.getId());
         if(!order.getDeliveryBoy().getId().equals(deliveryBoyId)){
             throw new YSException("ORD003");
         }
@@ -916,6 +917,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }
         boolean status = orderDaoService.update(order);
         if(status){
+            log.info("Order has been updated successfully");
             /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
             accountService.generateBillAndReceiptAndSendEmail(order);
 
@@ -988,6 +990,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
     /* This method is used to update unit price of an item. */
     private void updateItemPrice(OrderEntity orderEntity) throws Exception {
+        log.info("Updating item price of order with ID:"+orderEntity.getId());
         List<ItemsOrderEntity> itemsOrderEntities = orderEntity.getItemsOrder();
         for(ItemsOrderEntity itemsOrder: itemsOrderEntities){
             ItemEntity item = itemsOrder.getItem();

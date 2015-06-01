@@ -580,11 +580,11 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
             implodeString+=s;
         }
 
-        String[] explodeSting = implodeString.split("(?!^)");
-        String genImplodeArray =  explodeSting[0];
+        /*String[] explodeString = implodeString.split("(?!^)");
+        String genImplodeArray =  explodeString[0];
         List<String> genSearchString = new ArrayList<>();
         Integer cnt = 0;
-        for (String s: explodeSting){
+        for (String s: explodeString){
             if(cnt>0){
                 genImplodeArray+=s;
                 if(cnt>2){
@@ -595,7 +595,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         }
 
         Collections.reverse(genSearchString);
-        finalSearchString.addAll(genSearchString);
+        finalSearchString.addAll(genSearchString);*/
 
         Disjunction disjunction = Restrictions.disjunction();
         for (String s: finalSearchString){
@@ -625,11 +625,12 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
             implodeString+=s;
         }
 
-        String[] explodeSting = implodeString.split("(?!^)");
-        String genImplodeArray =  explodeSting[0];
+        //ToDo: search logic development in progress
+       /* String[] explodeString = implodeString.split("(?!^)");
+        String genImplodeArray =  explodeString[0];
         List<String> genSearchString = new ArrayList<>();
         Integer cnt = 0;
-        for (String s: explodeSting){
+        for (String s: explodeString){
             if(cnt>0){
                 genImplodeArray+=s;
                 if(cnt>2){
@@ -639,7 +640,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
             cnt++;
         }
         Collections.reverse(genSearchString);
-        finalSearchString.addAll(genSearchString);
+        finalSearchString.addAll(genSearchString);*/
 
         String queryString = "";
         Integer i = 0;

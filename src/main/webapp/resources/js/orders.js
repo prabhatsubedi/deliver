@@ -112,7 +112,9 @@ Order.loadOrderFn = function(){
         }
 
         var cusName = order.customer.user.fullName;
-        var cusPhone = order.customer.user.mobileNumber;
+        var cusPhone = order.address.mobileNumber == undefined ? order.customer.user.mobileNumber : order.address.mobileNumber;
+        var givenLocation = order.address.givenLocation;
+        var notes = order.address.notes;
         var deliveryAddress = '';
         order.address.street != "undefined" ? deliveryAddress += order.address.street : '';
         order.address.city != "undefined" ? deliveryAddress += "," + order.address.city : '';
@@ -135,7 +137,7 @@ Order.loadOrderFn = function(){
             if(order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt != undefined && order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt != undefined){
                 timeTaken = ((order.dBoyOrderHistories[orderHistoryLength-1].orderCompletedAt - order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt)/1000/60).toFixed(0);
             }else if(order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt != undefined){
-                timeTaken = ((n-order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt)/1000/60).toFixed(0);
+                timeTaken = ((new Date() - order.dBoyOrderHistories[orderHistoryLength-1].jobStartedAt)/1000/60).toFixed(0);
             }
 
             amountEarned = order.dBoyOrderHistories[orderHistoryLength-1].amountEarned != undefined?Main.getFromLocalStorage("currency")+" "+order.dBoyOrderHistories[orderHistoryLength-1].amountEarned:0;
@@ -153,7 +155,9 @@ Order.loadOrderFn = function(){
 
         createRow("Customer Name", cusName, "Customer Details");
         createRow("Customer Phone", cusPhone);
-        createRow("Delivery Address", deliveryAddress);
+        createRow("Given Address", givenLocation);
+        createRow("Street Address", deliveryAddress);
+        createRow("notes", notes);
         createRow("Rating", cusRating);
         createRow("Comments", cusComment);
 

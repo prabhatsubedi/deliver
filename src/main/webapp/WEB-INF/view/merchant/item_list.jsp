@@ -132,7 +132,7 @@
         <form role="form" id="form_tags" method="POST" action="">
             <div class="modal-content">
                 <div class="modal-header text-center">
-                    Add Tags
+                    Tags
                 </div>
                 <div class="modal-body body_padding">
                     <div class="form-group">
@@ -144,7 +144,7 @@
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
                     <div class="col-lg-6 no_pad">
-                        <button type="submit" class="btn btn-default next">Add</button>
+                        <button type="submit" class="btn btn-default next">Submit</button>
                     </div>
                 </div>
             </div>

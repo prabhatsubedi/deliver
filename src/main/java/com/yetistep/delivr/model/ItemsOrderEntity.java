@@ -31,6 +31,7 @@ public class ItemsOrderEntity implements Serializable {
     private BigDecimal vat;
     private BigDecimal serviceCharge;
     private Boolean purchaseStatus;
+    private String categoryName;
     private CustomItemEntity customItem;
     private List<ItemsOrderAttributeEntity> itemOrderAttributes;
 
@@ -146,6 +147,15 @@ public class ItemsOrderEntity implements Serializable {
 
     public void setPurchaseStatus(Boolean purchaseStatus) {
         this.purchaseStatus = purchaseStatus;
+    }
+
+    @Column(name="category_name")
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     @OneToOne(mappedBy = "itemsOrder", cascade = CascadeType.PERSIST, orphanRemoval=true, fetch = FetchType.LAZY)

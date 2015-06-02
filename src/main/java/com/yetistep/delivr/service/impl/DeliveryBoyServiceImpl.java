@@ -1795,6 +1795,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 itemsOrderAttributeEntities.add(itemOrderAttribute);
             }
             itemsOrderEntity.setItemOrderAttributes(itemsOrderAttributeEntities);
+            itemsOrderEntity.setCategoryName(itemOrder.getCategoryName());
             itemsOrderEntities.add(itemsOrderEntity);
         }
 

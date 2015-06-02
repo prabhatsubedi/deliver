@@ -878,6 +878,7 @@ function toggleSwitch(value, elem) {
 
         $('.btn_add_tags').live('click', function(e){
             e.preventDefault();
+            $('#tags').val($(this).data('tags'));
             $('#modal_tags').modal('show');
             $('.btn_add_tags').removeClass('current_tags');
             $(this).addClass('current_tags');
@@ -894,6 +895,7 @@ function toggleSwitch(value, elem) {
                 var callback = function (status, data) {
                     Main.popDialog('', data.message);
                     if (data.success) {
+                        $('.current_tags').data('tags', $('#tags').val());
                         $('#modal_tags').modal('hide');
                         $('#form_tags')[0].reset();
                     }
@@ -1057,6 +1059,7 @@ function toggleSwitch(value, elem) {
                                 if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
                                 $('.item_name a', elem).attr('href', Main.modifyURL('/merchant/item/view/' + item.id)).html(item.name);
                                 $('.item_price span', elem).html(item.unitPrice);
+                                $('.btn_add_tags', elem).attr('data-tags', item.tags);
                                 $('.btn_switch', elem).attr('data-id', item.id);
                                 if(item.status == 'ACTIVE') {
                                     $('.btn_switch', elem).removeClass('off').addClass('on');
@@ -1171,6 +1174,7 @@ function toggleSwitch(value, elem) {
                         if(item.itemsImage.length > 0) $('.item_image img', elem).attr('src', item.itemsImage[0].url);
                         $('.item_name a', elem).attr('href', Main.modifyURL('/merchant/item/view/' + item.id)).html(item.name);
                         $('.item_price span', elem).html(item.unitPrice);
+                        $('.btn_add_tags', elem).attr('data-tags', item.tags);
                         $('.btn_switch', elem).attr('data-id', item.id);
                         if(item.status == 'ACTIVE') {
                             $('.btn_switch', elem).removeClass('off').addClass('on');

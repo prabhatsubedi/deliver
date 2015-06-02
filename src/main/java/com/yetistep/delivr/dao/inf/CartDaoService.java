@@ -21,6 +21,8 @@ public interface CartDaoService extends GenericDaoService<Integer, CartEntity>{
 
     public List<CartEntity> getMyCustomItemCarts(Long facebookId) throws Exception;
 
+    public List<CartEntity> getMyCartsWithCategories(Long facebookId) throws Exception;
+
     public List<Integer> findCarts(Long fbId, Integer itemId, Integer brandId, String note) throws Exception;
 
     public Boolean updateOrderQuantity(Integer cartId, Integer additionalQuantity) throws Exception;

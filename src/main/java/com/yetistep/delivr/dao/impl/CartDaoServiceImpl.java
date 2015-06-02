@@ -147,6 +147,40 @@ public class CartDaoServiceImpl implements CartDaoService{
     }
 
     @Override
+    public List<CartEntity> getMyCartsWithCategories(Long facebookId) throws Exception {
+        ProjectionList projectionList = Projections.projectionList()
+                .add(Projections.property("id"), "id")
+                .add(Projections.property("note"), "note")
+                .add(Projections.property("orderQuantity"), "orderQuantity")
+                .add(Projections.property("sb.id"), "storesBrand.id")
+                .add(Projections.property("sb.brandName"), "storesBrand.brandName")
+                .add(Projections.property("sb.brandImage"), "storesBrand.brandImage")
+                .add(Projections.property("sb.brandLogo"), "storesBrand.brandLogo")
+                .add(Projections.property("sb.openingTime"), "storesBrand.openingTime")
+                .add(Projections.property("sb.closingTime"), "storesBrand.closingTime")
+                .add(Projections.property("sb.status"), "storesBrand.status")
+                .add(Projections.property("sb.minOrderAmount"), "storesBrand.minOrderAmount")
+                .add(Projections.property("i.id"), "item.id")
+                .add(Projections.property("i.name"), "item.name")
+                .add(Projections.property("i.unitPrice"), "item.unitPrice")
+                .add(Projections.property("i.serviceCharge"), "item.serviceCharge")
+                .add(Projections.property("i.vat"), "item.vat")
+                .add(Projections.property("i.status"), "item.status")
+                .add(Projections.property("i.minOrderQuantity"), "item.minOrderQuantity")
+                .add(Projections.property("i.maxOrderQuantity"), "item.maxOrderQuantity")
+                .add(Projections.property("i.category"), "item.category");
+
+
+        Criteria criteria = getCurrentSession().createCriteria(CartEntity.class)
+                .createAlias("storesBrand", "sb")
+                .createAlias("item", "i")
+                .setProjection(projectionList)
+                .setResultTransformer(new AliasToBeanNestedResultTransformer(CartEntity.class));
+        criteria.add(Restrictions.eq("customer.facebookId", facebookId));
+        return  (List<CartEntity>) criteria.list();
+    }
+
+    @Override
     public List<Integer> findCarts (Long fbId, Integer itemId, Integer brandId, String note) throws Exception {
         List<Integer> carts = new ArrayList<>();
 

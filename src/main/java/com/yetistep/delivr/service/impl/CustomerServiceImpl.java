@@ -42,6 +42,7 @@ public class CustomerServiceImpl implements CustomerService {
     private static final Integer ON_TIME_DELIVERY = 0;
     private static final Integer DELAYED_DELIVERY = 1;
     private static final BigDecimal minusOne = new BigDecimal(-1);
+    private static final String SPLITTER = " > ";
 
 
     @Autowired
@@ -844,7 +845,7 @@ public class CustomerServiceImpl implements CustomerService {
         BigDecimal itemVatCharge = BigDecimal.ZERO;
 
 
-        List<CartEntity> cartEntities = cartDaoService.getMyCarts(customerId);
+        List<CartEntity> cartEntities = cartDaoService.getMyCartsWithCategories(customerId);
         //get custom item carts
         List<CartEntity> customItemCarts = cartDaoService.getMyCustomItemCarts(customerId);
         //merge both carts
@@ -879,6 +880,14 @@ public class CustomerServiceImpl implements CustomerService {
             if(cart.getItem() != null){
                 itemsOrderEntity.setServiceCharge(BigDecimalUtil.checkNull(cart.getItem().getServiceCharge()));
                 itemsOrderEntity.setVat(BigDecimalUtil.checkNull(cart.getItem().getVat()));
+                CategoryEntity categoryEntity = cart.getItem().getCategory();
+                String categoryName = categoryEntity.getName();
+                categoryEntity = categoryEntity.getParent();
+                while(categoryEntity != null){
+                    categoryName =  categoryEntity.getName() + SPLITTER + categoryName;
+                    categoryEntity = categoryEntity.getParent();
+                }
+                itemsOrderEntity.setCategoryName(categoryName);
 
                 List<Integer> cartAttributes = cartAttributesDaoService.findCartAttributes(cart.getId());
                 List<ItemsOrderAttributeEntity> itemsOrderAttributeEntities = new ArrayList<ItemsOrderAttributeEntity>();

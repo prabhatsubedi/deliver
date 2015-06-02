@@ -1045,7 +1045,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         //add or update images
         List<ItemsImageEntity> itemsImages = requestJson.getEditItemImages();
         if(itemsImages != null){
-
             for (ItemsImageEntity image: itemsImages){
                 if(image.getId() == null){
                     dbImages.add(image);

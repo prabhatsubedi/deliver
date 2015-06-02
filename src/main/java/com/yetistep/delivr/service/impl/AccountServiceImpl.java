@@ -98,13 +98,11 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             BigDecimal itemVatAmount = BigDecimal.ZERO;
             for (OrderEntity order: orders){
                 for (ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()) {
-                    if(itemsOrderEntity.getItem() != null){
-                        BigDecimal itemServiceChargePcn = itemsOrderEntity.getItem().getServiceCharge();
-                        BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
-                        BigDecimal itemVatCharge = itemsOrderEntity.getItemTotal().multiply(itemsOrderEntity.getItem().getVat()).divide(new BigDecimal(100));
-                        totalServiceCharge.add(itemServiceCharge);
-                        itemVatAmount.add(itemVatCharge);
-                    }
+                    BigDecimal itemServiceChargePcn = itemsOrderEntity.getServiceCharge();
+                    BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
+                    BigDecimal itemVatCharge = itemsOrderEntity.getItemTotal().multiply(itemsOrderEntity.getVat()).divide(new BigDecimal(100));
+                    totalServiceCharge = totalServiceCharge.add(itemServiceCharge);
+                    itemVatAmount = itemVatAmount.add(itemVatCharge);
                 }
                 //add order
                 totalOrderAmount = totalOrderAmount.add(order.getTotalCost());

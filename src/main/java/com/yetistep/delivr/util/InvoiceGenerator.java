@@ -418,13 +418,11 @@ public class InvoiceGenerator {
         BigDecimal itemVatAmount = BigDecimal.ZERO;
         for (OrderEntity order: orders){
             for (ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()) {
-                if(itemsOrderEntity.getItem() != null){
-                    BigDecimal itemServiceChargePcn = itemsOrderEntity.getItem().getServiceCharge();
+                    BigDecimal itemServiceChargePcn = itemsOrderEntity.getServiceCharge();
                     BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
-                    BigDecimal itemVatCharge = itemsOrderEntity.getItemTotal().multiply(itemsOrderEntity.getItem().getVat()).divide(new BigDecimal(100));
-                    totalServiceCharge.add(itemServiceCharge);
-                    itemVatAmount.add(itemVatCharge);
-                }
+                    BigDecimal itemVatCharge = itemsOrderEntity.getItemTotal().multiply(itemsOrderEntity.getVat()).divide(new BigDecimal(100));
+                    totalServiceCharge = totalServiceCharge.add(itemServiceCharge);
+                    itemVatAmount = itemVatAmount.add(itemVatCharge);
             }
             //add order
             PdfUtil.addRow(billingTable, PdfUtil.getPhrase(cntOrder), PdfUtil.getPhrase(order.getOrderDate()), PdfUtil.getPhrase(order.getId()), PdfUtil.getPhrase(order.getTotalCost()));
@@ -456,7 +454,7 @@ public class InvoiceGenerator {
 
         Phrase grandTotal = PdfUtil.getPhrase("Grand Total", tableHeadFont);
         if(BigDecimalUtil.isIntegerValue(merchant.getCommissionPercentage())){
-            commission = PdfUtil.getPhrase("Commission("+ merchant.getCommissionPercentage().intValueExact()+"%) with vat", tableHeadFont);
+            commission = PdfUtil.getPhrase("Commission("+ merchant.getCommissionPercentage().intValueExact()+"%) with VAT", tableHeadFont);
         } else {
             commission = PdfUtil.getPhrase("Commission("+ merchant.getCommissionPercentage()+"%)", tableHeadFont);
         }

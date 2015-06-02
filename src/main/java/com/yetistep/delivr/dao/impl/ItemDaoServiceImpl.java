@@ -140,12 +140,13 @@ public class ItemDaoServiceImpl implements ItemDaoService{
                 "FROM items i "+
                 "LEFT JOIN items_images ii ON ii.id = (SELECT MIN(id) FROM items_images WHERE item_id = i.id) " +
                 "INNER JOIN stores_brands sb ON(sb.id = i.brand_id AND sb.status=:status) " +
-                "WHERE i.status = :status AND i.name LIKE :word AND i.brand_id=:brandId " +
+                "WHERE i.status = :status AND (i.name LIKE :word OR i.tags LIKE :tags) AND i.brand_id=:brandId " +
                 "ORDER BY i.unit_price ASC";
 
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("status", Status.ACTIVE.ordinal());
         sqlQuery.setParameter("word", CommonConstants.DELIMITER + word + CommonConstants.DELIMITER);
+        sqlQuery.setParameter("tags", CommonConstants.DELIMITER+word+CommonConstants.DELIMITER);
         sqlQuery.setParameter("brandId", brandId);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(ItemEntity.class));
         return (List<ItemEntity>) sqlQuery.list();

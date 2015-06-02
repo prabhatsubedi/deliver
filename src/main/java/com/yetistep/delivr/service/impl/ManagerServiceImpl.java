@@ -75,7 +75,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
 
         if(user.getEmailAddress() != null && !user.getEmailAddress().isEmpty()){
-            if(userDaoService.checkIfEmailExists(user.getEmailAddress(), user.getRole().getRole().toInt())){
+            if(userDaoService.checkIfEmailExists(user.getEmailAddress())){
                 throw new YSException("VLD026");
             }
         }
@@ -169,11 +169,10 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         dbUser.setEmailAddress(user.getEmailAddress());
         dbUser.setMobileNumber(user.getMobileNumber());
         dbUser.setStatus(user.getStatus());
-
+        dbUser.setUsername(user.getEmailAddress());
         String profileImage = user.getProfileImage();
 
         userDaoService.update(dbUser);
-
         if (profileImage != null && !profileImage.isEmpty()) {
 
             log.info("Deleting Profile Image of User to S3 Bucket ");

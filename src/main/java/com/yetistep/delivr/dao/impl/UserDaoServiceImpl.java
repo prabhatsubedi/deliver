@@ -221,6 +221,16 @@ public class UserDaoServiceImpl implements UserDaoService {
     }
 
     @Override
+    public Boolean checkIfEmailExists(String emailAddress) throws Exception {
+        String sql = "SELECT count(id) FROM users WHERE email = :email";
+        SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
+        sqlQuery.setParameter("email", emailAddress);
+
+        BigInteger count = (BigInteger) sqlQuery.uniqueResult();
+        return (count.intValue() > 0);
+    }
+
+    @Override
     public Boolean checkIfEmailExists(String emailAddress, Integer roleId) throws Exception {
         String sql = "SELECT count(id) FROM users WHERE email = :email AND role_id = :roleId";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);

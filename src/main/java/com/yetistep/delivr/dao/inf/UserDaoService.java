@@ -40,6 +40,8 @@ public interface UserDaoService extends GenericDaoService<Integer, UserEntity>{
 
     public Boolean checkIfEmailExists(String emailAddress, Integer roleId) throws Exception;
 
+    public Boolean checkIfEmailExists(String emailAddress) throws Exception;
+
     public Boolean deactivateUser(Integer userId) throws Exception;
 
     public Boolean activateUser(Integer userId) throws Exception;

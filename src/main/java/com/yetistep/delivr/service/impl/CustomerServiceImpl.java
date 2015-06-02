@@ -743,35 +743,31 @@ public class CustomerServiceImpl implements CustomerService {
         //Now Implement Nearest Location To Of store
 
         for(StoresBrandEntity featureBrand : featuredBrands) {
-            if(lat!=null && lon!=null){
-                List<StoreEntity> storeEntities = storeDaoService.findStores(featureBrand.getId());
 
+                List<StoreEntity> storeEntities = storeDaoService.findStores(featureBrand.getId());
+            if((lat!=null && !lat.isEmpty()) && (lon!=null && !lon.isEmpty()))
                 sortStoreByLocation(lat, lon, storeEntities);
 
-                if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
-                    featureBrand.setNearestStoreLocation(storeEntities.get(0).getStreet());
-                else
-                    featureBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
-            }  else {
+            if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
+                featureBrand.setNearestStoreLocation(storeEntities.get(0).getStreet());
+            else
                 featureBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
-            }
+
 
         }
 
         //For All Brands
         for(StoresBrandEntity resultBrand : resultBrands) {
-            if(lat!=null && lon!=null){
-                List<StoreEntity> storeEntities = storeDaoService.findStores(resultBrand.getId());
 
+                List<StoreEntity> storeEntities = storeDaoService.findStores(resultBrand.getId());
+            if((lat!=null && !lat.isEmpty()) && (lon!=null && !lon.isEmpty()))
                 sortStoreByLocation(lat, lon, storeEntities);
 
-                if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
-                    resultBrand.setNearestStoreLocation(storeEntities.get(0).getStreet());
-                else
-                    resultBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
-            }  else {
+            if(storeEntities.get(0).getStreet()!=null && !storeEntities.get(0).getStreet().isEmpty())
+                resultBrand.setNearestStoreLocation(storeEntities.get(0).getStreet());
+            else
                 resultBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
-            }
+
 
         }
 

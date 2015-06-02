@@ -263,16 +263,14 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             dBoyPayment.setOrders(orders);
             dBoyPayment.setGeneratedDate(new Date(System.currentTimeMillis()));
 
-            BigDecimal totalAmountEarned = BigDecimal.ZERO;
-            for (OrderEntity orderEntity: orders){
-                orderEntity.setdBoyPayment(dBoyPayment);
-                totalAmountEarned.add(orderEntity.getdBoyOrderHistories().get(0).getAmountEarned());
+            BigDecimal dboyTotalEarnedAmount = BigDecimal.ZERO;
+            for (OrderEntity order:orders){
+                dboyTotalEarnedAmount =  dboyTotalEarnedAmount.add(order.getdBoyOrderHistories().get(0).getAmountEarned());
+                order.setdBoyPayment(dBoyPayment);
             }
 
-            BigDecimal tdsAmount = totalAmountEarned.multiply(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.TDS_PERCENTAGE))).divide(new BigDecimal(100));
-
-            BigDecimal totalPayableAmount = totalAmountEarned.subtract(tdsAmount);
-
+            BigDecimal tdsAmount = dboyTotalEarnedAmount.multiply(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.TDS_PERCENTAGE))).divide(new BigDecimal(100));
+            BigDecimal totalPayableAmount = dboyTotalEarnedAmount.subtract(tdsAmount);
             dBoyPayment.setGeneratedDate(new Date(DateUtil.getCurrentTimestampSQL().getTime()));
             dBoyPayment.setFromDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(fromDate).getTime()));
             dBoyPayment.setToDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(toDate).getTime()));

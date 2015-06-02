@@ -1178,7 +1178,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
     public List<CategoryEntity> getCategoryTree(List<CategoryEntity> categories, Integer parent_id, Integer storeId){
-        log.info("++++++++++++ getting category tree +++++++++++++++");
           List<CategoryEntity> newCategories = new ArrayList<CategoryEntity>();
           for(CategoryEntity newCategory:  categories)
           {
@@ -1198,7 +1197,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     }
 
 
-    //findChildCategories
     @Override
     public List<CategoryEntity> findChildCategories(RequestJsonDto requestJson) throws Exception {
         log.info("++++++++++++ getting child categories +++++++++++++++");
@@ -1447,7 +1445,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("item", "id,name,unitPrice,currencyType,status,additionalOffer,itemsImage");
+        assoc.put("item", "id,name,unitPrice,currencyType,status,additionalOffer,itemsImage,tags");
         subAssoc.put("itemsImage", "url");
 
         for (CategoryEntity childCategory:childCategories){

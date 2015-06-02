@@ -1685,8 +1685,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
             for (ItemsOrderEntity itemOrder : itemsOrder) {
                 if(itemOrder.getCustomItem() != null){
-                    if(itemOrder.getCustomItem().getCustomerCustom().equals(Boolean.TRUE))   {
-                        if(itemOrder.getPurchaseStatus() == null || !itemOrder.getPurchaseStatus().equals(Boolean.TRUE)) {
+                    if(itemOrder.getCustomItem().getCustomerCustom().equals(Boolean.TRUE)) {
+                        if(itemOrder.getPurchaseStatus() == null) {
                             order.setGrandTotal(minusOne);
                             break;
                         }

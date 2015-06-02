@@ -95,21 +95,27 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
             BigDecimal totalOrderAmount = BigDecimal.ZERO;
             BigDecimal totalServiceCharge = BigDecimal.ZERO;
+            BigDecimal itemVatAmount = BigDecimal.ZERO;
             for (OrderEntity order: orders){
                 for (ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()) {
                     if(itemsOrderEntity.getItem() != null){
                         BigDecimal itemServiceChargePcn = itemsOrderEntity.getItem().getServiceCharge();
                         BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
+                        BigDecimal itemVatCharge = itemsOrderEntity.getItemTotal().multiply(itemsOrderEntity.getItem().getVat()).divide(new BigDecimal(100));
                         totalServiceCharge.add(itemServiceCharge);
+                        itemVatAmount.add(itemVatCharge);
                     }
                 }
                 //add order
                 totalOrderAmount = totalOrderAmount.add(order.getTotalCost());
             }
             BigDecimal totalTaxableAmount =  totalOrderAmount.add(totalServiceCharge);
-            BigDecimal vatAmount =  totalTaxableAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
-            BigDecimal grandTotalAmount = totalTaxableAmount.add(vatAmount);
+            //BigDecimal vatAmount =  totalTaxableAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
+            BigDecimal grandTotalAmount = totalTaxableAmount.add(itemVatAmount);
             BigDecimal commissionAmount = totalOrderAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
+            BigDecimal systemVatAmount =  commissionAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
+            commissionAmount = commissionAmount.add(systemVatAmount);
+
             BigDecimal netPayableAmount = grandTotalAmount.subtract(commissionAmount);
             invoice.setAmount(netPayableAmount.setScale(2, BigDecimal.ROUND_DOWN));
 

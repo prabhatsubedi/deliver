@@ -346,7 +346,7 @@ public class InvoiceGenerator {
         com.itextpdf.text.Font titleFont = new com.itextpdf.text.Font(FontFactory.getFont(FontFactory.TIMES_ROMAN, 19f));
         titleFont.setColor(new BaseColor(0xFF9235));
 
-        Paragraph title1 = PdfUtil.getParagraph(titleFont, "Statement No.: "+invoice.getId());
+        Paragraph title1 = PdfUtil.getParagraph(titleFont, "Invoice No.: "+invoice.getId());
         Paragraph title2 = PdfUtil.getParagraph(titleFont, "For Commission");
         title1.setAlignment(Element.ALIGN_CENTER);
         title2.setAlignment(Element.ALIGN_CENTER);
@@ -414,12 +414,16 @@ public class InvoiceGenerator {
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase("SN", tableHeadFont), PdfUtil.getPhrase("Date and Time of Transaction", tableHeadFont), PdfUtil.getPhrase("Order No.", tableHeadFont), PdfUtil.getPhrase("Amount ("+currency+")", tableHeadFont));
         BigDecimal totalOrderAmount = BigDecimal.ZERO;
         BigDecimal totalServiceCharge = BigDecimal.ZERO;
+
+        BigDecimal itemVatAmount = BigDecimal.ZERO;
         for (OrderEntity order: orders){
             for (ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()) {
                 if(itemsOrderEntity.getItem() != null){
                     BigDecimal itemServiceChargePcn = itemsOrderEntity.getItem().getServiceCharge();
                     BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
+                    BigDecimal itemVatCharge = itemsOrderEntity.getItemTotal().multiply(itemsOrderEntity.getItem().getVat()).divide(new BigDecimal(100));
                     totalServiceCharge.add(itemServiceCharge);
+                    itemVatAmount.add(itemVatCharge);
                 }
             }
             //add order
@@ -432,26 +436,27 @@ public class InvoiceGenerator {
             cntOrder++;
         }
         BigDecimal totalTaxableAmount =  totalOrderAmount.add(totalServiceCharge);
-        BigDecimal vatAmount =  totalTaxableAmount.multiply(new BigDecimal(Integer.parseInt(preferences.get("DELIVERY_FEE_VAT")))).divide(new BigDecimal(100));
-        BigDecimal grandTotalAmount = totalTaxableAmount.add(vatAmount);
+        BigDecimal grandTotalAmount = totalTaxableAmount.add(itemVatAmount);
         BigDecimal commissionAmount = totalOrderAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
+        BigDecimal systemVatAmount =  commissionAmount.multiply(new BigDecimal(Integer.parseInt(preferences.get("DELIVERY_FEE_VAT")))).divide(new BigDecimal(100));
+        commissionAmount = commissionAmount.add(systemVatAmount);
         BigDecimal netPayableAmount = grandTotalAmount.subtract(commissionAmount);
 
 
         Phrase subTotal = PdfUtil.getPhrase("Sub Total", tableHeadFont);
         Phrase serviceCharge = PdfUtil.getPhrase("Service Charge", tableHeadFont);
         Phrase taxableAmount = PdfUtil.getPhrase("Taxable Amount", tableHeadFont);
-        Phrase vat = PdfUtil.getPhrase("");
-        Phrase commission = PdfUtil.getPhrase("");
+        Phrase vat;
+        Phrase commission;
         if(BigDecimalUtil.isIntegerValue(new BigDecimal(preferences.get("DELIVERY_FEE_VAT")))){
-             vat = PdfUtil.getPhrase("Vat("+Integer.parseInt(preferences.get("DELIVERY_FEE_VAT"))+"%)", tableHeadFont);
+             vat = PdfUtil.getPhrase("VAT Amount", tableHeadFont);
         } else  {
-             vat = PdfUtil.getPhrase("Vat("+preferences.get("DELIVERY_FEE_VAT")+"%)", tableHeadFont);
+             vat = PdfUtil.getPhrase("VAT Amount", tableHeadFont);
         }
 
         Phrase grandTotal = PdfUtil.getPhrase("Grand Total", tableHeadFont);
         if(BigDecimalUtil.isIntegerValue(merchant.getCommissionPercentage())){
-            commission = PdfUtil.getPhrase("Commission("+ merchant.getCommissionPercentage().intValueExact()+"%)", tableHeadFont);
+            commission = PdfUtil.getPhrase("Commission("+ merchant.getCommissionPercentage().intValueExact()+"%) with vat", tableHeadFont);
         } else {
             commission = PdfUtil.getPhrase("Commission("+ merchant.getCommissionPercentage()+"%)", tableHeadFont);
         }
@@ -461,7 +466,7 @@ public class InvoiceGenerator {
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), subTotal, PdfUtil.getPhrase(totalOrderAmount.setScale(2, BigDecimal.ROUND_DOWN)));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), serviceCharge, PdfUtil.getPhrase(totalServiceCharge.setScale(2, BigDecimal.ROUND_DOWN)));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), taxableAmount, PdfUtil.getPhrase(totalTaxableAmount.setScale(2, BigDecimal.ROUND_DOWN)));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), vat, PdfUtil.getPhrase(vatAmount.setScale(2, BigDecimal.ROUND_DOWN)));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), vat, PdfUtil.getPhrase(itemVatAmount.setScale(2, BigDecimal.ROUND_DOWN)));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), grandTotal, PdfUtil.getPhrase(grandTotalAmount.setScale(2, BigDecimal.ROUND_DOWN)));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), commission, PdfUtil.getPhrase(commissionAmount.setScale(2, BigDecimal.ROUND_DOWN)));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), totalPayable, PdfUtil.getPhrase(netPayableAmount.setScale(2, BigDecimal.ROUND_DOWN)));

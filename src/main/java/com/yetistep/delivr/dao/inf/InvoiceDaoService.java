@@ -22,5 +22,15 @@ public interface InvoiceDaoService extends GenericDaoService<Integer, InvoiceEnt
 
     public Integer getTotalNumberOfInvoices(Integer merchantId) throws Exception;
 
+    public List<InvoiceEntity> findInvoices(Page page) throws Exception;
+
+    public List<InvoiceEntity> findInvoices(Page page, Date fromDate, Date toDate) throws Exception;
+
+    public Integer getTotalNumberOfInvoices() throws Exception;
+
+    public Integer getTotalNumberOfInvoices(Date fromDate, Date toDate) throws Exception;
+
+    public Integer getTotalNumberOfInvoices(Integer merchantId, Date fromDate, Date toDate) throws Exception;
+
 
 }

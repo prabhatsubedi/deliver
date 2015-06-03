@@ -50,6 +50,15 @@ public class InvoiceDaoServiceImpl implements InvoiceDaoService {
     }
 
     @Override
+    public List<InvoiceEntity> findInvoices(Page page) throws Exception {
+        List<InvoiceEntity> invoiceEntities = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(InvoiceEntity.class);
+        HibernateUtil.fillPaginationCriteria(criteria, page, InvoiceEntity.class);
+        invoiceEntities = criteria.list();
+        return invoiceEntities;
+    }
+
+    @Override
     public List<InvoiceEntity> findInvoicesByMerchant(Integer merchantId, Page page, Date fromDate, Date toDate) throws Exception {
         List<InvoiceEntity> invoiceEntities = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(InvoiceEntity.class);
@@ -58,6 +67,17 @@ public class InvoiceDaoServiceImpl implements InvoiceDaoService {
         invoiceEntities = criteria.list();
         return invoiceEntities;
     }
+
+    @Override
+    public List<InvoiceEntity> findInvoices(Page page, Date fromDate, Date toDate) throws Exception {
+        List<InvoiceEntity> invoiceEntities = new ArrayList<>();
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(InvoiceEntity.class);
+        criteria.add(Restrictions.between("generatedDate", fromDate, toDate));
+        HibernateUtil.fillPaginationCriteria(criteria, page, InvoiceEntity.class);
+        invoiceEntities = criteria.list();
+        return invoiceEntities;
+    }
+
 
     @Override
     public Boolean save(InvoiceEntity value) throws Exception {
@@ -81,11 +101,41 @@ public class InvoiceDaoServiceImpl implements InvoiceDaoService {
         return sessionFactory.getCurrentSession();
     }
 
+
+    @Override
+    public Integer getTotalNumberOfInvoices(Date fromDate, Date toDate) throws Exception {
+        String sqQuery =    "SELECT COUNT(i.id) FROM invoices i where i.generated_date >= :fromDate AND i.generated_date < :toDate";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("fromDate", fromDate);
+        query.setParameter("toDate", toDate);
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
+    }
+
+    @Override
+    public Integer getTotalNumberOfInvoices(Integer merchantId, Date fromDate, Date toDate) throws Exception {
+        String sqQuery =    "SELECT COUNT(i.id) FROM invoices i where i.merchant_id =:merchantId AND i.generated_date >= :fromDate AND i.generated_date < :toDate";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
+        query.setParameter("merchantId", merchantId);
+        query.setParameter("fromDate", fromDate);
+        query.setParameter("toDate", toDate);
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
+    }
+
     @Override
     public Integer getTotalNumberOfInvoices(Integer merchantId) throws Exception {
         String sqQuery =    "SELECT COUNT(i.id) FROM invoices i where i.merchant_id =:merchantId";
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
         query.setParameter("merchantId", merchantId);
+        BigInteger cnt = (BigInteger) query.uniqueResult();
+        return cnt.intValue();
+    }
+
+    @Override
+    public Integer getTotalNumberOfInvoices() throws Exception {
+        String sqQuery =    "SELECT COUNT(i.id) FROM invoices i";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqQuery);
         BigInteger cnt = (BigInteger) query.uniqueResult();
         return cnt.intValue();
     }

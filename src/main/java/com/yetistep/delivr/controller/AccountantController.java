@@ -364,4 +364,20 @@ public class AccountantController {
         }
     }
 
+    @RequestMapping(value = "/get_invoices", method = RequestMethod.POST)
+    public ResponseEntity<ServiceResponse> getInvoices(@RequestBody RequestJsonDto requestJsonDto) {
+        try{
+            PaginationDto invoices = merchantService.getInvoices(requestJsonDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("Invoices retrieved successfully");
+            serviceResponse.addParam("invoices", invoices);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            GeneralUtil.logError(log, "Error Occurred while retrieving Invoices: ", e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
 }

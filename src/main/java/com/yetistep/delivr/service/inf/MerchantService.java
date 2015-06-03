@@ -81,4 +81,6 @@ public interface MerchantService {
     public List<MerchantEntity> getAllMerchants() throws Exception;
 
     public void addItemsTags(HeaderDto headerDto, RequestJsonDto requestJson) throws Exception;
+
+    public PaginationDto getInvoices(RequestJsonDto requestJsonDto) throws Exception;
 }

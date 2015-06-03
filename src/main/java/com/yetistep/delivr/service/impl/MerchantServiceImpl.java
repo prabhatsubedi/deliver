@@ -1910,7 +1910,13 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
 
         PaginationDto paginationDto = new PaginationDto();
-        Integer totalRows =  invoiceDaoService.getTotalNumberOfInvoices(headerDto.getMerchantId());
+        Integer totalRows;
+        if(fromDate != null && toDate != null){
+            totalRows =  invoiceDaoService.getTotalNumberOfInvoices(headerDto.getMerchantId(), fromDate, toDate);
+        } else {
+            totalRows =  invoiceDaoService.getTotalNumberOfInvoices(headerDto.getMerchantId());
+        }
+
         paginationDto.setNumberOfRows(totalRows);
 
         if(page != null){
@@ -1925,6 +1931,70 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             invoiceList = invoiceDaoService.findInvoicesByMerchant(headerDto.getMerchantId(), page, fromDate, toDate);
         }else{
             invoiceList = invoiceDaoService.findInvoicesByMerchant(headerDto.getMerchantId(), page);
+        }
+
+
+
+
+        List<StoreEntity> storeEntityList = new ArrayList<>();
+        String fields = "id,generatedDate,path,amount,fromDate,toDate,invoicePaid,paidDate,store,commission";
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("store", "id,street,storesBrand");
+        assoc.put("commission", "id,amount");
+        subAssoc.put("storesBrand", "id,brandName");
+
+
+        for (InvoiceEntity invoiceEntity: invoiceList){
+            invoices.add((InvoiceEntity) ReturnJsonUtil.getJsonObject(invoiceEntity, fields, assoc, subAssoc));
+        }
+
+        paginationDto.setData(invoices);
+        return paginationDto;
+    }
+
+
+    @Override
+    public PaginationDto getInvoices(RequestJsonDto requestJsonDto) throws Exception{
+        log.info("++++++++++++ getting invoices +++++++++++++++");
+        Map<String, Date> dateRange = requestJsonDto.getDateRange();
+        Date fromDate = null;
+        Date toDate = null;
+        if(dateRange != null){
+            if(dateRange.get("fromDate") != null){
+                fromDate = dateRange.get("fromDate");
+            }
+            if(dateRange.get("toDate") != null){
+                toDate = dateRange.get("toDate");
+            }
+        }
+
+
+        Page page = requestJsonDto.getPage();
+
+
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows;
+        if(fromDate != null && toDate != null){
+            totalRows =  invoiceDaoService.getTotalNumberOfInvoices(fromDate, toDate);
+        } else {
+            totalRows =  invoiceDaoService.getTotalNumberOfInvoices();
+        }
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+
+        List<InvoiceEntity> invoices = new ArrayList<>();
+
+        List<InvoiceEntity> invoiceList = new ArrayList<>();
+
+        if(fromDate != null && toDate != null){
+            invoiceList = invoiceDaoService.findInvoices(page, fromDate, toDate);
+        }else{
+            invoiceList = invoiceDaoService.findInvoices(page);
         }
 
 

@@ -117,10 +117,10 @@ public class AdminServiceImpl implements AdminService {
         generalData.put("timeExceededDelivery", exceedTimePcn);
 
         Map<Integer, Map<String, String>> onDutyDBCount =  new HashMap<>();
-        List<Integer> statuses = new ArrayList<>();
-        statuses.add(DBoyStatus.FREE.ordinal());
-        statuses.add(DBoyStatus.BUSY.ordinal());
-        onDutyDBCount.put(adminDaoService.getDBoyCount(statuses), null);
+        List<Integer> DBoyStatuses = new ArrayList<>();
+        DBoyStatuses.add(DBoyStatus.FREE.ordinal());
+        DBoyStatuses.add(DBoyStatus.BUSY.ordinal());
+        onDutyDBCount.put(adminDaoService.getDBoyCount(DBoyStatuses), null);
         generalData.put("onDutyDeliveryBoy", onDutyDBCount);
 
         Map<Integer, Map<String, String>> offDutyDBCount =  new HashMap<>();
@@ -226,6 +226,23 @@ public class AdminServiceImpl implements AdminService {
             dbLatLang.put(i.toString(), dBoyObj.toString());
            i++;
         }
+
+        if(orders.size()==0){
+            List<DBoyStatus> statuses = new ArrayList<>();
+            statuses.add(DBoyStatus.FREE);
+            statuses.add(DBoyStatus.BUSY);
+            List<DeliveryBoyEntity> onDutyDBoy = adminDaoService.getOnDutyDBoy(statuses);
+            Integer d=0;
+            for (DeliveryBoyEntity db: onDutyDBoy){
+                JSONObject dBoyObj = new JSONObject();
+                dBoyObj.put("name", db.getUser().getFullName());
+                dBoyObj.put("lat", db.getLatitude());
+                dBoyObj.put("lang", db.getLongitude());
+                dbLatLang.put(d.toString(), dBoyObj.toString());
+                d++;
+            }
+        }
+
         newOrdersCount.put(orderInProcess, routes);
         generalData.put("newOrders", newOrdersCount);
 

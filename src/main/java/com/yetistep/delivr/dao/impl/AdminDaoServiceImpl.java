@@ -2,6 +2,7 @@ package com.yetistep.delivr.dao.impl;
 
 import com.yetistep.delivr.dao.inf.AdminDaoService;
 import com.yetistep.delivr.enums.*;
+import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import org.hibernate.Criteria;
@@ -114,6 +115,13 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         query.setParameter("status", Status.ACTIVE.ordinal());
         BigInteger cnt = (BigInteger) query.uniqueResult();
         return cnt.intValue();
+    }
+
+    @Override
+    public List<DeliveryBoyEntity> getOnDutyDBoy(List<DBoyStatus> statuses) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DeliveryBoyEntity.class);
+        criteria.add(Restrictions.in("availabilityStatus", statuses));
+        return (List<DeliveryBoyEntity>) criteria.list();
     }
 
     @Override

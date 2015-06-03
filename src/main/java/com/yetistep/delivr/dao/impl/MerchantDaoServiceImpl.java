@@ -446,56 +446,46 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId, Integer itemCount) throws Exception {
-        List<ItemEntity> items = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
         criteria.add(Restrictions.and(Restrictions.eq("category.id", categoryId), Restrictions.eq("storesBrand.id", brandId)));
         criteria.setMaxResults(itemCount);
         criteria.addOrder(Order.asc("status"));
-        items = criteria.list();
-        return items;
+        return (List<ItemEntity>) criteria.list();
     }
 
     @Override
     public List<ItemEntity> getCategoriesItems(Integer categoryId, Integer brandId, Page page) throws Exception {
-        List<ItemEntity> items = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
         criteria.add(Restrictions.and(Restrictions.eq("category.id", categoryId), Restrictions.eq("storesBrand.id", brandId)));
         criteria.addOrder(Order.asc("status"));
         HibernateUtil.fillPaginationCriteria(criteria, page, ItemEntity.class);
-        items = criteria.list();
-        return items;
+        return (List<ItemEntity>) criteria.list();
     }
 
 
     @Override
     public List<ItemEntity> getCategoriesItems(Integer categoryId) throws Exception {
-        List<ItemEntity> items = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
         criteria.add(Restrictions.and(Restrictions.eq("category.id", categoryId)));
         criteria.addOrder(Order.asc("status"));
-        items = criteria.list();
-        return items;
+        return (List<ItemEntity>) criteria.list();
     }
 
     @Override
     public List<ItemEntity> findItemByCategory(List<Integer> categoryId, Integer brandId, Integer itemCount) throws Exception {
-        List<ItemEntity> items = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
         criteria.add(Restrictions.and(Restrictions.in("category.id", categoryId), Restrictions.eq("storesBrand.id", brandId)));
         criteria.add(Restrictions.sqlRestriction("1=1 order by rand()"));
         criteria.setMaxResults(itemCount);
-        items = criteria.list();
-        return items;
+        return (List<ItemEntity>) criteria.list();
     }
 
     @Override
     public List<ItemEntity> findItemByCategory(List<Integer> categoryId, Integer brandId) throws Exception {
-        List<ItemEntity> items = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemEntity.class);
         criteria.add(Restrictions.and(Restrictions.in("category.id", categoryId), Restrictions.eq("storesBrand.id", brandId)));
         criteria.add(Restrictions.sqlRestriction("1=1 order by rand()"));
-        items = criteria.list();
-        return items;
+        return (List<ItemEntity>) criteria.list();
     }
 
     @Override
@@ -506,13 +496,10 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public List<ItemsStoreEntity> findItemsStores(Integer storeId) throws Exception {
-        List<ItemsStoreEntity> itemsStores = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ItemsStoreEntity.class);
         criteria.add(Restrictions.eq("store.id", storeId));
         criteria.addOrder(Order.asc("status"));
-        itemsStores = criteria.list();
-
-        return itemsStores;
+        return  (List<ItemsStoreEntity>) criteria.list();
     }
 
     @Override

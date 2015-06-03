@@ -3,6 +3,7 @@ package com.yetistep.delivr.dao.inf;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.DeliveryStatus;
 import com.yetistep.delivr.enums.JobOrderStatus;
+import com.yetistep.delivr.model.DeliveryBoyEntity;
 import com.yetistep.delivr.model.OrderEntity;
 import org.hibernate.Session;
 
@@ -56,6 +57,6 @@ public interface AdminDaoService {
 
     public Integer getCountOutOfReachDBoy() throws Exception;
 
-
+    public List<DeliveryBoyEntity> getOnDutyDBoy(List<DBoyStatus> statuses) throws Exception;
 
 }

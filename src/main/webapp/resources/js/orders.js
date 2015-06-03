@@ -803,8 +803,13 @@ Order.getInvoices = function(params){
     }
 
     var header = {};
-    header.merchantId = Main.getFromLocalStorage('mid');
-    dataFilter.url = "/merchant/get_invoices";
+    if(params != undefined && params.role != undefined && params.role == 'accountant') {
+        dataFilter.url = "/accountant/get_invoices";
+    } else {
+        header.merchantId = Main.getFromLocalStorage('mid');
+        dataFilter.url = "/merchant/get_invoices";
+    }
+
     dataFilter.columns = [
         { "name": "id" },
         { "name": "generatedDate" },
@@ -817,8 +822,9 @@ Order.getInvoices = function(params){
         { "name": "" },
         { "name": "" }
     ];
+
     dataFilter.headers = header;
-    if(params != undefined)
+    if(params != undefined && params.fromDate != undefined)
         dataFilter.params = {dateRange: params};
     Main.createDataTable("#invoices_table", dataFilter);
 }

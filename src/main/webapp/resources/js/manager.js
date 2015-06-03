@@ -1464,6 +1464,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             var newOrders = godView.newOrders;
             newOrders = newOrders[Object.keys(newOrders)[0]];
             var data_row = '';
+
             for(var i in newOrders) {
                 var newOrder = JSON.parse(newOrders[i]);
 
@@ -1478,6 +1479,16 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 data_row += '<div class="data_row" data-store="' + locationToKey({latitude: locStore.lat, longitude: locStore.lang}) + '" data-customer="' + locationToKey({latitude: locCustomer.lat, longitude: locCustomer.lang}) + '" data-courierBoy="' + locationToKey({latitude: locCourierBoy.lat, longitude: locCourierBoy.lang}) + '">' + newOrder.store.name + ', ' + newOrder.store.address + ' &rarr; ' + newOrder.customer.address + '</div>';
             }
             $('.new_orders .more_data').html(data_row);
+
+            if(data_row ==  '') {
+                var deliveryBoyLocations = godView.deliveryBoyLocations;
+                deliveryBoyLocations = deliveryBoyLocations[Object.keys(deliveryBoyLocations)[0]];
+                for(var i in deliveryBoyLocations) {
+                    var locCourierBoy = JSON.parse(deliveryBoyLocations[i]);
+
+                    addGodMarker(locCourierBoy, "courier");
+                }
+            }
 
             $('.count_span').each(function(){
                 $(this).html(Object.keys(godView[$(this).attr('data-get')])[0]);

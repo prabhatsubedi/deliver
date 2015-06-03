@@ -805,6 +805,7 @@ Order.getInvoices = function(params){
     var header = {};
     if(params != undefined && params.role != undefined && params.role == 'accountant') {
         dataFilter.url = "/accountant/get_invoices";
+        delete params.role;
     } else {
         header.merchantId = Main.getFromLocalStorage('mid');
         dataFilter.url = "/merchant/get_invoices";

@@ -450,14 +450,13 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("dBoyAdvanceAmounts", "id,advanceDate,amountAdvance,type,accountantNote");
-        assoc.put("order", "id,deliveryStatus,deliveryCharge,orderStatus,grandTotal,orderDate,paymentMode,paidFromWallet,paidFromCOD,store,dBoyOrderHistories,accountantNote,itemServiceAndVatCharge,totalCost,itemsOrder");
+        assoc.put("order", "id,deliveryStatus,deliveryCharge,orderStatus,grandTotal,orderDate,paymentMode,paidFromWallet,paidFromCOD,store,dBoyOrderHistories,accountantNote,itemServiceAndVatCharge,totalCost,itemsOrder,attachments");
         subAssoc.put("itemsOrder", "id,purchaseStatus");
         subAssoc.put("dBoyOrderHistories", "id,orderCompletedAt");
         subAssoc.put("store", "id,storesBrand");
-        subAssoc.put("store", "id,storesBrand");
         subAssoc.put("storesBrand", "id,merchant");
         subAssoc.put("merchant", "id,partnershipStatus");
-
+        subAssoc.put("attachments", "url");
 
         DeliveryBoyEntity acDBoy = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(dBoy, fields, assoc, subAssoc);
 

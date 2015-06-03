@@ -9,6 +9,7 @@ import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -78,4 +79,6 @@ public interface DeliveryBoyService {
     public OrderEntity getPaidFromCODAmount(Integer orderId) throws Exception;
 
     public PreferenceDto getHelpLineDetails() throws Exception;
+
+    public Boolean updateDiscountFromStore(Integer orderId, BigDecimal discountAmount) throws Exception;
 }

@@ -113,6 +113,8 @@ public class RequestJsonDto {
     /*add item tags*/
     private String itemTags;
 
+    private BigDecimal discountAmount;
+
     /*=================================================================== */
     public PasswordActionType getActionType() {
         return actionType;
@@ -499,5 +501,13 @@ public class RequestJsonDto {
 
     public void setItemTags(String itemTags) {
         this.itemTags = itemTags;
+    }
+
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
     }
 }

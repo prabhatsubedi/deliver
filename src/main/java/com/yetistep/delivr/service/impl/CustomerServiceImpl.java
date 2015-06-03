@@ -941,6 +941,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         order.setItemsOrder(itemsOrder);
         order.setTotalCost(itemTotalCost.setScale(2, BigDecimal.ROUND_DOWN));
+        order.setDiscountFromStore(BigDecimal.ZERO);
         order.setSurgeFactor(getSurgeFactor());
         order.setItemServiceAndVatCharge(itemServiceAndVatCharge.setScale(2, BigDecimal.ROUND_DOWN));
         order.setItemServiceCharge(itemServiceCharge.setScale(2, BigDecimal.ROUND_DOWN));

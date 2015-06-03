@@ -1259,6 +1259,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             throw new YSException("VLD017");
         } else if(order.getDeliveryBoy() == null){
             throw new YSException("ORD014");
+        } else if(order.getOrderStatus().equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)
+                || order.getOrderStatus().equals(JobOrderStatus.DELIVERED) || order.getOrderStatus().equals(JobOrderStatus.CANCELLED)){
+            throw new YSException("ORD024");
         }
 
         BigDecimal itemTotalCost = BigDecimal.ZERO;
@@ -1812,33 +1815,33 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }*/
 
 
-        if(countCustomItem == itemsOrder.size()){
+        if(countCustomItem.equals(itemsOrder.size())){
             accountSummary.setSubTotal(minusOne);
         } else {
             accountSummary.setSubTotal(order.getTotalCost());
         }
 
-        if(countCustomItem==0)
+        if(countCustomItem.equals(0))
             accountSummary.setServiceFee(order.getSystemServiceCharge());
         else
             accountSummary.setServiceFee(minusOne);
 
-        if(countCustomItem==0)
+        if(countCustomItem.equals(0))
             accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
         else
             accountSummary.setVatAndServiceCharge(minusOne);
 
-        if(countCustomItem==0)
+        if(countCustomItem.equals(0))
             accountSummary.setItemServiceCharge(order.getItemServiceCharge());
         else
             accountSummary.setItemServiceCharge(minusOne);
 
-        if(countCustomItem==0)
+        if(countCustomItem.equals(0))
             accountSummary.setItemVatCharge(order.getItemVatCharge());
         else
             accountSummary.setItemVatCharge(minusOne);
 
-        if(countCustomItem==0)
+        if(countCustomItem.equals(0))
             accountSummary.setDeliveryFee(order.getDeliveryCharge().add(totalDiscount));
         else
             accountSummary.setDeliveryFee(minusOne);
@@ -1846,23 +1849,23 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         accountSummary.setTotalDiscount(totalDiscount);
         accountSummary.setPartnerShipStatus(merchant.getPartnershipStatus());
 
-        if(countCustomItem==0)
+        if(countCustomItem.equals(0))
             accountSummary.setPaidFromCOD(order.getPaidFromCOD());
         else
             accountSummary.setPaidFromCOD(minusOne);
 
-        if(countCustomItem==0)
+        if(countCustomItem.equals(0))
             accountSummary.setPaidFromWallet(order.getPaidFromWallet());
         else
             accountSummary.setPaidFromWallet(minusOne);
 
         accountSummary.setPaymentMode(order.getPaymentMode());
 
-        if(countCustomItem==0)
+        if(countCustomItem.equals(0))
             accountSummary.setEstimatedTotal(order.getGrandTotal());
         else
             accountSummary.setEstimatedTotal(minusOne);
-
+        accountSummary.setDiscountFromStore(order.getDiscountFromStore());
         orderSummary.setAccountSummary(accountSummary);
         return orderSummary;
     }
@@ -1899,6 +1902,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         responseOrder.setDeliveryStatus(order.getDeliveryStatus());
         responseOrder.setOrderStatus(order.getOrderStatus());
         responseOrder.setCustomerChargeableDistance(order.getCustomerChargeableDistance());
+        responseOrder.setDiscountFromStore(order.getDiscountFromStore());
         if(countCustomItem == 0)
             responseOrder.setTotalCost(order.getTotalCost());
         else
@@ -2230,4 +2234,90 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         preferenceDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         return preferenceDto;
     }
+
+    @Override
+    public Boolean updateDiscountFromStore(Integer orderId, BigDecimal discountAmount) throws Exception {
+        OrderEntity order = orderDaoService.find(orderId);
+        if (order == null) {
+            throw new YSException("VLD017");
+        } else if(!BigDecimalUtil.isGreaterThen(order.getTotalCost(), order.getDiscountFromStore())){
+            throw new YSException("ORD023");
+        } else if(order.getOrderStatus().equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)
+                || order.getOrderStatus().equals(JobOrderStatus.DELIVERED) || order.getOrderStatus().equals(JobOrderStatus.CANCELLED)){
+            throw new YSException("ORD024");
+        }
+
+        BigDecimal itemTotalCost = BigDecimal.ZERO;
+        BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
+        BigDecimal itemServiceCharge = BigDecimal.ZERO;
+        BigDecimal itemVatCharge = BigDecimal.ZERO;
+
+        List<ItemsOrderEntity> itemsOrderEntityList = order.getItemsOrder();
+        for (ItemsOrderEntity itemsOrder : itemsOrderEntityList) {
+            if(itemsOrder.getPurchaseStatus() == null)
+                throw new YSException("ORD022");
+            /* Service Fee and Vat calculation for available items only. */
+            if (itemsOrder.getAvailabilityStatus()) {
+                BigDecimal serviceChargeAmount = BigDecimalUtil.percentageOf(BigDecimalUtil.checkNull(itemsOrder.getItemTotal()), BigDecimalUtil.checkNull(itemsOrder.getServiceCharge()));
+                BigDecimal serviceAndVatChargeAmount = serviceChargeAmount.add(BigDecimalUtil.percentageOf(serviceChargeAmount.add(BigDecimalUtil.checkNull(itemsOrder.getItemTotal())), BigDecimalUtil.checkNull(itemsOrder.getVat())));
+                itemTotalCost = itemTotalCost.add(BigDecimalUtil.checkNull(itemsOrder.getItemTotal()));
+                itemServiceCharge = itemServiceCharge.add(serviceChargeAmount);
+                itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(serviceChargeAmount.add(BigDecimalUtil.checkNull(itemsOrder.getItemTotal())), BigDecimalUtil.checkNull(itemsOrder.getVat())));
+                itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatChargeAmount);
+                itemsOrder.setServiceAndVatCharge(serviceAndVatChargeAmount);
+            }
+        }
+
+       /* Commented since minimum amount is checked at start delivery. */
+       /*if(BigDecimalUtil.isLessThen(itemTotalCost, order.getStore().getStoresBrand().getMinOrderAmount())){
+            throw new YSException("CRT008", " "+order.getStore().getStoresBrand().getMinOrderAmount());
+        }*/
+
+        order.setDiscountFromStore(BigDecimalUtil.chopToTwoDecimalPlace(discountAmount));
+        order.setTotalCost(BigDecimalUtil.chopToTwoDecimalPlace(itemTotalCost));
+        order.setItemServiceAndVatCharge(BigDecimalUtil.chopToTwoDecimalPlace(itemServiceAndVatCharge));
+        order.setItemServiceCharge(BigDecimalUtil.chopToTwoDecimalPlace(itemServiceCharge));
+        order.setItemVatCharge(BigDecimalUtil.chopToTwoDecimalPlace(itemVatCharge));
+
+        /*This section is used just for getting courier transaction information */
+        DeliveryBoySelectionEntity dBoySelection = new DeliveryBoySelectionEntity();
+        dBoySelection.setDistanceToStore(order.getSystemChargeableDistance());
+        dBoySelection.setStoreToCustomerDistance(order.getCustomerChargeableDistance());
+
+        CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
+        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, dBoySelection, courierTransactionEntity.getCommissionPct(), courierTransactionEntity.getServiceFeePct());
+        courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
+        courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
+        courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
+        courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
+        courierTransactionEntity.setServiceFeeAmt(courierTransaction.getServiceFeeAmt());
+        courierTransactionEntity.setDeliveryChargedBeforeDiscount(courierTransaction.getDeliveryChargedBeforeDiscount());
+        courierTransactionEntity.setCustomerBalanceBeforeDiscount(courierTransaction.getCustomerBalanceBeforeDiscount());
+        courierTransactionEntity.setDeliveryChargedAfterDiscount(courierTransaction.getDeliveryChargedAfterDiscount());
+        courierTransactionEntity.setCustomerBalanceAfterDiscount(courierTransaction.getCustomerBalanceAfterDiscount());
+        courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
+        courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
+        courierTransactionEntity.setProfit(courierTransaction.getProfit());
+        /* Wallet Integration */
+        if(order.getPaymentMode().equals(PaymentMode.WALLET)){
+            /* Difference in amount is set in Paid From COD amount
+               * Case I: No change ==> PaidFromCOD = 0
+               * Case II: Order Grand Total > Paid From Wallet: ==> Increase in price thus, paidFromCOD > 0
+               * Case III: Order Grand Total < Paid From Wallet: ==> Decrease in price thus, paidFromCOD < 0
+             */
+            order.setPaidFromCOD(order.getGrandTotal().subtract(order.getPaidFromWallet()));
+        }else{
+            order.setPaidFromCOD(order.getGrandTotal());
+        }
+
+        boolean status = orderDaoService.update(order);
+        if(status){
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String message = MessageBundle.getMessage("CPN005","push_notification.properties");
+            String extraDetail = order.getId().toString()+"/status/"+order.getOrderStatus().toString();
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
+        }
+        return status;
+    }
+
 }

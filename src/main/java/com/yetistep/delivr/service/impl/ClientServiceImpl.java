@@ -557,6 +557,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         accountSummary.setPaidFromCOD(order.getPaidFromCOD());
         accountSummary.setPaidFromWallet(order.getPaidFromWallet());
         accountSummary.setPaymentMode(order.getPaymentMode());
+        accountSummary.setDiscountFromStore(order.getDiscountFromStore());
         orderSummary.setAccountSummary(accountSummary);
         orderSummary.setAttachments(orderAttachments);
 

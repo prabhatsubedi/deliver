@@ -118,6 +118,7 @@ public class OrderSummaryDto {
         private BigDecimal paidFromCOD;
         private PaymentMode paymentMode;
         private String currency;
+        private BigDecimal discountFromStore;
 
         public BigDecimal getSubTotal() {
             return subTotal;
@@ -221,6 +222,14 @@ public class OrderSummaryDto {
 
         public void setCurrency(String currency) {
             this.currency = currency;
+        }
+
+        public BigDecimal getDiscountFromStore() {
+            return discountFromStore;
+        }
+
+        public void setDiscountFromStore(BigDecimal discountFromStore) {
+            this.discountFromStore = discountFromStore;
         }
     }
 }

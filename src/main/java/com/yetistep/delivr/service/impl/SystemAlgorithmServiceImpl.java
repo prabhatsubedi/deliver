@@ -48,6 +48,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
 
          /* 1. ===== Order Total ======= */
         BigDecimal totalOrder = order.getTotalCost().setScale(2, RoundingMode.HALF_UP);
+        totalOrder = totalOrder.subtract(BigDecimalUtil.checkNull(order.getDiscountFromStore()));
 
         /* 2. ======= Commission Percent ====== */
         BigDecimal commissionPct = BigDecimalUtil.checkNull(merchantCommission);
@@ -113,7 +114,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
             customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
 
         /* 14. ====== Customer Pays ========*/
-        BigDecimal customerPays = order.getTotalCost().add(serviceFeeAmt).add(deliveryChargedAfterDiscount).add(order.getItemServiceAndVatCharge());
+        BigDecimal customerPays = totalOrder.add(serviceFeeAmt).add(deliveryChargedAfterDiscount).add(order.getItemServiceAndVatCharge());
         customerPays = customerPays.setScale(2, BigDecimal.ROUND_DOWN);
         order.setGrandTotal(customerPays);
         order.setDeliveryCharge(deliveryChargedAfterDiscount);

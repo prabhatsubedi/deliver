@@ -456,7 +456,6 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         subAssoc.put("store", "id,storesBrand");
         subAssoc.put("storesBrand", "id,merchant");
         subAssoc.put("merchant", "id,partnershipStatus");
-        subAssoc.put("attachments", "url");
 
         DeliveryBoyEntity acDBoy = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(dBoy, fields, assoc, subAssoc);
 

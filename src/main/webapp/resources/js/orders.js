@@ -618,7 +618,7 @@ Order.getOrdersItems = function(){
             var name = item.item.name;
             if(item.item.editedName != undefined)
                 name = "<s>"+item.item.name+"</s> "+item.item.editedName;
-            var row = [i+1, name, item.quantity, '<span class="item_sc">' + (item.serviceCharge == undefined ? 'N/A' : item.serviceCharge) + '</span>' + (item.serviceCharge != undefined ? '' : '%'), '<span class="item_vat">' + (item.itemTotal == undefined ? 'N/A' : item.vat) + '</span>' + (item.vat != undefined ? '' : '%'), (item.itemTotal == undefined ? '' : Main.getFromLocalStorage("currency")) + ' <span class="item_total">' + (item.itemTotal == undefined ? 'N/A' : item.itemTotal) + '</span>'];
+            var row = [i+1, name, item.quantity, '<span class="item_sc">' + (item.serviceCharge == undefined ? 'N/A' : item.serviceCharge) + '</span>' + (item.serviceCharge != undefined ? '' : '%'), '<span class="item_vat">' + (item.itemTotal == undefined ? 'N/A' : item.vat) + '</span>' + (item.vat != undefined ? '' : '%'), (item.itemTotal == undefined ? '' : Main.getFromLocalStorage("currency")) + ' <span class="item_total">' + (item.itemTotal == undefined || item.availabilityStatus == false ? 'N/A' : item.itemTotal) + '</span>'];
             row = $.extend({}, row);
             tableData.push(row);
 
@@ -645,12 +645,7 @@ Order.getOrdersItems = function(){
                 var per_sc = parseFloat($('.item_sc', this).html());
                 var per_vat = parseFloat($('.item_vat', this).html());
                 var total_price = parseFloat($('.item_total', this).html());
-                if(isNaN(per_sc) || isNaN(per_vat) || isNaN(total_price)) {
-                    val_sc = 'N/A';
-                    val_vat = 'N/A';
-                    val_total = 'N/A';
-                    return false;
-                } else {
+                if(!isNaN(per_sc) && !isNaN(per_vat) && !isNaN(total_price)) {
                     var ind_sc = total_price * per_sc/100;
                     var ind_vat = (total_price + ind_sc) * per_vat/100;
                     val_sc += ind_sc;
@@ -659,17 +654,10 @@ Order.getOrdersItems = function(){
                 }
             });
 
-            if(val_sc == "N/A" || val_vat == "N/A" || val_total == "N/A") {
-                $("#orders_items_table tfoot .sub_total").html("N/A");
-                $("#orders_items_table tfoot .total_sc").html("N/A");
-                $("#orders_items_table tfoot .total_vat").html("N/A");
-                $("#orders_items_table tfoot .grand_total").html("N/A");
-            } else {
-                $("#orders_items_table tfoot .sub_total").html(Main.getFromLocalStorage("currency") + ' ' + val_total.toFixed(2));
-                $("#orders_items_table tfoot .total_sc").html(Main.getFromLocalStorage("currency") + ' ' + val_sc.toFixed(2));
-                $("#orders_items_table tfoot .total_vat").html(Main.getFromLocalStorage("currency") + ' ' + val_vat.toFixed(2));
-                $("#orders_items_table tfoot .grand_total").html(Main.getFromLocalStorage("currency") + ' ' + (val_total + val_sc + val_vat).toFixed(2));
-            }
+            $("#orders_items_table tfoot .sub_total").html(Main.getFromLocalStorage("currency") + ' ' + val_total.toFixed(2));
+            $("#orders_items_table tfoot .total_sc").html(Main.getFromLocalStorage("currency") + ' ' + val_sc.toFixed(2));
+            $("#orders_items_table tfoot .total_vat").html(Main.getFromLocalStorage("currency") + ' ' + val_vat.toFixed(2));
+            $("#orders_items_table tfoot .grand_total").html(Main.getFromLocalStorage("currency") + ' ' + (val_total + val_sc + val_vat).toFixed(2));
         };
         dataFilter.columns = [
             { "name": "" },

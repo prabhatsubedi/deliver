@@ -1807,10 +1807,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         if(page != null){
             page.setTotalRows(totalRows);
         }
-
         List<ItemsOrderEntity> items = merchantDaoService.getOrdersItems(Integer.parseInt(headerDto.getId()), page);
-
-        List<ItemsOrderEntity> notAvailableItems =  new ArrayList<>();
         for(ItemsOrderEntity item: items){
             if(item.getItem() == null && item.getCustomItem() != null){
                 CustomItemEntity customItem = item.getCustomItem();
@@ -1820,14 +1817,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 new_item.setEditedName(customItem.getEditedName());
                 item.setItem(new_item);
             }
-
-            if(!item.getAvailabilityStatus()){
-                notAvailableItems.add(item);
-            }
         }
-
-        items.removeAll(notAvailableItems);
-
         List<Object> objects = new ArrayList<>();
         String fields = "id,quantity,itemTotal,availabilityStatus,serviceCharge,vat,item,order";
         Map<String, String> assoc = new HashMap<>();

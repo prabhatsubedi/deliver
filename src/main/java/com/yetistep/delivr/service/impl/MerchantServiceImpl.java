@@ -1705,7 +1705,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 BigDecimal totalCost = orderEntity.getTotalCost();
 
                 if(orderEntity.getItemServiceAndVatCharge() != null){
-                    totalCost = totalCost.add(orderEntity.getItemServiceAndVatCharge());
+                    totalCost = totalCost.subtract(orderEntity.getDiscountFromStore()).add(orderEntity.getItemServiceAndVatCharge());
                 }
 
                 orderEntity.setTotalCost(totalCost);
@@ -1786,7 +1786,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         for (OrderEntity orderEntity: ordersList){
             BigDecimal totalCost = orderEntity.getTotalCost();
             if(orderEntity.getItemServiceAndVatCharge() != null){
-                totalCost = totalCost.add(orderEntity.getItemServiceAndVatCharge());
+                totalCost = totalCost.subtract(orderEntity.getDiscountFromStore()).add(orderEntity.getItemServiceAndVatCharge());
             }
             orderEntity.setTotalCost(totalCost);
         }

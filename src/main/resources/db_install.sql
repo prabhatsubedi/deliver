@@ -260,3 +260,5 @@ INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('MAX_ORDER_SERVING_DISTANCE', '30', '9', 'Maximum order serving distance in km');
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('LOGO_FOR_PDF_EMAIL', 'https://d1te5b0wbrygh3.cloudfront.net/default/login_logo/preference_661432553590098.png', '7', 'Logo For PDF and Email');
 
+/*===2015-06-04==*/
+UPDATE `delivr_db`.`orders` SET `discount_from_store` = 0 WHERE `discount_from_store` IS NULL;

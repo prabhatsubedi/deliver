@@ -67,7 +67,7 @@ public class TaskSchedule {
 
     }
 
-    @Scheduled(cron="0 51 09 * * WED")
+    @Scheduled(cron="0 59 23 * * THU")
     public void generateInvoice() throws Exception{
         log.info("Generating invoice:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -88,7 +88,7 @@ public class TaskSchedule {
         }
     }
 
-    @Scheduled(cron="0 51 09 * * WED")
+    @Scheduled(cron="0 59 23 * * THU")
     public void generateDBoyPayStatement() throws Exception {
         log.info("Generating DBoy pay statement:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -672,7 +672,7 @@ Order.getOrdersItems = function(){
             { "name": "itemTotal" }
         ];
         dataFilter.headers = {id:$(e.relatedTarget).data('id')};
-        dataFilter.pageSize = undefined;
+        dataFilter.pageSize = 0;
         Main.createDataTable("#orders_items_table", dataFilter);
 
     });

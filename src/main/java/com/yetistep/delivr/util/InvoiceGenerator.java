@@ -425,8 +425,8 @@ public class InvoiceGenerator {
                     itemVatAmount = itemVatAmount.add(itemVatCharge);
             }
             //add order
-            PdfUtil.addRow(billingTable, PdfUtil.getPhrase(cntOrder), PdfUtil.getPhrase(order.getOrderDate()), PdfUtil.getPhrase(order.getId()), PdfUtil.getPhrase(order.getTotalCost()));
-            totalOrderAmount = totalOrderAmount.add(order.getTotalCost());
+            PdfUtil.addRow(billingTable, PdfUtil.getPhrase(cntOrder), PdfUtil.getPhrase(order.getOrderDate()), PdfUtil.getPhrase(order.getId()), PdfUtil.getPhrase(order.getTotalCost().subtract(order.getDiscountFromStore())));
+            totalOrderAmount = totalOrderAmount.add(order.getTotalCost().subtract(order.getDiscountFromStore()));
 
             if(cntOrder%20==0){
                 document.newPage();
@@ -500,7 +500,7 @@ public class InvoiceGenerator {
         PdfUtil.addRow(commissionTable, PdfUtil.getPhrase("Title", tableHeadFont), PdfUtil.getPhrase("Amount("+currency+")", tableHeadFont));
         BigDecimal totalOrderAmount = BigDecimal.ZERO;
         for (OrderEntity order: orders){
-            totalOrderAmount = totalOrderAmount.add(order.getTotalCost());
+            totalOrderAmount = totalOrderAmount.add(order.getTotalCost().subtract(order.getDiscountFromStore()));
         }
 
         BigDecimal commissionAmount = totalOrderAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));

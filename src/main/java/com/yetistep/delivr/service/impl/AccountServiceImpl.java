@@ -105,7 +105,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                     itemVatAmount = itemVatAmount.add(itemVatCharge);
                 }
                 //add order
-                totalOrderAmount = totalOrderAmount.add(order.getTotalCost());
+                totalOrderAmount = totalOrderAmount.add(order.getTotalCost().subtract(order.getDiscountFromStore()));
             }
             BigDecimal totalTaxableAmount =  totalOrderAmount.add(totalServiceCharge);
             //BigDecimal vatAmount =  totalTaxableAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
@@ -450,7 +450,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("dBoyAdvanceAmounts", "id,advanceDate,amountAdvance,type,accountantNote");
-        assoc.put("order", "id,deliveryStatus,deliveryCharge,orderStatus,grandTotal,orderDate,paymentMode,paidFromWallet,paidFromCOD,store,dBoyOrderHistories,accountantNote,itemServiceAndVatCharge,totalCost,itemsOrder,attachments");
+        assoc.put("order", "id,deliveryStatus,deliveryCharge,orderStatus,grandTotal,orderDate,paymentMode,paidFromWallet,paidFromCOD,store,dBoyOrderHistories,accountantNote,itemServiceAndVatCharge,totalCost,discountFromStore,itemsOrder,attachments");
         subAssoc.put("itemsOrder", "id,purchaseStatus");
         subAssoc.put("dBoyOrderHistories", "id,orderCompletedAt");
         subAssoc.put("store", "id,storesBrand");
@@ -540,11 +540,11 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                         java.sql.Timestamp timestamp = new java.sql.Timestamp(orderDateInTime);
                         nonPartnerOrder.setOrderDate(timestamp);
                         nonPartnerOrder.setGrandTotal(order.getGrandTotal());
-                        nonPartnerOrder.setCr(order.getTotalCost().add(order.getItemServiceAndVatCharge()));
+                        nonPartnerOrder.setCr(order.getTotalCost().subtract(order.getDiscountFromStore()).add(order.getItemServiceAndVatCharge()));
                         nonPartnerOrder.setPaymentMode(order.getPaymentMode());
                         nonPartnerOrder.setDescription("Paid to Merchant - "+ partnershipStatus);
 
-                        balance = balance.subtract(order.getTotalCost().add(order.getItemServiceAndVatCharge()));
+                        balance = balance.subtract(order.getTotalCost().subtract(order.getDiscountFromStore()).add(order.getItemServiceAndVatCharge()));
                         nonPartnerOrder.setBalance(balance);
                         addedOrderRows.add(nonPartnerOrder);
                     }
@@ -618,11 +618,11 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                                 Long orderDateInTime = order.getOrderDate().getTime()-1000;
                                 java.sql.Timestamp timestamp = new java.sql.Timestamp(orderDateInTime);
                                 nonPartnerOrder.setOrderDate(timestamp);
-                                nonPartnerOrder.setCr(order.getTotalCost().add(order.getItemServiceAndVatCharge()));
+                                nonPartnerOrder.setCr(order.getTotalCost().subtract(order.getDiscountFromStore()).add(order.getItemServiceAndVatCharge()));
                                 nonPartnerOrder.setPaymentMode(order.getPaymentMode());
                                 nonPartnerOrder.setDescription("Paid to Merchant - "+ partnershipStatus);
 
-                                balance = balance.subtract(order.getTotalCost().add(order.getItemServiceAndVatCharge())).subtract(order.getGrandTotal());
+                                balance = balance.subtract(order.getTotalCost().subtract(order.getDiscountFromStore()).add(order.getItemServiceAndVatCharge())).subtract(order.getGrandTotal());
                                 nonPartnerOrder.setBalance(balance);
                                 balance = balance.add(order.getGrandTotal());
                                 order.setBalance(balance);
@@ -704,11 +704,11 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                                 Long orderDateInTime = order.getOrderDate().getTime()-1000;
                                 java.sql.Timestamp timestamp = new java.sql.Timestamp(orderDateInTime);
                                 nonPartnerOrder.setOrderDate(timestamp);
-                                nonPartnerOrder.setCr(order.getTotalCost().add(order.getItemServiceAndVatCharge()));
+                                nonPartnerOrder.setCr(order.getTotalCost().subtract(order.getDiscountFromStore()).add(order.getItemServiceAndVatCharge()));
                                 nonPartnerOrder.setPaymentMode(order.getPaymentMode());
                                 nonPartnerOrder.setDescription("Paid to Merchant - "+ partnershipStatus);
 
-                                balance = balance.subtract(order.getTotalCost().add(order.getItemServiceAndVatCharge())).subtract(order.getGrandTotal());
+                                balance = balance.subtract(order.getTotalCost().subtract(order.getDiscountFromStore()).add(order.getItemServiceAndVatCharge())).subtract(order.getGrandTotal());
                                 nonPartnerOrder.setBalance(balance);
 
                                 balance = balance.add(order.getGrandTotal());
@@ -781,7 +781,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     @Override
     public OrderEntity getOrder(HeaderDto headerDto) throws Exception{
          OrderEntity order = orderDaoService.findOrderById(Integer.parseInt(headerDto.getId()));
-        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,deliveryBoySelections,assignedTime,attachments,itemServiceAndVatCharge,grandTotal,totalCost,rating,deliveryCharge,bill,itemsOrder";
+        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,deliveryBoySelections,assignedTime,attachments,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,rating,deliveryCharge,bill,itemsOrder";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

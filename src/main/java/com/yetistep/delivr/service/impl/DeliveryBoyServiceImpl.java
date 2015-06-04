@@ -148,7 +148,6 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         deliveryBoyDaoService.save(deliveryBoy);
         if (profileImage != null && !profileImage.isEmpty()) {
             log.info("Uploading Profile Image of delivery boy to S3 Bucket ");
-
             String dir = MessageBundle.separateString("/", "DBoys", "DBoy_" + deliveryBoy.getId());
             boolean isLocal = MessageBundle.isLocalHost();
             String imageName = "pimg" + (isLocal ? "_tmp_" : "_") + deliveryBoy.getId()+System.currentTimeMillis();

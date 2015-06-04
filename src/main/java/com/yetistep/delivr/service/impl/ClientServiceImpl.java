@@ -570,6 +570,12 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             deliveryBoyEntity.setUser(user);
             orderSummary.setDeliveryBoy(deliveryBoyEntity);
         }
+
+        if(order.getDeliveryBoy() != null){
+            DeliveryBoySelectionEntity deliveryBoySelectionEntity = deliveryBoySelectionDaoService.getSelectionDetails(order.getId(), order.getDeliveryBoy().getId());
+            Integer totalTimeRequired = deliveryBoySelectionEntity.getTotalTimeRequired();
+            orderSummary.setEstimatedDeliveryTime(DateUtil.addMinute(order.getOrderDate(), totalTimeRequired));
+        }
         return orderSummary;
     }
 

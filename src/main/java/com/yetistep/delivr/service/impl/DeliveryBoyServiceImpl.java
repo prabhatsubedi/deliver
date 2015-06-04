@@ -1692,6 +1692,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
     private void courierBoyAccountingsAfterTakingOrder(DeliveryBoyEntity deliveryBoy, OrderEntity order, Boolean partnerShipStatus) throws Exception{
         BigDecimal orderAmount = order.getTotalCost().add(order.getItemServiceAndVatCharge());
+        orderAmount = orderAmount.subtract(BigDecimalUtil.checkNull(order.getDiscountFromStore()));
        // BigDecimal orderAmtReceived = order.getGrandTotal();
         BigDecimal walletAmount = deliveryBoy.getWalletAmount();
         BigDecimal bankAmount = deliveryBoy.getBankAmount();

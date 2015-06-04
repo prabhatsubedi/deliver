@@ -329,7 +329,7 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
                     var page = {};
                     if(typeof(dataFilter.params) == "object") request = dataFilter.params;
                     page.pageNumber = parseInt((data.start/data.length) + 1);
-                    page.pageSize = dataFilter.pageSize == undefined ? undefined : data.length;
+                    page.pageSize = dataFilter.pageSize == 0 ? undefined : data.length;
                     page.searchFor = data.search.value;
                     var sortColName = data.columns[data.order[0].column].name;
                     if(sortColName != "") {

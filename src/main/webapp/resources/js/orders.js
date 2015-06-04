@@ -618,7 +618,7 @@ Order.getOrdersItems = function(){
             var name = item.item.name;
             if(item.item.editedName != undefined)
                 name = "<s>"+item.item.name+"</s> "+item.item.editedName;
-            var row = [i+1, name, item.quantity, '<span class="item_sc">' + (item.serviceCharge == undefined ? 'N/A' : item.serviceCharge) + '</span>' + (item.serviceCharge != undefined ? '' : '%'), '<span class="item_vat">' + (item.itemTotal == undefined ? 'N/A' : item.vat) + '</span>' + (item.vat != undefined ? '' : '%'), (item.itemTotal == undefined ? '' : Main.getFromLocalStorage("currency")) + ' <span class="item_total">' + (item.itemTotal == undefined || item.availabilityStatus == false ? 'N/A' : item.itemTotal) + '</span>'];
+            var row = [i+1, name, item.quantity, '<span class="item_sc">' + (item.serviceCharge == undefined ? 'N/A' : item.serviceCharge) + '</span>' + (item.serviceCharge != undefined ? '' : '%'), '<span class="item_vat">' + (item.itemTotal == undefined ? 'N/A' : item.vat) + '</span>' + (item.vat != undefined ? '' : '%'), (item.itemTotal == undefined || item.availabilityStatus == false ? '' : Main.getFromLocalStorage("currency")) + ' <span class="item_total">' + (item.itemTotal == undefined || item.availabilityStatus == false ? 'N/A' : item.itemTotal) + '</span>'];
             row = $.extend({}, row);
             tableData.push(row);
 

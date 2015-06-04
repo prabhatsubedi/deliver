@@ -833,6 +833,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
                 List<DBoyAdvanceAmountEntity> advanceAmount = processOrder.getAdvanceAmounts();
                 DeliveryBoyEntity deliveryBoy = processOrder.getDeliveryBoy();
+                BigDecimal paidToMerchant = processOrder.getTotalCost().add(order.getItemServiceAndVatCharge());
                 if(advanceAmount.size() > 0){
                     BigDecimal tillTransferred = BigDecimal.ZERO;
                     for (DBoyAdvanceAmountEntity dBoyAdvanceAmount: advanceAmount){
@@ -844,7 +845,6 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                         orderTransferred.setTransferred(dBoyAdvanceAmount.getAmountAdvance());
                         addedOrderRows.add(orderTransferred);
                     }
-                    BigDecimal paidToMerchant = order.getTotalCost().add(order.getItemServiceAndVatCharge());
                     if(BigDecimalUtil.isLessThen(tillTransferred, paidToMerchant)){
                         if (BigDecimalUtil.isLessThen(deliveryBoy.getAvailableAmount(), paidToMerchant.subtract(tillTransferred))){
                             OrderEntity orderToBeTransferred = new OrderEntity();
@@ -857,8 +857,10 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                     }
 
                 } else  {
-                    processOrder.setToBeTransferred(processOrder.getTotalCost());
-                    ordersAmountTransferred.add(processOrder);
+                    if (BigDecimalUtil.isLessThen(deliveryBoy.getAvailableAmount(), paidToMerchant)) {
+                        processOrder.setToBeTransferred(processOrder.getTotalCost());
+                        ordersAmountTransferred.add(processOrder);
+                    }
                 }
             }
         }

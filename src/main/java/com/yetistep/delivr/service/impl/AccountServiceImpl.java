@@ -827,7 +827,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                 String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,orderVerificationCode,deliveryBoy,assignedTime,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,deliveryCharge,itemsOrder";
                 Map<String, String> assoc = new HashMap<>();
                 assoc.put("deliveryBoy", "id,user,averageRating,latitude,longitude,availableAmount");
-                assoc.put("itemsOrder", "id,itemTotal,serviceAndVatCharge,availabilityStatus,purchaseStatus,vat,serviceCharge,customItem");
+                assoc.put("itemsOrder", "id,itemTotal,serviceAndVatCharge,availabilityStatus,purchaseStatus,vat,serviceCharge");
                 assoc.put("advanceAmounts", "id,amountAdvance,advanceDate");
                 OrderEntity processOrder = (OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc);
 

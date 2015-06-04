@@ -24,6 +24,7 @@ public class OrderSummaryDto {
     private JobOrderStatus orderStatus;
     private String orderVerificationCode;
     private Timestamp orderDate;
+    private Timestamp estimatedDeliveryTime;
     private List<String> attachments;
     private AccountSummary accountSummary;
     private List<ItemsOrderEntity> itemOrders;
@@ -63,6 +64,14 @@ public class OrderSummaryDto {
         this.orderDate = orderDate;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
+    public Timestamp getEstimatedDeliveryTime() {
+        return estimatedDeliveryTime;
+    }
+
+    public void setEstimatedDeliveryTime(Timestamp estimatedDeliveryTime) {
+        this.estimatedDeliveryTime = estimatedDeliveryTime;
+    }
 
     public List<String> getAttachments() {
         return attachments;

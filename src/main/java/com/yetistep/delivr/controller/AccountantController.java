@@ -379,5 +379,19 @@ public class AccountantController {
         }
     }
 
+    @RequestMapping(value = "/get_orders_amount_transferred", method = RequestMethod.GET)
+    public ResponseEntity<ServiceResponse> getOrdersAmountTransferred() {
+        try{
+            List<OrderEntity> orders = accountService.getOrdersAmountTransferred();
+            ServiceResponse serviceResponse = new ServiceResponse("orders retrieved successfully");
+            serviceResponse.addParam("orders", orders);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            GeneralUtil.logError(log, "Error Occurred while retrieving Invoices: ", e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
 }

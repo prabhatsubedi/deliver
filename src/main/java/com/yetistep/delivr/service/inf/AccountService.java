@@ -41,4 +41,6 @@ public interface AccountService {
     public PaginationDto getDBoyAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 
     public OrderEntity getOrder(HeaderDto headerDto) throws Exception;
+
+    public List<OrderEntity> getOrdersAmountTransferred() throws Exception;
 }

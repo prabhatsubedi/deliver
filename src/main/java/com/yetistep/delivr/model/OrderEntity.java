@@ -66,6 +66,8 @@ public class OrderEntity implements Serializable {
     private BigDecimal balance; //used as transient for dBoy account
     private BigDecimal dr;  //used as transient for dBoy account
     private BigDecimal cr;  //used as transient for dBoy account
+    private BigDecimal toBeTransferred;  //used as transient for dBoy account
+    private BigDecimal transferred;  //used as transient for dBoy account
     private String accountantNote;
 
     private OrderCancelEntity orderCancel;
@@ -79,6 +81,7 @@ public class OrderEntity implements Serializable {
     private StoreEntity store;
     private List<DBoyOrderHistoryEntity> dBoyOrderHistories;
     private List<DeliveryBoySelectionEntity> deliveryBoySelections;
+    private List<DBoyAdvanceAmountEntity> advanceAmounts;
     private BillEntity bill;
     private ReceiptEntity receipt;
     private List<WalletTransactionEntity> walletTransactions;
@@ -572,6 +575,15 @@ public class OrderEntity implements Serializable {
         this.accountantNote = accountantNote;
     }
 
+    @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )
+    public List<DBoyAdvanceAmountEntity> getAdvanceAmounts() {
+        return advanceAmounts;
+    }
+
+    public void setAdvanceAmounts(List<DBoyAdvanceAmountEntity> advanceAmounts) {
+        this.advanceAmounts = advanceAmounts;
+    }
+
     @Transient
     public String getDescription() {
         return description;
@@ -615,5 +627,23 @@ public class OrderEntity implements Serializable {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    @Transient
+    public BigDecimal getToBeTransferred() {
+        return toBeTransferred;
+    }
+
+    public void setToBeTransferred(BigDecimal toBeTransferred) {
+        this.toBeTransferred = toBeTransferred;
+    }
+
+    @Transient
+    public BigDecimal getTransferred() {
+        return transferred;
+    }
+
+    public void setTransferred(BigDecimal transferred) {
+        this.transferred = transferred;
     }
 }

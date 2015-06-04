@@ -22,10 +22,11 @@ public class DBoyAdvanceAmountEntity implements Serializable {
 
     private Integer id;
     private Timestamp advanceDate;
-    private DeliveryBoyEntity deliveryBoy;
     private BigDecimal amountAdvance;
     private String type;
     private String accountantNote;
+    private DeliveryBoyEntity deliveryBoy;
+    private OrderEntity order;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -83,5 +84,15 @@ public class DBoyAdvanceAmountEntity implements Serializable {
 
     public void setAccountantNote(String accountantNote) {
         this.accountantNote = accountantNote;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    public OrderEntity getOrder() {
+        return order;
+    }
+
+    public void setOrder(OrderEntity order) {
+        this.order = order;
     }
 }

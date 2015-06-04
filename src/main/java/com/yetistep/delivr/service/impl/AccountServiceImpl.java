@@ -543,7 +543,6 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                         nonPartnerOrder.setCr(order.getTotalCost().subtract(order.getDiscountFromStore()).add(order.getItemServiceAndVatCharge()));
                         nonPartnerOrder.setPaymentMode(order.getPaymentMode());
                         nonPartnerOrder.setDescription("Paid to Merchant - "+ partnershipStatus);
-
                         balance = balance.subtract(order.getTotalCost().subtract(order.getDiscountFromStore()).add(order.getItemServiceAndVatCharge()));
                         nonPartnerOrder.setBalance(balance);
                         addedOrderRows.add(nonPartnerOrder);
@@ -805,5 +804,67 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         return (OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc);
     }
 
+    @Override
+    public List<OrderEntity> getOrdersAmountTransferred() throws Exception{
+        List<OrderEntity> ordersAmountTransferred = new ArrayList<>();
+        List<JobOrderStatus> orderStatuses = new ArrayList<>();
+        orderStatuses.add(JobOrderStatus.AT_STORE);
+        orderStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+        List<OrderEntity> allProcessedOrder = orderDaoService.getAllProcessedOrders(orderStatuses);
+
+        List<OrderEntity> addedOrderRows = new ArrayList<>();
+
+        for (OrderEntity order: allProcessedOrder){
+            Boolean orderProcessed = true;
+            for (ItemsOrderEntity itemsOrder: order.getItemsOrder()){
+                 if(itemsOrder.getPurchaseStatus() == null){
+                     orderProcessed = false;
+                     break;
+                 }
+            }
+
+            if(orderProcessed) {
+                String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,orderVerificationCode,deliveryBoy,assignedTime,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,deliveryCharge,itemsOrder";
+                Map<String, String> assoc = new HashMap<>();
+                assoc.put("deliveryBoy", "id,user,averageRating,latitude,longitude,availableAmount");
+                assoc.put("itemsOrder", "id,itemTotal,serviceAndVatCharge,availabilityStatus,purchaseStatus,vat,serviceCharge,customItem");
+                assoc.put("advanceAmounts", "id,amountAdvance,advanceDate");
+                OrderEntity processOrder = (OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc);
+
+                List<DBoyAdvanceAmountEntity> advanceAmount = processOrder.getAdvanceAmounts();
+                DeliveryBoyEntity deliveryBoy = processOrder.getDeliveryBoy();
+                if(advanceAmount.size() > 0){
+                    BigDecimal tillTransferred = BigDecimal.ZERO;
+                    for (DBoyAdvanceAmountEntity dBoyAdvanceAmount: advanceAmount){
+                        tillTransferred = tillTransferred.add(dBoyAdvanceAmount.getAmountAdvance());
+                        OrderEntity orderTransferred = new OrderEntity();
+                        orderTransferred.setId(processOrder.getId());
+                        orderTransferred.setOrderStatus(processOrder.getOrderStatus());
+                        orderTransferred.setTotalCost(processOrder.getTotalCost());
+                        orderTransferred.setTransferred(dBoyAdvanceAmount.getAmountAdvance());
+                        addedOrderRows.add(orderTransferred);
+                    }
+                    BigDecimal paidToMerchant = order.getTotalCost().add(order.getItemServiceAndVatCharge());
+                    if(BigDecimalUtil.isLessThen(tillTransferred, paidToMerchant)){
+                        if (BigDecimalUtil.isLessThen(deliveryBoy.getAvailableAmount(), paidToMerchant.subtract(tillTransferred))){
+                            OrderEntity orderToBeTransferred = new OrderEntity();
+                            orderToBeTransferred.setId(processOrder.getId());
+                            orderToBeTransferred.setOrderStatus(processOrder.getOrderStatus());
+                            orderToBeTransferred.setTotalCost(processOrder.getTotalCost());
+                            orderToBeTransferred.setToBeTransferred(processOrder.getTotalCost().subtract(tillTransferred));
+                            addedOrderRows.add(orderToBeTransferred);
+                        }
+                    }
+
+                } else  {
+                    processOrder.setToBeTransferred(processOrder.getTotalCost());
+                    ordersAmountTransferred.add(processOrder);
+                }
+            }
+        }
+        //add all orders to be re-transferred
+        ordersAmountTransferred.addAll(addedOrderRows);
+        return ordersAmountTransferred;
+    }
 
 }

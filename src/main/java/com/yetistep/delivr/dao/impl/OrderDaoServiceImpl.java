@@ -463,4 +463,16 @@ public class OrderDaoServiceImpl implements OrderDaoService {
     }
 
 
+    @Override
+    public List<OrderEntity> getAllProcessedOrders(List<JobOrderStatus> orderStatuses) throws Exception{
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class, "order");
+        criteria.createAlias("order.store", "store");
+        criteria.createAlias("store.storesBrand", "storesBrand");
+        criteria.createAlias("storesBrand.merchant", "merchant");
+        criteria.add(Restrictions.in("orderStatus", orderStatuses));
+        criteria.add(Restrictions.eq("merchant.partnershipStatus", false));
+        return (List<OrderEntity>) criteria.list();
+    }
+
+
 }

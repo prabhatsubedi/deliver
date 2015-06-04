@@ -71,4 +71,6 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
     public OrderEntity getPaidFromCashOnDeliveryAmount(Integer orderId) throws Exception;
 
     public List<OrderEntity> getCancelledPurchasedOrder(Integer dBoyId, Timestamp date) throws Exception;
+
+    public List<OrderEntity> getAllProcessedOrders(List<JobOrderStatus> orderStatuses) throws Exception;
 }

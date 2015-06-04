@@ -98,8 +98,16 @@ Order.loadOrderFn = function(){
         var order = gOrders[index];
         var orderDate = order.orderDate;
         var id = order.id;
-        var customerPays = order.grandTotal != undefined ? Main.getFromLocalStorage("currency") + " " + order.grandTotal : '';
-        var merchantGets = order.totalCost != null ? Main.getFromLocalStorage("currency") + " " + order.totalCost : '';
+        var customerPays = order.grandTotal;
+        if(customerPays == -1)
+            customerPays = 'TBD';
+        else
+            customerPays = customerPays != null ? Main.getFromLocalStorage("currency") + " " + customerPays : '';
+        var merchantGets = order.totalCost;
+        if(merchantGets == -1)
+            merchantGets = 'TBD';
+        else
+            merchantGets = merchantGets != null ? Main.getFromLocalStorage("currency") + " " + merchantGets : '';
         var cancelReason = '';
         if(order.orderStatus == "CANCELLED") {
             if (order.orderCancel.reasonDetails != undefined) {

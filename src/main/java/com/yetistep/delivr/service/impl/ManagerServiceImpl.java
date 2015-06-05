@@ -227,24 +227,21 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         dBoyAdvanceAmount.setType("advanceAmount");
         dBoyAdvanceAmount.setDeliveryBoy(dBoy);
         dBoyAdvanceAmount.setAdvanceDate(DateUtil.getCurrentTimestampSQL());
+        if(requestJsonDto.getAdvanceAmountOrderId() != null){
+            OrderEntity order = new OrderEntity();
+            order.setId(requestJsonDto.getAdvanceAmountOrderId());
+            dBoyAdvanceAmount.setOrder(order);
+        }
         dBoyAdvanceAmounts.add(dBoyAdvanceAmount);
-
         dBoy.setdBoyAdvanceAmounts(dBoyAdvanceAmounts);
-
         deliveryBoyDaoService.update(dBoy);
-
         String fields = "id,availabilityStatus,averageRating,previousDue,availableAmount,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
-
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
-
         assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,gender,status,addresses");
         subAssoc.put("addresses", "street,city,state,country,latitude,longitude");
-
         DeliveryBoyEntity deliveryBoy = ((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(dBoy, fields, assoc, subAssoc));
-
         Timestamp lastAckDate = dBoyAdvanceAmountDaoService.getLatestAckTimestamp(deliveryBoy.getId());
-
         BigDecimal cancelledPurchaseTotal = BigDecimal.ZERO;
         //if(lastAckDate != null){
         List<OrderEntity> cancelledPurchasedOrders =  orderDaoService.getCancelledPurchasedOrder(deliveryBoy.getId(), lastAckDate);

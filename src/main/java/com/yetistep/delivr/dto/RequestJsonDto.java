@@ -65,6 +65,7 @@ public class RequestJsonDto {
     /*update account properties*/
     private BigDecimal submittedAmount;
     private BigDecimal advanceAmount;
+    private Integer advanceAmountOrderId;
     /* For Mobile */
     private GpsInfo gpsInfo;
     private DeviceInfo deviceInfo;
@@ -314,6 +315,14 @@ public class RequestJsonDto {
 
     public void setAdvanceAmount(BigDecimal advanceAmount) {
         this.advanceAmount = advanceAmount;
+    }
+
+    public Integer getAdvanceAmountOrderId() {
+        return advanceAmountOrderId;
+    }
+
+    public void setAdvanceAmountOrderId(Integer advanceAmountOrderId) {
+        this.advanceAmountOrderId = advanceAmountOrderId;
     }
 
     public Integer getOrderId() {

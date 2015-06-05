@@ -1116,9 +1116,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 return;
             }
 
-            data = {"success":true,"message":"orders retrieved successfully","params":{"orders":[{"id":44,"orderName":"Imago Dei to Kailash Chour Ln Kathmandu 44600","orderVerificationCode":"4389","deliveryStatus":"PENDING","orderStatus":"IN_ROUTE_TO_DELIVERY","totalCost":8725.86,"deliveryCharge":0,"grandTotal":8725.86,"assignedTime":27,"itemServiceAndVatCharge":1705.86,"discountFromStore":0,"toBeTransferred":8725.86,"itemsOrder":[{"id":136,"itemTotal":7020,"serviceAndVatCharge":1705.86,"availabilityStatus":true,"vat":13,"serviceCharge":10,"purchaseStatus":true}],"deliveryBoy":{"id":6,"user":{"id":354,"fullName":"test shopper"},"averageRating":0,"availableAmount":0,"bankAccountNumber":"4575354744444","latitude":"27.7189777","longitude":"85.3214173"},"advanceAmounts":[],"orderDate":"2015-06-05 15:40:40"}]}};
-
-            console.log(data);
             var orders = data.params.orders;
             var tdata = [];
 

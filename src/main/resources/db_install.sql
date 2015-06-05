@@ -262,3 +262,5 @@ INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_
 
 /*===2015-06-04==*/
 UPDATE `delivr_db`.`orders` SET `discount_from_store` = 0 WHERE `discount_from_store` IS NULL;
+/*Use just in test servers or local servers, but not in live*/
+/*UPDATE `delivr_db`.`stores` SET `stores`.`send_email` = 0 WHERE `stores`.`send_email` = 1;*/

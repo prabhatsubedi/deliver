@@ -311,6 +311,7 @@ public class DeliveryBoyEntity implements Serializable {
     }
 
     @Column(name = "bank_account_number")
+    @JsonProperty
     public String getBankAccountNumber() {
         return bankAccountNumber;
     }

@@ -230,7 +230,7 @@ public class DeliveryBoyDaoServiceImpl implements DeliveryBoyDaoService {
 
     @Override
     public Boolean checkIfBankNumberExists(String bankNumber, Integer dBoyId) throws Exception{
-        String sql = "SELECT count(id) FROM delivery_boys WHERE back_account_number = :bankNumber AND id !=:dBoyId";
+        String sql = "SELECT count(id) FROM delivery_boys WHERE bank_account_number = :bankNumber AND id !=:dBoyId";
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("bankNumber", bankNumber);
         sqlQuery.setParameter("dBoyId", dBoyId);

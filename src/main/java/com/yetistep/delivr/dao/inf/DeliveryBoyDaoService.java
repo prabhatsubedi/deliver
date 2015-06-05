@@ -37,6 +37,10 @@ public interface DeliveryBoyDaoService extends GenericDaoService<Integer, Delive
 
     public Boolean checkIfLicenseNumberExists(String licenseNumber, Integer dBoyId) throws Exception;
 
+    public Boolean checkIfBankNumberExists(String bankNumber, Integer dBoyId) throws Exception;
+
+    public Boolean checkIfBankNumberExists(String bankNumber) throws Exception;
+
     public Integer getNumberOfActiveOrders(Integer deliveryBoyId) throws Exception;
 
     public DeliveryBoyEntity findDBoyById(Integer id) throws Exception;

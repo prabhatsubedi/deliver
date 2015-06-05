@@ -811,9 +811,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         orderStatuses.add(JobOrderStatus.AT_STORE);
         orderStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         List<OrderEntity> allProcessedOrder = orderDaoService.getAllProcessedOrders(orderStatuses);
-
         List<OrderEntity> addedOrderRows = new ArrayList<>();
-
         for (OrderEntity order: allProcessedOrder){
             Boolean orderProcessed = true;
             for (ItemsOrderEntity itemsOrder: order.getItemsOrder()){
@@ -822,49 +820,62 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                      break;
                  }
             }
-
             if(orderProcessed) {
-                String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,orderVerificationCode,deliveryBoy,assignedTime,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,deliveryCharge,itemsOrder";
+                String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,orderVerificationCode,deliveryBoy,assignedTime,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,deliveryCharge,itemsOrder,bankAccountNumber";
                 Map<String, String> assoc = new HashMap<>();
+                Map<String, String> subAssoc = new HashMap<>();
                 assoc.put("deliveryBoy", "id,user,averageRating,latitude,longitude,availableAmount");
                 assoc.put("itemsOrder", "id,itemTotal,serviceAndVatCharge,availabilityStatus,purchaseStatus,vat,serviceCharge");
                 assoc.put("advanceAmounts", "id,amountAdvance,advanceDate");
-                OrderEntity processOrder = (OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc);
-
+                subAssoc.put("user", "id,fullName");
+                OrderEntity processOrder = (OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc,subAssoc);
                 List<DBoyAdvanceAmountEntity> advanceAmount = processOrder.getAdvanceAmounts();
                 DeliveryBoyEntity deliveryBoy = processOrder.getDeliveryBoy();
-                BigDecimal paidToMerchant = processOrder.getTotalCost().add(order.getItemServiceAndVatCharge());
+                BigDecimal paidToMerchant = processOrder.getTotalCost().subtract(order.getDiscountFromStore()).add(order.getItemServiceAndVatCharge());
+                processOrder.setTotalCost(paidToMerchant);
                 if(advanceAmount.size() > 0){
                     BigDecimal tillTransferred = BigDecimal.ZERO;
                     for (DBoyAdvanceAmountEntity dBoyAdvanceAmount: advanceAmount){
                         tillTransferred = tillTransferred.add(dBoyAdvanceAmount.getAmountAdvance());
                         OrderEntity orderTransferred = new OrderEntity();
+                        UserEntity transferredDBoyUser = new UserEntity();
+                        DeliveryBoyEntity transferredDBoy = new DeliveryBoyEntity();
+                        transferredDBoyUser.setFullName(processOrder.getDeliveryBoy().getUser().getFullName());
+                        transferredDBoy.setUser(transferredDBoyUser);
+                        transferredDBoy.setAvailableAmount(processOrder.getDeliveryBoy().getAvailableAmount());
+                        orderTransferred.setDeliveryBoy(transferredDBoy);
+                        orderTransferred.setOrderDate(processOrder.getOrderDate());
                         orderTransferred.setId(processOrder.getId());
                         orderTransferred.setOrderStatus(processOrder.getOrderStatus());
-                        orderTransferred.setTotalCost(processOrder.getTotalCost());
+                        orderTransferred.setTotalCost(paidToMerchant);
                         orderTransferred.setTransferred(dBoyAdvanceAmount.getAmountAdvance());
                         addedOrderRows.add(orderTransferred);
                     }
                     if(BigDecimalUtil.isLessThen(tillTransferred, paidToMerchant)){
-                        if (BigDecimalUtil.isLessThen(deliveryBoy.getAvailableAmount(), paidToMerchant.subtract(tillTransferred))){
+                        if (BigDecimalUtil.isLessThen(deliveryBoy.getAvailableAmount(), paidToMerchant)){
                             OrderEntity orderToBeTransferred = new OrderEntity();
+                            UserEntity transferredDBoyUser = new UserEntity();
+                            DeliveryBoyEntity transferredDBoy = new DeliveryBoyEntity();
+                            transferredDBoyUser.setFullName(processOrder.getDeliveryBoy().getUser().getFullName());
+                            transferredDBoy.setUser(transferredDBoyUser);
+                            transferredDBoy.setAvailableAmount(processOrder.getDeliveryBoy().getAvailableAmount());
+                            orderToBeTransferred.setDeliveryBoy(transferredDBoy);
+                            orderToBeTransferred.setOrderDate(processOrder.getOrderDate());
                             orderToBeTransferred.setId(processOrder.getId());
                             orderToBeTransferred.setOrderStatus(processOrder.getOrderStatus());
-                            orderToBeTransferred.setTotalCost(processOrder.getTotalCost());
-                            orderToBeTransferred.setToBeTransferred(processOrder.getTotalCost().subtract(tillTransferred));
+                            orderToBeTransferred.setTotalCost(paidToMerchant);
+                            orderToBeTransferred.setToBeTransferred(paidToMerchant.subtract(processOrder.getDeliveryBoy().getAvailableAmount()));
                             addedOrderRows.add(orderToBeTransferred);
                         }
                     }
-
                 } else  {
                     if (BigDecimalUtil.isLessThen(deliveryBoy.getAvailableAmount(), paidToMerchant)) {
-                        processOrder.setToBeTransferred(processOrder.getTotalCost());
+                        processOrder.setToBeTransferred(paidToMerchant.subtract(processOrder.getDeliveryBoy().getAvailableAmount()));
                         ordersAmountTransferred.add(processOrder);
                     }
                 }
             }
         }
-        //add all orders to be re-transferred
         ordersAmountTransferred.addAll(addedOrderRows);
         return ordersAmountTransferred;
     }

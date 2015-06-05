@@ -45,6 +45,7 @@ public class DeliveryBoyEntity implements Serializable {
     private BigDecimal previousDue;
     private String licenseNumber;
     private String vehicleNumber;
+    private String bankAccountNumber;
     private List<DBoyOrderHistoryEntity> dBoyOrderHistories;
     private List<DeliveryBoySelectionEntity> deliveryBoySelections;
     private List<DBoyAdvanceAmountEntity> dBoyAdvanceAmounts;
@@ -307,6 +308,15 @@ public class DeliveryBoyEntity implements Serializable {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    @Column(name = "bank_account_number")
+    public String getBankAccountNumber() {
+        return bankAccountNumber;
+    }
+
+    public void setBankAccountNumber(String bankAccountNumber) {
+        this.bankAccountNumber = bankAccountNumber;
     }
 
     @JsonIgnore

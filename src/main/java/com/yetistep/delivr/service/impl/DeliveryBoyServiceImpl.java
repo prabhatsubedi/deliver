@@ -108,6 +108,11 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if(deliveryBoyDaoService.checkIfLicenseNumberExists(deliveryBoy.getLicenseNumber())){
             throw new YSException("VLD034");
         }
+        if(deliveryBoyDaoService.checkIfBankNumberExists(deliveryBoy.getLicenseNumber())){
+            throw new YSException("VLD041");
+        }
+
+
         user.setPassword(GeneralUtil.encryptPassword(user.getPassword()));
 
         RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_DELIVERY_BOY);
@@ -167,7 +172,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             throw new YSException("VLD011");
         }
 
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,previousDue,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude,order";
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,advanceAmount,previousDue,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude,order,bankAccountNumber";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -265,7 +270,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         List<DeliveryBoyEntity> objects = new ArrayList<>();
 
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,availableAmount,advanceAmount,user,order,latitude,longitude";
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,availableAmount,advanceAmount,user,order,latitude,longitude,bankAccountNumber";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -319,6 +324,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             throw new YSException("VLD034");
         }
 
+        if(deliveryBoyDaoService.checkIfBankNumberExists(deliveryBoyEntity.getBankAccountNumber(), dBoyEntity.getId())){
+            throw new YSException("VLD041");
+        }
+
 
 
         dBoyEntity.getUser().setUsername(headerDto.getUsername());
@@ -351,6 +360,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         dBoyEntity.setVehicleNumber(deliveryBoyEntity.getVehicleNumber());
         dBoyEntity.setVehicleType(deliveryBoyEntity.getVehicleType());
         dBoyEntity.setLicenseNumber(deliveryBoyEntity.getLicenseNumber());
+        dBoyEntity.setBankAccountNumber(deliveryBoyEntity.getBankAccountNumber());
 
         String profileImage = deliveryBoyEntity.getUser().getProfileImage();
 

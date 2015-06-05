@@ -1103,7 +1103,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     var bankNumber = order.deliveryBoy.bankAccountNumber == undefined ? "" : order.deliveryBoy.bankAccountNumber;
                     var action = '';
                     if(amtRequested != "") {
-                        action = '<button>Transfer</button>';
+                        action = '<a href="#" class="btn_transfer" data-id="' + orderId + '" data-sid="' + orderId + '">Transfer</a>';
                     }
                     var row = [orderId, orderDate, shopperName, amtRequested, amtTransferred, amtMerchant, bankNumber, action];
                     tdata.push(row);

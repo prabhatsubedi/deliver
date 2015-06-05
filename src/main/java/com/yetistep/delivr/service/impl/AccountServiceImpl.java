@@ -832,7 +832,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         List<OrderEntity> ordersAmountTransferred = new ArrayList<>();
         List<JobOrderStatus> orderStatuses = new ArrayList<>();
         orderStatuses.add(JobOrderStatus.AT_STORE);
-        orderStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+        //orderStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         List<OrderEntity> allProcessedOrder = orderDaoService.getAllProcessedOrders(orderStatuses);
         List<OrderEntity> addedOrderRows = new ArrayList<>();
 

@@ -15,6 +15,9 @@
             <ul class="nav nav-stacked">
                 <li><a href="/accountant/merchants" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Merchants"><span class="delivricon delivricon-merchant"></span><span class="menu_text">Merchants</span></a></li>
                 <li><a href="/accountant/courier_staff/list" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Shopper"><span class="delivricon delivricon-courier-staff"></span><span class="menu_text">Shopper</span></a></li>
+                <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_ACCOUNTANT')">
+                    <li><a href="/accountant/invoices" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Statements"><span class="delivricon delivricon-invoice"></span><span class="menu_text">Statements</span></a></li>
+                </sec:authorize>
             </ul>
         </div>
     </div>

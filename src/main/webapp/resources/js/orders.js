@@ -652,7 +652,7 @@ Order.getOrdersItems = function(){
                 var per_vat = parseFloat($('.item_vat', this).html());
                 var total_price = parseFloat($('.item_total', this).html());
                 if(!isNaN(per_sc) && !isNaN(per_vat) && !isNaN(total_price)) {
-                    var ind_sc = total_price - val_discount * per_sc/100;
+                    var ind_sc = (total_price - val_discount) * per_sc/100;
                     var ind_vat = (total_price - val_discount + ind_sc) * per_vat/100;
                     val_sc += ind_sc;
                     val_vat += ind_vat;

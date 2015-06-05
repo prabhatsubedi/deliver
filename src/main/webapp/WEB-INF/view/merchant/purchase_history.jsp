@@ -38,10 +38,11 @@
                             <th>Store Name & Address</th>
                             <th>Order No</th>
                             <th>Order Date & Time</th>
+                            <th>Discount from Store</th>
                             <th>Merchant Invoice Amount</th>
                             <th>Shopper</th>
-                            <th class="no_sort">Bill</th>
-                            <th class="no_sort">Items</th>
+                            <th class="no_sort"><div class="width_80">Bill</div></th>
+                            <th class="no_sort"><div class="width_80">Action</div></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,6 +82,10 @@
                     <tr>
                         <td colspan="5" class="text-right"><strong>Sub Total</strong></td>
                         <td class="sub_total"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-right"><strong>Discount from Store</strong></td>
+                        <td class="discount"></td>
                     </tr>
                     <tr>
                         <td colspan="5" class="text-right"><strong>Total Service Charge</strong></td>

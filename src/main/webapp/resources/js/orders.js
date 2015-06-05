@@ -481,7 +481,7 @@ Order.getPurchaseHistory = function(){
         }
 
         var responseRows = data.params.orders.numberOfRows;
-        var orders = data.params.orders.data;
+        var orders = gOrders = data.params.orders.data;
         var tableData = [];
 
         for (var i = 0; i < orders.length; i++) {
@@ -497,7 +497,7 @@ Order.getPurchaseHistory = function(){
                 link_attachments += '</div></div>';
             }
             var deliveryBoy = typeof(order.deliveryBoy) != 'undefined'?"<div class='db_td'><span class='show_db_info'>"+order.deliveryBoy.user.fullName+"</span>":'';
-            var view_items = '<span class="item_list" data-id="'+id+'" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
+            var view_items = '<span class="item_list" data-id="'+id+'" data-index="'+i+'" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
 
             if(typeof(order.deliveryBoy) != 'undefined') {
                 deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>"+order.deliveryBoy.user.mobileNumber+"</div>";
@@ -513,9 +513,9 @@ Order.getPurchaseHistory = function(){
                 deliveryBoy += "</div></div>";
             }
 
+            var discount = Main.getFromLocalStorage("currency") + ' ' + order.discountFromStore;
 
-
-            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.orderDate, order.totalCost != null?Main.getFromLocalStorage("currency")+order.totalCost:'', deliveryBoy, link_attachments, view_items];
+            var row = [i+1, order.customer.user.fullName, order.store.name+' - '+order.store.street+'', id, order.orderDate, discount, order.totalCost != null?Main.getFromLocalStorage("currency") + ' ' +order.totalCost:'', deliveryBoy, link_attachments, view_items];
             row = $.extend({}, row);
             tableData.push(row);
 
@@ -538,6 +538,7 @@ Order.getPurchaseHistory = function(){
         { "name": "store#name" },
         { "name": "id" },
         { "name": "orderDate" },
+        { "name": "discountFromStore" },
         { "name": "grandTotal" },
         { "name": "deliveryBoy#user#fullName" },
         { "name": "" },

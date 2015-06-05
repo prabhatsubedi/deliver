@@ -13,6 +13,12 @@
     <bean id="dataSource" class = "com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="com.mysql.jdbc.Driver" />
         <property name="jdbcUrl" value="jdbc:mysql://#{systemProperties.DELIVR_MYSQL_HOST}:#{systemProperties.DELIVR_MYSQL_PORT}/#{systemProperties.DELIVR_DATABASE}" />
+        <property name="properties">
+            <props>
+                <prop key="useUnicode">yes</prop>
+                <prop key="characterEncoding">utf-8</prop>
+            </props>
+        </property>
         <property name="user" value="#{systemProperties.DELIVR_MYSQL_USERNAME}" />
         <property name="password" value="#{systemProperties.DELIVR_MYSQL_PASSWORD}" />
         <property name="acquireIncrement" value="5" />

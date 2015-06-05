@@ -232,7 +232,8 @@ Order.getOrders = function(elemId, url, params){
 
             var view_items = '<span class="item_list" data-store="' + order.store.name + '" data-id="'+id+'"  data-index="' + i + '" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
             var activeStatus = ["ORDER_PLACED", "ORDER_ACCEPTED", "IN_ROUTE_TO_PICK_UP", "AT_STORE", "IN_ROUTE_TO_DELIVERY"];
-            var orderHistoryLength = order.dBoyOrderHistories.length;
+            var orderHistoryLength = 0;
+            if(order.dBoyOrderHistories != undefined) orderHistoryLength = order.dBoyOrderHistories.length;
             var assigned_time = order.assignedTime != undefined? Main.convertMin(order.assignedTime):'';
             var time_taken = 0;
 
@@ -319,7 +320,7 @@ Order.getOrders = function(elemId, url, params){
             } else if(order.orderStatus == "DELIVERED") {
                 row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, discount, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarned, assigned_time, time_taken, (typeof order.bill != "undefined" && typeof order.bill.path!="undefined")?'<a href="'+order.bill.path+'" target="_blank">View Receipt</a>':'', dboyRating, cusComment, cusRating, dboyComment, view_items];
             } else if($.inArray(order.orderStaus, activeStatus)) {
-                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, order.orderVerificationCode, discount, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarnedLive, assigned_time, time_taken, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' +  order.deliveryBoy.id + '">View on Map</a> | ' + view_items];
+                row = [i+1, order.orderDate, orderId, cusName, storeInfo,  drop_location, order.orderVerificationCode, discount, totalCost, link_attachments, grandTotal, deliveryBoy, amountEarnedLive, assigned_time, time_taken, Main.ucfirst(order.orderStatus.split('_').join(' ').toLowerCase()), (order.deliveryBoy == undefined ? '' : '<a href="#" data-toggle="modal" class="view_courier_boy_map" data-cbid = "' +  order.deliveryBoy.id + '">View on Map</a> | ') + view_items];
             }
             row = $.extend({}, row);
             tdata.push(row)

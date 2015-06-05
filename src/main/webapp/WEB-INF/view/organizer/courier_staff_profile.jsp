@@ -168,6 +168,16 @@
                                 </div>
 
                                 <div class="form-group clearfix">
+                                    <label for="account_no" class="col-lg-4 floated_label no_pad">Account Number</label>
+                                    <div class="col-lg-8">
+                                        <div class="form-control info_display val_account_no none_editable"></div>
+                                        <div class="info_edit editable hidden">
+                                            <input type="text" name="account_no" id="account_no" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group clearfix">
                                     <label for="vehicle_type" class="col-lg-4 floated_label no_pad">Vehicle Type</label>
                                     <div class="col-lg-8">
                                         <div class="form-control info_display val_vehicle_type none_editable"></div>

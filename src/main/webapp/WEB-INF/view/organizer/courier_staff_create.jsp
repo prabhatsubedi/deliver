@@ -85,6 +85,9 @@
                         <input type="text" class="form-control" id="country" name="country" placeholder="Country">
                     </div>
                     <div class="form-group">
+                        <input type="text" class="form-control" id="account_no" name="account_no" placeholder="Account Number">
+                    </div>
+                    <div class="form-group">
                         <select id="vehicle_type" name="vehicle_type" class="vehicle_type col-xs-12 no_pad no_margin" data-style="form-control">
                             <option value="0">Select Vehicle Type</option>
                             <%--<option value="ON_FOOT">On Foot</option>--%>

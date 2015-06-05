@@ -463,7 +463,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
         for (DBoyAdvanceAmountEntity advanceAmount: acDBoy.getdBoyAdvanceAmounts()){
             OrderEntity orderEntity = new OrderEntity();
-            orderEntity.setId(advanceAmount.getId());
+            orderEntity.setId(advanceAmount.getOrder().getId());
             orderEntity.setOrderDate(advanceAmount.getAdvanceDate());
             orderEntity.setGrandTotal(advanceAmount.getAmountAdvance());
             orderEntity.setDescription(advanceAmount.getType());

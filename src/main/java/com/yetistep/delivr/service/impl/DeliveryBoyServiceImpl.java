@@ -199,7 +199,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         deliveryBoy.setOrder(activeOrders);
 
-        Timestamp lastAckDate = dBoyAdvanceAmountDaoService.getLatestAckTimestamp(deliveryBoyEntity.getId());
+        Timestamp lastAckDate = dBoyAdvanceAmountDaoService.getLatestAckTimestamp(deliveryBoy.getId());
 
         BigDecimal cancelledPurchaseTotal = BigDecimal.ZERO;
         //if(lastAckDate != null){

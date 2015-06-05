@@ -88,6 +88,7 @@ public class DBoyAdvanceAmountDaoServiceImpl implements DBoyAdvanceAmountDaoServ
         List<DBoyAdvanceAmountEntity> acks  = new ArrayList<DBoyAdvanceAmountEntity>();
         Criteria criteria  = getCurrentSession().createCriteria(DBoyAdvanceAmountEntity.class);
         criteria.add(Restrictions.eq("deliveryBoy.id", dBoyId));
+        criteria.add(Restrictions.eq("type", "acknowledgeAmount"));
         criteria.addOrder(org.hibernate.criterion.Order.desc("advanceDate"));
         criteria.setMaxResults(1);
         acks = criteria.list();

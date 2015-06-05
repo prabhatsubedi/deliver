@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -463,7 +464,9 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
         for (DBoyAdvanceAmountEntity advanceAmount: acDBoy.getdBoyAdvanceAmounts()){
             OrderEntity orderEntity = new OrderEntity();
-            orderEntity.setId(advanceAmount.getOrder().getId());
+            if(advanceAmount.getOrder() != null){
+                orderEntity.setId(advanceAmount.getOrder().getId());
+            }
             orderEntity.setOrderDate(advanceAmount.getAdvanceDate());
             orderEntity.setGrandTotal(advanceAmount.getAmountAdvance());
             orderEntity.setDescription(advanceAmount.getType());
@@ -804,6 +807,26 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         return (OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc);
     }
 
+    private BigDecimal getCanceledItemAmount(DeliveryBoyEntity deliveryBoyEntity) throws Exception{
+        Timestamp lastAckDate = dBoyAdvanceAmountDaoService.getLatestAckTimestamp(deliveryBoyEntity.getId());
+        BigDecimal cancelledPurchaseTotal = BigDecimal.ZERO;
+        List<OrderEntity> cancelledPurchasedOrders =  orderDaoService.getCancelledPurchasedOrder(deliveryBoyEntity.getId(), lastAckDate);
+        for (OrderEntity order: cancelledPurchasedOrders){
+            Boolean itemPurchased = false;
+            List<ItemsOrderEntity> itemsOrders = order.getItemsOrder();
+            for(ItemsOrderEntity itemsOrder: itemsOrders){
+                if(itemsOrder.getPurchaseStatus() != null && itemsOrder.getPurchaseStatus()){
+                    itemPurchased = true;
+                    break;
+                }
+            }
+            if(itemPurchased)
+                cancelledPurchaseTotal =  cancelledPurchaseTotal.add(order.getGrandTotal());
+        }
+        return cancelledPurchaseTotal;
+    }
+
+
     @Override
     public List<OrderEntity> getOrdersAmountTransferred() throws Exception{
         List<OrderEntity> ordersAmountTransferred = new ArrayList<>();
@@ -812,66 +835,73 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         orderStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         List<OrderEntity> allProcessedOrder = orderDaoService.getAllProcessedOrders(orderStatuses);
         List<OrderEntity> addedOrderRows = new ArrayList<>();
+
         for (OrderEntity order: allProcessedOrder){
-            Boolean orderProcessed = true;
-            for (ItemsOrderEntity itemsOrder: order.getItemsOrder()){
-                 if(itemsOrder.getPurchaseStatus() == null){
-                     orderProcessed = false;
-                     break;
-                 }
-            }
-            if(orderProcessed) {
-                String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,orderVerificationCode,deliveryBoy,assignedTime,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,deliveryCharge,itemsOrder,bankAccountNumber";
-                Map<String, String> assoc = new HashMap<>();
-                Map<String, String> subAssoc = new HashMap<>();
-                assoc.put("deliveryBoy", "id,user,averageRating,latitude,longitude,availableAmount");
-                assoc.put("itemsOrder", "id,itemTotal,serviceAndVatCharge,availabilityStatus,purchaseStatus,vat,serviceCharge");
-                assoc.put("advanceAmounts", "id,amountAdvance,advanceDate");
-                subAssoc.put("user", "id,fullName");
-                OrderEntity processOrder = (OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc,subAssoc);
-                List<DBoyAdvanceAmountEntity> advanceAmount = processOrder.getAdvanceAmounts();
-                DeliveryBoyEntity deliveryBoy = processOrder.getDeliveryBoy();
-                BigDecimal paidToMerchant = processOrder.getTotalCost().subtract(order.getDiscountFromStore()).add(order.getItemServiceAndVatCharge());
-                processOrder.setTotalCost(paidToMerchant);
-                if(advanceAmount.size() > 0){
-                    BigDecimal tillTransferred = BigDecimal.ZERO;
-                    for (DBoyAdvanceAmountEntity dBoyAdvanceAmount: advanceAmount){
-                        tillTransferred = tillTransferred.add(dBoyAdvanceAmount.getAmountAdvance());
-                        OrderEntity orderTransferred = new OrderEntity();
-                        UserEntity transferredDBoyUser = new UserEntity();
-                        DeliveryBoyEntity transferredDBoy = new DeliveryBoyEntity();
-                        transferredDBoyUser.setFullName(processOrder.getDeliveryBoy().getUser().getFullName());
-                        transferredDBoy.setUser(transferredDBoyUser);
-                        transferredDBoy.setAvailableAmount(processOrder.getDeliveryBoy().getAvailableAmount());
-                        orderTransferred.setDeliveryBoy(transferredDBoy);
-                        orderTransferred.setOrderDate(processOrder.getOrderDate());
-                        orderTransferred.setId(processOrder.getId());
-                        orderTransferred.setOrderStatus(processOrder.getOrderStatus());
-                        orderTransferred.setTotalCost(paidToMerchant);
-                        orderTransferred.setTransferred(dBoyAdvanceAmount.getAmountAdvance());
-                        addedOrderRows.add(orderTransferred);
-                    }
-                    if(BigDecimalUtil.isLessThen(tillTransferred, paidToMerchant)){
-                        if (BigDecimalUtil.isLessThen(deliveryBoy.getAvailableAmount(), paidToMerchant)){
-                            OrderEntity orderToBeTransferred = new OrderEntity();
+            if(!order.getStore().getStoresBrand().getMerchant().getPartnershipStatus())  {
+                Boolean orderProcessed = true;
+                for (ItemsOrderEntity itemsOrder: order.getItemsOrder()){
+                     if(itemsOrder.getPurchaseStatus() == null){
+                         orderProcessed = false;
+                         break;
+                     }
+                }
+                if(orderProcessed) {
+                    String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,orderVerificationCode,deliveryBoy,assignedTime,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,deliveryCharge,itemsOrder";
+                    Map<String, String> assoc = new HashMap<>();
+                    Map<String, String> subAssoc = new HashMap<>();
+                    assoc.put("deliveryBoy", "id,user,averageRating,latitude,longitude,availableAmount,bankAccountNumber");
+                    assoc.put("itemsOrder", "id,itemTotal,serviceAndVatCharge,availabilityStatus,purchaseStatus,vat,serviceCharge");
+                    assoc.put("advanceAmounts", "id,amountAdvance,advanceDate");
+                    subAssoc.put("user", "id,fullName");
+                    OrderEntity processOrder = (OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc,subAssoc);
+                    List<DBoyAdvanceAmountEntity> advanceAmount = processOrder.getAdvanceAmounts();
+                    DeliveryBoyEntity deliveryBoy = processOrder.getDeliveryBoy();
+
+                    BigDecimal canceledItemAmount =  getCanceledItemAmount(deliveryBoy);
+                    processOrder.getDeliveryBoy().setAvailableAmount(processOrder.getDeliveryBoy().getAvailableAmount().subtract(canceledItemAmount));
+
+                    BigDecimal paidToMerchant = processOrder.getTotalCost().subtract(order.getDiscountFromStore()).add(order.getItemServiceAndVatCharge());
+                    processOrder.setTotalCost(paidToMerchant);
+                    if(advanceAmount.size() > 0){
+                        BigDecimal tillTransferred = BigDecimal.ZERO;
+                        for (DBoyAdvanceAmountEntity dBoyAdvanceAmount: advanceAmount){
+                            tillTransferred = tillTransferred.add(dBoyAdvanceAmount.getAmountAdvance());
+                            OrderEntity orderTransferred = new OrderEntity();
                             UserEntity transferredDBoyUser = new UserEntity();
                             DeliveryBoyEntity transferredDBoy = new DeliveryBoyEntity();
                             transferredDBoyUser.setFullName(processOrder.getDeliveryBoy().getUser().getFullName());
                             transferredDBoy.setUser(transferredDBoyUser);
                             transferredDBoy.setAvailableAmount(processOrder.getDeliveryBoy().getAvailableAmount());
-                            orderToBeTransferred.setDeliveryBoy(transferredDBoy);
-                            orderToBeTransferred.setOrderDate(processOrder.getOrderDate());
-                            orderToBeTransferred.setId(processOrder.getId());
-                            orderToBeTransferred.setOrderStatus(processOrder.getOrderStatus());
-                            orderToBeTransferred.setTotalCost(paidToMerchant);
-                            orderToBeTransferred.setToBeTransferred(paidToMerchant.subtract(processOrder.getDeliveryBoy().getAvailableAmount()));
-                            addedOrderRows.add(orderToBeTransferred);
+                            orderTransferred.setDeliveryBoy(transferredDBoy);
+                            orderTransferred.setOrderDate(processOrder.getOrderDate());
+                            orderTransferred.setId(processOrder.getId());
+                            orderTransferred.setOrderStatus(processOrder.getOrderStatus());
+                            orderTransferred.setTotalCost(paidToMerchant);
+                            orderTransferred.setTransferred(dBoyAdvanceAmount.getAmountAdvance());
+                            addedOrderRows.add(orderTransferred);
                         }
-                    }
-                } else  {
-                    if (BigDecimalUtil.isLessThen(deliveryBoy.getAvailableAmount(), paidToMerchant)) {
-                        processOrder.setToBeTransferred(paidToMerchant.subtract(processOrder.getDeliveryBoy().getAvailableAmount()));
-                        ordersAmountTransferred.add(processOrder);
+                        if(BigDecimalUtil.isLessThen(tillTransferred, paidToMerchant)){
+                            if (BigDecimalUtil.isLessThen(deliveryBoy.getAvailableAmount(), paidToMerchant)){
+                                OrderEntity orderToBeTransferred = new OrderEntity();
+                                UserEntity transferredDBoyUser = new UserEntity();
+                                DeliveryBoyEntity transferredDBoy = new DeliveryBoyEntity();
+                                transferredDBoyUser.setFullName(processOrder.getDeliveryBoy().getUser().getFullName());
+                                transferredDBoy.setUser(transferredDBoyUser);
+                                transferredDBoy.setAvailableAmount(processOrder.getDeliveryBoy().getAvailableAmount());
+                                orderToBeTransferred.setDeliveryBoy(transferredDBoy);
+                                orderToBeTransferred.setOrderDate(processOrder.getOrderDate());
+                                orderToBeTransferred.setId(processOrder.getId());
+                                orderToBeTransferred.setOrderStatus(processOrder.getOrderStatus());
+                                orderToBeTransferred.setTotalCost(paidToMerchant);
+                                orderToBeTransferred.setToBeTransferred(paidToMerchant.subtract(processOrder.getDeliveryBoy().getAvailableAmount()));
+                                addedOrderRows.add(orderToBeTransferred);
+                            }
+                        }
+                    } else  {
+                        if (BigDecimalUtil.isLessThen(deliveryBoy.getAvailableAmount(), paidToMerchant)) {
+                            processOrder.setToBeTransferred(paidToMerchant.subtract(processOrder.getDeliveryBoy().getAvailableAmount()));
+                            ordersAmountTransferred.add(processOrder);
+                        }
                     }
                 }
             }

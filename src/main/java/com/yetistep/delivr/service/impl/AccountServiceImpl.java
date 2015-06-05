@@ -871,6 +871,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                             DeliveryBoyEntity transferredDBoy = new DeliveryBoyEntity();
                             transferredDBoyUser.setFullName(processOrder.getDeliveryBoy().getUser().getFullName());
                             transferredDBoy.setUser(transferredDBoyUser);
+                            transferredDBoy.setId(processOrder.getDeliveryBoy().getId());
                             transferredDBoy.setAvailableAmount(processOrder.getDeliveryBoy().getAvailableAmount());
                             orderTransferred.setDeliveryBoy(transferredDBoy);
                             orderTransferred.setOrderDate(processOrder.getOrderDate());
@@ -887,6 +888,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                                 DeliveryBoyEntity transferredDBoy = new DeliveryBoyEntity();
                                 transferredDBoyUser.setFullName(processOrder.getDeliveryBoy().getUser().getFullName());
                                 transferredDBoy.setUser(transferredDBoyUser);
+                                transferredDBoy.setId(processOrder.getDeliveryBoy().getId());
                                 transferredDBoy.setAvailableAmount(processOrder.getDeliveryBoy().getAvailableAmount());
                                 orderToBeTransferred.setDeliveryBoy(transferredDBoy);
                                 orderToBeTransferred.setOrderDate(processOrder.getOrderDate());

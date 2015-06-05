@@ -1085,8 +1085,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 return;
             }
 
-            data = {"success":true,"message":"orders retrieved successfully","params":{"orders":[{"id":41,"orderStatus":"IN_ROUTE_TO_DELIVERY","totalCost":1925,"transferred":3850,"deliveryBoy":{"user":{"fullName":"test shopper"},"availableAmount":1925},"orderDate":"2015-06-05 12:51:19"},{"id":42,"orderName":"Big Mart to Kailash Chour Ln Kathmandu 44600","orderVerificationCode":"6780","deliveryStatus":"PENDING","orderStatus":"IN_ROUTE_TO_DELIVERY","totalCost":1925,"deliveryCharge":0,"grandTotal":1925,"assignedTime":24,"itemServiceAndVatCharge":0,"discountFromStore":0,"toBeTransferred":3850,"itemsOrder":[{"id":134,"itemTotal":1925,"serviceAndVatCharge":0,"availabilityStatus":true,"vat":0,"serviceCharge":0,"purchaseStatus":true}],"deliveryBoy":{"id":6,"user":{"id":354,"fullName":"test shopper"},"averageRating":0,"availableAmount":-1925,"latitude":"27.7189419","longitude":"85.321403"},"advanceAmounts":[],"orderDate":"2015-06-05 12:51:19"}]}};
-
             console.log(data);
             var orders = data.params.orders;
             var tdata = [];

@@ -743,7 +743,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     orderStatus = _orderStatus.join(" ");
                     var accountantNote = advanceAmount.accountantNote == undefined ? "" : advanceAmount.accountantNote;
                     var action = '<a data-id="' + advanceAmount.id + '" data-mode="' + (advanceAmount.paymentMode == undefined ? "advanceAmount" : "order" ) + '" href="#" class="btn_add_note">Add Note</a>';
-                    var row = [i + 1, orderDate, description, (advanceAmount.paymentMode == undefined ? "" : id ), dr, cr, balance, orderStatus, accountantNote, action];
+                    var row = [i + 1, orderDate, description, id, dr, cr, balance, orderStatus, accountantNote, action];
                     tdata.push(row);
 
                 }

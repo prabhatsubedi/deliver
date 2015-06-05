@@ -1071,6 +1071,57 @@ if (typeof(Manager) == "undefined") var Manager = {};
         $(".item_available_balance").text(Main.getFromLocalStorage('currency') + " "  + itemAvailableBalance);
     }
 
+    Manager.loadTransfers = function() {
+
+        Manager.getTransfers();
+
+    }
+
+    Manager.getTransfers = function () {
+
+        var callback = function (status, data) {
+            if (!data.success) {
+                Main.popDialog('', data.message);
+                return;
+            }
+
+            data = {"success":true,"message":"orders retrieved successfully","params":{"orders":[{"id":41,"orderStatus":"IN_ROUTE_TO_DELIVERY","totalCost":1925,"transferred":3850,"deliveryBoy":{"user":{"fullName":"test shopper"},"availableAmount":1925},"orderDate":"2015-06-05 12:51:19"},{"id":42,"orderName":"Big Mart to Kailash Chour Ln Kathmandu 44600","orderVerificationCode":"6780","deliveryStatus":"PENDING","orderStatus":"IN_ROUTE_TO_DELIVERY","totalCost":1925,"deliveryCharge":0,"grandTotal":1925,"assignedTime":24,"itemServiceAndVatCharge":0,"discountFromStore":0,"toBeTransferred":3850,"itemsOrder":[{"id":134,"itemTotal":1925,"serviceAndVatCharge":0,"availabilityStatus":true,"vat":0,"serviceCharge":0,"purchaseStatus":true}],"deliveryBoy":{"id":6,"user":{"id":354,"fullName":"test shopper"},"averageRating":0,"availableAmount":-1925,"latitude":"27.7189419","longitude":"85.321403"},"advanceAmounts":[],"orderDate":"2015-06-05 12:51:19"}]}};
+
+            console.log(data);
+            var orders = data.params.orders;
+            var tdata = [];
+
+            if(orders.length > 0) {
+
+                for(i = 0; i < orders.length; i++) {
+
+                    var order = orders[i];
+                    var orderId = order.id;
+                    var orderDate = order.orderDate;
+                    var shopperName = order.deliveryBoy.user.fullName;
+                    var amtRequested = order.toBeTransferred == undefined ? "" : order.toBeTransferred;
+                    var amtTransferred = order.transferred == undefined ? "" : order.transferred;
+                    var amtMerchant = order.totalCost;
+                    var bankNumber = order.deliveryBoy.bankAccountNumber == undefined ? "" : order.deliveryBoy.bankAccountNumber;
+                    var action = '';
+                    if(amtRequested != "") {
+                        action = '<button>Transfer</button>';
+                    }
+                    var row = [orderId, orderDate, shopperName, amtRequested, amtTransferred, amtMerchant, bankNumber, action];
+                    tdata.push(row);
+
+                }
+                Main.createNDataTable("#transfer_table", tdata, 0, 'desc');
+            }
+
+        };
+
+        callback.loaderDiv = "body";
+        callback.requestType = "GET";
+        Main.request('/accountant/get_orders_amount_transferred', {}, callback);
+
+    };
+
     Manager.getCategories = function(){
         var callback = function (status, data) {
             if (!data.success) {

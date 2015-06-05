@@ -56,6 +56,7 @@
                             <th><div class="width_200">Store Name & Address</div></th>
                             <th><div class="width_120">Drop of Location</div></th>
                             <th><div class="width_100">Verification Code</div></th>
+                            <th class="no_sort"><div class="width_80">Discount from Store</div></th>
                             <th><div class="width_80">Paid to Merchant</div></th>
                             <th><div class="width_150">Merchant Bill</div></th>
                             <th><div class="width_80">Received From Customer</div></th>
@@ -82,6 +83,7 @@
                         <th rowspan="2"><div class="width_120">Customer Name</div></th>
                         <th rowspan="2"><div class="width_200">Store Name & Address</div></th>
                         <th rowspan="2"><div class="width_120">Drop of Location</div></th>
+                        <th rowspan="2" class="no_sort"><div class="width_80">Discount from Store</div></th>
                         <th rowspan="2"><div class="width_80">Paid to Merchant</div></th>
                         <th rowspan="2"><div class="width_150">Merchant Bill</div></th>
                         <th rowspan="2"><div class="width_80">Received From Customer</div></th>
@@ -115,6 +117,7 @@
                         <th rowspan="2"><div class="width_120">Customer Name</div></th>
                         <th rowspan="2"><div class="width_200">Store Name & Address</div></th>
                         <th rowspan="2"><div class="width_120">Drop of Location</div></th>
+                        <th rowspan="2" class="no_sort"><div class="width_80">Discount from Store</div></th>
                         <th rowspan="2"><div class="width_80">Paid to Merchant</div></th>
                         <th rowspan="2"><div class="width_150">Merchant Bill</div></th>
                         <th rowspan="2"><div class="width_80">Received From Customer</div></th>
@@ -168,6 +171,10 @@
                     <tr>
                         <td colspan="5" class="text-right"><strong>Sub Total</strong></td>
                         <td class="sub_total"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-right"><strong>Discount from Store</strong></td>
+                        <td class="discount"></td>
                     </tr>
                     <tr>
                         <td colspan="5" class="text-right"><strong>Total Service Charge</strong></td>

@@ -792,7 +792,7 @@ public class ClientController extends AbstractManager{
 //            }
 
             serviceResponse.addParam("search", searchDto);
-            return new ResponseEntity<ServiceResponse>(serviceResponse, GeneralUtil.getCacheHeader(), HttpStatus.OK);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {
             GeneralUtil.logError(log, "Error Occurred while searching items and stores", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);

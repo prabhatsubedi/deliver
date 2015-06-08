@@ -67,14 +67,14 @@ public class TaskSchedule {
 
     }
 
-    @Scheduled(cron="0 59 23 * * THU")
+    @Scheduled(cron="0 59 23 * * MON")
     public void generateInvoice() throws Exception{
         log.info("Generating invoice:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 0);
         Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -7);
+        calPrev.add(Calendar.DATE, -10);
 
         List<StoreEntity> stores=accountService.getAllStores();
 
@@ -84,18 +84,18 @@ public class TaskSchedule {
                 accountService.generateInvoice(store.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()));
             }
         } else {
-            log.info("no stores found. ");
+            log.info("No stores found. ");
         }
     }
 
-    @Scheduled(cron="0 59 23 * * THU")
+    @Scheduled(cron="0 59 23 * * MON")
     public void generateDBoyPayStatement() throws Exception {
         log.info("Generating DBoy pay statement:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 0);
         Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -7);
+        calPrev.add(Calendar.DATE, -10);
 
         List<DeliveryBoyEntity> allActiveDBoy = deliveryBoyService.findAllActiveDeliveryBoy();
 
@@ -104,7 +104,7 @@ public class TaskSchedule {
                 accountService.generatedBoyPayStatement(deliveryBoy.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()));
             }
         }else{
-            log.info("no shoppers found");
+            log.info("No shoppers found");
         }
     }
 

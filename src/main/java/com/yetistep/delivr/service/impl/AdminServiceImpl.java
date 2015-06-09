@@ -412,8 +412,8 @@ public class AdminServiceImpl implements AdminService {
             countryCode = "+977";
         }
 
-        //TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", smsDto.getMobileNo(), countryCode);
-        SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", smsDto.getMobileNo());
+        TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", smsDto.getMobileNo(), countryCode);
+        //SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", smsDto.getMobileNo());
 
         //Now Update Total SMS Count
         validateMobileDaoService.updateNoOfSMSSend(smsDto.getId());

@@ -400,8 +400,8 @@ public class CustomerServiceImpl implements CustomerService {
             verificationCode = GeneralUtil.generateMobileCode();
 
             //Now Send SMS
-            SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
-            //TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile, countryCode);
+            //SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
+            TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile, countryCode);
 
             ValidateMobileEntity validateMobileEntity = new ValidateMobileEntity();
             validateMobileEntity.setMobileNo(mobile);
@@ -425,8 +425,8 @@ public class CustomerServiceImpl implements CustomerService {
                 verificationCode = String.valueOf(validMobile.getVerificationCode());
 
                 //Now Send SMS
-                SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
-                //TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile, countryCode);
+                //SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
+                TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile, countryCode);
 
                 validateMobileDaoService.updateNoOfSMSSend(validMobile.getId());
 

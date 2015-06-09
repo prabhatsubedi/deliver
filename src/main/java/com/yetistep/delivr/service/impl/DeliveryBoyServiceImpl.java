@@ -270,7 +270,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         List<DeliveryBoyEntity> objects = new ArrayList<>();
 
-        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,availableAmount,advanceAmount,user,order,latitude,longitude,bankAccountNumber";
+        String fields = "id,availabilityStatus,averageRating,bankAmount,walletAmount,availableAmount,advanceAmount,user,order,latitude,longitude,bankAccountNumber,lastLocationUpdate";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -282,6 +282,17 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         for (DeliveryBoyEntity deliveryBoyEntity:deliveryBoyEntities){
             DeliveryBoyEntity deliveryBoy = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc, subAssoc);
+            Integer locationUpdateTimeOut = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.LOCATION_UPDATE_TIMEOUT_IN_MIN));
+            if(deliveryBoy.getLastLocationUpdate() != null){
+                if(deliveryBoy.getLastLocationUpdate().after(new Date(System.currentTimeMillis()-(locationUpdateTimeOut*60*1000)))){
+                    deliveryBoy.setOutOfReach(false);
+                } else {
+                    deliveryBoy.setOutOfReach(true);
+                }
+            } else  {
+                deliveryBoy.setOutOfReach(true);
+            }
+
             List<JobOrderStatus> activeStatuses = new ArrayList<>();
             activeStatuses.add(JobOrderStatus.AT_STORE);
             activeStatuses.add(JobOrderStatus.ORDER_ACCEPTED);

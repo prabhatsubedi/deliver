@@ -1821,7 +1821,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<Object> objects = new ArrayList<>();
         String fields = "id,quantity,itemTotal,availabilityStatus,serviceCharge,vat,item,order";
         Map<String, String> assoc = new HashMap<>();
-        assoc.put("item", "id,name");
+        assoc.put("item", "id,name,editedName");
         assoc.put("order", "id");
 
         for (ItemsOrderEntity item:items){

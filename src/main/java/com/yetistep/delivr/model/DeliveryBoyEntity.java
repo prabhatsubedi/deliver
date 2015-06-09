@@ -4,8 +4,10 @@ package com.yetistep.delivr.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.DBoyStatus;
 import com.yetistep.delivr.enums.VehicleType;
+import com.yetistep.delivr.util.JsonDateSerializer;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -55,6 +57,7 @@ public class DeliveryBoyEntity implements Serializable {
     private String longitude;
     private Timestamp lastLocationUpdate;
     private BigDecimal itemReturnedTotal; //transient variable
+    private Boolean outOfReach; //transient variable
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -320,8 +323,9 @@ public class DeliveryBoyEntity implements Serializable {
         this.bankAccountNumber = bankAccountNumber;
     }
 
-    @JsonIgnore
+    @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name="last_location_update", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
+    @JsonProperty
     public Timestamp getLastLocationUpdate() {
         return lastLocationUpdate;
     }
@@ -339,5 +343,15 @@ public class DeliveryBoyEntity implements Serializable {
 
     public void setItemReturnedTotal(BigDecimal itemReturnedTotal) {
         this.itemReturnedTotal = itemReturnedTotal;
+    }
+
+    @Transient
+    @JsonProperty
+    public Boolean getOutOfReach() {
+        return outOfReach;
+    }
+
+    public void setOutOfReach(Boolean outOfReach) {
+        this.outOfReach = outOfReach;
     }
 }

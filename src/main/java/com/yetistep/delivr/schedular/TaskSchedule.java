@@ -67,19 +67,16 @@ public class TaskSchedule {
 
     }
 
-    @Scheduled(cron="0 59 23 * * MON")
+    @Scheduled(cron="0 59 23 * * TUE")
     public void generateInvoice() throws Exception{
         log.info("Generating invoice:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 0);
         Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -10);
-
+        calPrev.add(Calendar.DATE, -12);
         List<StoreEntity> stores=accountService.getAllStores();
-
         if(stores.size()>0){
-            //String filePath = new String();
             for (StoreEntity store: stores){
                 accountService.generateInvoice(store.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()));
             }
@@ -88,17 +85,15 @@ public class TaskSchedule {
         }
     }
 
-    @Scheduled(cron="0 59 23 * * MON")
+    @Scheduled(cron="0 59 23 * * TUE")
     public void generateDBoyPayStatement() throws Exception {
         log.info("Generating DBoy pay statement:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 0);
         Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -10);
-
+        calPrev.add(Calendar.DATE, -12);
         List<DeliveryBoyEntity> allActiveDBoy = deliveryBoyService.findAllActiveDeliveryBoy();
-
         if(allActiveDBoy.size()>0){
             for (DeliveryBoyEntity deliveryBoy: allActiveDBoy){
                 accountService.generatedBoyPayStatement(deliveryBoy.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()));

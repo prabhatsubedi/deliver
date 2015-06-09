@@ -7,53 +7,59 @@
 
      <!--Dao and Service Layer Bean Dependency-->
 
+    <!-- Version 1.0 beans starts here-->
+        <!-- Service layer beans starts here-->
+            <bean id = "userService" class = "com.yetistep.delivr.service.impl.UserServiceImpl" />
+            <bean id = "deliveryBoyService" class="com.yetistep.delivr.service.impl.DeliveryBoyServiceImpl" />
+            <bean id = "customerService" class="com.yetistep.delivr.service.impl.CustomerServiceImpl" />
+            <bean id = "merchantService" class="com.yetistep.delivr.service.impl.MerchantServiceImpl" />
+            <bean id = "managerService" class="com.yetistep.delivr.service.impl.ManagerServiceImpl" />
+            <bean id = "adminService" class="com.yetistep.delivr.service.impl.AdminServiceImpl" />
+            <bean id = "accountService" class="com.yetistep.delivr.service.impl.AccountServiceImpl" />
+            <bean id = "systemPropertyService" class="com.yetistep.delivr.service.impl.SystemPropertyServiceImpl" />
+            <bean id = "systemAlgorithmService" class="com.yetistep.delivr.service.impl.SystemAlgorithmServiceImpl" />
+            <bean id = "clientService" class="com.yetistep.delivr.service.impl.ClientServiceImpl" />
+        <!-- Service layer beans ends here-->
 
-    <bean id = "userService" class = "com.yetistep.delivr.service.impl.UserServiceImpl" />
-    <bean id = "deliveryBoyService" class="com.yetistep.delivr.service.impl.DeliveryBoyServiceImpl" />
-    <bean id = "customerService" class="com.yetistep.delivr.service.impl.CustomerServiceImpl" />
-    <bean id = "merchantService" class="com.yetistep.delivr.service.impl.MerchantServiceImpl" />
-    <bean id = "managerService" class="com.yetistep.delivr.service.impl.ManagerServiceImpl" />
-    <bean id = "adminService" class="com.yetistep.delivr.service.impl.AdminServiceImpl" />
-    <bean id = "accountService" class="com.yetistep.delivr.service.impl.AccountServiceImpl" />
-    <bean id = "systemPropertyService" class="com.yetistep.delivr.service.impl.SystemPropertyServiceImpl" />
-    <bean id = "systemAlgorithmService" class="com.yetistep.delivr.service.impl.SystemAlgorithmServiceImpl" />
-    <bean id = "clientService" class="com.yetistep.delivr.service.impl.ClientServiceImpl" />
+        <!-- DAO layer beans starts here-->
+            <bean id = "deliveryBoyDaoService" class="com.yetistep.delivr.dao.impl.DeliveryBoyDaoServiceImpl" />
+            <bean id = "customerDaoService" class="com.yetistep.delivr.dao.impl.CustomerDaoServiceImpl" />
+            <bean id = "merchantDaoService" class="com.yetistep.delivr.dao.impl.MerchantDaoServiceImpl" />
+            <bean id = "actionLogDaoService" class="com.yetistep.delivr.dao.impl.ActionLogDaoServiceImpl" />
+            <bean id = "countryDaoService" class="com.yetistep.delivr.dao.impl.CountryDaoServiceImpl" />
+            <bean id = "preferencesDaoService" class="com.yetistep.delivr.dao.impl.PreferencesDaoServiceImpl" />
+            <bean id = "courierTransactionDaoService" class="com.yetistep.delivr.dao.impl.CourierTransactionDaoServiceImpl" />
+            <bean id = "orderDaoService" class="com.yetistep.delivr.dao.impl.OrderDaoServiceImpl" />
+            <bean id = "deliveryBoySelectionDaoService" class="com.yetistep.delivr.dao.impl.DeliverBoySelectionDaoServiceImpl" />
+            <bean id = "storesBrandDaoService" class="com.yetistep.delivr.dao.impl.StoresBrandDaoServiceImpl" />
+            <bean id = "storeDaoService" class="com.yetistep.delivr.dao.impl.StoreDaoServiceImpl" />
+            <bean id = "userDeviceDaoService" class="com.yetistep.delivr.dao.impl.UserDeviceDaoServiceImpl" />
+            <bean id = "dBoyOrderHistoryDaoService" class="com.yetistep.delivr.dao.impl.DBoyOrderHistoryDaoServiceImpl" />
+            <bean id = "categoryDaoService" class="com.yetistep.delivr.dao.impl.CategoryDaoServiceImpl" />
+            <bean id = "itemDaoService" class="com.yetistep.delivr.dao.impl.ItemDaoServiceImpl" />
+            <bean id = "itemsOrderDaoService" class="com.yetistep.delivr.dao.impl.ItemsOrderDaoServiceImpl" />
+            <bean id = "cartDaoService" class="com.yetistep.delivr.dao.impl.CartDaoServiceImpl" />
+            <bean id = "cartAttributesDaoService" class="com.yetistep.delivr.dao.impl.CartAttributesDaoServiceImpl" />
+            <bean id = "itemsImageDaoService" class="com.yetistep.delivr.dao.impl.ItemsImageDaoServiceImpl" />
+            <bean id = "addressDaoService" class="com.yetistep.delivr.dao.impl.AddressDaoServiceImpl" />
+            <bean id = "itemsAttributeDaoService" class="com.yetistep.delivr.dao.impl.ItemsAttributeDaoServiceImpl" />
+            <bean id = "brandsCategoryService" class="com.yetistep.delivr.dao.impl.BrandsCategoryDaoServiceImpl" />
+            <bean id = "reasonDetailsDaoService" class="com.yetistep.delivr.dao.impl.ReasonDetailsDaoServiceImpl" />
+            <bean id = "adminDaoService" class="com.yetistep.delivr.dao.impl.AdminDaoServiceImpl" />
+            <bean id = "itemsOrderAttributeDaoService" class="com.yetistep.delivr.dao.impl.ItemsOrderAttributeDaoServiceImpl" />
+            <bean id = "systemInit" class="com.yetistep.delivr.sys.SystemInit" />
+            <bean id = "ratingDaoService" class="com.yetistep.delivr.dao.impl.RatingDaoServiceImpl" />
+            <bean id = "orderCancelDaoService" class="com.yetistep.delivr.dao.impl.OrderCancelDaoServiceImpl" />
+            <bean id = "invoiceDaoService" class="com.yetistep.delivr.dao.impl.InvoiceDaoServiceImpl" />
+            <bean id = "billDaoService" class="com.yetistep.delivr.dao.impl.BillDaoServiceImpl" />
+            <bean id = "receiptDaoService" class="com.yetistep.delivr.dao.impl.ReceiptDaoServiceImpl" />
+            <bean id = "validateMobileDaoService" class = "com.yetistep.delivr.dao.impl.ValidateMobileDaoServiceImpl" />
+            <bean id = "dBoyAdvanceAmountDaoService" class = "com.yetistep.delivr.dao.impl.DBoyAdvanceAmountDaoServiceImpl" />
+            <bean id = "walletTransactionDaoService" class = "com.yetistep.delivr.dao.impl.WalletTransactionDaoServiceImpl" />
+            <bean id = "cartCustomItemDaoService" class = "com.yetistep.delivr.dao.impl.CartCustomItemDaoServiceImpl" />
+            <bean id = "paymentGatewayInfoDaoService" class = "com.yetistep.delivr.dao.impl.PaymentGatewayInfoDaoServiceImpl" />
+            <bean id = "dBoyPaymentDaoService" class = "com.yetistep.delivr.dao.impl.DBoyPaymentDaoServiceImpl" />
+        <!-- DAO layer beans ends here-->
+    <!-- Version 1.0 beans ends here -->
 
-    <bean id = "deliveryBoyDaoService" class="com.yetistep.delivr.dao.impl.DeliveryBoyDaoServiceImpl" />
-    <bean id = "customerDaoService" class="com.yetistep.delivr.dao.impl.CustomerDaoServiceImpl" />
-    <bean id = "merchantDaoService" class="com.yetistep.delivr.dao.impl.MerchantDaoServiceImpl" />
-    <bean id = "actionLogDaoService" class="com.yetistep.delivr.dao.impl.ActionLogDaoServiceImpl" />
-    <bean id = "countryDaoService" class="com.yetistep.delivr.dao.impl.CountryDaoServiceImpl" />
-    <bean id = "preferencesDaoService" class="com.yetistep.delivr.dao.impl.PreferencesDaoServiceImpl" />
-    <bean id = "courierTransactionDaoService" class="com.yetistep.delivr.dao.impl.CourierTransactionDaoServiceImpl" />
-    <bean id = "orderDaoService" class="com.yetistep.delivr.dao.impl.OrderDaoServiceImpl" />
-    <bean id = "deliveryBoySelectionDaoService" class="com.yetistep.delivr.dao.impl.DeliverBoySelectionDaoServiceImpl" />
-    <bean id = "storesBrandDaoService" class="com.yetistep.delivr.dao.impl.StoresBrandDaoServiceImpl" />
-    <bean id = "storeDaoService" class="com.yetistep.delivr.dao.impl.StoreDaoServiceImpl" />
-    <bean id = "userDeviceDaoService" class="com.yetistep.delivr.dao.impl.UserDeviceDaoServiceImpl" />
-    <bean id = "dBoyOrderHistoryDaoService" class="com.yetistep.delivr.dao.impl.DBoyOrderHistoryDaoServiceImpl" />
-    <bean id = "categoryDaoService" class="com.yetistep.delivr.dao.impl.CategoryDaoServiceImpl" />
-    <bean id = "itemDaoService" class="com.yetistep.delivr.dao.impl.ItemDaoServiceImpl" />
-    <bean id = "itemsOrderDaoService" class="com.yetistep.delivr.dao.impl.ItemsOrderDaoServiceImpl" />
-    <bean id = "cartDaoService" class="com.yetistep.delivr.dao.impl.CartDaoServiceImpl" />
-    <bean id = "cartAttributesDaoService" class="com.yetistep.delivr.dao.impl.CartAttributesDaoServiceImpl" />
-    <bean id = "itemsImageDaoService" class="com.yetistep.delivr.dao.impl.ItemsImageDaoServiceImpl" />
-    <bean id = "addressDaoService" class="com.yetistep.delivr.dao.impl.AddressDaoServiceImpl" />
-    <bean id = "itemsAttributeDaoService" class="com.yetistep.delivr.dao.impl.ItemsAttributeDaoServiceImpl" />
-    <bean id = "brandsCategoryService" class="com.yetistep.delivr.dao.impl.BrandsCategoryDaoServiceImpl" />
-    <bean id = "reasonDetailsDaoService" class="com.yetistep.delivr.dao.impl.ReasonDetailsDaoServiceImpl" />
-    <bean id = "adminDaoService" class="com.yetistep.delivr.dao.impl.AdminDaoServiceImpl" />
-    <bean id = "itemsOrderAttributeDaoService" class="com.yetistep.delivr.dao.impl.ItemsOrderAttributeDaoServiceImpl" />
-    <bean id = "systemInit" class="com.yetistep.delivr.sys.SystemInit" />
-    <bean id = "ratingDaoService" class="com.yetistep.delivr.dao.impl.RatingDaoServiceImpl" />
-    <bean id = "orderCancelDaoService" class="com.yetistep.delivr.dao.impl.OrderCancelDaoServiceImpl" />
-    <bean id = "invoiceDaoService" class="com.yetistep.delivr.dao.impl.InvoiceDaoServiceImpl" />
-    <bean id = "billDaoService" class="com.yetistep.delivr.dao.impl.BillDaoServiceImpl" />
-    <bean id = "receiptDaoService" class="com.yetistep.delivr.dao.impl.ReceiptDaoServiceImpl" />
-    <bean id = "validateMobileDaoService" class = "com.yetistep.delivr.dao.impl.ValidateMobileDaoServiceImpl" />
-    <bean id = "dBoyAdvanceAmountDaoService" class = "com.yetistep.delivr.dao.impl.DBoyAdvanceAmountDaoServiceImpl" />
-    <bean id = "walletTransactionDaoService" class = "com.yetistep.delivr.dao.impl.WalletTransactionDaoServiceImpl" />
-    <bean id = "cartCustomItemDaoService" class = "com.yetistep.delivr.dao.impl.CartCustomItemDaoServiceImpl" />
-    <bean id = "paymentGatewayInfoDaoService" class = "com.yetistep.delivr.dao.impl.PaymentGatewayInfoDaoServiceImpl" />
-    <bean id = "dBoyPaymentDaoService" class = "com.yetistep.delivr.dao.impl.DBoyPaymentDaoServiceImpl" />
  </beans>

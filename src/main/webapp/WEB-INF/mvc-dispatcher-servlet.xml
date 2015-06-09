@@ -9,37 +9,26 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/task  http://www.springframework.org/schema/task/spring-task.xsd">
-
     <context:annotation-config />
-
     <mvc:annotation-driven>
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="objectMapper">
                     <bean class="com.fasterxml.jackson.databind.ObjectMapper">
                         <property name="serializationInclusion" value="NON_NULL"/>
-
                     </bean>
-
                 </property>
                 <property name="supportedMediaTypes" value="application/json"/>
             </bean>
-
         </mvc:message-converters>
-
     </mvc:annotation-driven>
-
-
     <task:annotation-driven />
     <task:scheduler id="scheduler" pool-size="50" />
-
     <!-- ========= This Interceptor Will be used to check request =================== -->
-
     <!--<mvc:interceptors>-->
     <!--<bean class="com.yetistep.delivr.sys.RequestProcessingInterceptor">-->
     <!--</bean>-->
     <!--</mvc:interceptors>-->
-
     <mvc:interceptors>
         <bean id="webContentInterceptor"
               class="org.springframework.web.servlet.mvc.WebContentInterceptor">
@@ -55,7 +44,6 @@
             </property>
         </bean>
     </mvc:interceptors>
-
     <!--<bean id="dynamicSchedule" class="com.yetistep.delivr.schedular.DynamicSchedule">-->
         <!--<constructor-arg ref="scheduler" />-->
         <!--<constructor-arg>-->
@@ -66,26 +54,18 @@
         <!--</constructor-arg>-->
         <!--<constructor-arg value="60000" />-->
     <!--</bean>-->
-
     <context:component-scan base-package="com.yetistep.delivr.*" />
-
     <!-- Import Other XMLs -->
     <import resource="spring-source-data.xml" />
     <import resource="spring-bean.xml" />
-
     <!-- Declaring the jsp view resolver to show jsp page in browser -->
     <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/view/" />
         <property name="suffix" value=".jsp" />
     </bean>
-
     <bean id="persistenceExceptionTranslationPostProcessor"
           class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
-
-
-
     <mvc:resources mapping="/resources/**" location="/resources/" />
-
     <!--<mvc:interceptors>-->
         <!--&lt;!&ndash; On pre-handle, resolve the device that originated the web request &ndash;&gt;-->
         <!--<bean class="org.springframework.mobile.device.DeviceResolverHandlerInterceptor" >-->
@@ -101,7 +81,4 @@
         <!--</constructor-arg>-->
         <!--</bean>-->
     <!--</mvc:interceptors>-->
-
-
-
 </beans>

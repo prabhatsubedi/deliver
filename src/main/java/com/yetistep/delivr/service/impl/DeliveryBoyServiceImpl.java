@@ -278,7 +278,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         assoc.put("user", "id,fullName,mobileNumber,emailAddress,status");
         assoc.put("order", "id,orderName,assignedTime,orderStatus,dBoyOrderHistories");
 
-        subAssoc.put("dBoyOrderHistories", "orderAcceptedAt");
+        subAssoc.put("dBoyOrderHistories", "orderAcceptedAt,jobStartedAt");
 
         for (DeliveryBoyEntity deliveryBoyEntity:deliveryBoyEntities){
             DeliveryBoyEntity deliveryBoy = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc, subAssoc);

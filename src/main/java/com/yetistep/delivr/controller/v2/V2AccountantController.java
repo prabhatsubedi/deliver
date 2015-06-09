@@ -35,12 +35,12 @@ public class V2AccountantController {
     private static final Logger log = Logger.getLogger(V2AccountantController.class);
 
     @Autowired
-    DeliveryBoyService deliveryBoyService;
+    DeliveryBoyService deliveryBoyServiceV2;
 
     @RequestMapping(value = "/get_dboys", method = RequestMethod.POST)
     public ResponseEntity<ServiceResponse> getAllDeliveryBoy(@RequestBody RequestJsonDto requestJsonDto) {
         try {
-            PaginationDto deliveryBoyEntities = deliveryBoyService.findAllDeliverBoy(requestJsonDto);
+            PaginationDto deliveryBoyEntities = deliveryBoyServiceV2.findAllDeliverBoy(requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("List of shoppers");
             serviceResponse.addParam("deliveryBoys", deliveryBoyEntities);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

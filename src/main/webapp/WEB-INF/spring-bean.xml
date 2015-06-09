@@ -62,4 +62,13 @@
         <!-- DAO layer beans ends here-->
     <!-- Version 1.0 beans ends here -->
 
- </beans>
+    <!-- Version 2.0 beans starts here-->
+        <!-- Service layer beans starts here-->
+            <bean id = "deliveryBoyServiceV2" class="com.yetistep.delivr.service.v2.impl.DeliveryBoyServiceImpl" />
+        <!-- Service layer beans ends here-->
+        <!-- DAO layer beans starts here-->
+            <bean id = "deliveryBoyDaoServiceV2" class="com.yetistep.delivr.dao.v2.impl.DeliveryBoyDaoServiceImpl" />
+        <!-- DAO layer beans ends here-->
+    <!-- Version 2.0 beans ends here -->
+
+</beans>

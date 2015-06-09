@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.util.regex.Pattern;
 
 /**
@@ -165,6 +166,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         BigDecimal value = walletTransactionEntity.getTransactionAmount().setScale(2, BigDecimal.ROUND_HALF_UP);
         Long currentTime = walletTransactionEntity.getTransactionDate().getTime();
         currentTime = (currentTime / 1000) * 1000;
+        walletTransactionEntity.setTransactionDate(new Timestamp(currentTime));
         value = value.add(new BigDecimal(currentTime));
         value = value.multiply(new BigDecimal(walletTransactionEntity.getCustomer().getId()));
         value = value.add(walletTransactionEntity.getAvailableWalletAmount().setScale(2, BigDecimal.ROUND_HALF_UP));

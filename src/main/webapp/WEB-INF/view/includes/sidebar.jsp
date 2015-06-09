@@ -20,7 +20,7 @@
                 <li><a href="/merchant/orders" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Orders"><span class="delivricon delivricon-item"></span><span class="menu_text">Orders</span></a></li>
                 <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_ACCOUNTANT')">
                 <li><a href="/accountant/invoices" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Statements"><span class="delivricon delivricon-invoice"></span><span class="menu_text">Statements</span></a></li>
-                <li><a href="/accountant/fund_transfer" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Fund Tranfer"><span class="delivricon delivricon-invoice"></span><span class="menu_text">Fund Tranfer</span></a></li>
+                <li><a href="/accountant/fund_transfer" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Fund Tranfer"><span class="delivricon delivricon-wallet"></span><span class="menu_text">Fund Tranfer</span></a></li>
                 </sec:authorize>
                 <li><a href="/organizer/customers" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="Inactive Customers"><span class="delivricon delivricon-user"></span><span class="menu_text">Inactive Customers</span></a></li>
                 <li><a href="/organizer/sms" class="elem_tooltip" data-container=".tooltip_conatiner" data-placement="right" title="SMS"><span class="delivricon delivricon-message"></span><span class="menu_text">SMS</span></a></li>

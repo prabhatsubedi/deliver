@@ -65,7 +65,7 @@ public class DeliveryBoyController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/update_location", method = RequestMethod.POST)
+    @RequestMapping(value = "/update_location", method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<ServiceResponse> updateDeliveryBoyLocation(@RequestHeader HttpHeaders headers, @RequestBody DeliveryBoyEntity deliveryBoy) {
         try{

@@ -264,3 +264,14 @@ INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_
 UPDATE `delivr_db`.`orders` SET `discount_from_store` = 0 WHERE `discount_from_store` IS NULL;
 /*Use just in test servers or local servers, but not in live*/
 /*UPDATE `delivr_db`.`stores` SET `stores`.`send_email` = 0 WHERE `stores`.`send_email` = 1;*/
+
+
+/*UTF-8 patch*/
+ALTER TABLE `delivr_db`.`users`
+CHANGE COLUMN `full_name` `full_name` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL DEFAULT NULL ;
+
+ALTER TABLE `delivr_db`.`address`
+CHANGE COLUMN `full_name` `full_name` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL DEFAULT NULL ,
+CHANGE COLUMN `notes` `notes` LONGTEXT CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL DEFAULT NULL ,
+CHANGE COLUMN `street` `street` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL DEFAULT NULL ,
+CHANGE COLUMN `given_location` `given_location` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL DEFAULT NULL ;

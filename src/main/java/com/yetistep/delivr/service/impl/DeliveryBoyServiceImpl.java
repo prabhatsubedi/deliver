@@ -720,12 +720,13 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             throw new YSException("ORD016");
         }
 
-        if(order.getPaymentMode().equals(PaymentMode.CASH_ON_DELIVERY)){
+        /* Commented in this phase due to TBD order */
+        /*if(order.getPaymentMode().equals(PaymentMode.CASH_ON_DELIVERY)){
             BigDecimal maxOrderAmount = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT));
             if (BigDecimalUtil.isGreaterThen(order.getTotalCost(), maxOrderAmount)) {
                 throw new YSException("CRT007", "Maximum order value is "+maxOrderAmount);
             }
-        }
+        }*/
         Boolean PROFIT_CHECK = GeneralUtil.parseBoolean(systemPropertyService.readPrefValue(PreferenceType.PROFIT_CHECK_FLAG));
         if(PROFIT_CHECK){
             BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));

@@ -19,5 +19,5 @@ public class CommonConstants {
 
     public static final String UNKNOWN_LOCATION = "Unknown Location";
 
-    public static final String SMS_PRE_TEXT = "Verification code: ";
+    public static final String SMS_PRE_TEXT = "Koolkat Verification Code is ";
 }

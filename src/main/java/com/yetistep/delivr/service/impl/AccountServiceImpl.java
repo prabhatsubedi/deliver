@@ -112,8 +112,8 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             //BigDecimal vatAmount =  totalTaxableAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
             BigDecimal grandTotalAmount = totalTaxableAmount.add(itemVatAmount);
             BigDecimal commissionAmount = totalOrderAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
-            BigDecimal systemVatAmount =  commissionAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
-            commissionAmount = commissionAmount.add(systemVatAmount);
+            /*BigDecimal systemVatAmount =  commissionAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
+            commissionAmount = commissionAmount.add(systemVatAmount);*/
 
             BigDecimal netPayableAmount = grandTotalAmount.subtract(commissionAmount);
             invoice.setAmount(netPayableAmount.setScale(2, BigDecimal.ROUND_DOWN));

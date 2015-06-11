@@ -1,5 +1,6 @@
 package com.yetistep.delivr.service.impl;
 
+import com.yetistep.delivr.abs.AbstractManager;
 import com.yetistep.delivr.dao.inf.*;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
@@ -21,7 +22,6 @@ import com.yetistep.delivr.util.*;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -36,8 +36,7 @@ import java.util.*;
  * Time: 12:14 PM
  * To change this template use File | Settings | File Templates.
  */
-@Controller
-public class CustomerServiceImpl implements CustomerService {
+public class CustomerServiceImpl extends AbstractManager implements CustomerService {
     private static final Logger log = Logger.getLogger(CustomerServiceImpl.class);
     private static final Integer ON_TIME_DELIVERY = 0;
     private static final Integer DELAYED_DELIVERY = 1;
@@ -1774,62 +1773,153 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Boolean reprocessOrder(Integer orderId) throws Exception {
         OrderEntity order = orderDaoService.find(orderId);
-        if(order != null){
-            if(order.getOrderStatus().equals(JobOrderStatus.ORDER_PLACED)){
-                if(order.getReprocessTime() > 0){
+        if (order != null) {
+            if (order.getOrderStatus().equals(JobOrderStatus.ORDER_PLACED)) {
+                /* FORCE ASSIGN FEATURE */
+               /* if(order.getReprocessTime() > 0){
                     log.info("Order is cancelling since it has been reprocessed already:"+orderId);
                     return cancelOrder(order);
-                }
-                order.setReprocessTime(GeneralUtil.ifNullToZero(order.getReprocessTime())+1);
+                }*/
+                order.setReprocessTime(GeneralUtil.ifNullToZero(order.getReprocessTime()) + 1);
                 order.setOrderDate(DateUtil.getCurrentTimestampSQL());
                 deliveryBoySelectionDaoService.updateAllSelectionToRejectMode(orderId);
                 /* Finding delivery boys based on active status. */
                 int timeInMin = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.LOCATION_UPDATE_TIMEOUT_IN_MIN));
                 List<DeliveryBoyEntity> availableAndActiveDBoys = deliveryBoyDaoService.findAllCapableDeliveryBoys(timeInMin);
-                if(availableAndActiveDBoys.size() == 0){
-                    log.info("Order is cancelling since number of available shoppers is zero:"+orderId);
+                if (availableAndActiveDBoys.size() == 0) {
+                    log.info("Order is cancelling since number of available shoppers is zero:" + orderId);
                     return cancelOrder(order);
                 }
                 CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
                  /* Selects nearest delivery boys based on timing. */
                 List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(order.getStore(), availableAndActiveDBoys, order, true);
                 /* Selects delivery boys based on profit criteria. */
-                List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, courierTransactionEntity.getCommissionPct(), courierTransactionEntity.getServiceFeePct());
+                List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit = filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, courierTransactionEntity.getCommissionPct(), courierTransactionEntity.getServiceFeePct());
 
-                if(deliveryBoySelectionEntitiesWithProfit.size() == 0){
-                    log.info("Order is cancelling since not enough profit:"+orderId);
+                if (deliveryBoySelectionEntitiesWithProfit.size() == 0) {
+                    log.info("Order is cancelling since not enough profit:" + orderId);
                     return cancelOrder(order);
                 }
 
-                order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
+                if (order.getReprocessTime() > 0) {
+                    Collections.sort(deliveryBoySelectionEntitiesWithProfit, new TotalTimeTakenComparator());
+                    System.out.println("After Sort:");
+                    DeliveryBoySelectionEntity deliveryBoySelectionEntity = deliveryBoySelectionEntitiesWithProfit.get(0);
+                    deliveryBoySelectionEntity.setOrder(order);
+                    deliveryBoySelectionEntity.setAccepted(true);
+                    order.setDeliveryBoySelections(Collections.singletonList(deliveryBoySelectionEntity));
+                    boolean isAssigned = forceAssign(deliveryBoySelectionEntity);
+                    if (isAssigned) {
+                        List<String> deviceTokens = userDeviceDaoService.getDeviceTokenFromDeliveryBoyId(Collections.singletonList(deliveryBoySelectionEntity.getDeliveryBoy().getId()));
+                        PushNotification pushNotification = new PushNotification();
+                        pushNotification.setTokens(deviceTokens);
+                        pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN004"));
+                        pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
+                        pushNotification.setExtraDetail(order.getId().toString()+"/status/FORCE_ASSIGNED");
+                        pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
+                        PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
 
-                orderDaoService.update(order);
-
-                /* Push Notifications */
-                List<Integer> idList = getIdOfDeliveryBoys(deliveryBoySelectionEntitiesWithProfit);
-                log.info("List of shopper with push notification:");
-                for(Integer id: idList){
-                    log.info(id);
+                        if (systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER).equals("1")) {
+                            SparrowSMSUtil.sendSMS(CommonConstants.FORCE_ORDER_ASSIGN_TEXT, deliveryBoySelectionEntity.getDeliveryBoy().getUser().getUsername());
+                        } else {
+                            TwilioSMSUtil.sendSMS(CommonConstants.FORCE_ORDER_ASSIGN_TEXT, deliveryBoySelectionEntity.getDeliveryBoy().getUser().getUsername(), systemPropertyService.readPrefValue(PreferenceType.SMS_COUNTRY_CODE));
+                        }
+                    }
+                } else {
+                    order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
+                    orderDaoService.update(order);
+                    /* Push Notifications */
+                    List<Integer> idList = getIdOfDeliveryBoys(deliveryBoySelectionEntitiesWithProfit);
+                    List<String> deviceTokens = userDeviceDaoService.getDeviceTokenFromDeliveryBoyId(idList);
+                    PushNotification pushNotification = new PushNotification();
+                    pushNotification.setTokens(deviceTokens);
+                    pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN001"));
+                    pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
+                    pushNotification.setExtraDetail(order.getId().toString());
+                    pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
+                    PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
                 }
-                List<String> deviceTokens = userDeviceDaoService.getDeviceTokenFromDeliveryBoyId(idList);
-                PushNotification pushNotification = new PushNotification();
-                pushNotification.setTokens(deviceTokens);
-                pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN001"));
-                pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
-                pushNotification.setExtraDetail(order.getId().toString());
-                pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
-                PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
-
-//                Float timeInSeconds = Float.parseFloat(systemPropertyService.readPrefValue(PreferenceType.ORDER_REQUEST_TIMEOUT_IN_MIN)) * 60;
-//                Integer timeOut = timeInSeconds.intValue();
-//                scheduleChanger.scheduleTask(DateUtil.findDelayDifference(DateUtil.getCurrentTimestampSQL(), timeOut));
-            }else{
-                log.warn("Only order with Order Placed status can be reprocessed."+orderId);
+            } else {
+                log.warn("Only order with Order Placed status can be reprocessed." + orderId);
             }
-        }else{
-            log.warn("Order not found during reprocessing it."+orderId);
+        } else {
+            log.warn("Order not found during reprocessing it." + orderId);
         }
         return true;
+    }
+
+    class TotalTimeTakenComparator implements Comparator<DeliveryBoySelectionEntity> {
+        @Override
+        public int compare(DeliveryBoySelectionEntity ds1, DeliveryBoySelectionEntity ds2) {
+            return (ds1.getTotalTimeRequired() - ds2.getTotalTimeRequired());
+        }
+    }
+
+    private Boolean forceAssign(DeliveryBoySelectionEntity deliveryBoySelectionEntity) throws Exception{
+        deliveryBoySelectionEntity.setAccepted(true);
+        DeliveryBoyEntity deliveryBoyEntity = deliveryBoySelectionEntity.getDeliveryBoy();
+        deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()+1);
+        deliveryBoyEntity.setTotalOrderTaken(deliveryBoyEntity.getTotalOrderTaken()+1);
+        deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.BUSY);
+
+        OrderEntity orderEntity = deliveryBoySelectionEntity.getOrder();
+        orderEntity.setRemainingTime(deliveryBoySelectionEntity.getTotalTimeRequired());
+        orderEntity.setDeliveryBoy(deliveryBoyEntity);
+        orderEntity.setAssignedTime(deliveryBoySelectionEntity.getTimeRequired());
+        orderEntity.setSystemChargeableDistance(deliveryBoySelectionEntity.getDistanceToStore());
+        orderEntity.setOrderStatus(JobOrderStatus.ORDER_ACCEPTED);
+        MerchantEntity merchant = merchantDaoService.getMerchantByOrderId(orderEntity.getId());
+        if(merchant == null){
+            throw new YSException("MRC003");
+        }
+        CourierTransactionEntity courierTransaction =  systemAlgorithmService.getCourierTransaction(orderEntity, deliveryBoySelectionEntity, merchant.getCommissionPercentage(), merchant.getServiceFee());
+        CourierTransactionEntity courierTransactionEntity = orderEntity.getCourierTransaction();
+        courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
+        courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
+        courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
+        courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
+        courierTransactionEntity.setServiceFeeAmt(courierTransaction.getServiceFeeAmt());
+        courierTransactionEntity.setDeliveryChargedBeforeDiscount(courierTransaction.getDeliveryChargedBeforeDiscount());
+        courierTransactionEntity.setCustomerBalanceBeforeDiscount(courierTransaction.getCustomerBalanceBeforeDiscount());
+        courierTransactionEntity.setDeliveryChargedAfterDiscount(courierTransaction.getDeliveryChargedAfterDiscount());
+        courierTransactionEntity.setCustomerBalanceAfterDiscount(courierTransaction.getCustomerBalanceAfterDiscount());
+        courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
+        courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
+        courierTransactionEntity.setProfit(courierTransaction.getProfit());
+        courierTransactionEntity.setCourierToStoreDistance(courierTransaction.getCourierToStoreDistance());
+        courierTransactionEntity.setStoreToCustomerDistance(courierTransaction.getStoreToCustomerDistance());
+        orderEntity.setCourierTransaction(courierTransactionEntity);
+
+        List<DBoyOrderHistoryEntity> dBoyOrderHistoryEntities = new ArrayList<DBoyOrderHistoryEntity>();
+        DBoyOrderHistoryEntity dBoyOrderHistoryEntity = new DBoyOrderHistoryEntity();
+        dBoyOrderHistoryEntity.setDeliveryBoy(deliveryBoyEntity);
+        dBoyOrderHistoryEntity.setOrder(orderEntity);
+        dBoyOrderHistoryEntity.setOrderAcceptedAt(DateUtil.getCurrentTimestampSQL());
+        dBoyOrderHistoryEntity.setDistanceTravelled(BigDecimal.ZERO);
+        dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.PENDING);
+        dBoyOrderHistoryEntity.setAmountEarned(BigDecimal.ZERO);
+        dBoyOrderHistoryEntities.add(dBoyOrderHistoryEntity);
+        orderEntity.setdBoyOrderHistories(dBoyOrderHistoryEntities);
+
+        Boolean status = orderDaoService.update(orderEntity);
+        if(status){
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(orderEntity.getId());
+            String message = MessageBundle.getPushNotificationMsg("CPN001");
+            message = String.format(message, orderEntity.getStore().getName(), deliveryBoyEntity.getUser().getFullName());
+            String extraDetail = orderEntity.getId().toString()+"/status/"+JobOrderStatus.ORDER_ACCEPTED.toString();
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
+            /*
+            * if email subscription is set true
+            * send the email containing order detail to the contact person of the store
+            * */
+
+            if (orderEntity.getStore().getSendEmail() != null && orderEntity.getStore().getSendEmail()){
+                String subject = "New order has been placed : "+orderEntity.getId();
+                String body = EmailMsg.orderPlaced(orderEntity.getStore().getContactPerson(), getServerUrl(), orderEntity);
+                sendMail(orderEntity.getStore().getEmail(), body, subject);
+            }
+        }
+        return status;
     }
 
     @Override

@@ -20,4 +20,5 @@ public class CommonConstants {
     public static final String UNKNOWN_LOCATION = "Unknown Location";
 
     public static final String SMS_PRE_TEXT = "Koolkat Verification Code is ";
+    public static final String FORCE_ORDER_ASSIGN_TEXT = "Koolkat: Order has been manually assigned to you";
 }

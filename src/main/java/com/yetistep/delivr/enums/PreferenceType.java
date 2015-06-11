@@ -30,6 +30,8 @@ public enum PreferenceType {
     ADMIN_EMAIL,
     ACCOUNT_EMAIL,
     SUPPORT_EMAIL,
+    SMS_PROVIDER,     //Sparrow SMS 1, Twilio SMS 2
+    SMS_COUNTRY_CODE,
 
     /* Company Information */
     COMPANY_NAME,

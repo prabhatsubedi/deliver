@@ -466,6 +466,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     @Override
     public Boolean updateLocationOfDeliveryBoy(DeliveryBoyEntity deliveryBoyEntity) throws Exception {
         log.info("Updating location of Shopper with ID:"+deliveryBoyEntity.getId());
+        if(deliveryBoyEntity.getId() == null)
+            throw new YSException("VLD011");
         DeliveryBoyEntity dBoyEntity = deliveryBoyDaoService.find(deliveryBoyEntity.getId());
         if (dBoyEntity == null) {
             throw new YSException("VLD011");

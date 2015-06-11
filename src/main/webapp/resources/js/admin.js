@@ -47,6 +47,8 @@ var Admin = function() {
                             var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'No', 1: 'Yes'});
                         } else if(prefKey == 'AIR_OR_ACTUAL_DISTANCE_SWITCH') {
                             var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'Air Distance', 1: 'Actual Distance'});
+                        } else if(prefKey == 'SMS_PROVIDER') {
+                            var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {1: 'Sparrow SMS', 2: 'Twilio SMS'});
                         } else if(prefKey == 'COMPANY_LOGO' || prefKey == 'DEFAULT_IMG_ITEM' || prefKey == 'DEFAULT_IMG_CATEGORY' || prefKey == 'DEFAULT_IMG_SEARCH' || prefKey == 'REFERRAL_FACEBOOK_IMG' || prefKey == 'LOGO_FOR_PDF_EMAIL') {
                             var elem = $('.image_template').clone();
                             var imgWidth = '';

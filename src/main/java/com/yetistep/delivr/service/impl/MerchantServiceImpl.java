@@ -1674,9 +1674,10 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
         assoc.put("orderCancel", "id,reasonDetails,reason");
         assoc.put("dBoyOrderHistories", "id,distanceTravelled,amountEarned,jobStartedAt,orderCompletedAt");
-        assoc.put("deliveryBoySelections", "id,paidToCourier,accepted");
+        assoc.put("deliveryBoySelections", "id,paidToCourier,accepted,deliveryBoy");
         assoc.put("bill", "id,path");
 
+        subAssoc.put("deliveryBoy", "id,user");
         subAssoc.put("user", "id,fullName,mobileNumber,profileImage,addresses,emailAddress");
         subAssoc.put("reasonDetails", "id,cancelReason");
         subAssoc.put("addresses", "id,street,city,state,country");

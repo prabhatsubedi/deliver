@@ -130,7 +130,7 @@ public class EmailMsg {
         body.append(getHtmlHeader(serverUrl));
         body.append("<div style='width: 100%;float: left;margin-bottom: 30px;background-color: white;border-radius: 15px;padding: 20px 0px;border:1px solid #E0E0E0;'>");
         body.append("<div style='padding: 20px; width:100%; height:90px;'><img src='"+serverUrl+"/resources/images/logo.png' width='90' height='64' alt='"+COMPANY_NAME+" Logo' style='float: left;'/> <div style='float: left;font-size: 40px;color: #AAAAAA;font-weight:bold;margin-left:20px;'>"+COMPANY_NAME+"</div></div>");
-        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px; text-align: center;'>New order has been placed for your store: Order no - "+order.getId()+"</div>");
+        body.append("<div style='min-height: 110px;line-height: 55px; background-color: #F58220;color: #ffffff;font-size: 36px;padding: 70px 40px; text-align: center;'>New order has been placed for your store: Order no - "+order.getId()+". Please confirm with CSR</div>");
 
         body.append("<div style='font-size: 16px; padding: 30px;'>");
         body.append("<p>Dear <b>"+contactPerson+"</b></p>");

@@ -74,7 +74,7 @@ public class TaskSchedule {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 0);
         Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -12);
+        calPrev.add(Calendar.DATE, -7);
         List<StoreEntity> stores=accountService.getAllStores();
         if(stores.size()>0){
             for (StoreEntity store: stores){
@@ -92,7 +92,7 @@ public class TaskSchedule {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 0);
         Calendar calPrev = Calendar.getInstance();
-        calPrev.add(Calendar.DATE, -12);
+        calPrev.add(Calendar.DATE, -7);
         List<DeliveryBoyEntity> allActiveDBoy = deliveryBoyService.findAllActiveDeliveryBoy();
         if(allActiveDBoy.size()>0){
             for (DeliveryBoyEntity deliveryBoy: allActiveDBoy){

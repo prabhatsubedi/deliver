@@ -37,7 +37,7 @@ public class V2AccountantController {
     @Autowired
     DeliveryBoyService deliveryBoyServiceV2;
 
-    @RequestMapping(value = "/get_dboys", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/get_dboys", method = RequestMethod.POST)
     public ResponseEntity<ServiceResponse> getAllDeliveryBoy(@RequestBody RequestJsonDto requestJsonDto) {
         try {
             PaginationDto deliveryBoyEntities = deliveryBoyServiceV2.findAllDeliverBoy(requestJsonDto);
@@ -49,7 +49,7 @@ public class V2AccountantController {
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
-    }
+    }*/
 
 
 }

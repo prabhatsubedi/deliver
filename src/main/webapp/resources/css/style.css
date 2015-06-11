@@ -163,6 +163,9 @@ body.loader_div > .loader {
 .width_300 {
     min-width: 300px;
 }
+.width_350 {
+    min-width: 350px;
+}
 .custom_link {
     color: #337ab7;
     text-decoration: none;
@@ -2171,4 +2174,15 @@ label.check_label .checkbox {
 }
 #order_details .modal-body .dRow:last-child {
     border-bottom: none;
+}
+
+.assigned_shoppers_view {
+    position: absolute;
+    width: 200px;
+    background-color: #fff;
+    box-shadow: 0 0 15px #999;
+    line-height: 1.8;
+    padding: 10px;
+    position: absolute;
+    z-index: 10;
 }

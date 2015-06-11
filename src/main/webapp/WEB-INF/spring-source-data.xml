@@ -84,7 +84,7 @@
 
     <aop:config>
         <aop:pointcut id="userServicePointCut"
-                      expression="execution(* com.yetistep.delivr.service.impl.*ServiceImpl.*(..)) || execution(* com.yetistep.delivr.service.v2.impl.*ServiceImpl.*(..))" />
+                      expression="execution(* com.yetistep.delivr.service.impl.*ServiceImpl.*(..))" />
         <aop:advisor advice-ref="txAdvice" pointcut-ref="userServicePointCut" />
     </aop:config>
 

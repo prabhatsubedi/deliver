@@ -383,14 +383,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         //once sms is enabled set validatedByUser false by default and uncomment the related lines of code
         Boolean validatedByUser = false;
 
-        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
-        String countryCode;
-
-        if(currency.equals("&#8377")){
-            countryCode = "+91";
-        }else{
-            countryCode = "+977";
-        }
+        String countryCode = systemPropertyService.readPrefValue(PreferenceType.SMS_COUNTRY_CODE);
 
         if(validMobile == null) {
             log.debug("++++++ Updating Mobile No and Validation Code");
@@ -398,9 +391,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
             verificationCode = GeneralUtil.generateMobileCode();
 
-            //Now Send SMS
-            SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
-            //TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile, countryCode);
+            SMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT, mobile, countryCode, systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
 
             ValidateMobileEntity validateMobileEntity = new ValidateMobileEntity();
             validateMobileEntity.setMobileNo(mobile);
@@ -423,9 +414,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 //Send SMS Only
                 verificationCode = String.valueOf(validMobile.getVerificationCode());
 
-                //Now Send SMS
-                SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile);
-                //TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile, countryCode);
+                SMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT, mobile, countryCode, systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
 
                 validateMobileDaoService.updateNoOfSMSSend(validMobile.getId());
 
@@ -1819,11 +1808,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                         pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
                         PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
 
-                        if (systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER).equals("1")) {
-                            SparrowSMSUtil.sendSMS(CommonConstants.FORCE_ORDER_ASSIGN_TEXT, deliveryBoySelectionEntity.getDeliveryBoy().getUser().getUsername());
-                        } else {
-                            TwilioSMSUtil.sendSMS(CommonConstants.FORCE_ORDER_ASSIGN_TEXT, deliveryBoySelectionEntity.getDeliveryBoy().getUser().getUsername(), systemPropertyService.readPrefValue(PreferenceType.SMS_COUNTRY_CODE));
-                        }
+                        SMSUtil.sendSMS(CommonConstants.FORCE_ORDER_ASSIGN_TEXT, deliveryBoySelectionEntity.getDeliveryBoy().getUser().getUsername(), systemPropertyService.readPrefValue(PreferenceType.SMS_COUNTRY_CODE),systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
                     }
                 } else {
                     order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);

@@ -403,17 +403,7 @@ public class AdminServiceImpl implements AdminService {
         log.info("+++++++++ Sending SMS to " + smsDto.getMobileNo() + " ++++++++++++++++");
         String verificationCode = validateMobileDaoService.getVerificationCode(smsDto.getId());
 
-        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
-        String countryCode;
-
-        if(currency.equals("&#8377")){
-            countryCode = "+91";
-        }else{
-            countryCode = "+977";
-        }
-
-        //TwilioSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", smsDto.getMobileNo(), countryCode);
-        SparrowSMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", smsDto.getMobileNo());
+        SMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT, smsDto.getMobileNo(), systemPropertyService.readPrefValue(PreferenceType.SMS_COUNTRY_CODE),systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
 
         //Now Update Total SMS Count
         validateMobileDaoService.updateNoOfSMSSend(smsDto.getId());

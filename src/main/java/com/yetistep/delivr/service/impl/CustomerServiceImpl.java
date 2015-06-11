@@ -391,7 +391,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
             verificationCode = GeneralUtil.generateMobileCode();
 
-            SMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT, mobile, countryCode, systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
+            SMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile, countryCode, systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
 
             ValidateMobileEntity validateMobileEntity = new ValidateMobileEntity();
             validateMobileEntity.setMobileNo(mobile);
@@ -414,7 +414,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 //Send SMS Only
                 verificationCode = String.valueOf(validMobile.getVerificationCode());
 
-                SMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT, mobile, countryCode, systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
+                SMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", mobile, countryCode, systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
 
                 validateMobileDaoService.updateNoOfSMSSend(validMobile.getId());
 

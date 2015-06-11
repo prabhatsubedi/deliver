@@ -403,7 +403,8 @@ public class AdminServiceImpl implements AdminService {
         log.info("+++++++++ Sending SMS to " + smsDto.getMobileNo() + " ++++++++++++++++");
         String verificationCode = validateMobileDaoService.getVerificationCode(smsDto.getId());
 
-        SMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT, smsDto.getMobileNo(), systemPropertyService.readPrefValue(PreferenceType.SMS_COUNTRY_CODE),systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
+
+        SMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", smsDto.getMobileNo(), systemPropertyService.readPrefValue(PreferenceType.SMS_COUNTRY_CODE),systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
 
         //Now Update Total SMS Count
         validateMobileDaoService.updateNoOfSMSSend(smsDto.getId());

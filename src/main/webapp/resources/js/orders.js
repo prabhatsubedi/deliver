@@ -49,6 +49,23 @@ Order.loadOrderFn = function(){
         $(this).find(".bill_list").addClass("hidden");
     });*/
 
+     $("body").delegate(".assigned_shoppers", "click mouseover", function(e){
+         e.preventDefault();
+         $('.assigned_shoppers_view').addClass('invisible');
+         $('.assigned_shoppers_view').html($(this).siblings('.assigned_shoppers_cont').html());
+
+         var left = $(this).offset().left - ($('.assigned_shoppers_view').width() + 30);
+         var top = $(this).offset().top - $('.assigned_shoppers_view').height();
+         $('.assigned_shoppers_view').css({left: left, top: top}).removeClass('invisible');
+
+     });
+
+     $("body").click(function(){
+
+         $('.assigned_shoppers_view').addClass('invisible');
+
+     });
+
 
     $('.db_td').live('mouseover', function(){
         $(this).addClass('currentPreview');
@@ -231,6 +248,23 @@ Order.getOrders = function(elemId, url, params){
             storeInfo += "<div class='store_info hidden'><div class='contact_person'><strong>"+contactPerson+"</strong></div><div class='contact_no'>"+contactNo+"</div></div></div>";
 
             var view_items = '<span class="item_list" data-store="' + order.store.name + '" data-id="'+id+'"  data-index="' + i + '" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
+
+            var assignedShoppers = order.deliveryBoySelections;
+            var viewShoppers = "";
+            if(assignedShoppers.length > 0) {
+                viewShoppers += ' | <a class="assigned_shoppers" href="#">View Selected Shoppers</a>';
+                viewShoppers += '<div class="assigned_shoppers_cont hidden">';
+                for(var k = 0; k < assignedShoppers.length; k++) {
+                    var dboy = assignedShoppers[k].deliveryBoy.user;
+                    viewShoppers += '<div class="contact_person">';
+                    viewShoppers += '<strong>' + dboy.fullName + '</strong>';
+                    viewShoppers += '</div>';
+                    viewShoppers += '<div class="contact_no">' + dboy.mobileNumber + '</div>';
+                }
+                viewShoppers += '</div>';
+            }
+
+            view_items += viewShoppers;
             var activeStatus = ["ORDER_PLACED", "ORDER_ACCEPTED", "IN_ROUTE_TO_PICK_UP", "AT_STORE", "IN_ROUTE_TO_DELIVERY"];
             var orderHistoryLength = 0;
             if(order.dBoyOrderHistories != undefined) orderHistoryLength = order.dBoyOrderHistories.length;

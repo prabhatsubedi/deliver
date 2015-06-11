@@ -65,7 +65,7 @@
                             <th><div class="width_100">Time Assigned</div></th>
                             <th><div class="width_100">Time Taken</div></th>
                             <th><div class="width_100">Status</div></th>
-                            <th class="no_sort"><div class="width_200">Action</div></th>
+                            <th class="no_sort"><div class="width_350">Action</div></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,7 +94,7 @@
                         <th rowspan="2"><div class="width_100">Customer Bill & Receipt</div></th>
                         <th colspan="2">Feedback To Shopper</th>
                         <th colspan="2">Feedback To Customer</th>
-                        <th rowspan="2" class="no_sort"><div class="width_100">Action</div></th>
+                        <th rowspan="2" class="no_sort"><div class="width_250">Action</div></th>
                     </tr>
                     <tr>
                         <th class="no_sort">Rating</th>
@@ -127,7 +127,7 @@
                         <th rowspan="2"><div class="width_100">Time Taken</div></th>
                         <th colspan="2">Feedback To Customer</th>
                         <th rowspan="2" class="no_sort">Cancel Reason</th>
-                        <th rowspan="2" class="no_sort"><div class="width_100">Action</div></th>
+                        <th rowspan="2" class="no_sort"><div class="width_250">Action</div></th>
                     </tr>
                     <tr>
                         <th class="no_sort">Rating</th>
@@ -260,6 +260,8 @@
         <p class="address_line"></p>
     </div>
 </div>
+
+<div class="assigned_shoppers_view invisible"></div>
 
 </body>
 </html>

@@ -77,7 +77,7 @@ var Admin = function() {
                             $('.image_container', elem).attr({id: prefKey, 'mr-width': imgWidth, 'mr-height': imgHeight});
                             $('.image_input', elem).attr({id: prefKey + '_input', name: prefKey + '_input', 'data-dimension': imgSize});
                             if(prefValue != "") {
-                                $('.image_container', elem).html('<img src="' + prefValue + '" style="height: 100%;" class="img-responsive" />');
+                                $('.image_container', elem).addClass('no_bg_img').html('<img src="' + prefValue + '" style="height: 100%;" class="img-responsive" />');
                             } else {
                                 $('.drop_info .image_size', elem).html(imgSize);
                             }

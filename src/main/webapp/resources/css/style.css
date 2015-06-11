@@ -967,6 +967,9 @@ body.assistance_page {
     position: relative;
     padding-top: 10px;
 }
+.drop_zone.no_bg_img:before {
+    background-image: none !important;
+}
 .store_open_close {
     margin: 15px -15px;
 }

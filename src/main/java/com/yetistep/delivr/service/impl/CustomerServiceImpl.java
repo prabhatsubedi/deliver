@@ -1761,6 +1761,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
     @Override
     public Boolean reprocessOrder(Integer orderId) throws Exception {
+        log.info("Reprocessing order with ID:"+orderId);
         OrderEntity order = orderDaoService.find(orderId);
         if (order != null) {
             if (order.getOrderStatus().equals(JobOrderStatus.ORDER_PLACED)) {
@@ -1792,7 +1793,6 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
                 if (order.getReprocessTime() > 0) {
                     Collections.sort(deliveryBoySelectionEntitiesWithProfit, new TotalTimeTakenComparator());
-                    System.out.println("After Sort:");
                     DeliveryBoySelectionEntity deliveryBoySelectionEntity = deliveryBoySelectionEntitiesWithProfit.get(0);
                     deliveryBoySelectionEntity.setOrder(order);
                     deliveryBoySelectionEntity.setAccepted(true);
@@ -1802,13 +1802,13 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                         List<String> deviceTokens = userDeviceDaoService.getDeviceTokenFromDeliveryBoyId(Collections.singletonList(deliveryBoySelectionEntity.getDeliveryBoy().getId()));
                         PushNotification pushNotification = new PushNotification();
                         pushNotification.setTokens(deviceTokens);
-                        pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN004"));
+                        pushNotification.setMessage(String.format(MessageBundle.getPushNotificationMsg("PN004"), orderId));
                         pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
                         pushNotification.setExtraDetail(order.getId().toString()+"/status/FORCE_ASSIGNED");
                         pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
                         PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
 
-                        SMSUtil.sendSMS(CommonConstants.FORCE_ORDER_ASSIGN_TEXT, deliveryBoySelectionEntity.getDeliveryBoy().getUser().getUsername(), systemPropertyService.readPrefValue(PreferenceType.SMS_COUNTRY_CODE),systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
+                        SMSUtil.sendSMS(String.format(CommonConstants.FORCE_ORDER_ASSIGN_TEXT, orderId), deliveryBoySelectionEntity.getDeliveryBoy().getUser().getUsername(), systemPropertyService.readPrefValue(PreferenceType.SMS_COUNTRY_CODE),systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
                     }
                 } else {
                     order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
@@ -1841,6 +1841,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
     }
 
     private Boolean forceAssign(DeliveryBoySelectionEntity deliveryBoySelectionEntity) throws Exception{
+        log.info("Assigning order forcefully to shoppers");
         deliveryBoySelectionEntity.setAccepted(true);
         DeliveryBoyEntity deliveryBoyEntity = deliveryBoySelectionEntity.getDeliveryBoy();
         deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()+1);
@@ -1875,7 +1876,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         courierTransactionEntity.setStoreToCustomerDistance(courierTransaction.getStoreToCustomerDistance());
         orderEntity.setCourierTransaction(courierTransactionEntity);
 
-        List<DBoyOrderHistoryEntity> dBoyOrderHistoryEntities = new ArrayList<DBoyOrderHistoryEntity>();
+        List<DBoyOrderHistoryEntity> dBoyOrderHistoryEntities = orderEntity.getdBoyOrderHistories();
+        dBoyOrderHistoryEntities.removeAll(dBoyOrderHistoryEntities);
         DBoyOrderHistoryEntity dBoyOrderHistoryEntity = new DBoyOrderHistoryEntity();
         dBoyOrderHistoryEntity.setDeliveryBoy(deliveryBoyEntity);
         dBoyOrderHistoryEntity.setOrder(orderEntity);

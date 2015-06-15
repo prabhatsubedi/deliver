@@ -1699,7 +1699,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 if(action == "get_on_time_delivery_graph") {
                     count1 = graphData[Object.keys(graphData)[1]];
                     count2 = graphData[Object.keys(graphData)[0]];
-                    chartData = [['Date', 'On Time Delivery', 'Exceed On Time']];
+                    chartData = [['Date', 'On Time Delivery', 'Late Delivery']];
                 } else if (action == "get_delivery_success_graph") {
                     chartData = [['Date', 'Successful Delivery', 'Failed Delivery']];
                 } else {

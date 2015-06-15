@@ -164,7 +164,7 @@
             <div class="block_counts col-sm-12">
                 <div class="col-sm-3 count_block_cont">
                     <div class="count_cont table_div open_chart" data-action="get_on_time_delivery_graph" data-title="Delivery Graph Based on Time">
-                        <span class="td_div count_red"><span class="count_span" data-get="timeExceededDelivery">0</span>%</span> <span class="count_label td_div">Late Deliveries</span>
+                        <span class="td_div count_red"><span class="count_span" data-get="timeExceededDelivery">0</span>%</span> <span class="count_label td_div">Late Delivery</span>
                     </div>
                 </div>
                 <div class="col-sm-3 count_block_cont">

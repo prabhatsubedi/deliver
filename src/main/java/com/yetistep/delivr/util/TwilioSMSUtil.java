@@ -29,7 +29,7 @@ public class TwilioSMSUtil {
     private static final TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
 
 
-    public static Message sendSMS(String text, String to, String countryCode) {
+    public static void sendSMS(String text, String to, String countryCode) {
         to = countryCode+to;
         log.info("++++++ Sending SMS to " + to + " +++++++++++");
 
@@ -43,7 +43,7 @@ public class TwilioSMSUtil {
 
             MessageFactory messageFactory = client.getAccount().getMessageFactory();
             message = messageFactory.create(params);
-            log.info("Twilio SID: "+message.getSid());
+            //log.info("Twilio SID: "+message.getSid());
         } catch (TwilioRestException e) {
             log.info(e.getErrorMessage());
             throw new RuntimeException(e.getErrorMessage());
@@ -55,7 +55,6 @@ public class TwilioSMSUtil {
         }
 
         log.info("++++++ SMS message " + message + " +++++++++++");
-        return message;
     }
 
 

@@ -89,6 +89,7 @@ public class OrderEntity implements Serializable {
     private Boolean settled;
     private Date settledDate;
     private String currency; //Transient Field
+    private Boolean forceAssigned;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -582,6 +583,15 @@ public class OrderEntity implements Serializable {
 
     public void setAdvanceAmounts(List<DBoyAdvanceAmountEntity> advanceAmounts) {
         this.advanceAmounts = advanceAmounts;
+    }
+
+    @Column(name = "force_assigned", columnDefinition = "tinyint(1) default 0")
+    public Boolean getForceAssigned() {
+        return forceAssigned;
+    }
+
+    public void setForceAssigned(Boolean forceAssigned) {
+        this.forceAssigned = forceAssigned;
     }
 
     @Transient

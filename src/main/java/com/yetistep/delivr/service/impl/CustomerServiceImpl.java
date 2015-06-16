@@ -1849,6 +1849,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.BUSY);
 
         OrderEntity orderEntity = deliveryBoySelectionEntity.getOrder();
+        orderEntity.setForceAssigned(true);
         orderEntity.setRemainingTime(deliveryBoySelectionEntity.getTotalTimeRequired());
         orderEntity.setDeliveryBoy(deliveryBoyEntity);
         orderEntity.setAssignedTime(deliveryBoySelectionEntity.getTimeRequired());

@@ -1660,7 +1660,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
 
         List<OrderEntity> orderList = new ArrayList<>();
-        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,deliveryBoySelections,assignedTime,attachments,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,rating,deliveryCharge,bill,itemsOrder";
+        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,deliveryBoySelections,assignedTime,attachments,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,rating,deliveryCharge,forceAssigned,bill,itemsOrder";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

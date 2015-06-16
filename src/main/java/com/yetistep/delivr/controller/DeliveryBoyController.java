@@ -9,6 +9,8 @@ import com.yetistep.delivr.enums.JobOrderStatus;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.PreferenceDto;
+import com.yetistep.delivr.service.inf.AccountService;
+import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.UserService;
 import com.yetistep.delivr.util.GeneralUtil;
@@ -38,6 +40,12 @@ public class DeliveryBoyController extends AbstractManager{
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    AccountService accountService;
+
+    @Autowired
+    CustomerService customerService;
 
     Logger log = Logger.getLogger(DeliveryBoyController.class);
 
@@ -148,7 +156,12 @@ public class DeliveryBoyController extends AbstractManager{
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
             //validateMobileClient(headerDto.getAccessToken());
 
-            deliveryBoyService.changeOrderStatus(order, Integer.parseInt(headerDto.getId()));
+            Boolean statusChanged = deliveryBoyService.changeOrderStatus(order, Integer.parseInt(headerDto.getId()));
+            if(statusChanged && order.equals(JobOrderStatus.DELIVERED)){
+                 /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
+                 accountService.generateBillAndReceiptAndSendEmail(order);
+                 customerService.setReferralReward(order);
+            }
             ServiceResponse serviceResponse = new ServiceResponse("Job order status changed successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){

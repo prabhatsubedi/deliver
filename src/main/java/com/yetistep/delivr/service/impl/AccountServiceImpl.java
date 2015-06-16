@@ -166,9 +166,10 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     }
 
     @Override
-    public String generateBillAndReceiptAndSendEmail(OrderEntity order) throws Exception{
+    public String generateBillAndReceiptAndSendEmail(OrderEntity orderJson) throws Exception{
        /* Integer orderId = Integer.parseInt(headerDto.getId());
         OrderEntity order = orderDaoService.find(orderId);*/
+        OrderEntity order = orderDaoService.find(orderJson.getId());
         String billAndReceiptPath = "";
         if(order != null) {
             Integer orderId = order.getId();

@@ -932,18 +932,18 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
        // order.setRating(rating);
         CustomerEntity customerEntity = order.getCustomer();
         customerEntity.setTotalOrderDelivered(GeneralUtil.ifNullToZero(customerEntity.getTotalOrderDelivered())+1);
-        List<OrderEntity> customersOrders = orderDaoService.getCustomersOrders(order.getCustomer().getId());
+        /*List<OrderEntity> customersOrders = orderDaoService.getCustomersOrders(order.getCustomer().getId());*/
         if(BigDecimalUtil.isGreaterThen(order.getPaidFromCOD(), BigDecimal.ZERO)){
             String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
             String remarks = MessageBundle.getMessage("TRN001", "push_notification.properties");
             remarks = String.format(remarks, currency, order.getPaidFromCOD(), order.getId());
-            this.setWalletTransaction(order, order.getPaidFromCOD(), AccountType.DEBIT, PaymentMode.CASH_ON_DELIVERY, remarks, order.getCustomer().getWalletAmount());
+            setWalletTransaction(order, order.getPaidFromCOD(), AccountType.DEBIT, PaymentMode.CASH_ON_DELIVERY, remarks, order.getCustomer().getWalletAmount());
         }
         boolean status = orderDaoService.update(order);
         if(status){
             log.info("Order has been updated successfully");
-            /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
-            accountService.generateBillAndReceiptAndSendEmail(order);
+            /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) *//*
+            accountService.generateBillAndReceiptAndSendEmail(order);*/
 
 
             /*=========== Calculate Average Rating For Customer ================ (Appended By Surendra) */
@@ -981,10 +981,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             String message = MessageBundle.getMessage("CPN006","push_notification.properties");
             String extraDetail = order.getId().toString()+"/status/"+JobOrderStatus.DELIVERED.toString();
             PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
-            /*
+           /* *//*
             * if the transaction is first transaction of  the current customer
             * set reward for referrer
-            * */
+            * *//*
              if(customersOrders.size() == 1){
                Long referrerId = order.getCustomer().getReferredBy();
                if(referrerId != null){
@@ -993,7 +993,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                    customerService.refillCustomerWallet(referrer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT)), MessageBundle.getMessage("WTM005", "push_notification.properties"), false);
                    customerDaoService.update(referrer);
                }
-            }
+            }*/
 
         }
         return status;

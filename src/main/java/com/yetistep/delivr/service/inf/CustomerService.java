@@ -79,4 +79,7 @@ public interface CustomerService {
     public String paymentGatewaySettlement(PaymentGatewayDto paymentGatewayDto) throws Exception;
 
     public CustomerEntity getWalletBalance(Long facebookId) throws Exception;
+
+    public void setReferralReward(OrderEntity orderJson) throws Exception;
+
 }

@@ -2233,6 +2233,27 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         return this.getHTMLMessage(paymentGatewayInfoEntity.getResponseCode(), paymentGatewayInfoEntity.getCustomer().getId());
     }
 
+    @Override
+    public void setReferralReward(OrderEntity orderJson) throws Exception{
+         /*
+            * if the transaction is first transaction of  the current customer
+            * set reward for referrer
+            * */
+        OrderEntity order = orderDaoService.find(orderJson.getId());
+
+        List<OrderEntity> customersOrders = orderDaoService.getCustomersOrders(order.getCustomer().getId());
+         if(customersOrders.size() == 1){
+            Long referrerId = order.getCustomer().getReferredBy();
+            if(referrerId != null){
+                CustomerEntity referrer = customerDaoService.find(referrerId);
+                referrer.setRewardsEarned(referrer.getRewardsEarned().add(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT))));
+                refillCustomerWallet(referrer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT)), MessageBundle.getMessage("WTM005", "push_notification.properties"), false);
+                customerDaoService.update(referrer);
+            }
+        }
+    }
+
+
     private String getHTMLMessage(String responseCode, Integer customerId) throws Exception{
         String remarks = MessageBundle.getPaymentGatewayMsg(responseCode);
         Boolean flag = false;

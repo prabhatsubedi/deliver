@@ -1397,6 +1397,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if(orderEntity == null){
             throw new YSException("VLD017");
         }
+
+        if(orderEntity.getOrderStatus().equals(JobOrderStatus.DELIVERED)){
+            throw new YSException("ORD025");
+        }
         log.info("About to Cancel order with Order ID:"+order.getId());
 
         /*Setting Ratings */

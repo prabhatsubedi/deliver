@@ -1921,6 +1921,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             orderCancel.setCancelledDate(DateUtil.getCurrentTimestampSQL());
             order.setOrderCancel(orderCancel);
         }
+
         order.setOrderStatus(JobOrderStatus.CANCELLED);
         order.setDeliveryStatus(DeliveryStatus.CANCELLED);
         BigDecimal customerWalletAmount = order.getCustomer().getWalletAmount();

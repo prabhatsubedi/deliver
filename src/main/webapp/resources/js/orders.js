@@ -217,7 +217,7 @@ Order.getOrders = function(elemId, url, params){
             var id = order.id;
             var link_attachments = '';
             if(order.attachments.length > 0){
-                link_attachments += '<div class="bill_td"><span class="view_bills">View Bills</span><div class="bill_list hidden">';
+                link_attachments += '<div class="bill_td"><span class="view_bills">View Bills</span><div class="exclude_data bill_list hidden">';
                 for(var j= 0; j<order.attachments.length; j++){
 //                    var nameArray = order.attachments[j].split("/");
 //                    var  nameArrayLength = nameArray.length;
@@ -228,7 +228,7 @@ Order.getOrders = function(elemId, url, params){
             var deliveryBoy = typeof(order.deliveryBoy) != 'undefined'?"<div class='db_td'><span class='show_db_info'><a href='" + Main.modifyURL('/organizer/courier_staff/order_history/' + order.deliveryBoy.id) + "'>" + order.deliveryBoy.user.fullName+"</a></span>":'';
 
             if(typeof(order.deliveryBoy) != 'undefined') {
-                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>"+order.deliveryBoy.user.mobileNumber+"</div>";
+                deliveryBoy += "<div class='exclude_data db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>"+order.deliveryBoy.user.mobileNumber+"</div>";
                 deliveryBoy += "<div class='ratings'><ul class=nav>";
 
                 var rating = parseInt(order.deliveryBoy.averageRating);
@@ -245,7 +245,7 @@ Order.getOrders = function(elemId, url, params){
             var contactPerson = order.store.contactPerson != undefined?order.store.contactPerson:'';
             var contactNo = order.store.contactNo != undefined?order.store.contactNo:'';
 
-            storeInfo += "<div class='store_info hidden'><div class='contact_person'><strong>"+contactPerson+"</strong></div><div class='contact_no'>"+contactNo+"</div></div></div>";
+            storeInfo += "<div class='exclude_data store_info hidden'><div class='contact_person'><strong>"+contactPerson+"</strong></div><div class='contact_no'>"+contactNo+"</div></div></div>";
 
             var view_items = '<span class="item_list" data-store="' + order.store.name + '" data-id="'+id+'"  data-index="' + i + '" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
 
@@ -253,7 +253,7 @@ Order.getOrders = function(elemId, url, params){
             var viewShoppers = "";
             if(assignedShoppers.length > 0) {
                 viewShoppers += ' | <a class="assigned_shoppers" href="#">View Selected Shoppers</a>';
-                viewShoppers += '<div class="assigned_shoppers_cont hidden">';
+                viewShoppers += '<div class="exclude_data assigned_shoppers_cont hidden">';
                 for(var k = 0; k < assignedShoppers.length; k++) {
                     var dboy = assignedShoppers[k].deliveryBoy.user;
                     viewShoppers += '<div class="contact_person">';

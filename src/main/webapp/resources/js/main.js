@@ -287,7 +287,13 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
 
         if(typeof TableTools != "undefined") {
             TableTools.DEFAULTS.sSwfPath = Main.modifyURL("/resources/js/copy_csv_xls_pdf.swf");
-            TableTools.DEFAULTS.aButtons = [ "csv" ];
+            TableTools.DEFAULTS.aButtons = [ { sExtends: "csv", fnCellRender: function ( sValue, iColumn, nTr, iDataIndex ) {
+                var htmlElem = $('<div>' + sValue + '</div>');
+                $('.exclude_data', htmlElem).remove();
+                console.log(htmlElem.html());
+                return htmlElem.text();
+            }
+            } ];
         }
 
         $.extend($.fn.dataTable.defaults, {

@@ -1902,7 +1902,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
             if (orderEntity.getStore().getSendEmail() != null && orderEntity.getStore().getSendEmail()){
                 String subject = "New order has been placed : "+orderEntity.getId();
-                String body = EmailMsg.orderPlaced(orderEntity.getStore().getContactPerson(), getServerUrl(), orderEntity);
+                String body = EmailMsg.orderPlaced(orderEntity.getStore().getContactPerson(), "http://ktm.koolkat.in/", orderEntity);
                 sendMail(orderEntity.getStore().getEmail(), body, subject);
             }
         }

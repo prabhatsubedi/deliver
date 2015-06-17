@@ -59,6 +59,7 @@
             <bean id = "cartCustomItemDaoService" class = "com.yetistep.delivr.dao.impl.CartCustomItemDaoServiceImpl" />
             <bean id = "paymentGatewayInfoDaoService" class = "com.yetistep.delivr.dao.impl.PaymentGatewayInfoDaoServiceImpl" />
             <bean id = "dBoyPaymentDaoService" class = "com.yetistep.delivr.dao.impl.DBoyPaymentDaoServiceImpl" />
+            <bean id = "idGeneratorDaoService" class = "com.yetistep.delivr.dao.impl.IDGeneratorDaoServiceImpl" />
         <!-- DAO layer beans ends here-->
     <!-- Version 1.0 beans ends here -->
 

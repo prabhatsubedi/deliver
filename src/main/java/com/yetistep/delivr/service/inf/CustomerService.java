@@ -82,4 +82,8 @@ public interface CustomerService {
 
     public void setReferralReward(OrderEntity orderJson) throws Exception;
 
+
+    public CustomerEntity mobileLogin(RequestJsonDto requestJsonDto) throws Exception;
+
+    public RequestJsonDto customerSignUp(UserEntity user) throws Exception;
 }

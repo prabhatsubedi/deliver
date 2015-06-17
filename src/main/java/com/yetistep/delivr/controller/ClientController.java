@@ -1053,4 +1053,40 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/login_via_mobile", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> customerMobileLogin(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
+            CustomerEntity customer = customerService.mobileLogin(requestJsonDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Customer Login Successfully");
+            serviceResponse.addParam("customer", customer);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred customer login", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/signup_via_mobile", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> signUpFromMobile(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ACCESS_TOKEN);
+            validateMobileClient(headerDto.getAccessToken());
+            RequestJsonDto requestJsonDto = customerService.customerSignUp(user);
+            ServiceResponse serviceResponse = new ServiceResponse("Sign up information retrieved successfully");
+            serviceResponse.addParam("userInfo", requestJsonDto);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving sign up information", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

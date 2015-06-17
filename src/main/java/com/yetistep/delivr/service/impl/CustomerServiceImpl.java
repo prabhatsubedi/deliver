@@ -123,6 +123,9 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
     @Autowired
     PaymentGatewayInfoDaoService paymentGatewayInfoDaoService;
 
+    @Autowired
+    IDGeneratorDaoService idGeneratorDaoService;
+
     @Override
     public void login(CustomerEntity customerEntity) throws Exception {
         log.info("++++++++++++++ Logging Customer ++++++++++++++++");
@@ -203,6 +206,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 customerEntity.setRewardsEarned(BigDecimal.ZERO);
                 customerEntity.setTotalOrderPlaced(0);
                 customerEntity.setTotalOrderDelivered(0);
+                customerEntity.setCustomerType(CustomerType.FACEBOOK);
 
                 RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_CUSTOMER);
                 customerEntity.getUser().setRole(userRole);
@@ -238,6 +242,201 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         }
     }
 
+    @Override
+    public CustomerEntity mobileLogin(RequestJsonDto requestJsonDto) throws Exception {
+        log.info("++++++++++++++ Logging Customer From Mobile++++++++++++++++");
+
+        String userAgent = httpServletRequest.getHeader("User-Agent");
+        UserAgent ua = UserAgent.parseUserAgentString(userAgent);
+        String family = ua.getOperatingSystem().name();
+
+        //Now Signup Process
+        if (requestJsonDto.getCustomer() == null || requestJsonDto.getCustomer().getUser() == null ||
+                requestJsonDto.getCustomer().getUser().getUserDevice() == null ||
+                requestJsonDto.getCustomer().getUser().getUserDevice().getUuid() == null) {
+            throw new YSException("JSN001");
+        }
+
+        UserEntity userEntity = userDaoService.getUserByMobileNumber(requestJsonDto.getCustomer().getUser().getMobileNumber(), Role.ROLE_CUSTOMER.toInt());
+        //If Account exists
+        if (userEntity == null) {
+            throw new YSException("VLD011");
+        } else {
+            ValidateMobileEntity validateMobileEntity = validateMobileDaoService.getMobileCode(userEntity.getId(), userEntity.getMobileNumber());
+            if (!requestJsonDto.getVerificationCode().equals(validateMobileEntity.getVerificationCode())) {
+                throw new YSException("SEC011");
+            }
+
+            CustomerEntity customerEntity = userEntity.getCustomer();
+            if (customerEntity != null) {
+                userEntity.getUserDevice().setUuid(requestJsonDto.getCustomer().getUser().getUserDevice().getUuid());
+                userEntity.getUserDevice().setFamily(family);
+                userEntity.getUserDevice().setFamilyName(family);
+                userEntity.getUserDevice().setName(family);
+                userEntity.getUserDevice().setBrand(requestJsonDto.getCustomer().getUser().getUserDevice().getBrand());
+                userEntity.getUserDevice().setModel(requestJsonDto.getCustomer().getUser().getUserDevice().getModel());
+                userEntity.getUserDevice().setDpi(requestJsonDto.getCustomer().getUser().getUserDevice().getDpi());
+                userEntity.getUserDevice().setHeight(requestJsonDto.getCustomer().getUser().getUserDevice().getHeight());
+                userEntity.getUserDevice().setWidth(requestJsonDto.getCustomer().getUser().getUserDevice().getWidth());
+                if (requestJsonDto.getCustomer().getUser().getUserDevice().getDeviceToken() != null)
+                    userEntity.getUserDevice().setDeviceToken(requestJsonDto.getCustomer().getUser().getUserDevice().getDeviceToken());
+
+                if (requestJsonDto.getCustomer().getLatitude() != null && requestJsonDto.getCustomer().getLongitude() != null) {
+                    customerEntity.setLatitude(requestJsonDto.getCustomer().getLatitude());
+                    customerEntity.setLongitude(requestJsonDto.getCustomer().getLongitude());
+                }
+                userDaoService.update(userEntity);
+            } else {
+                customerEntity = new CustomerEntity();
+                customerEntity.setUser(userEntity);
+                IDGeneratorEntity idGeneratorEntity = idGeneratorDaoService.find(1);
+                customerEntity.setFacebookId(idGeneratorEntity.getGeneratedId());
+                customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
+                customerEntity.setDefault(false);
+                customerEntity.setTotalOrderPlaced(0);
+                customerEntity.setTotalOrderDelivered(0);
+                customerEntity.setCustomerType(CustomerType.MOBILE_NUMBER);
+                if (requestJsonDto.getCustomer().getLatitude() != null && requestJsonDto.getCustomer().getLongitude() != null) {
+                    customerEntity.setLatitude(requestJsonDto.getCustomer().getLatitude());
+                    customerEntity.setLongitude(requestJsonDto.getCustomer().getLongitude());
+                }
+                userEntity.setCustomer(customerEntity);
+
+                UserDeviceEntity userDeviceEntity = new UserDeviceEntity();
+                userDeviceEntity.setUuid(requestJsonDto.getCustomer().getUser().getUserDevice().getUuid());
+                userDeviceEntity.setFamily(family);
+                userDeviceEntity.setFamilyName(family);
+                userDeviceEntity.setName(family);
+                userDeviceEntity.setBrand(requestJsonDto.getCustomer().getUser().getUserDevice().getBrand());
+                userDeviceEntity.setModel(requestJsonDto.getCustomer().getUser().getUserDevice().getModel());
+                userDeviceEntity.setDpi(requestJsonDto.getCustomer().getUser().getUserDevice().getDpi());
+                userDeviceEntity.setHeight(requestJsonDto.getCustomer().getUser().getUserDevice().getHeight());
+                userDeviceEntity.setWidth(requestJsonDto.getCustomer().getUser().getUserDevice().getWidth());
+                if (requestJsonDto.getCustomer().getUser().getUserDevice().getDeviceToken() != null)
+                    userDeviceEntity.setDeviceToken(requestJsonDto.getCustomer().getUser().getUserDevice().getDeviceToken());
+                userDeviceEntity.setUser(userEntity);
+                userEntity.setUserDevice(userDeviceEntity);
+
+                userEntity.setFullName(requestJsonDto.getCustomer().getUser().getFullName());
+                userEntity.setEmailAddress(requestJsonDto.getCustomer().getUser().getEmailAddress());
+                userDaoService.update(userEntity);
+
+                idGeneratorEntity.setGeneratedId(idGeneratorEntity.getGeneratedId() + 1);
+                idGeneratorDaoService.update(idGeneratorEntity);
+
+                customerEntity.setWalletAmount(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
+                WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
+                walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+                walletTransactionEntity.setAccountType(AccountType.CREDIT);
+                String remark = MessageBundle.getMessage("WTM009", "push_notification.properties");
+                walletTransactionEntity.setRemarks(remark);
+                walletTransactionEntity.setTransactionAmount(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
+                walletTransactionEntity.setCustomer(customerEntity);
+                walletTransactionEntity.setPaymentMode(PaymentMode.WALLET);
+                walletTransactionEntity.setAvailableWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()));
+                systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
+                customerEntity.setWalletTransactions(Collections.singletonList(walletTransactionEntity));
+                customerEntity.setDefault(false);
+                userDaoService.update(userEntity);
+            }
+            validateMobileDaoService.updateVerifiedByUser(validateMobileEntity.getId());
+        }
+
+        //Response
+        CustomerEntity customer = new CustomerEntity();
+        customer.setId(userEntity.getCustomer().getId());
+        customer.setFacebookId(userEntity.getCustomer().getFacebookId());
+        UserEntity user1 = new UserEntity();
+        user1.setFullName(userEntity.getFullName());
+        user1.setMobileNumber(userEntity.getMobileNumber());
+        user1.setEmailAddress(userEntity.getEmailAddress());
+        user1.setId(userEntity.getId());
+        customer.setUser(user1);
+        return customer;
+    }
+
+    @Override
+    public RequestJsonDto customerSignUp(UserEntity user) throws Exception {
+        RequestJsonDto requestJsonDto = new RequestJsonDto();
+        UserEntity userEntity = userDaoService.getUserByMobileNumber(user.getMobileNumber(), Role.ROLE_CUSTOMER.toInt());
+        if (userEntity == null) {
+            String verificationCode = GeneralUtil.generateMobileCode();
+            ValidateMobileEntity validateMobileEntity = new ValidateMobileEntity();
+            validateMobileEntity.setMobileNo(user.getMobileNumber());
+            validateMobileEntity.setVerificationCode(verificationCode);
+            userEntity = new UserEntity();
+            validateMobileEntity.setUser(userEntity);
+            validateMobileEntity.setTotalSmsSend(1);
+            userEntity.setValidateMobiles(Collections.singletonList(validateMobileEntity));
+            userEntity.setCreatedDate(DateUtil.getCurrentTimestampSQL());
+            userEntity.setLastActivityDate(null);
+            userEntity.setMobileNumber(user.getMobileNumber());
+
+            RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_CUSTOMER);
+            userEntity.setRole(userRole);
+            userDaoService.save(userEntity);
+
+            SMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + verificationCode + ".", user.getMobileNumber(),
+                    systemPropertyService.readPrefValue(PreferenceType.SMS_COUNTRY_CODE), systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
+
+            requestJsonDto.setLoginType(LoginType.NEW_USER);
+            return requestJsonDto;
+        } else {
+            if (userEntity.getUserDevice() != null && userEntity.getUserDevice().getUuid().equals(user.getUserDevice().getUuid())) {
+                log.info("Same customer with same uuid and mobile number:" + userEntity.getMobileNumber());
+                CustomerEntity customer = new CustomerEntity();
+                customer.setId(userEntity.getCustomer().getId());
+                customer.setFacebookId(userEntity.getCustomer().getFacebookId());
+                UserEntity user1 = new UserEntity();
+                user1.setFullName(userEntity.getFullName());
+                user1.setMobileNumber(userEntity.getMobileNumber());
+                user1.setEmailAddress(userEntity.getEmailAddress());
+                user1.setId(userEntity.getId());
+                customer.setUser(user1);
+                requestJsonDto.setLoginType(LoginType.VERIFIED_USER);
+                requestJsonDto.setCustomer(customer);
+                return requestJsonDto;
+            } else {
+                log.info("Same customer with same mobile number: " + userEntity.getMobileNumber() + " and different UUID");
+                if (userEntity.getFullName() == null)
+                    requestJsonDto.setLoginType(LoginType.NEW_USER);
+                else {
+                    CustomerEntity customer = new CustomerEntity();
+                    customer.setId(userEntity.getCustomer().getId());
+                    customer.setFacebookId(userEntity.getCustomer().getFacebookId());
+                    UserEntity user1 = new UserEntity();
+                    user1.setFullName(userEntity.getFullName());
+                    user1.setMobileNumber(userEntity.getMobileNumber());
+                    user1.setEmailAddress(userEntity.getEmailAddress());
+                    user1.setId(userEntity.getId());
+                    customer.setUser(user1);
+                    requestJsonDto.setLoginType(LoginType.UNVERIFIED_USER);
+                    requestJsonDto.setCustomer(customer);
+                }
+                ValidateMobileEntity validateMobileEntity = validateMobileDaoService.getMobileCode(userEntity.getId(), userEntity.getMobileNumber());
+                if (validateMobileEntity != null) {
+//                    if (validateMobileEntity.getTotalSmsSend() < 3) {
+                    SMSUtil.sendSMS(CommonConstants.SMS_PRE_TEXT + validateMobileEntity.getVerificationCode() + ".", user.getMobileNumber(),
+                            systemPropertyService.readPrefValue(PreferenceType.SMS_COUNTRY_CODE), systemPropertyService.readPrefValue(PreferenceType.SMS_PROVIDER));
+                    validateMobileDaoService.updateNoOfSMSSend(validateMobileEntity.getId());
+//                    } else {
+//                        throw new YSException("SEC012", "#" + systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+//                    }
+                } else {
+                    String verificationCode = GeneralUtil.generateMobileCode();
+                    validateMobileEntity = new ValidateMobileEntity();
+                    validateMobileEntity.setMobileNo(user.getMobileNumber());
+                    validateMobileEntity.setVerificationCode(verificationCode);
+                    validateMobileEntity.setUser(userEntity);
+                    validateMobileEntity.setTotalSmsSend(1);
+                    userEntity.setValidateMobiles(Collections.singletonList(validateMobileEntity));
+                    userDaoService.save(userEntity);
+                }
+                requestJsonDto.setHelplineNumber(systemPropertyService.readPrefValue(PreferenceType.HELPLINE_NUMBER));
+                return requestJsonDto;
+            }
+        }
+    }
 
     private void validateUserDevice(UserDeviceEntity userDevice) throws Exception {
         Validator.validateString(userDevice.getName(), "Invalid Name");

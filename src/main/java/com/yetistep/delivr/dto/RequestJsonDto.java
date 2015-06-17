@@ -1,9 +1,6 @@
 package com.yetistep.delivr.dto;
 
-import com.yetistep.delivr.enums.DeliveryStatus;
-import com.yetistep.delivr.enums.NotifyTo;
-import com.yetistep.delivr.enums.PasswordActionType;
-import com.yetistep.delivr.enums.PaymentMode;
+import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.model.mobile.CustomerInfo;
 import com.yetistep.delivr.model.mobile.DeviceInfo;
@@ -115,6 +112,11 @@ public class RequestJsonDto {
     private String itemTags;
 
     private BigDecimal discountAmount;
+
+    private LoginType loginType;
+
+    private String verificationCode;
+    private String helplineNumber;
 
     /*=================================================================== */
     public PasswordActionType getActionType() {
@@ -397,8 +399,6 @@ public class RequestJsonDto {
         this.statusId = statusId;
     }
 
-
-
     public String getSearchString() {
         return searchString;
     }
@@ -518,5 +518,29 @@ public class RequestJsonDto {
 
     public void setDiscountAmount(BigDecimal discountAmount) {
         this.discountAmount = discountAmount;
+    }
+
+    public LoginType getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(LoginType loginType) {
+        this.loginType = loginType;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    public String getHelplineNumber() {
+        return helplineNumber;
+    }
+
+    public void setHelplineNumber(String helplineNumber) {
+        this.helplineNumber = helplineNumber;
     }
 }

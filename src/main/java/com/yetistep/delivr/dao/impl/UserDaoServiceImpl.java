@@ -314,4 +314,13 @@ public class UserDaoServiceImpl implements UserDaoService {
 
         return ((BigInteger) query.uniqueResult()).intValue();
     }
+
+    @Override
+    public UserEntity getUserByMobileNumber(String mobileNumber, Integer roleId) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(UserEntity.class);
+        criteria.add(Restrictions.eq("mobileNumber", mobileNumber));
+        criteria.add(Restrictions.eq("role.id", roleId));
+        return (UserEntity) criteria.uniqueResult();
+
+    }
 }

@@ -278,3 +278,9 @@ CHANGE COLUMN `given_location` `given_location` VARCHAR(255) CHARACTER SET 'utf8
 
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('SMS_PROVIDER', '1', '4', 'SMS Provider Selection');
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('SMS_COUNTRY_CODE', '+977', '4', 'Country Code For SMS');
+
+
+ALTER TABLE `delivr_db`.`orders`
+CHANGE COLUMN `order_name` `order_name` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL DEFAULT NULL ;
+
+INSERT INTO `delivr_db`.`id_generator` (`generatedId`) VALUES ('1');

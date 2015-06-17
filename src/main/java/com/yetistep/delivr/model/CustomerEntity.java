@@ -2,6 +2,7 @@ package com.yetistep.delivr.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yetistep.delivr.enums.CustomerType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -42,6 +43,7 @@ public class CustomerEntity implements Serializable {
     private Boolean isDefault;
     private BigDecimal walletAmount;
     private BigDecimal shortFallAmount;
+    private CustomerType customerType;
     private List<CartEntity> carts;
     private String currency;//Transient Variable
     private List<BillEntity> bill;
@@ -326,5 +328,15 @@ public class CustomerEntity implements Serializable {
 
     public void setPaymentGatewayInfo(List<PaymentGatewayInfoEntity> paymentGatewayInfo) {
         this.paymentGatewayInfo = paymentGatewayInfo;
+    }
+
+    @Column(name = "customer_type")
+    @Enumerated(EnumType.ORDINAL)
+    public CustomerType getCustomerType() {
+        return customerType;
+    }
+
+    public void setCustomerType(CustomerType customerType) {
+        this.customerType = customerType;
     }
 }

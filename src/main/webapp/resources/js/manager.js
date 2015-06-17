@@ -509,12 +509,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
                      order_name += "<li" + (exceed_time ? " class='color_error'" : "") + ">"+order[cntOrder].orderName+"</li>";
                      assigned_time += "<li>"+Main.convertMin(order[cntOrder].assignedTime)+"</li>";
                      elapsed_time += "<li>"+Main.convertMin(order[cntOrder].elapsedTime)+"</li>";
-                     job_status += "<li>"+Main.ucfirst((order[cntOrder].orderStatus).split('_').join(' ').toLowerCase())+"</li>";
+                     job_status += "<li>"+Main.ucfirst((courierStaff.outOfReach ? 'Out of Reach' : order[cntOrder].orderStatus).split('_').join(' ').toLowerCase())+"</li>";
                  }
 
                 if(job_status == '<ul class="current_order_attrs">'){
 
-                    var arr_avail = courierStaff.availabilityStatus.split('_');
+                    var arr_avail = courierStaff.outOfReach ? ('Out of Reach').split('_') : courierStaff.availabilityStatus.split('_');
                     var new_arr_avail = [];
                     for(var j in arr_avail) {
                         new_arr_avail.push(Main.ucfirst(arr_avail[j]));

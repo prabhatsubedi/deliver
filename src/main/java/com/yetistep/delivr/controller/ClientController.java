@@ -969,7 +969,7 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    @RequestMapping(value = "/refill_wallet", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/refill_wallet", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> refillWallet(@RequestHeader HttpHeaders headers, @RequestBody CustomerEntity customer) {
         try{
@@ -984,7 +984,7 @@ public class ClientController extends AbstractManager{
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
-    }
+    }*/
 
     @RequestMapping(value = "/transactions/fbId/{facebookId}", method = RequestMethod.POST)
     @ResponseBody

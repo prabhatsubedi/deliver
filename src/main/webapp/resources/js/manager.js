@@ -543,7 +543,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     '<a class="elem_tooltip delivricon delivricon-user" href="' + Main.modifyURL('/organizer/courier_staff/profile/' + id) + '" data-placement="left"  title="View Profile"></a>' + status_link
                     '</div>';
 
-                var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, courierStaff.outOfReach ? 'Out of Reach' : '', Main.ucfirst(user_status), Main.getFromLocalStorage("currency")+' '+balance, action];
+                var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, courierStaff.outOfReach ? '<div class="color_error">Out of Reach</div>' : '', Main.ucfirst(user_status), Main.getFromLocalStorage("currency")+' '+balance, action];
                 row = $.extend({}, row);
                 tdata.push(row);
             }

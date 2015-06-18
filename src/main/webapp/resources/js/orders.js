@@ -226,7 +226,7 @@ Order.getOrders = function(elemId, url, params){
                 link_attachments += '</div></div>';
             }
             var deliveryBoy = typeof(order.deliveryBoy) != 'undefined'?"<div class='db_td'><span class='show_db_info'><a href='" + Main.modifyURL('/organizer/courier_staff/order_history/' + order.deliveryBoy.id) + "'>" + order.deliveryBoy.user.fullName+"</a></span>":'';
-            if(order.forceAssigned) deliveryBoy += '<div style="color: #f71d1d;">(Force Assigned)</div>';
+            if(order.forceAssigned) deliveryBoy += '<div class="color_error">(Force Assigned)</div>';
 
             if(typeof(order.deliveryBoy) != 'undefined') {
                 deliveryBoy += "<div class='exclude_data db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>"+order.deliveryBoy.user.mobileNumber+"</div>";

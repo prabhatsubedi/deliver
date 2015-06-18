@@ -148,29 +148,30 @@
                     <tr>
                         <th rowspan="2">SN</th>
                         <th rowspan="2">
-                            <div class="width_150"> Shopper Name</div>
+                            <div class="width_150">Shopper Name</div>
                         </th>
                         <th rowspan="2">
-                            <div class="width_100"> Contact No.</div>
+                            <div class="width_100">Contact No.</div>
                         </th>
-                        <th colspan="5"> Current Job</th>
-                        <th rowspan="2"> Account Status</th>
+                        <th colspan="5">Current Job</th>
+                        <th rowspan="2"><div class="width_150">Location Update</div></th>
+                        <th rowspan="2">Account Status</th>
                         <th rowspan="2">
                             <div class="width_100"> Current Balance</div>
                         </th>
                         <th rowspan="2" class="no_sort">
-                            <div class="width_150"> Action</div>
+                            <div class="width_150">Action</div>
                         </th>
                     </tr>
                     <tr>
                         <th>
-                            <div class="width_50"> Order No.</div>
+                            <div class="width_50">Order No.</div>
                         </th>
                         <th>
-                            <div class="width_250"> Order Name</div>
+                            <div class="width_250">Order Name</div>
                         </th>
                         <th>
-                            <div class="width_150"> Job Status</div>
+                            <div class="width_150">Job Status</div>
                         </th>
                         <th>
                             <div class="width_100">Assigned Time</div>

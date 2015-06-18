@@ -509,12 +509,12 @@ if (typeof(Manager) == "undefined") var Manager = {};
                      order_name += "<li" + (exceed_time ? " class='color_error'" : "") + ">"+order[cntOrder].orderName+"</li>";
                      assigned_time += "<li>"+Main.convertMin(order[cntOrder].assignedTime)+"</li>";
                      elapsed_time += "<li>"+Main.convertMin(order[cntOrder].elapsedTime)+"</li>";
-                     job_status += "<li>"+Main.ucfirst((courierStaff.outOfReach ? 'Out of Reach' : order[cntOrder].orderStatus).split('_').join(' ').toLowerCase())+"</li>";
+                     job_status += "<li>"+Main.ucfirst((order[cntOrder].orderStatus).split('_').join(' ').toLowerCase())+"</li>";
                  }
 
                 if(job_status == '<ul class="current_order_attrs">'){
 
-                    var arr_avail = courierStaff.outOfReach ? ('Out of Reach').split('_') : courierStaff.availabilityStatus.split('_');
+                    var arr_avail = courierStaff.availabilityStatus.split('_');
                     var new_arr_avail = [];
                     for(var j in arr_avail) {
                         new_arr_avail.push(Main.ucfirst(arr_avail[j]));
@@ -543,7 +543,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     '<a class="elem_tooltip delivricon delivricon-user" href="' + Main.modifyURL('/organizer/courier_staff/profile/' + id) + '" data-placement="left"  title="View Profile"></a>' + status_link
                     '</div>';
 
-                var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, Main.ucfirst(user_status), Main.getFromLocalStorage("currency")+' '+balance, action];
+                var row = [id, link_courier_staff, number, order_no, order_name, job_status, assigned_time, elapsed_time, courierStaff.outOfReach ? 'Out of Reach' : '', Main.ucfirst(user_status), Main.getFromLocalStorage("currency")+' '+balance, action];
                 row = $.extend({}, row);
                 tdata.push(row);
             }
@@ -570,6 +570,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
             { "name": "order#orderStatus" },
             { "name": "order#assignedTime" },
             { "name": "order#elapsedTime" },
+            { "name": "" },
             { "name": "user#status" },
             { "name": "availableAmount" },
             { "name": "" }

@@ -285,6 +285,10 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                     customerEntity.setLatitude(requestJsonDto.getCustomer().getLatitude());
                     customerEntity.setLongitude(requestJsonDto.getCustomer().getLongitude());
                 }
+                if (requestJsonDto.getCustomer().getUser().getFullName() != null)
+                    userEntity.setFullName(requestJsonDto.getCustomer().getUser().getFullName());
+                if (requestJsonDto.getCustomer().getUser().getEmailAddress() != null)
+                    userEntity.setEmailAddress(requestJsonDto.getCustomer().getUser().getEmailAddress());
                 userDaoService.update(userEntity);
             } else {
                 customerEntity = new CustomerEntity();
@@ -395,6 +399,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 customer.setUser(user1);
                 requestJsonDto.setLoginType(LoginType.VERIFIED_USER);
                 requestJsonDto.setCustomer(customer);
+                ValidateMobileEntity validateMobileEntity = validateMobileDaoService.getMobileCode(userEntity.getId(), userEntity.getMobileNumber());
+                requestJsonDto.setVerificationCode(validateMobileEntity.getVerificationCode());
                 return requestJsonDto;
             } else {
                 log.info("Same customer with same mobile number: " + userEntity.getMobileNumber() + " and different UUID");
@@ -939,6 +945,11 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 featureBrand.setNearestStoreLocation(storeEntities.get(0).getStreet());
             else
                 featureBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
+            if(DateUtil.isTimeBetweenTwoTime(featureBrand.getOpeningTime().toString(), featureBrand.getClosingTime().toString(), DateUtil.getCurrentTime().toString())){
+                featureBrand.setOpenStatus(true);
+            }else{
+                featureBrand.setOpenStatus(false);
+            }
 
 
         }
@@ -954,7 +965,11 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 resultBrand.setNearestStoreLocation(storeEntities.get(0).getStreet());
             else
                 resultBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
-
+            if(DateUtil.isTimeBetweenTwoTime(resultBrand.getOpeningTime().toString(), resultBrand.getClosingTime().toString(), DateUtil.getCurrentTime().toString())){
+                resultBrand.setOpenStatus(true);
+            }else{
+                resultBrand.setOpenStatus(false);
+            }
 
         }
 

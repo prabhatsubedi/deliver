@@ -130,6 +130,12 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                     priorityBrandEntity.setNearestStoreLocation(storeEntities.get(0).getStreet());
                 else
                     priorityBrandEntity.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
+
+                if(DateUtil.isTimeBetweenTwoTime(priorityBrandEntity.getOpeningTime().toString(), priorityBrandEntity.getClosingTime().toString(), DateUtil.getCurrentTime().toString())){
+                    priorityBrandEntity.setOpenStatus(true);
+                }else{
+                    priorityBrandEntity.setOpenStatus(false);
+                }
             }
 
             storeBrandResult.addAll(priorityBrands);
@@ -179,6 +185,12 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                     else
                         tempBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
 
+                    if(DateUtil.isTimeBetweenTwoTime(storeEntity.getStoresBrand().getOpeningTime().toString(), storeEntity.getStoresBrand().getClosingTime().toString(), DateUtil.getCurrentTime().toString())){
+                        tempBrand.setOpenStatus(true);
+                    }else{
+                        tempBrand.setOpenStatus(false);
+                    }
+
                     storeBrandResult.add(tempBrand);
 
                 }
@@ -200,6 +212,12 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                      featureBrand.setNearestStoreLocation(storeEntities.get(0).getStreet());
                  else
                      featureBrand.setNearestStoreLocation(CommonConstants.UNKNOWN_LOCATION);
+
+                 if(DateUtil.isTimeBetweenTwoTime(featureBrand.getOpeningTime().toString(), featureBrand.getClosingTime().toString(), DateUtil.getCurrentTime().toString())){
+                     featureBrand.setOpenStatus(true);
+                 }else{
+                     featureBrand.setOpenStatus(false);
+                 }
              }
 
 

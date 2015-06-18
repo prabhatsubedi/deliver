@@ -157,9 +157,9 @@ public class DateUtil {
             Calendar calendar2 = Calendar.getInstance();
             calendar2.setTime(finTime);
 
-            if (finalTime.compareTo(initialTime) < 0) {
+            if (finalTime.compareTo(initialTime) <= 0) {
                 calendar2.add(Calendar.DATE, 1);
-                calendar3.add(Calendar.DATE, 1);
+                /*calendar3.add(Calendar.DATE, 1);*/
             }
 
             java.util.Date actualTime = calendar3.getTime();

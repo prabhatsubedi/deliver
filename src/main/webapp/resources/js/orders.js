@@ -536,7 +536,7 @@ Order.getPurchaseHistory = function(){
             var view_items = '<span class="item_list" data-id="'+id+'" data-index="'+i+'" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
 
             if(typeof(order.deliveryBoy) != 'undefined') {
-                deliveryBoy += "<div class='db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>"+order.deliveryBoy.user.mobileNumber+"</div>";
+                deliveryBoy += "<div class='exclude_data db_info hidden'><div class='db_image'><img src='"+order.deliveryBoy.user.profileImage+"' width='200' height='200'></div><div class='db_name'>"+order.deliveryBoy.user.fullName+"</div><div class='db_contact'>"+order.deliveryBoy.user.mobileNumber+"</div>";
                 deliveryBoy += "<div class='ratings'><ul class=nav>";
 
                 var rating = parseInt(order.deliveryBoy.averageRating);

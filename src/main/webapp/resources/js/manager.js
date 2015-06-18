@@ -1904,7 +1904,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     params.pushMessage = $('#message').val();
                     params.notifyToList = notifyList;
 
-                    Main.request('/organizer/send_notification', params, callback);
+                    Main.request('/admin/send_notification', params, callback);
                 };
 
                 button1.text = "Yes";

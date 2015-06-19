@@ -283,4 +283,6 @@ INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_
 ALTER TABLE `delivr_db`.`orders`
 CHANGE COLUMN `order_name` `order_name` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL DEFAULT NULL ;
 
-INSERT INTO `delivr_db`.`id_generator` (`generatedId`) VALUES ('1');
+INSERT INTO `delivr_db`.`id_generator` (`generated_id`) VALUES ('1');
+UPDATE customers SET customer_type = 0 WHERE customer_type IS NULL;
+

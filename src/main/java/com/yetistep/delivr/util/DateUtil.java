@@ -142,32 +142,37 @@ public class DateUtil {
         String reg = "^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$";
         if (initialTime.matches(reg) && finalTime.matches(reg) && currentTime.matches(reg)) {
             boolean valid = false;
-            //Start Time
-            java.util.Date inTime = new SimpleDateFormat("HH:mm:ss").parse(initialTime);
-            Calendar calendar1 = Calendar.getInstance();
-            calendar1.setTime(inTime);
+            // Start Time
+            java.util.Date inTime = new SimpleDateFormat("HH:mm:ss")
+                    .parse(initialTime);
+            Calendar calendarOpenTime = Calendar.getInstance();
+            calendarOpenTime.setTime(inTime);
 
-            //Current Time
-            java.util.Date checkTime = new SimpleDateFormat("HH:mm:ss").parse(currentTime);
-            Calendar calendar3 = Calendar.getInstance();
-            calendar3.setTime(checkTime);
+            // Current Time
+            java.util.Date checkTime = new SimpleDateFormat("HH:mm:ss")
+                    .parse(currentTime);
+            Calendar calendarCurrentTime = Calendar.getInstance();
+            calendarCurrentTime.setTime(checkTime);
 
-            //End Time
-            java.util.Date finTime = new SimpleDateFormat("HH:mm:ss").parse(finalTime);
-            Calendar calendar2 = Calendar.getInstance();
-            calendar2.setTime(finTime);
+            // End Time
+            java.util.Date finTime = new SimpleDateFormat("HH:mm:ss")
+                    .parse(finalTime);
+            Calendar calendarCloseTime = Calendar.getInstance();
+            calendarCloseTime.setTime(finTime);
 
-            if (finalTime.compareTo(initialTime) <= 0) {
-                calendar2.add(Calendar.DATE, 1);
-                /*calendar3.add(Calendar.DATE, 1);*/
+            if (calendarCloseTime.compareTo(calendarOpenTime) <= 0) {
+                calendarCloseTime.add(Calendar.DATE, 1);
+                if (calendarOpenTime.compareTo(calendarCurrentTime) >= 0) {
+                    calendarCurrentTime.add(Calendar.DATE, 1);
+                }
             }
 
-            java.util.Date actualTime = calendar3.getTime();
-            if ((actualTime.after(calendar1.getTime()) || actualTime.compareTo(calendar1.getTime()) == 0)
-                    && actualTime.before(calendar2.getTime())) {
+
+            if ((calendarCurrentTime.compareTo(calendarOpenTime) >= 0) && (calendarCurrentTime.compareTo(calendarCloseTime) <= 0)) {
                 valid = true;
             }
             return valid;
+
         } else {
             throw new YSException("VLD013");
         }

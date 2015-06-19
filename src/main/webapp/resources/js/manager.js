@@ -1764,7 +1764,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 var user = users[i];
 
                 var id = user.id;
-                var fullName = user.fullName;
+                var fullName = user.fullName == undefined ? '' : user.fullName;
                 var mobileNumber = user.mobileNo;
                 var sentCount = user.totalSmsSend;
                 var action = '<a class="trigger_activation" href="#" data-id="' + id + '"  data-mobile="' + mobileNumber + '" >Resend SMS</a>';

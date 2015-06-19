@@ -1020,8 +1020,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         //update items category
         if(itemCategories.size()>1){
             CategoryEntity parentCategory = merchantDaoService.getCategoryById(itemCategories.get(0).getId());
+
             if(parentCategory.getItem().size() > 0)
                 throw new YSException("VLD031");
+
+            //if category exists just update for the first level child of the parent category
+            CategoryEntity catExist = categoryDaoService.getCategory(itemCategories.get(1).getName(), parentCategory.getId(), storesBrand.getId());
+            if(catExist != null){
+                itemCategories.get(1).setId(catExist.getId());
+            }
 
             int i;
             for(i = 1; i<itemCategories.size(); i++){
@@ -1172,11 +1179,11 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         return categories;
     }
 
-    public List<CategoryEntity> getCategoryTree(List<CategoryEntity> categories, Integer parent_id, Integer storeId){
+    public List<CategoryEntity> getCategoryTree(List<CategoryEntity> categories, Integer parentId, Integer storeId){
           List<CategoryEntity> newCategories = new ArrayList<CategoryEntity>();
           for(CategoryEntity newCategory:  categories)
           {
-            if(newCategory.getParent().getId().equals(parent_id) && (newCategory.getStoresBrand()== null || newCategory.getStoresBrand().getId() == storeId ))
+            if(newCategory.getParent().getId().equals(parentId) && (newCategory.getStoresBrand()== null || newCategory.getStoresBrand().getId().equals(storeId) ))
             {
                 newCategory.setChild(getCategoryTree(categories, newCategory.getId(), storeId));
                 List<ItemEntity> items = newCategory.getItem();
@@ -1221,8 +1228,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         for (CategoryEntity category:newCategories){
             objects.add((CategoryEntity) ReturnJsonUtil.getJsonObject(category, fields, assoc, subAssoc));
         }
-
-
         return  objects;
     }
 
@@ -1494,7 +1499,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 if(!storesBrand.getMerchant().getUser().getStatus().equals(Status.ACTIVE))
                     throw new YSException("VLD040");
                 storesBrand.setStatus(Status.fromInt(statusId));
-                if(statusId==3){
+                if(statusId.equals(3)){
                     storesBrand.setFeatured(null);
                     storesBrand.setPriority(null);
                 }

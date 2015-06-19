@@ -1797,6 +1797,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }
         MerchantEntity merchant = merchantDaoService.getMerchantByOrderId(orderId);
         OrderSummaryDto orderSummary = new OrderSummaryDto();
+        orderSummary.setMinimumOrderAmount(order.getStore().getStoresBrand().getMinOrderAmount());
 
         List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
         List<ItemsOrderEntity> itemsOrderEntities = new ArrayList<ItemsOrderEntity>();

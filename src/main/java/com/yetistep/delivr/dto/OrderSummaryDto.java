@@ -25,6 +25,7 @@ public class OrderSummaryDto {
     private String orderVerificationCode;
     private Timestamp orderDate;
     private Timestamp estimatedDeliveryTime;
+    private BigDecimal minimumOrderAmount;
     private List<String> attachments;
     private AccountSummary accountSummary;
     private List<ItemsOrderEntity> itemOrders;
@@ -71,6 +72,14 @@ public class OrderSummaryDto {
 
     public void setEstimatedDeliveryTime(Timestamp estimatedDeliveryTime) {
         this.estimatedDeliveryTime = estimatedDeliveryTime;
+    }
+
+    public BigDecimal getMinimumOrderAmount() {
+        return minimumOrderAmount;
+    }
+
+    public void setMinimumOrderAmount(BigDecimal minimumOrderAmount) {
+        this.minimumOrderAmount = minimumOrderAmount;
     }
 
     public List<String> getAttachments() {

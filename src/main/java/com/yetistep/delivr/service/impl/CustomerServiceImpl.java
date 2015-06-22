@@ -781,8 +781,11 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         BigDecimal deliveryCostWithoutAdditionalDvAmt = BigDecimal.ZERO;
         if(BigDecimalUtil.isLessThen(storeToCustomerDistance, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_NKM_DISTANCE))))
             deliveryCostWithoutAdditionalDvAmt = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_NKM)).multiply(new BigDecimal(surgeFactor));
-        else
-            deliveryCostWithoutAdditionalDvAmt = storeToCustomerDistance.multiply(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_NKM))).multiply(new BigDecimal(surgeFactor));
+        else{
+            BigDecimal defaultCharge = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_NKM)).multiply(new BigDecimal(surgeFactor));
+            BigDecimal extraDistance = storeToCustomerDistance.subtract(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_NKM_DISTANCE)));
+            deliveryCostWithoutAdditionalDvAmt = defaultCharge.add(extraDistance.multiply(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_NKM))).multiply(new BigDecimal(surgeFactor)));
+        }
 
         /* 10. ======= Service fee Amount with VAT =========== */
         BigDecimal serviceFeeAmt = BigDecimalUtil.percentageOf(subTotal, serviceFeePct);

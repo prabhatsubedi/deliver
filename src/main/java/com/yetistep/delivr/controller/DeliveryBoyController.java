@@ -157,7 +157,7 @@ public class DeliveryBoyController extends AbstractManager{
             //validateMobileClient(headerDto.getAccessToken());
 
             Boolean statusChanged = deliveryBoyService.changeOrderStatus(order, Integer.parseInt(headerDto.getId()));
-            if(statusChanged && order.equals(JobOrderStatus.DELIVERED)){
+            if(order.getOrderStatus().equals(JobOrderStatus.DELIVERED)){
                  /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
                  accountService.generateBillAndReceiptAndSendEmail(order);
                  customerService.setReferralReward(order);

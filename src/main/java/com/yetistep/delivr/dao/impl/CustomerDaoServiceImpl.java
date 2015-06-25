@@ -80,6 +80,13 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
     }
 
     @Override
+    public List<CustomerEntity> getReferralsAllReferees(Long facebookId) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(CustomerEntity.class);
+        criteria.add(Restrictions.eq("referredBy", facebookId));
+        return  (List<CustomerEntity>) criteria.list();
+    }
+
+    @Override
     public CustomerEntity findUser(Long facebookId) throws Exception {
        String sql = "SELECT c.id, u.id AS userId, u.mobile_number, u.verification_code, u.full_name, u.last_address_mobile FROM customers c " +
                "INNER JOIN users u ON (u.id = c.user_id) " +

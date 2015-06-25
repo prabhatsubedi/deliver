@@ -2491,4 +2491,34 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         customer.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
         return  customer;
     }
+
+    @Override
+    public void updateRewards() throws Exception{
+        List<CustomerEntity> allCustomers = customerDaoService.findAll();
+        for (CustomerEntity customer: allCustomers){
+            BigDecimal signUpEarned;
+            if(customer.getReferredBy() != null)  {
+                signUpEarned = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT));
+            } else {
+                signUpEarned = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT));
+            }
+
+            BigDecimal earnedRewardExists = customer.getRewardsEarned();
+            List<CustomerEntity> referees =  customerDaoService.getReferralsAllReferees(customer.getFacebookId());
+            List<Integer> refereesFacebookIdList = new ArrayList<>();
+            for(CustomerEntity referee : referees){
+                refereesFacebookIdList.add(referee.getId());
+            }
+
+            Integer refereesDeliveredOrders = orderDaoService.getRefereesDeliveredOrders(refereesFacebookIdList);
+            //total rewards earned = signup reward + total referral amount
+            BigDecimal rewardsShouldBe =  new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT)).multiply(new BigDecimal(refereesDeliveredOrders)).add(signUpEarned);
+
+            BigDecimal rewardDifference = rewardsShouldBe.subtract(earnedRewardExists);
+            refillCustomerWallet(customer.getFacebookId(), rewardDifference, "Reward Difference", false);
+            //update customer with original rewards earned
+            customer.setRewardsEarned(rewardsShouldBe);
+            customerDaoService.update(customer);
+        }
+    }
 }

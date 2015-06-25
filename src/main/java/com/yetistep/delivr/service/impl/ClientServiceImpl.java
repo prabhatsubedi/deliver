@@ -1423,5 +1423,4 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         return defaultInfoDto;
     }
 
-
 }

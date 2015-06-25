@@ -55,4 +55,6 @@ public interface CustomerDaoService extends GenericDaoService<Integer, CustomerE
 
     public CustomerEntity getWalletInfo(Long facebookId) throws Exception;
 
+    public List<CustomerEntity> getReferralsAllReferees(Long facebookId) throws Exception;
+
 }

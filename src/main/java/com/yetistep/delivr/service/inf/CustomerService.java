@@ -86,4 +86,6 @@ public interface CustomerService {
     public CustomerEntity mobileLogin(RequestJsonDto requestJsonDto) throws Exception;
 
     public RequestJsonDto customerSignUp(UserEntity user) throws Exception;
+
+    public void updateRewards() throws Exception;
 }

@@ -1089,4 +1089,18 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/update_reward", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> updateReward(@RequestHeader HttpHeaders headers, @RequestBody UserEntity user) {
+        try {
+            customerService.updateRewards();
+            ServiceResponse serviceResponse = new ServiceResponse("Rewards has been updated successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving sign up information", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 }

@@ -145,6 +145,14 @@ public class MainController {
 
     }
 
+    @RequestMapping(value = "/signup", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView signup(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("signup");
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/assistance/**", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView forgotPassword(){
@@ -158,6 +166,14 @@ public class MainController {
     public ModelAndView balance(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("balance");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/store/{id}/", "/store/{id}/{cat}/"}, method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView store(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("store");
         return modelAndView;
     }
 

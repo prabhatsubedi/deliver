@@ -1,12 +1,5 @@
 $(document).ready(function(){
 
-    if(window.location.hostname == "test.idelivr.com") {
-
-        $('#login_form #email').val('admin@yetistep.com');
-        $('#login_form #password').val('password');
-
-    }
-
     Image.dropZone('#logo_input');
 
     $.validator.addMethod("contactNumber", function(value, element, arg){
@@ -22,17 +15,6 @@ $(document).ready(function(){
             $('#error_container').html(error);
         }
     });
-
-    $('#login_form').validate({
-        submitHandler: function() {
-            var data = {username: $('#email').val(), password: $('#password').val(), stringify: false};
-            Main.doLogin(data);
-            return false;
-        }/*,
-        wrapper : 'div'*/
-    });
-    $('#email').rules('add', {required: true, email: true, messages : {required: "Email is required."}});
-    $('#password').rules('add', {required: true, minlength: 6, messages : {required: "Password is required."}});
 
     $('#signup_form').validate({
         submitHandler: function() {
@@ -98,9 +80,6 @@ $(document).ready(function(){
 //    $('#registration_no').rules('add', {required: true, messages : {required: "Registration number is required."}});
 //    $('#vat').rules('add', {required: true, messages : {required: "VAT is required."}});
 
-    $('#modal_login').on('shown.bs.modal', function (e) {
-        $('#email').focus();
-    });
     $('#modal_signup').on('shown.bs.modal', function (e) {
         $('#business_name').focus();
         $('body').addClass('modal-open');
@@ -210,6 +189,8 @@ $(document).ready(function(){
             return false;
         }
     });
+
+    $('#modal_signup').modal('show');
 
 
 });

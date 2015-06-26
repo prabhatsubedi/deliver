@@ -713,6 +713,10 @@ if(typeof(Store) == "undefined") var Store = {};
                 else
                     $('.btn_switch').removeClass('on').addClass('off');
                 document.title = storeBrand.brandName;
+                $('.brand_offer').html(storeBrand.offer);
+                $('.closed_days').html(storeBrand.closedDays.join(', '));
+                $('.service_charge').html(Main.ucfirst(storeBrand.serviceChargeApplicability));
+                $('.service_distance').html(storeBrand.servingDistance);
                 $('.open_time').html(storeBrand.openingTime + ' - ' + storeBrand.closingTime);
                 $('.min_amount').html(storeBrand.minOrderAmount == undefined ? 0 : storeBrand.minOrderAmount);
 

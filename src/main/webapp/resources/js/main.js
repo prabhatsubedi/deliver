@@ -137,10 +137,10 @@ $(window).bind('beforeunload', function() { if(!form_submit) return 'Your data w
         Main.request('/j_spring_security_check', data, callback);
     };
 
-    Main.doLogout = function (data) {
+    Main.doLogout = function (noredir) {
         var callback = function (status, data) {
             Main.clearLocalStorage();
-            window.location = Main.modifyURL("/");
+            if(!noredir) window.location = Main.modifyURL("/");
         };
         callback.loaderDiv = "body";
         Main.request('/j_spring_security_logout', {}, callback);

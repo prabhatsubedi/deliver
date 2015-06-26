@@ -2494,10 +2494,11 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
     @Override
     public void updateRewards() throws Exception{
-        List<CustomerEntity> allCustomers = customerDaoService.findAll();
+        List<CustomerEntity> allCustomers = customerDaoService.getBalanceHolderCustomer();
+        int i=0;
         for (CustomerEntity customer: allCustomers){
             BigDecimal signUpEarned;
-            if(customer.getReferredBy() != null)  {
+            if(customer.getReferredBy() == null)  {
                 signUpEarned = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT));
             } else {
                 signUpEarned = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT));
@@ -2511,14 +2512,25 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             }
 
             Integer refereesDeliveredOrders = orderDaoService.getRefereesDeliveredOrders(refereesFacebookIdList);
-            //total rewards earned = signup reward + total referral amount
-            BigDecimal rewardsShouldBe =  new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT)).multiply(new BigDecimal(refereesDeliveredOrders)).add(signUpEarned);
+            //log.info("Referees Deliver Count:"+refereesDeliveredOrders);
+            if(refereesDeliveredOrders > 0){
 
-            BigDecimal rewardDifference = rewardsShouldBe.subtract(earnedRewardExists);
-            refillCustomerWallet(customer.getFacebookId(), rewardDifference, "Reward Difference", false);
-            //update customer with original rewards earned
-            customer.setRewardsEarned(rewardsShouldBe);
-            customerDaoService.update(customer);
+                //total rewards earned = signup reward + total referral amount
+                log.info("Referees Deliver Count:" + refereesDeliveredOrders);
+
+                BigDecimal rewardsShouldBe =  new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT)).multiply(new BigDecimal(refereesDeliveredOrders)).add(signUpEarned);
+
+                BigDecimal rewardDifference = rewardsShouldBe.subtract(earnedRewardExists);
+                if(BigDecimalUtil.isGreaterThen(rewardDifference, new BigDecimal(51))){
+                    i++;
+                    refillCustomerWallet(customer.getFacebookId(), rewardDifference, "Pending Reward Awarded", false);
+                    //update customer with original rewards earned
+                    customer.setRewardsEarned(rewardsShouldBe);
+                    customerDaoService.update(customer);
+                    log.info("Balance: "+rewardDifference+" Added to customer: ID=>"+customer.getId()+"  Facebook ID:"+customer.getFacebookId());
+                }else
+                    log.info("Not Added Balance: "+rewardDifference+" Added to customer: ID=>"+customer.getId()+"  Facebook ID:"+customer.getFacebookId());
+            }
         }
     }
 }

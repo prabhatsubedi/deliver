@@ -478,7 +478,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
     public Integer getRefereesDeliveredOrders(List<Integer> refereesFacebookId) throws Exception {
         String sql = "SELECT COUNT(DISTINCT customer_id) FROM orders WHERE customer_id IN(:refereesFacebookId) && order_status = 5";
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
-        query.setParameter("refereesFacebookId", refereesFacebookId);
+        query.setParameterList("refereesFacebookId", refereesFacebookId);
         return ((Number) query.uniqueResult()).intValue();
     }
 

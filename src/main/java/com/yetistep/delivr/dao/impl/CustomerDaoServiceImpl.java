@@ -289,6 +289,12 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
         sqlQuery.setResultTransformer(Transformers.aliasToBean(CustomerEntity.class));
         return  (CustomerEntity) sqlQuery.uniqueResult();
     }
+
+    public List<CustomerEntity> getBalanceHolderCustomer() throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(CustomerEntity.class);
+        criteria.add(Restrictions.gt("referredFriendsCount", 0));
+        return  (List<CustomerEntity>) criteria.list();
+    }
 }
 
 

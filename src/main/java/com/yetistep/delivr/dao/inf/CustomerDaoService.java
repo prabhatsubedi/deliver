@@ -57,4 +57,6 @@ public interface CustomerDaoService extends GenericDaoService<Integer, CustomerE
 
     public List<CustomerEntity> getReferralsAllReferees(Long facebookId) throws Exception;
 
+    public List<CustomerEntity> getBalanceHolderCustomer() throws Exception;
+
 }

@@ -49,9 +49,6 @@
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="brand_name" name="brand_name" placeholder="Store Name">
                                     </div>
-<%--                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="brand_offer" name="brand_offer" placeholder="Offer">
-                                    </div>--%>
                                     <div class="brand_images clearfix">
                                         <div id="brand_image" class="drop_zone disabled unselectable text-center maintain_ratio" mr-width="720" mr-height="400">
                                             <div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 720x400</div>
@@ -74,29 +71,9 @@
                                             </select>
                                         </div>
                                     </div>
-<%--                                    <div class="form-group">
-                                        <select id="closed_days" name="closed_days" class="col-xs-12 no_pad no_margin" data-style="form-control" multiple="multiple" title="Select Closed Days">
-                                            <option value="SUNDAY">Sunday</option>
-                                            <option value="MONDAY">Monday</option>
-                                            <option value="TUESDAY">Tuesday</option>
-                                            <option value="WEDNESDAY">Wednesday</option>
-                                            <option value="THURSDAY">Thursday</option>
-                                            <option value="FRIDAY">Friday</option>
-                                            <option value="SATURDAY">Saturday</option>
-                                        </select>
-                                    </div>--%>
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="min_amount" name="min_amount" placeholder="Minimum Order Amount">
                                     </div>
-<%--                                    <div class="form-group">
-                                        <select id="service_charge" name="service_charge" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                            <option value="NOT_APPLICABLE">Not Applicable</option>
-                                            <option value="APPLICABLE">Applicable</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="service_distance" name="service_distance" placeholder="Service Distance (KM)">
-                                    </div>--%>
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="brand_url" name="brand_url" placeholder="Store URL">
                                     </div>

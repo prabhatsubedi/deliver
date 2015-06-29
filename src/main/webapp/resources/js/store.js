@@ -139,7 +139,6 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#close_time').val("22:00:00");
 
         $('#open_time, #close_time').selectpicker({size: 5});
-//        $('#open_time, #close_time, #closed_days, #service_charge').selectpicker({size: 5});
 
         function updateGeoPoints(showAlert) {
 
@@ -289,13 +288,9 @@ if(typeof(Store) == "undefined") var Store = {};
 
                         stores_brand.id = $('.submit_store').attr('data-id');
                         stores_brand.brandName = $('#brand_name').val();
-//                        stores_brand.offer = $('#brand_offer').val();
                         stores_brand.minOrderAmount = $('#min_amount').val();
-//                        stores_brand.serviceChargeApplicability = $('#service_charge').val();
-//                        stores_brand.servingDistance = $('#service_distance').val();
                         stores_brand.openingTime = $('#open_time').val();
                         stores_brand.closingTime = $('#close_time').val();
-//                        stores_brand.closedDays = $('#closed_days').val();
                         stores_brand.brandLogo = $('#brand_logo img').attr('data-new') ? $('#brand_logo img').attr('src') : undefined;
                         stores_brand.brandImage = $('#brand_image img').attr('data-new') ? $('#brand_image img').attr('src') : undefined;
                         stores_brand.brandUrl = $('#brand_url').val();
@@ -378,17 +373,11 @@ if(typeof(Store) == "undefined") var Store = {};
                         $('#brand_logo').html('<img src="' + storeBrand.brandLogo + '" style="height: 100%;" class="img-responsive" />');
                         $('.submit_store').attr({'data-id': storeBrand.id});
                         $('#brand_name').val(storeBrand.brandName);
-//                        $('#brand_offer').val(storeBrand.offer);
                         $('#min_amount').val(storeBrand.minOrderAmount == undefined ? 0 : storeBrand.minOrderAmount);
                         $('#open_time').val(storeBrand.openingTime);
                         $('#open_time').selectpicker('refresh');
                         $('#close_time').val(storeBrand.closingTime);
                         $('#close_time').selectpicker('refresh');
-//                        $('#closed_days').val(storeBrand.closedDays);
-//                        $('#closed_days').selectpicker('refresh');
-//                        $('#service_charge').val(storeBrand.serviceChargeApplicability);
-//                        $('#service_charge').selectpicker('refresh');
-//                        $('#service_distance').val(storeBrand.servingDistance);
                         $('#brand_url').val(storeBrand.brandUrl);
 
                         var cat_callback = function (status, data) {
@@ -714,10 +703,6 @@ if(typeof(Store) == "undefined") var Store = {};
                 else
                     $('.btn_switch').removeClass('on').addClass('off');
                 document.title = storeBrand.brandName;
-//                $('.brand_offer').html(storeBrand.offer);
-//                $('.closed_days').html(storeBrand.closedDays.join(', '));
-//                $('.service_charge').html(Main.ucfirst(storeBrand.serviceChargeApplicability));
-//                $('.service_distance').html(storeBrand.servingDistance);
                 $('.open_time').html(storeBrand.openingTime + ' - ' + storeBrand.closingTime);
                 $('.min_amount').html(storeBrand.minOrderAmount == undefined ? 0 : storeBrand.minOrderAmount);
 

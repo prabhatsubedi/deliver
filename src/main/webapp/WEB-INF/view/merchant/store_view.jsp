@@ -67,27 +67,27 @@
 
                                 <div class="other_info">
 
-                                    <div class="detail_row">
+<%--                                    <div class="detail_row">
                                         <label class="detail_label">Offer</label>
                                         <div class="detail_value brand_offer"></div>
-                                    </div>
+                                    </div>--%>
 
                                     <div class="detail_row">
                                         <label class="detail_label">Open Time</label>
                                         <div class="detail_value open_time"></div>
                                     </div>
 
-                                    <div class="detail_row">
+<%--                                    <div class="detail_row">
                                         <label class="detail_label">Closed Days</label>
                                         <div class="detail_value closed_days"></div>
-                                    </div>
+                                    </div>--%>
 
                                     <div class="detail_row">
                                         <label class="detail_label">Minimum Order Amount</label>
                                         <div class="detail_value min_amount"></div>
                                     </div>
 
-                                    <div class="detail_row">
+<%--                                    <div class="detail_row">
                                         <label class="detail_label">Service Charge Applicability</label>
                                         <div class="detail_value service_charge"></div>
                                     </div>
@@ -95,7 +95,7 @@
                                     <div class="detail_row">
                                         <label class="detail_label">Service Distance</label>
                                         <div class="detail_value service_distance"></div>
-                                    </div>
+                                    </div>--%>
 
                                     <div class="detail_row">
                                         <label class="detail_label">Categories</label>

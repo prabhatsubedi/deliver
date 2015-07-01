@@ -2408,7 +2408,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
     public String paymentGatewaySettlement(PaymentGatewayDto paymentGatewayDto) throws Exception {
         String paymentResponse = "Data=>"+paymentGatewayDto.getData() + " Interface Version=>"+paymentGatewayDto.getInterfaceVersion()+" Request URL=>"+paymentGatewayDto.getPGRequestURL()+" SEAL => "+paymentGatewayDto.getSeal();
         log.info(paymentResponse);
-        sendMail("mun.lyt.5@gmail.com", paymentResponse, "Payment Gateway Message");
+        //sendMail("mun.lyt.5@gmail.com", paymentResponse, "Payment Gateway Message");
 
         Properties properties = GeneralUtil.parsePropertiesString(paymentGatewayDto.getData(), "|");
         Integer transactionId = Integer.parseInt(properties.getProperty(SHAEncoder.ORDER_ID_NAME));

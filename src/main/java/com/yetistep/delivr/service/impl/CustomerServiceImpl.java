@@ -1160,7 +1160,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         StoreEntity store = findNearestStoreFromCustomer(order, stores);
         BigDecimal maxDistance = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MAX_ORDER_SERVING_DISTANCE));
         if(BigDecimalUtil.isGreaterThen(order.getCustomerChargeableDistance(), maxDistance)){
-            throw new YSException("VLD036", maxDistance + "km");
+            throw new YSException("VLD036");
         }
         order.setStore(store);
         order.setOrderName(store.getName() + " to " + order.getAddress().getStreet());
@@ -2406,10 +2406,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
     @Override
     public String paymentGatewaySettlement(PaymentGatewayDto paymentGatewayDto) throws Exception {
-        String paymentResponse = "Data=>"+paymentGatewayDto.getData() + " Interface Version=>"+paymentGatewayDto.getInterfaceVersion()+" Request URL=>"+paymentGatewayDto.getPGRequestURL()+" SEAL => "+paymentGatewayDto.getSeal();
-        log.info(paymentResponse);
-        //sendMail("mun.lyt.5@gmail.com", paymentResponse, "Payment Gateway Message");
-
+        log.info("Data=>"+paymentGatewayDto.getData() + " Interface Version=>"+paymentGatewayDto.getInterfaceVersion()+" Request URL=>"+paymentGatewayDto.getPGRequestURL()+" SEAL => "+paymentGatewayDto.getSeal());
         Properties properties = GeneralUtil.parsePropertiesString(paymentGatewayDto.getData(), "|");
         Integer transactionId = Integer.parseInt(properties.getProperty(SHAEncoder.ORDER_ID_NAME));
         PaymentGatewayInfoEntity paymentGatewayInfoEntity = paymentGatewayInfoDaoService.find(transactionId);
@@ -2482,7 +2479,9 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         if(responseCode.equals(SHAEncoder.SUCCESSFUL_RESPONSE_CODE))
             flag = true;
         UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromCustomerId(customerId);
-        return SHAEncoder.getResponseHTML(remarks, flag, userDevice.getFamily());
+        if(userDevice != null)
+            return SHAEncoder.getResponseHTML(remarks, flag, userDevice.getFamily());
+        return "";
     }
 
     @Override

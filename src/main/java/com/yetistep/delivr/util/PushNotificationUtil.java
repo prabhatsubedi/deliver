@@ -26,8 +26,10 @@ public class PushNotificationUtil {
 
     private static final String DBOY_API_KEY = "AIzaSyBp36qfwThBp57gVjC0dOA4qf3vTv3gHCA";
     private static final String CUSTOMER_API_KEY = "AIzaSyCXcn_iKKSCnBnYbrinDFCmTdt6xyPcbTI";
-    public static final String CERTIFICATE_IOS = "Koolkat_dev.p12";
-    public static final String PASSWORD_IOS = "password123";
+    public static final String CERTIFICATE_IOS = "iphone_production.p12";
+    public static final String PASSWORD_IOS = "pass123";
+    //public static final String CERTIFICATE_IOS = "Koolkat_dev.p12";
+    //public static final String PASSWORD_IOS = "password123";
 
 
     public static void sendPushNotification(UserDeviceEntity userDevice, String message, NotifyTo notifyTo, PushNotificationRedirect pushNotificationRedirect, String extraDetail) {
@@ -120,7 +122,7 @@ public class PushNotificationUtil {
             payloadBuilder = payloadBuilder.customField("customMessage",customMessage);
             String payload = payloadBuilder.build();
 
-            ApnsService service = APNS.newService().withCert(inputStream, PASSWORD_IOS).withSandboxDestination().build();
+            ApnsService service = APNS.newService().withCert(inputStream, PASSWORD_IOS).withProductionDestination().build();
             service.push(pushNotification.getTokens(), payload);
             log.info("Notification sent successfully");
         } catch (Exception e) {

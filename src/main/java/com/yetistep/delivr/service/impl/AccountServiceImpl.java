@@ -325,7 +325,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         List<OrderEntity> orders = new ArrayList<>();
 
         for (String id: orderIds ) {
-            if(id != "")
+            if(!id.equals(""))
                 orders.add(orderDaoService.find(Integer.parseInt(id)));
         }
 
@@ -343,7 +343,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         List<InvoiceEntity> invoiceEntities = new ArrayList<>();
 
         for (String id: invoiceIds ) {
-            if(id != "")
+            if(!id.equals(""))
                 invoiceEntities.add(invoiceDaoService.find(Integer.parseInt(id)));
         }
 
@@ -362,7 +362,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         List<OrderEntity> orders = new ArrayList<>();
 
         for (String id: orderIds ) {
-            if(id != "")
+            if(!id.equals(""))
                 orders.add(orderDaoService.find(Integer.parseInt(id)));
         }
 
@@ -427,7 +427,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         List<DBoyPaymentEntity> dBoyPaymentEntities = new ArrayList<>();
 
         for (String id: invoiceIds ) {
-            if(id != "")
+            if(!id.equals(""))
                 dBoyPaymentEntities.add(dBoyPaymentDaoService.find(Integer.parseInt(id)));
         }
 

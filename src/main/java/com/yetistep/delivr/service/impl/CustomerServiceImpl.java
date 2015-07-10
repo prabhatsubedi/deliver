@@ -2467,6 +2467,13 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 CustomerEntity referrer = customerDaoService.find(referrerId);
                 referrer.setRewardsEarned(referrer.getRewardsEarned().add(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT))));
                 refillCustomerWallet(referrer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT)), MessageBundle.getMessage("WTM005", "push_notification.properties"), false);
+                Integer referred_friends_count = referrer.getReferredFriendsCount();
+                if(referred_friends_count != null){
+                    referred_friends_count++;
+                } else {
+                    referred_friends_count=1;
+                }
+                referrer.setReferredFriendsCount(referred_friends_count);
                 customerDaoService.update(referrer);
             }
         }
@@ -2536,4 +2543,21 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             }
         }
     }
+
+    @Override
+    public void updateReferredCount() throws Exception {
+        List<CustomerEntity> allCustomers = customerDaoService.getBalanceHolderCustomer();
+        for (CustomerEntity customer: allCustomers){
+            List<CustomerEntity> referees =  customerDaoService.getReferralsAllReferees(customer.getFacebookId());
+            List<Integer> refereesFacebookIdList = new ArrayList<>();
+            for(CustomerEntity referee : referees){
+                refereesFacebookIdList.add(referee.getId());
+            }
+            Integer refereesDeliveredOrders = orderDaoService.getRefereesDeliveredOrders(refereesFacebookIdList);
+            customer.setReferredFriendsCount(refereesDeliveredOrders);
+            customerDaoService.update(customer);
+        }
+    }
+
+
 }

@@ -88,4 +88,8 @@ public interface CustomerService {
     public RequestJsonDto customerSignUp(UserEntity user) throws Exception;
 
     public void updateRewards() throws Exception;
+
+    public void updateReferredCount() throws Exception;
 }
+
+

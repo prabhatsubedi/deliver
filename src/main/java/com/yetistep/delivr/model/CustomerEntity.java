@@ -35,6 +35,7 @@ public class CustomerEntity implements Serializable {
     private Integer friendsInvitationCount;
     private String referenceUrl;
     private Integer referredFriendsCount;
+    private Integer invitedFriendsCount;
     private BigDecimal rewardsEarned;
     private String creditCardToken;
     private String creditCardId;
@@ -142,6 +143,16 @@ public class CustomerEntity implements Serializable {
 
     public void setReferredFriendsCount(Integer referredFriendsCount) {
         this.referredFriendsCount = referredFriendsCount;
+    }
+
+    @Column(name = "invited_friends_count")
+    @JsonProperty
+    public Integer getInvitedFriendsCount() {
+        return invitedFriendsCount;
+    }
+
+    public void setInvitedFriendsCount(Integer invitedFriendsCount) {
+        this.invitedFriendsCount = invitedFriendsCount;
     }
 
     @Column(name = "rewards_earned")

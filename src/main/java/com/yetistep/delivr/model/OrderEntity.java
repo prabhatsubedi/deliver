@@ -62,6 +62,7 @@ public class OrderEntity implements Serializable {
     private BigDecimal itemServiceCharge;
     private BigDecimal itemVatCharge;
     private BigDecimal discountFromStore;
+    private Boolean partnershipStatus;
     private String description; //used as transient for dBoy account
     private BigDecimal balance; //used as transient for dBoy account
     private BigDecimal dr;  //used as transient for dBoy account
@@ -370,6 +371,15 @@ public class OrderEntity implements Serializable {
 
     public void setDiscountFromStore(BigDecimal discountFromStore) {
         this.discountFromStore = discountFromStore;
+    }
+
+    @Column(name = "partnership_status", columnDefinition = "TINYINT(1) DEFAULT 0")
+    public Boolean getPartnershipStatus() {
+        return partnershipStatus;
+    }
+
+    public void setPartnershipStatus(Boolean partnershipStatus) {
+        this.partnershipStatus = partnershipStatus;
     }
 
     @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )

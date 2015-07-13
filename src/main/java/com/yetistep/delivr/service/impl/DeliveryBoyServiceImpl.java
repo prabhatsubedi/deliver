@@ -523,6 +523,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
         }
         if(orderStatus.equals(JobOrderStatus.ORDER_ACCEPTED)){
+            if(order.getOrderStatus().equals(JobOrderStatus.ORDER_ACCEPTED)){
+                throw new YSException("ORD001");
+            }
             return acceptDeliveryOrder(orderEntityJson.getId(), deliveryBoyId);
         }else if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_PICK_UP)){
             return startJob(order, orderEntityJson, deliveryBoyId);

@@ -791,12 +791,18 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
     private void sendNotification(Role role, String family, NotifyTo notifyTo, String message) throws Exception{
         List<String> deviceTokens = userDeviceDaoService.getAllDeviceTokensForFamilyAndRole(role, family);
-        PushNotification pushNotification = new PushNotification();
-        pushNotification.setTokens(deviceTokens);
-        pushNotification.setMessage(message);
-        pushNotification.setPushNotificationRedirect(PushNotificationRedirect.INFO);
-        pushNotification.setNotifyTo(notifyTo);
-        PushNotificationUtil.sendNotification(pushNotification, family);
+
+        int numberOfLoop = deviceTokens.size() / 500 + (deviceTokens.size() % 500 == 0 ? 0 : 1);
+        for (int i = 0; i < numberOfLoop; i++) {
+            int maxList = deviceTokens.size() > ((i + 1) * 500) ? ((i + 1) * 500) : deviceTokens.size();
+            List<String> deviceTokensTemp = deviceTokens.subList(i * 500, maxList);
+            PushNotification pushNotification = new PushNotification();
+            pushNotification.setTokens(deviceTokensTemp);
+            pushNotification.setMessage(message);
+            pushNotification.setPushNotificationRedirect(PushNotificationRedirect.INFO);
+            pushNotification.setNotifyTo(notifyTo);
+            PushNotificationUtil.sendNotification(pushNotification, family);
+        }
     }
 
     @Override

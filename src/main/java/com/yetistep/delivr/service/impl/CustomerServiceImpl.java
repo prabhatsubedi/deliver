@@ -1138,6 +1138,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         if(merchant == null){
             throw new YSException("MRC003");
         }
+        if(merchant.getPartnershipStatus() != null)
+            order.setPartnershipStatus(merchant.getPartnershipStatus());
 
         Boolean isOpen = DateUtil.isTimeBetweenTwoTime(storesBrand.getOpeningTime().toString(), storesBrand.getClosingTime().toString(),DateUtil.getCurrentTime().toString());
         if(!isOpen){

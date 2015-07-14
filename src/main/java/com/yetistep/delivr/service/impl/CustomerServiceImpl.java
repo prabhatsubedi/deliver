@@ -1454,20 +1454,20 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         if(referrer == null)
             throw new YSException("VLD011");
 
-        Integer referred_friends_count = referrer.getReferredFriendsCount();
-        if(referred_friends_count == null){
-            referred_friends_count = 1;
+        Integer invited_friends_count = referrer.getInvitedFriendsCount();
+        if(invited_friends_count == null){
+            invited_friends_count = 1;
         }else{
-            referred_friends_count++;
+            invited_friends_count++;
         }
-        referrer.setReferredFriendsCount(referred_friends_count);
+        referrer.setInvitedFriendsCount(invited_friends_count);
         referrer.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
         customerDaoService.update(referrer);
         CustomerEntity cUser = customerDaoService.find(user.getCustomer().getFacebookId());
         if(cUser != null)
             throw new YSException("VLD010");
 
-        if(!referrer.getDefault() && referrer.getReferredFriendsCount() != null && referrer.getReferredFriendsCount() >= Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.MAX_REFERRED_FRIENDS_COUNT)))
+        if(!referrer.getDefault() && referrer.getInvitedFriendsCount() != null && referrer.getInvitedFriendsCount() >= Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.MAX_REFERRED_FRIENDS_COUNT)))
             throw new YSException("VLD021");
 
         user.getCustomer().setReferredBy(Long.parseLong(headerDto.getId()));

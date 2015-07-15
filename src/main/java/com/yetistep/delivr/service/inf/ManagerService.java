@@ -61,4 +61,6 @@ public interface ManagerService {
     public void updateCategoryPriority(RequestJsonDto requestJsonDto) throws Exception;
 
     public List<WalletTransactionEntity> getWalletTransactionInformation() throws Exception;
+
+    public DeliveryBoyEntity clearDBoyAccount(HeaderDto headerDto) throws Exception;
 }

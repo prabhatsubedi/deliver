@@ -86,6 +86,7 @@ public class OrderEntity implements Serializable {
     private BillEntity bill;
     private ReceiptEntity receipt;
     private List<WalletTransactionEntity> walletTransactions;
+    private List<CourierTransactionAccountEntity> courierTransactionAccount;
     //for merchant settlement
     private Boolean settled;
     private Date settledDate;
@@ -556,6 +557,15 @@ public class OrderEntity implements Serializable {
 
     public void setWalletTransactions(List<WalletTransactionEntity> walletTransactions) {
         this.walletTransactions = walletTransactions;
+    }
+
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    public List<CourierTransactionAccountEntity> getCourierTransactionAccount() {
+        return courierTransactionAccount;
+    }
+
+    public void setCourierTransactionAccount(List<CourierTransactionAccountEntity> courierTransactionAccount) {
+        this.courierTransactionAccount = courierTransactionAccount;
     }
 
     @Column(name = "settled", columnDefinition = "TINYINT(1) DEFAULT 0")

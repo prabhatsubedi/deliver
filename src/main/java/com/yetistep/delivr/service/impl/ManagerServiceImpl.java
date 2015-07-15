@@ -235,6 +235,8 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         dBoyAdvanceAmounts.add(dBoyAdvanceAmount);
         dBoy.setdBoyAdvanceAmounts(dBoyAdvanceAmounts);
         deliveryBoyDaoService.update(dBoy);
+
+
         String fields = "id,availabilityStatus,averageRating,previousDue,availableAmount,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -824,4 +826,60 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         }
         return walletTransactionEntities;
     }
+
+
+    public DeliveryBoyEntity clearDBoyAccount(HeaderDto headerDto) throws Exception {
+
+        DeliveryBoyEntity dBoy = deliveryBoyDaoService.find(Integer.parseInt(headerDto.getId()));
+
+        List<DBoyAdvanceAmountEntity> dBoySubmittedAmounts = new ArrayList<>();
+        DBoyAdvanceAmountEntity dBoySubmittedAmount = new DBoyAdvanceAmountEntity();
+        dBoySubmittedAmount.setAmountAdvance(dBoy.getAvailableAmount());
+        dBoySubmittedAmount.setType("acknowledgeAmount");
+        dBoySubmittedAmount.setDeliveryBoy(dBoy);
+        dBoySubmittedAmount.setAdvanceDate(DateUtil.getCurrentTimestampSQL());
+        dBoySubmittedAmounts.add(dBoySubmittedAmount);
+        dBoy.setdBoyAdvanceAmounts(dBoySubmittedAmounts);
+
+        dBoy.setPreviousDue(new BigDecimal(0));
+        dBoy.setAvailableAmount(new BigDecimal(0));
+        dBoy.setWalletAmount(new BigDecimal(0));
+        dBoy.setBankAmount(new BigDecimal(0));
+
+        deliveryBoyDaoService.update(dBoy);
+        String fields = "id,availabilityStatus,averageRating,previousDue,availableAmount,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
+
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+
+        assoc.put("user", "id,fullName,mobileNumber,emailAddress,profileImage,gender,status,addresses");
+        subAssoc.put("addresses", "street,city,state,country,latitude,longitude");
+
+        DeliveryBoyEntity deliveryBoy = ((DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(dBoy, fields, assoc, subAssoc));
+
+        Timestamp lastAckDate = dBoyAdvanceAmountDaoService.getLatestAckTimestamp(deliveryBoy.getId());
+
+        BigDecimal cancelledPurchaseTotal = BigDecimal.ZERO;
+        //if(lastAckDate != null){
+        List<OrderEntity> cancelledPurchasedOrders =  orderDaoService.getCancelledPurchasedOrder(deliveryBoy.getId(), lastAckDate);
+        for (OrderEntity order: cancelledPurchasedOrders){
+            Boolean itemPurchased = false;
+            List<ItemsOrderEntity> itemsOrders = order.getItemsOrder();
+            for(ItemsOrderEntity itemsOrder: itemsOrders){
+                if(itemsOrder.getPurchaseStatus() != null && itemsOrder.getPurchaseStatus()){
+                    itemPurchased = true;
+                    break;
+                }
+            }
+            if(itemPurchased)
+                cancelledPurchaseTotal =  cancelledPurchaseTotal.add(order.getGrandTotal());
+        }
+        //}
+
+        deliveryBoy.setItemReturnedTotal(cancelledPurchaseTotal);
+
+        return deliveryBoy;
+
+    }
+
 }

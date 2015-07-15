@@ -67,6 +67,7 @@
        <mapping class="com.yetistep.delivr.model.DBoyPaymentEntity" />
        <mapping class="com.yetistep.delivr.model.CommissionStatementEntity" />
        <mapping class="com.yetistep.delivr.model.IDGeneratorEntity" />
+       <mapping class="com.yetistep.delivr.model.CourierTransactionAccountEntity" />
 
     </session-factory>
 </hibernate-configuration>

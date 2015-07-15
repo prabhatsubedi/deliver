@@ -327,6 +327,20 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         return (List<OrderEntity>) criteria.list();
     }
 
+    @Override
+    public List<OrderEntity> getShoppersLiveOrders(Integer shopperId) throws Exception {
+        Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
+        List<JobOrderStatus> activeStatuses = new ArrayList<>();
+        activeStatuses.add(JobOrderStatus.AT_STORE);
+        activeStatuses.add(JobOrderStatus.ORDER_ACCEPTED);
+        activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
+        activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
+
+        criteria.add(Restrictions.in("orderStatus", activeStatuses))
+                .add(Restrictions.eq("deliveryBoy.id", shopperId));
+        return (List<OrderEntity>) criteria.list();
+    }
+
 
     @Override
     public List<Integer> getCustomerRatings(Integer customerId) throws Exception {

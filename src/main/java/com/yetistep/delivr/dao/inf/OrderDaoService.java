@@ -75,4 +75,6 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
     public List<OrderEntity> getAllProcessedOrders(List<JobOrderStatus> orderStatuses) throws Exception;
 
     public Integer getRefereesDeliveredOrders(List<Integer> refereesFacebookId) throws Exception;
+
+    public List<OrderEntity> getShoppersLiveOrders(Integer shopperId) throws Exception;
 }

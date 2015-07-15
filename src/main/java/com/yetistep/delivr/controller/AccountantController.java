@@ -393,5 +393,21 @@ public class AccountantController {
         }
     }
 
+    @RequestMapping(value = "/clear_dboy_account", method = RequestMethod.GET)
+    public ResponseEntity<ServiceResponse> clearDBoyAccount(@RequestHeader HttpHeaders headers) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            DeliveryBoyEntity deliveryBoy = managerService.clearDBoyAccount(headerDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Account has been cleared successfully");
+            serviceResponse.addParam("deliveryBoy", deliveryBoy);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            GeneralUtil.logError(log, "Error Occurred while clearing shopper account: ", e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
 }

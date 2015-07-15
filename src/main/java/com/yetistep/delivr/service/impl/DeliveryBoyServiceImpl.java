@@ -276,9 +276,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         Map<String, String> subAssoc = new HashMap<>();
 
         assoc.put("user", "id,fullName,mobileNumber,emailAddress,status");
-        assoc.put("order", "id,orderName,assignedTime,orderStatus,dBoyOrderHistories");
+        /*assoc.put("order", "id,orderName,assignedTime,orderStatus,dBoyOrderHistories");
 
-        subAssoc.put("dBoyOrderHistories", "orderAcceptedAt,jobStartedAt");
+        subAssoc.put("dBoyOrderHistories", "orderAcceptedAt,jobStartedAt");*/
 
         for (DeliveryBoyEntity deliveryBoyEntity:deliveryBoyEntities){
             DeliveryBoyEntity deliveryBoy = (DeliveryBoyEntity) ReturnJsonUtil.getJsonObject(deliveryBoyEntity, fields, assoc, subAssoc);
@@ -293,7 +293,24 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 deliveryBoy.setOutOfReach(true);
             }
 
-            List<JobOrderStatus> activeStatuses = new ArrayList<>();
+            List<OrderEntity> dbCurrentOrders = orderDaoService.getShoppersLiveOrders(deliveryBoyEntity.getId());
+            List<OrderEntity> currentOrders = new ArrayList<>();
+            for (OrderEntity currentOrder: dbCurrentOrders){
+
+                   String orderFields = "id,orderName,assignedTime,orderStatus,dBoyOrderHistories";
+                   Map<String, String> orderAssoc = new HashMap<>();
+                   orderAssoc.put("dBoyOrderHistories", "orderAcceptedAt,jobStartedAt");
+                   OrderEntity order = (OrderEntity) ReturnJsonUtil.getJsonObject(currentOrder, orderFields, orderAssoc);
+
+                    if(order.getdBoyOrderHistories().size() > 0){
+                        Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), order.getdBoyOrderHistories().get(0).getOrderAcceptedAt().getTime());
+                        order.setElapsedTime(minuteDiff.intValue());
+                    }
+                    currentOrders.add(order);
+
+            }
+
+            /*List<JobOrderStatus> activeStatuses = new ArrayList<>();
             activeStatuses.add(JobOrderStatus.AT_STORE);
             activeStatuses.add(JobOrderStatus.ORDER_ACCEPTED);
             activeStatuses.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
@@ -307,12 +324,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                      }
                      currentOrders.add(order);
                  }
-            }
+            }*/
             deliveryBoy.setOrder(currentOrders);
             objects.add(deliveryBoy);
         }
 
-          paginationDto.setData(objects);
+        paginationDto.setData(objects);
         return paginationDto;
     }
 

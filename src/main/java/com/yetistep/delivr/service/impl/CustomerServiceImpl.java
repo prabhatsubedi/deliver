@@ -165,7 +165,10 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             if(registeredCustomer.getUser().getUserDevice() != null){
                 registeredCustomer.getUser().getUserDevice().setUser(registeredCustomer.getUser());
                 registeredCustomer.getUser().getUserDevice().setUuid(customerEntity.getUser().getUserDevice().getUuid());
-    //            registeredCustomer.getUser().getUserDevice().setDeviceToken(customerEntity.getUser().getUserDevice().getDeviceToken());
+                if(customerEntity.getUser().getUserDevice().getDeviceToken() != null){
+                    log.info("Device token set:"+customerEntity.getUser().getUserDevice().getDeviceToken()+" of customer"+customerEntity.getFacebookId());
+                    registeredCustomer.getUser().getUserDevice().setDeviceToken(customerEntity.getUser().getUserDevice().getDeviceToken());
+                }
                 registeredCustomer.getUser().getUserDevice().setFamily(customerEntity.getUser().getUserDevice().getFamily());
                 registeredCustomer.getUser().getUserDevice().setFamilyName(customerEntity.getUser().getUserDevice().getFamilyName());
                 registeredCustomer.getUser().getUserDevice().setName(customerEntity.getUser().getUserDevice().getName());
@@ -175,6 +178,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 registeredCustomer.getUser().getUserDevice().setHeight(customerEntity.getUser().getUserDevice().getHeight());
                 registeredCustomer.getUser().getUserDevice().setWidth(customerEntity.getUser().getUserDevice().getWidth());
             }else{
+                log.info("Whole device token set");
                 registeredCustomer.getUser().setUserDevice(customerEntity.getUser().getUserDevice());
             }
             /*
@@ -278,8 +282,10 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 userEntity.getUserDevice().setDpi(requestJsonDto.getCustomer().getUser().getUserDevice().getDpi());
                 userEntity.getUserDevice().setHeight(requestJsonDto.getCustomer().getUser().getUserDevice().getHeight());
                 userEntity.getUserDevice().setWidth(requestJsonDto.getCustomer().getUser().getUserDevice().getWidth());
-                if (requestJsonDto.getCustomer().getUser().getUserDevice().getDeviceToken() != null)
+                if (requestJsonDto.getCustomer().getUser().getUserDevice().getDeviceToken() != null){
+                    log.info("Device token being updated to "+requestJsonDto.getCustomer().getUser().getUserDevice().getDeviceToken());
                     userEntity.getUserDevice().setDeviceToken(requestJsonDto.getCustomer().getUser().getUserDevice().getDeviceToken());
+                }
 
                 if (requestJsonDto.getCustomer().getLatitude() != null && requestJsonDto.getCustomer().getLongitude() != null) {
                     customerEntity.setLatitude(requestJsonDto.getCustomer().getLatitude());
@@ -316,8 +322,10 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 userDeviceEntity.setDpi(requestJsonDto.getCustomer().getUser().getUserDevice().getDpi());
                 userDeviceEntity.setHeight(requestJsonDto.getCustomer().getUser().getUserDevice().getHeight());
                 userDeviceEntity.setWidth(requestJsonDto.getCustomer().getUser().getUserDevice().getWidth());
-                if (requestJsonDto.getCustomer().getUser().getUserDevice().getDeviceToken() != null)
+                if (requestJsonDto.getCustomer().getUser().getUserDevice().getDeviceToken() != null){
+                    log.info("Else: Device token being updated to "+requestJsonDto.getCustomer().getUser().getUserDevice().getDeviceToken());
                     userDeviceEntity.setDeviceToken(requestJsonDto.getCustomer().getUser().getUserDevice().getDeviceToken());
+                }
                 userDeviceEntity.setUser(userEntity);
                 userEntity.setUserDevice(userDeviceEntity);
 

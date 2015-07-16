@@ -689,6 +689,7 @@ public class ClientController extends AbstractManager{
             validateMobileClient(headerDto.getAccessToken());
 
             clientService.updateUserDeviceToken(facebookId, deviceInfo.getDeviceToken());
+            log.info("Device Token updated successfully of customer with facebook ID:"+facebookId);
             ServiceResponse serviceResponse = new ServiceResponse("Device Token updated Successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e) {

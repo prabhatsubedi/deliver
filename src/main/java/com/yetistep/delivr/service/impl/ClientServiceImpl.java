@@ -199,9 +199,10 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         }
 
         /* If all stores are not activate then  brand should escaped to display */
+        List<StoresBrandEntity> zeroActiveStoreFeaturedBrand = new ArrayList<>();
         for(StoresBrandEntity featureBrand : featuredBrands){
              if(storeDaoService.getActiveStores(featureBrand.getId()) == 0) {
-                 featuredBrands.remove(featureBrand);
+                 zeroActiveStoreFeaturedBrand.add(featureBrand);
              } else {
                  List<StoreEntity> storeEntities = storeDaoService.findStores(featureBrand.getId());
 
@@ -219,14 +220,19 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                      featureBrand.setOpenStatus(false);
                  }
              }
-
-
         }
 
+        //remove the featured brands which have zero active stores
+        featuredBrands.removeAll(zeroActiveStoreFeaturedBrand);
+
+        List<StoresBrandEntity> zeroActiveStoreOtherBrand = new ArrayList<>();
         for(StoresBrandEntity otherBrand : storeBrandResult) {
             if(storeDaoService.getActiveStores(otherBrand.getId()) == 0)
-                storeBrandResult.remove(otherBrand);
+                zeroActiveStoreOtherBrand.add(otherBrand);
         }
+
+        //remove the featured brands which have zero active stores
+        storeBrandResult.removeAll(zeroActiveStoreOtherBrand);
 
         // Perform sorted store pagination
         PageInfo pageInfo = null;

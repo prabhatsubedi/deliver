@@ -138,7 +138,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
         List<CategoryEntity> categories = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CategoryEntity.class);
         criteria.add(Restrictions.isNotNull("parent.id"));
-        criteria.addOrder(Order.desc("id"));
+        criteria.addOrder(Order.asc("priority"));
         categories = criteria.list();
 
         return categories;

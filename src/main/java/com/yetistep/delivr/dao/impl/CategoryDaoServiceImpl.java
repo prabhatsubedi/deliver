@@ -117,7 +117,7 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
         String sql = "SELECT DISTINCT(c.id), c.name, c.image_url AS imageUrl FROM categories c " +
                 "INNER JOIN brands_categories bc ON(bc.category_id = c.id) " +
                 "INNER JOIN stores_brands sb ON(bc.stores_brand_id = sb.id AND sb.status = :status) " +
-                "WHERE c.parent_id IS NULL ";
+                "WHERE c.parent_id IS NULL ORDER BY c.priority ASC";
 
         SQLQuery sqlQuery = getCurrentSession().createSQLQuery(sql);
         sqlQuery.setParameter("status", Status.ACTIVE.toInt());

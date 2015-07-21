@@ -287,7 +287,15 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         CategoryDto categoryDto = null;
         List<CategoryEntity> categoryEntities = itemDaoService.findItemCategory(brandId);
-
+        Collections.sort(categoryEntities, new Comparator<CategoryEntity>() {
+            public int compare(CategoryEntity one, CategoryEntity other) {
+                if(one.getPriority() != null && other.getPriority() != null)  {
+                    return one.getPriority().compareTo(other.getPriority());
+                }   else {
+                    return 1;
+                }
+            }
+        });
         for (CategoryEntity categoryEntity : categoryEntities) {
             categoryDto = new CategoryDto();
 
@@ -404,6 +412,16 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
         if (categoryEntities == null || categoryEntities.size() == 0)
             throw new YSException("VLD012");
+
+        Collections.sort(categoryEntities, new Comparator<CategoryEntity>() {
+            public int compare(CategoryEntity one, CategoryEntity other) {
+                if(one.getPriority() != null && other.getPriority() != null)  {
+                    return one.getPriority().compareTo(other.getPriority());
+                }   else {
+                    return 1;
+                }
+            }
+        });
 
         for (CategoryEntity categoryEntity : categoryEntities) {
             CategoryEntity cat = null;

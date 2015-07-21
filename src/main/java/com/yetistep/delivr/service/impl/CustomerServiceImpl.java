@@ -895,6 +895,15 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             if(categoryEntity.getImageUrl()==null)
                 categoryEntity.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_CATEGORY));
         }
+        Collections.sort(categories, new Comparator<CategoryEntity>() {
+            public int compare(CategoryEntity one, CategoryEntity other) {
+                if(one.getPriority() != null && other.getPriority() != null)  {
+                    return one.getPriority().compareTo(other.getPriority());
+                }   else {
+                    return 1;
+                }
+            }
+        });
         return categories;
     }
 

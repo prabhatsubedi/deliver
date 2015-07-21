@@ -628,7 +628,17 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     @Override
     public List<CategoryEntity> getParentCategories() throws Exception {
         log.info("++++++++++++ getting parent categories +++++++++++++++");
-        return (List<CategoryEntity>) merchantDaoService.findParentCategories();
+        List<CategoryEntity> categories = merchantDaoService.findParentCategories();
+        Collections.sort(categories, new Comparator<CategoryEntity>() {
+            public int compare(CategoryEntity one, CategoryEntity other) {
+                if(one.getPriority() != null && other.getPriority() != null)  {
+                    return one.getPriority().compareTo(other.getPriority());
+                }   else {
+                    return 1;
+                }
+            }
+        });
+        return categories;
     }
 
 
@@ -1145,6 +1155,16 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             objects.add((CategoryEntity) ReturnJsonUtil.getJsonObject(category, fields, assoc, subAssoc));
         }
 
+        Collections.sort(categories, new Comparator<CategoryEntity>() {
+            public int compare(CategoryEntity one, CategoryEntity other) {
+                if(one.getPriority() != null && other.getPriority() != null)  {
+                    return one.getPriority().compareTo(other.getPriority());
+                }   else {
+                    return 1;
+                }
+            }
+        });
+
         return objects;
 
     }
@@ -1176,6 +1196,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }else{
             categories = merchantDaoService.findParentCategories();
         }
+        Collections.sort(categories, new Comparator<CategoryEntity>() {
+            public int compare(CategoryEntity one, CategoryEntity other) {
+                if(one.getPriority() != null && other.getPriority() != null)  {
+                    return one.getPriority().compareTo(other.getPriority());
+                }   else {
+                    return 1;
+                }
+            }
+        });
         return categories;
     }
 
@@ -1195,6 +1224,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 newCategories.add(newCategory);
             }
           }
+            Collections.sort(newCategories, new Comparator<CategoryEntity>() {
+                public int compare(CategoryEntity one, CategoryEntity other) {
+                    if(one.getPriority() != null && other.getPriority() != null)  {
+                        return one.getPriority().compareTo(other.getPriority());
+                    }   else {
+                        return 1;
+                    }
+                }
+            });
           return newCategories;
     }
 
@@ -1228,6 +1266,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         for (CategoryEntity category:newCategories){
             objects.add((CategoryEntity) ReturnJsonUtil.getJsonObject(category, fields, assoc, subAssoc));
         }
+        Collections.sort(objects, new Comparator<CategoryEntity>() {
+            public int compare(CategoryEntity one, CategoryEntity other) {
+                if(one.getPriority() != null && other.getPriority() != null)  {
+                    return one.getPriority().compareTo(other.getPriority());
+                }   else {
+                    return 1;
+                }
+            }
+        });
         return  objects;
     }
 
@@ -1343,6 +1390,16 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             categories.add(brandsCategory.getCategory());
         }
 
+        Collections.sort(categories, new Comparator<CategoryEntity>() {
+            public int compare(CategoryEntity one, CategoryEntity other) {
+                if(one.getPriority() != null && other.getPriority() != null)  {
+                    return one.getPriority().compareTo(other.getPriority());
+                }   else {
+                    return 1;
+                }
+            }
+        });
+
         return categories;
     }
 
@@ -1452,6 +1509,16 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             objects.add((CategoryEntity) ReturnJsonUtil.getJsonObject(childCategory, fields, assoc, subAssoc));
         }
 
+        Collections.sort(objects, new Comparator<CategoryEntity>() {
+            public int compare(CategoryEntity one, CategoryEntity other) {
+                if(one.getPriority() != null && other.getPriority() != null)  {
+                    return one.getPriority().compareTo(other.getPriority());
+                }   else {
+                    return 1;
+                }
+            }
+        });
+
         return  objects;
 
 
@@ -1474,7 +1541,15 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         for (CategoryEntity category:categories){
              objects.add((CategoryEntity) ReturnJsonUtil.getJsonObject(category, fields));
         }
-
+        Collections.sort(objects, new Comparator<CategoryEntity>() {
+            public int compare(CategoryEntity one, CategoryEntity other) {
+                if(one.getPriority() != null && other.getPriority() != null)  {
+                    return one.getPriority().compareTo(other.getPriority());
+                }   else {
+                    return 1;
+                }
+            }
+        });
         return objects;
     }
 

@@ -689,6 +689,15 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
                 newCategories.add(newCategory);
             }
         }
+        Collections.sort(newCategories, new Comparator<CategoryEntity>() {
+            public int compare(CategoryEntity one, CategoryEntity other) {
+                if(one.getPriority() != null && other.getPriority() != null)  {
+                    return one.getPriority().compareTo(other.getPriority());
+                }   else {
+                    return 1;
+                }
+            }
+        });
         return newCategories;
     }
 
@@ -703,7 +712,15 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
                category.setChild(newCategories);
             }
         }
-
+        Collections.sort(parentCategories, new Comparator<CategoryEntity>() {
+            public int compare(CategoryEntity one, CategoryEntity other) {
+                if(one.getPriority() != null && other.getPriority() != null)  {
+                    return one.getPriority().compareTo(other.getPriority());
+                }   else {
+                    return 1;
+                }
+            }
+        });
         return  parentCategories;
     }
 

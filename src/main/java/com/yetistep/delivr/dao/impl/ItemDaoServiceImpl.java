@@ -65,7 +65,7 @@ public class ItemDaoServiceImpl implements ItemDaoService{
     public List<CategoryEntity> findItemCategory(Integer brandId) throws Exception {
         List<CategoryEntity> categoryEntities = new ArrayList<>();
 
-        String sql = "SELECT DISTINCT DISTINCT(cat.id), cat.name, cat.parent_id as parentId FROM items it " +
+        String sql = "SELECT DISTINCT DISTINCT(cat.id), cat.name, cat.priority, cat.parent_id as parentId FROM items it " +
                 "INNER JOIN categories cat ON(cat.id = it.category_id) " +
                 "WHERE it.brand_id = :brandId AND it.status =:status";
         SQLQuery query =  getCurrentSession().createSQLQuery(sql);

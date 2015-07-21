@@ -35,6 +35,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
     private static final BigDecimal minusOne = new BigDecimal(-1);
 
+    private Integer shopperId = null;
+
     @Autowired
     DeliveryBoyDaoService deliveryBoyDaoService;
 
@@ -564,113 +566,125 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     }
 
     private Boolean acceptDeliveryOrder(Integer orderId, Integer deliveryBoyId) throws Exception {
-        log.info("Accepting Order By delivery Boy with ID:"+deliveryBoyId);
+        if(shopperId == null){
+            shopperId = deliveryBoyId;
+            log.info("Accepting Order By delivery Boy with ID:"+deliveryBoyId);
 
-        DeliveryBoySelectionEntity deliveryBoySelectionEntity = deliveryBoySelectionDaoService.getSelectionDetails(orderId, deliveryBoyId);
-        if(deliveryBoySelectionEntity == null){
-            throw new YSException("ORD003");
-        }
-
-        /* Returns true if order can be accepted else returns false */
-        boolean orderAcceptance = deliveryBoySelectionDaoService.checkOrderAcceptedStatus(orderId);
-        if(orderAcceptance){
-            if(deliveryBoySelectionEntity.getOrder().getOrderStatus().equals(JobOrderStatus.CANCELLED)){
-                throw new YSException("ORD006");
+            DeliveryBoySelectionEntity deliveryBoySelectionEntity = deliveryBoySelectionDaoService.getSelectionDetails(orderId, deliveryBoyId);
+            if(deliveryBoySelectionEntity == null){
+                shopperId = null;
+                throw new YSException("ORD003");
             }
-            deliveryBoySelectionEntity.setAccepted(true);
-            DeliveryBoyEntity deliveryBoyEntity = deliveryBoySelectionEntity.getDeliveryBoy();
-            if(deliveryBoyEntity.getActiveOrderNo() >= 3){
-                throw new YSException("DBY003");
-            }
-            deliveryBoyEntity.setActiveOrderNo(deliveryBoyDaoService.getNumberOfActiveOrders(deliveryBoyId)+1);
-            deliveryBoyEntity.setTotalOrderTaken(deliveryBoyEntity.getTotalOrderTaken()+1);
-           /* deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);*/
-            deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.BUSY);
 
-            OrderEntity orderEntity = deliveryBoySelectionEntity.getOrder();
-            orderEntity.setRemainingTime(deliveryBoySelectionEntity.getTotalTimeRequired());
-            orderEntity.setDeliveryBoy(deliveryBoyEntity);
-            orderEntity.setAssignedTime(deliveryBoySelectionEntity.getTimeRequired());
-            orderEntity.setSystemChargeableDistance(deliveryBoySelectionEntity.getDistanceToStore());
-            orderEntity.setOrderStatus(JobOrderStatus.ORDER_ACCEPTED);
-            MerchantEntity merchant = merchantDaoService.getMerchantByOrderId(orderId);
-            if(merchant == null){
-                 throw new YSException("MRC003");
-            }
-            CourierTransactionEntity courierTransaction =  systemAlgorithmService.getCourierTransaction(orderEntity, deliveryBoySelectionEntity, merchant.getCommissionPercentage(), merchant.getServiceFee());
-            CourierTransactionEntity courierTransactionEntity = orderEntity.getCourierTransaction();
-            courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
-            courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
-            courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
-            courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
-            courierTransactionEntity.setServiceFeeAmt(courierTransaction.getServiceFeeAmt());
-            courierTransactionEntity.setDeliveryChargedBeforeDiscount(courierTransaction.getDeliveryChargedBeforeDiscount());
-            courierTransactionEntity.setCustomerBalanceBeforeDiscount(courierTransaction.getCustomerBalanceBeforeDiscount());
-            courierTransactionEntity.setDeliveryChargedAfterDiscount(courierTransaction.getDeliveryChargedAfterDiscount());
-            courierTransactionEntity.setCustomerBalanceAfterDiscount(courierTransaction.getCustomerBalanceAfterDiscount());
-            courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
-            courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
-            courierTransactionEntity.setProfit(courierTransaction.getProfit());
-            courierTransactionEntity.setCourierToStoreDistance(courierTransaction.getCourierToStoreDistance());
-            courierTransactionEntity.setStoreToCustomerDistance(courierTransaction.getStoreToCustomerDistance());
-            orderEntity.setCourierTransaction(courierTransactionEntity);
-
-            List<DBoyOrderHistoryEntity> dBoyOrderHistoryEntities = new ArrayList<DBoyOrderHistoryEntity>();
-            DBoyOrderHistoryEntity dBoyOrderHistoryEntity = new DBoyOrderHistoryEntity();
-            dBoyOrderHistoryEntity.setDeliveryBoy(deliveryBoyEntity);
-            dBoyOrderHistoryEntity.setOrder(orderEntity);
-            dBoyOrderHistoryEntity.setOrderAcceptedAt(DateUtil.getCurrentTimestampSQL());
-            dBoyOrderHistoryEntity.setDistanceTravelled(BigDecimal.ZERO);
-            dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.PENDING);
-            dBoyOrderHistoryEntity.setAmountEarned(BigDecimal.ZERO);
-            dBoyOrderHistoryEntities.add(dBoyOrderHistoryEntity);
-            orderEntity.setdBoyOrderHistories(dBoyOrderHistoryEntities);
-
-            Boolean status = orderDaoService.update(orderEntity);
-            if(status){
-                UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(orderId);
-                String message = MessageBundle.getPushNotificationMsg("CPN001");
-                message = String.format(message, orderEntity.getStore().getName(), deliveryBoyEntity.getUser().getFullName());
-                String extraDetail = orderId.toString()+"/status/"+JobOrderStatus.ORDER_ACCEPTED.toString();
-                PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
-
-                List<String> deviceTokens = userDeviceDaoService.getDeviceTokensExceptAcceptedDeliveryBoy(orderId, deliveryBoyId);
-                if(deviceTokens.size() > 0){
-                    PushNotification pushNotification = new PushNotification();
-                    pushNotification.setTokens(deviceTokens);
-                    pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN002"));
-                    pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
-                    pushNotification.setExtraDetail(orderId.toString()+"/status/"+JobOrderStatus.ORDER_ACCEPTED.toString());
-                    pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
-                    PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
+            /* Returns true if order can be accepted else returns false */
+            boolean orderAcceptance = deliveryBoySelectionDaoService.checkOrderAcceptedStatus(orderId);
+            if(orderAcceptance){
+                if(deliveryBoySelectionEntity.getOrder().getOrderStatus().equals(JobOrderStatus.CANCELLED)){
+                    shopperId = null;
+                    throw new YSException("ORD006");
                 }
+                deliveryBoySelectionEntity.setAccepted(true);
+                DeliveryBoyEntity deliveryBoyEntity = deliveryBoySelectionEntity.getDeliveryBoy();
+                if(deliveryBoyEntity.getActiveOrderNo() >= 3){
+                    shopperId = null;
+                    throw new YSException("DBY003");
+                }
+                deliveryBoyEntity.setActiveOrderNo(deliveryBoyDaoService.getNumberOfActiveOrders(deliveryBoyId)+1);
+                deliveryBoyEntity.setTotalOrderTaken(deliveryBoyEntity.getTotalOrderTaken()+1);
+               /* deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);*/
+                deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.BUSY);
 
-                List<DeliveryBoySelectionEntity> deliveryBoySelectionEntityList = deliveryBoySelectionDaoService.getAllSelectionDetails(orderId, deliveryBoyId);
-                for(DeliveryBoySelectionEntity dBoySelection: deliveryBoySelectionEntityList){
-                    if(deliveryBoySelectionDaoService.getCountOfDeliveryBoyForOrder(dBoySelection.getOrder().getId(), deliveryBoyId) == 0){
-                        customerService.reprocessOrder(dBoySelection.getOrder().getId());
-                    }else{
-                        dBoySelection.setRejected(true);
-                        deliveryBoySelectionDaoService.update(dBoySelection);
+                OrderEntity orderEntity = deliveryBoySelectionEntity.getOrder();
+                orderEntity.setRemainingTime(deliveryBoySelectionEntity.getTotalTimeRequired());
+                orderEntity.setDeliveryBoy(deliveryBoyEntity);
+                orderEntity.setAssignedTime(deliveryBoySelectionEntity.getTimeRequired());
+                orderEntity.setSystemChargeableDistance(deliveryBoySelectionEntity.getDistanceToStore());
+                orderEntity.setOrderStatus(JobOrderStatus.ORDER_ACCEPTED);
+                MerchantEntity merchant = merchantDaoService.getMerchantByOrderId(orderId);
+                if(merchant == null){
+                    shopperId = null;
+                     throw new YSException("MRC003");
+                }
+                CourierTransactionEntity courierTransaction =  systemAlgorithmService.getCourierTransaction(orderEntity, deliveryBoySelectionEntity, merchant.getCommissionPercentage(), merchant.getServiceFee());
+                CourierTransactionEntity courierTransactionEntity = orderEntity.getCourierTransaction();
+                courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
+                courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
+                courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
+                courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
+                courierTransactionEntity.setServiceFeeAmt(courierTransaction.getServiceFeeAmt());
+                courierTransactionEntity.setDeliveryChargedBeforeDiscount(courierTransaction.getDeliveryChargedBeforeDiscount());
+                courierTransactionEntity.setCustomerBalanceBeforeDiscount(courierTransaction.getCustomerBalanceBeforeDiscount());
+                courierTransactionEntity.setDeliveryChargedAfterDiscount(courierTransaction.getDeliveryChargedAfterDiscount());
+                courierTransactionEntity.setCustomerBalanceAfterDiscount(courierTransaction.getCustomerBalanceAfterDiscount());
+                courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
+                courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
+                courierTransactionEntity.setProfit(courierTransaction.getProfit());
+                courierTransactionEntity.setCourierToStoreDistance(courierTransaction.getCourierToStoreDistance());
+                courierTransactionEntity.setStoreToCustomerDistance(courierTransaction.getStoreToCustomerDistance());
+                orderEntity.setCourierTransaction(courierTransactionEntity);
+
+                List<DBoyOrderHistoryEntity> dBoyOrderHistoryEntities = new ArrayList<DBoyOrderHistoryEntity>();
+                DBoyOrderHistoryEntity dBoyOrderHistoryEntity = new DBoyOrderHistoryEntity();
+                dBoyOrderHistoryEntity.setDeliveryBoy(deliveryBoyEntity);
+                dBoyOrderHistoryEntity.setOrder(orderEntity);
+                dBoyOrderHistoryEntity.setOrderAcceptedAt(DateUtil.getCurrentTimestampSQL());
+                dBoyOrderHistoryEntity.setDistanceTravelled(BigDecimal.ZERO);
+                dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.PENDING);
+                dBoyOrderHistoryEntity.setAmountEarned(BigDecimal.ZERO);
+                dBoyOrderHistoryEntities.add(dBoyOrderHistoryEntity);
+                orderEntity.setdBoyOrderHistories(dBoyOrderHistoryEntities);
+
+                Boolean status = orderDaoService.update(orderEntity);
+                if(status){
+                    UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(orderId);
+                    String message = MessageBundle.getPushNotificationMsg("CPN001");
+                    message = String.format(message, orderEntity.getStore().getName(), deliveryBoyEntity.getUser().getFullName());
+                    String extraDetail = orderId.toString()+"/status/"+JobOrderStatus.ORDER_ACCEPTED.toString();
+                    PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
+
+                    List<String> deviceTokens = userDeviceDaoService.getDeviceTokensExceptAcceptedDeliveryBoy(orderId, deliveryBoyId);
+                    if(deviceTokens.size() > 0){
+                        PushNotification pushNotification = new PushNotification();
+                        pushNotification.setTokens(deviceTokens);
+                        pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN002"));
+                        pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
+                        pushNotification.setExtraDetail(orderId.toString()+"/status/"+JobOrderStatus.ORDER_ACCEPTED.toString());
+                        pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
+                        PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
+                    }
+
+                    List<DeliveryBoySelectionEntity> deliveryBoySelectionEntityList = deliveryBoySelectionDaoService.getAllSelectionDetails(orderId, deliveryBoyId);
+                    for(DeliveryBoySelectionEntity dBoySelection: deliveryBoySelectionEntityList){
+                        if(deliveryBoySelectionDaoService.getCountOfDeliveryBoyForOrder(dBoySelection.getOrder().getId(), deliveryBoyId) == 0){
+                            customerService.reprocessOrder(dBoySelection.getOrder().getId());
+                        }else{
+                            dBoySelection.setRejected(true);
+                            deliveryBoySelectionDaoService.update(dBoySelection);
+                        }
+                    }
+
+                    /*
+                    * if email subscription is set true
+                    * send the email containing order detail to the contact person of the store
+                    * */
+
+                     if (orderEntity.getStore().getSendEmail() != null && orderEntity.getStore().getSendEmail()){
+                        String subject = "New order has been placed : "+orderEntity.getId();
+                        String body = EmailMsg.orderPlaced(orderEntity.getStore().getContactPerson(), getServerUrl(), orderEntity);
+                        sendMail(orderEntity.getStore().getEmail(), body, subject);
                     }
                 }
-
-                /*
-                * if email subscription is set true
-                * send the email containing order detail to the contact person of the store
-                * */
-
-                 if (orderEntity.getStore().getSendEmail() != null && orderEntity.getStore().getSendEmail()){
-                    String subject = "New order has been placed : "+orderEntity.getId();
-                    String body = EmailMsg.orderPlaced(orderEntity.getStore().getContactPerson(), getServerUrl(), orderEntity);
-                    sendMail(orderEntity.getStore().getEmail(), body, subject);
-                }
+                shopperId = null;
+                return status;
+            } else if (deliveryBoyId.equals(deliveryBoySelectionEntity.getOrder().getDeliveryBoy().getId())) {
+                shopperId = null;
+                throw new YSException("ORD005");
             }
-            return status;
-        } else if (deliveryBoyId.equals(deliveryBoySelectionEntity.getOrder().getDeliveryBoy().getId())) {
-            throw new YSException("ORD005");
+            shopperId = null;
+            throw new YSException("ORD001");
+        }else{
+            return false;
         }
-        throw new YSException("ORD001");
     }
 
     private Boolean startJob(OrderEntity order, OrderEntity orderJson, Integer deliveryBoyId) throws Exception{

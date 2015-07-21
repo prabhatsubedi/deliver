@@ -22,7 +22,9 @@ public class CourierTransactionAccountEntity implements Serializable {
     private BigDecimal cr;
     private BigDecimal balance;
     private String note;
+    private String description;
     private OrderEntity order;
+    private DeliveryBoyEntity deliveryBoy;
 
 
     @Id
@@ -72,6 +74,15 @@ public class CourierTransactionAccountEntity implements Serializable {
         this.balance = balance;
     }
 
+    @Column(name = "description")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Column(name = "note")
     public String getNote() {
         return note;
@@ -88,5 +99,14 @@ public class CourierTransactionAccountEntity implements Serializable {
 
     public void setOrder(OrderEntity order) {
         this.order = order;
+    }
+
+    @ManyToOne
+    public DeliveryBoyEntity getDeliveryBoy() {
+        return deliveryBoy;
+    }
+
+    public void setDeliveryBoy(DeliveryBoyEntity deliveryBoy) {
+        this.deliveryBoy = deliveryBoy;
     }
 }

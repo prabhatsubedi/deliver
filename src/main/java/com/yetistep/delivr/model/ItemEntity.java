@@ -35,8 +35,6 @@ public class ItemEntity implements Serializable {
     private Integer minOrderQuantity;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
-    private Boolean paymentMethodCd;  //cash on demand
-    private Boolean paymentMethodCc; //credit card
     private BigDecimal unitPrice;
     private String currencyType;
     private String additionalOffer;
@@ -47,6 +45,7 @@ public class ItemEntity implements Serializable {
     private String promoCode;
     private BigDecimal vat;
     private BigDecimal serviceCharge;
+    private BigDecimal commissionPercentage;
     private Status status;
     private String tags;
     private String imageUrl; //Transient Value
@@ -262,33 +261,6 @@ public class ItemEntity implements Serializable {
         this.currency = currency;
     }
 
-    /*@Column(name = "valid_till")
-    public Timestamp getValidTill() {
-        return validTill;
-    }
-
-    public void setValidTill(Timestamp validTill) {
-        this.validTill = validTill;
-    }*/
-
-    @Column(name = "payment_method_cd", columnDefinition = "TINYINT(1)")
-    public Boolean getPaymentMethodCd() {
-        return paymentMethodCd;
-    }
-
-    public void setPaymentMethodCd(Boolean paymentMethodCd) {
-        this.paymentMethodCd = paymentMethodCd;
-    }
-
-    @Column(name = "payment_method_cc", columnDefinition = "TINYINT(1)")
-    public Boolean getPaymentMethodCc() {
-        return paymentMethodCc;
-    }
-
-    public void setPaymentMethodCc(Boolean paymentMethodCc) {
-        this.paymentMethodCc = paymentMethodCc;
-    }
-
     @Column(name = "unit_price")
     public BigDecimal getUnitPrice() {
         return unitPrice;
@@ -377,6 +349,15 @@ public class ItemEntity implements Serializable {
 
     public void setServiceCharge(BigDecimal serviceCharge) {
         this.serviceCharge = serviceCharge;
+    }
+
+    @Column(name = "commission_percentage")
+    public BigDecimal getCommissionPercentage() {
+        return commissionPercentage;
+    }
+
+    public void setCommissionPercentage(BigDecimal commissionPercentage) {
+        this.commissionPercentage = commissionPercentage;
     }
 
     @Column(name = "status")

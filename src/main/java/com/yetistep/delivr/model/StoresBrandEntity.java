@@ -46,6 +46,8 @@ public class StoresBrandEntity implements Serializable {
    private Integer priority;
    private Timestamp createdDate;
    private Status status;
+   private BigDecimal processingCharge;
+   private Boolean partnershipStatus;
     //Transient Variable
    private Boolean openStatus;
    private Integer merchantId; //Transient Variable
@@ -58,6 +60,7 @@ public class StoresBrandEntity implements Serializable {
    private List<ItemEntity> items;
    private List<CategoryEntity> categories;
    private List<CartEntity> carts;
+
 
 
     @Id
@@ -202,6 +205,24 @@ public class StoresBrandEntity implements Serializable {
 
     public void setCreatedDate(Timestamp createdDate) {
         this.createdDate = createdDate;
+    }
+
+    @Column(name = "processing_charge")
+    public BigDecimal getProcessingCharge() {
+        return processingCharge;
+    }
+
+    public void setProcessingCharge(BigDecimal processingCharge) {
+        this.processingCharge = processingCharge;
+    }
+
+    @Column(name = "partnership_status")
+    public Boolean getPartnershipStatus() {
+        return partnershipStatus;
+    }
+
+    public void setPartnershipStatus(Boolean partnershipStatus) {
+        this.partnershipStatus = partnershipStatus;
     }
 
     @Transient

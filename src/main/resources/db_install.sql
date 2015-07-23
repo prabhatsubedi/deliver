@@ -288,4 +288,8 @@ UPDATE `delivr_db`.`customers` SET customer_type = 0 WHERE customer_type IS NULL
 
 /*2015-07-10*/
 UPDATE `delivr_db`.`customers` SET invited_friends_count = referred_friends_count;
+/*23-07-2015*/
+ALTER TABLE `delivr_db`.`stores_brands` DROP COLUMN commission_percentage;
+ALTER TABLE `delivr_db`.`items` DROP COLUMN payment_method_cc;
+ALTER TABLE `delivr_db`.`items` DROP COLUMN payment_method_cd;
 

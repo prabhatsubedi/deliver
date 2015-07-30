@@ -1061,6 +1061,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
         BigDecimal itemServiceCharge = BigDecimal.ZERO;
         BigDecimal itemVatCharge = BigDecimal.ZERO;
+        BigDecimal totalCommissionAmount = BigDecimal.ZERO;
 
 
         List<CartEntity> cartEntities = cartDaoService.getMyCartsWithCategories(customerId);
@@ -1072,7 +1073,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         List<Integer> cartIds = new ArrayList<Integer>();
         List<ItemsOrderEntity> itemsOrder = new ArrayList<ItemsOrderEntity>();
         Integer brandId = null;
-        StoresBrandEntity storesBrand = null;
+        StoresBrandEntity storesBrand = cartEntities.get(0).getStoresBrand();
         for (CartEntity cart : cartEntities) {
             ItemsOrderEntity itemsOrderEntity = new ItemsOrderEntity();
             itemsOrderEntity.setOrder(order);
@@ -1122,11 +1123,21 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 itemPrice = BigDecimalUtil.calculateCost(cart.getOrderQuantity(), cart.getItem().getUnitPrice(), attributePrice);
 
                 BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemPrice, BigDecimalUtil.checkNull(cart.getItem().getServiceCharge()));
-                BigDecimal serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), BigDecimalUtil.checkNull(cart.getItem().getVat())));
+                BigDecimal commissionAmount = BigDecimalUtil.percentageOf(itemPrice, BigDecimalUtil.checkNull(cart.getItem().getCommissionPercentage()));
+                itemsOrderEntity.setCommissionAmount(commissionAmount);
+                totalCommissionAmount =  totalCommissionAmount.add(commissionAmount);
+
+                BigDecimal serviceAndVatCharge;
+                if(!cart.getStoresBrand().getVatInclusive())
+                    serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), BigDecimalUtil.checkNull(cart.getItem().getVat())));
+                else
+                    serviceAndVatCharge = serviceCharge;
                 /*Set for order total and total serviceVat*/
 
                 itemServiceCharge = itemServiceCharge.add(serviceCharge);
-                itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), BigDecimalUtil.checkNull(cart.getItem().getVat())));
+
+                if(!cart.getStoresBrand().getVatInclusive())
+                    itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), BigDecimalUtil.checkNull(cart.getItem().getVat())));
                 
                 itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatCharge);
                 itemsOrderEntity.setServiceAndVatCharge(serviceAndVatCharge);
@@ -1145,18 +1156,16 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
             itemsOrderEntity.setItemTotal(itemPrice);*/
             itemsOrder.add(itemsOrderEntity);
-            brandId = cart.getStoresBrand().getId();
-            storesBrand = cart.getStoresBrand();
+            //brandId = cart.getStoresBrand().getId();
+            //storesBrand = cart.getStoresBrand();
             cartIds.add(cart.getId());
         }
 
 
-        MerchantEntity merchant = merchantDaoService.getCommissionVatPartnerShipStatus(brandId);
-        if(merchant == null){
-            throw new YSException("MRC003");
-        }
-        if(merchant.getPartnershipStatus() != null)
-            order.setPartnershipStatus(merchant.getPartnershipStatus());
+        if(storesBrand.getPartnershipStatus() != null)
+            order.setPartnershipStatus(storesBrand.getPartnershipStatus());
+        else
+            throw new YSException("VLD042");
 
         Boolean isOpen = DateUtil.isTimeBetweenTwoTime(storesBrand.getOpeningTime().toString(), storesBrand.getClosingTime().toString(),DateUtil.getCurrentTime().toString());
         if(!isOpen){
@@ -1170,6 +1179,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         order.setItemServiceAndVatCharge(itemServiceAndVatCharge.setScale(2, BigDecimal.ROUND_DOWN));
         order.setItemServiceCharge(itemServiceCharge.setScale(2, BigDecimal.ROUND_DOWN));
         order.setItemVatCharge(itemVatCharge.setScale(2, BigDecimal.ROUND_DOWN));
+        order.setCommissionAmount(totalCommissionAmount);
 
         /* Listing Active stores of a store brand and finding shortest store */
         List<StoreEntity> stores = merchantDaoService.findActiveStoresByBrand(brandId);
@@ -1195,12 +1205,12 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         /* Selects nearest delivery boys based on timing. */
         List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(store, availableAndActiveDBoys, order, false);
         /* Selects delivery boys based on profit criteria. */
-        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, merchant.getCommissionPercentage(), merchant.getServiceFee());
+        List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit =  filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, order.getCommissionAmount(), storesBrand.getProcessingCharge());
         if(deliveryBoySelectionEntitiesWithProfit.size() == 0){
             throw new YSException("ORD012");
         }
         order.setDeliveryBoySelections(deliveryBoySelectionEntitiesWithProfit);
-        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, deliveryBoySelectionEntities.get(0), merchant.getCommissionPercentage(), merchant.getServiceFee());
+        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, deliveryBoySelectionEntities.get(0), order.getCommissionAmount(), storesBrand.getProcessingCharge());
         courierTransaction.setCourierToStoreDistance(null);
         courierTransaction.setAdditionalDeliveryAmt(null);
         courierTransaction.setPaidToCourier(null);
@@ -1423,7 +1433,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         return hasCustomerCustomItem;
     }
 
-    private List<DeliveryBoySelectionEntity> filterDBoyWithProfitCriteria(OrderEntity order, List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities, BigDecimal merchantCommission, BigDecimal merchantServiceFee) throws Exception {
+    private List<DeliveryBoySelectionEntity> filterDBoyWithProfitCriteria(OrderEntity order, List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities, BigDecimal merchantCommission, BigDecimal systemProcessingCharge) throws Exception {
         log.info("Unfiltered Dboys:"+deliveryBoySelectionEntities.toString());
         List<DeliveryBoySelectionEntity> filteredDeliveryBoys = new ArrayList<DeliveryBoySelectionEntity>();
         BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
@@ -1433,7 +1443,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         Boolean isCustomerCustomOrder = hasCustomerCustomItem(order);
 
         for (DeliveryBoySelectionEntity deliveryBoySelectionEntity : deliveryBoySelectionEntities) {
-            CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, deliveryBoySelectionEntity, merchantCommission, merchantServiceFee);
+            CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, deliveryBoySelectionEntity, merchantCommission, systemProcessingCharge);
             if(PROFIT_CHECK && !isCustomerCustomOrder){
                 if(BigDecimalUtil.isGreaterThen(courierTransaction.getProfit(), BigDecimalUtil.percentageOf(order.getTotalCost(), MINIMUM_PROFIT_PERCENTAGE)))
                     filteredDeliveryBoys.add(deliveryBoySelectionEntity);
@@ -2020,7 +2030,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                  /* Selects nearest delivery boys based on timing. */
                 List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities = calculateStoreToDeliveryBoyDistance(order.getStore(), availableAndActiveDBoys, order, true);
                 /* Selects delivery boys based on profit criteria. */
-                List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit = filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, courierTransactionEntity.getCommissionPct(), courierTransactionEntity.getServiceFeePct());
+                List<DeliveryBoySelectionEntity> deliveryBoySelectionEntitiesWithProfit = filterDBoyWithProfitCriteria(order, deliveryBoySelectionEntities, courierTransactionEntity.getCommissionAmount(), courierTransactionEntity.getSystemProcessingChargePct());
 
                 if (deliveryBoySelectionEntitiesWithProfit.size() == 0) {
                     log.info("Order is cancelling since not enough profit:" + orderId);
@@ -2095,13 +2105,13 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         if(merchant == null){
             throw new YSException("MRC003");
         }
-        CourierTransactionEntity courierTransaction =  systemAlgorithmService.getCourierTransaction(orderEntity, deliveryBoySelectionEntity, merchant.getCommissionPercentage(), merchant.getServiceFee());
+        CourierTransactionEntity courierTransaction =  systemAlgorithmService.getCourierTransaction(orderEntity, deliveryBoySelectionEntity, orderEntity.getCommissionAmount(), orderEntity.getStore().getStoresBrand().getProcessingCharge());
         CourierTransactionEntity courierTransactionEntity = orderEntity.getCourierTransaction();
         courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
         courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
         courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
         courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
-        courierTransactionEntity.setServiceFeeAmt(courierTransaction.getServiceFeeAmt());
+        courierTransactionEntity.setSystemProcessingChargeAmount(courierTransaction.getSystemProcessingChargeAmount());
         courierTransactionEntity.setDeliveryChargedBeforeDiscount(courierTransaction.getDeliveryChargedBeforeDiscount());
         courierTransactionEntity.setCustomerBalanceBeforeDiscount(courierTransaction.getCustomerBalanceBeforeDiscount());
         courierTransactionEntity.setDeliveryChargedAfterDiscount(courierTransaction.getDeliveryChargedAfterDiscount());

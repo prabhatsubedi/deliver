@@ -43,9 +43,9 @@ public class ItemEntity implements Serializable {
     private String returnPolicy;
     private Integer deliveryFee;
     private String promoCode;
-    private BigDecimal vat;
-    private BigDecimal serviceCharge;
-    private BigDecimal commissionPercentage;
+    private BigDecimal vat; // vat charge by merchant
+    private BigDecimal serviceCharge; //service charge by merchant
+    private BigDecimal commissionPercentage; //commission percentage from merchant to koolkat
     private Status status;
     private String tags;
     private String imageUrl; //Transient Value

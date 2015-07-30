@@ -98,7 +98,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
 
     @Override
     public Integer getPartnerStoreCount() throws Exception {
-        String sqQuery = "SELECT COUNT(b.id) FROM stores_brands b INNER JOIN merchants m ON b.merchant_id = m.id WHERE m.partnership_status =:partnershipStatus";
+        String sqQuery = "SELECT COUNT(sb.id) FROM stores_brands sb WHERE sb.partnership_status =:partnershipStatus";
         Query query = getCurrentSession().createSQLQuery(sqQuery);
         query.setParameter("partnershipStatus", Boolean.TRUE);
 

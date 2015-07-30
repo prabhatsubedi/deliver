@@ -30,6 +30,7 @@ public class ItemsOrderEntity implements Serializable {
     private String customerNote;
     private BigDecimal vat;
     private BigDecimal serviceCharge;
+    private BigDecimal commissionAmount; // commission to koolkat from merchant
     private Boolean purchaseStatus;
     private String categoryName;
     private CustomItemEntity customItem;
@@ -138,6 +139,15 @@ public class ItemsOrderEntity implements Serializable {
 
     public void setServiceCharge(BigDecimal serviceCharge) {
         this.serviceCharge = serviceCharge;
+    }
+
+    @Column(name = "commission_amount")
+    public BigDecimal getCommissionAmount() {
+        return commissionAmount;
+    }
+
+    public void setCommissionAmount(BigDecimal commissionAmount) {
+        this.commissionAmount = commissionAmount;
     }
 
     @Column(name="purchase_status", columnDefinition = "TINYINT(1)")

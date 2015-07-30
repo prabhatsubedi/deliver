@@ -34,17 +34,17 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
     public static final BigDecimal ZERO = BigDecimal.ZERO;
 
     @Override
-    public CourierTransactionEntity getCourierTransaction(OrderEntity order, DeliveryBoySelectionEntity dBoySelection, BigDecimal merchantCommission, BigDecimal merchantServiceFee) throws Exception {
-        BigDecimal DBOY_ADDITIONAL_PER_KM_CHARGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_ADDITIONAL_PER_KM_CHARGE));
-        BigDecimal RESERVED_COMM_PER_BY_SYSTEM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.RESERVED_COMM_PER_BY_SYSTEM));
-        BigDecimal DBOY_PER_KM_CHARGE_UPTO_NKM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_NKM));
-        BigDecimal DBOY_PER_KM_CHARGE_ABOVE_NKM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_NKM));
-        BigDecimal DBOY_COMMISSION = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_COMMISSION));
-        BigDecimal DBOY_MIN_AMOUNT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_MIN_AMOUNT));
-        BigDecimal DELIVERY_FEE_VAT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));
-        BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE));
-        BigDecimal ADDITIONAL_KM_FREE_LIMIT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ADDITIONAL_KM_FREE_LIMIT));
-        BigDecimal DEFAULT_NKM_DISTANCE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_NKM_DISTANCE));
+    public CourierTransactionEntity getCourierTransaction(OrderEntity order, DeliveryBoySelectionEntity dBoySelection, BigDecimal totalCommission, BigDecimal systemProcessingCharge) throws Exception {
+        BigDecimal DBOY_ADDITIONAL_PER_KM_CHARGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_ADDITIONAL_PER_KM_CHARGE));  //Shopper per km additional charge
+        BigDecimal RESERVED_COMM_PER_BY_SYSTEM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.RESERVED_COMM_PER_BY_SYSTEM));      //Reserved commission percentage by system
+        BigDecimal DBOY_PER_KM_CHARGE_UPTO_NKM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_UPTO_NKM));      //shopper per km charge for default distance
+        BigDecimal DBOY_PER_KM_CHARGE_ABOVE_NKM = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_PER_KM_CHARGE_ABOVE_NKM));    //shopper per km charge above default distance
+        BigDecimal DBOY_COMMISSION = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_COMMISSION));       //shopper commission percentage
+        BigDecimal DBOY_MIN_AMOUNT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DBOY_MIN_AMOUNT));       //minimum amount given to shopper
+        BigDecimal DELIVERY_FEE_VAT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT));     //system vat percentage
+        BigDecimal MINIMUM_PROFIT_PERCENTAGE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.MINIMUM_PROFIT_PERCENTAGE)); //Minimum Profit Percentage for Order Acceptance
+        BigDecimal ADDITIONAL_KM_FREE_LIMIT = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ADDITIONAL_KM_FREE_LIMIT));  //Unpaid KM for Shopper
+        BigDecimal DEFAULT_NKM_DISTANCE = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_NKM_DISTANCE));         //default distance in km
         BigDecimal ZERO = BigDecimal.ZERO;
 
          /* 1. ===== Order Total ======= */
@@ -52,7 +52,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         totalOrder = totalOrder.subtract(BigDecimalUtil.checkNull(order.getDiscountFromStore()));
 
         /* 2. ======= Commission Percent ====== */
-        BigDecimal commissionPct = BigDecimalUtil.checkNull(merchantCommission);
+        //BigDecimal commissionPct = BigDecimalUtil.checkNull(merchantCommission);
 
         /* 3. ===== Distance Store to Customer(KM) ======== */
         BigDecimal storeToCustomerDistance = dBoySelection.getStoreToCustomerDistance();
@@ -61,7 +61,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         BigDecimal courierToStoreDistance = dBoySelection.getDistanceToStore();
 
         /* 5. ==== Service Fee % ======= */
-        BigDecimal serviceFeePct = BigDecimalUtil.checkNull(merchantServiceFee);
+        BigDecimal systemProcessingChargePct = BigDecimalUtil.checkNull(systemProcessingCharge);
 
         /* 6. ====== Additional delivery amt ======= */
         BigDecimal additionalDeliveryAmt = ZERO;
@@ -71,8 +71,8 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
        /* 7. ==== Discount on delivery to customer ======= */
         BigDecimal customerDiscount = ZERO;
         BigDecimal systemReservedCommissionAmt = ZERO;
-        if (BigDecimalUtil.isGreaterThenZero(commissionPct)) {
-            BigDecimal totalCommission = BigDecimalUtil.percentageOf(totalOrder, commissionPct);
+        if (BigDecimalUtil.isGreaterThenZero(totalCommission)) {
+            //BigDecimal totalCommission = BigDecimalUtil.percentageOf(totalOrder, commissionPct);
             systemReservedCommissionAmt = BigDecimalUtil.percentageOf(totalCommission, RESERVED_COMM_PER_BY_SYSTEM);
             customerDiscount = totalCommission.subtract(systemReservedCommissionAmt);
         }
@@ -91,8 +91,8 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         }
 
         /* 10. ======= Service fee Amount with VAT =========== */
-        BigDecimal serviceFeeAmt = BigDecimalUtil.percentageOf(totalOrder, serviceFeePct);
-        serviceFeeAmt = serviceFeeAmt.add(BigDecimalUtil.percentageOf(serviceFeeAmt, DELIVERY_FEE_VAT));
+        BigDecimal systemProcessingChargeAmount = BigDecimalUtil.percentageOf(totalOrder, systemProcessingChargePct);
+        systemProcessingChargeAmount = systemProcessingChargeAmount.add(BigDecimalUtil.percentageOf(systemProcessingChargeAmount, DELIVERY_FEE_VAT));
 
         /* 11. ====== Delivery cost  with VAT and with Discount from system ======== */
         BigDecimal deliveryChargedBeforeDiscount = ZERO;
@@ -112,17 +112,23 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
             deliveryChargedAfterDiscount = deliveryChargedBeforeDiscount.subtract(customerBalanceBeforeDiscount);
         deliveryChargedAfterDiscount = deliveryChargedAfterDiscount.subtract(BigDecimalUtil.percentageOf(deliveryChargedAfterDiscount, BigDecimalUtil.checkNull(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DISCOUNT_ON_DELIVERY_FEE)))));
 
+        /* 14. ======= Delivery Charge after store delivery discount ======== */
+        BigDecimal discountInDeliveryFeeFromStore = BigDecimalUtil.percentageOf(deliveryChargedAfterDiscount, BigDecimalUtil.checkNull(order.getStore().getDiscountInDeliveryFee()));
+        if(order.getStore().getDiscountInDeliveryFee() != null)
+            deliveryChargedAfterDiscount = deliveryChargedAfterDiscount.subtract(discountInDeliveryFeeFromStore);
+
         /* 14. ======= Customer available balance after discount ======== */
         BigDecimal customerBalanceAfterDiscount = ZERO;
         if (BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
             customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
 
         /* 14. ====== Customer Pays ========*/
-        BigDecimal customerPays = totalOrder.add(serviceFeeAmt).add(deliveryChargedAfterDiscount).add(order.getItemServiceAndVatCharge());
+        BigDecimal customerPays = totalOrder.add(systemProcessingChargeAmount).add(deliveryChargedAfterDiscount).add(order.getItemServiceAndVatCharge());
         customerPays = customerPays.setScale(2, BigDecimal.ROUND_DOWN);
         order.setGrandTotal(customerPays);
         order.setDeliveryCharge(deliveryChargedAfterDiscount);
-        order.setSystemServiceCharge(serviceFeeAmt);
+        order.setSystemServiceCharge(systemProcessingChargeAmount);
+        order.setStoreDeliveryDiscount(discountInDeliveryFeeFromStore);
 
         /* 15. ======= Paid to Courier ====== */
         BigDecimal paidToCourier = ZERO;
@@ -136,7 +142,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         /* 16 ===== Profit ====== */
         // total order * profit% = >  actual profit
         BigDecimal profit = ZERO;
-        profit = BigDecimalUtil.percentageOf(totalOrder, commissionPct).add(BigDecimalUtil.percentageOf(totalOrder, serviceFeePct));
+        profit = totalCommission.add(BigDecimalUtil.percentageOf(totalOrder, systemProcessingChargeAmount));
         profit = profit.add(deliveryChargedAfterDiscount.divide(BigDecimal.ONE.add(DELIVERY_FEE_VAT.divide(new BigDecimal(100))), MathContext.DECIMAL128)).subtract(paidToCourier);
         if (BigDecimalUtil.isLessThen(profit, BigDecimalUtil.percentageOf(totalOrder, MINIMUM_PROFIT_PERCENTAGE))) {
             log.warn("No Profit");
@@ -145,15 +151,16 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         CourierTransactionEntity courierTransactionEntity = new CourierTransactionEntity();
         courierTransactionEntity.setOrder(order);
         courierTransactionEntity.setOrderTotal(totalOrder);
-        courierTransactionEntity.setCommissionPct(commissionPct);
+        //courierTransactionEntity.setCommissionPct(commissionPct);
+        courierTransactionEntity.setCommissionAmount(totalCommission);
         courierTransactionEntity.setStoreToCustomerDistance(storeToCustomerDistance);
         courierTransactionEntity.setCourierToStoreDistance(courierToStoreDistance);
-        courierTransactionEntity.setServiceFeePct(serviceFeePct);
+        courierTransactionEntity.setSystemProcessingChargePct(systemProcessingChargePct);
         courierTransactionEntity.setAdditionalDeliveryAmt(additionalDeliveryAmt);
         courierTransactionEntity.setCustomerDiscount(customerDiscount);
         courierTransactionEntity.setSurgeFactor(surgeFactor);
         courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(deliveryCostWithoutAdditionalDvAmt);
-        courierTransactionEntity.setServiceFeeAmt(serviceFeeAmt);
+        courierTransactionEntity.setSystemProcessingChargeAmount(systemProcessingChargeAmount);
         courierTransactionEntity.setDeliveryChargedBeforeDiscount(deliveryChargedBeforeDiscount);
         courierTransactionEntity.setCustomerBalanceBeforeDiscount(customerBalanceBeforeDiscount);
         courierTransactionEntity.setDeliveryChargedAfterDiscount(deliveryChargedAfterDiscount);

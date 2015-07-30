@@ -136,6 +136,7 @@ public class ManagerController {
         }
     }
 
+    //no more in use
     @RequestMapping(value = "/activate_merchant", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> activateMerchant(@RequestBody MerchantEntity merchantEntity) {

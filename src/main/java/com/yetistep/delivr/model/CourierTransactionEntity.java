@@ -17,15 +17,15 @@ import java.math.BigDecimal;
 public class CourierTransactionEntity {
     private Integer id;
     private BigDecimal orderTotal;
-    private BigDecimal commissionPct;
+    private BigDecimal commissionAmount;
     private BigDecimal storeToCustomerDistance;
     private BigDecimal courierToStoreDistance;
-    private BigDecimal serviceFeePct;
+    private BigDecimal systemProcessingChargePct;
     private BigDecimal additionalDeliveryAmt;
     private BigDecimal customerDiscount;
     private Integer surgeFactor;
     private BigDecimal deliveryCostWithoutAdditionalDvAmt;
-    private BigDecimal serviceFeeAmt;
+    private BigDecimal systemProcessingChargeAmount;
     private BigDecimal deliveryChargedBeforeDiscount;
     private BigDecimal customerBalanceBeforeDiscount;
     private BigDecimal deliveryChargedAfterDiscount;
@@ -55,13 +55,13 @@ public class CourierTransactionEntity {
         this.orderTotal = orderTotal;
     }
 
-    @Column(name ="commission_pct", precision = 4, scale = 2)
-    public BigDecimal getCommissionPct() {
-        return commissionPct;
+    @Column(name ="commission_amount", precision = 4, scale = 2)
+    public BigDecimal getCommissionAmount() {
+        return commissionAmount;
     }
 
-    public void setCommissionPct(BigDecimal commissionPct) {
-        this.commissionPct = commissionPct;
+    public void setCommissionAmount(BigDecimal commissionAmount) {
+        this.commissionAmount = commissionAmount;
     }
 
     @Column(name ="store_to_customer_distance", precision = 5, scale = 2)
@@ -82,13 +82,13 @@ public class CourierTransactionEntity {
         this.courierToStoreDistance = courierToStoreDistance;
     }
 
-    @Column(name ="service_fee_pct", precision = 4, scale = 2)
-    public BigDecimal getServiceFeePct() {
-        return serviceFeePct;
+    @Column(name ="system_processing_charge_pct", precision = 4, scale = 2)
+    public BigDecimal getSystemProcessingChargePct() {
+        return systemProcessingChargePct;
     }
 
-    public void setServiceFeePct(BigDecimal serviceFeePct) {
-        this.serviceFeePct = serviceFeePct;
+    public void setSystemProcessingChargePct(BigDecimal systemProcessingChargePct) {
+        this.systemProcessingChargePct = systemProcessingChargePct;
     }
 
     @Column(name ="additional_delivery_amt", precision = 16, scale = 2)
@@ -127,13 +127,13 @@ public class CourierTransactionEntity {
         this.deliveryCostWithoutAdditionalDvAmt = deliveryCostWithoutAdditionalDvAmt;
     }
 
-    @Column(name ="service_fee_amt", precision = 16, scale = 2)
-    public BigDecimal getServiceFeeAmt() {
-        return serviceFeeAmt;
+    @Column(name ="system_processing_charge_amt", precision = 16, scale = 2)
+    public BigDecimal getSystemProcessingChargeAmount() {
+        return systemProcessingChargeAmount;
     }
 
-    public void setServiceFeeAmt(BigDecimal serviceFeeAmt) {
-        this.serviceFeeAmt = serviceFeeAmt;
+    public void setSystemProcessingChargeAmount(BigDecimal systemProcessingChargeAmount) {
+        this.systemProcessingChargeAmount = systemProcessingChargeAmount;
     }
 
     @Column(name ="delivery_charge_before_discount", precision = 16, scale = 2)

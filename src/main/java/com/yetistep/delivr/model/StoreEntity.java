@@ -40,6 +40,7 @@ public class StoreEntity implements Serializable {
     private String brandLogo;//Transient Variable
     private String email;
     private Boolean sendEmail;//on order placed
+    private BigDecimal discountInDeliveryFee;
     private StoresBrandEntity storesBrand;
     private List<ItemsStoreEntity> itemsStore;
     private List<OrderEntity> order;
@@ -240,6 +241,15 @@ public class StoreEntity implements Serializable {
 
     public void setSendEmail(Boolean sendEmail) {
         this.sendEmail = sendEmail;
+    }
+
+    @Column(name = "discount_in_delivery_fee")
+    public BigDecimal getDiscountInDeliveryFee() {
+        return discountInDeliveryFee;
+    }
+
+    public void setDiscountInDeliveryFee(BigDecimal discountInDeliveryFee) {
+        this.discountInDeliveryFee = discountInDeliveryFee;
     }
 
     @OneToMany(mappedBy = "store")

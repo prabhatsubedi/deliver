@@ -484,7 +484,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         criteria.createAlias("store.storesBrand", "storesBrand");
         criteria.createAlias("storesBrand.merchant", "merchant");
         criteria.add(Restrictions.in("orderStatus", orderStatuses));
-        criteria.add(Restrictions.eq("merchant.partnershipStatus", false));
+        //criteria.add(Restrictions.eq("merchant.partnershipStatus", false));
         return (List<OrderEntity>) criteria.list();
     }
 

@@ -374,6 +374,16 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         dbStoresBrand.setOpeningTime(storesBrand.getOpeningTime());
         dbStoresBrand.setClosingTime(storesBrand.getClosingTime());
         dbStoresBrand.setOpenStatus(storesBrand.getOpenStatus());
+        if(storesBrand.getPartnershipStatus()!=null)
+            dbStoresBrand.setPartnershipStatus(storesBrand.getPartnershipStatus());
+        if(storesBrand.getProcessingCharge() != null)
+            dbStoresBrand.setProcessingCharge(storesBrand.getProcessingCharge());
+        if(storesBrand.getVatNo() != null)
+            dbStoresBrand.setVatNo(storesBrand.getVatNo());
+        if(storesBrand.getPanNo() != null)
+            dbStoresBrand.setPanNo(storesBrand.getPanNo());
+        if(storesBrand.getVatInclusive() != null)
+            dbStoresBrand.setVatInclusive(storesBrand.getVatInclusive());
 
         List<BrandsCategoryEntity> dbBrandsCategories = dbStoresBrand.getBrandsCategory();
         Map<Integer, Integer> brandCategoriesIdList = new HashMap<Integer, Integer>();
@@ -450,6 +460,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 dbStore.setContactPerson(newStore.getContactPerson());
                 dbStore.setEmail(newStore.getEmail());
                 dbStore.setSendEmail(newStore.getSendEmail());
+                dbStore.setDiscountInDeliveryFee(newStore.getDiscountInDeliveryFee());
             }
         }
         dbStoresBrand.setStore(dbStores);
@@ -643,7 +654,14 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<StoresBrandEntity> storesBrands = merchantDaoService.findBrandListByMerchant(dbMerchant.getId());
         List<Object> storesBrandEntities = new ArrayList<Object>();
 
-        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,featured,priority,merchant,store";
+        /*
+        * private String vatNo;
+   private String panNo;
+   private Boolean vatInclusive;
+   private BigDecimal processingCharge;  // processing charge by the koolkat for the merchant
+   private Boolean partnershipStatus;
+        * */
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,vatNo,panNo,vatInclusive,featured,priority,merchant,store";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -748,13 +766,12 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception {
         log.info("++++++++++++ getting brand detail +++++++++++++++");
         StoresBrandEntity storesBrandEntity =  merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
-
-        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount";
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,processingCharge,vatNo,panNo,vatInclusive";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("store", "id,street,city,state,country,latitude,longitude,status,contactNo,contactPerson,email,sendEmail");
+        assoc.put("store", "id,street,city,state,country,latitude,longitude,status,contactNo,contactPerson,email,sendEmail,discountInDeliveryFee");
         assoc.put("brandsCategory", "id,category");
 
         subAssoc.put("category", "id,name,featured");
@@ -936,6 +953,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         dbItem.setMinOrderQuantity(item.getMinOrderQuantity());
         dbItem.setVat(item.getVat());
         dbItem.setServiceCharge(item.getServiceCharge());
+        if(dbItem.getCommissionPercentage() != null)
+            dbItem.setCommissionPercentage(item.getCommissionPercentage());
         dbItem.setUnitPrice(item.getUnitPrice());
         dbItem.setTags(item.getTags());
         dbItem.setModifiedDate(DateUtil.getCurrentTimestampSQL());
@@ -1337,7 +1356,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
         item.setCategory(category);
 
-        String fields = "id,name,description,availableQuantity,availableStartTime,availableEndTime,maxOrderQuantity,minOrderQuantity,unitPrice,tags,currencyType,additionalOffer,status,vat,serviceCharge,deliveryFee,itemsImage,itemsStores,attributesTypes,category,storesBrand";
+        String fields = "id,name,description,availableQuantity,availableStartTime,availableEndTime,maxOrderQuantity,minOrderQuantity,unitPrice,tags,currencyType,additionalOffer,status,vat,serviceCharge,deliveryFee,commissionPercentage,itemsImage,itemsStores,attributesTypes,category,storesBrand";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

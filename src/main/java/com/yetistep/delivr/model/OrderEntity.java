@@ -41,6 +41,7 @@ public class OrderEntity implements Serializable {
     //private BigDecimal transportationCharge;
     private BigDecimal systemServiceCharge;
     private BigDecimal deliveryCharge;
+    private BigDecimal commissionAmount; // total amount of commission
     private BigDecimal grandTotal;
     private BigDecimal deliveryBoyShare;
     /*private BigDecimal systemShare;*/
@@ -70,6 +71,7 @@ public class OrderEntity implements Serializable {
     private BigDecimal toBeTransferred;  //used as transient for dBoy account
     private BigDecimal transferred;  //used as transient for dBoy account
     private String accountantNote;
+    private BigDecimal storeDeliveryDiscount; //discount in delivery fee from store
 
     private OrderCancelEntity orderCancel;
     private CourierTransactionEntity courierTransaction;
@@ -269,6 +271,15 @@ public class OrderEntity implements Serializable {
 
     public void setDeliveryCharge(BigDecimal deliveryCharge) {
         this.deliveryCharge = deliveryCharge;
+    }
+
+    @Column(name = "commission_amount", precision = 19, scale = 2)
+    public BigDecimal getCommissionAmount() {
+        return commissionAmount;
+    }
+
+    public void setCommissionAmount(BigDecimal commissionAmount) {
+        this.commissionAmount = commissionAmount;
     }
 
     @Column(name = "grand_total", precision = 19, scale = 2)
@@ -594,6 +605,15 @@ public class OrderEntity implements Serializable {
 
     public void setAccountantNote(String accountantNote) {
         this.accountantNote = accountantNote;
+    }
+
+    @Column(name = "store_delivery_discount")
+    public BigDecimal getStoreDeliveryDiscount() {
+        return storeDeliveryDiscount;
+    }
+
+    public void setStoreDeliveryDiscount(BigDecimal storeDeliveryDiscount) {
+        this.storeDeliveryDiscount = storeDeliveryDiscount;
     }
 
     @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )

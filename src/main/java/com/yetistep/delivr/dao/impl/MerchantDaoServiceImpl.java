@@ -541,7 +541,7 @@ public class MerchantDaoServiceImpl implements MerchantDaoService {
 
     @Override
     public MerchantEntity getMerchantByOrderId(Integer orderId) throws Exception {
-        String sqlQuery = "SELECT m.id as id, m.partnership_status as partnershipStatus, " +
+        String sqlQuery = "SELECT m.id as id, " +
                 "m.service_fee as serviceFee, m.commission_percentage as commissionPercentage " +
                 "FROM merchants m " +
                 "INNER JOIN stores_brands sb on sb.merchant_id = m.id " +

@@ -46,8 +46,8 @@ public class StoresBrandEntity implements Serializable {
    private Integer priority;
    private Timestamp createdDate;
    private Status status;
-   private BigDecimal processingCharge;
-   private Boolean partnershipStatus;
+   private BigDecimal processingCharge;  // processing charge by the koolkat for the merchant
+   private Boolean partnershipStatus;  // partnership status of merchant for the brand
     //Transient Variable
    private Boolean openStatus;
    private Integer merchantId; //Transient Variable
@@ -60,6 +60,10 @@ public class StoresBrandEntity implements Serializable {
    private List<ItemEntity> items;
    private List<CategoryEntity> categories;
    private List<CartEntity> carts;
+
+   private String vatNo;
+   private String panNo;
+   private Boolean vatInclusive; // if not vat inclusive then vat exclusive
 
 
 
@@ -260,6 +264,33 @@ public class StoresBrandEntity implements Serializable {
 
     public void setMinOrderAmount(BigDecimal minOrderAmount) {
         this.minOrderAmount = minOrderAmount;
+    }
+
+    @Column(name = "vat_no")
+    public String getVatNo() {
+        return vatNo;
+    }
+
+    public void setVatNo(String vatNo) {
+        this.vatNo = vatNo;
+    }
+
+    @Column(name = "pan_no")
+    public String getPanNo() {
+        return panNo;
+    }
+
+    public void setPanNo(String panNo) {
+        this.panNo = panNo;
+    }
+
+    @Column(name = "vat_inclusive")
+    public Boolean getVatInclusive() {
+        return vatInclusive;
+    }
+
+    public void setVatInclusive(Boolean vatInclusive) {
+        this.vatInclusive = vatInclusive;
     }
 
     @Transient

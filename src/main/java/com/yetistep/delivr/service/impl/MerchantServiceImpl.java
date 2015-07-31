@@ -374,6 +374,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         dbStoresBrand.setOpeningTime(storesBrand.getOpeningTime());
         dbStoresBrand.setClosingTime(storesBrand.getClosingTime());
         dbStoresBrand.setOpenStatus(storesBrand.getOpenStatus());
+        dbStoresBrand.setDiscountInDeliveryFee(storesBrand.getDiscountInDeliveryFee());
+
         if(storesBrand.getPartnershipStatus()!=null)
             dbStoresBrand.setPartnershipStatus(storesBrand.getPartnershipStatus());
         if(storesBrand.getProcessingCharge() != null)
@@ -460,7 +462,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 dbStore.setContactPerson(newStore.getContactPerson());
                 dbStore.setEmail(newStore.getEmail());
                 dbStore.setSendEmail(newStore.getSendEmail());
-                dbStore.setDiscountInDeliveryFee(newStore.getDiscountInDeliveryFee());
             }
         }
         dbStoresBrand.setStore(dbStores);
@@ -766,12 +767,12 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception {
         log.info("++++++++++++ getting brand detail +++++++++++++++");
         StoresBrandEntity storesBrandEntity =  merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
-        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,processingCharge,vatNo,panNo,vatInclusive";
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,partnershipStatus,processingCharge,discountInDeliveryFee,vatNo,panNo,vatInclusive";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
 
-        assoc.put("store", "id,street,city,state,country,latitude,longitude,status,contactNo,contactPerson,email,sendEmail,discountInDeliveryFee");
+        assoc.put("store", "id,street,city,state,country,latitude,longitude,status,contactNo,contactPerson,email,sendEmail");
         assoc.put("brandsCategory", "id,category");
 
         subAssoc.put("category", "id,name,featured");

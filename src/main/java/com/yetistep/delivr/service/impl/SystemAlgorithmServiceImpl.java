@@ -113,8 +113,8 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         deliveryChargedAfterDiscount = deliveryChargedAfterDiscount.subtract(BigDecimalUtil.percentageOf(deliveryChargedAfterDiscount, BigDecimalUtil.checkNull(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DISCOUNT_ON_DELIVERY_FEE)))));
 
         /* 14. ======= Delivery Charge after store delivery discount ======== */
-        BigDecimal discountInDeliveryFeeFromStore = BigDecimalUtil.percentageOf(deliveryChargedAfterDiscount, BigDecimalUtil.checkNull(order.getStore().getDiscountInDeliveryFee()));
-        if(order.getStore().getDiscountInDeliveryFee() != null)
+        BigDecimal discountInDeliveryFeeFromStore = BigDecimalUtil.percentageOf(deliveryChargedAfterDiscount, BigDecimalUtil.checkNull(order.getStore().getStoresBrand().getDiscountInDeliveryFee()));
+        if(order.getStore().getStoresBrand().getDiscountInDeliveryFee() != null)
             deliveryChargedAfterDiscount = deliveryChargedAfterDiscount.subtract(discountInDeliveryFeeFromStore);
 
         /* 14. ======= Customer available balance after discount ======== */

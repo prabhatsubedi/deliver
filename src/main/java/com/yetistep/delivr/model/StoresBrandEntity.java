@@ -48,6 +48,7 @@ public class StoresBrandEntity implements Serializable {
    private Status status;
    private BigDecimal processingCharge;  // processing charge by the koolkat for the merchant
    private Boolean partnershipStatus;  // partnership status of merchant for the brand
+   private BigDecimal discountInDeliveryFee;
     //Transient Variable
    private Boolean openStatus;
    private Integer merchantId; //Transient Variable
@@ -227,6 +228,15 @@ public class StoresBrandEntity implements Serializable {
 
     public void setPartnershipStatus(Boolean partnershipStatus) {
         this.partnershipStatus = partnershipStatus;
+    }
+
+    @Column(name = "discount_in_delivery_fee", columnDefinition = "Decimal(10,2) default '0.00'")
+    public BigDecimal getDiscountInDeliveryFee() {
+        return discountInDeliveryFee;
+    }
+
+    public void setDiscountInDeliveryFee(BigDecimal discountInDeliveryFee) {
+        this.discountInDeliveryFee = discountInDeliveryFee;
     }
 
     @Transient

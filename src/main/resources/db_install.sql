@@ -293,3 +293,11 @@ ALTER TABLE `delivr_db`.`stores_brands` DROP COLUMN commission_percentage;
 ALTER TABLE `delivr_db`.`items` DROP COLUMN payment_method_cc;
 ALTER TABLE `delivr_db`.`items` DROP COLUMN payment_method_cd;
 
+
+/*2015-07-31*/  /*drag various merchants attributes to stores_brand and items*/
+UPDATE stores_brands sb LEFT JOIN merchants m ON sb.merchant_id = m.id SET sb.partnership_status = m.partnership_status;
+UPDATE stores_brands sb LEFT JOIN merchants m ON sb.merchant_id = m.id SET sb.vat_no = m.vat_no;
+UPDATE stores_brands sb LEFT JOIN merchants m ON sb.merchant_id = m.id SET sb.pan_no = m.pan_no;
+UPDATE stores_brands sb LEFT JOIN merchants m ON sb.merchant_id = m.id SET sb.processing_charge = m.service_fee;
+UPDATE items it LEFT JOIN stores_brands sb ON it.brand_id = sb.id LEFT JOIN merchants m ON sb.merchant_id = m.id SET it.commission_percentage = m.commission_percentage;
+

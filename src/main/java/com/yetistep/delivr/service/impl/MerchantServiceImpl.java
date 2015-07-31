@@ -778,51 +778,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         subAssoc.put("category", "id,name,featured");
         return (StoresBrandEntity) ReturnJsonUtil.getJsonObject(storesBrandEntity, fields, assoc, subAssoc);
 
-        //return getStoreBrandForJson(storesBrandEntity);
     }
 
-    /*private StoresBrandEntity getStoreBrandForJson(StoresBrandEntity storesBrandEntity){
-        StoresBrandEntity storesBrand = new StoresBrandEntity();
-        storesBrand.setId(storesBrandEntity.getId());
-        storesBrand.setBrandName(storesBrandEntity.getBrandName());
-        storesBrand.setOpeningTime(storesBrandEntity.getOpeningTime());
-        storesBrand.setClosingTime(storesBrandEntity.getClosingTime());
-        storesBrand.setBrandLogo(storesBrandEntity.getBrandLogo());
-        storesBrand.setBrandImage(storesBrandEntity.getBrandImage());
-        storesBrand.setBrandUrl(storesBrandEntity.getBrandUrl());
-        storesBrand.setStatus(storesBrandEntity.getStatus());
-        storesBrand.setMinOrderAmount(storesBrandEntity.getMinOrderAmount());
-        storesBrand.setCreatedDate(storesBrandEntity.getCreatedDate());
-
-        List<BrandsCategoryEntity> brandCategories = new ArrayList<BrandsCategoryEntity>();
-        for(BrandsCategoryEntity brandsCategoryEntity : storesBrandEntity.getBrandsCategory()){
-            BrandsCategoryEntity brandsCategory = new BrandsCategoryEntity();
-            brandsCategory.setId(brandsCategoryEntity.getId());
-            brandCategories.add(brandsCategory);
-        }
-        storesBrand.setBrandsCategory(brandCategories);
-
-        List<StoreEntity> stores = new ArrayList<StoreEntity>();
-        for(StoreEntity storeEntity: storesBrandEntity.getStore()){
-            StoreEntity store = new StoreEntity();
-            store.setId(storeEntity.getId());
-            store.setName(storeEntity.getName());
-            store.setStreet(storeEntity.getStreet());
-            store.setCity(storeEntity.getCity());
-            store.setState(storeEntity.getState());
-            store.setCountry(storeEntity.getCountry());
-            store.setContactNo(storeEntity.getContactNo());
-            store.setContactPerson(storeEntity.getContactPerson());
-            store.setLatitude(storeEntity.getLatitude());
-            store.setLongitude(storeEntity.getLongitude());
-            store.setStatus(storeEntity.getStatus());
-            store.setCreatedDate(storeEntity.getCreatedDate());
-            stores.add(store);
-        }
-        storesBrand.setStore(stores);
-        return storesBrand;
-    }
-*/
     @Override
     public void saveItem(RequestJsonDto requestJson, HeaderDto headerDto) throws Exception {
         log.info("++++++++++++ Saving Item +++++++++++++++");
@@ -1912,7 +1869,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             }
         }
         List<Object> objects = new ArrayList<>();
-        String fields = "id,quantity,itemTotal,availabilityStatus,serviceCharge,vat,item,order";
+        String fields = "id,quantity,itemTotal,availabilityStatus,serviceCharge,vat,commissionAmount,item,order";
         Map<String, String> assoc = new HashMap<>();
         assoc.put("item", "id,name,unitPrice,editedName");
         assoc.put("order", "id");

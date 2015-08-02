@@ -73,11 +73,10 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         List<OrderEntity> orders =  orderDaoService.getStoresOrders(storeId, fromDate, toDate);
         if(orders.size()>0){
             StoreEntity store =  storeDaoService.find(storeId);
-            //store.getId();
-
             MerchantEntity merchant = store.getStoresBrand().getMerchant();
             InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
 
+            log.info("set the statement attributes");
             InvoiceEntity invoice = new InvoiceEntity();
             CommissionStatementEntity commission = new CommissionStatementEntity();
             invoice.setInvoiceStatus(InvoiceStatus.UNPAID);
@@ -86,9 +85,8 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
             invoice.setOrders(orders);
             invoice.setGeneratedDate(new Date(System.currentTimeMillis()));
 
-            for (OrderEntity orderEntity: orders){
-                orderEntity.setInvoice(invoice);
-            }
+            BigDecimal commissionAmount = BigDecimal.ZERO;
+            BigDecimal commissionVatAmount = BigDecimal.ZERO;
 
             invoice.setGeneratedDate(new Date(DateUtil.getCurrentTimestampSQL().getTime()));
             invoice.setFromDate(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(fromDate).getTime()));
@@ -96,30 +94,28 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
             BigDecimal totalOrderAmount = BigDecimal.ZERO;
             BigDecimal totalServiceCharge = BigDecimal.ZERO;
-            BigDecimal itemVatAmount = BigDecimal.ZERO;
+            BigDecimal totalVatAmount = BigDecimal.ZERO;
             for (OrderEntity order: orders){
+                order.setInvoice(invoice);
+                commissionAmount = commissionAmount.add(order.getCommissionAmount());
                 for (ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()) {
-                    BigDecimal itemServiceChargePcn = itemsOrderEntity.getServiceCharge();
-                    BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
-                    BigDecimal itemVatCharge = itemsOrderEntity.getItemTotal().multiply(itemsOrderEntity.getVat()).divide(new BigDecimal(100));
+                    BigDecimal itemServiceCharge = BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal(), BigDecimalUtil.checkNull(itemsOrderEntity.getServiceCharge()));
                     totalServiceCharge = totalServiceCharge.add(itemServiceCharge);
-                    itemVatAmount = itemVatAmount.add(itemVatCharge);
+
+                    if(!order.getStore().getStoresBrand().getVatInclusive()) {
+                        totalVatAmount = totalVatAmount.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal().add(itemServiceCharge), BigDecimalUtil.checkNull(itemsOrderEntity.getVat())));
+                    }
+                    commissionVatAmount.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getCommissionAmount(), BigDecimalUtil.checkNull(itemsOrderEntity.getVat())));
                 }
-                //add order
                 totalOrderAmount = totalOrderAmount.add(order.getTotalCost().subtract(order.getDiscountFromStore()));
             }
             BigDecimal totalTaxableAmount =  totalOrderAmount.add(totalServiceCharge);
-            //BigDecimal vatAmount =  totalTaxableAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
-            BigDecimal grandTotalAmount = totalTaxableAmount.add(itemVatAmount);
-            BigDecimal commissionAmount = totalOrderAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
-            /*BigDecimal systemVatAmount =  commissionAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
-            commissionAmount = commissionAmount.add(systemVatAmount);*/
+            BigDecimal grandTotalAmount = totalTaxableAmount.add(totalVatAmount);
 
             BigDecimal netPayableAmount = grandTotalAmount.subtract(commissionAmount);
             invoice.setAmount(netPayableAmount.setScale(2, BigDecimal.ROUND_DOWN));
 
 
-            BigDecimal commissionVatAmount = commissionAmount.multiply(new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT)))).divide(new BigDecimal(100));
             BigDecimal totalCommissionAmount = commissionAmount.add(commissionVatAmount);
 
             commission.setGeneratedDate(new Date(DateUtil.getCurrentTimestampSQL().getTime()));
@@ -153,7 +149,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                 if(MessageBundle.isLocalHost()){
                     serverUrl = "http://localhost:8080/";
                 } else {
-                    serverUrl = "http://test.idelivr.com/";
+                    serverUrl = "http://ktm.koolkat.in/";
                 }
                 String message = EmailMsg.sendInvoiceEmail(store, fromDate, toDate, serverUrl);
                 sendAttachmentEmail(email,  message, "get invoice-"+fromDate+"-"+toDate, invoicePath);

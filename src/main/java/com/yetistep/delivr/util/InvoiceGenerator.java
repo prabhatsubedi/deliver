@@ -197,7 +197,7 @@ public class InvoiceGenerator {
 
             addCommissionDetail(document, merchant, invoice, store);
 
-            addCommissionBody(document, merchant, orders, preferences);
+            addCommissionBody(document, orders, preferences);
 
             addFooter(document);
 
@@ -415,14 +415,19 @@ public class InvoiceGenerator {
         BigDecimal totalOrderAmount = BigDecimal.ZERO;
         BigDecimal totalServiceCharge = BigDecimal.ZERO;
 
-        BigDecimal itemVatAmount = BigDecimal.ZERO;
+        BigDecimal totalVatAmount = BigDecimal.ZERO;
+        BigDecimal commissionAmount = BigDecimal.ZERO;
+        BigDecimal commissionVatAmount = BigDecimal.ZERO;
         for (OrderEntity order: orders){
+            commissionAmount = commissionAmount.add(order.getCommissionAmount());
             for (ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()) {
-                    BigDecimal itemServiceChargePcn = itemsOrderEntity.getServiceCharge();
-                    BigDecimal itemServiceCharge = itemsOrderEntity.getItemTotal().multiply(itemServiceChargePcn).divide(new BigDecimal(100));
-                    BigDecimal itemVatCharge = itemsOrderEntity.getItemTotal().multiply(itemsOrderEntity.getVat()).divide(new BigDecimal(100));
-                    totalServiceCharge = totalServiceCharge.add(itemServiceCharge);
-                    itemVatAmount = itemVatAmount.add(itemVatCharge);
+                BigDecimal itemServiceCharge = BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal(), BigDecimalUtil.checkNull(itemsOrderEntity.getServiceCharge()));
+                totalServiceCharge = totalServiceCharge.add(itemServiceCharge);
+
+                if(!order.getStore().getStoresBrand().getVatInclusive()) {
+                    totalVatAmount = totalVatAmount.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal().add(itemServiceCharge), BigDecimalUtil.checkNull(itemsOrderEntity.getVat())));
+                }
+                commissionVatAmount.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getCommissionAmount(), BigDecimalUtil.checkNull(itemsOrderEntity.getVat())));
             }
             //add order
             PdfUtil.addRow(billingTable, PdfUtil.getPhrase(cntOrder), PdfUtil.getPhrase(order.getOrderDate()), PdfUtil.getPhrase(order.getId()), PdfUtil.getPhrase(order.getTotalCost().subtract(order.getDiscountFromStore())));
@@ -434,10 +439,8 @@ public class InvoiceGenerator {
             cntOrder++;
         }
         BigDecimal totalTaxableAmount =  totalOrderAmount.add(totalServiceCharge);
-        BigDecimal grandTotalAmount = totalTaxableAmount.add(itemVatAmount);
-        BigDecimal commissionAmount = totalOrderAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
-        BigDecimal systemVatAmount =  commissionAmount.multiply(new BigDecimal(Integer.parseInt(preferences.get("DELIVERY_FEE_VAT")))).divide(new BigDecimal(100));
-        commissionAmount = commissionAmount.add(systemVatAmount);
+        BigDecimal grandTotalAmount = totalTaxableAmount.add(totalVatAmount);
+        commissionAmount = commissionAmount.add(commissionVatAmount);
         BigDecimal netPayableAmount = grandTotalAmount.subtract(commissionAmount);
 
 
@@ -464,7 +467,7 @@ public class InvoiceGenerator {
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), subTotal, PdfUtil.getPhrase(totalOrderAmount.setScale(2, BigDecimal.ROUND_DOWN)));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), serviceCharge, PdfUtil.getPhrase(totalServiceCharge.setScale(2, BigDecimal.ROUND_DOWN)));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), taxableAmount, PdfUtil.getPhrase(totalTaxableAmount.setScale(2, BigDecimal.ROUND_DOWN)));
-        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), vat, PdfUtil.getPhrase(itemVatAmount.setScale(2, BigDecimal.ROUND_DOWN)));
+        PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), vat, PdfUtil.getPhrase(totalVatAmount.setScale(2, BigDecimal.ROUND_DOWN)));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), grandTotal, PdfUtil.getPhrase(grandTotalAmount.setScale(2, BigDecimal.ROUND_DOWN)));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), commission, PdfUtil.getPhrase(commissionAmount.setScale(2, BigDecimal.ROUND_DOWN)));
         PdfUtil.addRow(billingTable, PdfUtil.getPhrase(""), PdfUtil.getPhrase(""), totalPayable, PdfUtil.getPhrase(netPayableAmount.setScale(2, BigDecimal.ROUND_DOWN)));
@@ -484,7 +487,7 @@ public class InvoiceGenerator {
     }
 
 
-    private void addCommissionBody(Document document, MerchantEntity merchant, List<OrderEntity> orders, Map<String, String> preferences) throws Exception {
+    private void addCommissionBody(Document document, List<OrderEntity> orders, Map<String, String> preferences) throws Exception {
 
         PdfPTable commissionTable = new PdfPTable(2);
         commissionTable.setWidthPercentage(100);
@@ -499,20 +502,24 @@ public class InvoiceGenerator {
         String currency = preferences.get("CURRENCY");
         PdfUtil.addRow(commissionTable, PdfUtil.getPhrase("Title", tableHeadFont), PdfUtil.getPhrase("Amount("+currency+")", tableHeadFont));
         BigDecimal totalOrderAmount = BigDecimal.ZERO;
+        BigDecimal commissionAmount = BigDecimal.ZERO;
+        BigDecimal commissionVatAmount = BigDecimal.ZERO;
         for (OrderEntity order: orders){
             totalOrderAmount = totalOrderAmount.add(order.getTotalCost().subtract(order.getDiscountFromStore()));
+            commissionAmount.add(order.getCommissionAmount());
+            for (ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()) {
+                commissionVatAmount.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getCommissionAmount(), BigDecimalUtil.checkNull(itemsOrderEntity.getVat())));
+            }
         }
 
-        BigDecimal commissionAmount = totalOrderAmount.multiply(merchant.getCommissionPercentage()).divide(new BigDecimal(100));
-        BigDecimal vatAmount = commissionAmount.multiply(new BigDecimal(Integer.parseInt(preferences.get("DELIVERY_FEE_VAT")))).divide(new BigDecimal(100));
-        BigDecimal totalAmount = commissionAmount.add(vatAmount);
+        BigDecimal totalAmount = commissionAmount.add(commissionVatAmount);
 
         Phrase commission = PdfUtil.getPhrase("Commission", tableHeadFont);
-        Phrase vat = PdfUtil.getPhrase("VAT("+preferences.get("DELIVERY_FEE_VAT")+"%)", tableHeadFont);
+        Phrase vat = PdfUtil.getPhrase("VAT", tableHeadFont);
         Phrase total = PdfUtil.getPhrase("Total", tableHeadFont);
 
         PdfUtil.addRow(commissionTable, commission, PdfUtil.getPhrase(commissionAmount.setScale(2, BigDecimal.ROUND_DOWN)));
-        PdfUtil.addRow(commissionTable, vat, PdfUtil.getPhrase(vatAmount.setScale(2, BigDecimal.ROUND_DOWN)));
+        PdfUtil.addRow(commissionTable, vat, PdfUtil.getPhrase(commissionVatAmount.setScale(2, BigDecimal.ROUND_DOWN)));
         PdfUtil.addRow(commissionTable, total, PdfUtil.getPhrase(totalAmount.setScale(2, BigDecimal.ROUND_DOWN)));
 
         for (PdfPRow row: commissionTable.getRows()) {

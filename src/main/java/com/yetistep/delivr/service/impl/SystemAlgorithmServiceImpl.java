@@ -132,10 +132,11 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
 
         /* 15. ======= Paid to Courier ====== */
         BigDecimal paidToCourier = ZERO;
-        if (BigDecimalUtil.isGreaterThen(BigDecimalUtil.percentageOf(deliveryCostWithoutAdditionalDvAmt, DBOY_COMMISSION), DBOY_MIN_AMOUNT))
+        if (BigDecimalUtil.isGreaterThen(BigDecimalUtil.percentageOf(deliveryCostWithoutAdditionalDvAmt, DBOY_COMMISSION).add(additionalDeliveryAmt), DBOY_MIN_AMOUNT))
             paidToCourier = BigDecimalUtil.percentageOf(deliveryCostWithoutAdditionalDvAmt, DBOY_COMMISSION).add(additionalDeliveryAmt);
         else
-            paidToCourier = DBOY_MIN_AMOUNT.add(additionalDeliveryAmt);
+            paidToCourier = DBOY_MIN_AMOUNT;
+
         paidToCourier = paidToCourier.setScale(0, BigDecimal.ROUND_DOWN);
         dBoySelection.setPaidToCourier(paidToCourier);
 

@@ -138,7 +138,7 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#open_time').val("07:00:00");
         $('#close_time').val("22:00:00");
 
-        $('#open_time, #close_time').selectpicker({size: 5});
+        $('#open_time, #close_time, #partnership, #vat_status').selectpicker({size: 5});
 
         function updateGeoPoints(showAlert) {
 
@@ -295,6 +295,12 @@ if(typeof(Store) == "undefined") var Store = {};
                         stores_brand.brandImage = $('#brand_image img').attr('data-new') ? $('#brand_image img').attr('src') : undefined;
                         stores_brand.brandUrl = $('#brand_url').val();
                         stores_brand.status = "ACTIVE";
+                        stores_brand.partnershipStatus = $('#partnership').val();
+                        stores_brand.processingCharge = $('#processing_charge').val();
+                        stores_brand.vatNo = $('#vat_no').val();
+                        stores_brand.panNo = $('#pan_no').val();
+                        stores_brand.discountInDeliveryFee = $('#delivery_discount').val();
+                        stores_brand.vatInclusive = $('#vat_status').val();
 
 
                         var categories = $('#store_categories').val();
@@ -331,6 +337,10 @@ if(typeof(Store) == "undefined") var Store = {};
 //        $('#service_distance').rules('add', {required: true, number: true});
         $('#brand_url').rules('add', {url: true});
         $('#store_categories').rules('add', {minSelection: 1});
+        $('#partnership').rules('add', {notEqual: "none"});
+        $('#processing_charge').rules('add', {required: true});
+        $('#delivery_discount').rules('add', {required: true});
+        $('#vat_status').rules('add', {notEqual: "none"});
 
         $('.cancel_marker').live('click', function(){
 

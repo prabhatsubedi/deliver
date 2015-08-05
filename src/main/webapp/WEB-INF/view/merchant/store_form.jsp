@@ -82,6 +82,32 @@
                                             <option value="All">All</option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <select id="partnership" name="partnership" class="partnership col-xs-12 no_pad no_margin" data-style="form-control">
+                                            <option value="none">Select Partnership Status</option>
+                                            <option value="1">Partner</option>
+                                            <option value="0">Non Partner</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="processing_charge" name="processing_charge" placeholder="Processing Charge">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="vat_no" name="vat_no" placeholder="VAT No.">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="pan_no" name="pan_no" placeholder="Pan No.">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="delivery_discount" name="delivery_discount" placeholder="Delivery Fee Discount %">
+                                    </div>
+                                    <div class="form-group">
+                                        <select id="vat_status" name="vat_status" class="col-xs-12 no_pad no_margin" data-style="form-control">
+                                            <option value="none">Select VAT Status</option>
+                                            <option value="1">Inclusive</option>
+                                            <option value="0">Exclusive</option>
+                                        </select>
+                                    </div>
                                 </form>
                             </div>
                         </div>

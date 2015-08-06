@@ -714,7 +714,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.getTransactions = function () {
 
-        var callback = function (status, data) {
+/*        var callback = function (status, data) {
             if (!data.success) {
                 Main.popDialog('', data.message);
                 return;
@@ -757,7 +757,72 @@ if (typeof(Manager) == "undefined") var Manager = {};
         callback.requestType = "POST";
         var headers = {};
         headers.id = cbid;
-        Main.request('/accountant/get_dboy_account', {}, callback, headers);
+        Main.request('/accountant/get_dboy_account', {}, callback, headers);*/
+
+
+        var dataFilter = function (data, type) {
+            if (!data.success) {
+                Main.popDialog('', data.message);
+                return;
+            }
+
+            var responseRows = data.params.payStatement.numberOfRows;
+            var payStatements = data.params.payStatement.data;
+            var unpaid_total = 0;
+
+            var tdata = [];
+
+            if(payStatements.length > 0) {
+
+                for(i = 0; i < payStatements.length; i++) {
+
+                    var payStatement = payStatements[i];
+
+                    if(payStatement.dBoyPaid != false){
+                        var checkBox = '';
+                    }else{
+                        var checkBox = '<input type="checkbox" data-id="'+payStatement.id+'" class="pay_row">';
+                        unpaid_total += payStatement.payableAmount;
+                    }
+
+                    var row = [payStatement.id, payStatement.generatedDate, payStatement.fromDate, payStatement.toDate, Main.getFromLocalStorage('currency') + ' <span class="' + (payStatement.dBoyPaid == false ? "paid_status unpaid_amount" : '') + '">' + payStatement.payableAmount + '</span>', '<a href="' + payStatement.path + '" target="_blank">PDF' + '</a>', payStatement.paidDate == undefined ? '' : payStatement.paidDate, checkBox];
+                    row = $.extend({}, row);
+                    tdata.push(row);
+                    $('.unpaid_total').html(Main.getFromLocalStorage('currency') + " " + unpaid_total.toFixed(2));
+
+                }
+
+            }
+
+            var response = {};
+            response.data = tdata;
+            response.recordsTotal = responseRows;
+            response.recordsFiltered = responseRows;
+
+            return response;
+
+        };
+
+        var headers = {};
+        headers.id = cbid;
+
+        dataFilter.url = "/accountant/get_shoppers_transaction_account";
+        dataFilter.columns = [
+            { "name": "" },
+            { "name": "orderDate" },
+            { "name": "" },
+            { "name": "id" },
+            { "name": "dr" },
+            { "name": "cr" },
+            { "name": "balance" },
+            { "name": "orderStatus" },
+            { "name": "" },
+            { "name": "" }
+        ];
+        dataFilter.order = [[ 3, 'desc' ]];
+        dataFilter.headers = headers;
+
+        Main.createDataTable("#detail_account_table", dataFilter);
 
     };
 

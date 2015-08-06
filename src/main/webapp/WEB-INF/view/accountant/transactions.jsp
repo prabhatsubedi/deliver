@@ -169,16 +169,16 @@
                 <table id="detail_account_table">
                     <thead>
                     <tr>
-                        <th>SN</th>
+                        <th class="no_sort">SN</th>
                         <th><div class="width_120">Date and Time</div></th>
-                        <th><div class="width_200">Description</div></th>
+                        <th class="no_sort"><div class="width_200">Description</div></th>
                         <th>Order ID</th>
                         <th><div class="width_80">DR</div></th>
                         <th><div class="width_80">CR</div></th>
                         <th><div class="width_80">Balance</div></th>
                         <th>Order Status</th>
-                        <th>Remarks</th>
-                        <th>Action</th>
+                        <th class="no_sort">Remarks</th>
+                        <th class="no_sort">Action</th>
                     </tr>
                     </thead>
                     <tbody></tbody>

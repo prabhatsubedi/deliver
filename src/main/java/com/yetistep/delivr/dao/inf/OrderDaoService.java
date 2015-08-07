@@ -8,6 +8,7 @@ import com.yetistep.delivr.model.RatingEntity;
 import com.yetistep.delivr.model.mobile.dto.OrderInfoDto;
 import com.yetistep.delivr.model.mobile.dto.TrackOrderDto;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -77,4 +78,10 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
     public Integer getRefereesDeliveredOrders(List<Integer> refereesFacebookId) throws Exception;
 
     public List<OrderEntity> getShoppersLiveOrders(Integer shopperId) throws Exception;
+
+    public void deleteOrderCancel(Integer orderId) throws Exception;
+
+    public BigDecimal getCurrentOrdersWalletAmount(Integer customerId) throws Exception;
+
+    public BigDecimal getCurrentOrdersCodAmount(Integer customerId) throws Exception;
 }

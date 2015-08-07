@@ -234,6 +234,18 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         }
         dBoyAdvanceAmounts.add(dBoyAdvanceAmount);
         dBoy.setdBoyAdvanceAmounts(dBoyAdvanceAmounts);
+
+        List<CourierTransactionAccountEntity> courierTransactionAccounts = new ArrayList<>();
+        CourierTransactionAccountEntity courierTransactionAccount = new CourierTransactionAccountEntity();
+        courierTransactionAccount.setBalance(dBoy.getAvailableAmount().add(requestJsonDto.getAdvanceAmount()));
+        courierTransactionAccount.setDeliveryBoy(dBoy);
+        courierTransactionAccount.setOrder(null);
+        courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0022"));
+        courierTransactionAccount.setDr(requestJsonDto.getAdvanceAmount());
+        courierTransactionAccount.setDateTime(new Timestamp(System.currentTimeMillis()));
+        courierTransactionAccounts.add(courierTransactionAccount);
+        dBoy.setCourierTransactionAccount(courierTransactionAccounts);
+
         deliveryBoyDaoService.update(dBoy);
 
 
@@ -281,6 +293,19 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         dBoySubmittedAmount.setAdvanceDate(DateUtil.getCurrentTimestampSQL());
         dBoySubmittedAmounts.add(dBoySubmittedAmount);
         dBoy.setdBoyAdvanceAmounts(dBoySubmittedAmounts);
+
+
+        List<CourierTransactionAccountEntity> courierTransactionAccounts = new ArrayList<>();
+        CourierTransactionAccountEntity courierTransactionAccount = new CourierTransactionAccountEntity();
+        courierTransactionAccount.setBalance(dBoy.getAvailableAmount().subtract(requestJsonDto.getSubmittedAmount()));
+        courierTransactionAccount.setDeliveryBoy(dBoy);
+        courierTransactionAccount.setOrder(null);
+        courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0023"));
+        courierTransactionAccount.setCr(requestJsonDto.getSubmittedAmount());
+        courierTransactionAccount.setDateTime(new Timestamp(System.currentTimeMillis()));
+        courierTransactionAccounts.add(courierTransactionAccount);
+        dBoy.setCourierTransactionAccount(courierTransactionAccounts);
+
 
         deliveryBoyDaoService.update(dBoy);
         String fields = "id,availabilityStatus,averageRating,previousDue,availableAmount,bankAmount,walletAmount,advanceAmount,vehicleType,licenseNumber,vehicleNumber,user,latitude,longitude";
@@ -333,6 +358,17 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         dBoySubmittedAmount.setType("acknowledgeAmount");
         dBoySubmittedAmounts.add(dBoySubmittedAmount);
         dBoy.setdBoyAdvanceAmounts(dBoySubmittedAmounts);
+
+        List<CourierTransactionAccountEntity> courierTransactionAccounts = new ArrayList<>();
+        CourierTransactionAccountEntity courierTransactionAccount = new CourierTransactionAccountEntity();
+        courierTransactionAccount.setBalance(dBoy.getAvailableAmount().subtract(requestJsonDto.getSubmittedAmount()));
+        courierTransactionAccount.setDeliveryBoy(dBoy);
+        courierTransactionAccount.setOrder(null);
+        courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0023"));
+        courierTransactionAccount.setCr(requestJsonDto.getSubmittedAmount());
+        courierTransactionAccount.setDateTime(new Timestamp(System.currentTimeMillis()));
+        courierTransactionAccounts.add(courierTransactionAccount);
+        dBoy.setCourierTransactionAccount(courierTransactionAccounts);
 
         deliveryBoyDaoService.update(dBoy);
 
@@ -857,6 +893,17 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         dBoySubmittedAmount.setAdvanceDate(DateUtil.getCurrentTimestampSQL());
         dBoySubmittedAmounts.add(dBoySubmittedAmount);
         dBoy.setdBoyAdvanceAmounts(dBoySubmittedAmounts);
+
+        List<CourierTransactionAccountEntity> courierTransactionAccounts = new ArrayList<>();
+        CourierTransactionAccountEntity courierTransactionAccount = new CourierTransactionAccountEntity();
+        courierTransactionAccount.setBalance(BigDecimal.ZERO);
+        courierTransactionAccount.setDeliveryBoy(dBoy);
+        courierTransactionAccount.setOrder(null);
+        courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0023"));
+        courierTransactionAccount.setCr(dBoy.getAvailableAmount());
+        courierTransactionAccount.setDateTime(new Timestamp(System.currentTimeMillis()));
+        courierTransactionAccounts.add(courierTransactionAccount);
+        dBoy.setCourierTransactionAccount(courierTransactionAccounts);
 
         dBoy.setPreviousDue(new BigDecimal(0));
         dBoy.setAvailableAmount(new BigDecimal(0));

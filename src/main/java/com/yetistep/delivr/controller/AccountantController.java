@@ -296,6 +296,22 @@ public class AccountantController {
         }
     }
 
+    @RequestMapping(value = "/get_shoppers_transaction_account", method = RequestMethod.POST)
+    public ResponseEntity<ServiceResponse> getShoppersTransactionAccount(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            PaginationDto shoppersTransactionAccounts = accountService.getShoppersTransactionAccount(headerDto, requestJsonDto);
+            ServiceResponse serviceResponse = new ServiceResponse("DBoy transactions retrieved successfully");
+            serviceResponse.addParam("shoppersTransactionAccounts", shoppersTransactionAccounts);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while retrieving DBoy transactions: ", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
 
     @RequestMapping(value = "/add_accountant_note", method = RequestMethod.POST)
     public ResponseEntity<ServiceResponse> addAccountantNote(@RequestHeader HttpHeaders headers, @RequestBody RequestJsonDto requestJsonDto) {

@@ -72,6 +72,7 @@ public class OrderEntity implements Serializable {
     private BigDecimal transferred;  //used as transient for dBoy account
     private String accountantNote;
     private BigDecimal storeDeliveryDiscount; //discount in delivery fee from store
+    private BigDecimal cashBackToCustomerAmount;
 
     private OrderCancelEntity orderCancel;
     private CourierTransactionEntity courierTransaction;
@@ -273,7 +274,7 @@ public class OrderEntity implements Serializable {
         this.deliveryCharge = deliveryCharge;
     }
 
-    @Column(name = "commission_amount", precision = 19, scale = 2)
+    @Column(name = "commission_amount")
     public BigDecimal getCommissionAmount() {
         return commissionAmount;
     }
@@ -614,6 +615,15 @@ public class OrderEntity implements Serializable {
 
     public void setStoreDeliveryDiscount(BigDecimal storeDeliveryDiscount) {
         this.storeDeliveryDiscount = storeDeliveryDiscount;
+    }
+
+    @Column(name = "cash_back_to_customer")
+    public BigDecimal getCashBackToCustomerAmount() {
+        return cashBackToCustomerAmount;
+    }
+
+    public void setCashBackToCustomerAmount(BigDecimal cashBackToCustomerAmount) {
+        this.cashBackToCustomerAmount = cashBackToCustomerAmount;
     }
 
     @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )

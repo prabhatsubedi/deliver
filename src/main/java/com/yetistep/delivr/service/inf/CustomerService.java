@@ -90,6 +90,10 @@ public interface CustomerService {
     public void updateRewards() throws Exception;
 
     public void updateReferredCount() throws Exception;
+
+    public void registerCustomerMobile(UserEntity user, HeaderDto headerDto) throws Exception;
+
+    public void orderCanceledToInRouteToDelivery(Integer orderId) throws Exception;
 }
 
 

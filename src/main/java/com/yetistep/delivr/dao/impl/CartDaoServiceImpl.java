@@ -133,6 +133,7 @@ public class CartDaoServiceImpl implements CartDaoService{
                 .add(Projections.property("sb.closingTime"), "storesBrand.closingTime")
                 .add(Projections.property("sb.partnershipStatus"), "storesBrand.partnershipStatus")
                 .add(Projections.property("sb.processingCharge"), "storesBrand.processingCharge")
+                .add(Projections.property("sb.discountInDeliveryFee"), "storesBrand.discountInDeliveryFee")
                 .add(Projections.property("sb.vatInclusive"), "storesBrand.vatInclusive")
                 .add(Projections.property("sb.status"), "storesBrand.status")
                 .add(Projections.property("sb.minOrderAmount"), "storesBrand.minOrderAmount")
@@ -166,6 +167,7 @@ public class CartDaoServiceImpl implements CartDaoService{
                 .add(Projections.property("sb.partnershipStatus"), "storesBrand.partnershipStatus")
                 .add(Projections.property("sb.processingCharge"), "storesBrand.processingCharge")
                 .add(Projections.property("sb.vatInclusive"), "storesBrand.vatInclusive")
+                .add(Projections.property("sb.discountInDeliveryFee"), "storesBrand.discountInDeliveryFee")
                 .add(Projections.property("i.id"), "item.id")
                 .add(Projections.property("i.name"), "item.name")
                 .add(Projections.property("i.unitPrice"), "item.unitPrice")
@@ -174,8 +176,8 @@ public class CartDaoServiceImpl implements CartDaoService{
                 .add(Projections.property("i.status"), "item.status")
                 .add(Projections.property("i.minOrderQuantity"), "item.minOrderQuantity")
                 .add(Projections.property("i.maxOrderQuantity"), "item.maxOrderQuantity")
+                .add(Projections.property("i.commissionPercentage"), "item.commissionPercentage")
                 .add(Projections.property("i.category"), "item.category");
-
 
         Criteria criteria = getCurrentSession().createCriteria(CartEntity.class)
                 .createAlias("storesBrand", "sb")

@@ -970,7 +970,7 @@ public class ClientController extends AbstractManager{
         }
     }
 
-    /*@RequestMapping(value = "/refill_wallet", method = RequestMethod.POST)
+    @RequestMapping(value = "/refill_wallet", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> refillWallet(@RequestHeader HttpHeaders headers, @RequestBody CustomerEntity customer) {
         try{
@@ -985,7 +985,7 @@ public class ClientController extends AbstractManager{
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
-    }*/
+    }
 
     @RequestMapping(value = "/transactions/fbId/{facebookId}", method = RequestMethod.POST)
     @ResponseBody
@@ -1118,5 +1118,23 @@ public class ClientController extends AbstractManager{
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+    @RequestMapping(value = "/order_canceled_to_in_route_to_delivery", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ServiceResponse> orderCanceledToInRouteToDelivery(@RequestHeader HttpHeaders headers) {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID);
+            customerService.orderCanceledToInRouteToDelivery(Integer.parseInt(headerDto.getId()));
+            ServiceResponse serviceResponse = new ServiceResponse("Order Status has been change to in route to delivery successfully");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            GeneralUtil.logError(log, "Error Occurred while changing the order status to in route to delivery", e);
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
 
 }

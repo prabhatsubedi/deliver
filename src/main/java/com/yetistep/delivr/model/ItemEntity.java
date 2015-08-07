@@ -58,6 +58,7 @@ public class ItemEntity implements Serializable {
     private Boolean isCustomItem = Boolean.FALSE; //Transient Value
     private Boolean defaultImage; //Transient Value
     private String editedName;
+    private BigDecimal cashBackAmount;
 
     private CategoryEntity category;
     private StoresBrandEntity storesBrand;
@@ -387,6 +388,15 @@ public class ItemEntity implements Serializable {
 
     public void setCarts(List<CartEntity> carts) {
         this.carts = carts;
+    }
+
+    @Column(name = "cash_back_amount")
+    public BigDecimal getCashBackAmount() {
+        return cashBackAmount;
+    }
+
+    public void setCashBackAmount(BigDecimal cashBackAmount) {
+        this.cashBackAmount = cashBackAmount;
     }
 
     @Transient

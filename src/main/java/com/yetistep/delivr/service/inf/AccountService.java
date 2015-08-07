@@ -44,4 +44,6 @@ public interface AccountService {
 
     public List<OrderEntity> getOrdersAmountTransferred() throws Exception;
 
+    public PaginationDto getShoppersTransactionAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
+
 }

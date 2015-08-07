@@ -67,6 +67,9 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     @Autowired
     DeliveryBoyDaoService deliveryBoyDaoService;
 
+    @Autowired
+    CourierTransactionAccountDaoService courierTransactionAccountDaoService;
+
     @Override
     public String generateInvoice(Integer storeId, String fromDate, String toDate) throws Exception {
         String invoicePath = new String();
@@ -728,7 +731,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                                 OrderEntity cancelledOrder = new OrderEntity();
                                 cancelledOrder.setId(order.getId());
                                 cancelledOrder.setCr(BigDecimal.ZERO);
-                                cancelledOrder.setDescription("Canceled order received-item not purchased, not processed");
+                                cancelledOrder.setDescription("Canceled order item not purchased, not processed");
                                 cancelledOrder.setOrderDate(order.getOrderDate());
                                 cancelledOrder.setPaymentMode(order.getPaymentMode());
                                 balance = balance.subtract(order.getGrandTotal());
@@ -741,7 +744,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
                                 OrderEntity cancelledOrder = new OrderEntity();
                                 cancelledOrder.setId(order.getId());
                                 cancelledOrder.setCr(BigDecimal.ZERO);
-                                cancelledOrder.setDescription("Canceled order received-item not purchased but processed");
+                                cancelledOrder.setDescription("Canceled order item not purchased but processed");
                                 cancelledOrder.setOrderDate(order.getOrderDate());
                                 cancelledOrder.setPaymentMode(order.getPaymentMode());
                                 cancelledOrder.setBalance(balance);
@@ -780,7 +783,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     @Override
     public OrderEntity getOrder(HeaderDto headerDto) throws Exception{
          OrderEntity order = orderDaoService.findOrderById(Integer.parseInt(headerDto.getId()));
-        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,deliveryBoySelections,assignedTime,attachments,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,rating,deliveryCharge,bill,itemsOrder";
+        String fields = "id,orderName,orderStatus,paymentMode,deliveryStatus,orderDate,customer,orderVerificationCode,store,deliveryBoy,deliveryBoySelections,assignedTime,attachments,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,rating,deliveryCharge,bill,itemsOrder";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -909,6 +912,35 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         }
         ordersAmountTransferred.addAll(addedOrderRows);
         return ordersAmountTransferred;
+    }
+
+
+    public PaginationDto getShoppersTransactionAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception{
+        PaginationDto paginationDto = new PaginationDto();
+        Page page = requestJsonDto.getPage();
+        Integer shopperId = Integer.parseInt(headerDto.getId());
+
+        Integer totalRows =  courierTransactionAccountDaoService.getTotalNumberOfRows(shopperId);
+        paginationDto.setNumberOfRows(totalRows);
+
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+        List<CourierTransactionAccountEntity> returnCTA = new ArrayList<>();
+
+        List<CourierTransactionAccountEntity> courierTransactionAccounts = courierTransactionAccountDaoService.findAllCTA(shopperId, page);
+
+        String fields = "id,dateTime,dr,cr,balance,note,description,order";
+        Map<String, String> assoc = new HashMap<>();
+        assoc.put("order", "id,orderName,accountantNote,orderStatus,paymentMode");
+
+        for (CourierTransactionAccountEntity courierTransactionAccount: courierTransactionAccounts){
+            returnCTA.add((CourierTransactionAccountEntity) ReturnJsonUtil.getJsonObject(courierTransactionAccount, fields, assoc));
+        }
+
+        paginationDto.setData(returnCTA);
+        return paginationDto;
+
     }
 
 

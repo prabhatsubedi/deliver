@@ -29,6 +29,10 @@ public class MessageBundle {
         return getMessage(key, "payment.properties");
     }
 
+    public static String getShoppersTransactionDescription(String key) {
+        return getMessage(key, "shoppersTransactionDescription.properties");
+    }
+
     public static String getPushNotificationMsg(String key, String value) {
         String msg = getMessage(key, "push_notification.properties");
         msg = msg +":"+value;

@@ -123,7 +123,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
             customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
 
         /* 14. ====== Customer Pays ========*/
-        BigDecimal customerPays = totalOrder.add(systemProcessingChargeAmount).add(deliveryChargedAfterDiscount).add(order.getItemServiceAndVatCharge());
+        BigDecimal customerPays = totalOrder.subtract(order.getCashBackToCustomerAmount()).add(systemProcessingChargeAmount).add(deliveryChargedAfterDiscount).add(order.getItemServiceAndVatCharge());
         customerPays = customerPays.setScale(2, BigDecimal.ROUND_DOWN);
         order.setGrandTotal(customerPays);
         order.setDeliveryCharge(deliveryChargedAfterDiscount);

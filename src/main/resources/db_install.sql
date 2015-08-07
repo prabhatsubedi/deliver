@@ -286,7 +286,7 @@ CHANGE COLUMN `order_name` `order_name` VARCHAR(255) CHARACTER SET 'utf8' COLLAT
 INSERT INTO `delivr_db`.`id_generator` (`generated_id`) VALUES ('1');
 UPDATE `delivr_db`.`customers` SET customer_type = 0 WHERE customer_type IS NULL;
 
-/*2015-07-10*/
+/*2015-07-10*/     /*after new war uploaded to the live server - execute just once*/
 UPDATE `delivr_db`.`customers` SET invited_friends_count = referred_friends_count;
 /*23-07-2015*/
 ALTER TABLE `delivr_db`.`stores_brands` DROP COLUMN commission_percentage;

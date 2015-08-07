@@ -55,7 +55,7 @@ public class CourierTransactionEntity {
         this.orderTotal = orderTotal;
     }
 
-    @Column(name ="commission_amount", precision = 4, scale = 2)
+    @Column(name ="commission_amount")
     public BigDecimal getCommissionAmount() {
         return commissionAmount;
     }

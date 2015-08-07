@@ -189,4 +189,23 @@ public class AnonController {
     }
 
 
+    @RequestMapping(value = "/register_customer_mobile")
+    public ResponseEntity<ServiceResponse> registerCustomerMobile(@RequestHeader HttpHeaders httpHeaders, @RequestBody UserEntity customer) throws Exception {
+        try {
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(httpHeaders, headerDto, GeneralUtil.ID, GeneralUtil.ACCESS_TOKEN);
+
+            customerService.registerCustomerMobile(customer, headerDto);
+
+            ServiceResponse serviceResponse = new ServiceResponse("You are registered successfully.");
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+
+        } catch (Exception e) {
+            GeneralUtil.logError(log, "Error occurred while doing Sign Up", e);
+            HttpHeaders headers = ServiceResponse.generateRuntimeErrors(e);
+            return new ResponseEntity<ServiceResponse>(headers, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+
 }

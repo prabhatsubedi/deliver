@@ -705,6 +705,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         BigDecimal merchantTax = BigDecimal.ZERO;
         BigDecimal itemServiceCharge = BigDecimal.ZERO;
         BigDecimal itemVatCharge = BigDecimal.ZERO;
+        BigDecimal cashBackAmountTotal = BigDecimal.ZERO;
         for(CartEntity cart : carts){
             if(cart.getItem() != null){
                 ItemEntity item = merchantDaoService.getItemDetail(cart.getItem().getId());
@@ -714,6 +715,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
                 BigDecimal total = BigDecimalUtil.calculateCost(cart.getOrderQuantity(), item.getUnitPrice(), attributePrice);
 
+                cashBackAmountTotal = cashBackAmountTotal.add(BigDecimalUtil.checkNull(item.getCashBackAmount()).multiply(new BigDecimal(cart.getOrderQuantity())));
+
                 BigDecimal itemTax = BigDecimal.ZERO;
 
                 if(item.getServiceCharge()!=null && BigDecimalUtil.isGreaterThenZero(item.getServiceCharge())){
@@ -721,9 +724,11 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                     itemServiceCharge = itemServiceCharge.add(itemTax);
                 }
 
-                if(item.getVat()!=null && BigDecimalUtil.isGreaterThenZero(item.getVat())){
-                    itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
-                    itemTax = itemTax.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
+                if(!item.getStoresBrand().getVatInclusive())  {
+                    if(item.getVat()!=null && BigDecimalUtil.isGreaterThenZero(item.getVat())){
+                        itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
+                        itemTax = itemTax.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
+                    }
                 }
 
                 merchantTax = merchantTax.add(itemTax);
@@ -876,7 +881,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         if(cartCustomItems.size()>0){
             checkOutDto.setEstimatedAmount(minusOne);
         }   else {
-            BigDecimal estimatedAmt = subTotal.add(merchantTax).add(serviceFeeAmt).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
+            BigDecimal estimatedAmt = subTotal.subtract(cashBackAmountTotal).add(merchantTax).add(serviceFeeAmt).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
             checkOutDto.setEstimatedAmount(estimatedAmt.setScale(2, BigDecimal.ROUND_DOWN));
         }
         checkOutDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
@@ -1062,6 +1067,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         BigDecimal itemServiceCharge = BigDecimal.ZERO;
         BigDecimal itemVatCharge = BigDecimal.ZERO;
         BigDecimal totalCommissionAmount = BigDecimal.ZERO;
+        BigDecimal cashBackAmountTotal = BigDecimal.ZERO;
 
 
         List<CartEntity> cartEntities = cartDaoService.getMyCartsWithCategories(customerId);
@@ -1072,7 +1078,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
         List<Integer> cartIds = new ArrayList<Integer>();
         List<ItemsOrderEntity> itemsOrder = new ArrayList<ItemsOrderEntity>();
-        Integer brandId = null;
+        Integer brandId = cartEntities.get(0).getStoresBrand().getId();
         StoresBrandEntity storesBrand = cartEntities.get(0).getStoresBrand();
         for (CartEntity cart : cartEntities) {
             ItemsOrderEntity itemsOrderEntity = new ItemsOrderEntity();
@@ -1122,13 +1128,16 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 BigDecimal attributePrice = cartAttributesDaoService.findAttributesPrice(cart.getId());
                 itemPrice = BigDecimalUtil.calculateCost(cart.getOrderQuantity(), cart.getItem().getUnitPrice(), attributePrice);
 
+                BigDecimal cashBackAmount = BigDecimalUtil.checkNull(cart.getItem().getCashBackAmount()).multiply(new BigDecimal(cart.getOrderQuantity()));
+                cashBackAmountTotal = cashBackAmountTotal.add(cashBackAmount);
+
                 BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemPrice, BigDecimalUtil.checkNull(cart.getItem().getServiceCharge()));
                 BigDecimal commissionAmount = BigDecimalUtil.percentageOf(itemPrice, BigDecimalUtil.checkNull(cart.getItem().getCommissionPercentage()));
                 itemsOrderEntity.setCommissionAmount(commissionAmount);
                 totalCommissionAmount =  totalCommissionAmount.add(commissionAmount);
 
                 BigDecimal serviceAndVatCharge;
-                if(!cart.getStoresBrand().getVatInclusive())
+                if(cart.getStoresBrand().getVatInclusive() == null || !cart.getStoresBrand().getVatInclusive())
                     serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), BigDecimalUtil.checkNull(cart.getItem().getVat())));
                 else
                     serviceAndVatCharge = serviceCharge;
@@ -1165,7 +1174,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         if(storesBrand.getPartnershipStatus() != null)
             order.setPartnershipStatus(storesBrand.getPartnershipStatus());
         else
-            throw new YSException("VLD042");
+            throw new YSException("V1VLD042");
 
         Boolean isOpen = DateUtil.isTimeBetweenTwoTime(storesBrand.getOpeningTime().toString(), storesBrand.getClosingTime().toString(),DateUtil.getCurrentTime().toString());
         if(!isOpen){
@@ -1179,8 +1188,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         order.setItemServiceAndVatCharge(itemServiceAndVatCharge.setScale(2, BigDecimal.ROUND_DOWN));
         order.setItemServiceCharge(itemServiceCharge.setScale(2, BigDecimal.ROUND_DOWN));
         order.setItemVatCharge(itemVatCharge.setScale(2, BigDecimal.ROUND_DOWN));
-        order.setCommissionAmount(totalCommissionAmount);
-
+        order.setCommissionAmount(totalCommissionAmount.setScale(2, BigDecimal.ROUND_DOWN));
+        order.setCashBackToCustomerAmount(cashBackAmountTotal);
         /* Listing Active stores of a store brand and finding shortest store */
         List<StoreEntity> stores = merchantDaoService.findActiveStoresByBrand(brandId);
         if(stores.size() == 0){
@@ -1191,6 +1200,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         if(BigDecimalUtil.isGreaterThen(order.getCustomerChargeableDistance(), maxDistance)){
             throw new YSException("VLD036");
         }
+        store.setStoresBrand(storesBrand);
         order.setStore(store);
         order.setOrderName(store.getName() + " to " + order.getAddress().getStreet());
         order.setOrderVerificationCode(GeneralUtil.generateMobileCode());
@@ -1219,36 +1229,51 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
         order.setPaymentMode(paymentMode);
         if(paymentMode.equals(PaymentMode.WALLET)){
-            if(BigDecimalUtil.isLessThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+            BigDecimal currentOrdersWalletAmount = orderDaoService.getCurrentOrdersWalletAmount(order.getCustomer().getId());
+            if(BigDecimalUtil.isGreaterThenOrEqualTo(currentOrdersWalletAmount, order.getCustomer().getWalletAmount()))
+                throw new YSException("ORD020");
+
+            BigDecimal totalWalletAmount = currentOrdersWalletAmount.add(order.getGrandTotal());
+            if(BigDecimalUtil.isLessThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()), totalWalletAmount)){
                 throw new YSException("ORD020");
             }
             order.setPaidFromWallet(order.getGrandTotal());
             order.setPaidFromCOD(BigDecimal.ZERO);
-            order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(order.getGrandTotal()));
+            //order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(order.getGrandTotal()));
 
             /*Setting data for wallet transaction entity*/
-            List<WalletTransactionEntity> walletTransactionEntities = new ArrayList<WalletTransactionEntity>();
-            WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
-            walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
-            walletTransactionEntity.setAccountType(AccountType.DEBIT);
-            String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
-            String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
-            walletTransactionEntity.setRemarks(String.format(remarks, currency, order.getGrandTotal(), order.getStore().getName()));
-            walletTransactionEntity.setTransactionAmount(order.getGrandTotal());
-            walletTransactionEntity.setOrder(order);
-            walletTransactionEntity.setCustomer(order.getCustomer());
-            walletTransactionEntity.setPaymentMode(PaymentMode.WALLET);
-            walletTransactionEntity.setAvailableWalletAmount(order.getCustomer().getWalletAmount());
-            systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
-            walletTransactionEntities.add(walletTransactionEntity);
-            order.setWalletTransactions(walletTransactionEntities);
+            //setWalletTransaction(order);
         }else{
-            if(BigDecimalUtil.isLessThen(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)), order.getGrandTotal())) {
-                //Max order amount reached
+            BigDecimal currentOrdersCodAmount = orderDaoService.getCurrentOrdersCodAmount(order.getCustomer().getId());
+            if(BigDecimalUtil.isGreaterThen(currentOrdersCodAmount.add(order.getGrandTotal()), new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)))))
                 throw new YSException("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
+            BigDecimal currentOrdersWalletAmount = orderDaoService.getCurrentOrdersWalletAmount(order.getCustomer().getId());
+            if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()).subtract(currentOrdersWalletAmount),order.getGrandTotal())){
+                order.setPaidFromWallet(order.getGrandTotal());
+                order.setPaidFromCOD(BigDecimal.ZERO);
+                //order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(order.getGrandTotal()));
+                //setWalletTransaction(order);
+            } else if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()).subtract(currentOrdersWalletAmount), BigDecimal.ZERO)){
+                     BigDecimal paidFromWallet = order.getCustomer().getWalletAmount();
+                     BigDecimal paidFromCOD = order.getGrandTotal().subtract(order.getCustomer().getWalletAmount());
+                    if(BigDecimalUtil.isLessThen(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)), paidFromCOD.add(currentOrdersCodAmount))) {
+                        //Max order amount reached
+                        throw new YSException("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
+                    }
+
+                    order.setPaidFromWallet(paidFromWallet);
+                    order.setPaidFromCOD(paidFromCOD);
+                    //order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(paidFromWallet));
+                    //setWalletTransaction(order);
+            } else {
+                if(BigDecimalUtil.isLessThen(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)), order.getGrandTotal().add(currentOrdersCodAmount))) {
+                    //Max order amount reached
+                    throw new YSException("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
+                }
+                order.setPaidFromWallet(BigDecimal.ZERO);
+                order.setPaidFromCOD(order.getGrandTotal());
             }
-            order.setPaidFromWallet(BigDecimal.ZERO);
-            order.setPaidFromCOD(order.getGrandTotal());
+
         }
 
         order.setShortFallAmount(BigDecimal.ZERO);
@@ -1275,6 +1300,24 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 //        Integer timeOut = timeInSeconds.intValue();
 //        scheduleChanger.scheduleTask(DateUtil.findDelayDifference(DateUtil.getCurrentTimestampSQL(), timeOut));
     }
+
+    /*private void setWalletTransaction(OrderEntity order) throws Exception{
+        List<WalletTransactionEntity> walletTransactionEntities = new ArrayList<WalletTransactionEntity>();
+        WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
+        walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+        walletTransactionEntity.setAccountType(AccountType.DEBIT);
+        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+        String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
+        walletTransactionEntity.setRemarks(String.format(remarks, currency, order.getGrandTotal(), order.getStore().getName()));
+        walletTransactionEntity.setTransactionAmount(order.getPaidFromWallet());
+        walletTransactionEntity.setOrder(order);
+        walletTransactionEntity.setCustomer(order.getCustomer());
+        walletTransactionEntity.setPaymentMode(order.getPaymentMode());
+        walletTransactionEntity.setAvailableWalletAmount(order.getCustomer().getWalletAmount());
+        systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
+        walletTransactionEntities.add(walletTransactionEntity);
+        order.setWalletTransactions(walletTransactionEntities);
+    }*/
 
     private  List<Integer> getIdOfDeliveryBoys(List<DeliveryBoySelectionEntity> deliveryBoySelectionEntities){
         List<Integer> idList = new ArrayList<Integer>();
@@ -1470,7 +1513,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         return surgeFactor;
     }
 
-    /* Used For Only Manager and Account Registration */
+    @Override
     public void registerCustomer(UserEntity user, HeaderDto headerDto) throws Exception{
 
         RoleEntity userRole = userDaoService.getRoleByRole(user.getRole().getRole());
@@ -1478,10 +1521,18 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
         CustomerEntity referrer = customerDaoService.find(Long.parseLong(headerDto.getId()));
 
+        CustomerEntity cUser = customerDaoService.find(user.getCustomer().getFacebookId());
+        if(cUser != null)
+            throw new YSException("VLD010");
+
         if(referrer == null)
             throw new YSException("VLD011");
 
         Integer invited_friends_count = referrer.getInvitedFriendsCount();
+
+        if(!referrer.getDefault() && invited_friends_count != null && invited_friends_count >= Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.MAX_REFERRED_FRIENDS_COUNT)))
+            throw new YSException("VLD021");
+
         if(invited_friends_count == null){
             invited_friends_count = 1;
         }else{
@@ -1490,16 +1541,51 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         referrer.setInvitedFriendsCount(invited_friends_count);
         referrer.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
         customerDaoService.update(referrer);
-        CustomerEntity cUser = customerDaoService.find(user.getCustomer().getFacebookId());
-        if(cUser != null)
-            throw new YSException("VLD010");
-
-        if(!referrer.getDefault() && referrer.getInvitedFriendsCount() != null && referrer.getInvitedFriendsCount() >= Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.MAX_REFERRED_FRIENDS_COUNT)))
-            throw new YSException("VLD021");
-
         user.getCustomer().setReferredBy(Long.parseLong(headerDto.getId()));
         user.getCustomer().setDefault(false);
         user.getCustomer().setFbToken(headerDto.getAccessToken());
+        user.getCustomer().setUser(user);
+        user.setCreatedDate(DateUtil.getCurrentTimestampSQL());
+        userDaoService.save(user);
+    }
+
+    @Override
+    public void registerCustomerMobile(UserEntity user, HeaderDto headerDto) throws Exception {
+
+        RoleEntity userRole = userDaoService.getRoleByRole(user.getRole().getRole());
+        user.setRole(userRole);
+
+        CustomerEntity referrer = customerDaoService.find(Long.parseLong(headerDto.getId()));
+        if(referrer == null)
+            throw new YSException("VLD011");
+
+        UserEntity userEntity = userDaoService.getUserByMobileNumber(user.getMobileNumber(), Role.ROLE_CUSTOMER.toInt());
+
+        if(userEntity != null)
+            throw new YSException("VLD010");
+
+        Integer invited_friends_count = referrer.getInvitedFriendsCount();
+
+        if(!referrer.getDefault() && invited_friends_count != null && invited_friends_count >= Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.MAX_REFERRED_FRIENDS_COUNT)))
+            throw new YSException("VLD021");
+
+        if(invited_friends_count == null){
+            invited_friends_count = 1;
+        }else{
+            invited_friends_count++;
+        }
+
+        referrer.setInvitedFriendsCount(invited_friends_count);
+        referrer.getUser().setLastActivityDate(DateUtil.getCurrentTimestampSQL());
+        customerDaoService.update(referrer);
+
+        CustomerEntity customer = new CustomerEntity();
+        IDGeneratorEntity idGeneratorEntity = idGeneratorDaoService.find(1);
+        customer.setFacebookId(idGeneratorEntity.getGeneratedId());
+        user.setCustomer(customer);
+
+        user.getCustomer().setReferredBy(Long.parseLong(headerDto.getId()));
+        user.getCustomer().setDefault(false);
         user.getCustomer().setUser(user);
         user.setCreatedDate(DateUtil.getCurrentTimestampSQL());
         userDaoService.save(user);
@@ -2171,20 +2257,20 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         order.setOrderStatus(JobOrderStatus.CANCELLED);
         order.setDeliveryStatus(DeliveryStatus.CANCELLED);
         BigDecimal customerWalletAmount = order.getCustomer().getWalletAmount();
-        if(order.getPaymentMode().equals(PaymentMode.WALLET)){
+        if(BigDecimalUtil.isGreaterThen(order.getPaidFromWallet(),BigDecimal.ZERO)){
             String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
             BigDecimal paidFromWallet = order.getPaidFromWallet();
             customerWalletAmount = customerWalletAmount.add(paidFromWallet);
 
             String remarks = MessageBundle.getMessage("WTM002", "push_notification.properties");
             remarks = String.format(remarks, currency, paidFromWallet, order.getId());
-            this.setWalletTransaction(order, paidFromWallet, AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
+            this.setWalletTransaction(order, paidFromWallet, AccountType.CREDIT, order.getPaymentMode(), remarks, customerWalletAmount);
             order.getCustomer().setWalletAmount(customerWalletAmount);
             order.setPaidFromWallet(BigDecimal.ZERO);
         }
         boolean status = orderDaoService.update(order);
         if(status){
-            if(order.getPaymentMode().equals(PaymentMode.WALLET))
+            if(BigDecimalUtil.isGreaterThen(order.getPaidFromWallet(),BigDecimal.ZERO))
                 adjustWalletBalanceForPendingOrders(customerWalletAmount, order.getCustomer().getId());
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN007", "push_notification.properties");
@@ -2249,7 +2335,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         walletTransactionEntity.setTransactionAmount(amount);
         walletTransactionEntity.setOrder(order);
         walletTransactionEntity.setCustomer(order.getCustomer());
-        walletTransactionEntity.setPaymentMode(paymentMode);
+        walletTransactionEntity.setPaymentMode(order.getPaymentMode());
         walletTransactionEntity.setAvailableWalletAmount(BigDecimalUtil.checkNull(availableAmount));
         systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
         walletTransactionEntities.add(walletTransactionEntity);
@@ -2575,6 +2661,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
     @Override
     public void updateReferredCount() throws Exception {
+        log.info("Updating referred count");
         List<CustomerEntity> allCustomers = customerDaoService.getBalanceHolderCustomer();
         for (CustomerEntity customer: allCustomers){
             List<CustomerEntity> referees =  customerDaoService.getReferralsAllReferees(customer.getFacebookId());
@@ -2586,6 +2673,60 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             customer.setReferredFriendsCount(refereesDeliveredOrders);
             customerDaoService.update(customer);
         }
+    }
+
+    @Override
+    public void orderCanceledToInRouteToDelivery(Integer orderId) throws Exception {
+          OrderEntity order = orderDaoService.find(orderId);
+          if(!order.getOrderStatus().equals(JobOrderStatus.CANCELLED)){
+              throw new YSException("ORD017");
+          }
+
+          List<ItemsOrderEntity> itemsOrders = order.getItemsOrder();
+          Boolean itemPurchased = false;
+          for (ItemsOrderEntity itemsOrder: itemsOrders){
+              if (itemsOrder.getPurchaseStatus()){
+                  itemPurchased = true;
+                  break;
+              }
+          }
+
+        if(!itemPurchased)
+              throw new YSException("V1VLD043");
+
+        orderDaoService.deleteOrderCancel(orderId);
+
+        order.setOrderStatus(JobOrderStatus.AT_STORE);
+        order.setDeliveryStatus(DeliveryStatus.PENDING);
+        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+        BigDecimal customerWalletAmount = order.getCustomer().getWalletAmount();
+        customerWalletAmount = customerWalletAmount.add(order.getGrandTotal());
+
+        String remarks = MessageBundle.getMessage("WTM012", "push_notification.properties");
+        remarks = String.format(remarks, currency, order.getGrandTotal(), order.getId());
+        this.setWalletTransaction(order, order.getGrandTotal(), AccountType.CREDIT, order.getPaymentMode(), remarks, customerWalletAmount);
+
+        boolean status = orderDaoService.update(order);
+        if(status){
+            adjustWalletBalanceForPendingOrders(customerWalletAmount, order.getCustomer().getId());
+
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String message = MessageBundle.getMessage("CPN007", "push_notification.properties");
+            String extraDetail = order.getId().toString()+"/status/"+order.getOrderStatus().toString();
+            PushNotificationUtil.sendPushNotification(userDevice, message, NotifyTo.CUSTOMER, PushNotificationRedirect.ORDER, extraDetail);
+
+            List<String> deviceTokens = userDeviceDaoService.getDeviceTokensOfAssignedDeliveryBoy(order.getId());
+            if(deviceTokens.size() > 0){
+                PushNotification pushNotification = new PushNotification();
+                pushNotification.setTokens(deviceTokens);
+                pushNotification.setMessage(MessageBundle.getPushNotificationMsg("PN005"));
+                pushNotification.setPushNotificationRedirect(PushNotificationRedirect.ORDER);
+                pushNotification.setExtraDetail(order.getId().toString()+"/status/"+JobOrderStatus.AT_STORE.toString());
+                pushNotification.setNotifyTo(NotifyTo.DELIVERY_BOY);
+                PushNotificationUtil.sendNotificationToAndroidDevice(pushNotification);
+            }
+        }
+
     }
 
 

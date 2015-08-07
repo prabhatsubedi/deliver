@@ -496,4 +496,41 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         return ((Number) query.uniqueResult()).intValue();
     }
 
+    @Override
+    public void deleteOrderCancel(Integer orderId) throws Exception {
+        String sql = "delete from order_cancel where order_id =:orderId";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("orderId", orderId);
+        query.executeUpdate();
+    }
+
+    @Override
+    public BigDecimal getCurrentOrdersWalletAmount(Integer customerId) throws Exception {
+        List<Integer> jobOrderStatusList = new ArrayList<Integer>();
+        jobOrderStatusList.add(JobOrderStatus.ORDER_PLACED.ordinal());
+        jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
+        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
+        jobOrderStatusList.add(JobOrderStatus.AT_STORE.ordinal());
+        String sql = "SELECT SUM(paid_from_wallet) FROM orders WHERE order_status IN(:jobOrderStatusList)";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameterList("jobOrderStatusList", jobOrderStatusList);
+        return new BigDecimal(((Number) query.uniqueResult()).intValue());
+
+    }
+
+    @Override
+    public BigDecimal getCurrentOrdersCodAmount(Integer customerId) throws Exception {
+        List<Integer> jobOrderStatusList = new ArrayList<Integer>();
+        jobOrderStatusList.add(JobOrderStatus.ORDER_PLACED.ordinal());
+        jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
+        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
+        jobOrderStatusList.add(JobOrderStatus.AT_STORE.ordinal());
+        String sql = "SELECT SUM(paid_from_wallet) FROM orders WHERE order_status IN(:jobOrderStatusList)";
+        SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameterList("jobOrderStatusList", jobOrderStatusList);
+        return new BigDecimal(((Number) query.uniqueResult()).intValue());
+
+    }
+
+
 }

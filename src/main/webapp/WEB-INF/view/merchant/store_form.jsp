@@ -85,8 +85,8 @@
                                     <div class="form-group">
                                         <select id="partnership" name="partnership" class="partnership col-xs-12 no_pad no_margin" data-style="form-control">
                                             <option value="none">Select Partnership Status</option>
-                                            <option value="1">Partner</option>
-                                            <option value="0">Non Partner</option>
+                                            <option value="true">Partner</option>
+                                            <option value="false">Non Partner</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -104,8 +104,8 @@
                                     <div class="form-group">
                                         <select id="vat_status" name="vat_status" class="col-xs-12 no_pad no_margin" data-style="form-control">
                                             <option value="none">Select VAT Status</option>
-                                            <option value="1">Inclusive</option>
-                                            <option value="0">Exclusive</option>
+                                            <option value="true">Inclusive</option>
+                                            <option value="false">Exclusive</option>
                                         </select>
                                     </div>
                                     <div class="form-group">

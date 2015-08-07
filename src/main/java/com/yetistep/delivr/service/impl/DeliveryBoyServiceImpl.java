@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -991,6 +992,20 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         order.setDeliveryStatus(DeliveryStatus.SUCCESSFUL);
         order.setOrderStatus(JobOrderStatus.DELIVERED);
         order.setOrderVerificationStatus(true);
+        /*if(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_CHARGING_MODEL).equals("Flat Charge")) {
+            if(order.getStore().getStoresBrand().getDeliveryFee() == null)
+                throw new Exception("V1VLD044");
+            BigDecimal totalOrder = order.getTotalCost().setScale(2, RoundingMode.HALF_UP);
+            totalOrder = totalOrder.subtract(BigDecimalUtil.checkNull(order.getDiscountFromStore()));
+            BigDecimal dfl = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_LIMIT));
+            if(BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
+                order.setDeliveryCharge(BigDecimal.ZERO);
+            }  else {
+                BigDecimal deliveryFee = order.getStore().getStoresBrand().getDeliveryFee();
+                deliveryFee =  deliveryFee.add(BigDecimalUtil.percentageOf(deliveryFee, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
+                order.setDeliveryCharge(deliveryFee.multiply(new BigDecimal(order.getSurgeFactor())));
+            }
+        }*/
 
         List<DBoyOrderHistoryEntity> orderHistoryEntities = order.getdBoyOrderHistories();
         for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: orderHistoryEntities){
@@ -998,19 +1013,25 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 dBoyOrderHistoryEntity.setOrderCompletedAt(DateUtil.getCurrentTimestampSQL());
                 dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.SUCCESSFUL);
                 dBoyOrderHistoryEntity.setDistanceTravelled(order.getCustomerChargeableDistance().add(order.getSystemChargeableDistance()));
-                Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), order.getOrderDate().getTime());
-                Integer GRACE_TIME = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DBOY_GRESS_TIME));
-                Integer totalTime = minuteDiff.intValue() + GRACE_TIME;
-                int remainingTime = order.getRemainingTime();
-                BigDecimal deliveryCost = order.getCourierTransaction().getPaidToCourier();
-                if(remainingTime < totalTime) {
-                    BigDecimal deductionPercent = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEDUCTION_PERCENT));
-                    BigDecimal deductAmount = BigDecimalUtil.percentageOf(deliveryCost, deductionPercent);
-                    deliveryCost = deliveryCost.subtract(deductAmount);
-                    order.getCourierTransaction().setPaidToCourier(deliveryCost);
-                    order.getCourierTransaction().setProfit(order.getCourierTransaction().getProfit().add(deductAmount));
+                if(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_CHARGING_MODEL).equals("Distance Based")) {
+                    Double minuteDiff = DateUtil.getMinDiff(System.currentTimeMillis(), order.getOrderDate().getTime());
+                    Integer GRACE_TIME = Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.DBOY_GRESS_TIME));
+                    Integer totalTime = minuteDiff.intValue() + GRACE_TIME;
+                    int remainingTime = order.getRemainingTime();
+                    BigDecimal deliveryCost = order.getCourierTransaction().getPaidToCourier();
+                    if(remainingTime < totalTime) {
+                        BigDecimal deductionPercent = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEDUCTION_PERCENT));
+                        BigDecimal deductAmount = BigDecimalUtil.percentageOf(deliveryCost, deductionPercent);
+                        deliveryCost = deliveryCost.subtract(deductAmount);
+                        order.getCourierTransaction().setPaidToCourier(deliveryCost);
+                        order.getCourierTransaction().setProfit(order.getCourierTransaction().getProfit().add(deductAmount));
+                    }
+                    dBoyOrderHistoryEntity.setAmountEarned(deliveryCost);
+                } else {
+                    BigDecimal shoppersEarning = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.SHOPPERS_EARNING_IN_FLAT_MODEL)).multiply(new BigDecimal(order.getSurgeFactor()));
+                    order.getCourierTransaction().setPaidToCourier(shoppersEarning);
+                    dBoyOrderHistoryEntity.setAmountEarned(shoppersEarning);
                 }
-                dBoyOrderHistoryEntity.setAmountEarned(deliveryCost);
                 break;
             }
         }
@@ -1638,9 +1659,11 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                     dBoyOrderHistoryEntity.setDeliveryStatus(DeliveryStatus.CANCELLED);
                     dBoyOrderHistoryEntity.setOrderCompletedAt(DateUtil.getCurrentTimestampSQL());
                     /* Calculates the distance travelled by a delivery boy and his earning to that specific order. */
-                    BigDecimal paidToCourier = this.getCourierBoyEarningAtAnyStage(dBoyOrderHistoryEntity, orderEntity.getOrderStatus());
-                    orderEntity.getCourierTransaction().setPaidToCourier(paidToCourier);
-                    orderEntity.getDeliveryBoy().setTotalEarnings(orderEntity.getDeliveryBoy().getTotalEarnings().add(paidToCourier));
+                    if(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_CHARGING_MODEL).equals("Distance Based")){
+                        BigDecimal paidToCourier = this.getCourierBoyEarningAtAnyStage(dBoyOrderHistoryEntity, orderEntity.getOrderStatus());
+                        orderEntity.getCourierTransaction().setPaidToCourier(paidToCourier);
+                        orderEntity.getDeliveryBoy().setTotalEarnings(orderEntity.getDeliveryBoy().getTotalEarnings().add(paidToCourier));
+                    }
                     if(BigDecimalUtil.isGreaterThen(orderEntity.getGrandTotal(), BigDecimal.ZERO)){
                         if (orderEntity.getOrderStatus().equals(JobOrderStatus.AT_STORE)) {
                             boolean partnerShipStatus = orderEntity.getPartnershipStatus();//merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());
@@ -1717,7 +1740,23 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         BigDecimal paidFromWallet = orderEntity.getPaidFromWallet();
         BigDecimal paidFromCOD = orderEntity.getPaidFromCOD();
         String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
-        if (orderStatus.equals(JobOrderStatus.ORDER_ACCEPTED) && BigDecimalUtil.isGreaterThen(orderEntity.getPaidFromWallet(), BigDecimal.ZERO)) {
+
+        if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)){
+            String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
+            remarks = String.format(remarks, currency, orderEntity.getGrandTotal(), orderEntity.getStore().getName());
+            this.setWalletTransaction(orderEntity, orderEntity.getGrandTotal(), AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount.subtract(orderEntity.getGrandTotal()));
+
+            paidFromWallet = orderEntity.getGrandTotal();
+            customerWalletAmount = customerWalletAmount.subtract(orderEntity.getGrandTotal());
+            paidFromCOD = BigDecimal.ZERO;
+        }
+
+        orderEntity.setPaidFromCOD(paidFromCOD);
+        orderEntity.setPaidFromWallet(paidFromWallet);
+        orderEntity.getCustomer().setWalletAmount(customerWalletAmount);
+
+
+        /*if (orderStatus.equals(JobOrderStatus.ORDER_ACCEPTED) && BigDecimalUtil.isGreaterThen(orderEntity.getPaidFromWallet(), BigDecimal.ZERO)) {
             log.info("ORDER ACCEPTED STAGE: No Change in item price before cancelling for order ID:" + orderEntity.getId());
             customerWalletAmount = customerWalletAmount.add(paidFromWallet);
             String remarks = MessageBundle.getMessage("WTM012", "push_notification.properties");
@@ -1764,7 +1803,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 log.info("Change in item price before cancelling for order ID:" + orderEntity.getId());
                 if (BigDecimalUtil.isGreaterThen(paidFromCOD, BigDecimal.ZERO)) {
                     paidFromWallet = orderEntity.getGrandTotal();
-                    /* Adjusting balance for shortfall amount for this order */
+                    *//* Adjusting balance for shortfall amount for this order *//*
                     if(BigDecimalUtil.isGreaterThenOrEqualTo(customerWalletAmount, paidFromCOD)){
                        customerWalletAmount = customerWalletAmount.subtract(paidFromCOD);
                        String remarks = MessageBundle.getMessage("WTM008", "push_notification.properties");
@@ -1800,7 +1839,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 log.info("Change in item price before cancelling for order ID:" + orderEntity.getId());
                 if (BigDecimalUtil.isGreaterThen(paidFromCOD, BigDecimal.ZERO)) {
                     paidFromWallet = orderEntity.getGrandTotal();
-                    /* Adjusting balance for shortfall amount for this order */
+                    *//* Adjusting balance for shortfall amount for this order *//*
                     if(BigDecimalUtil.isGreaterThenOrEqualTo(customerWalletAmount, paidFromCOD)){
                         customerWalletAmount = customerWalletAmount.subtract(paidFromCOD);
                         String remarks = MessageBundle.getMessage("WTM008", "push_notification.properties");
@@ -1830,7 +1869,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }
         orderEntity.setPaidFromCOD(paidFromCOD);
         orderEntity.setPaidFromWallet(paidFromWallet);
-        orderEntity.getCustomer().setWalletAmount(customerWalletAmount);
+        orderEntity.getCustomer().setWalletAmount(customerWalletAmount);*/
     }
 
     private BigDecimal getCourierBoyEarningAtAnyStage(DBoyOrderHistoryEntity dBoyOrderHistory, JobOrderStatus orderStatus) throws Exception {

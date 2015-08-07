@@ -90,8 +90,11 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
             deliveryCostWithoutAdditionalDvAmt = defaultCharge.add(extraDistance.multiply(DBOY_PER_KM_CHARGE_ABOVE_NKM).multiply(new BigDecimal(surgeFactor)));
         }
 
-        /* 10. ======= Service fee Amount with VAT =========== */
+        /* 10. ======= Processing fee Amount with VAT =========== */
         BigDecimal systemProcessingChargeAmount = BigDecimalUtil.percentageOf(totalOrder, systemProcessingChargePct);
+        BigDecimal capOnProcessingCharge = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CAP_ON_PROCESSING_CHARGE));
+        if(BigDecimalUtil.isGreaterThen(systemProcessingChargeAmount, capOnProcessingCharge))
+            systemProcessingChargeAmount = capOnProcessingCharge;
         systemProcessingChargeAmount = systemProcessingChargeAmount.add(BigDecimalUtil.percentageOf(systemProcessingChargeAmount, DELIVERY_FEE_VAT));
 
         /* 11. ====== Delivery cost  with VAT and with Discount from system ======== */
@@ -126,7 +129,24 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         BigDecimal customerPays = totalOrder.subtract(order.getCashBackToCustomerAmount()).add(systemProcessingChargeAmount).add(deliveryChargedAfterDiscount).add(order.getItemServiceAndVatCharge());
         customerPays = customerPays.setScale(2, BigDecimal.ROUND_DOWN);
         order.setGrandTotal(customerPays);
-        order.setDeliveryCharge(deliveryChargedAfterDiscount);
+        BigDecimal dfl = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_LIMIT));
+        if(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_CHARGING_MODEL).equals("Distance Based") )  {
+            if(BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
+                order.setDeliveryCharge(BigDecimal.ZERO);
+            }  else {
+                order.setDeliveryCharge(deliveryChargedAfterDiscount);
+            }
+        }else{
+            if(order.getStore().getStoresBrand().getDeliveryFee() == null)
+                throw new Exception("V1VLD044");
+            if(BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
+                order.setDeliveryCharge(BigDecimal.ZERO);
+            }  else {
+                BigDecimal deliveryFee = order.getStore().getStoresBrand().getDeliveryFee();
+                deliveryFee =  deliveryFee.add(BigDecimalUtil.percentageOf(deliveryFee, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
+                order.setDeliveryCharge(deliveryFee.multiply(new BigDecimal(order.getSurgeFactor())));
+            }
+        }
         order.setSystemServiceCharge(systemProcessingChargeAmount);
         order.setStoreDeliveryDiscount(discountInDeliveryFeeFromStore);
 

@@ -99,6 +99,9 @@
                                         <input type="text" class="form-control" id="pan_no" name="pan_no" placeholder="Pan No.">
                                     </div>
                                     <div class="form-group">
+                                        <input type="text" class="form-control" id="delivery_fee" name="delivery_fee" placeholder="Delivery Fee">
+                                    </div>
+                                    <div class="form-group">
                                         <input type="text" class="form-control" id="delivery_discount" name="delivery_discount" placeholder="Delivery Fee Discount %">
                                     </div>
                                     <div class="form-group">

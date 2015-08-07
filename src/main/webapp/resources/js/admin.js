@@ -43,6 +43,8 @@ var Admin = function() {
                         var prefTitle = pref.prefTitle;
                         if(prefKey == 'ENABLE_FREE_REGISTER') {
                             var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'Disable', 1: 'Enable'});
+                        } else if(prefKey == 'DELIVERY_FEE_CHARGING_MODEL') {
+                            var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {'Flat Charge': 'Flat Charge', 'Distance Based': 'Distance Based'});
                         } else if(prefKey == 'PROFIT_CHECK_FLAG') {
                             var elem = Admin.prepSelect(prefTitle, prefKey, prefValue, {0: 'No', 1: 'Yes'});
                         } else if(prefKey == 'AIR_OR_ACTUAL_DISTANCE_SWITCH') {

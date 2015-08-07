@@ -386,6 +386,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             dbStoresBrand.setPanNo(storesBrand.getPanNo());
         if(storesBrand.getVatInclusive() != null)
             dbStoresBrand.setVatInclusive(storesBrand.getVatInclusive());
+        if(storesBrand.getDefaultCommissionPcn() != null)
+            dbStoresBrand.setDefaultCommissionPcn(storesBrand.getDefaultCommissionPcn());
 
         List<BrandsCategoryEntity> dbBrandsCategories = dbStoresBrand.getBrandsCategory();
         Map<Integer, Integer> brandCategoriesIdList = new HashMap<Integer, Integer>();
@@ -767,7 +769,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception {
         log.info("++++++++++++ getting brand detail +++++++++++++++");
         StoresBrandEntity storesBrandEntity =  merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
-        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,partnershipStatus,processingCharge,discountInDeliveryFee,vatNo,panNo,vatInclusive";
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,partnershipStatus,processingCharge,discountInDeliveryFee,defaultCommissionPcn,vatNo,panNo,vatInclusive";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -913,7 +915,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         dbItem.setServiceCharge(item.getServiceCharge());
         if(dbItem.getCommissionPercentage() != null)
             dbItem.setCommissionPercentage(item.getCommissionPercentage());
-        dbItem.setUnitPrice(item.getUnitPrice());
+        if(dbItem.getCashBackAmount() != null)
+        dbItem.setCashBackAmount(item.getCashBackAmount());
         dbItem.setTags(item.getTags());
         dbItem.setModifiedDate(DateUtil.getCurrentTimestampSQL());
 
@@ -1314,7 +1317,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }
         item.setCategory(category);
 
-        String fields = "id,name,description,availableQuantity,availableStartTime,availableEndTime,maxOrderQuantity,minOrderQuantity,unitPrice,tags,currencyType,additionalOffer,status,vat,serviceCharge,deliveryFee,commissionPercentage,itemsImage,itemsStores,attributesTypes,category,storesBrand";
+        String fields = "id,name,description,availableQuantity,availableStartTime,availableEndTime,maxOrderQuantity,minOrderQuantity,unitPrice,tags,currencyType,additionalOffer,status,vat,serviceCharge,deliveryFee,commissionPercentage,cashBackAmount,itemsImage,itemsStores,attributesTypes,category,storesBrand";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

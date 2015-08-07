@@ -215,6 +215,18 @@
                                                 <input type="text" class="form-control" id="service_charge" name="service_charge" value="0">
                                             </div>
                                         </div>
+                                        <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label" for="commission">Commission %</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="commission" name="commission" value="0">
+                                            </div>
+                                        </div>
+                                        <div class="form-group clearfix">
+                                            <label class="col-lg-4 floated_label" for="cashback">Cashback Amount</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="cashback" name="cashback" value="0">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form_head">Pricing & Attributes</div>

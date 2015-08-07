@@ -65,7 +65,8 @@
 
                         var callback = function(success, data){
                             Main.popDialog('', data.message);
-                            Manager.getStatements();
+                            if(data.success)
+                                Manager.fillDboyAccount(data.params.deliveryBoy);
                             return;
                         }
 
@@ -84,6 +85,32 @@
                     Main.popDialog('', "Are you sure you want to pay the statement(s)", buttons);
 
                 }
+            });
+
+            $("#btn_clear").click(function(){
+
+                var button1 = function() {
+
+                    var callback = function(success, data){
+                        Main.popDialog('', data.message);
+                        Manager.getStatements();
+                        return;
+                    }
+
+                    callback.loaderDiv = "body";
+                    callback.requestType = "GET";
+                    var header = {};
+                    header.id = Main.getURLvalue(2);
+
+                    Main.request('/accountant/clear_dboy_account', {}, callback, header);
+                };
+
+                button1.text = "Yes";
+                var button2 = "No";
+
+                var buttons = [button1, button2];
+                Main.popDialog('', "Are you sure you want to clear account?", buttons);
+
             });
         });
     </script>
@@ -157,7 +184,7 @@
                             <th>6</th>
                             <td>Advance Amount</td>
                             <td class="advance_amount form_container"><input type="text" id="advance_amount_val" class="form-control"></td>
-                            <td></td>
+                            <td><button type="button" id="btn_clear" class="btn btn_green">Clear Account</button></td>
                         </tr>
                         </tbody>
                     </table>

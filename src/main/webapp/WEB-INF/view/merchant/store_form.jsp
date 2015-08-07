@@ -108,6 +108,9 @@
                                             <option value="0">Exclusive</option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="default_commission" name="default_commission" placeholder="Default Commission %">
+                                    </div>
                                 </form>
                             </div>
                         </div>

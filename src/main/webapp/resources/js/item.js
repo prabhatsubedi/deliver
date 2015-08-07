@@ -640,6 +640,8 @@ function toggleSwitch(value, elem) {
                     item.vat = $('#vat').val();
                     item.serviceCharge = $('#service_charge').val();
                     item.status = "ACTIVE";
+                    item.commissionPercentage = $('#commission').val();
+                    item.cashBackAmount = $('#cashback').val();
 
                     /*                $('#category_container select.category_options').each(function(){
                      var cat_key = $('option:selected', this).attr('data-new') == "true" ? "name" : "id";
@@ -748,6 +750,8 @@ function toggleSwitch(value, elem) {
         $('#service_charge').rules('add', {required: true, number: true, min: 0, max: 100});
         $('#price').rules('add', {required: true, number: true, min: 0});
         $('#new_category').rules('add', {required: true});
+        $('#commission').rules('add', {required: true, number: true, min: 0, max: 100});
+        $('#cashback').rules('add', {required: true, number: true, min: 0});
 
         $('select').live('change', function(){
             $(this).siblings('.bootstrap-select').children('.form-control').removeClass('error');

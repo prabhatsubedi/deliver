@@ -714,12 +714,15 @@ if (typeof(Manager) == "undefined") var Manager = {};
 
     Manager.getTransactions = function () {
 
-/*        var callback = function (status, data) {
+        var dataFilter = function (data, type) {
             if (!data.success) {
                 Main.popDialog('', data.message);
                 return;
             }
-            var advanceAmounts = data.params.advanceAmounts.data;
+
+            var responseRows = data.params.shoppersTransactionAccounts.numberOfRows;
+            var advanceAmounts = data.params.shoppersTransactionAccounts.data;
+
             var tdata = [];
 
             if(advanceAmounts.length > 0) {
@@ -727,7 +730,7 @@ if (typeof(Manager) == "undefined") var Manager = {};
                 for(i = 0; i < advanceAmounts.length; i++) {
 
                     var advanceAmount = advanceAmounts[i];
-                    var orderDate = advanceAmount.orderDate == undefined ? "" : advanceAmount.orderDate;
+                    var orderDate = advanceAmount.dateTime == undefined ? "" : advanceAmount.dateTime;
                     var description = advanceAmount.description == undefined ? "" : advanceAmount.description;
                     var id = advanceAmount.id == undefined ? "" : advanceAmount.id;
                     var dr = advanceAmount.dr == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.dr;
@@ -744,54 +747,11 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     orderStatus = _orderStatus.join(" ");
                     var accountantNote = advanceAmount.accountantNote == undefined ? "" : advanceAmount.accountantNote;
                     var action = '<a data-id="' + advanceAmount.id + '" data-mode="' + (advanceAmount.paymentMode == undefined ? "advanceAmount" : "order" ) + '" href="#" class="btn_add_note">Add Note</a>';
-                    var row = [i + 1, orderDate, description, id, dr, cr, balance, orderStatus, accountantNote, action];
+                    var row = [id, orderDate, description, '', dr, cr, balance, orderStatus, accountantNote, action];
                     tdata.push(row);
 
                 }
                 Main.createNDataTable("#detail_account_table", tdata, 0, 'desc');
-            }
-
-        };
-
-        callback.loaderDiv = "body";
-        callback.requestType = "POST";
-        var headers = {};
-        headers.id = cbid;
-        Main.request('/accountant/get_dboy_account', {}, callback, headers);*/
-
-
-        var dataFilter = function (data, type) {
-            if (!data.success) {
-                Main.popDialog('', data.message);
-                return;
-            }
-
-            var responseRows = data.params.payStatement.numberOfRows;
-            var payStatements = data.params.payStatement.data;
-            var unpaid_total = 0;
-
-            var tdata = [];
-
-            if(payStatements.length > 0) {
-
-                for(i = 0; i < payStatements.length; i++) {
-
-                    var payStatement = payStatements[i];
-
-                    if(payStatement.dBoyPaid != false){
-                        var checkBox = '';
-                    }else{
-                        var checkBox = '<input type="checkbox" data-id="'+payStatement.id+'" class="pay_row">';
-                        unpaid_total += payStatement.payableAmount;
-                    }
-
-                    var row = [payStatement.id, payStatement.generatedDate, payStatement.fromDate, payStatement.toDate, Main.getFromLocalStorage('currency') + ' <span class="' + (payStatement.dBoyPaid == false ? "paid_status unpaid_amount" : '') + '">' + payStatement.payableAmount + '</span>', '<a href="' + payStatement.path + '" target="_blank">PDF' + '</a>', payStatement.paidDate == undefined ? '' : payStatement.paidDate, checkBox];
-                    row = $.extend({}, row);
-                    tdata.push(row);
-                    $('.unpaid_total').html(Main.getFromLocalStorage('currency') + " " + unpaid_total.toFixed(2));
-
-                }
-
             }
 
             var response = {};
@@ -819,7 +779,6 @@ if (typeof(Manager) == "undefined") var Manager = {};
             { "name": "" },
             { "name": "" }
         ];
-        dataFilter.order = [[ 3, 'desc' ]];
         dataFilter.headers = headers;
 
         Main.createDataTable("#detail_account_table", dataFilter);

@@ -301,6 +301,7 @@ if(typeof(Store) == "undefined") var Store = {};
                         stores_brand.panNo = $('#pan_no').val();
                         stores_brand.discountInDeliveryFee = $('#delivery_discount').val();
                         stores_brand.vatInclusive = $('#vat_status').val();
+                        stores_brand.defaultCommissionPcn = $('#default_commission').val();
 
 
                         var categories = $('#store_categories').val();
@@ -338,9 +339,10 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#brand_url').rules('add', {url: true});
         $('#store_categories').rules('add', {minSelection: 1});
         $('#partnership').rules('add', {notEqual: "none"});
-        $('#processing_charge').rules('add', {required: true});
-        $('#delivery_discount').rules('add', {required: true});
+        $('#processing_charge').rules('add', {required: true, number: true, min: 0});
+        $('#delivery_discount').rules('add', {required: true, number: true, min: 0, max: 100});
         $('#vat_status').rules('add', {notEqual: "none"});
+        $('#default_commission').rules('add', {required: true, number: true, min: 0, max: 100});
 
         $('.cancel_marker').live('click', function(){
 

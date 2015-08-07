@@ -388,6 +388,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             dbStoresBrand.setVatInclusive(storesBrand.getVatInclusive());
         if(storesBrand.getDefaultCommissionPcn() != null)
             dbStoresBrand.setDefaultCommissionPcn(storesBrand.getDefaultCommissionPcn());
+        if(storesBrand.getDeliveryFee() != null)
+            dbStoresBrand.setDeliveryFee(storesBrand.getDeliveryFee());
+
 
         List<BrandsCategoryEntity> dbBrandsCategories = dbStoresBrand.getBrandsCategory();
         Map<Integer, Integer> brandCategoriesIdList = new HashMap<Integer, Integer>();
@@ -769,7 +772,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception {
         log.info("++++++++++++ getting brand detail +++++++++++++++");
         StoresBrandEntity storesBrandEntity =  merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
-        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,partnershipStatus,processingCharge,discountInDeliveryFee,defaultCommissionPcn,vatNo,panNo,vatInclusive";
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,partnershipStatus,processingCharge,discountInDeliveryFee,deliveryFee,defaultCommissionPcn,vatNo,panNo,vatInclusive";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

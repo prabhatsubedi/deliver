@@ -96,6 +96,7 @@ public enum PreferenceType {
     DBOY_GRESS_TIME,                //Grace Time for Order Delivery given to Shopper in Min
     PROFIT_CHECK_FLAG,              //Check Profit = 1(Yes), Don't Check Profit = 2 (No)
     LOCATION_UPDATE_TIMEOUT_IN_MIN,
+    LIVE_ORDER_COUNT_FOR_SHOPPER,
 
     /* Profit And Commission Configuration */
     RESERVED_COMM_PER_BY_SYSTEM,
@@ -103,6 +104,9 @@ public enum PreferenceType {
     DBOY_MIN_AMOUNT,                //Minimum Amount Given to Shopper
     MINIMUM_PROFIT_PERCENTAGE,      //Minimum Profit Percentage for Order Acceptance
     DEDUCTION_PERCENT,              //Deduction in case of Delayed Delivery from Shopper Earning
-    DISCOUNT_ON_DELIVERY_FEE
+    DISCOUNT_ON_DELIVERY_FEE,       //
+    DELIVERY_FEE_LIMIT,
+    CAP_ON_PROCESSING_CHARGE,
+    DELIVERY_FEE_CHARGING_MODEL
 
 }

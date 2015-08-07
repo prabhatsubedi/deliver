@@ -585,7 +585,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 }
                 deliveryBoySelectionEntity.setAccepted(true);
                 DeliveryBoyEntity deliveryBoyEntity = deliveryBoySelectionEntity.getDeliveryBoy();
-                if(deliveryBoyEntity.getActiveOrderNo() >= 3){
+                if(deliveryBoyEntity.getActiveOrderNo() >= Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.LIVE_ORDER_COUNT_FOR_SHOPPER))){
                     shopperId = null;
                     throw new YSException("DBY003");
                 }

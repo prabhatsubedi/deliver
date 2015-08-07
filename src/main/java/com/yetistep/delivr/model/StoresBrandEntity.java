@@ -50,6 +50,7 @@ public class StoresBrandEntity implements Serializable {
    private Boolean partnershipStatus;  // partnership status of merchant for the brand
    private BigDecimal discountInDeliveryFee;
    private BigDecimal defaultCommissionPcn;
+   private BigDecimal deliveryFee;
     //Transient Variable
    private Boolean openStatus;
    private Integer merchantId; //Transient Variable
@@ -247,6 +248,15 @@ public class StoresBrandEntity implements Serializable {
 
     public void setDefaultCommissionPcn(BigDecimal defaultCommissionPcn) {
         this.defaultCommissionPcn = defaultCommissionPcn;
+    }
+
+    @Column(name = "delivery_fee")
+    public BigDecimal getDeliveryFee() {
+        return deliveryFee;
+    }
+
+    public void setDeliveryFee(BigDecimal deliveryFee) {
+        this.deliveryFee = deliveryFee;
     }
 
     @Transient

@@ -301,3 +301,12 @@ UPDATE stores_brands sb LEFT JOIN merchants m ON sb.merchant_id = m.id SET sb.pa
 UPDATE stores_brands sb LEFT JOIN merchants m ON sb.merchant_id = m.id SET sb.processing_charge = m.service_fee;
 UPDATE items it LEFT JOIN stores_brands sb ON it.brand_id = sb.id LEFT JOIN merchants m ON sb.merchant_id = m.id SET it.commission_percentage = m.commission_percentage;
 
+
+/*2015-08-07*/
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('LIVE_ORDER_COUNT_FOR_SHOPPER', '3', '10', 'Live Order Count For Shopper ');
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('DELIVERY_FEE_LIMIT', '1000', '11', 'Delivery Fee Limit');
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('CAP_ON_PROCESSING_CHARGE', '100', '11', 'Cap On Processing Charge');
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('DELIVERY_FEE_CHARGING_MODEL', 'Flat Charge', '11', 'Delivery Fee Charging Model');
+
+
+

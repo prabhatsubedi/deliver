@@ -876,7 +876,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         walletTransactionEntity.setAccountType(AccountType.DEBIT);
         String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
         String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
-        walletTransactionEntity.setRemarks(String.format(remarks, currency, order.getGrandTotal(), order.getStore().getName()));
+        walletTransactionEntity.setRemarks(String.format(remarks, currency, order.getPaidFromWallet(), order.getStore().getName()));
         walletTransactionEntity.setTransactionAmount(order.getPaidFromWallet());
         walletTransactionEntity.setOrder(order);
         walletTransactionEntity.setCustomer(order.getCustomer());
@@ -884,6 +884,22 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         walletTransactionEntity.setAvailableWalletAmount(order.getCustomer().getWalletAmount());
         systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
         walletTransactionEntities.add(walletTransactionEntity);
+        if(order.getCashBackToCustomerAmount() != null && BigDecimalUtil.isGreaterThen(order.getCashBackToCustomerAmount(), BigDecimal.ZERO)){
+            order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().add(order.getCashBackToCustomerAmount()));
+            WalletTransactionEntity walletTransactionCashBackEntity = new WalletTransactionEntity();
+            walletTransactionCashBackEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+            walletTransactionCashBackEntity.setAccountType(AccountType.DEBIT);
+            String remarkCashBack = MessageBundle.getMessage("WTM013", "push_notification.properties");
+            walletTransactionCashBackEntity.setRemarks(String.format(remarkCashBack, currency, order.getCashBackToCustomerAmount(), order.getId()));
+            walletTransactionCashBackEntity.setTransactionAmount(order.getCashBackToCustomerAmount());
+            walletTransactionCashBackEntity.setOrder(order);
+            walletTransactionCashBackEntity.setCustomer(order.getCustomer());
+            walletTransactionCashBackEntity.setPaymentMode(order.getPaymentMode());
+            walletTransactionCashBackEntity.setAvailableWalletAmount(order.getCustomer().getWalletAmount());
+            systemAlgorithmService.encodeWalletTransaction(walletTransactionCashBackEntity);
+            walletTransactionEntities.add(walletTransactionCashBackEntity);
+        }
+
         order.setWalletTransactions(walletTransactionEntities);
 
         boolean status = orderDaoService.update(order);

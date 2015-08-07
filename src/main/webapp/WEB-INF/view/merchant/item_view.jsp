@@ -115,6 +115,14 @@
                                                 <div class="sub_label pull-left">Service Charge</div>
                                                 <div class="sub_value pull-left service_charge"></div>
                                             </div>
+                                            <div class="clearfix">
+                                                <div class="sub_label pull-left">Commission %</div>
+                                                <div class="sub_value pull-left commission"></div>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="sub_label pull-left">Cashback Amount</div>
+                                                <div class="sub_value pull-left cashback"></div>
+                                            </div>
                                         </div>
                                     </div>
 

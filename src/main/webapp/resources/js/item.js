@@ -176,6 +176,8 @@ function toggleSwitch(value, elem) {
                         $('#max_order').val(item.maxOrderQuantity);
                         $('#vat').val(item.vat);
                         $('#service_charge').val(item.serviceCharge);
+                        $('#commission').val(item.commissionPercentage);
+                        $('#cashback').val(item.cashBackAmount);
                         $('#price').val(item.unitPrice);
 
                         var attributes_types = "";
@@ -1416,6 +1418,8 @@ function toggleSwitch(value, elem) {
                 $('.item_info .order_quantity').html("Min " + item.minOrderQuantity + " - Max " + item.maxOrderQuantity);
                 $('.item_info .vat').html((item.vat == undefined ? 0 : item.vat) + " %");
                 $('.item_info .service_charge').html((item.serviceCharge == undefined ? 0 : item.serviceCharge) + " %");
+                $('.item_info .commission').html((item.commissionPercentage == undefined ? 0 : item.commissionPercentage) + " %");
+                $('.item_info .cashback').html(item.cashBackAmount == undefined ? 0 : item.cashBackAmount);
 
                 var attributes_types = "";
                 if(attributesTypes.length > 0) {

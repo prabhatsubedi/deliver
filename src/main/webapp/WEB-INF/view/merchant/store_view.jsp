@@ -83,6 +83,46 @@
                                     </div>
 
                                     <div class="detail_row">
+                                        <label class="detail_label">Partnership Status</label>
+                                        <div class="detail_value partnership"></div>
+                                    </div>
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Processing Charge</label>
+                                        <div class="detail_value processing_charge"></div>
+                                    </div>
+
+                                    <div class="detail_row vat_show hidden">
+                                        <label class="detail_label">VAT No.</label>
+                                        <div class="detail_value vat_no"></div>
+                                    </div>
+
+                                    <div class="detail_row pan_show hidden">
+                                        <label class="detail_label">PAN No.</label>
+                                        <div class="detail_value pan_no"></div>
+                                    </div>
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Delivery Fee</label>
+                                        <div class="detail_value delivery_fee"></div>
+                                    </div>
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Delivery Fee Discount %</label>
+                                        <div class="detail_value delivery_discount"></div>
+                                    </div>
+
+                                    <div class="detail_row vat_show hidden">
+                                        <label class="detail_label">VAT Status</label>
+                                        <div class="detail_value vat_status"></div>
+                                    </div>
+
+                                    <div class="detail_row">
+                                        <label class="detail_label">Default Commission %</label>
+                                        <div class="detail_value default_commission"></div>
+                                    </div>
+
+                                    <div class="detail_row">
                                         <div class="clearfix">
                                             <label class="detail_label pull-left">Store Location</label>
                                             <div class="detail_options pull-right">

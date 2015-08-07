@@ -104,7 +104,7 @@
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="delivery_discount" name="delivery_discount" placeholder="Delivery Fee Discount %">
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group vat_show hidden">
                                         <select id="vat_status" name="vat_status" class="col-xs-12 no_pad no_margin" data-style="form-control">
                                             <option value="none">Select VAT Status</option>
                                             <option value="true">Inclusive</option>

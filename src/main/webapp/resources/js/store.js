@@ -22,6 +22,15 @@ if(typeof(Store) == "undefined") var Store = {};
             $('.check_span', this).removeClass("icon_semi");
         });
 
+        $('#vat_no').keyup(function(){
+            $('#pan_no').val('');
+            $('.vat_show').removeClass('hidden');
+        });
+        $('#pan_no').keyup(function(){
+            $('#vat_no').val('');
+            $('.vat_show').addClass('hidden');
+        });
+
         form_submit = false;
 
         var action = Main.getURLvalue(3);
@@ -393,6 +402,21 @@ if(typeof(Store) == "undefined") var Store = {};
                         $('#close_time').val(storeBrand.closingTime);
                         $('#close_time').selectpicker('refresh');
                         $('#brand_url').val(storeBrand.brandUrl);
+                        $('#partnership').val(storeBrand.partnershipStatus + '');
+                        $('#partnership').selectpicker('refresh');
+                        $('#processing_charge').val(storeBrand.processingCharge);
+                        $('#vat_no').val(storeBrand.vatNo);
+                        $('#pan_no').val(storeBrand.panNo);
+                        $('#delivery_fee').val(storeBrand.deliveryFee);
+                        $('#delivery_discount').val(storeBrand.discountInDeliveryFee);
+                        $('#vat_status').val(storeBrand.vatInclusive + '');
+                        $('#vat_status').selectpicker('refresh');
+                        $('#default_commission').val(storeBrand.defaultCommissionPcn);
+
+
+                        if(storeBrand.panNo == undefined || storeBrand.panNo == "") {
+                            $('.vat_show').removeClass('hidden');
+                        }
 
                         var cat_callback = function (status, data) {
 
@@ -719,6 +743,20 @@ if(typeof(Store) == "undefined") var Store = {};
                 document.title = storeBrand.brandName;
                 $('.open_time').html(storeBrand.openingTime + ' - ' + storeBrand.closingTime);
                 $('.min_amount').html(storeBrand.minOrderAmount == undefined ? 0 : storeBrand.minOrderAmount);
+                $('.partnership').html(storeBrand.partnershipStatus == undefined ? "Non Partner" : (storeBrand.partnershipStatus ? 'Partner' : 'Non Partner'));
+                $('.processing_charge').html(storeBrand.processingCharge == undefined ? "0" : storeBrand.processingCharge);
+                $('.vat_no').html(storeBrand.vatNo == undefined ? "" : storeBrand.vatNo);
+                $('.pan_no').html(storeBrand.panNo == undefined ? "" : storeBrand.panNo);
+                $('.delivery_fee').html(storeBrand.deliveryFee == undefined ? "0" : storeBrand.deliveryFee);
+                $('.delivery_discount').html((storeBrand.discountInDeliveryFee == undefined ? "0" : storeBrand.discountInDeliveryFee) + " %");
+                $('.vat_status').html(storeBrand.vatInclusive == undefined ? "Excluded" : (storeBrand.vatInclusive ? 'Included' : 'Excluded'));
+                $('.default_commission').html((storeBrand.defaultCommissionPcn == undefined ? "0" : storeBrand.defaultCommissionPcn)  + " %");
+
+                if(storeBrand.vatNo != undefined && storeBrand.vatNo != "")
+                    $('.vat_show').removeClass('hidden');
+                else if(storeBrand.panNo != undefined && storeBrand.panNo != "")
+                    $('.pan_show').removeClass('hidden');
+
 
                 var store_location = '';
                 var stores = storeBrand.store;

@@ -1742,13 +1742,15 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
 
         if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)){
-            String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
-            remarks = String.format(remarks, currency, orderEntity.getGrandTotal(), orderEntity.getStore().getName());
-            this.setWalletTransaction(orderEntity, orderEntity.getGrandTotal(), AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount.subtract(orderEntity.getGrandTotal()));
+            if(BigDecimalUtil.isGreaterThen(orderEntity.getPaidFromCOD(), BigDecimal.ZERO)){
+                String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
+                remarks = String.format(remarks, currency, orderEntity.getGrandTotal(), orderEntity.getStore().getName());
+                this.setWalletTransaction(orderEntity, orderEntity.getPaidFromCOD(), AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount.subtract(orderEntity.getPaidFromCOD()));
 
-            paidFromWallet = orderEntity.getGrandTotal();
-            customerWalletAmount = customerWalletAmount.subtract(orderEntity.getGrandTotal());
-            paidFromCOD = BigDecimal.ZERO;
+                paidFromWallet = orderEntity.getGrandTotal();
+                customerWalletAmount = customerWalletAmount.subtract(orderEntity.getPaidFromCOD());
+                paidFromCOD = BigDecimal.ZERO;
+            }
         }
 
         orderEntity.setPaidFromCOD(paidFromCOD);

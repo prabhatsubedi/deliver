@@ -8,6 +8,7 @@ import com.yetistep.delivr.model.WalletTransactionEntity;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.BigDecimalUtil;
+import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -138,7 +139,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
             }
         }else{
             if(order.getStore().getStoresBrand().getDeliveryFee() == null)
-                throw new Exception("V1VLD044");
+                throw new YSException("V1VLD044");
             if(BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
                 order.setDeliveryCharge(BigDecimal.ZERO);
             }  else {

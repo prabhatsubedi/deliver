@@ -2357,6 +2357,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 //do wallet transaction for the difference
                 BigDecimal newPaidFromWallet = o.getPaidFromWallet().subtract(prevPaidFromWallet);
                 if(BigDecimalUtil.isGreaterThenZero(newPaidFromWallet))  {
+                    log.info("wallet transaction of amount "+newPaidFromWallet);
                     o.getCustomer().setWalletAmount(o.getCustomer().getWalletAmount());
                     List<WalletTransactionEntity> walletTransactionEntities = new ArrayList<WalletTransactionEntity>();
                     WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
@@ -2373,7 +2374,6 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                     walletTransactionEntities.add(walletTransactionEntity);
                     o.setWalletTransactions(walletTransactionEntities);
                 }
-
                 orderDaoService.update(o);
             }else
                 break;

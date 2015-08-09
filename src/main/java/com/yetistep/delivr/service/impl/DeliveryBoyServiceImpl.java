@@ -895,7 +895,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             walletTransactionEntity.setTransactionAmount(order.getPaidFromWallet());
             walletTransactionEntity.setOrder(order);
             walletTransactionEntity.setCustomer(order.getCustomer());
-            walletTransactionEntity.setPaymentMode(order.getPaymentMode());
+            walletTransactionEntity.setPaymentMode(PaymentMode.CASH_ON_DELIVERY);
             walletTransactionEntity.setAvailableWalletAmount(order.getCustomer().getWalletAmount());
             systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
             walletTransactionEntities.add(walletTransactionEntity);
@@ -1049,12 +1049,48 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         CustomerEntity customerEntity = order.getCustomer();
         customerEntity.setTotalOrderDelivered(GeneralUtil.ifNullToZero(customerEntity.getTotalOrderDelivered())+1);
         /*List<OrderEntity> customersOrders = orderDaoService.getCustomersOrders(order.getCustomer().getId());*/
+
+        //calculate paidFromCod and paid from wallet
+        /*BigDecimal prevCodAmount = order.getPaidFromCOD();
+        //BigDecimal prevWalletAmount = order.getPaidFromWallet();
+        if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+            order.setPaidFromWallet(order.getGrandTotal());
+            order.setPaidFromCOD(BigDecimal.ZERO);
+        } else if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()), BigDecimal.ZERO)){
+            BigDecimal paidFromWallet = order.getCustomer().getWalletAmount();
+            BigDecimal paidFromCOD = order.getGrandTotal().subtract(paidFromWallet);
+            order.setPaidFromWallet(paidFromWallet);
+            order.setPaidFromCOD(paidFromCOD);
+        } else {
+            order.setPaidFromWallet(BigDecimal.ZERO);
+            order.setPaidFromCOD(order.getGrandTotal());
+        }*/
+
         if(BigDecimalUtil.isGreaterThenZero(order.getPaidFromCOD())){
             String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
             String remarks = MessageBundle.getMessage("TRN001", "push_notification.properties");
             remarks = String.format(remarks, currency, order.getPaidFromCOD(), order.getId());
             setWalletTransaction(order, order.getPaidFromCOD(), AccountType.DEBIT, PaymentMode.CASH_ON_DELIVERY, remarks, order.getCustomer().getWalletAmount());
         }
+
+        /* Wallet Integration */
+        /*BigDecimal changeInWalletAmount = prevCodAmount.subtract(order.getPaidFromCOD());
+        if(BigDecimalUtil.isGreaterThenZero(changeInWalletAmount))  {
+            order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(changeInWalletAmount));
+            WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
+            walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+            walletTransactionEntity.setAccountType(AccountType.DEBIT);
+            String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+            String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
+            walletTransactionEntity.setRemarks(String.format(remarks, currency, changeInWalletAmount, order.getStore().getName()));
+            walletTransactionEntity.setTransactionAmount(changeInWalletAmount);
+            walletTransactionEntity.setOrder(order);
+            walletTransactionEntity.setCustomer(order.getCustomer());
+            walletTransactionEntity.setPaymentMode(order.getPaymentMode());
+            walletTransactionEntity.setAvailableWalletAmount(order.getCustomer().getWalletAmount());
+            systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
+            order.getWalletTransactions().add(walletTransactionEntity);
+        }*/
 
         // refill cashback amount to customer wallet and notify customer
         if(order.getCashBackToCustomerAmount() != null && BigDecimalUtil.isGreaterThenZero(order.getCashBackToCustomerAmount())){
@@ -1068,7 +1104,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             walletTransactionCashBackEntity.setTransactionAmount(order.getCashBackToCustomerAmount());
             walletTransactionCashBackEntity.setOrder(order);
             walletTransactionCashBackEntity.setCustomer(order.getCustomer());
-            walletTransactionCashBackEntity.setPaymentMode(order.getPaymentMode());
+            walletTransactionCashBackEntity.setPaymentMode(PaymentMode.WALLET);
             walletTransactionCashBackEntity.setAvailableWalletAmount(order.getCustomer().getWalletAmount());
             systemAlgorithmService.encodeWalletTransaction(walletTransactionCashBackEntity);
             order.getWalletTransactions().add(walletTransactionCashBackEntity);

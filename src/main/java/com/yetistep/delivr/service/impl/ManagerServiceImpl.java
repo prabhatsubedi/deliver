@@ -237,7 +237,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
         List<CourierTransactionAccountEntity> courierTransactionAccounts = new ArrayList<>();
         CourierTransactionAccountEntity courierTransactionAccount = new CourierTransactionAccountEntity();
-        courierTransactionAccount.setBalance(dBoy.getAvailableAmount().add(requestJsonDto.getAdvanceAmount()));
+        courierTransactionAccount.setBalance(dBoy.getAvailableAmount());
         courierTransactionAccount.setDeliveryBoy(dBoy);
         courierTransactionAccount.setOrder(null);
         courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0022"));
@@ -297,7 +297,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
         List<CourierTransactionAccountEntity> courierTransactionAccounts = new ArrayList<>();
         CourierTransactionAccountEntity courierTransactionAccount = new CourierTransactionAccountEntity();
-        courierTransactionAccount.setBalance(dBoy.getAvailableAmount().subtract(requestJsonDto.getSubmittedAmount()));
+        courierTransactionAccount.setBalance(dBoy.getAvailableAmount());
         courierTransactionAccount.setDeliveryBoy(dBoy);
         courierTransactionAccount.setOrder(null);
         courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0023"));
@@ -361,7 +361,7 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
         List<CourierTransactionAccountEntity> courierTransactionAccounts = new ArrayList<>();
         CourierTransactionAccountEntity courierTransactionAccount = new CourierTransactionAccountEntity();
-        courierTransactionAccount.setBalance(dBoy.getAvailableAmount().subtract(requestJsonDto.getSubmittedAmount()));
+        courierTransactionAccount.setBalance(dBoy.getAvailableAmount());
         courierTransactionAccount.setDeliveryBoy(dBoy);
         courierTransactionAccount.setOrder(null);
         courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0023"));

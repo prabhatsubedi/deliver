@@ -890,7 +890,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                     deliveryFee = BigDecimal.ZERO;
                 }  else {
                     if(cartsBrand.getDeliveryFee()!=null)
-                        deliveryFee  = order.getStore().getStoresBrand().getDeliveryFee();
+                        deliveryFee  = cartsBrand.getDeliveryFee();
                     else
                         deliveryFee =  new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_DELIVERY_FEE_IN_FLAT_MODEL));
 
@@ -2734,6 +2734,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
         BigDecimal customerWalletAmount = order.getCustomer().getWalletAmount();
         customerWalletAmount = customerWalletAmount.add(order.getGrandTotal());
+        order.getCustomer().setWalletAmount(customerWalletAmount);
 
         String remarks = MessageBundle.getMessage("WTM012", "push_notification.properties");
         remarks = String.format(remarks, currency, order.getGrandTotal(), order.getId());

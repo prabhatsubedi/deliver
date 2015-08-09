@@ -733,11 +733,11 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     var orderDate = advanceAmount.dateTime == undefined ? "" : advanceAmount.dateTime;
                     var description = advanceAmount.description == undefined ? "" : advanceAmount.description;
                     var id = advanceAmount.id == undefined ? "" : advanceAmount.id;
-                    var orderId = advanceAmount.order.id == undefined ? "" : advanceAmount.order.id;
+                    var orderId = advanceAmount.order == undefined ? "" : advanceAmount.order.id;
                     var dr = advanceAmount.dr == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.dr;
                     var cr = advanceAmount.cr == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.cr;
                     var balance = advanceAmount.balance == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.balance;
-                    var orderStatus = advanceAmount.order.orderStatus == undefined ? "" : advanceAmount.order.orderStatus;
+                    var orderStatus = advanceAmount.order == undefined ? "" : advanceAmount.order.orderStatus;
                     var _orderStatus = [];
                     if(orderStatus != "") {
                         _orderStatus = orderStatus.toLowerCase().split('_');

@@ -733,10 +733,11 @@ if (typeof(Manager) == "undefined") var Manager = {};
                     var orderDate = advanceAmount.dateTime == undefined ? "" : advanceAmount.dateTime;
                     var description = advanceAmount.description == undefined ? "" : advanceAmount.description;
                     var id = advanceAmount.id == undefined ? "" : advanceAmount.id;
+                    var orderId = advanceAmount.order.id == undefined ? "" : advanceAmount.order.id;
                     var dr = advanceAmount.dr == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.dr;
                     var cr = advanceAmount.cr == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.cr;
                     var balance = advanceAmount.balance == undefined ? "" : Main.getFromLocalStorage('currency') + " " + advanceAmount.balance;
-                    var orderStatus = advanceAmount.orderStatus == undefined ? "" : advanceAmount.orderStatus;
+                    var orderStatus = advanceAmount.order.orderStatus == undefined ? "" : advanceAmount.order.orderStatus;
                     var _orderStatus = [];
                     if(orderStatus != "") {
                         _orderStatus = orderStatus.toLowerCase().split('_');
@@ -745,9 +746,9 @@ if (typeof(Manager) == "undefined") var Manager = {};
                         _orderStatus[index] = Main.ucfirst(item);
                     });
                     orderStatus = _orderStatus.join(" ");
-                    var accountantNote = advanceAmount.accountantNote == undefined ? "" : advanceAmount.accountantNote;
+                    var accountantNote = advanceAmount.note == undefined ? "" : advanceAmount.note;
                     var action = '<a data-id="' + advanceAmount.id + '" data-mode="' + (advanceAmount.paymentMode == undefined ? "advanceAmount" : "order" ) + '" href="#" class="btn_add_note">Add Note</a>';
-                    var row = [id, orderDate, description, '', dr, cr, balance, orderStatus, accountantNote, action];
+                    var row = [id, orderDate, description, orderId, dr, cr, balance, orderStatus, accountantNote, action];
                     tdata.push(row);
 
                 }

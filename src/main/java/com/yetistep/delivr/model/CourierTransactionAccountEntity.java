@@ -1,5 +1,8 @@
 package com.yetistep.delivr.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.yetistep.delivr.util.JsonDateSerializer;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -38,7 +41,8 @@ public class CourierTransactionAccountEntity implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "date_time")
+    @JsonSerialize(using = JsonDateSerializer.class)
+    @Column(name = "date_time", columnDefinition="TIMESTAMP NULL DEFAULT NULL")
     public Timestamp getDateTime() {
         return dateTime;
     }

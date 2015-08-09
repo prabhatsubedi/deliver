@@ -126,28 +126,34 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         if (BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
             customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
 
+            BigDecimal dfl = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_LIMIT));
+            if(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_CHARGING_MODEL).equals("Distance Based") )  {
+                if(BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
+                    order.setDeliveryCharge(BigDecimal.ZERO);
+                }  else {
+                    order.setDeliveryCharge(deliveryChargedAfterDiscount);
+                }
+            }else{
+                if(BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
+                    order.setDeliveryCharge(BigDecimal.ZERO);
+                }  else {
+                    BigDecimal deliveryFee = BigDecimal.ZERO;
+                    if(order.getStore().getStoresBrand().getDeliveryFee()!=null)
+                        deliveryFee  = order.getStore().getStoresBrand().getDeliveryFee();
+                    else
+                        deliveryFee =  new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_DELIVERY_FEE_IN_FLAT_MODEL));
+
+                    deliveryFee =  deliveryFee.add(BigDecimalUtil.percentageOf(deliveryFee, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
+                    order.setDeliveryCharge(deliveryFee.multiply(new BigDecimal(order.getSurgeFactor())));
+                }
+            }
+
+
         /* 14. ====== Customer Pays ========*/
-        BigDecimal customerPays = totalOrder.subtract(order.getCashBackToCustomerAmount()).add(systemProcessingChargeAmount).add(deliveryChargedAfterDiscount).add(order.getItemServiceAndVatCharge());
+        BigDecimal customerPays = totalOrder.subtract(order.getCashBackToCustomerAmount()).add(systemProcessingChargeAmount).add(order.getDeliveryCharge()).add(order.getItemServiceAndVatCharge());
         customerPays = customerPays.setScale(2, BigDecimal.ROUND_DOWN);
         order.setGrandTotal(customerPays);
-        BigDecimal dfl = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_LIMIT));
-        if(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_CHARGING_MODEL).equals("Distance Based") )  {
-            if(BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
-                order.setDeliveryCharge(BigDecimal.ZERO);
-            }  else {
-                order.setDeliveryCharge(deliveryChargedAfterDiscount);
-            }
-        }else{
-            if(order.getStore().getStoresBrand().getDeliveryFee() == null)
-                throw new YSException("V1VLD044");
-            if(BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
-                order.setDeliveryCharge(BigDecimal.ZERO);
-            }  else {
-                BigDecimal deliveryFee = order.getStore().getStoresBrand().getDeliveryFee();
-                deliveryFee =  deliveryFee.add(BigDecimalUtil.percentageOf(deliveryFee, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
-                order.setDeliveryCharge(deliveryFee.multiply(new BigDecimal(order.getSurgeFactor())));
-            }
-        }
+
         order.setSystemServiceCharge(systemProcessingChargeAmount);
         order.setStoreDeliveryDiscount(discountInDeliveryFeeFromStore);
 
@@ -164,7 +170,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         /* 16 ===== Profit ====== */
         // total order * profit% = >  actual profit
         BigDecimal profit = ZERO;
-        profit = totalCommission.add(BigDecimalUtil.percentageOf(totalOrder, systemProcessingChargeAmount));
+        profit = totalCommission.add(BigDecimalUtil.percentageOf(totalOrder, systemProcessingCharge));
         profit = profit.add(deliveryChargedAfterDiscount.divide(BigDecimal.ONE.add(DELIVERY_FEE_VAT.divide(new BigDecimal(100))), MathContext.DECIMAL128)).subtract(paidToCourier);
         if (BigDecimalUtil.isLessThen(profit, BigDecimalUtil.percentageOf(totalOrder, MINIMUM_PROFIT_PERCENTAGE))) {
             log.warn("No Profit");

@@ -375,7 +375,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
     @Override
     public void saveDBoyTransactionNote(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
-         String className = requestJsonDto.getClassName();
+         /*String className = requestJsonDto.getClassName();
          if(className.equals("order")){
              OrderEntity orderEntity = orderDaoService.find(Integer.parseInt(headerDto.getId()));
              orderEntity.setAccountantNote(requestJsonDto.getAccountantNote());
@@ -384,7 +384,11 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
              DBoyAdvanceAmountEntity dBoyAdvanceAmountEntity = dBoyAdvanceAmountDaoService.find(Integer.parseInt(headerDto.getId()));
              dBoyAdvanceAmountEntity.setAccountantNote(requestJsonDto.getAccountantNote());
              dBoyAdvanceAmountDaoService.update(dBoyAdvanceAmountEntity);
-         }
+         }*/
+
+        CourierTransactionAccountEntity courierTransactionAccount = courierTransactionAccountDaoService.find(Integer.parseInt(headerDto.getId()));
+        courierTransactionAccount.setNote(requestJsonDto.getAccountantNote());
+        courierTransactionAccountDaoService.update(courierTransactionAccount);
     }
 
     @Override

@@ -706,6 +706,9 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         BigDecimal itemServiceCharge = BigDecimal.ZERO;
         BigDecimal itemVatCharge = BigDecimal.ZERO;
         BigDecimal cashBackAmountTotal = BigDecimal.ZERO;
+        BigDecimal totalCommission = BigDecimal.ZERO;
+        BigDecimal deliveryFee = BigDecimal.ZERO;
+        StoresBrandEntity cartsBrand = carts.get(0).getStoresBrand();
         for(CartEntity cart : carts){
             if(cart.getItem() != null){
                 ItemEntity item = merchantDaoService.getItemDetail(cart.getItem().getId());
@@ -717,6 +720,9 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
                 cashBackAmountTotal = cashBackAmountTotal.add(BigDecimalUtil.checkNull(item.getCashBackAmount()).multiply(new BigDecimal(cart.getOrderQuantity())));
 
+                BigDecimal commissionAmount = BigDecimalUtil.percentageOf(total, BigDecimalUtil.checkNull(cart.getItem().getCommissionPercentage()));
+                totalCommission =  totalCommission.add(commissionAmount);
+
                 BigDecimal itemTax = BigDecimal.ZERO;
 
                 if(item.getServiceCharge()!=null && BigDecimalUtil.isGreaterThenZero(item.getServiceCharge())){
@@ -724,7 +730,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                     itemServiceCharge = itemServiceCharge.add(itemTax);
                 }
 
-                if(!item.getStoresBrand().getVatInclusive())  {
+                if(!cartsBrand.getVatInclusive())  {
                     if(item.getVat()!=null && BigDecimalUtil.isGreaterThenZero(item.getVat())){
                         itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
                         itemTax = itemTax.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
@@ -767,8 +773,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
         /* Now Get Merchant's Commission and Percentage */
         MerchantEntity merchant = merchantDaoService.getCommissionAndVat(merchantId);
-        BigDecimal commissionPct = merchant.getCommissionPercentage() != null ? merchant.getCommissionPercentage() : BigDecimal.ZERO;
-        BigDecimal serviceFeePct = merchant.getServiceFee() != null ? merchant.getServiceFee() : BigDecimal.ZERO;
+        //BigDecimal commissionPct = merchant.getCommissionPercentage() != null ? merchant.getCommissionPercentage() : BigDecimal.ZERO;
+        BigDecimal serviceFeePct = cartsBrand.getProcessingCharge() != null ? cartsBrand.getProcessingCharge() : BigDecimal.ZERO;
 
         /* Customer Reward Money */
 
@@ -780,8 +786,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         // ==== Discount on delivery to customer =======
         BigDecimal customerDiscount = BigDecimal.ZERO;
         BigDecimal systemReservedCommissionAmt = BigDecimal.ZERO;
-        if(BigDecimalUtil.isGreaterThenZero(commissionPct)){
-            BigDecimal totalCommission = BigDecimalUtil.percentageOf(subTotal,commissionPct);
+        if(BigDecimalUtil.isGreaterThenZero(totalCommission)){
+            //BigDecimal totalCommission = BigDecimalUtil.percentageOf(subTotal,commissionPct);
             systemReservedCommissionAmt = BigDecimalUtil.percentageOf(totalCommission, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.RESERVED_COMM_PER_BY_SYSTEM)));
             customerDiscount = totalCommission.subtract(systemReservedCommissionAmt);
         }
@@ -802,7 +808,12 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
         /* 10. ======= Service fee Amount with VAT =========== */
         BigDecimal serviceFeeAmt = BigDecimalUtil.percentageOf(subTotal, serviceFeePct);
-        serviceFeeAmt = serviceFeeAmt.add(BigDecimalUtil.percentageOf(serviceFeeAmt, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
+        serviceFeeAmt = serviceFeeAmt;//.add(BigDecimalUtil.percentageOf(serviceFeeAmt, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
+        BigDecimal capOnProcessingCharge = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.CAP_ON_PROCESSING_CHARGE));
+        if(BigDecimalUtil.isGreaterThen(serviceFeeAmt, capOnProcessingCharge))
+            serviceFeeAmt = capOnProcessingCharge;
+            serviceFeeAmt = serviceFeeAmt.add(BigDecimalUtil.percentageOf(serviceFeeAmt, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
+
 
         /* 11. ====== Delivery cost  with VAT and with Discount from system ======== */
         BigDecimal deliveryChargedBeforeDiscount = BigDecimal.ZERO;
@@ -816,8 +827,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         /* Item Detail and Others */
         StoresBrandEntity storeBrand = new StoresBrandEntity();
         storeBrand.setId(brandId);
-        storeBrand.setBrandName(carts.get(0).getStoresBrand().getBrandName());
-        storeBrand.setBrandLogo(carts.get(0).getStoresBrand().getBrandLogo());
+        storeBrand.setBrandName(cartsBrand.getBrandName());
+        storeBrand.setBrandLogo(cartsBrand.getBrandLogo());
 
         //add custom items to the item
         List<ItemEntity> customItems = new ArrayList<>();
@@ -864,7 +875,29 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             itemVatCharge = itemVatCharge.setScale(2, BigDecimal.ROUND_DOWN);
             checkOutDto.setTax(merchantTax);
             checkOutDto.setServiceFee(serviceFeeAmt);
-            checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount);
+
+            //checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount);
+            //calculate delivery fee
+            BigDecimal dfl = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_LIMIT));
+            if(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_CHARGING_MODEL).equals("Distance Based") )  {
+                if(BigDecimalUtil.isGreaterThen(subTotal, dfl)){
+                    deliveryFee = BigDecimal.ZERO;
+                }  else {
+                    deliveryFee = deliveryChargedBeforeDiscount;
+                }
+            }else{
+                if(BigDecimalUtil.isGreaterThen(subTotal, dfl)){
+                    deliveryFee = BigDecimal.ZERO;
+                }  else {
+                    if(cartsBrand.getDeliveryFee()!=null)
+                        deliveryFee  = order.getStore().getStoresBrand().getDeliveryFee();
+                    else
+                        deliveryFee =  new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_DELIVERY_FEE_IN_FLAT_MODEL));
+
+                    deliveryFee =  deliveryFee.add(BigDecimalUtil.percentageOf(deliveryFee, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
+                }
+            }
+            checkOutDto.setDeliveryFee(deliveryFee);
             checkOutDto.setItemServiceCharge(itemServiceCharge);
             checkOutDto.setItemVatCharge(itemVatCharge);
         }
@@ -881,7 +914,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         if(cartCustomItems.size()>0){
             checkOutDto.setEstimatedAmount(minusOne);
         }   else {
-            BigDecimal estimatedAmt = subTotal.subtract(cashBackAmountTotal).add(merchantTax).add(serviceFeeAmt).add(deliveryChargedBeforeDiscount).subtract(customerBalanceBeforeDiscount);
+            BigDecimal estimatedAmt = subTotal.subtract(cashBackAmountTotal).add(merchantTax).add(serviceFeeAmt).add(deliveryFee).subtract(customerBalanceBeforeDiscount);
             checkOutDto.setEstimatedAmount(estimatedAmt.setScale(2, BigDecimal.ROUND_DOWN));
         }
         checkOutDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));
@@ -2270,8 +2303,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         }
         boolean status = orderDaoService.update(order);
         if(status){
-            if(BigDecimalUtil.isGreaterThen(order.getPaidFromWallet(),BigDecimal.ZERO))
-                adjustWalletBalanceForPendingOrders(customerWalletAmount, order.getCustomer().getId());
+            /*if(BigDecimalUtil.isGreaterThen(order.getPaidFromWallet(),BigDecimal.ZERO))
+                adjustWalletBalanceForPendingOrders(customerWalletAmount, order.getCustomer().getId());*/
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN007", "push_notification.properties");
             String extraDetail = order.getId().toString()+"/status/"+order.getOrderStatus().toString();
@@ -2436,7 +2469,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             }
         }
         /*Running wallet order adjustments*/
-        this.adjustWalletBalanceForPendingOrders(customerWalletAmount, customerEntity.getId());
+        //this.adjustWalletBalanceForPendingOrders(customerWalletAmount, customerEntity.getId());
         return status;
     }
 
@@ -2708,7 +2741,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
         boolean status = orderDaoService.update(order);
         if(status){
-            adjustWalletBalanceForPendingOrders(customerWalletAmount, order.getCustomer().getId());
+            //adjustWalletBalanceForPendingOrders(customerWalletAmount, order.getCustomer().getId());
 
             UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
             String message = MessageBundle.getMessage("CPN007", "push_notification.properties");

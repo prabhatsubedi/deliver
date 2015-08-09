@@ -308,6 +308,7 @@ INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('CAP_ON_PROCESSING_CHARGE', '100', '11', 'Cap On Processing Charge');
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('DELIVERY_FEE_CHARGING_MODEL', 'Flat Charge', '11', 'Delivery Fee Charging Model');
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('SHOPPERS_EARNING_IN_FLAT_MODEL', '30', '11', 'Shoppers Earning In Flat Model');
+INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('DEFAULT_DELIVERY_FEE_IN_FLAT_MODEL', '30', '11', 'Default Delivery Fee In Flat Model');
 
 
 

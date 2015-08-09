@@ -867,41 +867,40 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         order.setOrderStatus(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
         boolean partnerShipStatus = order.getPartnershipStatus(); //merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());
         courierBoyAccountingsAfterTakingOrder(order.getDeliveryBoy(), order, partnerShipStatus);
-        /* Wallet Integration */
 
-        order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(order.getPaidFromWallet()));
-
-        List<WalletTransactionEntity> walletTransactionEntities = new ArrayList<WalletTransactionEntity>();
-        WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
-        walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
-        walletTransactionEntity.setAccountType(AccountType.DEBIT);
-        String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
-        String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
-        walletTransactionEntity.setRemarks(String.format(remarks, currency, order.getPaidFromWallet(), order.getStore().getName()));
-        walletTransactionEntity.setTransactionAmount(order.getPaidFromWallet());
-        walletTransactionEntity.setOrder(order);
-        walletTransactionEntity.setCustomer(order.getCustomer());
-        walletTransactionEntity.setPaymentMode(order.getPaymentMode());
-        walletTransactionEntity.setAvailableWalletAmount(order.getCustomer().getWalletAmount());
-        systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
-        walletTransactionEntities.add(walletTransactionEntity);
-        if(order.getCashBackToCustomerAmount() != null && BigDecimalUtil.isGreaterThen(order.getCashBackToCustomerAmount(), BigDecimal.ZERO)){
-            order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().add(order.getCashBackToCustomerAmount()));
-            WalletTransactionEntity walletTransactionCashBackEntity = new WalletTransactionEntity();
-            walletTransactionCashBackEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
-            walletTransactionCashBackEntity.setAccountType(AccountType.DEBIT);
-            String remarkCashBack = MessageBundle.getMessage("WTM013", "push_notification.properties");
-            walletTransactionCashBackEntity.setRemarks(String.format(remarkCashBack, currency, order.getCashBackToCustomerAmount(), order.getId()));
-            walletTransactionCashBackEntity.setTransactionAmount(order.getCashBackToCustomerAmount());
-            walletTransactionCashBackEntity.setOrder(order);
-            walletTransactionCashBackEntity.setCustomer(order.getCustomer());
-            walletTransactionCashBackEntity.setPaymentMode(order.getPaymentMode());
-            walletTransactionCashBackEntity.setAvailableWalletAmount(order.getCustomer().getWalletAmount());
-            systemAlgorithmService.encodeWalletTransaction(walletTransactionCashBackEntity);
-            walletTransactionEntities.add(walletTransactionCashBackEntity);
+        //calculate paidFromCod and paid from wallet
+        if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+            order.setPaidFromWallet(order.getGrandTotal());
+            order.setPaidFromCOD(BigDecimal.ZERO);
+        } else if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()), BigDecimal.ZERO)){
+            BigDecimal paidFromWallet = order.getCustomer().getWalletAmount();
+            BigDecimal paidFromCOD = order.getGrandTotal().subtract(paidFromWallet);
+            order.setPaidFromWallet(paidFromWallet);
+            order.setPaidFromCOD(paidFromCOD);
+        } else {
+            order.setPaidFromWallet(BigDecimal.ZERO);
+            order.setPaidFromCOD(order.getGrandTotal());
         }
 
-        order.setWalletTransactions(walletTransactionEntities);
+        /* Wallet Integration */
+        if(BigDecimalUtil.isGreaterThenZero(order.getPaidFromWallet()))  {
+            order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(order.getPaidFromWallet()));
+            List<WalletTransactionEntity> walletTransactionEntities = new ArrayList<WalletTransactionEntity>();
+            WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
+            walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+            walletTransactionEntity.setAccountType(AccountType.DEBIT);
+            String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+            String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
+            walletTransactionEntity.setRemarks(String.format(remarks, currency, order.getPaidFromWallet(), order.getStore().getName()));
+            walletTransactionEntity.setTransactionAmount(order.getPaidFromWallet());
+            walletTransactionEntity.setOrder(order);
+            walletTransactionEntity.setCustomer(order.getCustomer());
+            walletTransactionEntity.setPaymentMode(order.getPaymentMode());
+            walletTransactionEntity.setAvailableWalletAmount(order.getCustomer().getWalletAmount());
+            systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
+            walletTransactionEntities.add(walletTransactionEntity);
+            order.setWalletTransactions(walletTransactionEntities);
+        }
 
         boolean status = orderDaoService.update(order);
         /*BigDecimal customerWalletAmount = order.getCustomer().getWalletAmount();
@@ -992,20 +991,6 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         order.setDeliveryStatus(DeliveryStatus.SUCCESSFUL);
         order.setOrderStatus(JobOrderStatus.DELIVERED);
         order.setOrderVerificationStatus(true);
-        /*if(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_CHARGING_MODEL).equals("Flat Charge")) {
-            if(order.getStore().getStoresBrand().getDeliveryFee() == null)
-                throw new Exception("V1VLD044");
-            BigDecimal totalOrder = order.getTotalCost().setScale(2, RoundingMode.HALF_UP);
-            totalOrder = totalOrder.subtract(BigDecimalUtil.checkNull(order.getDiscountFromStore()));
-            BigDecimal dfl = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_LIMIT));
-            if(BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
-                order.setDeliveryCharge(BigDecimal.ZERO);
-            }  else {
-                BigDecimal deliveryFee = order.getStore().getStoresBrand().getDeliveryFee();
-                deliveryFee =  deliveryFee.add(BigDecimalUtil.percentageOf(deliveryFee, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
-                order.setDeliveryCharge(deliveryFee.multiply(new BigDecimal(order.getSurgeFactor())));
-            }
-        }*/
 
         List<DBoyOrderHistoryEntity> orderHistoryEntities = order.getdBoyOrderHistories();
         for(DBoyOrderHistoryEntity dBoyOrderHistoryEntity: orderHistoryEntities){
@@ -1064,12 +1049,35 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         CustomerEntity customerEntity = order.getCustomer();
         customerEntity.setTotalOrderDelivered(GeneralUtil.ifNullToZero(customerEntity.getTotalOrderDelivered())+1);
         /*List<OrderEntity> customersOrders = orderDaoService.getCustomersOrders(order.getCustomer().getId());*/
-        if(BigDecimalUtil.isGreaterThen(order.getPaidFromCOD(), BigDecimal.ZERO)){
+        if(BigDecimalUtil.isGreaterThenZero(order.getPaidFromCOD())){
             String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
             String remarks = MessageBundle.getMessage("TRN001", "push_notification.properties");
             remarks = String.format(remarks, currency, order.getPaidFromCOD(), order.getId());
             setWalletTransaction(order, order.getPaidFromCOD(), AccountType.DEBIT, PaymentMode.CASH_ON_DELIVERY, remarks, order.getCustomer().getWalletAmount());
         }
+
+        // refill cashback amount to customer wallet and notify customer
+        if(order.getCashBackToCustomerAmount() != null && BigDecimalUtil.isGreaterThenZero(order.getCashBackToCustomerAmount())){
+            order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().add(order.getCashBackToCustomerAmount()));
+            WalletTransactionEntity walletTransactionCashBackEntity = new WalletTransactionEntity();
+            walletTransactionCashBackEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+            walletTransactionCashBackEntity.setAccountType(AccountType.DEBIT);
+            String remarkCashBack = MessageBundle.getMessage("WTM013", "push_notification.properties");
+            String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
+            walletTransactionCashBackEntity.setRemarks(String.format(remarkCashBack, currency, order.getCashBackToCustomerAmount(), order.getId()));
+            walletTransactionCashBackEntity.setTransactionAmount(order.getCashBackToCustomerAmount());
+            walletTransactionCashBackEntity.setOrder(order);
+            walletTransactionCashBackEntity.setCustomer(order.getCustomer());
+            walletTransactionCashBackEntity.setPaymentMode(order.getPaymentMode());
+            walletTransactionCashBackEntity.setAvailableWalletAmount(order.getCustomer().getWalletAmount());
+            systemAlgorithmService.encodeWalletTransaction(walletTransactionCashBackEntity);
+            order.getWalletTransactions().add(walletTransactionCashBackEntity);
+
+            UserDeviceEntity userDevice = userDeviceDaoService.getUserDeviceInfoFromOrderId(order.getId());
+            String extraDetail = order.getId().toString();
+            PushNotificationUtil.sendPushNotification(userDevice, remarkCashBack, NotifyTo.CUSTOMER, PushNotificationRedirect.TRANSACTION, extraDetail);
+        }
+
         boolean status = orderDaoService.update(order);
         if(status){
             log.info("Order has been updated successfully");
@@ -1254,25 +1262,38 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     @Override
     public Boolean addNewItem(ItemsOrderEntity itemsOrderEntity) throws Exception {
         OrderEntity order = orderDaoService.find(itemsOrderEntity.getOrder().getId());
+        Boolean vatInclusive = order.getStore().getStoresBrand().getVatInclusive();
         if(order == null)
             throw new YSException("VLD017");
         /*Adding item total*/
         order.setTotalCost(order.getTotalCost().add(itemsOrderEntity.getItemTotal()));
 
-        BigDecimal commissionAmount = BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal(), BigDecimalUtil.checkNull(itemsOrderEntity.getItem().getCommissionPercentage()));
+        BigDecimal commissionAmount = BigDecimal.ZERO;
+        if(itemsOrderEntity.getItem()!=null) {
+            commissionAmount = BigDecimalUtil.percentageOf(BigDecimalUtil.checkNull(itemsOrderEntity.getItemTotal()), BigDecimalUtil.checkNull(itemsOrderEntity.getItem().getCommissionPercentage()));
+        }  else {
+            commissionAmount = BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal(), BigDecimalUtil.checkNull(order.getStore().getStoresBrand().getDefaultCommissionPcn()));
+        }
+
         itemsOrderEntity.setCommissionAmount(commissionAmount);
 
         /*Calculating service and vat charge for new item and adding it to ItemServiceAndVatCharge*/
         BigDecimal serviceCharge = BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal(), itemsOrderEntity.getServiceCharge());
+        BigDecimal vatCharge =  BigDecimal.ZERO;
         BigDecimal serviceAndVatCharge;
-        if(!order.getStore().getStoresBrand().getVatInclusive())
-            serviceAndVatCharge = serviceCharge.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal().add(serviceCharge), itemsOrderEntity.getVat()));
-        else
+        if(!vatInclusive) {
+            vatCharge =  BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal().add(serviceCharge), itemsOrderEntity.getVat());
+            serviceAndVatCharge = serviceCharge.add(vatCharge);
+        } else
             serviceAndVatCharge = serviceCharge;
 
         itemsOrderEntity.setServiceAndVatCharge(serviceAndVatCharge);
         order.setItemServiceAndVatCharge(order.getItemServiceAndVatCharge().add(serviceAndVatCharge));
+        order.setItemVatCharge(order.getItemVatCharge().add(vatCharge));
+        order.setItemServiceCharge(order.getItemServiceCharge().add(serviceCharge));
         order.setCommissionAmount(order.getCommissionAmount().add(commissionAmount));
+        if(!order.getStore().getStoresBrand().getVatInclusive())
+
         itemsOrderEntity.getCustomItem().setItemsOrder(itemsOrderEntity);
 
         List<ItemsOrderEntity> itemsOrderEntities = order.getItemsOrder();
@@ -1307,7 +1328,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             order.setPaidFromCOD(order.getGrandTotal());
         }*/
 
-        //calculate paidFromCod and paid from wallet in case of custom item
+        //calculate paidFromCod and paid from wallet
         if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
             order.setPaidFromWallet(order.getGrandTotal());
             order.setPaidFromCOD(BigDecimal.ZERO);
@@ -1452,6 +1473,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     @Override
     public Boolean updateItemOrderByItemOrderId(ItemsOrderEntity itemOrder, Integer orderId) throws Exception {
         OrderEntity order = orderDaoService.find(orderId);
+        Boolean vatInclusive = order.getStore().getStoresBrand().getVatInclusive();
         if (order == null) {
             throw new YSException("VLD017");
         } else if(order.getDeliveryBoy() == null){
@@ -1516,16 +1538,16 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 BigDecimal serviceChargeAmount = BigDecimalUtil.percentageOf(BigDecimalUtil.checkNull(itemsOrder.getItemTotal()), BigDecimalUtil.checkNull(itemsOrder.getServiceCharge()));
 
                 BigDecimal serviceAndVatChargeAmount;
-                if(itemsOrder.getItem() != null && !itemsOrder.getItem().getStoresBrand().getVatInclusive())
-                    serviceAndVatChargeAmount = serviceChargeAmount.add(BigDecimalUtil.percentageOf(serviceChargeAmount.add(BigDecimalUtil.checkNull(itemsOrder.getItemTotal())), BigDecimalUtil.checkNull(itemsOrder.getVat())));
-                else
+                if(!vatInclusive) {
+                    BigDecimal itemsOrderVatAmount = BigDecimalUtil.percentageOf(serviceChargeAmount.add(BigDecimalUtil.checkNull(itemsOrder.getItemTotal())), BigDecimalUtil.checkNull(itemsOrder.getVat()));
+                    itemVatCharge = itemVatCharge.add(itemsOrderVatAmount);
+                    serviceAndVatChargeAmount = serviceChargeAmount.add(itemsOrderVatAmount);
+                } else
                     serviceAndVatChargeAmount = serviceChargeAmount;
 
                 itemTotalCost = itemTotalCost.add(BigDecimalUtil.checkNull(itemsOrder.getItemTotal()));
                 itemServiceCharge = itemServiceCharge.add(serviceChargeAmount);
                 totalCommissionAmount = totalCommissionAmount.add(commissionAmount);
-                if(itemsOrder.getItem() != null && !itemsOrder.getItem().getStoresBrand().getVatInclusive())
-                    itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(serviceChargeAmount.add(BigDecimalUtil.checkNull(itemsOrder.getItemTotal())), BigDecimalUtil.checkNull(itemsOrder.getVat())));
                 itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatChargeAmount);
                 itemsOrder.setServiceAndVatCharge(serviceAndVatChargeAmount);
                 itemOrder.setCommissionAmount(commissionAmount);
@@ -1550,7 +1572,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         dBoySelection.setStoreToCustomerDistance(order.getCustomerChargeableDistance());
 
         CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
-        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, dBoySelection, courierTransactionEntity.getCommissionAmount(), courierTransactionEntity.getSystemProcessingChargePct());
+        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, dBoySelection, order.getCommissionAmount(), courierTransactionEntity.getSystemProcessingChargePct());
         courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
         courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
         courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
@@ -1563,6 +1585,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
         courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
         courierTransactionEntity.setProfit(courierTransaction.getProfit());
+        courierTransactionEntity.setCommissionAmount(courierTransaction.getCommissionAmount());
+
         /* Wallet Integration */
         //if(order.getPaymentMode().equals(PaymentMode.WALLET)){
             /* Difference in amount is set in Paid From COD amount
@@ -1575,7 +1599,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             order.setPaidFromCOD(order.getGrandTotal());
         }*/
 
-        //calculate paidFromCod and paid from wallet in case of custom item
+        //calculate paidFromCod and paid from wallet
         if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
             order.setPaidFromWallet(order.getGrandTotal());
             order.setPaidFromCOD(BigDecimal.ZERO);
@@ -1668,9 +1692,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                         if (orderEntity.getOrderStatus().equals(JobOrderStatus.AT_STORE)) {
                             boolean partnerShipStatus = orderEntity.getPartnershipStatus();//merchantDaoService.findPartnerShipStatusFromOrderId(order.getId());
                             courierBoyAccountingsAfterTakingOrder(orderEntity.getDeliveryBoy(), orderEntity, partnerShipStatus);
-                            courierBoyAccountingsAfterOrderCancel(orderEntity.getDeliveryBoy(), orderEntity);
+                            courierBoyAccountingAfterOrderCancel(orderEntity.getDeliveryBoy(), orderEntity);
                         }else if (orderEntity.getOrderStatus().equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)) {
-                            courierBoyAccountingsAfterOrderCancel(orderEntity.getDeliveryBoy(), orderEntity);
+                            courierBoyAccountingAfterOrderCancel(orderEntity.getDeliveryBoy(), orderEntity);
                         }
                     }
                     break;
@@ -1994,25 +2018,25 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     private void setCourierTransactionAccountDescriptionDelivered(CourierTransactionAccountEntity courierTransactionAccount, OrderEntity order){
 
         if(order.getPartnershipStatus() && order.getPaymentMode().equals(PaymentMode.CASH_ON_DELIVERY)){
-            if(order.getPaidFromWallet().equals(BigDecimal.ZERO)){
+            if(BigDecimalUtil.isEqualTo(order.getPaidFromWallet(), BigDecimal.ZERO)){
                 courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD004"));
             }else {
                 courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD006"));
             }
         } else if (!order.getPartnershipStatus() && order.getPaymentMode().equals(PaymentMode.CASH_ON_DELIVERY)){
-            if(order.getPaidFromWallet().equals(BigDecimal.ZERO)){
+            if(BigDecimalUtil.isEqualTo(order.getPaidFromWallet(), BigDecimal.ZERO)){
                 courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD005"));
             }else {
                 courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD007"));
             }
         }  else if(order.getPartnershipStatus() && order.getPaymentMode().equals(PaymentMode.WALLET)){
-            if(order.getPaidFromCOD().equals(BigDecimal.ZERO)){
+            if(BigDecimalUtil.isEqualTo(order.getPaidFromCOD(), BigDecimal.ZERO)){
                 courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD003"));
             }else {
                 courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD006"));
             }
         } else if(!order.getPartnershipStatus() && order.getPaymentMode().equals(PaymentMode.WALLET)) {
-            if(order.getPaidFromCOD().equals(BigDecimal.ZERO)){
+            if(BigDecimalUtil.isEqualTo(order.getPaidFromCOD(), BigDecimal.ZERO)){
                 courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD002"));
             }else {
                 courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD007"));
@@ -2023,56 +2047,21 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
     private void setCourierTransactionAccountDescriptionCanceled(CourierTransactionAccountEntity courierTransactionAccount, OrderEntity order) throws Exception{
 
-        //check if item purchased && processed
-        Boolean itemPurchased = false;
-        Boolean itemProcessed = false;
-        for (ItemsOrderEntity itemsOrder: order.getItemsOrder()){
-            if (itemsOrder.getPurchaseStatus() != null && itemsOrder.getPurchaseStatus()){
-                itemPurchased = true;
-                break;
-            }
-        }
-
-        for (ItemsOrderEntity itemsOrder: order.getItemsOrder()){
-            if (itemsOrder.getPurchaseStatus() != null && !itemsOrder.getPurchaseStatus()){
-                itemProcessed = true;
-                break;
-            }
-        }
-
-        if(order.getPartnershipStatus() && order.getPaymentMode().equals(PaymentMode.CASH_ON_DELIVERY) && !itemProcessed && !itemPurchased){
-            courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0017"));
-        } else if (order.getPartnershipStatus() && order.getPaymentMode().equals(PaymentMode.CASH_ON_DELIVERY) && itemProcessed && !itemPurchased){
-            courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0019"));
-        }  else if(order.getPartnershipStatus() && order.getPaymentMode().equals(PaymentMode.WALLET) && !itemProcessed && !itemPurchased){
-            if(order.getDeliveryCharge() != null && BigDecimalUtil.isGreaterThen(order.getDeliveryCharge(), BigDecimal.ZERO)){
-                courierTransactionAccount.setDr(order.getDeliveryCharge());
-            }
-            courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0013"));
-        } else if(order.getPartnershipStatus() && order.getPaymentMode().equals(PaymentMode.WALLET)  && itemProcessed && !itemPurchased) {
-            if(order.getDeliveryCharge() != null && BigDecimalUtil.isGreaterThen(order.getDeliveryCharge(), BigDecimal.ZERO)){
-                courierTransactionAccount.setDr(order.getDeliveryCharge());
-            }
-            courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0014"));
-        } else if(!order.getPartnershipStatus() && order.getPaymentMode().equals(PaymentMode.CASH_ON_DELIVERY) && !itemProcessed && !itemPurchased){
-            courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0018"));
-        } else if (!order.getPartnershipStatus() && order.getPaymentMode().equals(PaymentMode.CASH_ON_DELIVERY) && itemProcessed && !itemPurchased){
-            courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0020"));
-        }  else if(!order.getPartnershipStatus() && order.getPaymentMode().equals(PaymentMode.WALLET) && !itemProcessed && !itemPurchased){
-            if(order.getDeliveryCharge() != null && BigDecimalUtil.isGreaterThen(order.getDeliveryCharge(), BigDecimal.ZERO)){
-                courierTransactionAccount.setDr(order.getDeliveryCharge());
-            }
-            courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0015"));
-        } else if(!order.getPartnershipStatus() && order.getPaymentMode().equals(PaymentMode.WALLET)  && itemProcessed && !itemPurchased) {
-            if(order.getDeliveryCharge() != null && BigDecimalUtil.isGreaterThen(order.getDeliveryCharge(), BigDecimal.ZERO)){
-                courierTransactionAccount.setDr(order.getDeliveryCharge());
+            if(order.getPartnershipStatus() && BigDecimalUtil.isGreaterThenZero(order.getPaidFromWallet()) && BigDecimalUtil.isGreaterThenZero(order.getPaidFromCOD())){
+                courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD008")); //cod+wallet partner
+            } else if(!order.getPartnershipStatus() && BigDecimalUtil.isGreaterThenZero(order.getPaidFromWallet()) && BigDecimalUtil.isGreaterThenZero(order.getPaidFromCOD())) {
+                courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD009")); //cod+wallet non partner
+            } else if(order.getPartnershipStatus() && !BigDecimalUtil.isGreaterThenZero(order.getPaidFromWallet()) && BigDecimalUtil.isGreaterThenZero(order.getPaidFromCOD())) {
+                courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0012")); //cod partner
+            } else if(!order.getPartnershipStatus() && !BigDecimalUtil.isGreaterThenZero(order.getPaidFromWallet()) && BigDecimalUtil.isGreaterThenZero(order.getPaidFromCOD())) {
+                courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0013")); //cod non partner
+            } else if(order.getPartnershipStatus() && BigDecimalUtil.isGreaterThenZero(order.getPaidFromWallet()) && !BigDecimalUtil.isGreaterThenZero(order.getPaidFromCOD())) {
+                courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0010")); //wallet partner
+            } else if(!order.getPartnershipStatus() && BigDecimalUtil.isGreaterThenZero(order.getPaidFromWallet()) && !BigDecimalUtil.isGreaterThenZero(order.getPaidFromCOD())) {
+                courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0011")); //wallet non partner
             }
 
-            courierTransactionAccount.setDescription(MessageBundle.getShoppersTransactionDescription("STD0016"));
-        } else if(itemProcessed && itemPurchased){
             courierTransactionAccount.setNote(MessageBundle.getShoppersTransactionDescription("STD0021")+" "+systemPropertyService.readPrefValue(PreferenceType.CURRENCY)+ order.getGrandTotal());
-        }
-
     }
 
     private void courierBoyAccountingsAfterOrderDelivery(DeliveryBoyEntity deliveryBoy, OrderEntity order) {
@@ -2094,7 +2083,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         List<CourierTransactionAccountEntity> courierTransactionAccounts = new ArrayList<>();
 
         CourierTransactionAccountEntity courierTransactionAccountDr = new CourierTransactionAccountEntity();
-        courierTransactionAccountDr.setBalance(availableAmount);
+        courierTransactionAccountDr.setBalance(availableAmount.add(order.getPaidFromWallet()));
         courierTransactionAccountDr.setDeliveryBoy(deliveryBoy);
         courierTransactionAccountDr.setOrder(order);
         courierTransactionAccountDr.setDr(order.getGrandTotal());
@@ -2103,7 +2092,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         setCourierTransactionAccountDescriptionDelivered(courierTransactionAccountDr, order);
         courierTransactionAccounts.add(courierTransactionAccountDr);
 
-        if(BigDecimalUtil.isGreaterThen(walletAmount, BigDecimal.ZERO)){
+        if(BigDecimalUtil.isGreaterThenZero(order.getPaidFromWallet())){
             CourierTransactionAccountEntity courierTransactionAccountCr = new CourierTransactionAccountEntity();
             courierTransactionAccountCr.setBalance(availableAmount);
             courierTransactionAccountCr.setDeliveryBoy(deliveryBoy);
@@ -2116,36 +2105,44 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         order.setCourierTransactionAccount(courierTransactionAccounts);
     }
 
-    private void courierBoyAccountingsAfterOrderCancel(DeliveryBoyEntity deliveryBoy, OrderEntity order) throws Exception{
-        BigDecimal orderAmtReceived = order.getGrandTotal();
-        BigDecimal walletAmount = deliveryBoy.getWalletAmount();
-        BigDecimal availableAmount = deliveryBoy.getAvailableAmount();
+    private void courierBoyAccountingAfterOrderCancel(DeliveryBoyEntity deliveryBoy, OrderEntity order) throws Exception{
+        Boolean itemPurchased = false;
+        for (ItemsOrderEntity itemsOrder: order.getItemsOrder()){
+            if (itemsOrder.getPurchaseStatus() != null && itemsOrder.getPurchaseStatus()){
+                itemPurchased = true;
+                break;
+            }
+        }
 
-        availableAmount = availableAmount.add(orderAmtReceived);
-        walletAmount = walletAmount.add(orderAmtReceived);
-        deliveryBoy.setWalletAmount(walletAmount);
-        deliveryBoy.setAvailableAmount(availableAmount);
+        if(itemPurchased) {
+            BigDecimal orderAmtReceived = order.getGrandTotal();
+            BigDecimal walletAmount = deliveryBoy.getWalletAmount();
+            BigDecimal availableAmount = deliveryBoy.getAvailableAmount();
 
-        log.info("== AFTER ORDER DELIVERY =="
-                + "\n Wallet Amount: " + walletAmount
-                + "\t Available Amount: " + availableAmount
-                + "\t Amount to be Submitted: " + walletAmount);
+            availableAmount = availableAmount.add(orderAmtReceived);
+            walletAmount = walletAmount.add(orderAmtReceived);
+            deliveryBoy.setWalletAmount(walletAmount);
+            deliveryBoy.setAvailableAmount(availableAmount);
+
+            log.info("== AFTER ORDER DELIVERY =="
+                    + "\n Wallet Amount: " + walletAmount
+                    + "\t Available Amount: " + availableAmount
+                    + "\t Amount to be Submitted: " + walletAmount);
 
 
-        log.info("set courier transaction account");
-        List<CourierTransactionAccountEntity> courierTransactionAccounts = new ArrayList<>();
+            log.info("set courier transaction account");
+            List<CourierTransactionAccountEntity> courierTransactionAccounts = new ArrayList<>();
 
-        CourierTransactionAccountEntity courierTransactionAccountDr = new CourierTransactionAccountEntity();
-        courierTransactionAccountDr.setBalance(availableAmount);
-        courierTransactionAccountDr.setDeliveryBoy(deliveryBoy);
-        courierTransactionAccountDr.setOrder(order);
-        courierTransactionAccountDr.setCr(order.getGrandTotal());
-        courierTransactionAccountDr.setDateTime(new Timestamp(System.currentTimeMillis()));
-        courierTransactionAccounts.add(courierTransactionAccountDr);
-        setCourierTransactionAccountDescriptionCanceled(courierTransactionAccountDr, order);
-        courierTransactionAccounts.add(courierTransactionAccountDr);
-
-        order.setCourierTransactionAccount(courierTransactionAccounts);
+            CourierTransactionAccountEntity courierTransactionAccountDr = new CourierTransactionAccountEntity();
+            courierTransactionAccountDr.setBalance(availableAmount);
+            courierTransactionAccountDr.setDeliveryBoy(deliveryBoy);
+            courierTransactionAccountDr.setOrder(order);
+            courierTransactionAccountDr.setDr(order.getGrandTotal());
+            courierTransactionAccountDr.setDateTime(new Timestamp(System.currentTimeMillis()));
+            setCourierTransactionAccountDescriptionCanceled(courierTransactionAccountDr, order);
+            courierTransactionAccounts.add(courierTransactionAccountDr);
+            order.setCourierTransactionAccount(courierTransactionAccounts);
+        }
     }
 
 

@@ -581,7 +581,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         }   else {
             accountSummary.setServiceFee(order.getSystemServiceCharge());
             accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
-            accountSummary.setDeliveryFee(order.getCourierTransaction().getDeliveryChargedAfterDiscount());
+            accountSummary.setDeliveryFee(order.getDeliveryCharge());
             accountSummary.setEstimatedTotal(order.getGrandTotal());
             accountSummary.setItemServiceCharge(order.getItemServiceCharge());
             accountSummary.setItemVatCharge(order.getItemVatCharge());

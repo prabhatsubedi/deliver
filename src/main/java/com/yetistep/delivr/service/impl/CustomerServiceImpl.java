@@ -2329,6 +2329,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         List<OrderEntity> orderList = orderDaoService.getAllWalletUnpaidOrdersOfCustomer(customerId);
         String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
         for(OrderEntity o: orderList){
+            BigDecimal prevPaidFromWallet = o.getPaidFromWallet();
             if(BigDecimalUtil.isGreaterThen(customerWalletAmount, BigDecimal.ZERO)){
                 /* Customer wallet amount is less than order amount to be paid at customer during cash on delivery */
                 if(BigDecimalUtil.isGreaterThenOrEqualTo(o.getPaidFromCOD(), customerWalletAmount)){
@@ -2352,6 +2353,27 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                     o.setPaidFromCOD(BigDecimal.ZERO);
                     o.getCustomer().setWalletAmount(customerWalletAmount);
                 }
+
+                //do wallet transaction for the difference
+                BigDecimal newPaidFromWallet = o.getPaidFromWallet().subtract(prevPaidFromWallet);
+                if(BigDecimalUtil.isGreaterThenZero(newPaidFromWallet))  {
+                    o.getCustomer().setWalletAmount(o.getCustomer().getWalletAmount());
+                    List<WalletTransactionEntity> walletTransactionEntities = new ArrayList<WalletTransactionEntity>();
+                    WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
+                    walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
+                    walletTransactionEntity.setAccountType(AccountType.DEBIT);
+                    String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
+                    walletTransactionEntity.setRemarks(String.format(remarks, currency, newPaidFromWallet, o.getStore().getName()));
+                    walletTransactionEntity.setTransactionAmount(newPaidFromWallet);
+                    walletTransactionEntity.setOrder(o);
+                    walletTransactionEntity.setCustomer(o.getCustomer());
+                    walletTransactionEntity.setPaymentMode(PaymentMode.CASH_ON_DELIVERY);
+                    walletTransactionEntity.setAvailableWalletAmount(o.getCustomer().getWalletAmount());
+                    systemAlgorithmService.encodeWalletTransaction(walletTransactionEntity);
+                    walletTransactionEntities.add(walletTransactionEntity);
+                    o.setWalletTransactions(walletTransactionEntities);
+                }
+
                 orderDaoService.update(o);
             }else
                 break;
@@ -2469,7 +2491,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             }
         }
         /*Running wallet order adjustments*/
-        //this.adjustWalletBalanceForPendingOrders(customerWalletAmount, customerEntity.getId());
+        this.adjustWalletBalanceForPendingOrders(customerWalletAmount, customerEntity.getId());
         return status;
     }
 

@@ -123,6 +123,11 @@
                                     </div>
 
                                     <div class="detail_row">
+                                        <label class="detail_label">Delivery Fee Limit</label>
+                                        <div class="detail_value delivery_fee_limit"></div>
+                                    </div>
+
+                                    <div class="detail_row">
                                         <div class="clearfix">
                                             <label class="detail_label pull-left">Store Location</label>
                                             <div class="detail_options pull-right">

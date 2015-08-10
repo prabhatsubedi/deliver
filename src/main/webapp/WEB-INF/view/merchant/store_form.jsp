@@ -106,13 +106,15 @@
                                     </div>
                                     <div class="form-group vat_show hidden">
                                         <select id="vat_status" name="vat_status" class="col-xs-12 no_pad no_margin" data-style="form-control">
-                                            <option value="none">Select VAT Status</option>
-                                            <option value="true">Inclusive</option>
                                             <option value="false">Exclusive</option>
+                                            <option value="true">Inclusive</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="default_commission" name="default_commission" placeholder="Default Commission %">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="delivery_fee_limit" name="delivery_fee_limit" placeholder="Delivery Fee Limit">
                                     </div>
                                 </form>
                             </div>

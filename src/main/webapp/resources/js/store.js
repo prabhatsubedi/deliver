@@ -312,6 +312,7 @@ if(typeof(Store) == "undefined") var Store = {};
                         stores_brand.discountInDeliveryFee = $('#delivery_discount').val();
                         stores_brand.vatInclusive = $('#vat_status').val();
                         stores_brand.defaultCommissionPcn = $('#default_commission').val();
+                        stores_brand.deliveryFeeLimit = $('#delivery_fee_limit').val();
 
 
                         var categories = $('#store_categories').val();
@@ -352,8 +353,8 @@ if(typeof(Store) == "undefined") var Store = {};
         $('#processing_charge').rules('add', {required: true, number: true, min: 0});
         $('#delivery_fee').rules('add', {required: true, number: true, min: 0});
         $('#delivery_discount').rules('add', {required: true, number: true, min: 0, max: 100});
-        $('#vat_status').rules('add', {notEqual: "none"});
         $('#default_commission').rules('add', {required: true, number: true, min: 0, max: 100});
+        $('#delivery_fee_limit').rules('add', {required: true, number: true, min: 0});
 
         $('.cancel_marker').live('click', function(){
 
@@ -412,6 +413,7 @@ if(typeof(Store) == "undefined") var Store = {};
                         $('#vat_status').val(storeBrand.vatInclusive + '');
                         $('#vat_status').selectpicker('refresh');
                         $('#default_commission').val(storeBrand.defaultCommissionPcn);
+                        $('#delivery_fee_limit').val(storeBrand.deliveryFeeLimit);
 
 
                         if(storeBrand.panNo == undefined || storeBrand.panNo == "") {
@@ -748,9 +750,10 @@ if(typeof(Store) == "undefined") var Store = {};
                 $('.vat_no').html(storeBrand.vatNo == undefined ? "" : storeBrand.vatNo);
                 $('.pan_no').html(storeBrand.panNo == undefined ? "" : storeBrand.panNo);
                 $('.delivery_fee').html(storeBrand.deliveryFee == undefined ? "0" : storeBrand.deliveryFee);
-                $('.delivery_discount').html((storeBrand.discountInDeliveryFee == undefined ? "0" : storeBrand.discountInDeliveryFee) + " %");
+                $('.delivery_discount').html((storeBrand.discountInDeliveryFee == undefined ? "0" : storeBrand.discountInDeliveryFee) + "%");
                 $('.vat_status').html(storeBrand.vatInclusive == undefined ? "Excluded" : (storeBrand.vatInclusive ? 'Included' : 'Excluded'));
-                $('.default_commission').html((storeBrand.defaultCommissionPcn == undefined ? "0" : storeBrand.defaultCommissionPcn)  + " %");
+                $('.default_commission').html((storeBrand.defaultCommissionPcn == undefined ? "0" : storeBrand.defaultCommissionPcn)  + "%");
+                $('.delivery_fee_limit').html((storeBrand.deliveryFeeLimit == undefined ? "0" : storeBrand.deliveryFeeLimit));
 
                 if(storeBrand.vatNo != undefined && storeBrand.vatNo != "")
                     $('.vat_show').removeClass('hidden');

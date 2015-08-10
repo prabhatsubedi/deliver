@@ -6,7 +6,6 @@ import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.dto.PaginationDto;
 import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.DeliveryStatus;
-import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
 import com.yetistep.delivr.model.*;
@@ -1727,7 +1726,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         assoc.put("address", "id,street,city,state,country,notes,givenLocation,mobileNumber");
         assoc.put("attachments", "url");
         assoc.put("rating", "id,customerRating,deliveryBoyRating,deliveryBoyComment,customerComment");
-        assoc.put("orderCancel", "id,reasonDetails,reason");
+        assoc.put("orderCancel", "id,reasonDetails,reason,jobOrderStatus");
         assoc.put("dBoyOrderHistories", "id,distanceTravelled,amountEarned,jobStartedAt,orderCompletedAt");
         assoc.put("deliveryBoySelections", "id,paidToCourier,accepted,deliveryBoy");
         assoc.put("bill", "id,path");

@@ -8,7 +8,6 @@ import com.yetistep.delivr.model.WalletTransactionEntity;
 import com.yetistep.delivr.service.inf.SystemAlgorithmService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.BigDecimalUtil;
-import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -126,7 +125,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         if (BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
             customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
 
-            BigDecimal dfl = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_LIMIT));
+            BigDecimal dfl = BigDecimalUtil.checkNull(order.getStore().getStoresBrand().getDeliveryFeeLimit());
             if(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_CHARGING_MODEL).equals("Distance Based") )  {
                 if(BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
                     order.setDeliveryCharge(BigDecimal.ZERO);

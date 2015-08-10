@@ -878,7 +878,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
             //checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount);
             //calculate delivery fee
-            BigDecimal dfl = new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_LIMIT));
+            BigDecimal dfl = BigDecimalUtil.checkNull(cartsBrand.getDeliveryFeeLimit());
             if(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_CHARGING_MODEL).equals("Distance Based") )  {
                 if(BigDecimalUtil.isGreaterThen(subTotal, dfl)){
                     deliveryFee = BigDecimal.ZERO;
@@ -1262,7 +1262,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
         order.setPaymentMode(paymentMode);
         if(paymentMode.equals(PaymentMode.WALLET)){
-            BigDecimal currentOrdersWalletAmount = orderDaoService.getCurrentOrdersWalletAmount(order.getCustomer().getId());
+            BigDecimal currentOrdersWalletAmount = BigDecimalUtil.checkNull(orderDaoService.getCurrentOrdersWalletAmount(customer.getId()));
             if(BigDecimalUtil.isGreaterThenOrEqualTo(currentOrdersWalletAmount, order.getCustomer().getWalletAmount()))
                 throw new YSException("ORD020");
 
@@ -1277,10 +1277,10 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             /*Setting data for wallet transaction entity*/
             //setWalletTransaction(order);
         }else{
-            BigDecimal currentOrdersCodAmount = orderDaoService.getCurrentOrdersCodAmount(order.getCustomer().getId());
+            BigDecimal currentOrdersCodAmount = BigDecimalUtil.checkNull(orderDaoService.getCurrentOrdersCodAmount(customer.getId()));
             if(BigDecimalUtil.isGreaterThen(currentOrdersCodAmount.add(order.getGrandTotal()), new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)))))
                 throw new YSException("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
-            BigDecimal currentOrdersWalletAmount = orderDaoService.getCurrentOrdersWalletAmount(order.getCustomer().getId());
+            BigDecimal currentOrdersWalletAmount = BigDecimalUtil.checkNull(orderDaoService.getCurrentOrdersWalletAmount(customer.getId()));
             if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()).subtract(currentOrdersWalletAmount),order.getGrandTotal())){
                 order.setPaidFromWallet(order.getGrandTotal());
                 order.setPaidFromCOD(BigDecimal.ZERO);

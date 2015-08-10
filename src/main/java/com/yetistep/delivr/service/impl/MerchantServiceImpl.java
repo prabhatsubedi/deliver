@@ -389,6 +389,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
             dbStoresBrand.setDefaultCommissionPcn(storesBrand.getDefaultCommissionPcn());
         if(storesBrand.getDeliveryFee() != null)
             dbStoresBrand.setDeliveryFee(storesBrand.getDeliveryFee());
+        if(storesBrand.getDeliveryFeeLimit() != null)
+            dbStoresBrand.setDeliveryFeeLimit(storesBrand.getDeliveryFeeLimit());
 
 
         List<BrandsCategoryEntity> dbBrandsCategories = dbStoresBrand.getBrandsCategory();
@@ -666,7 +668,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
    private BigDecimal processingCharge;  // processing charge by the koolkat for the merchant
    private Boolean partnershipStatus;
         * */
-        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,vatNo,panNo,vatInclusive,featured,priority,merchant,store";
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,partnershipStatus,,defaultCommissionPcn,deliveryFeeLimit,vatNo,panNo,vatInclusive,featured,priority,merchant,store";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -723,7 +725,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
         List<StoresBrandEntity> brandList = new ArrayList<>();
 
-        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,featured,priority,store,merchant";
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,partnershipStatus,defaultCommissionPcn,vatInclusive,vatNo,panNo,minOrderAmount,featured,priority,store,merchant";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();
@@ -771,7 +773,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
     public StoresBrandEntity findBrandDetail(HeaderDto headerDto) throws Exception {
         log.info("++++++++++++ getting brand detail +++++++++++++++");
         StoresBrandEntity storesBrandEntity =  merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
-        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,partnershipStatus,processingCharge,discountInDeliveryFee,deliveryFee,defaultCommissionPcn,vatNo,panNo,vatInclusive";
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,partnershipStatus,processingCharge,deliveryFeeLimit,discountInDeliveryFee,deliveryFee,defaultCommissionPcn,vatNo,panNo,vatInclusive";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

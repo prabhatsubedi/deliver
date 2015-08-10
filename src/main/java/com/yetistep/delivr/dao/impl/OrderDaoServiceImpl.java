@@ -511,8 +511,9 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
         jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
         jobOrderStatusList.add(JobOrderStatus.AT_STORE.ordinal());
-        String sql = "SELECT SUM(paid_from_wallet) FROM orders WHERE order_status IN(:jobOrderStatusList)";
+        String sql = "SELECT SUM(paid_from_wallet) FROM orders WHERE order_status IN(:jobOrderStatusList) AND customer_id =:customerId";
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("customerId", customerId);
         query.setParameterList("jobOrderStatusList", jobOrderStatusList);
         return new BigDecimal(((Number) query.uniqueResult()).intValue());
 
@@ -525,8 +526,9 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
         jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
         jobOrderStatusList.add(JobOrderStatus.AT_STORE.ordinal());
-        String sql = "SELECT SUM(paid_from_wallet) FROM orders WHERE order_status IN(:jobOrderStatusList)";
+        String sql = "SELECT SUM(paid_from_wallet) FROM orders WHERE order_status IN(:jobOrderStatusList) AND customer_id =:customerId";
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
+        query.setParameter("customerId", customerId);
         query.setParameterList("jobOrderStatusList", jobOrderStatusList);
         return new BigDecimal(((Number) query.uniqueResult()).intValue());
 

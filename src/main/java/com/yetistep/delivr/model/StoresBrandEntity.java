@@ -51,6 +51,7 @@ public class StoresBrandEntity implements Serializable {
    private BigDecimal discountInDeliveryFee;
    private BigDecimal defaultCommissionPcn;
    private BigDecimal deliveryFee;
+   private BigDecimal deliveryFeeLimit;
     //Transient Variable
    private Boolean openStatus;
    private Integer merchantId; //Transient Variable
@@ -257,6 +258,15 @@ public class StoresBrandEntity implements Serializable {
 
     public void setDeliveryFee(BigDecimal deliveryFee) {
         this.deliveryFee = deliveryFee;
+    }
+
+    @Column(name = "delivery_fee_limit")
+    public BigDecimal getDeliveryFeeLimit() {
+        return deliveryFeeLimit;
+    }
+
+    public void setDeliveryFeeLimit(BigDecimal deliveryFeeLimit) {
+        this.deliveryFeeLimit = deliveryFeeLimit;
     }
 
     @Transient

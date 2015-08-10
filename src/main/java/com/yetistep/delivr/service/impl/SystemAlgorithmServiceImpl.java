@@ -125,15 +125,15 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
         if (BigDecimalUtil.isGreaterThen(customerBalanceBeforeDiscount, deliveryChargedBeforeDiscount))
             customerBalanceAfterDiscount = customerBalanceBeforeDiscount.subtract(deliveryChargedBeforeDiscount);
 
-            BigDecimal dfl = BigDecimalUtil.checkNull(order.getStore().getStoresBrand().getDeliveryFeeLimit());
+            BigDecimal dfl = order.getStore().getStoresBrand().getDeliveryFeeLimit();
             if(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_CHARGING_MODEL).equals("Distance Based") )  {
-                if(BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
+                if(dfl != null && BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
                     order.setDeliveryCharge(BigDecimal.ZERO);
                 }  else {
                     order.setDeliveryCharge(deliveryChargedAfterDiscount);
                 }
             }else{
-                if(BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
+                if(dfl != null && BigDecimalUtil.isGreaterThen(totalOrder, dfl)){
                     order.setDeliveryCharge(BigDecimal.ZERO);
                 }  else {
                     BigDecimal deliveryFee = BigDecimal.ZERO;

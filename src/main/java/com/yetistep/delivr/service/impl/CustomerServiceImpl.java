@@ -878,15 +878,15 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
             //checkOutDto.setDeliveryFee(deliveryChargedBeforeDiscount);
             //calculate delivery fee
-            BigDecimal dfl = BigDecimalUtil.checkNull(cartsBrand.getDeliveryFeeLimit());
+            BigDecimal dfl = cartsBrand.getDeliveryFeeLimit();
             if(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_CHARGING_MODEL).equals("Distance Based") )  {
-                if(BigDecimalUtil.isGreaterThen(subTotal, dfl)){
+                if(dfl != null && BigDecimalUtil.isGreaterThen(subTotal, dfl)){
                     deliveryFee = BigDecimal.ZERO;
                 }  else {
                     deliveryFee = deliveryChargedBeforeDiscount;
                 }
             }else{
-                if(BigDecimalUtil.isGreaterThen(subTotal, dfl)){
+                if(dfl != null && BigDecimalUtil.isGreaterThen(subTotal, dfl)){
                     deliveryFee = BigDecimal.ZERO;
                 }  else {
                     if(cartsBrand.getDeliveryFee()!=null)

@@ -668,7 +668,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
    private BigDecimal processingCharge;  // processing charge by the koolkat for the merchant
    private Boolean partnershipStatus;
         * */
-        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,partnershipStatus,,defaultCommissionPcn,deliveryFeeLimit,vatNo,panNo,vatInclusive,featured,priority,merchant,store";
+        String fields = "id,brandName,brandLogo,brandImage,status,openingTime,closingTime,minOrderAmount,partnershipStatus,defaultCommissionPcn,deliveryFeeLimit,vatNo,panNo,vatInclusive,featured,priority,merchant,store";
 
         Map<String, String> assoc = new HashMap<>();
         Map<String, String> subAssoc = new HashMap<>();

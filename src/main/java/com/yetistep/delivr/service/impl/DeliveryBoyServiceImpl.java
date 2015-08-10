@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -1574,7 +1573,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 BigDecimal serviceChargeAmount = BigDecimalUtil.percentageOf(BigDecimalUtil.checkNull(itemsOrder.getItemTotal()), BigDecimalUtil.checkNull(itemsOrder.getServiceCharge()));
 
                 BigDecimal serviceAndVatChargeAmount;
-                if(!vatInclusive) {
+                if(vatInclusive != null && !vatInclusive) {
                     BigDecimal itemsOrderVatAmount = BigDecimalUtil.percentageOf(serviceChargeAmount.add(BigDecimalUtil.checkNull(itemsOrder.getItemTotal())), BigDecimalUtil.checkNull(itemsOrder.getVat()));
                     itemVatCharge = itemVatCharge.add(itemsOrderVatAmount);
                     serviceAndVatChargeAmount = serviceChargeAmount.add(itemsOrderVatAmount);

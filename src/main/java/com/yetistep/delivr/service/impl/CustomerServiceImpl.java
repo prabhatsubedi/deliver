@@ -730,7 +730,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                     itemServiceCharge = itemServiceCharge.add(itemTax);
                 }
 
-                if(!cartsBrand.getVatInclusive())  {
+                if(cartsBrand.getVatInclusive() != null && !cartsBrand.getVatInclusive())  {
                     if(item.getVat()!=null && BigDecimalUtil.isGreaterThenZero(item.getVat())){
                         itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
                         itemTax = itemTax.add(BigDecimalUtil.percentageOf(total.add(itemTax), item.getVat()));
@@ -1178,7 +1178,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
                 itemServiceCharge = itemServiceCharge.add(serviceCharge);
 
-                if(!cart.getStoresBrand().getVatInclusive())
+                if(cart.getStoresBrand().getVatInclusive() != null && !cart.getStoresBrand().getVatInclusive())
                     itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(itemPrice.add(serviceCharge), BigDecimalUtil.checkNull(cart.getItem().getVat())));
                 
                 itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatCharge);

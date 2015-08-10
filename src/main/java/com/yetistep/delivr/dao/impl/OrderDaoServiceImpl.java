@@ -515,8 +515,8 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
         query.setParameter("customerId", customerId);
         query.setParameterList("jobOrderStatusList", jobOrderStatusList);
-        return new BigDecimal(((Number) query.uniqueResult()).intValue());
-
+        Number walletAmount = (Number) query.uniqueResult();
+        return walletAmount != null? new BigDecimal(walletAmount.intValue()):BigDecimal.ZERO;
     }
 
     @Override
@@ -530,8 +530,8 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
         query.setParameter("customerId", customerId);
         query.setParameterList("jobOrderStatusList", jobOrderStatusList);
-        return new BigDecimal(((Number) query.uniqueResult()).intValue());
-
+        Number codAmount = (Number) query.uniqueResult();
+        return codAmount != null? new BigDecimal(codAmount.intValue()):BigDecimal.ZERO;
     }
 
 

@@ -149,7 +149,7 @@ public class SystemAlgorithmServiceImpl implements SystemAlgorithmService {
 
 
         /* 14. ====== Customer Pays ========*/
-        BigDecimal customerPays = totalOrder.subtract(order.getCashBackToCustomerAmount()).add(systemProcessingChargeAmount).add(order.getDeliveryCharge()).add(order.getItemServiceAndVatCharge());
+        BigDecimal customerPays = totalOrder.add(systemProcessingChargeAmount).add(order.getDeliveryCharge()).add(order.getItemServiceAndVatCharge());
         customerPays = customerPays.setScale(2, BigDecimal.ROUND_DOWN);
         order.setGrandTotal(customerPays);
 

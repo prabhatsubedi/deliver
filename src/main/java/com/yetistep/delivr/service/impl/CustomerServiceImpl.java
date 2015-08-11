@@ -914,7 +914,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         if(cartCustomItems.size()>0){
             checkOutDto.setEstimatedAmount(minusOne);
         }   else {
-            BigDecimal estimatedAmt = subTotal.subtract(cashBackAmountTotal).add(merchantTax).add(serviceFeeAmt).add(deliveryFee).subtract(customerBalanceBeforeDiscount);
+            BigDecimal estimatedAmt = subTotal.add(merchantTax).add(serviceFeeAmt).add(deliveryFee).subtract(customerBalanceBeforeDiscount);
             checkOutDto.setEstimatedAmount(estimatedAmt.setScale(2, BigDecimal.ROUND_DOWN));
         }
         checkOutDto.setCurrency(systemPropertyService.readPrefValue(PreferenceType.CURRENCY));

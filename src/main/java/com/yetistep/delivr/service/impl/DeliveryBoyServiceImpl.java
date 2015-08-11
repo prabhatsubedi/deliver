@@ -1802,12 +1802,30 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
         if(orderStatus.equals(JobOrderStatus.IN_ROUTE_TO_DELIVERY)){
             if(BigDecimalUtil.isGreaterThen(orderEntity.getPaidFromCOD(), BigDecimal.ZERO)){
-                String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
-                remarks = String.format(remarks, currency, orderEntity.getGrandTotal(), orderEntity.getStore().getName());
-                this.setWalletTransaction(orderEntity, orderEntity.getPaidFromCOD(), AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount.subtract(orderEntity.getPaidFromCOD()));
-
                 paidFromWallet = orderEntity.getGrandTotal();
                 customerWalletAmount = customerWalletAmount.subtract(orderEntity.getPaidFromCOD());
+                String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
+                remarks = String.format(remarks, currency, orderEntity.getGrandTotal(), orderEntity.getStore().getName());
+                this.setWalletTransaction(orderEntity, orderEntity.getPaidFromCOD(), AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
+
+                paidFromCOD = BigDecimal.ZERO;
+            }
+        }
+
+        if(orderStatus.equals(JobOrderStatus.AT_STORE)){
+            Boolean itemPurchased = false;
+            for (ItemsOrderEntity itemsOrder: orderEntity.getItemsOrder()){
+                if (itemsOrder.getPurchaseStatus() != null && itemsOrder.getPurchaseStatus()){
+                    itemPurchased = true;
+                    break;
+                }
+            }
+            if(itemPurchased){
+                paidFromWallet = orderEntity.getGrandTotal();
+                customerWalletAmount = customerWalletAmount.subtract(paidFromWallet);
+                String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
+                remarks = String.format(remarks, currency, orderEntity.getGrandTotal(), orderEntity.getStore().getName());
+                this.setWalletTransaction(orderEntity, paidFromWallet, AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
                 paidFromCOD = BigDecimal.ZERO;
             }
         }

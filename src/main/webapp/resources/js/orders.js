@@ -17,7 +17,38 @@ Order.loadOrderFn = function(){
         Order.getOrders("#" + $(this).attr('data-id'), "/merchant/get_orders", {deliveryStatus: $(this).attr('data-status')});
 
     });
+
     $('.main_tabs a[data-toggle="tab"]').eq(0).tab('show');
+
+    $("#order_canceled_table").on("click", ".make_live", function(e) {
+        e.preventDefault();
+        console.log(e);
+        var button1 = function() {
+
+            var callback = function(status, data) {
+                Main.popDialog('', data.message);
+                if(data.success)
+                    $("#order_canceled_table").DataTable().ajax.reload();
+            };
+
+            callback.requestType = "GET";
+
+            var url = "/client/order_canceled_to_in_route_to_delivery";
+
+            var headers = {};
+            headers.id = $(e.target).attr("data-id");
+
+            Main.request(url,{}, callback, headers);
+
+        };
+
+        button1.text = "Yes";
+        button2 = "No";
+
+        var button = [button1, button2];
+
+        Main.popDialog("", "Are you sure you want to make the order live?", button);
+    });
 
 
     var postData = {};
@@ -249,6 +280,12 @@ Order.getOrders = function(elemId, url, params){
             storeInfo += "<div class='exclude_data store_info hidden'><div class='contact_person'><strong>"+contactPerson+"</strong></div><div class='contact_no'>"+contactNo+"</div></div></div>";
 
             var view_items = '<span class="item_list" data-store="' + order.store.name + '" data-id="'+id+'"  data-index="' + i + '" data-toggle="modal" data-target="#order_items_modal">View Item List</span>';
+
+
+            // Make Live for Cancelled Orders
+            if (order.orderStatus == "CANCELLED" && order.orderCancel.jobOrderStatus == "IN_ROUTE_TO_DELIVERY") {
+                view_items += ' | <a data-id="' + order.id + '" class="make_live" href="#">Make Live</a>';
+            }
 
             var assignedShoppers = order.deliveryBoySelections;
             var viewShoppers = "";

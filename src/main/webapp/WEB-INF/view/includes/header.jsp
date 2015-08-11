@@ -28,7 +28,7 @@
                         <li><a href="/admin/users">User Management</a></li>
                         <li><a href="/admin/settings">Settings</a></li>
                         <li><a href="/admin/view_category">Categories</a></li>
-                        <%--<li><a href="/admin/refill_wallet">Refill Wallet</a></li>--%>
+                        <li><a href="/admin/refill_wallet">Refill Wallet</a></li>
                     </sec:authorize>
                     <%--<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">--%>
                     <sec:authorize access="hasRole('ROLE_MANAGER')">

@@ -823,6 +823,10 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         }
         deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.subtract(BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, BigDecimalUtil.checkNull(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DISCOUNT_ON_DELIVERY_FEE)))));
 
+        /* 12. ======= Delivery Charge after store delivery discount ======== */
+        BigDecimal discountInDeliveryFeeFromStore = BigDecimalUtil.percentageOf(deliveryChargedBeforeDiscount, BigDecimalUtil.checkNull(cartsBrand.getDiscountInDeliveryFee()));
+        if(cartsBrand.getDiscountInDeliveryFee() != null)
+            deliveryChargedBeforeDiscount = deliveryChargedBeforeDiscount.subtract(discountInDeliveryFeeFromStore);
 
         /* Item Detail and Others */
         StoresBrandEntity storeBrand = new StoresBrandEntity();
@@ -885,6 +889,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 }  else {
                     deliveryFee = deliveryChargedBeforeDiscount;
                 }
+
+
             }else{
                 if(dfl != null && BigDecimalUtil.isGreaterThen(subTotal, dfl)){
                     deliveryFee = BigDecimal.ZERO;
@@ -897,6 +903,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                     deliveryFee =  deliveryFee.add(BigDecimalUtil.percentageOf(deliveryFee, new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.DELIVERY_FEE_VAT))));
                 }
             }
+
             checkOutDto.setDeliveryFee(deliveryFee);
             checkOutDto.setItemServiceCharge(itemServiceCharge);
             checkOutDto.setItemVatCharge(itemVatCharge);
@@ -1281,14 +1288,15 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             if(BigDecimalUtil.isGreaterThen(currentOrdersCodAmount.add(order.getGrandTotal()), new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)))))
                 throw new YSException("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
             BigDecimal currentOrdersWalletAmount = BigDecimalUtil.checkNull(orderDaoService.getCurrentOrdersWalletAmount(customer.getId()));
-            if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()).subtract(currentOrdersWalletAmount),order.getGrandTotal())){
+            BigDecimal remainingWalletAmount = BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()).subtract(currentOrdersWalletAmount);
+            if(BigDecimalUtil.isGreaterThenOrEqualTo(remainingWalletAmount,order.getGrandTotal())){
                 order.setPaidFromWallet(order.getGrandTotal());
                 order.setPaidFromCOD(BigDecimal.ZERO);
                 //order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(order.getGrandTotal()));
                 //setWalletTransaction(order);
-            } else if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()).subtract(currentOrdersWalletAmount), BigDecimal.ZERO)){
-                     BigDecimal paidFromWallet = order.getCustomer().getWalletAmount();
-                     BigDecimal paidFromCOD = order.getGrandTotal().subtract(order.getCustomer().getWalletAmount());
+            } else if(BigDecimalUtil.isGreaterThen(remainingWalletAmount, BigDecimal.ZERO) && BigDecimalUtil.isLessThen(remainingWalletAmount, order.getGrandTotal())){
+                     BigDecimal paidFromWallet = remainingWalletAmount;
+                     BigDecimal paidFromCOD = order.getGrandTotal().subtract(paidFromWallet);
                     if(BigDecimalUtil.isLessThen(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)), paidFromCOD.add(currentOrdersCodAmount))) {
                         //Max order amount reached
                         throw new YSException("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
@@ -2740,7 +2748,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
           List<ItemsOrderEntity> itemsOrders = order.getItemsOrder();
           Boolean itemPurchased = false;
           for (ItemsOrderEntity itemsOrder: itemsOrders){
-              if (itemsOrder.getPurchaseStatus()){
+              if (itemsOrder.getPurchaseStatus() != null && itemsOrder.getPurchaseStatus()){
                   itemPurchased = true;
                   break;
               }

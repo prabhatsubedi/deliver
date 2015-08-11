@@ -2261,14 +2261,14 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }
 
         if(countCustomItem.equals(0)) {
-            accountSummary.setServiceFee(order.getSystemServiceCharge());
-            accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge());
-            accountSummary.setItemServiceCharge(order.getItemServiceCharge());
-            accountSummary.setItemVatCharge(order.getItemVatCharge());
-            accountSummary.setDeliveryFee(order.getDeliveryCharge().add(totalDiscount));
-            accountSummary.setPaidFromCOD(order.getPaidFromCOD());
-            accountSummary.setPaidFromWallet(order.getPaidFromWallet());
-            accountSummary.setEstimatedTotal(order.getGrandTotal());
+            accountSummary.setServiceFee(order.getSystemServiceCharge().setScale(2, BigDecimal.ROUND_DOWN));
+            accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge().setScale(2, BigDecimal.ROUND_DOWN));
+            accountSummary.setItemServiceCharge(order.getItemServiceCharge().setScale(2, BigDecimal.ROUND_DOWN));
+            accountSummary.setItemVatCharge(order.getItemVatCharge().setScale(2, BigDecimal.ROUND_DOWN));
+            accountSummary.setDeliveryFee(order.getDeliveryCharge().add(totalDiscount).setScale(2, BigDecimal.ROUND_DOWN));
+            accountSummary.setPaidFromCOD(order.getPaidFromCOD().setScale(2, BigDecimal.ROUND_DOWN));
+            accountSummary.setPaidFromWallet(order.getPaidFromWallet().setScale(2, BigDecimal.ROUND_DOWN));
+            accountSummary.setEstimatedTotal(order.getGrandTotal().setScale(2, BigDecimal.ROUND_DOWN));
         } else  {
             accountSummary.setServiceFee(minusOne);
             accountSummary.setVatAndServiceCharge(minusOne);

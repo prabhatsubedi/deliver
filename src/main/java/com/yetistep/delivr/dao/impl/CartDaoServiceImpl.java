@@ -112,6 +112,7 @@ public class CartDaoServiceImpl implements CartDaoService{
                 .add(Projections.property("i.serviceCharge"), "item.serviceCharge")
                 .add(Projections.property("i.vat"), "item.vat")
                 .add(Projections.property("i.status"), "item.status")
+                .add(Projections.property("i.commissionPercentage"), "item.commissionPercentage")
                 .add(Projections.property("i.minOrderQuantity"), "item.minOrderQuantity")
                 .add(Projections.property("i.maxOrderQuantity"), "item.maxOrderQuantity");
 

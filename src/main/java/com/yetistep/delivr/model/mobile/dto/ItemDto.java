@@ -20,6 +20,7 @@ public class ItemDto {
     private String imageUrl;
     private Integer brandId;
     private Boolean defaultImage;
+    private BigDecimal cashBackAmount;
 
     public Integer getId() {
         return id;
@@ -99,5 +100,13 @@ public class ItemDto {
 
     public void setDefaultImage(Boolean defaultImage) {
         this.defaultImage = defaultImage;
+    }
+
+    public BigDecimal getCashBackAmount() {
+        return cashBackAmount;
+    }
+
+    public void setCashBackAmount(BigDecimal cashBackAmount) {
+        this.cashBackAmount = cashBackAmount;
     }
 }

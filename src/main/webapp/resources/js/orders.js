@@ -32,6 +32,7 @@ Order.loadOrderFn = function(){
             };
 
             callback.requestType = "GET";
+            callback.loaderDiv = "body";
 
             var url = "/client/order_canceled_to_in_route_to_delivery";
 

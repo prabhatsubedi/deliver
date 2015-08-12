@@ -1096,7 +1096,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().add(order.getCashBackToCustomerAmount()));
             WalletTransactionEntity walletTransactionCashBackEntity = new WalletTransactionEntity();
             walletTransactionCashBackEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
-            walletTransactionCashBackEntity.setAccountType(AccountType.DEBIT);
+            walletTransactionCashBackEntity.setAccountType(AccountType.CREDIT);
             String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
             String remarkCashBack = String.format(MessageBundle.getMessage("WTM013", "push_notification.properties"), currency, order.getCashBackToCustomerAmount(), order.getId());
             walletTransactionCashBackEntity.setRemarks(remarkCashBack);
@@ -2257,7 +2257,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if(countCustomItem.equals(itemsOrder.size())){
             accountSummary.setSubTotal(minusOne);
         } else {
-            accountSummary.setSubTotal(order.getTotalCost());
+            accountSummary.setSubTotal(order.getTotalCost().setScale(2, BigDecimal.ROUND_DOWN));
         }
 
         if(countCustomItem.equals(0)) {
@@ -2265,7 +2265,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             accountSummary.setVatAndServiceCharge(order.getItemServiceAndVatCharge().setScale(2, BigDecimal.ROUND_DOWN));
             accountSummary.setItemServiceCharge(order.getItemServiceCharge().setScale(2, BigDecimal.ROUND_DOWN));
             accountSummary.setItemVatCharge(order.getItemVatCharge().setScale(2, BigDecimal.ROUND_DOWN));
-            accountSummary.setDeliveryFee(order.getDeliveryCharge().add(totalDiscount).setScale(2, BigDecimal.ROUND_DOWN));
+            accountSummary.setDeliveryFee(order.getDeliveryCharge().setScale(2, BigDecimal.ROUND_DOWN));
             accountSummary.setPaidFromCOD(order.getPaidFromCOD().setScale(2, BigDecimal.ROUND_DOWN));
             accountSummary.setPaidFromWallet(order.getPaidFromWallet().setScale(2, BigDecimal.ROUND_DOWN));
             accountSummary.setEstimatedTotal(order.getGrandTotal().setScale(2, BigDecimal.ROUND_DOWN));

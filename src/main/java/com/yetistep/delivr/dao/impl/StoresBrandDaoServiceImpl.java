@@ -71,6 +71,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("brandUrl"), "brandUrl")
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
+                .add(Projections.property("deliveryFeeLimit"), "deliveryFeeLimit")
                 .add(Projections.property("minOrderAmount"), "minOrderAmount")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.isNotNull("featured")) ;
@@ -93,6 +94,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("brandUrl"), "brandUrl")
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
+                .add(Projections.property("deliveryFeeLimit"), "deliveryFeeLimit")
                 .add(Projections.property("minOrderAmount"), "minOrderAmount")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.isNull("featured"));
@@ -208,6 +210,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("brandUrl"), "brandUrl")
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
+                .add(Projections.property("deliveryFeeLimit"), "deliveryFeeLimit")
                 .add(Projections.property("minOrderAmount"), "minOrderAmount")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.in("id", brandId));
@@ -297,6 +300,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("brandUrl"), "brandUrl")
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
+                .add(Projections.property("deliveryFeeLimit"), "deliveryFeeLimit")
                 .add(Projections.property("minOrderAmount"), "minOrderAmount")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.isNotNull("featured")) ;
@@ -322,6 +326,7 @@ public class StoresBrandDaoServiceImpl implements StoresBrandDaoService{
                 .add(Projections.property("brandUrl"), "brandUrl")
                 .add(Projections.property("featured"), "featured")
                 .add(Projections.property("priority"), "priority")
+                .add(Projections.property("deliveryFeeLimit"), "deliveryFeeLimit")
                 .add(Projections.property("minOrderAmount"), "minOrderAmount")
         ).setResultTransformer(Transformers.aliasToBean(StoresBrandEntity.class));
         criteria.add(Restrictions.isNull("featured"));

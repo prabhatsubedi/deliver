@@ -434,15 +434,10 @@ public class OrderDaoServiceImpl implements OrderDaoService {
     @Override
     public List<OrderEntity> getAllWalletUnpaidOrdersOfCustomer(Integer customerId) throws Exception {
         List<JobOrderStatus> jobOrderStatusList = new ArrayList<JobOrderStatus>();
-        /*jobOrderStatusList.add(JobOrderStatus.ORDER_PLACED);
-        jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED);
-        jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP);
-        jobOrderStatusList.add(JobOrderStatus.AT_STORE);*/
         jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_DELIVERY);
 
         Criteria criteria = getCurrentSession().createCriteria(OrderEntity.class);
         criteria.add(Restrictions.in("orderStatus", jobOrderStatusList))
-                .add(Restrictions.eq("paymentMode", PaymentMode.WALLET))
                 .add(Restrictions.gt("paidFromCOD", BigDecimal.ZERO))
                 .add(Restrictions.eq("customer.id", customerId));
         return (List<OrderEntity>) criteria.list();
@@ -526,7 +521,7 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         jobOrderStatusList.add(JobOrderStatus.ORDER_ACCEPTED.ordinal());
         jobOrderStatusList.add(JobOrderStatus.IN_ROUTE_TO_PICK_UP.ordinal());
         jobOrderStatusList.add(JobOrderStatus.AT_STORE.ordinal());
-        String sql = "SELECT SUM(paid_from_wallet) FROM orders WHERE order_status IN(:jobOrderStatusList) AND customer_id =:customerId";
+        String sql = "SELECT SUM(paid_from_cod) FROM orders WHERE order_status IN(:jobOrderStatusList) AND customer_id =:customerId";
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
         query.setParameter("customerId", customerId);
         query.setParameterList("jobOrderStatusList", jobOrderStatusList);

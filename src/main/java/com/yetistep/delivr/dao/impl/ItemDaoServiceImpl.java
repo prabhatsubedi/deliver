@@ -82,7 +82,7 @@ public class ItemDaoServiceImpl implements ItemDaoService{
     public List<ItemDto> findItems(Integer brandId, Integer categoryId) throws Exception {
         List<ItemDto> items;
 
-        String sql = "SELECT it.id, it.name, it.description, it.unit_price AS price, i.cash_back_amount as cashBackAmount, it.service_charge as serviceCharge, it.vat, itim.url AS imageUrl FROM items it " +
+        String sql = "SELECT it.id, it.name, it.description, it.unit_price AS price, it.cash_back_amount as cashBackAmount, it.service_charge as serviceCharge, it.vat, itim.url AS imageUrl FROM items it " +
                 "LEFT JOIN items_images itim ON itim.id = (SELECT MIN(id) FROM items_images WHERE item_id = it.id) " +
                 "WHERE it.brand_id = :brandId AND it.category_id = :categoryId AND status =:status";
         SQLQuery query = getCurrentSession().createSQLQuery(sql);

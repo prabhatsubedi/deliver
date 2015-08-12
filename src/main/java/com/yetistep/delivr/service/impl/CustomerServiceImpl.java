@@ -1271,8 +1271,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         if(paymentMode.equals(PaymentMode.WALLET)){
             BigDecimal currentOrdersWalletAmount = BigDecimalUtil.checkNull(orderDaoService.getCurrentOrdersWalletAmount(customer.getId()));
             log.info("Current orders wallet amount: "+currentOrdersWalletAmount);
-            if(BigDecimalUtil.isGreaterThenOrEqualTo(currentOrdersWalletAmount, order.getCustomer().getWalletAmount()))
-                throw new YSException("ORD020");
+            /*if(BigDecimalUtil.isGreaterThenOrEqualTo(currentOrdersWalletAmount, order.getCustomer().getWalletAmount()))
+                throw new YSException("ORD020");*/
 
             BigDecimal totalWalletAmount = currentOrdersWalletAmount.add(order.getGrandTotal());
             if(BigDecimalUtil.isLessThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()), totalWalletAmount)){

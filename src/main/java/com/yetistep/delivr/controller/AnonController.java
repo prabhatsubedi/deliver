@@ -5,14 +5,12 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.CountryEntity;
-import com.yetistep.delivr.model.CustomerEntity;
 import com.yetistep.delivr.model.MerchantEntity;
 import com.yetistep.delivr.model.UserEntity;
 import com.yetistep.delivr.service.inf.*;
 import com.yetistep.delivr.util.GeneralUtil;
 import com.yetistep.delivr.util.ServiceResponse;
 import com.yetistep.delivr.util.SessionManager;
-import com.yetistep.delivr.util.YSException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -170,11 +168,11 @@ public class AnonController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/register_customer")
+    @RequestMapping(value = "/register_customer", method = RequestMethod.POST)
     public ResponseEntity<ServiceResponse> registerCustomer(@RequestHeader HttpHeaders httpHeaders, @RequestBody UserEntity customer) throws Exception {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(httpHeaders, headerDto, GeneralUtil.ID, GeneralUtil.ACCESS_TOKEN);
+            GeneralUtil.fillHeaderCredential(httpHeaders, headerDto, GeneralUtil.ID);
 
             customerService.registerCustomer(customer, headerDto);
 
@@ -189,11 +187,11 @@ public class AnonController {
     }
 
 
-    @RequestMapping(value = "/register_customer_mobile")
+    @RequestMapping(value = "/register_mobile_customer", method = RequestMethod.POST)
     public ResponseEntity<ServiceResponse> registerCustomerMobile(@RequestHeader HttpHeaders httpHeaders, @RequestBody UserEntity customer) throws Exception {
         try {
             HeaderDto headerDto = new HeaderDto();
-            GeneralUtil.fillHeaderCredential(httpHeaders, headerDto, GeneralUtil.ID, GeneralUtil.ACCESS_TOKEN);
+            GeneralUtil.fillHeaderCredential(httpHeaders, headerDto, GeneralUtil.ID);
 
             customerService.registerCustomerMobile(customer, headerDto);
 

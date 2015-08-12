@@ -21,6 +21,7 @@ public class ItemDto {
     private Integer brandId;
     private Boolean defaultImage;
     private BigDecimal cashBackAmount;
+    private BigDecimal mrp;
 
     public Integer getId() {
         return id;
@@ -108,5 +109,13 @@ public class ItemDto {
 
     public void setCashBackAmount(BigDecimal cashBackAmount) {
         this.cashBackAmount = cashBackAmount;
+    }
+
+    public BigDecimal getMrp() {
+        return mrp;
+    }
+
+    public void setMrp(BigDecimal mrp) {
+        this.mrp = mrp;
     }
 }

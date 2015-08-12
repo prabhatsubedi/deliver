@@ -59,6 +59,7 @@ public class ItemEntity implements Serializable {
     private Boolean defaultImage; //Transient Value
     private String editedName;
     private BigDecimal cashBackAmount;
+    private BigDecimal mrp;
 
     private CategoryEntity category;
     private StoresBrandEntity storesBrand;
@@ -397,6 +398,15 @@ public class ItemEntity implements Serializable {
 
     public void setCashBackAmount(BigDecimal cashBackAmount) {
         this.cashBackAmount = cashBackAmount;
+    }
+
+    @Column(name = "mrp")
+    public BigDecimal getMrp() {
+        return mrp;
+    }
+
+    public void setMrp(BigDecimal mrp) {
+        this.mrp = mrp;
     }
 
     @Transient

@@ -7,7 +7,6 @@ import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,7 +113,7 @@ public class CategoryDaoServiceImpl implements CategoryDaoService{
 
     @Override
     public List<CategoryEntity> findDefaultCategories() throws Exception {
-        String sql = "SELECT DISTINCT(c.id), c.name, c.image_url AS imageUrl FROM categories c " +
+        String sql = "SELECT DISTINCT(c.id), c.name, c.image_url AS imageUrl, c.list_image_url AS listImageUrl FROM categories c " +
                 "INNER JOIN brands_categories bc ON(bc.category_id = c.id) " +
                 "INNER JOIN stores_brands sb ON(bc.stores_brand_id = sb.id AND sb.status = :status) " +
                 "WHERE c.parent_id IS NULL ORDER BY c.priority ASC";

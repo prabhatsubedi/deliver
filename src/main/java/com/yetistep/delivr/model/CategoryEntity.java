@@ -1,10 +1,9 @@
 package com.yetistep.delivr.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -33,6 +32,7 @@ public class CategoryEntity implements Serializable {
    private Integer priority;
    private Timestamp createdDate;
    private String imageUrl;
+   private String listImageUrl;
     //Transient
    private Integer parentId;
     @Id
@@ -138,6 +138,15 @@ public class CategoryEntity implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Column(name = "list_image_url")
+    public String getListImageUrl() {
+        return listImageUrl;
+    }
+
+    public void setListImageUrl(String listImageUrl) {
+        this.listImageUrl = listImageUrl;
     }
 
     @Transient

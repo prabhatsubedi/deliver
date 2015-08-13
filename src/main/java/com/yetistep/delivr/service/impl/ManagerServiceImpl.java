@@ -538,7 +538,9 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
         }
 
         String categoryImage = category.getImageUrl();
+        String categoryListImage = category.getListImageUrl();
         category.setImageUrl(null);
+        category.setListImageUrl(null);
         category.setCreatedDate(DateUtil.getCurrentTimestampSQL());
         if (category.getFeatured() == null) {
             category.setFeatured(false);
@@ -553,8 +555,21 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
             String categoryImageUrl = "category"+(isLocal ? "_tmp_" : "_") + category.getId()+System.currentTimeMillis();
             String s3PathImage = GeneralUtil.saveImageToBucket(categoryImage, categoryImageUrl, dir, true);
             category.setImageUrl(s3PathImage);
-            categoryDaoService.update(category);
         }
+
+        if(categoryListImage != null){
+            log.info("Uploading category list image to S3 Bucket ");
+            String dir = MessageBundle.separateString("/", "categories");
+            boolean isLocal = MessageBundle.isLocalHost();
+            String categoryListImageUrl = "category_list"+(isLocal ? "_tmp_" : "_") + category.getId()+System.currentTimeMillis();
+            String s3PathImage = GeneralUtil.saveImageToBucket(categoryListImage, categoryListImageUrl, dir, true);
+            category.setImageUrl(s3PathImage);
+        }
+
+        if(categoryImage != null || categoryListImage != null)
+            categoryDaoService.update(category);
+
+
         String fields = "id,name,imageUrl";
         return ReturnJsonUtil.getJsonObject(category, fields);
     }
@@ -575,10 +590,15 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
 
         String categoryImage = category.getImageUrl();
         String dbImageUrl = dbCategory.getImageUrl();
+        String categoryListImage = category.getListImageUrl();
+        String dbListImageUrl = dbCategory.getImageUrl();
 
         if(categoryImage != null){
             dbCategory.setImageUrl(null);
         }
+
+        if(categoryListImage != null)
+            dbCategory.setListImageUrl(null);
 
         dbCategory.setName(category.getName());
         if(childCategories != null && childCategories.size()>0){
@@ -610,8 +630,25 @@ public class ManagerServiceImpl extends AbstractManager implements ManagerServic
             String categoryImageUrl = "category"+(isLocal ? "_tmp_" : "_") + dbCategory.getId()+System.currentTimeMillis();
             String s3PathImage = GeneralUtil.saveImageToBucket(categoryImage, categoryImageUrl, dir, true);
             dbCategory.setImageUrl(s3PathImage);
-            categoryDaoService.update(dbCategory);
         }
+
+        if(categoryListImage != null){
+            log.info("Uploading category list image to S3 Bucket ");
+            String dir = MessageBundle.separateString("/", "categories");
+            boolean isLocal = MessageBundle.isLocalHost();
+
+            if(dbListImageUrl != null){
+                log.info("deleting category image from S3 Bucket ");
+                AmazonUtil.deleteFileFromBucket(AmazonUtil.getAmazonS3Key(dbListImageUrl));
+            }
+
+            String categoryListImageUrl = "category_list"+(isLocal ? "_tmp_" : "_") + dbCategory.getId()+System.currentTimeMillis();
+            String s3PathImage = GeneralUtil.saveImageToBucket(categoryListImage, categoryListImageUrl, dir, true);
+            dbCategory.setImageUrl(s3PathImage);
+        }
+
+        if(categoryImage != null || categoryListImage != null)
+            categoryDaoService.update(dbCategory);
 
         String fields = "id,parent,name,imageUrl";
 

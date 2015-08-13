@@ -186,6 +186,7 @@ function toggleSwitch(value, elem) {
                         $('#commission').val(item.commissionPercentage);
                         $('#cashback').val(item.cashBackAmount);
                         $('#price').val(item.unitPrice);
+                        $('#mrp').val(item.mrp);
 
                         var attributes_types = "";
                         if(attributesTypes.length > 0) {
@@ -666,6 +667,7 @@ function toggleSwitch(value, elem) {
                     item.maxOrderQuantity = $('#max_order').val();
                     item.minOrderQuantity = $('#min_order').val();
                     item.unitPrice = $('#price').val();
+                    item.mrp = $('#mrp').val();
                     if($('#additional_offer').val() != "N/A" && $('#additional_offer').val() != "") item.additionalOffer = $('#additional_offer').val();
                     //item.approxSize = "";
                     //item.approxWeight = "";
@@ -784,6 +786,7 @@ function toggleSwitch(value, elem) {
         $('#vat').rules('add', {required: true, number: true, min: 0, max: 100});
         $('#service_charge').rules('add', {required: true, number: true, min: 0, max: 100});
         $('#price').rules('add', {required: true, number: true, min: 0});
+        $('#mrp').rules('add', {required: true, number: true, min: 0});
         $('#new_category').rules('add', {required: true});
         $('#commission').rules('add', {required: true, number: true, min: 0, max: 100});
         $('#cashback').rules('add', {required: true, number: true, min: 0});
@@ -846,7 +849,7 @@ function toggleSwitch(value, elem) {
                     update_subcat(data_categories_id);
 
                     $('.product_image .drop_zone').html('<div class="drop_info">Drop image file <br /> (or click to browse) <br /> Min Size: 400x400</div>');
-                    $('#name_item, #description, #price').val('');
+                    $('#name_item, #description, #price, #mrp').val('');
                     $('#min_order').val('1');
                     $('#max_order').val('100');
                     $('#additional_offer').val('N/A');

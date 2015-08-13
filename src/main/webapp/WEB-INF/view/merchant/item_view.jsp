@@ -123,6 +123,10 @@
                                                 <div class="sub_label pull-left">Cashback Amount</div>
                                                 <div class="sub_value pull-left cashback"></div>
                                             </div>
+                                            <div class="clearfix">
+                                                <div class="sub_label pull-left">MRP</div>
+                                                <div class="sub_value pull-left mrp"></div>
+                                            </div>
                                         </div>
                                     </div>
 

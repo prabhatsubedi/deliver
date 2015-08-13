@@ -87,7 +87,7 @@
                                         <div class="form-group clearfix">
                                             <label class="col-lg-4 floated_label" for="description">Tags</label>
                                             <div class="col-lg-8">
-                                                <input type="text" class="form-control" id="tags" name="tags">
+                                                <input type="text" class="form-control" id="tags" name="tags" data-edited="false">
                                             </div>
                                         </div>
                                         <div class="form-group clearfix">
@@ -231,6 +231,12 @@
                                 </div>
                                 <div class="form_head">Pricing & Attributes</div>
                                 <div class="form_content">
+                                    <div class="form-group clearfix row">
+                                        <label class="col-lg-4 floated_label" for="mrp">MRP</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="mrp" name="mrp">
+                                        </div>
+                                    </div>
                                     <div class="form-group clearfix row">
                                         <label class="col-lg-4 floated_label" for="price">Price</label>
                                         <div class="col-lg-8">

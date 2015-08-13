@@ -8,12 +8,10 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.enums.*;
 import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.AccountService;
-import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -310,7 +308,7 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         List<StoreEntity> storeEntities = storeDaoService.findAll();
         List<StoreEntity> partnerStores = new ArrayList<>();
         for (StoreEntity storeEntity:storeEntities){
-            if(storeEntity.getStoresBrand().getMerchant().getPartnershipStatus().equals(Boolean.TRUE)){
+            if(storeEntity.getStoresBrand().getPartnershipStatus().equals(Boolean.TRUE)){
                     partnerStores.add(storeEntity);
             }
         }

@@ -1287,8 +1287,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         }else{
             BigDecimal currentOrdersCodAmount = BigDecimalUtil.checkNull(orderDaoService.getCurrentOrdersCodAmount(customer.getId()));
             log.info("Current orders cod amount: "+currentOrdersCodAmount);
-            if(BigDecimalUtil.isGreaterThen(currentOrdersCodAmount.add(order.getGrandTotal()), new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)))))
-                throw new YSException("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
+            /*if(BigDecimalUtil.isGreaterThen(currentOrdersCodAmount.add(order.getGrandTotal()), new BigDecimal(Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)))))
+                throw new YSException("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");*/
             BigDecimal currentOrdersWalletAmount = BigDecimalUtil.checkNull(orderDaoService.getCurrentOrdersWalletAmount(customer.getId()));
             log.info("Current orders wallet amount: "+currentOrdersWalletAmount);
             BigDecimal remainingWalletAmount = BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()).subtract(currentOrdersWalletAmount);
@@ -1302,7 +1302,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                      BigDecimal paidFromCOD = order.getGrandTotal().subtract(paidFromWallet);
                     if(BigDecimalUtil.isLessThen(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)), paidFromCOD.add(currentOrdersCodAmount))) {
                         //Max order amount reached
-                        throw new YSException("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
+                        throw new YSException("CRT007", ": Your running order sum exceeds the limit of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + ". Please try placing order via wallet payment.");
                     }
 
                     order.setPaidFromWallet(paidFromWallet);
@@ -1312,7 +1312,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             } else {
                 if(BigDecimalUtil.isLessThen(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT)), order.getGrandTotal().add(currentOrdersCodAmount))) {
                     //Max order amount reached
-                    throw new YSException("CRT007: Value of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + " can be order");
+                    throw new YSException("CRT007", ": Your running order sum exceeds the limit of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + ". Please try placing order via wallet payment.");
                 }
                 order.setPaidFromWallet(BigDecimal.ZERO);
                 order.setPaidFromCOD(order.getGrandTotal());

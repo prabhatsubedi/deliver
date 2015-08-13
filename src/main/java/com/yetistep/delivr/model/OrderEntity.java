@@ -73,6 +73,7 @@ public class OrderEntity implements Serializable {
     private String accountantNote;
     private BigDecimal storeDeliveryDiscount; //discount in delivery fee from store
     private BigDecimal cashBackToCustomerAmount;
+    private BigDecimal appVersionNo;
 
     private OrderCancelEntity orderCancel;
     private CourierTransactionEntity courierTransaction;
@@ -624,6 +625,15 @@ public class OrderEntity implements Serializable {
 
     public void setCashBackToCustomerAmount(BigDecimal cashBackToCustomerAmount) {
         this.cashBackToCustomerAmount = cashBackToCustomerAmount;
+    }
+
+    @Column(name = "app_version_no")
+    public BigDecimal getAppVersionNo() {
+        return appVersionNo;
+    }
+
+    public void setAppVersionNo(BigDecimal appVersionNo) {
+        this.appVersionNo = appVersionNo;
     }
 
     @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE} )

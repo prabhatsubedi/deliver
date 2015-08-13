@@ -1326,6 +1326,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         }else{
             order.getCustomer().setTotalOrderPlaced(order.getCustomer().getTotalOrderPlaced()+1);
         }
+        order.setAppVersionNo(BigDecimal.ONE);
         orderDaoService.save(order);
 
         deleteCarts(cartIds);

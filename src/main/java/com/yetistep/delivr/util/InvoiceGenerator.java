@@ -2,24 +2,19 @@ package com.yetistep.delivr.util;
 
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPRow;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
-import com.yetistep.delivr.dao.inf.DBoyPaymentDaoService;
-import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.model.*;
-import org.apache.commons.mail.EmailException;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.awt.*;
-import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -235,10 +230,12 @@ public class InvoiceGenerator {
         //logo cell
         PdfPCell logoCell = new PdfPCell();
         System.out.println(imageUrl);
-        Image logo = Image.getInstance(new URL(imageUrl));
-        logo.setAlignment(Element.ALIGN_LEFT);
-        logo.setWidthPercentage(60);
-        logoCell.addElement(logo);
+        if(imageUrl != null && !imageUrl.equals("")) {
+            Image logo = Image.getInstance(new URL(imageUrl));
+            logo.setAlignment(Element.ALIGN_LEFT);
+            logo.setWidthPercentage(60);
+            logoCell.addElement(logo);
+        }
         logoCell.setRight(40);
 
         //contact cell
@@ -427,7 +424,7 @@ public class InvoiceGenerator {
                 if(!order.getStore().getStoresBrand().getVatInclusive()) {
                     totalVatAmount = totalVatAmount.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getItemTotal().add(itemServiceCharge), BigDecimalUtil.checkNull(itemsOrderEntity.getVat())));
                 }
-                commissionVatAmount.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getCommissionAmount(), BigDecimalUtil.checkNull(itemsOrderEntity.getVat())));
+                commissionVatAmount = commissionVatAmount.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getCommissionAmount(), BigDecimalUtil.checkNull(itemsOrderEntity.getVat())));
             }
             //add order
             PdfUtil.addRow(billingTable, PdfUtil.getPhrase(cntOrder), PdfUtil.getPhrase(order.getOrderDate()), PdfUtil.getPhrase(order.getId()), PdfUtil.getPhrase(order.getTotalCost().subtract(order.getDiscountFromStore())));
@@ -456,11 +453,7 @@ public class InvoiceGenerator {
         }
 
         Phrase grandTotal = PdfUtil.getPhrase("Grand Total", tableHeadFont);
-        if(BigDecimalUtil.isIntegerValue(merchant.getCommissionPercentage())){
-            commission = PdfUtil.getPhrase("Commission("+ merchant.getCommissionPercentage().intValueExact()+"%) with VAT", tableHeadFont);
-        } else {
-            commission = PdfUtil.getPhrase("Commission("+ merchant.getCommissionPercentage()+"%)", tableHeadFont);
-        }
+        commission = PdfUtil.getPhrase("Total Commission", tableHeadFont);
         Phrase totalPayable = PdfUtil.getPhrase("Net Payable", tableHeadFont);
 
 
@@ -506,9 +499,9 @@ public class InvoiceGenerator {
         BigDecimal commissionVatAmount = BigDecimal.ZERO;
         for (OrderEntity order: orders){
             totalOrderAmount = totalOrderAmount.add(order.getTotalCost().subtract(order.getDiscountFromStore()));
-            commissionAmount.add(order.getCommissionAmount());
+            commissionAmount = commissionAmount.add(order.getCommissionAmount());
             for (ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()) {
-                commissionVatAmount.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getCommissionAmount(), BigDecimalUtil.checkNull(itemsOrderEntity.getVat())));
+                commissionVatAmount = commissionVatAmount.add(BigDecimalUtil.percentageOf(itemsOrderEntity.getCommissionAmount(), BigDecimalUtil.checkNull(itemsOrderEntity.getVat())));
             }
         }
 

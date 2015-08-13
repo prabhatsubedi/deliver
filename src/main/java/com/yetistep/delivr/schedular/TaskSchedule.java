@@ -10,7 +10,6 @@ import com.yetistep.delivr.service.inf.AccountService;
 import com.yetistep.delivr.service.inf.CustomerService;
 import com.yetistep.delivr.service.inf.DeliveryBoyService;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
-import com.yetistep.delivr.util.MessageBundle;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -67,7 +66,7 @@ public class TaskSchedule {
 
     }
 
-    @Scheduled(cron="0 59 23 * * TUE")
+    @Scheduled(cron="0 59 23 * * THU")
     public void generateInvoice() throws Exception{
         log.info("Generating invoice:");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -76,8 +75,10 @@ public class TaskSchedule {
         Calendar calPrev = Calendar.getInstance();
         calPrev.add(Calendar.DATE, -7);
         List<StoreEntity> stores=accountService.getAllStores();
+        log.info("Count Store: "+stores.size());
         if(stores.size()>0){
             for (StoreEntity store: stores){
+                log.info("Generating invoice for store: "+store.getName());
                 accountService.generateInvoice(store.getId(), dateFormat.format(calPrev.getTime()), dateFormat.format(cal.getTime()));
             }
         } else {

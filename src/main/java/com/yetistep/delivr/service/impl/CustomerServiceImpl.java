@@ -1629,6 +1629,9 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         customer.setFacebookId(idGeneratorEntity.getGeneratedId());
         user.setCustomer(customer);
 
+        idGeneratorEntity.setGeneratedId(idGeneratorEntity.getGeneratedId() + 1);
+        idGeneratorDaoService.update(idGeneratorEntity);
+
         user.getCustomer().setReferredBy(Long.parseLong(headerDto.getId()));
         user.getCustomer().setDefault(false);
         user.getCustomer().setUser(user);

@@ -833,6 +833,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         storeBrand.setId(brandId);
         storeBrand.setBrandName(cartsBrand.getBrandName());
         storeBrand.setBrandLogo(cartsBrand.getBrandLogo());
+        storeBrand.setDeliveryFeeLimit(cartsBrand.getDeliveryFeeLimit());
 
         //add custom items to the item
         List<ItemEntity> customItems = new ArrayList<>();

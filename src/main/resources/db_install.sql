@@ -312,3 +312,6 @@ INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_
 
 
 
+/*2015-08-14*/
+update items set cash_back_amount = 0 where cash_back_amount is null;
+update items set mrp = 0 where mrp is null;

@@ -22,6 +22,7 @@ public class ItemDto {
     private Boolean defaultImage;
     private BigDecimal cashBackAmount;
     private BigDecimal mrp;
+    private BigDecimal deliveryFeeLimit;
 
     public Integer getId() {
         return id;
@@ -117,5 +118,13 @@ public class ItemDto {
 
     public void setMrp(BigDecimal mrp) {
         this.mrp = mrp;
+    }
+
+    public BigDecimal getDeliveryFeeLimit() {
+        return deliveryFeeLimit;
+    }
+
+    public void setDeliveryFeeLimit(BigDecimal deliveryFeeLimit) {
+        this.deliveryFeeLimit = deliveryFeeLimit;
     }
 }

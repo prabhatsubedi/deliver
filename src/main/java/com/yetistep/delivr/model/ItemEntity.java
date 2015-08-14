@@ -70,6 +70,8 @@ public class ItemEntity implements Serializable {
     private List<CartEntity> carts;
 
 
+    private BigDecimal deliveryFeeLimit;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
@@ -470,5 +472,13 @@ public class ItemEntity implements Serializable {
 
     public void setEditedName(String editedName) {
         this.editedName = editedName;
+    }
+    @Transient
+    public BigDecimal getDeliveryFeeLimit() {
+        return deliveryFeeLimit;
+    }
+
+    public void setDeliveryFeeLimit(BigDecimal deliveryFeeLimit) {
+        this.deliveryFeeLimit = deliveryFeeLimit;
     }
 }

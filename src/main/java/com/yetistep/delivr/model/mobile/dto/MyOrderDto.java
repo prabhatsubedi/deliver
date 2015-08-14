@@ -3,6 +3,8 @@ package com.yetistep.delivr.model.mobile.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yetistep.delivr.enums.JobOrderStatus;
 
+import java.math.BigDecimal;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Chandra Prakash Panday
@@ -16,6 +18,8 @@ public class MyOrderDto {
     private String brandName;
     private JobOrderStatus orderStatus;
     private Integer jobOrderStatus;
+    private BigDecimal paidFromWallet;
+    private BigDecimal paidFromCod;
 
     public Integer getOrderId() {
         return orderId;
@@ -57,5 +61,21 @@ public class MyOrderDto {
     public void setJobOrderStatus(Integer jobOrderStatus) {
         this.jobOrderStatus = jobOrderStatus;
         this.setOrderStatus(JobOrderStatus.fromInt(jobOrderStatus));
+    }
+
+    public BigDecimal getPaidFromWallet() {
+        return paidFromWallet;
+    }
+
+    public void setPaidFromWallet(BigDecimal paidFromWallet) {
+        this.paidFromWallet = paidFromWallet;
+    }
+
+    public BigDecimal getPaidFromCod() {
+        return paidFromCod;
+    }
+
+    public void setPaidFromCod(BigDecimal paidFromCod) {
+        this.paidFromCod = paidFromCod;
     }
 }

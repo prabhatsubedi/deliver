@@ -137,6 +137,7 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
     @Override
     public List<MyOrderDto> getCurrentOrdersByFacebookId(Long facebookId) throws Exception {
         String sqlQuery = "SELECT o.id as orderId, o.order_status as jobOrderStatus, " +
+                "o.paid_from_wallet as paidFromWallet, o.paid_from_cod as paidFromCod" +
                 "sb.brand_logo as brandLogo, sb.brand_name as brandName " +
                 "FROM orders o, stores_brands sb, stores s, customers c " +
                 "WHERE o.store_id = s.id AND s.stores_brand_id = sb.id AND " +
@@ -166,6 +167,7 @@ public class CustomerDaoServiceImpl implements CustomerDaoService {
     @Override
     public List<MyOrderDto> getPastOrdersByFacebookId(Long facebookId, Page page) throws Exception {
         String sqlQuery = "SELECT o.id as orderId, o.order_status as jobOrderStatus, " +
+                "o.paid_from_wallet as paidFromWallet, o.paid_from_cod as paidFromCod" +
                 "sb.brand_logo as brandLogo, sb.brand_name as brandName " +
                 "FROM orders o, stores_brands sb, stores s, customers c " +
                 "WHERE o.store_id = s.id AND s.stores_brand_id = sb.id AND " +

@@ -85,7 +85,7 @@ public class ItemDaoServiceImpl implements ItemDaoService{
         String sql = "SELECT it.id, it.name, it.description, it.unit_price AS price, it.mrp AS mrp, it.cash_back_amount as cashBackAmount, it.service_charge as serviceCharge, it.vat, sb.delivery_fee_limit as deliveryFeeLimit, itim.url AS imageUrl FROM items it " +
                 "LEFT JOIN items_images itim ON itim.id = (SELECT MIN(id) FROM items_images WHERE item_id = it.id) " +
                 "INNER JOIN stores_brands sb ON(sb.id = it.brand_id AND sb.status=:status) " +
-                "WHERE it.brand_id = :brandId AND it.category_id = :categoryId AND status =:status";
+                "WHERE it.brand_id = :brandId AND it.category_id = :categoryId AND it.status =:status";
         SQLQuery query = getCurrentSession().createSQLQuery(sql);
         query.setParameter("brandId", brandId);
         query.setParameter("categoryId", categoryId);

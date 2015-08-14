@@ -64,7 +64,7 @@ public class CourierTransactionEntity {
         this.commissionAmount = commissionAmount;
     }
 
-    @Column(name ="store_to_customer_distance", precision = 5, scale = 2)
+    @Column(name ="store_to_customer_distance", precision = 16, scale = 2)
     public BigDecimal getStoreToCustomerDistance() {
         return storeToCustomerDistance;
     }
@@ -73,7 +73,7 @@ public class CourierTransactionEntity {
         this.storeToCustomerDistance = storeToCustomerDistance;
     }
 
-    @Column(name ="courier_to_store_distance", precision = 5, scale = 2)
+    @Column(name ="courier_to_store_distance", precision = 16, scale = 2)
     public BigDecimal getCourierToStoreDistance() {
         return courierToStoreDistance;
     }

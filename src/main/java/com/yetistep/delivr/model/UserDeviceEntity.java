@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -29,6 +30,7 @@ public class UserDeviceEntity {
     private Integer height;
     private Integer width;
     private UserEntity user;
+    private BigDecimal currentVersion;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -150,5 +152,14 @@ public class UserDeviceEntity {
 
     public void setUser(UserEntity user) {
         this.user = user;
+    }
+
+    @Column(name = "current_version")
+    public BigDecimal getCurrentVersion() {
+        return currentVersion;
+    }
+
+    public void setCurrentVersion(BigDecimal currentVersion) {
+        this.currentVersion = currentVersion;
     }
 }

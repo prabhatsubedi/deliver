@@ -20,6 +20,7 @@ public class MyOrderDto {
     private Integer jobOrderStatus;
     private BigDecimal paidFromWallet;
     private BigDecimal paidFromCod;
+    private BigDecimal cashBackAmount;
 
     public Integer getOrderId() {
         return orderId;
@@ -77,5 +78,13 @@ public class MyOrderDto {
 
     public void setPaidFromCod(BigDecimal paidFromCod) {
         this.paidFromCod = paidFromCod;
+    }
+
+    public BigDecimal getCashBackAmount() {
+        return cashBackAmount;
+    }
+
+    public void setCashBackAmount(BigDecimal cashBackAmount) {
+        this.cashBackAmount = cashBackAmount;
     }
 }

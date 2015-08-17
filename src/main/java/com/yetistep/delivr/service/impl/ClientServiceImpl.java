@@ -529,18 +529,17 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
 
 
-            /*if (itemOrder.getItem() != null) {
-                ItemEntity item = new ItemEntity();
+            if (itemOrder.getItem() != null) {
+                /*ItemEntity item = new ItemEntity();
                 item.setId(itemOrder.getItem().getId());
                 item.setName(itemOrder.getItem().getName());
-                item.setAdditionalOffer(itemOrder.getItem().getAdditionalOffer());
-                ItemsImageEntity itemsImageEntity = itemsImageDaoService.findImage(itemOrder.getItem().getId());
-                if(itemsImageEntity !=null)
-                    item.setImageUrl(itemsImageEntity.getUrl());
+                item.setAdditionalOffer(itemOrder.getItem().getAdditionalOffer());*/
+                List<ItemsImageEntity> itemsImageEntity = itemOrder.getItem().getItemsImage();
+                if(itemsImageEntity !=null && itemsImageEntity.size() > 0)
+                    itemOrder.getItem().setImageUrl(itemsImageEntity.get(0).getUrl());
                 else
-                    item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
-                itemOrder.setItem(item);
-            }else*/ if(returnItemOrder.getCustomItem() != null){
+                    itemOrder.getItem().setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+            }else if(returnItemOrder.getCustomItem() != null){
                 if(returnItemOrder.getCustomItem().getCustomerCustom().equals(Boolean.TRUE))   {
                     if(returnItemOrder.getPurchaseStatus() == null || !returnItemOrder.getPurchaseStatus().equals(Boolean.TRUE)) {
                         returnItemOrder.setVat(minusOne);

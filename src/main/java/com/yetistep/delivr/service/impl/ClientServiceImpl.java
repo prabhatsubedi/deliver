@@ -523,6 +523,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             assoc.put("itemOrderAttributes", "id,itemsAttribute");
 
             subAssoc.put("itemsAttribute", "id,attribute,unitPrice,type");
+            subAssoc.put("itemsImage", "id,url");
             subAssoc.put("type", "id,type");
 
             ItemsOrderEntity returnItemOrder = (ItemsOrderEntity) ReturnJsonUtil.getJsonObject(itemOrder, fields, assoc, subAssoc);

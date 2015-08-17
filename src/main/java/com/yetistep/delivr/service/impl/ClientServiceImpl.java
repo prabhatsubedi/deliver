@@ -529,18 +529,18 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
 
 
-            if (itemOrder.getItem() != null) {
+            if (returnItemOrder.getItem() != null) {
                 /*ItemEntity item = new ItemEntity();
                 item.setId(itemOrder.getItem().getId());
                 item.setName(itemOrder.getItem().getName());
                 item.setAdditionalOffer(itemOrder.getItem().getAdditionalOffer());*/
-                List<ItemsImageEntity> itemsImageEntity = itemOrder.getItem().getItemsImage();
+                List<ItemsImageEntity> itemsImageEntity = returnItemOrder.getItem().getItemsImage();
                 if(itemsImageEntity !=null && itemsImageEntity.size() > 0)
-                    itemOrder.getItem().setImageUrl(itemsImageEntity.get(0).getUrl());
+                    returnItemOrder.getItem().setImageUrl(itemsImageEntity.get(0).getUrl());
                 else
-                    itemOrder.getItem().setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+                    returnItemOrder.getItem().setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
 
-                itemOrder.getItem().setItemsImage(null);
+                returnItemOrder.getItem().setItemsImage(null);
             }else if(returnItemOrder.getCustomItem() != null){
                 if(returnItemOrder.getCustomItem().getCustomerCustom().equals(Boolean.TRUE))   {
                     if(returnItemOrder.getPurchaseStatus() == null || !returnItemOrder.getPurchaseStatus().equals(Boolean.TRUE)) {

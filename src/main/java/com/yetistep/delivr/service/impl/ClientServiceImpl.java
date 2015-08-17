@@ -509,27 +509,11 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
 
         OrderSummaryDto orderSummary = new OrderSummaryDto();
         List<ItemsOrderEntity> itemsOrder = order.getItemsOrder();
-        List<ItemsOrderEntity> returnItemOrders = new ArrayList<ItemsOrderEntity>();
         for (ItemsOrderEntity itemOrder : itemsOrder) {
             if ( itemOrder.getNote()!=null && itemOrder.getNote().equals(""))
                 itemOrder.setNote(null);
 
-            Map<String, String> assoc = new HashMap<>();
-            Map<String, String> subAssoc = new HashMap<>();
-
-            String fields = "id,item,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,purchaseStatus,itemOrderAttributes,customItem";
-            assoc.put("item", "id,name,additionalOffer,itemsImage");
-            assoc.put("customItem", "id,name,editedName,customerCustom");
-            assoc.put("itemOrderAttributes", "id,itemsAttribute");
-
-            subAssoc.put("itemsAttribute", "id,attribute,unitPrice,type");
-            subAssoc.put("type", "id,type");
-
-            ItemsOrderEntity returnItemOrder = (ItemsOrderEntity) ReturnJsonUtil.getJsonObject(itemOrder, fields, assoc, subAssoc);
-
-
-
-            /*if (itemOrder.getItem() != null) {
+            if (itemOrder.getItem() != null) {
                 ItemEntity item = new ItemEntity();
                 item.setId(itemOrder.getItem().getId());
                 item.setName(itemOrder.getItem().getName());
@@ -540,20 +524,20 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
                 else
                     item.setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
                 itemOrder.setItem(item);
-            }else*/ if(returnItemOrder.getCustomItem() != null){
-                if(returnItemOrder.getCustomItem().getCustomerCustom().equals(Boolean.TRUE))   {
-                    if(returnItemOrder.getPurchaseStatus() == null || !returnItemOrder.getPurchaseStatus().equals(Boolean.TRUE)) {
-                        returnItemOrder.setVat(minusOne);
-                        returnItemOrder.setServiceCharge(minusOne);
-                        returnItemOrder.setItemTotal(minusOne);
-                        returnItemOrder.setServiceAndVatCharge(minusOne);
+            }else if(itemOrder.getCustomItem() != null){
+                if(itemOrder.getCustomItem().getCustomerCustom().equals(Boolean.TRUE))   {
+                    if(itemOrder.getPurchaseStatus() == null || !itemOrder.getPurchaseStatus().equals(Boolean.TRUE)) {
+                        itemOrder.setVat(minusOne);
+                        itemOrder.setServiceCharge(minusOne);
+                        itemOrder.setItemTotal(minusOne);
+                        itemOrder.setServiceAndVatCharge(minusOne);
                     }
                 }
 
-                returnItemOrder.getCustomItem().setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
+                itemOrder.getCustomItem().setImageUrl(systemPropertyService.readPrefValue(PreferenceType.DEFAULT_IMG_ITEM));
             }
-            returnItemOrders.add(returnItemOrder);
-            //itemOrder.setItemOrderAttributes(null);
+
+            itemOrder.setItemOrderAttributes(null);
         }
 
         StoreEntity store = new StoreEntity();
@@ -570,7 +554,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         orderSummary.setOrderStatus(order.getOrderStatus());
         orderSummary.setOrderDate(order.getOrderDate());
         orderSummary.setOrderVerificationCode(order.getOrderVerificationCode());
-        orderSummary.setItemOrders(returnItemOrders);
+        orderSummary.setItemOrders(itemsOrder);
 
         OrderSummaryDto.AccountSummary accountSummary = orderSummary.new AccountSummary();
         

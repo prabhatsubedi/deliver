@@ -618,7 +618,7 @@ public class OrderEntity implements Serializable {
         this.storeDeliveryDiscount = storeDeliveryDiscount;
     }
 
-    @Column(name = "cash_back_to_customer")
+    @Column(name = "cash_back_to_customer", columnDefinition = "Decimal(19,2) default '0.00'")
     public BigDecimal getCashBackToCustomerAmount() {
         return cashBackToCustomerAmount;
     }

@@ -917,6 +917,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         dbItem.setMinOrderQuantity(item.getMinOrderQuantity());
         dbItem.setVat(item.getVat());
         dbItem.setServiceCharge(item.getServiceCharge());
+        dbItem.setUnitPrice(item.getUnitPrice());
         if(item.getCommissionPercentage() != null)
             dbItem.setCommissionPercentage(item.getCommissionPercentage());
         if(item.getCashBackAmount() != null)

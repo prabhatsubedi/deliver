@@ -1534,6 +1534,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         itemsOrderEntity.setAvailabilityStatus(itemOrder.getAvailabilityStatus());
         itemsOrderEntity.setVat(itemOrder.getVat());
         itemsOrderEntity.setServiceCharge(itemOrder.getServiceCharge());
+
+        if(itemOrder.getItemOrderAttributes() == null){
+            BigDecimal itemPrice = itemOrder.getItemTotal().divide(new BigDecimal(itemOrder.getQuantity())).setScale(2, BigDecimal.ROUND_DOWN);
+            itemsOrderEntity.getItem().setUnitPrice(itemPrice);
+        }
+
         if(itemOrder.getNote() != null && !itemOrder.getNote().equals(""))
             itemsOrderEntity.setNote(itemOrder.getNote());
 

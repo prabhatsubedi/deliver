@@ -589,7 +589,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                     shopperId = null;
                     throw new YSException("DBY003");
                 }
-                deliveryBoyEntity.setActiveOrderNo(deliveryBoyDaoService.getNumberOfActiveOrders(deliveryBoyId)+1);
+                deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()+1);
                 deliveryBoyEntity.setTotalOrderTaken(deliveryBoyEntity.getTotalOrderTaken()+1);
                /* deliveryBoyEntity.setTotalOrderUndelivered(deliveryBoyEntity.getTotalOrderUndelivered()+1);*/
                 deliveryBoyEntity.setAvailabilityStatus(DBoyStatus.BUSY);

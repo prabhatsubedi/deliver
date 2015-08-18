@@ -393,7 +393,7 @@ public class ItemEntity implements Serializable {
         this.carts = carts;
     }
 
-    @Column(name = "cash_back_amount")
+    @Column(name = "cash_back_amount", columnDefinition = "Decimal(16,2) default '0.00'")
     public BigDecimal getCashBackAmount() {
         return cashBackAmount;
     }
@@ -402,7 +402,7 @@ public class ItemEntity implements Serializable {
         this.cashBackAmount = cashBackAmount;
     }
 
-    @Column(name = "mrp")
+    @Column(name = "mrp", columnDefinition = "Decimal(16,2) default '0.00'")
     public BigDecimal getMrp() {
         return mrp;
     }

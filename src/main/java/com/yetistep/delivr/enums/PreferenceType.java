@@ -105,7 +105,6 @@ public enum PreferenceType {
     MINIMUM_PROFIT_PERCENTAGE,      //Minimum Profit Percentage for Order Acceptance
     DEDUCTION_PERCENT,              //Deduction in case of Delayed Delivery from Shopper Earning
     DISCOUNT_ON_DELIVERY_FEE,       //
-    DELIVERY_FEE_LIMIT,
     CAP_ON_PROCESSING_CHARGE,
     DELIVERY_FEE_CHARGING_MODEL,
     SHOPPERS_EARNING_IN_FLAT_MODEL,

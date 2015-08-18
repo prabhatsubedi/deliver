@@ -517,7 +517,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
             Map<String, String> assoc = new HashMap<>();
             Map<String, String> subAssoc = new HashMap<>();
 
-            String fields = "id,item,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,purchaseStatus,cashBackToCustomerAmount,itemOrderAttributes,customItem";
+            String fields = "id,item,quantity,itemTotal,serviceAndVatCharge,availabilityStatus,vat,serviceCharge,purchaseStatus,itemOrderAttributes,customItem";
             assoc.put("item", "id,name,additionalOffer,itemsImage");
             assoc.put("customItem", "id,name,editedName,customerCustom");
             assoc.put("itemOrderAttributes", "id,itemsAttribute");
@@ -573,7 +573,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         orderSummary.setOrderDate(order.getOrderDate());
         orderSummary.setOrderVerificationCode(order.getOrderVerificationCode());
         orderSummary.setItemOrders(returnItemOrders);
-
+        orderSummary.setCashBackAmount(order.getCashBackToCustomerAmount());
         OrderSummaryDto.AccountSummary accountSummary = orderSummary.new AccountSummary();
 
 

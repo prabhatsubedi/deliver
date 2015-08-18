@@ -31,6 +31,7 @@ public class OrderSummaryDto {
     private List<ItemsOrderEntity> itemOrders;
     private StoreEntity store;
     private DeliveryBoyEntity deliveryBoy;
+    private BigDecimal  cashBackAmount;
 
     public Integer getId() {
         return id;
@@ -120,6 +121,14 @@ public class OrderSummaryDto {
 
     public void setDeliveryBoy(DeliveryBoyEntity deliveryBoy) {
         this.deliveryBoy = deliveryBoy;
+    }
+
+    public BigDecimal getCashBackAmount() {
+        return cashBackAmount;
+    }
+
+    public void setCashBackAmount(BigDecimal cashBackAmount) {
+        this.cashBackAmount = cashBackAmount;
     }
 
     public class AccountSummary{

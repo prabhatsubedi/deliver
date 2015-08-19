@@ -2203,7 +2203,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }
 
         if(itemPurchased) {
-            if(order.getAttachments() == null)
+            if(order.getAttachments() == null || order.getAttachments().size()==0)
                 throw new YSException("V1ORD025");
 
             BigDecimal orderAmtReceived = order.getGrandTotal();

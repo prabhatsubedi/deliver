@@ -285,8 +285,10 @@ Order.getOrders = function(elemId, url, params){
 
             // Make Live for Cancelled Orders
             var itemPurchased = false;
-            for (var itemsOrder in order.itemsOrder){
-                if (itemsOrder.purchaseStatus != 'undefined' && itemsOrder.purchaseStatus){
+            var itemsOrderLength = 0;
+            if (order.itemsOrder != undefined) itemsOrderLength = order.itemsOrder.length;
+            for (var io = 0; io < itemsOrderLength; io++) {
+                if (order.itemsOrder[io].purchaseStatus != 'undefined' && order.itemsOrder[io].purchaseStatus){
                     itemPurchased = true;
                     break;
                 }

@@ -284,7 +284,15 @@ Order.getOrders = function(elemId, url, params){
 
 
             // Make Live for Cancelled Orders
-            if (order.orderStatus == "CANCELLED" && order.orderCancel.jobOrderStatus == "IN_ROUTE_TO_DELIVERY") {
+            var itemPurchased = false;
+            for (var itemsOrder in order.itemsOrder){
+                if (itemsOrder.purchaseStatus != 'undefined' && itemsOrder.purchaseStatus){
+                    itemPurchased = true;
+                    break;
+                }
+            }
+
+            if (order.orderStatus == "CANCELLED" && itemPurchased) {
                 view_items += ' | <a data-id="' + order.id + '" class="make_live" href="#">Make Live</a>';
             }
 

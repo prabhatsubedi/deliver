@@ -580,7 +580,7 @@ public class ClientServiceImpl extends AbstractManager implements ClientService 
         Boolean tbd = false;
         //to calculate subtotal
         Boolean allTbd = true;
-        for(ItemsOrderEntity itemsOrderEntity: order.getItemsOrder()){
+        for(ItemsOrderEntity itemsOrderEntity: returnItemOrders){
             if(itemsOrderEntity.getItemTotal().equals(minusOne) && itemsOrderEntity.getAvailabilityStatus()){
                 tbd = true;
             }  else {

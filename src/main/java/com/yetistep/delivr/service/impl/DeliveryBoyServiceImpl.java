@@ -1674,6 +1674,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if(orderEntity.getOrderStatus().equals(JobOrderStatus.DELIVERED)){
             throw new YSException("ORD025");
         }
+
         log.info("About to Cancel order with Order ID:"+order.getId());
 
         /*Setting Ratings */
@@ -2181,6 +2182,9 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }
 
         if(itemPurchased) {
+            if(order.getAttachments() == null)
+                throw new YSException("V1ORD025");
+
             BigDecimal orderAmtReceived = order.getGrandTotal();
             BigDecimal walletAmount = deliveryBoy.getWalletAmount();
             BigDecimal availableAmount = deliveryBoy.getAvailableAmount();

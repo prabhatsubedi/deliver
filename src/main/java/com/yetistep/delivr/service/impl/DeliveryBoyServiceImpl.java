@@ -1291,6 +1291,27 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         if(deliveryBoy == null){
             throw new YSException("VLD011");
         }
+        Timestamp lastAckDate = dBoyAdvanceAmountDaoService.getLatestAckTimestamp(deliveryBoy.getId());
+
+        BigDecimal cancelledPurchaseTotal = BigDecimal.ZERO;
+        //if(lastAckDate != null){
+        List<OrderEntity> cancelledPurchasedOrders =  orderDaoService.getCancelledPurchasedOrder(deliveryBoy.getId(), lastAckDate);
+        for (OrderEntity order: cancelledPurchasedOrders){
+            Boolean itemPurchased = false;
+            List<ItemsOrderEntity> itemsOrders = order.getItemsOrder();
+            for(ItemsOrderEntity itemsOrder: itemsOrders){
+                if(itemsOrder.getPurchaseStatus() != null && itemsOrder.getPurchaseStatus()){
+                    itemPurchased = true;
+                    break;
+                }
+            }
+            if(itemPurchased)
+                cancelledPurchaseTotal =  cancelledPurchaseTotal.add(order.getGrandTotal());
+        }
+        //}
+
+        deliveryBoy.setItemReturnedTotal(cancelledPurchaseTotal);
+
         return deliveryBoy;
     }
 

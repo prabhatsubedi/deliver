@@ -133,12 +133,12 @@ public class InvoiceGenerator {
             //add bill header
             addPdfHeader(document, serverUrl, preferences);
 
-            addBillBody(document, order, bill, preferences);
+            //addBillBody(document, order, bill, preferences);
 
-            document.newPage();
+            //document.newPage();
 
             //add receipt header
-            addPdfHeader(document, serverUrl, preferences);
+            //addPdfHeader(document, serverUrl, preferences);
 
             addReceiptBody(document, order, receipt, bill, preferences);
 

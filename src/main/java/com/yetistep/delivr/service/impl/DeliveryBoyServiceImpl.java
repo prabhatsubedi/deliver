@@ -1348,8 +1348,6 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         order.setItemVatCharge(order.getItemVatCharge().add(vatCharge));
         order.setItemServiceCharge(order.getItemServiceCharge().add(serviceCharge));
         order.setCommissionAmount(order.getCommissionAmount().add(commissionAmount));
-        if(!order.getStore().getStoresBrand().getVatInclusive())
-
         itemsOrderEntity.getCustomItem().setItemsOrder(itemsOrderEntity);
 
         List<ItemsOrderEntity> itemsOrderEntities = order.getItemsOrder();
@@ -1612,7 +1610,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 totalCommissionAmount = totalCommissionAmount.add(commissionAmount);
                 itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatChargeAmount);
                 itemsOrder.setServiceAndVatCharge(serviceAndVatChargeAmount);
-                itemOrder.setCommissionAmount(commissionAmount);
+                itemsOrder.setCommissionAmount(commissionAmount);
             }
         }
 
@@ -2676,6 +2674,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     @Override
     public Boolean updateDiscountFromStore(Integer orderId, BigDecimal discountAmount) throws Exception {
         OrderEntity order = orderDaoService.find(orderId);
+        Boolean vatInclusive = order.getStore().getStoresBrand().getVatInclusive();
         if (order == null) {
             throw new YSException("VLD017");
         } else if(!BigDecimalUtil.isGreaterThen(order.getTotalCost(), order.getDiscountFromStore())){
@@ -2689,20 +2688,36 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         BigDecimal itemServiceAndVatCharge = BigDecimal.ZERO;
         BigDecimal itemServiceCharge = BigDecimal.ZERO;
         BigDecimal itemVatCharge = BigDecimal.ZERO;
+        BigDecimal totalCommissionAmount = BigDecimal.ZERO;
+        BigDecimal cashBackAmountTotal = BigDecimal.ZERO;
 
         List<ItemsOrderEntity> itemsOrderEntityList = order.getItemsOrder();
         for (ItemsOrderEntity itemsOrder : itemsOrderEntityList) {
-            if(itemsOrder.getPurchaseStatus() == null)
-                throw new YSException("ORD022");
             /* Service Fee and Vat calculation for available items only. */
             if (itemsOrder.getAvailabilityStatus()) {
+                BigDecimal commissionAmount = BigDecimal.ZERO;
+                if(itemsOrder.getItem()!=null) {
+                    commissionAmount = BigDecimalUtil.percentageOf(BigDecimalUtil.checkNull(itemsOrder.getItemTotal()), BigDecimalUtil.checkNull(itemsOrder.getItem().getCommissionPercentage()));
+                    cashBackAmountTotal = cashBackAmountTotal.add(BigDecimalUtil.checkNull(itemsOrder.getItem().getCashBackAmount()).multiply(new BigDecimal(itemsOrder.getQuantity())));
+                }  else {
+                    commissionAmount = BigDecimalUtil.percentageOf(itemsOrder.getItemTotal(), BigDecimalUtil.checkNull(order.getStore().getStoresBrand().getDefaultCommissionPcn()));
+                }
                 BigDecimal serviceChargeAmount = BigDecimalUtil.percentageOf(BigDecimalUtil.checkNull(itemsOrder.getItemTotal()), BigDecimalUtil.checkNull(itemsOrder.getServiceCharge()));
-                BigDecimal serviceAndVatChargeAmount = serviceChargeAmount.add(BigDecimalUtil.percentageOf(serviceChargeAmount.add(BigDecimalUtil.checkNull(itemsOrder.getItemTotal())), BigDecimalUtil.checkNull(itemsOrder.getVat())));
+
+                BigDecimal serviceAndVatChargeAmount;
+                if(vatInclusive != null && !vatInclusive) {
+                    BigDecimal itemsOrderVatAmount = BigDecimalUtil.percentageOf(serviceChargeAmount.add(BigDecimalUtil.checkNull(itemsOrder.getItemTotal())), BigDecimalUtil.checkNull(itemsOrder.getVat()));
+                    itemVatCharge = itemVatCharge.add(itemsOrderVatAmount);
+                    serviceAndVatChargeAmount = serviceChargeAmount.add(itemsOrderVatAmount);
+                } else
+                    serviceAndVatChargeAmount = serviceChargeAmount;
+
                 itemTotalCost = itemTotalCost.add(BigDecimalUtil.checkNull(itemsOrder.getItemTotal()));
                 itemServiceCharge = itemServiceCharge.add(serviceChargeAmount);
-                itemVatCharge = itemVatCharge.add(BigDecimalUtil.percentageOf(serviceChargeAmount.add(BigDecimalUtil.checkNull(itemsOrder.getItemTotal())), BigDecimalUtil.checkNull(itemsOrder.getVat())));
+                totalCommissionAmount = totalCommissionAmount.add(commissionAmount);
                 itemServiceAndVatCharge = itemServiceAndVatCharge.add(serviceAndVatChargeAmount);
                 itemsOrder.setServiceAndVatCharge(serviceAndVatChargeAmount);
+                itemsOrder.setCommissionAmount(commissionAmount);
             }
         }
 
@@ -2716,6 +2731,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         order.setItemServiceAndVatCharge(BigDecimalUtil.chopToTwoDecimalPlace(itemServiceAndVatCharge));
         order.setItemServiceCharge(BigDecimalUtil.chopToTwoDecimalPlace(itemServiceCharge));
         order.setItemVatCharge(BigDecimalUtil.chopToTwoDecimalPlace(itemVatCharge));
+        order.setCashBackToCustomerAmount(cashBackAmountTotal);
+        order.setCommissionAmount(totalCommissionAmount);
 
         /*This section is used just for getting courier transaction information */
         DeliveryBoySelectionEntity dBoySelection = new DeliveryBoySelectionEntity();
@@ -2723,7 +2740,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         dBoySelection.setStoreToCustomerDistance(order.getCustomerChargeableDistance());
 
         CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
-        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, dBoySelection, courierTransactionEntity.getCommissionAmount(), courierTransactionEntity.getSystemProcessingChargePct());
+        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, dBoySelection, totalCommissionAmount, courierTransactionEntity.getSystemProcessingChargePct());
         courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
         courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
         courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
@@ -2736,15 +2753,18 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
         courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
         courierTransactionEntity.setProfit(courierTransaction.getProfit());
-        /* Wallet Integration */
-        if(order.getPaymentMode().equals(PaymentMode.WALLET)){
-            /* Difference in amount is set in Paid From COD amount
-               * Case I: No change ==> PaidFromCOD = 0
-               * Case II: Order Grand Total > Paid From Wallet: ==> Increase in price thus, paidFromCOD > 0
-               * Case III: Order Grand Total < Paid From Wallet: ==> Decrease in price thus, paidFromCOD < 0
-             */
-            order.setPaidFromCOD(order.getGrandTotal().subtract(order.getPaidFromWallet()));
-        }else{
+
+        //calculate paidFromCod and paid from wallet
+        if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+            order.setPaidFromWallet(order.getGrandTotal());
+            order.setPaidFromCOD(BigDecimal.ZERO);
+        } else if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()), BigDecimal.ZERO)){
+            BigDecimal paidFromWallet = order.getCustomer().getWalletAmount();
+            BigDecimal paidFromCOD = order.getGrandTotal().subtract(paidFromWallet);
+            order.setPaidFromWallet(paidFromWallet);
+            order.setPaidFromCOD(paidFromCOD);
+        } else {
+            order.setPaidFromWallet(BigDecimal.ZERO);
             order.setPaidFromCOD(order.getGrandTotal());
         }
 

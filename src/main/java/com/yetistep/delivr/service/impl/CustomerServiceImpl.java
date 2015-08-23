@@ -136,20 +136,24 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         UserAgent ua = UserAgent.parseUserAgentString(userAgent);
 
         String family = ua.getOperatingSystem().name();
+        UserEntity user = customerEntity.getUser();
+        UserDeviceEntity userDevice = customerEntity.getUser().getUserDevice();
 
-        customerEntity.getUser().getUserDevice().setFamily(family);
-        customerEntity.getUser().getUserDevice().setFamilyName(family);
-        customerEntity.getUser().getUserDevice().setName(family);
+        userDevice.setFamily(family);
+        userDevice.setFamilyName(family);
+        userDevice.setName(family);
 
         //Now Signup Process
         CustomerEntity registeredCustomer = customerDaoService.find(customerEntity.getFacebookId());
+        UserEntity registeredUser = registeredCustomer.getUser();
+        UserDeviceEntity registeredUserDevice = registeredCustomer.getUser().getUserDevice();
 
         //If Account already exist
         if (registeredCustomer != null) {
             //If Client Permission granted after denied first time then email & DOB should updated
-            if ((customerEntity.getUser().getEmailAddress() != null && !customerEntity.getUser().getEmailAddress().isEmpty()) &&
-                    (registeredCustomer.getUser().getEmailAddress() == null || !registeredCustomer.getUser().getEmailAddress().equals(customerEntity.getUser().getEmailAddress())))
-                registeredCustomer.getUser().setEmailAddress(customerEntity.getUser().getEmailAddress());
+            if ((user.getEmailAddress() != null && !user.getEmailAddress().isEmpty()) &&
+                    (registeredUser.getEmailAddress() == null || !registeredUser.getEmailAddress().equals(user.getEmailAddress())))
+                registeredUser.setEmailAddress(user.getEmailAddress());
 
             if(customerEntity.getFbToken()!=null && !customerEntity.getFbToken().isEmpty())
                 registeredCustomer.setFbToken(customerEntity.getFbToken());
@@ -162,47 +166,47 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
              log.info("++++++++++++ Updating Customer Info +++++++++++++");
             //Update User Device
-            if(registeredCustomer.getUser().getUserDevice() != null){
-                registeredCustomer.getUser().getUserDevice().setUser(registeredCustomer.getUser());
-                registeredCustomer.getUser().getUserDevice().setUuid(customerEntity.getUser().getUserDevice().getUuid());
-                if(customerEntity.getUser().getUserDevice().getDeviceToken() != null){
-                    log.info("Device token set:"+customerEntity.getUser().getUserDevice().getDeviceToken()+" of customer"+customerEntity.getFacebookId());
-                    registeredCustomer.getUser().getUserDevice().setDeviceToken(customerEntity.getUser().getUserDevice().getDeviceToken());
+            if(registeredUserDevice != null){
+                registeredUserDevice.setUser(registeredUser);
+                registeredUserDevice.setUuid(userDevice.getUuid());
+                if(userDevice.getDeviceToken() != null){
+                    log.info("Device token set:"+userDevice.getDeviceToken()+" of customer"+customerEntity.getFacebookId());
+                    registeredUserDevice.setDeviceToken(userDevice.getDeviceToken());
                 }
-                registeredCustomer.getUser().getUserDevice().setFamily(customerEntity.getUser().getUserDevice().getFamily());
-                registeredCustomer.getUser().getUserDevice().setFamilyName(customerEntity.getUser().getUserDevice().getFamilyName());
-                registeredCustomer.getUser().getUserDevice().setName(customerEntity.getUser().getUserDevice().getName());
-                registeredCustomer.getUser().getUserDevice().setBrand(customerEntity.getUser().getUserDevice().getBrand());
-                registeredCustomer.getUser().getUserDevice().setModel(customerEntity.getUser().getUserDevice().getModel());
-                registeredCustomer.getUser().getUserDevice().setDpi(customerEntity.getUser().getUserDevice().getDpi());
-                registeredCustomer.getUser().getUserDevice().setHeight(customerEntity.getUser().getUserDevice().getHeight());
-                registeredCustomer.getUser().getUserDevice().setWidth(customerEntity.getUser().getUserDevice().getWidth());
+                registeredUserDevice.setFamily(userDevice.getFamily());
+                registeredUserDevice.setFamilyName(userDevice.getFamilyName());
+                registeredUserDevice.setName(userDevice.getName());
+                registeredUserDevice.setBrand(userDevice.getBrand());
+                registeredUserDevice.setModel(userDevice.getModel());
+                registeredUserDevice.setDpi(userDevice.getDpi());
+                registeredUserDevice.setHeight(userDevice.getHeight());
+                registeredUserDevice.setWidth(userDevice.getWidth());
             }else{
                 log.info("Whole device token set");
-                registeredCustomer.getUser().setUserDevice(customerEntity.getUser().getUserDevice());
+                registeredUser.setUserDevice(user.getUserDevice());
             }
             /*
             * if current login is the first login of the current customer
             * set reward for the customer
             * */
-            if(registeredCustomer.getUser().getLastActivityDate() == null) {
+            if(registeredUser.getLastActivityDate() == null) {
                 if(registeredCustomer.getReferredBy() != null){
                     registeredCustomer.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
                     refillCustomerWallet(registeredCustomer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)), MessageBundle.getMessage("WTM010", "push_notification.properties"), false);
                 }
             }
 
-            registeredCustomer.getUser().setLastActivityDate(MessageBundle.getCurrentTimestampSQL());
+            registeredUser.setLastActivityDate(MessageBundle.getCurrentTimestampSQL());
 
-            validateUserDevice(registeredCustomer.getUser().getUserDevice());
+            validateUserDevice(registeredUser.getUserDevice());
             registeredCustomer.setDefault(false);
             customerDaoService.update(registeredCustomer);
 
         } else {
            if(systemPropertyService.readPrefValue(PreferenceType.ENABLE_FREE_REGISTER).equals("1")){
                /* Check User Email */
-               if(customerEntity.getUser().getEmailAddress()!=null && !customerEntity.getUser().getEmailAddress().isEmpty()) {
-                   if(userDaoService.checkIfEmailExists(customerEntity.getUser().getEmailAddress(), Role.ROLE_CUSTOMER.toInt()))
+               if(user.getEmailAddress()!=null && !user.getEmailAddress().isEmpty()) {
+                   if(userDaoService.checkIfEmailExists(user.getEmailAddress(), Role.ROLE_CUSTOMER.toInt()))
                        throw new YSException("VLD026");
                }
 
@@ -213,10 +217,10 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 customerEntity.setCustomerType(CustomerType.FACEBOOK);
 
                 RoleEntity userRole = userDaoService.getRoleByRole(Role.ROLE_CUSTOMER);
-                customerEntity.getUser().setRole(userRole);
-                customerEntity.getUser().getUserDevice().setUser(customerEntity.getUser());
-                customerEntity.getUser().setCreatedDate(DateUtil.getCurrentTimestampSQL());
-                customerEntity.getUser().setLastActivityDate(null);
+                user.setRole(userRole);
+                userDevice.setUser(customerEntity.getUser());
+                user.setCreatedDate(DateUtil.getCurrentTimestampSQL());
+                user.setLastActivityDate(null);
     //            if (customerEntity.getLatitude() != null) {
     //                customerEntity.getUser().getAddresses().get(0).setLatitude(customerEntity.getLatitude());
     //                customerEntity.getUser().getAddresses().get(0).setLongitude(customerEntity.getLongitude());

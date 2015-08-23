@@ -3,8 +3,6 @@ package com.yetistep.delivr.model;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.util.JsonDateSerializer;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -123,7 +121,7 @@ public class CartEntity {
         this.cartAttributes = cartAttributes;
     }
 
-    @OneToOne(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
+    @OneToOne(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true, fetch = FetchType.LAZY)
     public CartCustomItemEntity getCartCustomItem() {
         return cartCustomItem;
     }

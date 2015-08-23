@@ -30,7 +30,7 @@ public class ReturnJsonUtil {
          String[] arrFields =  fields.split(",");
 
         for (String field: arrFields){
-            PropertyUtils.setProperty(rtnObject, field, PropertyUtils.getProperty(defaultObject, field));
+            PropertyUtils.setProperty(rtnObject, field.trim(), PropertyUtils.getProperty(defaultObject, field.trim()));
         }
 
         //get the map of associated model and and related fields and set the values to the return object

@@ -304,7 +304,6 @@ UPDATE items it LEFT JOIN stores_brands sb ON it.brand_id = sb.id LEFT JOIN merc
 
 /*2015-08-07*/
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('LIVE_ORDER_COUNT_FOR_SHOPPER', '3', '10', 'Live Order Count For Shopper ');
-INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('DELIVERY_FEE_LIMIT', '1000', '11', 'Delivery Fee Limit');
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('CAP_ON_PROCESSING_CHARGE', '100', '11', 'Cap On Processing Charge');
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('DELIVERY_FEE_CHARGING_MODEL', 'Flat Charge', '11', 'Delivery Fee Charging Model');
 INSERT INTO `delivr_db`.`preferences` (`pref_key`, `value`, `section_id`, `pref_title`) VALUES ('SHOPPERS_EARNING_IN_FLAT_MODEL', '30', '11', 'Shoppers Earning In Flat Model');

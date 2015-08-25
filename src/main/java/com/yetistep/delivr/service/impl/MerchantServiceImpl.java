@@ -909,7 +909,6 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         dbItem.setName(item.getName());
         dbItem.setDescription(item.getDescription());
         dbItem.setAdditionalOffer(item.getAdditionalOffer());
-        dbItem.setStatus(item.getStatus());
         dbItem.setAvailableEndTime(item.getAvailableEndTime());
         dbItem.setAvailableStartTime(item.getAvailableStartTime());
         dbItem.setCurrencyType(item.getCurrencyType());

@@ -145,11 +145,12 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
         //Now Signup Process
         CustomerEntity registeredCustomer = customerDaoService.find(customerEntity.getFacebookId());
-        UserEntity registeredUser = registeredCustomer.getUser();
-        UserDeviceEntity registeredUserDevice = registeredCustomer.getUser().getUserDevice();
 
         //If Account already exist
         if (registeredCustomer != null) {
+            UserEntity registeredUser = registeredCustomer.getUser();
+            UserDeviceEntity registeredUserDevice = registeredCustomer.getUser().getUserDevice();
+
             //If Client Permission granted after denied first time then email & DOB should updated
             if ((user.getEmailAddress() != null && !user.getEmailAddress().isEmpty()) &&
                     (registeredUser.getEmailAddress() == null || !registeredUser.getEmailAddress().equals(user.getEmailAddress())))

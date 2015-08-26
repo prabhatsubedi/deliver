@@ -35,8 +35,6 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
 
     private static final BigDecimal minusOne = new BigDecimal(-1);
 
-    private Integer shopperId = null;
-
     @Autowired
     DeliveryBoyDaoService deliveryBoyDaoService;
 
@@ -566,13 +564,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
     }
 
     private Boolean acceptDeliveryOrder(Integer orderId, Integer deliveryBoyId) throws Exception {
-        if(shopperId == null){
-            shopperId = deliveryBoyId;
             log.info("Accepting Order By delivery Boy with ID:"+deliveryBoyId);
 
             DeliveryBoySelectionEntity deliveryBoySelectionEntity = deliveryBoySelectionDaoService.getSelectionDetails(orderId, deliveryBoyId);
             if(deliveryBoySelectionEntity == null){
-                shopperId = null;
                 throw new YSException("ORD003");
             }
 
@@ -580,13 +575,11 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             boolean orderAcceptance = deliveryBoySelectionDaoService.checkOrderAcceptedStatus(orderId);
             if(orderAcceptance){
                 if(deliveryBoySelectionEntity.getOrder().getOrderStatus().equals(JobOrderStatus.CANCELLED)){
-                    shopperId = null;
                     throw new YSException("ORD006");
                 }
                 deliveryBoySelectionEntity.setAccepted(true);
                 DeliveryBoyEntity deliveryBoyEntity = deliveryBoySelectionEntity.getDeliveryBoy();
                 if(deliveryBoyEntity.getActiveOrderNo() >= Integer.parseInt(systemPropertyService.readPrefValue(PreferenceType.LIVE_ORDER_COUNT_FOR_SHOPPER))){
-                    shopperId = null;
                     throw new YSException("DBY003");
                 }
                 deliveryBoyEntity.setActiveOrderNo(deliveryBoyEntity.getActiveOrderNo()+1);
@@ -602,7 +595,6 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 orderEntity.setOrderStatus(JobOrderStatus.ORDER_ACCEPTED);
                 MerchantEntity merchant = merchantDaoService.getMerchantByOrderId(orderId);
                 if(merchant == null){
-                    shopperId = null;
                      throw new YSException("MRC003");
                 }
                 CourierTransactionEntity courierTransaction =  systemAlgorithmService.getCourierTransaction(orderEntity, deliveryBoySelectionEntity, orderEntity.getCommissionAmount(), orderEntity.getStore().getStoresBrand().getProcessingCharge());
@@ -674,17 +666,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                         sendMail(orderEntity.getStore().getEmail(), body, subject);
                     }
                 }
-                shopperId = null;
                 return status;
             } else if (deliveryBoyId.equals(deliveryBoySelectionEntity.getOrder().getDeliveryBoy().getId())) {
-                shopperId = null;
                 throw new YSException("ORD005");
             }
-            shopperId = null;
             throw new YSException("ORD001");
-        }else{
-            return false;
-        }
+
     }
 
     private Boolean startJob(OrderEntity order, OrderEntity orderJson, Integer deliveryBoyId) throws Exception{

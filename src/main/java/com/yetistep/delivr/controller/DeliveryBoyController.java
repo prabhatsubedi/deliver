@@ -49,6 +49,8 @@ public class DeliveryBoyController extends AbstractManager{
 
     Logger log = Logger.getLogger(DeliveryBoyController.class);
 
+    private Integer shopperId;
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ServiceResponse> login(@RequestHeader HttpHeaders headers, @RequestBody UserDeviceEntity userDevice) {
@@ -155,17 +157,33 @@ public class DeliveryBoyController extends AbstractManager{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.ID/*, GeneralUtil.ACCESS_TOKEN*/);
             //validateMobileClient(headerDto.getAccessToken());
+            ServiceResponse serviceResponse;
+            if(shopperId == null){
+                if(order.getOrderStatus().equals(JobOrderStatus.ORDER_ACCEPTED)){
+                      shopperId = 1;
+                }
 
-            deliveryBoyService.changeOrderStatus(order, Integer.parseInt(headerDto.getId()));
+                deliveryBoyService.changeOrderStatus(order, Integer.parseInt(headerDto.getId()));
 
-            if(order.getOrderStatus().equals(JobOrderStatus.DELIVERED)){
-                 /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
-                 accountService.generateBillAndReceiptAndSendEmail(order);
-                 customerService.setReferralReward(order);
+                if(order.getOrderStatus().equals(JobOrderStatus.DELIVERED)){
+                     /*=========== Email Bill and Receipt to the customer ================ (Appended By Sagar) */
+                     accountService.generateBillAndReceiptAndSendEmail(order);
+                     customerService.setReferralReward(order);
+                }
+
+                if(order.getOrderStatus().equals(JobOrderStatus.ORDER_ACCEPTED)){
+                    shopperId = null;
+                }
+
+               serviceResponse = new ServiceResponse("Job order status changed successfully");
+            } else {
+                serviceResponse = new ServiceResponse("Another user trying to accept to this order");
             }
-            ServiceResponse serviceResponse = new ServiceResponse("Job order status changed successfully");
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
+            if(order.getOrderStatus().equals(JobOrderStatus.ORDER_ACCEPTED)){
+                shopperId = null;
+            }
             GeneralUtil.logError(log, "Error Occurred while updating job status", e);
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
             return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);

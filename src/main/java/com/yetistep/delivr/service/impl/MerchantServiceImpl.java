@@ -794,6 +794,7 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         List<Integer> itemStores = requestJson.getItemStores();
         List<ItemsAttributesTypeEntity> itemsAttributesTypes = requestJson.getItemAttributesTypes();
         List<String> itemsImages = requestJson.getItemImages();
+        item.setStatus(Status.ACTIVE);
 
         StoresBrandEntity storesBrand = merchantDaoService.findBrandDetail(Integer.parseInt(headerDto.getId()));
         if((storesBrand == null) || (!storesBrand.getStatus().equals(Status.ACTIVE)))

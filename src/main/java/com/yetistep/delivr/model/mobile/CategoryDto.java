@@ -2,9 +2,6 @@ package com.yetistep.delivr.model.mobile;
 
 import com.yetistep.delivr.model.CategoryEntity;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Created with IntelliJ IDEA.
  * User: surendraJ
@@ -15,6 +12,7 @@ import java.util.Map;
 public class CategoryDto extends CategoryEntity{
     private Integer brandId;
     private Boolean hasNext;
+    private Integer priority;
 
     public Boolean getHasNext() {
         return hasNext;
@@ -28,6 +26,7 @@ public class CategoryDto extends CategoryEntity{
     public CategoryDto setValues(CategoryEntity categoryEntity) {
         setId(categoryEntity.getId());
         setName(categoryEntity.getName());
+        setPriority(categoryEntity.getPriority());
         return this;
     }
 

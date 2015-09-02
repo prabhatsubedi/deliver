@@ -1287,6 +1287,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             if(BigDecimalUtil.isLessThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()), totalWalletAmount)){
                 throw new YSException("ORD020");
             }
+            //calculate wallet payments
+            OrderPaymentUtil.calculateOrderWalletPayment(order);
             order.setPaidFromWallet(order.getGrandTotal());
             order.setPaidFromCOD(BigDecimal.ZERO);
             //order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(order.getGrandTotal()));
@@ -1302,6 +1304,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             log.info("Current orders wallet amount: "+currentOrdersWalletAmount);
             BigDecimal remainingWalletAmount = BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()).subtract(currentOrdersWalletAmount);
             if(BigDecimalUtil.isGreaterThenOrEqualTo(remainingWalletAmount,order.getGrandTotal())){
+                //calculate wallet payments
+                OrderPaymentUtil.calculateOrderWalletPayment(order);
                 order.setPaidFromWallet(order.getGrandTotal());
                 order.setPaidFromCOD(BigDecimal.ZERO);
                 //order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(order.getGrandTotal()));
@@ -1314,6 +1318,8 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                         throw new YSException("CRT007", ": Your running order sum exceeds the limit of "+ systemPropertyService.readPrefValue(PreferenceType.CURRENCY) + systemPropertyService.readPrefValue(PreferenceType.ORDER_MAX_AMOUNT) + ". Please try placing order via wallet payment.");
                     }
 
+                    //calculate wallet payments
+                    OrderPaymentUtil.calculateOrderWalletPayment(order);
                     order.setPaidFromWallet(paidFromWallet);
                     order.setPaidFromCOD(paidFromCOD);
                     //order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(paidFromWallet));

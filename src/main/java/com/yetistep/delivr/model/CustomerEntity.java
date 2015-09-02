@@ -52,6 +52,10 @@ public class CustomerEntity implements Serializable {
     private List<WalletTransactionEntity> walletTransactions;
     private List<PaymentGatewayInfoEntity> paymentGatewayInfo;
 
+    private BigDecimal rmBonusAmount; //remaining bonus amount
+    private BigDecimal rmCashBackAmount; //remaining cash back amount
+    private BigDecimal rmFundTransferAmount; //remaining fund transfer amount
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
@@ -349,5 +353,35 @@ public class CustomerEntity implements Serializable {
 
     public void setCustomerType(CustomerType customerType) {
         this.customerType = customerType;
+    }
+
+    @Column(name = "rm_bonus_amount")
+    @JsonProperty
+    public BigDecimal getRmBonusAmount() {
+        return rmBonusAmount;
+    }
+
+    public void setRmBonusAmount(BigDecimal rmBonusAmount) {
+        this.rmBonusAmount = rmBonusAmount;
+    }
+
+    @Column(name = "rm_cash_back_amount")
+    @JsonProperty
+    public BigDecimal getRmCashBackAmount() {
+        return rmCashBackAmount;
+    }
+
+    public void setRmCashBackAmount(BigDecimal rmCashBackAmount) {
+        this.rmCashBackAmount = rmCashBackAmount;
+    }
+
+    @Column(name = "rm_fund_transfer_amount")
+    @JsonProperty
+    public BigDecimal getRmFundTransferAmount() {
+        return rmFundTransferAmount;
+    }
+
+    public void setRmFundTransferAmount(BigDecimal rmFundTransferAmount) {
+        this.rmFundTransferAmount = rmFundTransferAmount;
     }
 }

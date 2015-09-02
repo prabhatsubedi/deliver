@@ -97,6 +97,10 @@ public class OrderEntity implements Serializable {
     private String currency; //Transient Field
     private Boolean forceAssigned;
 
+    private BigDecimal paidBonusAmount; //remaining bonus amount
+    private BigDecimal paidCashBackAmount; //remaining cash back amount
+    private BigDecimal paidFundTransferAmount; //remaining fund transfer amount
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -715,5 +719,33 @@ public class OrderEntity implements Serializable {
 
     public void setTransferred(BigDecimal transferred) {
         this.transferred = transferred;
+
+    }
+
+    @Column(name = "paid_bonus_amount")
+    public BigDecimal getPaidBonusAmount() {
+        return paidBonusAmount;
+    }
+
+    public void setPaidBonusAmount(BigDecimal paidBonusAmount) {
+        this.paidBonusAmount = paidBonusAmount;
+    }
+
+    @Column(name = "paid_cash_back_amount")
+    public BigDecimal getPaidCashBackAmount() {
+        return paidCashBackAmount;
+    }
+
+    public void setPaidCashBackAmount(BigDecimal paidCashBackAmount) {
+        this.paidCashBackAmount = paidCashBackAmount;
+    }
+
+    @Column(name = "paid_fund_transfer_amount")
+    public BigDecimal getPaidFundTransferAmount() {
+        return paidFundTransferAmount;
+    }
+
+    public void setPaidFundTransferAmount(BigDecimal paidFundTransferAmount) {
+        this.paidFundTransferAmount = paidFundTransferAmount;
     }
 }

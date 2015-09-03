@@ -722,7 +722,7 @@ public class OrderEntity implements Serializable {
 
     }
 
-    @Column(name = "paid_bonus_amount")
+    @Column(name = "paid_bonus_amount", columnDefinition = "Decimal(19,2) default '0.00'")
     public BigDecimal getPaidBonusAmount() {
         return paidBonusAmount;
     }
@@ -731,7 +731,7 @@ public class OrderEntity implements Serializable {
         this.paidBonusAmount = paidBonusAmount;
     }
 
-    @Column(name = "paid_cash_back_amount")
+    @Column(name = "paid_cash_back_amount", columnDefinition = "Decimal(19,2) default '0.00'")
     public BigDecimal getPaidCashBackAmount() {
         return paidCashBackAmount;
     }
@@ -740,7 +740,7 @@ public class OrderEntity implements Serializable {
         this.paidCashBackAmount = paidCashBackAmount;
     }
 
-    @Column(name = "paid_fund_transfer_amount")
+    @Column(name = "paid_fund_transfer_amount", columnDefinition = "Decimal(19,2) default '0.00'")
     public BigDecimal getPaidFundTransferAmount() {
         return paidFundTransferAmount;
     }

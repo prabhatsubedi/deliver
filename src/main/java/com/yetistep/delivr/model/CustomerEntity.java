@@ -355,7 +355,7 @@ public class CustomerEntity implements Serializable {
         this.customerType = customerType;
     }
 
-    @Column(name = "rm_bonus_amount")
+    @Column(name = "rm_bonus_amount", columnDefinition = "Decimal(19,2) default '0.00'")
     @JsonProperty
     public BigDecimal getRmBonusAmount() {
         return rmBonusAmount;
@@ -365,7 +365,7 @@ public class CustomerEntity implements Serializable {
         this.rmBonusAmount = rmBonusAmount;
     }
 
-    @Column(name = "rm_cash_back_amount")
+    @Column(name = "rm_cash_back_amount", columnDefinition = "Decimal(19,2) default '0.00'")
     @JsonProperty
     public BigDecimal getRmCashBackAmount() {
         return rmCashBackAmount;
@@ -375,7 +375,7 @@ public class CustomerEntity implements Serializable {
         this.rmCashBackAmount = rmCashBackAmount;
     }
 
-    @Column(name = "rm_fund_transfer_amount")
+    @Column(name = "rm_fund_transfer_amount", columnDefinition = "Decimal(19,2) default '0.00'")
     @JsonProperty
     public BigDecimal getRmFundTransferAmount() {
         return rmFundTransferAmount;

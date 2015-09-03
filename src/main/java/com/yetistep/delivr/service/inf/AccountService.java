@@ -6,7 +6,6 @@ import com.yetistep.delivr.dto.RequestJsonDto;
 import com.yetistep.delivr.model.OrderEntity;
 import com.yetistep.delivr.model.StoreEntity;
 
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -45,5 +44,7 @@ public interface AccountService {
     public List<OrderEntity> getOrdersAmountTransferred() throws Exception;
 
     public PaginationDto getShoppersTransactionAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
+
+    public List<OrderEntity> getSystemMerchantAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 
 }

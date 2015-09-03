@@ -68,6 +68,9 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
     @Autowired
     CourierTransactionAccountDaoService courierTransactionAccountDaoService;
 
+    @Autowired
+    MerchantDaoService merchantDaoService;
+
     @Override
     public String generateInvoice(Integer storeId, String fromDate, String toDate) throws Exception {
         String invoicePath = new String();
@@ -943,6 +946,19 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         paginationDto.setData(returnCTA);
         return paginationDto;
 
+    }
+
+
+    @Override
+    public List<OrderEntity> getSystemMerchantAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
+        log.info("++++++++++++ getting merchant +++++++++++++++");
+        MerchantEntity merchantEntity = merchantDaoService.find(headerDto.getMerchantId());
+        if(merchantEntity == null)
+            throw new YSException("VLD011");
+
+
+
+        return null;
     }
 
 

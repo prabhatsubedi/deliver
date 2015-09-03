@@ -17,11 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -417,6 +414,22 @@ public class AccountantController {
             DeliveryBoyEntity deliveryBoy = managerService.clearDBoyAccount(headerDto);
             ServiceResponse serviceResponse = new ServiceResponse("Account has been cleared successfully");
             serviceResponse.addParam("deliveryBoy", deliveryBoy);
+            return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
+        } catch (Exception e){
+            HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);
+            GeneralUtil.logError(log, "Error Occurred while clearing shopper account: ", e);
+            return new ResponseEntity<ServiceResponse>(httpHeaders, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/system_merchant_account", method = RequestMethod.GET)
+    public ResponseEntity<ServiceResponse> systemMerchantAccount(@RequestHeader HttpHeaders headers, RequestJsonDto requestJsonDto) {
+        try{
+            HeaderDto headerDto = new HeaderDto();
+            GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
+            List<OrderEntity> orders = accountService.getSystemMerchantAccount(headerDto, requestJsonDto);
+            ServiceResponse serviceResponse = new ServiceResponse("Account has been cleared successfully");
+            serviceResponse.addParam("orders", orders);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);
         } catch (Exception e){
             HttpHeaders httpHeaders = ServiceResponse.generateRuntimeErrors(e);

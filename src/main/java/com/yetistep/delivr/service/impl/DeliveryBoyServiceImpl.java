@@ -855,7 +855,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         courierBoyAccountingsAfterTakingOrder(order.getDeliveryBoy(), order, partnerShipStatus);
 
         //calculate paidFromCod and paid from wallet
-        if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+       /* if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
             order.setPaidFromWallet(order.getGrandTotal());
             order.setPaidFromCOD(BigDecimal.ZERO);
         } else if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()), BigDecimal.ZERO)){
@@ -866,11 +866,16 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         } else {
             order.setPaidFromWallet(BigDecimal.ZERO);
             order.setPaidFromCOD(order.getGrandTotal());
-        }
+        }*/
+        OrderPaymentUtil.calculateOrderPayment(order);
 
         /* Wallet Integration */
         if(BigDecimalUtil.isGreaterThenZero(order.getPaidFromWallet()))  {
             order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().subtract(order.getPaidFromWallet()));
+            order.getCustomer().setRmBonusAmount(BigDecimalUtil.checkNull(order.getCustomer().getRmBonusAmount()).subtract(BigDecimalUtil.checkNull(order.getPaidBonusAmount())));
+            order.getCustomer().setRmCashBackAmount(BigDecimalUtil.checkNull(order.getCustomer().getRmCashBackAmount()).subtract(BigDecimalUtil.checkNull(order.getPaidCashBackAmount())));
+            order.getCustomer().setRmFundTransferAmount(BigDecimalUtil.checkNull(order.getCustomer().getRmFundTransferAmount()).subtract(BigDecimalUtil.checkNull(order.getPaidFundTransferAmount())));
+
             List<WalletTransactionEntity> walletTransactionEntities = new ArrayList<WalletTransactionEntity>();
             WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
             walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
@@ -1081,6 +1086,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         // refill cashback amount to customer wallet and notify customer
         if(order.getCashBackToCustomerAmount() != null && BigDecimalUtil.isGreaterThenZero(order.getCashBackToCustomerAmount())){
             order.getCustomer().setWalletAmount(order.getCustomer().getWalletAmount().add(order.getCashBackToCustomerAmount()));
+            order.getCustomer().setRmCashBackAmount(BigDecimalUtil.checkNull(order.getCustomer().getRmCashBackAmount()).add(BigDecimalUtil.checkNull(order.getPaidFromWallet())));
+
             WalletTransactionEntity walletTransactionCashBackEntity = new WalletTransactionEntity();
             walletTransactionCashBackEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
             walletTransactionCashBackEntity.setAccountType(AccountType.CREDIT);
@@ -1370,10 +1377,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }*/
 
         //calculate paidFromCod and paid from wallet
-        if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+       /* if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+            OrderPaymentUtil.calculateOrderWalletPayment(order);
             order.setPaidFromWallet(order.getGrandTotal());
             order.setPaidFromCOD(BigDecimal.ZERO);
         } else if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()), BigDecimal.ZERO)){
+            OrderPaymentUtil.calculateOrderWalletPayment(order);
             BigDecimal paidFromWallet = order.getCustomer().getWalletAmount();
             BigDecimal paidFromCOD = order.getGrandTotal().subtract(paidFromWallet);
             order.setPaidFromWallet(paidFromWallet);
@@ -1381,7 +1390,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         } else {
             order.setPaidFromWallet(BigDecimal.ZERO);
             order.setPaidFromCOD(order.getGrandTotal());
-        }
+        }*/
+        OrderPaymentUtil.calculateOrderPayment(order);
 
         boolean status = orderDaoService.save(order);
         if(status){
@@ -1647,10 +1657,12 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         }*/
 
         //calculate paidFromCod and paid from wallet
-        if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+       /* if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+            OrderPaymentUtil.calculateOrderWalletPayment(order);
             order.setPaidFromWallet(order.getGrandTotal());
             order.setPaidFromCOD(BigDecimal.ZERO);
         } else if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()), BigDecimal.ZERO)){
+            OrderPaymentUtil.calculateOrderWalletPayment(order);
             BigDecimal paidFromWallet = order.getCustomer().getWalletAmount();
             BigDecimal paidFromCOD = order.getGrandTotal().subtract(paidFromWallet);
             order.setPaidFromWallet(paidFromWallet);
@@ -1658,7 +1670,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         } else {
             order.setPaidFromWallet(BigDecimal.ZERO);
             order.setPaidFromCOD(order.getGrandTotal());
-        }
+        }*/
+        OrderPaymentUtil.calculateOrderPayment(order);
 
         boolean status = orderDaoService.update(order);
         if(status){
@@ -1843,8 +1856,13 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             }
         }
 
+        OrderPaymentUtil.calculateOrderWalletPaymentOnOrderCancel(orderEntity);
         orderEntity.setPaidFromCOD(paidFromCOD);
         orderEntity.setPaidFromWallet(paidFromWallet);
+
+        orderEntity.getCustomer().setRmBonusAmount(BigDecimalUtil.checkNull(orderEntity.getCustomer().getRmBonusAmount()).subtract(BigDecimalUtil.checkNull(orderEntity.getPaidBonusAmount())));
+        orderEntity.getCustomer().setRmCashBackAmount(BigDecimalUtil.checkNull(orderEntity.getCustomer().getRmCashBackAmount()).subtract(BigDecimalUtil.checkNull(orderEntity.getPaidCashBackAmount())));
+        orderEntity.getCustomer().setRmFundTransferAmount(BigDecimalUtil.checkNull(orderEntity.getCustomer().getRmFundTransferAmount()).subtract(BigDecimalUtil.checkNull(orderEntity.getPaidFundTransferAmount())));
         orderEntity.getCustomer().setWalletAmount(customerWalletAmount);
 
 

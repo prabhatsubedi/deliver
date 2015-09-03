@@ -193,6 +193,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             if(registeredUser.getLastActivityDate() == null) {
                 if(registeredCustomer.getReferredBy() != null){
                     registeredCustomer.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
+                    registeredCustomer.setRmBonusAmount(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)));
                     refillCustomerWallet(registeredCustomer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFEREE_REWARD_AMOUNT)), MessageBundle.getMessage("WTM010", "push_notification.properties"), false);
                 }
             }
@@ -228,6 +229,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
     //            }
                 //if(registeredCustomer.getUser().getLastActivityDate().equals(null)) {
                 customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
+                customerEntity.setRmBonusAmount(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
                // }
                customerEntity.setDefault(false);
                customerDaoService.save(customerEntity);
@@ -307,6 +309,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                 IDGeneratorEntity idGeneratorEntity = idGeneratorDaoService.find(1);
                 customerEntity.setFacebookId(idGeneratorEntity.getGeneratedId());
                 customerEntity.setRewardsEarned(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
+                customerEntity.setRmBonusAmount(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
                 customerEntity.setDefault(false);
                 customerEntity.setTotalOrderPlaced(0);
                 customerEntity.setTotalOrderDelivered(0);
@@ -2467,6 +2470,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             throw new YSException("VLD011");
         }
         customerEntity.setWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()).add(refillAmount));
+        customerEntity.setRmFundTransferAmount(BigDecimalUtil.checkNull(customerEntity.getRmFundTransferAmount()).add(refillAmount));
         this.setCustomerWalletTransaction(customerEntity, refillAmount, AccountType.CREDIT, PaymentMode.WALLET, remark, customerEntity.getWalletAmount());
         /* Since bonus is given in transferred amount */
         if(isTransfer){
@@ -2476,6 +2480,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
                bonusRemark = String.format(bonusRemark, currency, bonusAmount);
                customerEntity.setWalletAmount(BigDecimalUtil.checkNull(customerEntity.getWalletAmount()).add(bonusAmount));
+               customerEntity.setRmBonusAmount(BigDecimalUtil.checkNull(customerEntity.getRmBonusAmount()).add(bonusAmount));
                this.setCustomerWalletTransaction(customerEntity, bonusAmount, AccountType.CREDIT, PaymentMode.WALLET, bonusRemark, customerEntity.getWalletAmount());
            }
         }
@@ -2666,6 +2671,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             if(referrerId != null){
                 CustomerEntity referrer = customerDaoService.find(referrerId);
                 referrer.setRewardsEarned(referrer.getRewardsEarned().add(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT))));
+                referrer.setRmBonusAmount(BigDecimalUtil.checkNull(referrer.getRmBonusAmount()).add(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT))));
                 refillCustomerWallet(referrer.getFacebookId(), new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.REFERRAL_REWARD_AMOUNT)), MessageBundle.getMessage("WTM005", "push_notification.properties"), false);
                 Integer referred_friends_count = referrer.getReferredFriendsCount();
                 if(referred_friends_count != null){
@@ -2787,6 +2793,9 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
         BigDecimal customerWalletAmount = order.getCustomer().getWalletAmount();
         customerWalletAmount = customerWalletAmount.add(order.getGrandTotal());
         order.getCustomer().setWalletAmount(customerWalletAmount);
+        order.getCustomer().setRmBonusAmount(BigDecimalUtil.checkNull(order.getCustomer().getRmBonusAmount()).add(BigDecimalUtil.checkNull(order.getPaidBonusAmount())));
+        order.getCustomer().setRmCashBackAmount(BigDecimalUtil.checkNull(order.getCustomer().getRmCashBackAmount()).add(BigDecimalUtil.checkNull(order.getPaidCashBackAmount())));
+        order.getCustomer().setRmFundTransferAmount(BigDecimalUtil.checkNull(order.getCustomer().getRmFundTransferAmount()).add(BigDecimalUtil.checkNull(order.getPaidFundTransferAmount())));
 
         String remarks = MessageBundle.getMessage("WTM012", "push_notification.properties");
         remarks = String.format(remarks, currency, order.getGrandTotal(), order.getId());

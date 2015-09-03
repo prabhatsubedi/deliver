@@ -24,7 +24,7 @@ public class OrderPaymentUtil {
             paidByBonusAmount = remainingAmount;
             remainingAmount = BigDecimal.ZERO;
         } else {
-            paidByBonusAmount = orderEntity.getCustomer().getRmBonusAmount();
+            paidByBonusAmount = BigDecimalUtil.checkNull(orderEntity.getCustomer().getRmBonusAmount());
             remainingAmount = remainingAmount.subtract(paidByBonusAmount);
         }
 
@@ -51,6 +51,57 @@ public class OrderPaymentUtil {
         orderEntity.setPaidCashBackAmount(paidByCashBackAmount);
         orderEntity.setPaidFundTransferAmount(paidByFundTransferAmount);
 
+    }
+
+    public static void calculateOrderWalletPaymentOnOrderCancel(OrderEntity orderEntity) throws Exception{
+        BigDecimal paidByBonusAmount = BigDecimal.ZERO;
+        BigDecimal paidByCashBackAmount = BigDecimal.ZERO;
+        BigDecimal paidByFundTransferAmount = BigDecimal.ZERO;
+        BigDecimal remainingAmount = orderEntity.getGrandTotal();
+
+        //first priority to bonus
+        if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(orderEntity.getCustomer().getRmBonusAmount()), remainingAmount)){
+            paidByBonusAmount = remainingAmount;
+            remainingAmount = BigDecimal.ZERO;
+        } else {
+            paidByBonusAmount = BigDecimalUtil.checkNull(orderEntity.getCustomer().getRmBonusAmount());
+            remainingAmount = remainingAmount.subtract(paidByBonusAmount);
+        }
+
+        //second priority to cash back
+        if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(orderEntity.getCustomer().getRmCashBackAmount()), remainingAmount)){
+            paidByCashBackAmount = remainingAmount;
+            remainingAmount = BigDecimal.ZERO;
+        } else {
+            paidByCashBackAmount = BigDecimalUtil.checkNull(orderEntity.getCustomer().getRmCashBackAmount());
+            remainingAmount = remainingAmount.subtract(paidByCashBackAmount);
+        }
+
+        //third priority to cash back
+        paidByFundTransferAmount = remainingAmount;
+
+        orderEntity.setPaidBonusAmount(paidByBonusAmount);
+        orderEntity.setPaidCashBackAmount(paidByCashBackAmount);
+        orderEntity.setPaidFundTransferAmount(paidByFundTransferAmount);
+
+    }
+
+
+    public static void calculateOrderPayment(OrderEntity order) throws Exception {
+        if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+            OrderPaymentUtil.calculateOrderWalletPayment(order);
+            order.setPaidFromWallet(order.getGrandTotal());
+            order.setPaidFromCOD(BigDecimal.ZERO);
+        } else if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()), BigDecimal.ZERO)){
+            OrderPaymentUtil.calculateOrderWalletPayment(order);
+            BigDecimal paidFromWallet = order.getCustomer().getWalletAmount();
+            BigDecimal paidFromCOD = order.getGrandTotal().subtract(paidFromWallet);
+            order.setPaidFromWallet(paidFromWallet);
+            order.setPaidFromCOD(paidFromCOD);
+        } else {
+            order.setPaidFromWallet(BigDecimal.ZERO);
+            order.setPaidFromCOD(order.getGrandTotal());
+        }
     }
 
 }

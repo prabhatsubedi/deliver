@@ -1099,8 +1099,8 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         log.info("++++++++++++ getting categories of brand +++++++++++++++");
         List<BrandsCategoryEntity> brandsCategories =  merchantDaoService.getBrandsCategory(Integer.parseInt(headerDto.getId()));
         List<CategoryEntity> categories = new ArrayList<>();
-        List<CategoryEntity> allCategories;
-        allCategories = merchantDaoService.getCategories();
+        //List<CategoryEntity> allCategories;
+        /*allCategories = merchantDaoService.getCategories();
 
             for (BrandsCategoryEntity brandsCategory: brandsCategories){
                 List<CategoryEntity> newCategories = new ArrayList<CategoryEntity>();
@@ -1108,15 +1108,23 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 newCategory = brandsCategory.getCategory();
                 newCategories =  getCategoryTree(allCategories, brandsCategory.getCategory().getId(), brandsCategory.getStoresBrand().getId());
                 List<ItemEntity> items = newCategory.getItem();
-               /* if(items.size() > 0){
+               *//* if(items.size() > 0){
                     newCategory.setItem(new ArrayList<ItemEntity>());
                 } else {
                     newCategory.setItem(null);
-                }*/
+                }*//*
                 newCategory.setChild(null);
                 newCategory.setChild(newCategories);
                 categories.add(newCategory);
-            }
+            }*/
+
+        for (BrandsCategoryEntity brandsCategory: brandsCategories){
+            CategoryEntity newCategory = brandsCategory.getCategory();
+            List<CategoryEntity> newCategories = categoryDaoService.getBrandsChildCategories(brandsCategory.getCategory().getId(), brandsCategory.getStoresBrand().getId());
+            newCategory.setChild(null);
+            newCategory.setChild(newCategories);
+            categories.add(newCategory);
+        }
 
         List<CategoryEntity> objects = new ArrayList<>();
 
@@ -1221,14 +1229,17 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         log.info("++++++++++++ getting child categories +++++++++++++++");
         Integer parentId = requestJson.getParentCategoryId();
         Integer storeId = requestJson.getCategoryStoreId();
-        List<CategoryEntity> categories;
-        List<CategoryEntity> newCategories = new ArrayList<CategoryEntity>();
+        //List<CategoryEntity> categories;
+        //List<CategoryEntity> newCategories = new ArrayList<CategoryEntity>();
 
-        categories = merchantDaoService.getCategories();
+        //categories = merchantDaoService.getCategories();
 
-        if(categories.size() > 0){
+        /*if(categories.size() > 0){
             newCategories =  getCategoryTree(categories, parentId, storeId);
-        }
+        }*/
+
+
+        List<CategoryEntity> newCategories = categoryDaoService.getBrandsChildCategories(parentId, storeId);
 
         List<CategoryEntity> objects = new ArrayList<>();
 

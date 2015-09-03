@@ -2745,22 +2745,10 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         dBoySelection.setStoreToCustomerDistance(order.getCustomerChargeableDistance());
 
         CourierTransactionEntity courierTransactionEntity = order.getCourierTransaction();
-        CourierTransactionEntity courierTransaction = systemAlgorithmService.getCourierTransaction(order, dBoySelection, totalCommissionAmount, courierTransactionEntity.getSystemProcessingChargePct());
-        courierTransactionEntity.setOrderTotal(courierTransaction.getOrderTotal());
-        courierTransactionEntity.setAdditionalDeliveryAmt(courierTransaction.getAdditionalDeliveryAmt());
-        courierTransactionEntity.setCustomerDiscount(courierTransaction.getCustomerDiscount());
-        courierTransactionEntity.setDeliveryCostWithoutAdditionalDvAmt(courierTransaction.getDeliveryCostWithoutAdditionalDvAmt());
-        courierTransactionEntity.setSystemProcessingChargeAmount(courierTransaction.getSystemProcessingChargeAmount());
-        courierTransactionEntity.setDeliveryChargedBeforeDiscount(courierTransaction.getDeliveryChargedBeforeDiscount());
-        courierTransactionEntity.setCustomerBalanceBeforeDiscount(courierTransaction.getCustomerBalanceBeforeDiscount());
-        courierTransactionEntity.setDeliveryChargedAfterDiscount(courierTransaction.getDeliveryChargedAfterDiscount());
-        courierTransactionEntity.setCustomerBalanceAfterDiscount(courierTransaction.getCustomerBalanceAfterDiscount());
-        courierTransactionEntity.setCustomerPays(courierTransaction.getCustomerPays());
-        courierTransactionEntity.setPaidToCourier(courierTransaction.getPaidToCourier());
-        courierTransactionEntity.setProfit(courierTransaction.getProfit());
+        systemAlgorithmService.getCourierTransaction(order, dBoySelection, totalCommissionAmount, courierTransactionEntity.getSystemProcessingChargePct());
 
         //calculate paidFromCod and paid from wallet
-        if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
+        /*if(BigDecimalUtil.isGreaterThenOrEqualTo(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()),order.getGrandTotal())){
             order.setPaidFromWallet(order.getGrandTotal());
             order.setPaidFromCOD(BigDecimal.ZERO);
         } else if(BigDecimalUtil.isGreaterThen(BigDecimalUtil.checkNull(order.getCustomer().getWalletAmount()), BigDecimal.ZERO)){
@@ -2771,7 +2759,8 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
         } else {
             order.setPaidFromWallet(BigDecimal.ZERO);
             order.setPaidFromCOD(order.getGrandTotal());
-        }
+        }*/
+        OrderPaymentUtil.calculateOrderPayment(order);
 
         boolean status = orderDaoService.update(order);
         if(status){

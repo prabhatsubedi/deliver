@@ -84,4 +84,9 @@ public interface OrderDaoService extends GenericDaoService<Integer, OrderEntity>
     public BigDecimal getCurrentOrdersWalletAmount(Integer customerId) throws Exception;
 
     public BigDecimal getCurrentOrdersCodAmount(Integer customerId) throws Exception;
+
+    public Integer getTotalNumbersOfOrdersTransactions(List<Integer> storeIdList) throws Exception;
+
+    public List<OrderEntity> getOrdersTransactionReport(List<Integer> storeIdList, Page page) throws Exception;
+
 }

@@ -950,15 +950,50 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
 
 
     @Override
-    public List<OrderEntity> getSystemMerchantAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
-        log.info("++++++++++++ getting merchant +++++++++++++++");
+    public PaginationDto getOrderTransactionReport(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception {
+        log.info("++++++++++++ getting orders +++++++++++++++");
+        Page page = requestJsonDto.getPage();
+
         MerchantEntity merchantEntity = merchantDaoService.find(headerDto.getMerchantId());
         if(merchantEntity == null)
             throw new YSException("VLD011");
+        MerchantEntity dbMerchant = merchantDaoService.find(headerDto.getMerchantId());
+        if(dbMerchant == null)
+            throw new YSException("VLD011");
+        List<Integer> brandIdList = merchantDaoService.getBrandIdList(headerDto.getMerchantId());
+        if(brandIdList.size() == 0)
+            throw new YSException("VLD012");
+        List<Integer> storeIdList = merchantDaoService.getStoreIdList(brandIdList);
+        if(storeIdList.size() == 0)
+            throw new YSException("VLD012");
 
+        PaginationDto paginationDto = new PaginationDto();
+        Integer totalRows =  orderDaoService.getTotalNumbersOfOrdersTransactions(storeIdList);
+        paginationDto.setNumberOfRows(totalRows);
+        if(page != null){
+            page.setTotalRows(totalRows);
+        }
+        List<OrderEntity> orders = orderDaoService.getOrdersTransactionReport(storeIdList, page);
 
+        List<OrderEntity> orderList = new ArrayList<>();
+        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,orderVerificationCode,assignedTime,systemServiceCharge,deliveryCharge,paidFromCOD,paidFromWallet,paidBonusAmount,paidCashBackAmount,paidFundTransferAmount,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,paymentMode,deliveryCharge";
 
-        return null;
+        for (OrderEntity order:orders){
+            orderList.add((OrderEntity) ReturnJsonUtil.getJsonObject(order, fields));
+        }
+
+        for (OrderEntity orderEntity: orderList){
+            // if is custom order not purchase set total cost and grand total -1
+            BigDecimal totalCost = orderEntity.getTotalCost();
+            if(orderEntity.getItemServiceAndVatCharge() != null){
+                totalCost = totalCost.subtract(orderEntity.getDiscountFromStore()).add(orderEntity.getItemServiceAndVatCharge());
+            }
+            orderEntity.setTotalCost(totalCost);
+        }
+
+        paginationDto.setData(orderList);
+
+        return paginationDto;
     }
 
 

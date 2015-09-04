@@ -422,12 +422,12 @@ public class AccountantController {
         }
     }
 
-    @RequestMapping(value = "/system_merchant_account", method = RequestMethod.GET)
-    public ResponseEntity<ServiceResponse> systemMerchantAccount(@RequestHeader HttpHeaders headers, RequestJsonDto requestJsonDto) {
+    @RequestMapping(value = "/order_transaction_report", method = RequestMethod.POST)
+    public ResponseEntity<ServiceResponse> orderTransactionReport(@RequestHeader HttpHeaders headers, RequestJsonDto requestJsonDto) {
         try{
             HeaderDto headerDto = new HeaderDto();
             GeneralUtil.fillHeaderCredential(headers, headerDto, GeneralUtil.MERCHANT_ID);
-            List<OrderEntity> orders = accountService.getSystemMerchantAccount(headerDto, requestJsonDto);
+            PaginationDto orders = accountService.getOrderTransactionReport(headerDto, requestJsonDto);
             ServiceResponse serviceResponse = new ServiceResponse("Account has been cleared successfully");
             serviceResponse.addParam("orders", orders);
             return new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.OK);

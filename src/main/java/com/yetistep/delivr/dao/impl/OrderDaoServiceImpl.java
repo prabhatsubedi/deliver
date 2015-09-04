@@ -529,5 +529,30 @@ public class OrderDaoServiceImpl implements OrderDaoService {
         return codAmount != null? new BigDecimal(codAmount.intValue()):BigDecimal.ZERO;
     }
 
+    @Override
+    public Integer getTotalNumbersOfOrdersTransactions(List<Integer> storeId) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.createAlias("itemsOrder", "itemsOrder");
+        List<JobOrderStatus> purchaseOrders = new ArrayList<JobOrderStatus>();
+        purchaseOrders.add(JobOrderStatus.DELIVERED);
+        purchaseOrders.add(JobOrderStatus.CANCELLED);
+        criteria.add(Restrictions.and(Restrictions.in("store.id", storeId), Restrictions.in("orderStatus", purchaseOrders), Restrictions.isNotNull("itemsOrder.purchaseStatus"), Restrictions.ne("itemsOrder.purchaseStatus", false)));
 
+        List<OrderEntity> orders = criteria.list();
+        return orders.size();
+    }
+
+    @Override
+    public List<OrderEntity> getOrdersTransactionReport(List<Integer> storeId, Page page) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderEntity.class);
+        criteria.createAlias("itemsOrder", "itemsOrder");
+        List<JobOrderStatus> purchaseOrders = new ArrayList<JobOrderStatus>();
+        purchaseOrders.add(JobOrderStatus.DELIVERED);
+        purchaseOrders.add(JobOrderStatus.CANCELLED);
+        criteria.add(Restrictions.and(Restrictions.in("store.id", storeId), Restrictions.in("orderStatus", purchaseOrders), Restrictions.isNotNull("itemsOrder.purchaseStatus"), Restrictions.ne("itemsOrder.purchaseStatus", false)));
+
+        HibernateUtil.fillPaginationCriteria(criteria, page, OrderEntity.class);
+        List<OrderEntity> orders = criteria.list();
+        return orders;
+    }
 }

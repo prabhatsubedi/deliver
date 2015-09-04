@@ -45,6 +45,6 @@ public interface AccountService {
 
     public PaginationDto getShoppersTransactionAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 
-    public List<OrderEntity> getSystemMerchantAccount(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
+    public PaginationDto getOrderTransactionReport(HeaderDto headerDto, RequestJsonDto requestJsonDto) throws Exception;
 
 }

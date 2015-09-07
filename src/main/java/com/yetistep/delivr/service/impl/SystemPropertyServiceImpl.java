@@ -123,9 +123,9 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
         UserEntity userEntity = userDaoService.find(((AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
         for (PreferencesEntity preference : systemPreferences){
             PreferencesEntity dbPreference = preferencesDaoService.findByKey(preference.getPrefKey());
-            ActionLogEntity actionLog = ActionLogUtil.createActionLog(dbPreference, preference, null, userEntity);
+            ActionLogEntity actionLog = ActionLogUtil.createActionLog(dbPreference, preference, new String[]{"value"}, userEntity);
             if(actionLog!=null){
-                actionLogs.add(ActionLogUtil.createActionLog(dbPreference, preference, null, userEntity));
+                actionLogs.add(actionLog);
             }
         }
 

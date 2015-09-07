@@ -1,21 +1,18 @@
 package com.yetistep.delivr.service.impl;
 
 import com.yetistep.delivr.abs.AbstractManager;
+import com.yetistep.delivr.dao.inf.ActionLogDaoService;
 import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.PasswordActionType;
 import com.yetistep.delivr.enums.Role;
 import com.yetistep.delivr.enums.Status;
-import com.yetistep.delivr.model.RoleEntity;
-import com.yetistep.delivr.model.StoresBrandEntity;
-import com.yetistep.delivr.model.UserEntity;
+import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.UserService;
-import com.yetistep.delivr.util.EmailMsg;
-import com.yetistep.delivr.util.GeneralUtil;
-import com.yetistep.delivr.util.MessageBundle;
-import com.yetistep.delivr.util.YSException;
+import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +29,9 @@ public class UserServiceImpl extends AbstractManager implements UserService{
     private static final Logger log = Logger.getLogger(UserServiceImpl.class);
     @Autowired
     UserDaoService userDaoService;
+
+    @Autowired
+    ActionLogDaoService actionLogDaoService;
 
     /* Used For Only Manager and Account Registration */
     public void saveUser(UserEntity user) throws Exception{
@@ -192,6 +192,7 @@ public class UserServiceImpl extends AbstractManager implements UserService{
 
     @Override
     public Boolean changeUserStatus(UserEntity userEntity) throws Exception {
+        log.info("updating user status of user id: "+userEntity.getId());
         UserEntity user = userDaoService.find(userEntity.getId());
         if( user == null){
             throw new YSException("VLD011");
@@ -206,7 +207,16 @@ public class UserServiceImpl extends AbstractManager implements UserService{
              }
         }
 
+        //set action log
+        UserEntity loggedInUser = userDaoService.find(((AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
+        ActionLogEntity actionLog = ActionLogUtil.createActionLog(user, userEntity, new String[]{"status"}, loggedInUser);
+
         userDaoService.update(user);
+
+        if (actionLog != null){
+            log.info("saving action log info");
+            actionLogDaoService.save(actionLog);
+        }
 
         if(user.getRole().getRole().equals(Role.ROLE_MERCHANT) && user.getStatus().equals(Status.INACTIVE)) {
             //Sending Email For Merchant

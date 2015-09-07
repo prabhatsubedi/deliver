@@ -13,6 +13,7 @@ import com.yetistep.delivr.service.inf.MerchantService;
 import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -47,6 +48,9 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
 
     @Autowired
     ItemDaoService itemDaoService;
+
+    @Autowired
+    ActionLogDaoService actionLogDaoService;
 
     private static final BigDecimal minusOne = new BigDecimal(-1);
 
@@ -1563,12 +1567,23 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
                 StoresBrandEntity storesBrand =   merchantDaoService.findBrandDetail(Integer.parseInt(id));
                 if(!storesBrand.getMerchant().getUser().getStatus().equals(Status.ACTIVE))
                     throw new YSException("VLD040");
+                //set action log
+                StoresBrandEntity newStoresBrand = new StoresBrandEntity();
+                newStoresBrand.setStatus(Status.fromInt(statusId));
+                UserEntity loggedInUser = userDaoService.find(((AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
+                ActionLogEntity actionLog = ActionLogUtil.createActionLog(storesBrand, newStoresBrand, new String[]{"status"}, loggedInUser);
+
                 storesBrand.setStatus(Status.fromInt(statusId));
                 if(statusId.equals(3)){
                     storesBrand.setFeatured(null);
                     storesBrand.setPriority(null);
                 }
                 merchantDaoService.updateStoresBrand(storesBrand);
+
+                if(actionLog != null) {
+                    log.info("saving action log");
+                    actionLogDaoService.save(actionLog);
+                }
             }
         }  else if(type.equals("Store")){
             for(String id: ids) {
@@ -1581,9 +1596,22 @@ public class MerchantServiceImpl extends AbstractManager implements MerchantServ
         }  else if(type.equals("Item")){
             for(String id: ids) {
                 ItemEntity item = merchantDaoService.getItemDetail(Integer.parseInt(id));
+
+                //set action log
+                ItemEntity newItem = new ItemEntity();
+                newItem.setStatus(Status.fromInt(statusId));
+                UserEntity loggedInUser = userDaoService.find(((AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
+                ActionLogEntity actionLog = ActionLogUtil.createActionLog(item, newItem, new String[]{"status"}, loggedInUser);
+
                 item.setStatus(Status.fromInt(statusId));
                 item.setModifiedDate(DateUtil.getCurrentTimestampSQL());
                 merchantDaoService.updateItem(item);
+
+                if(actionLog != null) {
+                    log.info("saving action log");
+                    actionLogDaoService.save(actionLog);
+                }
+
             }
         }
         return  true;

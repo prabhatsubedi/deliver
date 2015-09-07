@@ -38,8 +38,6 @@ public class MainController {
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public ModelAndView defaultPage() {
         ModelAndView model = new ModelAndView();
-        model.addObject("title", "Spring Security + Hibernate Example");
-        model.addObject("message", "This is default page!");
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null && !SessionManager.isAnonymousUser()) {
             Role role = SessionManager.getRole();
             if (role.toString().equals(Role.ROLE_ADMIN.toString())) {

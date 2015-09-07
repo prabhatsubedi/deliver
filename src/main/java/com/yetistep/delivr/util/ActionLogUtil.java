@@ -5,10 +5,8 @@ import com.yetistep.delivr.model.ActionLogEntity;
 import com.yetistep.delivr.model.UserEntity;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
-import org.aspectj.lang.annotation.Aspect;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,8 +18,6 @@ import java.util.Map;
  * Time: 5:49 PM
  * To change this template use File | Settings | File Templates.
  */
-@Component
-@Aspect
 public class ActionLogUtil {
 
     private static final Logger log = Logger.getLogger(ActionLogUtil.class);
@@ -95,7 +91,7 @@ public class ActionLogUtil {
         for (String field : fields) {
             Object firstValue = PropertyUtils.getProperty(firstInstance, field.trim());
             Object secondValue = PropertyUtils.getProperty(secondInstance, field.trim());
-            if (!PropertyUtils.getProperty(firstInstance, field.trim()).equals(PropertyUtils.getProperty(secondInstance, field.trim()))){
+            if (!firstValue.equals(secondValue)){
                 methodDifferenceValue.put(field, new Object[]{firstValue, secondValue});
             }
         }

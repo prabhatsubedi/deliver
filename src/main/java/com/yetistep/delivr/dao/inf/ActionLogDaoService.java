@@ -16,5 +16,7 @@ import java.util.List;
 public interface ActionLogDaoService extends GenericDaoService<Long, ActionLogEntity> {
      public List<ActionLogEntity> findActionLogPaginated(Page page) throws Exception;
 
+     public void saveAll(List<ActionLogEntity> values) throws Exception;
+
      public Integer getTotalNumberOfActionLogs() throws Exception;
 }

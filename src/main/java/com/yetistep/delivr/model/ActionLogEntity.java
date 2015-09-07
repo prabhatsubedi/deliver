@@ -1,6 +1,5 @@
 package com.yetistep.delivr.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yetistep.delivr.enums.ActionType;
 import com.yetistep.delivr.enums.Role;
@@ -21,16 +20,16 @@ import java.sql.Timestamp;
 @Table(name = "action_log")
 public class ActionLogEntity implements Serializable {
     private Long id;
-    private UserEntity userEntity;
+    private UserEntity user;
     private Role role;
     private ActionType actionType;
     private String description;
     private String userIP;
     private Timestamp dateTime;
 
-    public ActionLogEntity(Role role, UserEntity userEntity, ActionType actionType, String description, String userIP) {
+    public ActionLogEntity(Role role, UserEntity user, ActionType actionType, String description, String userIP) {
         this.role = role;
-        this.userEntity = userEntity;
+        this.user = user;
         this.actionType = actionType;
         this.description = description;
         this.userIP = userIP;
@@ -50,15 +49,15 @@ public class ActionLogEntity implements Serializable {
         this.id = id;
     }
 
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "user_id")
-    public UserEntity getUserEntity() {
-        return userEntity;
+    public UserEntity getUser() {
+        return user;
     }
 
-    public void setUserEntity(UserEntity userEntity) {
-        this.userEntity = userEntity;
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     @Column(name = "user_role")

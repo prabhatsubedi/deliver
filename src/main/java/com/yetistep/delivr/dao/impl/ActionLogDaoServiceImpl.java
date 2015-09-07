@@ -35,8 +35,22 @@ public class ActionLogDaoServiceImpl implements ActionLogDaoService {
 
     @Override
     public Boolean save(ActionLogEntity value) throws Exception {
-        getCurrentSession().save(value);
+        getCurrentSession().persist(value);
         return true;
+    }
+
+    @Override
+    public void saveAll(List<ActionLogEntity> values) throws Exception {
+        Integer i = 0;
+        for (ActionLogEntity value: values) {
+            getCurrentSession().persist(value);
+            if ( i % 20 == 0 ) { //20, same as the JDBC batch size
+                //flush a batch of inserts and release memory:
+                getCurrentSession().flush();
+                getCurrentSession().clear();
+            }
+            i++;
+        }
     }
 
     @Override

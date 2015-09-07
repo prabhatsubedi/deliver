@@ -1,24 +1,22 @@
 package com.yetistep.delivr.service.impl;
 
+import com.yetistep.delivr.dao.inf.ActionLogDaoService;
 import com.yetistep.delivr.dao.inf.PreferencesDaoService;
+import com.yetistep.delivr.dao.inf.UserDaoService;
 import com.yetistep.delivr.dao.inf.UserDeviceDaoService;
 import com.yetistep.delivr.dto.HeaderDto;
 import com.yetistep.delivr.enums.NotifyTo;
 import com.yetistep.delivr.enums.PreferenceType;
 import com.yetistep.delivr.enums.PushNotificationRedirect;
 import com.yetistep.delivr.enums.Role;
-import com.yetistep.delivr.model.PreferenceSectionEntity;
-import com.yetistep.delivr.model.PreferenceTypeEntity;
-import com.yetistep.delivr.model.PreferencesEntity;
+import com.yetistep.delivr.model.*;
 import com.yetistep.delivr.service.inf.SystemPropertyService;
-import com.yetistep.delivr.util.MessageBundle;
-import com.yetistep.delivr.util.PushNotification;
-import com.yetistep.delivr.util.PushNotificationUtil;
-import com.yetistep.delivr.util.ReturnJsonUtil;
+import com.yetistep.delivr.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.*;
 import java.util.*;
@@ -40,6 +38,12 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
 
     @Autowired
     UserDeviceDaoService userDeviceDaoService;
+
+    @Autowired
+    UserDaoService userDaoService;
+
+    @Autowired
+    ActionLogDaoService actionLogDaoService;
 
 
     @Override
@@ -115,8 +119,20 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
     public Boolean updateSystemPreferences(List<PreferencesEntity> systemPreferences) throws Exception {
         log.info("+++++++++++ Updating preferences table and property file ++++++++++++++");
         //update preference in db
+        List<ActionLogEntity> actionLogs = new ArrayList<>();
+        UserEntity userEntity = userDaoService.find(((AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
+        for (PreferencesEntity preference : systemPreferences){
+            PreferencesEntity dbPreference = preferencesDaoService.findByKey(preference.getPrefKey());
+            ActionLogEntity actionLog = ActionLogUtil.createActionLog(dbPreference, preference, null, userEntity);
+            if(actionLog!=null){
+                actionLogs.add(ActionLogUtil.createActionLog(dbPreference, preference, null, userEntity));
+            }
+        }
 
         preferencesDaoService.updatePreferences(systemPreferences);
+
+        log.info("saving action log");
+        actionLogDaoService.saveAll(actionLogs);
 
         for (PreferencesEntity preference : systemPreferences) {
             if (preference.getPrefKey().equals(PreferenceType.ANDROID_APP_VER_NO.toString())) {

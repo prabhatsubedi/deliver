@@ -882,7 +882,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
             walletTransactionEntity.setAccountType(AccountType.DEBIT);
             String currency = systemPropertyService.readPrefValue(PreferenceType.CURRENCY);
             String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
-            walletTransactionEntity.setRemarks(String.format(remarks, currency, order.getPaidFromWallet(), order.getStore().getName()));
+            walletTransactionEntity.setRemarks(String.format(remarks, currency, order.getPaidFromWallet(), order.getStore().getName(), order.getId()));
             walletTransactionEntity.setTransactionAmount(order.getPaidFromWallet());
             walletTransactionEntity.setOrder(order);
             walletTransactionEntity.setCustomer(order.getCustomer());
@@ -1831,7 +1831,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 paidFromWallet = orderEntity.getGrandTotal();
                 customerWalletAmount = customerWalletAmount.subtract(orderEntity.getPaidFromCOD());
                 String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
-                remarks = String.format(remarks, currency, orderEntity.getGrandTotal(), orderEntity.getStore().getName());
+                remarks = String.format(remarks, currency, orderEntity.getGrandTotal(), orderEntity.getStore().getName(), orderEntity.getId());
                 this.setWalletTransaction(orderEntity, orderEntity.getPaidFromCOD(), AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
 
                 paidFromCOD = BigDecimal.ZERO;
@@ -1850,7 +1850,7 @@ public class DeliveryBoyServiceImpl extends AbstractManager implements DeliveryB
                 paidFromWallet = orderEntity.getGrandTotal();
                 customerWalletAmount = customerWalletAmount.subtract(paidFromWallet);
                 String remarks = MessageBundle.getMessage("WTM001", "push_notification.properties");
-                remarks = String.format(remarks, currency, orderEntity.getGrandTotal(), orderEntity.getStore().getName());
+                remarks = String.format(remarks, currency, orderEntity.getGrandTotal(), orderEntity.getStore().getName(), orderEntity.getId());
                 this.setWalletTransaction(orderEntity, paidFromWallet, AccountType.CREDIT, PaymentMode.WALLET, remarks, customerWalletAmount);
                 paidFromCOD = BigDecimal.ZERO;
             }

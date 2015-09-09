@@ -976,10 +976,17 @@ public class AccountServiceImpl extends AbstractManager implements AccountServic
         List<OrderEntity> orders = orderDaoService.getOrdersTransactionReport(storeIdList, page);
 
         List<OrderEntity> orderList = new ArrayList<>();
-        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,orderVerificationCode,assignedTime,systemServiceCharge,deliveryCharge,paidFromCOD,paidFromWallet,paidBonusAmount,paidCashBackAmount,paidFundTransferAmount,itemServiceAndVatCharge,grandTotal,totalCost,discountFromStore,paymentMode,deliveryCharge";
+        String fields = "id,orderName,orderStatus,deliveryStatus,orderDate,orderVerificationCode,assignedTime,systemServiceCharge,deliveryCharge,paidFromCOD,paidFromWallet,paidBonusAmount,paidCashBackAmount,paidFundTransferAmount,itemServiceAndVatCharge,itemServiceCharge,itemVatCharge,grandTotal,totalCost,discountFromStore,paymentMode,deliveryCharge,customer,deliveryBoy,store";
+        Map<String, String> assoc = new HashMap<>();
+        Map<String, String> subAssoc = new HashMap<>();
+        assoc.put("store", "id,storesBrand");
+        assoc.put("customer", "id");
+        assoc.put("deliveryBoy", "id");
+        subAssoc.put("storesBrand", "id,merchant");
+        subAssoc.put("merchant", "id");
 
         for (OrderEntity order:orders){
-            orderList.add((OrderEntity) ReturnJsonUtil.getJsonObject(order, fields));
+            orderList.add((OrderEntity) ReturnJsonUtil.getJsonObject(order, fields, assoc, subAssoc));
         }
 
         for (OrderEntity orderEntity: orderList){

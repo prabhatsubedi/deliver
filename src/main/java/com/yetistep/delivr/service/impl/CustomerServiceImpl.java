@@ -152,6 +152,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
             UserDeviceEntity registeredUserDevice = registeredCustomer.getUser().getUserDevice();
 
             //If Client Permission granted after denied first time then email & DOB should updated
+            log.info("++++++++++++ Updating Customer customer email +++++++++++++");
             if ((user.getEmailAddress() != null && !user.getEmailAddress().isEmpty()) &&
                     (registeredUser.getEmailAddress() == null || !registeredUser.getEmailAddress().equals(user.getEmailAddress())))
                 registeredUser.setEmailAddress(user.getEmailAddress());
@@ -202,9 +203,11 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
             validateUserDevice(registeredUser.getUserDevice());
             registeredCustomer.setDefault(false);
+            log.info("update the customer");
             customerDaoService.update(registeredCustomer);
 
         } else {
+           log.info("Register the new customer");
            if(systemPropertyService.readPrefValue(PreferenceType.ENABLE_FREE_REGISTER).equals("1")){
                /* Check User Email */
                if(user.getEmailAddress()!=null && !user.getEmailAddress().isEmpty()) {
@@ -234,6 +237,7 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
                customerEntity.setDefault(false);
                customerDaoService.save(customerEntity);
                customerEntity.setWalletAmount(new BigDecimal(systemPropertyService.readPrefValue(PreferenceType.NORMAL_USER_BONUS_AMOUNT)));
+               log.info("set wallet transaction of new customer");
                WalletTransactionEntity walletTransactionEntity = new WalletTransactionEntity();
                walletTransactionEntity.setTransactionDate(DateUtil.getCurrentTimestampSQL());
                walletTransactionEntity.setAccountType(AccountType.CREDIT);
@@ -280,6 +284,10 @@ public class CustomerServiceImpl extends AbstractManager implements CustomerServ
 
             CustomerEntity customerEntity = userEntity.getCustomer();
             if (customerEntity != null) {
+                if(userEntity.getUserDevice() == null){
+                    UserDeviceEntity userDevice = new UserDeviceEntity();
+                    userEntity.setUserDevice(userDevice);
+                }
                 userEntity.getUserDevice().setUuid(requestJsonDto.getCustomer().getUser().getUserDevice().getUuid());
                 userEntity.getUserDevice().setFamily(family);
                 userEntity.getUserDevice().setFamilyName(family);
